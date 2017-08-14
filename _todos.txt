@@ -1,0 +1,15 @@
+Theme
+  dayBackgroundStyle
+  dayBackgroundClass
+  dayContentStyle
+  dayContentClass
+  dayContentHorizontalAlign: left, center, right
+  dayContentVerticalAlign: top, middle, bottom
+
+A calendar can have a default highlight, custom highlights
+Each highlight contains the following properties
+  dates: Array of date objects or date range objects
+  backgroundStyle: Style for the background of the highlight
+  backgroundClass: Class for the background of the highlight
+  contentStyle: Style for the content of the highlight
+  contentClass: Class for the content of the highlight
