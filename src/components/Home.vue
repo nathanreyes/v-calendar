@@ -42,7 +42,7 @@
             <div class='column is-half'>
               <div class='calendar-container'>
                 <calendar
-                  :symbols='calendarSymbols'>
+                  :highlights='highlights'>
                 </calendar>
               </div>
             </div>
@@ -56,6 +56,8 @@
 <script>
 import Calendar from './Calendar';
 
+const backgroundDiameter = '30px';
+
 export default {
   components: {
     Calendar,
@@ -64,27 +66,24 @@ export default {
   data() {
     return {
       msg: 'Welcome to Your Vue.js App',
-      calendarSymbols: [
+      highlights: [
         {
-          theme: {
-            background: {
-              horizontalAlign: 'center',
-              verticalAlign: 'center',
-              class: null,
-              style: {
-                backgroundColor: 'red',
-                borderRadius: '50%',
-                width: '1.9em',
-                height: '1.9em',
-              },
-              animation: 'none',
-            },
-            content: {
-              horizontalAlign: 'center',
-              verticalAlign: 'center',
-            },
+          date: new Date(2017, 7, 1),
+          startDate: null,
+          endDate: null,
+          backgroundClass: '',
+          backgroundStyle: {
+            backgroundColor: 'red',
+            border: '',
+            width: backgroundDiameter,
+            height: backgroundDiameter,
+            borderRadius: '50%',
           },
-          date: new Date(2017, 7, 30),
+          contentClass: '',
+          contentStyle: {
+            color: 'white',
+          },
+          isRounded: true,
         },
       ],
     };

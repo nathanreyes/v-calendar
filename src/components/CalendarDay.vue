@@ -3,7 +3,7 @@
   <!-- Background layers -->
   <div
     v-for='(background, i) in backgrounds' :key='i'
-    :class='background.wrapperClass'>
+    :class='getWrapperClass(background)'>
     <div :class='background.class' :style='background.style'></div>
   </div>
   <!-- Single date selection background layer -->
@@ -23,7 +23,7 @@
     </div>
   </transition>
   <!-- Content layer -->
-  <!-- <div class="c-day-layer c-day-wrap-center">
+  <div class="c-day-layer c-day-wrap-center">
     <div
       :class='contentClass'
       :style='contentStyle'
@@ -32,7 +32,7 @@
       @mouseleave='leave()'>
       {{ label }}
     </div>
-  </div> -->
+  </div>
 </div>
 </template>
 
@@ -41,14 +41,14 @@
 export default {
   data() {
     return {
-      backgrounds: [],
-      content: {},
-      foregrounds: [],
       isHovered: false,
     };
   },
   props: {
-    symbols: Array,
+    backgrounds: Array,
+    contentClass: String,
+    contentStyle: Object,
+    indicators: Array,
     label: String,
     day: Number,
     weekday: Number,
@@ -91,33 +91,7 @@ export default {
     //   return theme;
     // },
   },
-  watch: {
-    symbols() {
-      this.processSymbols();
-    },
-  },
-  created() {
-    this.processSymbols();
-  },
   methods: {
-    processSymbols() {
-      const backgrounds = [];
-      const foregrounds = [];
-      let content = {};
-      this.symbols.forEach((s) => {
-        const background = s.theme.background;
-        const foreground = s.theme.foreground;
-        if (background) {
-          background.wrapperClass = this.getWrapperClass(background);
-          backgrounds.push(background);
-        }
-        if (s.theme.content) content = s.theme.content;
-        if (foreground) foregrounds.push(foreground);
-      });
-      this.backgrounds = backgrounds;
-      this.content = content;
-      this.foregrounds = foregrounds;
-    },
     getWrapperClass({ horizontalAlign, verticalAlign }) {
       if (!horizontalAlign) horizontalAlign = 'center';
       if (!verticalAlign) verticalAlign = 'center';

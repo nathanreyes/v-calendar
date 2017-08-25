@@ -4,7 +4,10 @@
     <calendar-day
       v-for='day in week'
       :key='day.id'
-      :symbols='day.symbols'
+      :backgrounds='day.backgrounds'
+      :content-class='day.contentClass'
+      :content-style='day.contentStyle'
+      :indicators='day.indicators'
       :label='day.label'
       :day='day.day'
       :weekday='day.weekday'
@@ -36,7 +39,8 @@ export default {
     CalendarDay,
   },
   props: {
-    symbols: Array,
+    highlights: Array,
+    indicators: Array,
     month: Number,
     year: Number,
     isLeapYear: Boolean,
@@ -92,7 +96,7 @@ export default {
             beforeMonth: previousMonth,
             afterMonth: nextMonth,
           };
-          this.assignDaySymbols(dayInfo);
+          this.assignDayAttributes(dayInfo);
           week.push(dayInfo);
 
           // We've hit the last day of the month
@@ -113,9 +117,46 @@ export default {
       return weeks;
     },
   },
+  watch: {
+    highlights() {
+      this.processHighlights();
+    },
+  },
+  created() {
+    this.processHighlights();
+  },
   methods: {
-    assignDaySymbols(dayInfo) {
-      dayInfo.symbols = this.symbols;
+    processHighlights() {
+      this.highlights.forEach((h) => {
+        if (h.date) h.date.setHours(0, 0, 0, 0);
+        if (h.startDate) h.startDate.setHours(0, 0, 0, 0);
+        if (h.endDate) h.endDate.setHours(0, 0, 0, 0);
+      });
+    },
+    assignDayAttributes(dayInfo) {
+      // Assign backgroudns by filtering out highlights that cover dates
+      dayInfo.backgrounds = this.highlights.filter((h) => {
+        if (h.date) {
+          return h.date.getTime() === dayInfo.date.getTime();
+        } else if (h.startDate && h.endDate) {
+          return dayInfo.date >= h.startDate && dayInfo.date <= h.endDate;
+        }
+        return false;
+      }).map((h) => {
+        let horizontalAlign = '';
+        const verticalAlign = 'center';
+        if (h.startDate === dayInfo.date) horizontalAlign = 'right';
+        else if (h.endDate === dayInfo.date) horizontalAlign = 'left';
+        else horizontalAlign = 'center';
+        if (h.contentClass) dayInfo.contentClass = h.contentClass;
+        if (h.contentStyle) dayInfo.contentStyle = h.contentStyle;
+        return Object.assign({}, {
+          class: h.backgroundClass,
+          style: h.backgroundStyle,
+          horizontalAlign,
+          verticalAlign,
+        });
+      });
     },
   },
 };
