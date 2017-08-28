@@ -1,6 +1,8 @@
 <template>
 <calendar
-  :configureDay='configureDay'
+  :highlights='highlights'
+  v-bind='$attrs'
+  v-on='$listeners'
   @dayClick='selectDay'>
 </calendar>
 </template>
@@ -23,24 +25,28 @@ export default {
       if (!this.hasValues) return [];
       return this.value.map(v => v.getTime());
     },
-    configureDay() {
-      return (day) => {
-        day.selectMode = 'multiple';
-        day.isSelected = this.dayIsSelected(day);
-      };
+    highlights() {
+      return this.hasValues ? [
+        {
+          dates: this.value,
+          backgroundColor: '#fafafa',
+          color: '#333333',
+        },
+      ] :
+      [];
     },
   },
   methods: {
-    dayIsSelected(day) {
-      if (!this.hasValues) return false;
-      const t = day.date.getTime();
-      return !!this.valueTimes.find(vt => vt === t);
-    },
     selectDay(day) {
-      if (!day.isSelected) {
-        this.$emit('input', this.hasValues ? [...this.value, day.date] : [day.date]);
+      // Check if no values exist
+      if (!this.hasValues) {
+        this.$emit('input', [day.date]);
+      // Check if value contains the selected date
+      } else if (this.valueTimes.find(dt => dt === day.dateTime)) {
+        this.$emit('input', this.value.filter(v => v.getTime() !== day.dateTime));
+      // Value does not contain the selected date
       } else {
-        this.$emit('input', this.value.filter(v => v.getTime() !== day.date.getTime()));
+        this.$emit('input', [...this.value, day.date]);
       }
     },
   },

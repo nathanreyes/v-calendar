@@ -244,6 +244,7 @@ $dayWidth: 14.2857%
   min-width: $minWidth
   background-color: $bgColor
   padding: $padding
+  overflow: hidden
 
 .calendar-header
   display: flex

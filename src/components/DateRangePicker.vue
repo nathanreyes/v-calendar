@@ -1,9 +1,10 @@
 <template>
 <calendar
-  :configureDay='configureDay'
+  :highlights='highlights'
+  v-bind='$attrs'
+  v-on='$listeners'
   @dayClick='selectDay'
-  @dayEnter='enterDay'
-  v-on='$listeners'>
+  @dayEnter='enterDay'>
 </calendar> 
 </template>
 
@@ -32,20 +33,31 @@ export default {
     normalizedDragRange() {
       return this.normalizeRange(this.dragRange);
     },
-    configureDay() {
-      return (day) => {
-        const dateTime = day.date.getTime();
-        const valueRange = this.normalizedValue;
-        const dragRange = this.normalizedDragRange;
-        day.selectMode = 'range';
-        day.isSelected = valueRange && dateTime >= valueRange.startTime && dateTime <= valueRange.endTime;
-        day.startsSelection = valueRange && dateTime === valueRange.startTime;
-        day.endsSelection = valueRange && dateTime === valueRange.endTime;
-        day.dragActive = !!dragRange; // Just to let day know drag is happening somewhere
-        day.isDragged = dragRange && dateTime >= dragRange.startTime && dateTime <= dragRange.endTime;
-        day.startsDrag = dragRange && dateTime === dragRange.startTime;
-        day.endsDrag = dragRange && dateTime === dragRange.endTime;
-      };
+    highlights() {
+      if (this.dragRange) {
+        return [
+          {
+            // key: 'selected',
+            startDate: this.normalizedDragRange.start,
+            endDate: this.normalizedDragRange.end,
+            backgroundColor: '#91abc3',
+            color: '#103456',
+            height: '26px',
+          },
+        ];
+      }
+      if (this.valueIsValid) {
+        return [
+          {
+            // key: 'selected',
+            startDate: this.value.start,
+            endDate: this.value.end,
+            backgroundColor: '#fafafa',
+            color: '#333333',
+          },
+        ];
+      }
+      return null;
     },
   },
   watch: {

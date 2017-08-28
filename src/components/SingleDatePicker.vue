@@ -1,6 +1,8 @@
 <template>
 <calendar
-  :configureDayData='configureDayData'
+  :highlights='highlights'
+  v-bind='$attrs'
+  v-on='$listeners'
   @dayClick='selectDay'>
 </calendar>
 </template>
@@ -22,16 +24,20 @@ export default {
     valueTime() {
       return this.hasValue ? this.value.getTime() : null;
     },
-    configureDayData() {
-      return (day) => {
-        day.selectMode = 'single';
-        day.isSelected = day.date.getTime() === this.valueTime;
-      };
+    highlights() {
+      return this.hasValue ? [
+        {
+          date: this.value,
+          backgroundColor: '#fafafa',
+          color: '#333333',
+        },
+      ] :
+      [];
     },
   },
   methods: {
     selectDay(day) {
-      this.$emit('input', day.isSelected ? null : day.date);
+      this.$emit('input', (day.date === this.value) ? null : day.date);
     },
   },
 };
