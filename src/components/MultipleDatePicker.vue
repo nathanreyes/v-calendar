@@ -29,8 +29,8 @@ export default {
       return this.hasValues ? [
         {
           dates: this.value,
-          backgroundColor: '#fafafa',
-          color: '#333333',
+          backgroundColor: '#686864',
+          color: '#fafafa',
         },
       ] :
       [];

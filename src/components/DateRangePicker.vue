@@ -37,23 +37,21 @@ export default {
       if (this.dragRange) {
         return [
           {
-            // key: 'selected',
-            startDate: this.normalizedDragRange.start,
-            endDate: this.normalizedDragRange.end,
-            backgroundColor: '#91abc3',
+            dates: [this.normalizedDragRange],
+            backgroundColor: '#c1c1be',
             color: '#103456',
-            height: '26px',
+            height: '27px',
           },
         ];
       }
       if (this.valueIsValid) {
         return [
           {
-            // key: 'selected',
-            startDate: this.value.start,
-            endDate: this.value.end,
-            backgroundColor: '#fafafa',
-            color: '#333333',
+            dates: [this.value],
+            backgroundColor: '#9b9b97',
+            borderWidth: '2px',
+            borderColor: '#8f8f8a',
+            color: '#fafafa',
           },
         ];
       }

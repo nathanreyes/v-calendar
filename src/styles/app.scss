@@ -4,7 +4,7 @@
 @import "~bulma/sass/utilities/_all";
 
 // Set your colors
-$primary: #ff7a58;
+$primary: #65999a;
 $primary-invert: findColorInvert($primary);
 $twitter: #4099FF;
 $twitter-invert: findColorInvert($twitter);
@@ -36,4 +36,4 @@ $navbar-item-color: #fafafa;
 @import "~buefy/src/scss/buefy";
 
 // Import your library's styles
-@import 'lib'
+@import 'lib.sass'

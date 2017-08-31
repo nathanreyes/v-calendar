@@ -39,5 +39,6 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'max-len': 'off',
     'no-plusplus': 'off',
+    'linebreak-style': 'off',
   }
 }

@@ -4,7 +4,7 @@
       <div class='hero-body'>
         <div class='container has-text-centered'>
           <h1 class='title'>V-Calendar</h1>
-          <h2 class='subtitle'>A stylish calendar</h2>
+          <h2 class='subtitle'>A clean & lively calendar for Vue.js</h2>
         </div>
       </div>
       <!-- Hero footer: will stick at the bottom -->
@@ -12,59 +12,102 @@
         <nav class="tabs">
           <div class="container">
             <ul>
-              <li class="is-active"><a>Overview</a></li>
-              <li><a>Modifiers</a></li>
-              <li><a>Grid</a></li>
-              <li><a>Elements</a></li>
-              <li><a>Components</a></li>
-              <li><a>Layout</a></li>
+              <li><a>Calendar</a></li>
+              <li><a>Highlights</a></li>
+              <li><a>Slots</a></li>
+              <li><a>Props</a></li>
+              <li><a>Events</a></li>
+              <li><a>DatePicker</a></li>
             </ul>
           </div>
         </nav>
       </div>
     </section>
     <section class='section'>
-      <div class='container content'>
-        <h1 class='title is-spaced'>Overview</h1>
+      <div class='container'>
+        <h3 class='title has-text-primary is-spaced'>Calendar</h3>
+        <p class='subtitle'><i>V-Calendar</i> is a calendar component for Vue.js designed with these goals in mind:</p>
         <div class='columns'>
-          <div class='column is-half'>
-            <h4>
-              V-Calendar is a calendar component for Vue.js. It was designed with these goals in mind.
-            </h4>
+          <div class='column content'>
             <ul>
               <li>Lightweight and dependency-free</li>
-              <li>Customizable via props and scoped slots</li>
-              <li>Out of the box support for highlighted backgrounds, attributes and datepickers
-              <li>Clean and lively default design</li>
+              <li>Extensive customization via props and scoped slots</li>
+              <li>Built-in support for highlights, indicators and datepickers</li>
+              <li>Clean and lively design</li>
             </ul>
           </div>
-          <div class='column is-half'>
+        </div>
+      </div>
+    </section>
+    <section class='section'>
+      <div class='container'>
+        <h4 class='title is-4 has-text-grey-dark is-spaced'>Highlights</h4>
+        <div class='columns'>
+          <div class='column is-tw-thirds'>
+            <b-tabs>
+              <b-tab-item label='Overview'>
+                <div class='content'>
+                  <p class='subtitle'>Every calendar needs a highlighter.</p>
+                  <ul>
+                    <li>Properties for background, border and content</li>
+                    <li>Rounded or squared</li>
+                    <li>Spans dates and date ranges</li>
+                    <li>Optionally animated on appearance or disappearance</li> 
+                  </ul>
+                </div>
+              </b-tab-item>
+              <b-tab-item label='Example Code'>
+                <pre v-highlightjs='exHighlightsCode'>
+                  <code class='html'></code>
+                </pre>
+              </b-tab-item>
+            </b-tabs>
+          </div>
+          <div class='column is-one-third'>
             <div class='center-container'>
-              <calendar
-                :highlights='highlights'>
-              </calendar>
+              <ex-highlights></ex-highlights>
             </div>
           </div>
         </div>
-        <h1 class='title is-spaced'>Date Picker</h1>
+      </div>
+    </section>
+    <section class='section'>
+      <div class='container'>
+        <h3 class='title has-text-primary is-spaced'>Date Picker</h3>
         <div class='columns is-centered'>
-          <div class='column is-half'>
-            <div class='block'>
-              <div class='center-container'>
-                <b-field>
-                  <b-radio-button v-model='selectMode' native-value='single'>Single Date</b-radio-button>
-                  <b-radio-button v-model='selectMode' native-value='multiple'>Multiple Dates</b-radio-button>
-                  <b-radio-button v-model='selectMode' native-value='range'>Date Range</b-radio-button>
-                </b-field>
-              </div>
-            </div>
-            <div class='center-container'>
-              <date-picker :select-mode='selectMode' v-model='selectedDate'>
-              </date-picker>
-            </div>
+          <div class='column is-two-thirds'>
+            <b-tabs>
+              <b-tab-item label='Overview'>
+                <p class='subtitle'>
+                  A <i>v-date-picker</i> is just a <i>v-calendar</i> wrapper.
+                </p>
+                <p class='content'>
+                  It proxies all native calendar props and events, but also applies a special highlight for the date selection.
+                </p>
+                <p class='content'>
+                  Supported selection modes include...
+                  <ul>
+                    <li>Single date</li>
+                    <li>Multiple dates</li>
+                    <li>Date range</li>
+                  </ul>
+                </p>
+              </b-tab-item>
+              <b-tab-item label='Example Code'>
+                <pre v-highlightjs='exDatePickerCode'>
+                  <code class='html'></code>
+                </pre>
+              </b-tab-item>
+              <b-tab-item label='Props'>
+                <b-table>
+                </b-table>
+              </b-tab-item>
+            </b-tabs>
           </div>
-          <div class='column is-half'>
-
+          <div class='column is-one-third'>
+            <div class='center-container'>
+              <ex-date-picker></ex-date-picker>
+            </div>
           </div>
         </div>
       </div>
@@ -73,39 +116,30 @@
 </template>
 
 <script>
-import Calendar from './Calendar';
-import DatePicker from './DatePicker';
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable import/no-duplicates */
+/* eslint-disable import/first */
+import ExHighlights from './ExHighlights';
+import ExHighlightsCode from '!!raw-loader!./ExHighlights';
+import ExDatePicker from './ExDatePicker';
+import ExDatePickerCode from '!!raw-loader!./ExDatePicker';
 
 export default {
   components: {
-    Calendar,
-    DatePicker,
+    ExHighlights,
+    ExDatePicker,
   },
-  name: 'hello',
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      selectMode: 'single',
-      selectedDate: null,
-      highlights: [
-        {
-          key: '',
-          // date: new Date(2017, 7, 1),
-          // dates: [new Date(2017, 7, 1), new Date(2017, 7, 10), new Date(2017, 7, 22), new Date(2017, 7, 31)],
-          startDate: new Date(2017, 7, 1),
-          endDate: new Date(2017, 7, 4),
-          backgroundColor: 'red',
-          color: 'white',
-          // isSquared: true,
-        },
-      ],
+      exHighlightsCode: ExHighlightsCode,
+      exDatePickerCode: ExDatePickerCode,
     };
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang='sass' scoped>
+<style lang='sass'>
 
 .center-container
   display: flex

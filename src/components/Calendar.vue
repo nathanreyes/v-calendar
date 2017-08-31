@@ -1,33 +1,54 @@
 <template>
   <div class='calendar'>
-    <div class='calendar-header'>
-      <!-- <a class='calendar-arrow' @click='movePrevYear'>
+    <div class='c-header'>
+      <!-- <a class='c-arrow' @click='movePrevYear'>
         <slot name='prev-year'>&laquo;</slot>
       </a>  -->
-      <a class='calendar-arrow' @click='movePrevMonth'>
-        <slot name='prev-month'>&lsaquo;</slot>
+      <a class='c-arrow' @click='movePrevMonth'>
+        <slot name='prev-month'>
+          <p class='c-left'>&lsaquo;</p>
+        </slot>
       </a>
-      <transition-group tag='div' class='calendar-title-wrapper' :name='"header-" + transitionName'>
-        <div class='calendar-title' v-for='page in pages' :key='page.id' v-if='page === activePage' @click='moveThisMonth'>
-          <slot name='title' :page='page'>
-            {{ page.headerLabel }}
-          </slot>
+      <transition-group
+        tag='div'
+        class='c-title'
+        :name='"header-" + transitionName'>
+        <div
+          class='c-title-1'
+          v-for='page in pages'
+          :key='page.id'
+          v-if='page === activePage'
+          @click='moveThisMonth'>
+          <div class='c-title-2'>
+            <slot name='title' :page='page'>
+              {{ page.headerLabel }}
+            </slot>
+          </div>
         </div>
       </transition-group>
-      <a class='calendar-arrow' @click='moveNextMonth'>
-        <slot name='next-month'>&rsaquo;</slot>
+      <a class='c-arrow' @click='moveNextMonth'>
+        <slot name='next-month'>
+          <p class='c-right'>&rsaquo;</p>
+        </slot>
       </a>
-      <!-- <a class='calendar-arrow' @click='moveNextYear'>
+      <!-- <a class='c-arrow' @click='moveNextYear'>
         <slot name='next-year'>&raquo;</slot>
       </a>  -->
     </div>
-     <div class='weekdays'>
-      <div class='weekday' :style='weekdayStyle' v-for='weekday in weekdayLabels' :key='weekday'>
+     <div class='c-weekdays'>
+      <div
+        v-for='weekday in weekdayLabels'
+        :key='weekday'
+        class='c-weekday'
+        :style='weekdayStyle'>
         {{ weekday }}
       </div>
     </div> 
-     <transition-group tag='div' class='calendar-weeks' :name='"header-" + transitionName'>
-       <calendar-weeks
+    <transition-group
+      tag='div'
+      class='c-weeks'
+      :name='"weeks-" + transitionName'>
+      <calendar-weeks
         v-for='page in pages'
         :key='page.id'
         :month='page.month'
@@ -222,21 +243,53 @@ export default {
 <style lang='sass' scoped>
 
 $minWidth: 320px
-$bgColor: #3c6186
-$padding: 0.2em 0.4em 0.8em 0.4em
+$bgColor: #dae6e7
+$padding: 0.8em 0.4em
+$hoverColor: rgba(0, 0, 0, 0.6)
+$hoverBgColor: rgba(71, 105, 108, 0.15)
 
-$headerPadding: 0
+$headerFontSize: 1.2rem
+$headerFontWeight: 400
+$headerPadding: 0 0.4em 0.3em 0.4em
 $headerBorderWidth: 1px
 $headerBorderStyle: none
 $headerBorderColor: #aaaaaa
 $headerBackground: transparent
-$headerColor: white
+$headerColor: #637083
+$headerTranslateX: 25px
 $headerTransition: all .3s ease-in-out
+
+$arrowColor: #637083
+$arrowFontSize: 2.6rem
+$arrowFontWeight: 200
+$arrowHoverColor: #8f9aab
+$arrowSize: 0.7em
+$arrowMarginTop: -.15em
+$arrowMarginHorizontal: .05em
+
+$weeksTransition: all .3s ease-in-out
+$weeksTranslateX: 25px
 
 $dayWidth: 14.2857%
 
-*
-  box-sizing: border-box
+=pointer()
+  cursor: pointer
+  &:hover
+    color: $hoverColor
+
+=box($justify: center, $align: center)
+  display: flex
+  justify-content: $justify
+  align-items: $align
+  margin: 0
+  padding: 0
+
+=content($color, $fontSize, $fontWeight, $cursor: pointer)
+  color: $color
+  font-size: $fontSize
+  font-weight: $fontWeight
+  cursor: $cursor
+  user-select: none
 
 .calendar
   display: flex
@@ -246,7 +299,7 @@ $dayWidth: 14.2857%
   padding: $padding
   overflow: hidden
 
-.calendar-header
+.c-header
   display: flex
   align-items: stretch
   padding: $headerPadding
@@ -254,60 +307,90 @@ $dayWidth: 14.2857%
   border-style: $headerBorderStyle
   border-color: $headerBorderColor
   background-color: $headerBackground
-  
-  =pointer()
-    cursor: pointer
+  user-select: none
+
+  .c-arrow
+    +box()
+    +content($arrowColor, $arrowFontSize, $arrowFontWeight)
+    width: $arrowSize
+    height: $arrowSize
+    border-radius: 50%
+    transition: $headerTransition
     &:hover
-      color: #dcdcdc
-  
-  .calendar-arrow
-    +pointer
-    color: $headerColor
-    padding: 0 0.4em 0.2em 0.4em
-    font-size: 1.8rem
-    font-weight: 500
-    user-select: none
-    flex-grow: 0
+      color: $arrowHoverColor
+      background-color: $hoverBgColor
+    .c-left
+      margin-top: $arrowMarginTop
+      margin-left: -$arrowMarginHorizontal
+    .c-right
+      margin-top: $arrowMarginTop
+      margin-left: $arrowMarginHorizontal
     
-  .calendar-title-wrapper
+  .c-title
     flex-grow: 1
     display: flex
     justify-content: center
     align-items: center
     position: relative
-    .calendar-title
+    .c-title-1
       +pointer
-      display: inline-block
+      position: absolute
+      left: 0
+      top: 0
+      width: 100%
+      height: 100%
       color: $headerColor
-      font-size: 1.2rem
+      font-weight: $headerFontWeight
+      font-size: $headerFontSize
+      transition: $headerTransition
+      .c-title-2
+        display: flex
+        height: 100%
+        justify-content: center
+        align-items: center
 
-.weekdays
+.c-weekdays
   display: flex
   
-.weekday
+.c-weekday
   width: $dayWidth
   display: flex
   justify-content: center
   align-items: center  
   cursor: default
 
-.calendar-weeks
+.c-weeks
   flex-grow: 1
   position: relative
+  >div
+    transition: $weeksTransition
 
-.header-slide-left-enter-active, .header-slide-left-leave-active, .header-slide-right-enter-active, .header-slide-right-leave-active
-  transition: $headerTransition
-
-.header-slide-left-leave-active, .header-slide-right-leave-active
-  position: absolute
-
-.header-slide-left-enter, .header-slide-left-leave-to, .header-slide-right-enter, .header-slide-right-leave-to
+.header-slide-left-enter,
+.header-slide-right-leave-to
   opacity: 0
+  transform: translateX($headerTranslateX)
 
-.header-slide-left-enter, .header-slide-right-leave-to
-  transform: translateX(25px)
+.header-slide-left-leave-to,
+.header-slide-right-enter
+  opacity: 0
+  transform: translateX(-$headerTranslateX)
 
-.header-slide-left-leave-to, .header-slide-right-enter
-  transform: translateX(-25px)
+.weeks-slide-left-leave-active,
+.weeks-slide-right-leave-active
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+
+.weeks-slide-left-enter,
+.weeks-slide-right-leave-to
+  opacity: 0
+  transform: translateX($weeksTranslateX)
+
+.weeks-slide-left-leave-to,
+.weeks-slide-right-enter
+  opacity: 0
+  transform: translateX(-$weeksTranslateX)
 
 </style>

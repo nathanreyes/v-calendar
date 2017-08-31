@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 
 export default {
   props: {
@@ -50,6 +51,11 @@ export default {
     beforeMonth: Boolean,
     afterMonth: Boolean,
   },
+  data() {
+    return {
+      transitionName: '',
+    };
+  },
   computed: {
     data() {
       return {
@@ -68,7 +74,19 @@ export default {
     dayClass() {
       return this.inMonth ? '' : 'c-day-not-in-month';
     },
-    transitionName() {
+  },
+  watch: {
+    backgrounds() {
+      const transitionName = this.getTransitionName();
+      if (transitionName) {
+        this.transitionName = transitionName;
+      } else {
+        Vue.nextTick(() => { this.transitionName = transitionName; });
+      }
+    },
+  },
+  methods: {
+    getTransitionName() {
       let transition = '';
       if (!this.backgrounds || this.backgrounds.length === 0) return transition;
       this.backgrounds.forEach((b) => {
@@ -76,8 +94,6 @@ export default {
       });
       return transition;
     },
-  },
-  methods: {
     getWrapperClass({ horizontalAlign, verticalAlign }) {
       if (!horizontalAlign) horizontalAlign = 'center';
       if (!verticalAlign) verticalAlign = 'center';
@@ -99,7 +115,9 @@ export default {
 
 <style lang='sass' scoped>
 
-$dayColor: #fafafa
+$bgColor: #dae6e7
+
+$dayColor: #333333
 $dayFontSize: 0.8rem
 $dayFontWeight: 500
 $dayWidth: 14.2857%
@@ -107,20 +125,17 @@ $dayHeight: 2.2em
 
 $hoverBgColor: rgba(16, 52, 86, 0.25)
 
-$transitionTime: 0.18s ease-in-out
-$backgroundTransitionTime: 0.1s ease-in-out
+$contentTransitionTime: 0.18s ease-in-out
+$backgroundTransitionTime: .13s ease-in-out
 $scaleTransition: all 0.06s ease-in-out
-$tranlateTransition: 0.2s ease-in-out
+$translateTransition: .2s ease-in-out
 
 =box($justify: center, $align: center)
   display: flex
   justify-content: $justify
-  align-items: center
+  align-items: $align
   margin: 0
   padding: 0
-
-*
-  box-sizing: border-box
 
 .c-day
   position: relative
@@ -131,15 +146,15 @@ $tranlateTransition: 0.2s ease-in-out
   +box()
 
 .c-day-box-left-center
-  +box(flex-start, center)
+  +box(flex-start)
 
 .c-day-box-right-center
-  +box(flex-end, center)
+  +box(flex-end)
 
 .c-day-not-in-month
-  background-color: #3c6186
+  background-color: $bgColor
   pointer-events: none
-  opacity: 0.6
+  opacity: 0.5
   z-index: 100
 
 .c-day-layer
@@ -150,7 +165,7 @@ $tranlateTransition: 0.2s ease-in-out
   top: 0
 
 .c-day-background
-  transition: all $backgroundTransitionTime
+  transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
   
 .c-day-content
   +box()
@@ -159,21 +174,21 @@ $tranlateTransition: 0.2s ease-in-out
   font-weight: $dayFontWeight
   cursor: pointer
   user-select: none
-  transition: all $transitionTime
+  transition: all $contentTransitionTime
   z-index: 10
   &:hover
     background-color: $hoverBgColor
 
 .width-height-enter-active
-  animation: widthHeightGrow 0.14s
+  animation: widthHeightEnter 0.14s
 
 .width-height-leave-active
-  animation: widthHeightShrink 0.2s
+  animation: widthHeightLeave .18s
 
-@keyframes widthHeightGrow
+@keyframes widthHeightEnter
   0%
     transform: scaleX(0.7) scaleY(0.7)
-    opacity: 0
+    opacity: 0.3
   90%
     transform: scaleX(1.1) scaleY(1.1)
   95%
@@ -182,32 +197,41 @@ $tranlateTransition: 0.2s ease-in-out
     transform: scaleX(1) scaleY(1)
     opacity: 1
 
-@keyframes widthHeightShrink
-  80%
-    transform: scaleX(1.1) scaleY(1.1)
+@keyframes widthHeightLeave
+  0%
+    transform: scaleX(1) scaleY(1)
+  60%
+    transform: scaleX(1.2) scaleY(1.2)
+    opacity: 0.2
   100%
-    transform: scaleX(0.5) scaleY(0.5)
+    transform: scaleX(1.15) scaleY(1.15)
     opacity: 0
 
-.from-left-enter-active
-  animation: fromLeftEnter $tranlateTransition
+.from-left-enter-active.c-day-box-left-center
+  transition: $translateTransition
+  .c-day-background
+    animation: fromLeftEnter $translateTransition
+    transform-origin: 0% 50%
+
+.from-right-enter-active.c-day-box-right-center
+  transition: $translateTransition
+  .c-day-background
+    animation: fromRightEnter $translateTransition
+    transform-origin: 100% 50%
 
 @keyframes fromLeftEnter
   0%
-    transform: translateX(-20px)
+    transform: scaleX(0)
   60%
-    transform: translateX(0) scaleX(1.08)
+    transform: scaleX(1.08)
   100%
     transform: scaleX(1)
 
-.from-right-enter-active
-  animation: fromRightEnter $tranlateTransition
-
 @keyframes fromRightEnter
   0%
-    transform: translateX(20px)
+    transform: scaleX(0)
   60%
-    transform: translateX(0) scaleX(1.08)
+    transform: scaleX(1.08)
   100%
     transform: scaleX(1)
 

@@ -27,9 +27,9 @@ export default {
     highlights() {
       return this.hasValue ? [
         {
-          date: this.value,
-          backgroundColor: '#fafafa',
-          color: '#333333',
+          dates: [this.value],
+          backgroundColor: '#686864',
+          color: '#fafafa',
         },
       ] :
       [];
