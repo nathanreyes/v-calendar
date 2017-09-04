@@ -19,19 +19,6 @@ export default {
     return {
       highlights: [
         {
-          // Light purple background
-          backgroundColor: '#9999bd',
-          borderWidth: '2px',
-          borderColor: '#8484ae',
-          color: 'white',
-          // Use multiple dates
-          dates: [
-            new Date(year, month, 1),
-            new Date(year, month, 10),
-            new Date(year, month, 22),
-          ],
-        },
-        {
           // Light red background
           backgroundColor: '#bd9999',
           borderWidth: '2px',
@@ -46,7 +33,19 @@ export default {
             },
           ],
         },
-
+        {
+          // Light purple background
+          backgroundColor: '#9999bd',
+          borderWidth: '2px',
+          borderColor: '#8484ae',
+          color: 'white',
+          // Use multiple dates
+          dates: [
+            new Date(year, month, 1),
+            new Date(year, month, 10),
+            new Date(year, month, 22),
+          ],
+        },
         {
           // Light tan background
           backgroundColor: '#bdb499',
@@ -61,7 +60,7 @@ export default {
               end: new Date(year, month, 25),
             },
             new Date(year, month, 28),
-            new Date(year, month + 1, 7),
+            new Date(year, month + 1, 4),
           ],
         },
       ],

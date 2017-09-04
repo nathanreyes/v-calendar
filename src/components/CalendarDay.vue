@@ -1,31 +1,30 @@
 <template>
-<div class='c-day'>
+<div
+  :class='["c-day", {"c-day-not-in-month": !inMonth}]'
+  :style='{height: dayHeight}'>
   <!-- Background layers -->
   <transition-group
     :name='transitionName'>
     <div
-      v-for='(background, i) in backgrounds' :key='background.key'
+      v-for='(background, i) in backgrounds'
+      :key='background.key'
       :class='getWrapperClass(background)'>
       <div
         class='c-day-background'
-        :class='background.class'
         :style='background.style'>
       </div>
     </div>
   </transition-group>
   <!-- Content layer -->
-  <div class="c-day-layer c-day-box-center-center">
+  <div class='c-day-layer c-day-box-center-center'>
     <div
       class='c-day-content'
-      :class='contentClass'
       :style='contentStyle'
       @click='click()'
       @mouseenter='enter()'
       @mouseleave='leave()'>
       {{ label }}
     </div>
-  </div>
-  <div class='c-day-layer c-day-not-in-month' v-if='!inMonth'>
   </div>
 </div>
 </template>
@@ -35,9 +34,9 @@ import Vue from 'vue';
 
 export default {
   props: {
-    backgrounds: Array,
-    contentClass: String,
+    dayHeight: { type: String, default: '2.2rem' },
     contentStyle: Object,
+    backgrounds: Array,
     indicators: Array,
     label: String,
     day: Number,
@@ -70,9 +69,6 @@ export default {
         beforeMonth: this.beforeMonth,
         afterMonth: this.afterMonth,
       };
-    },
-    dayClass() {
-      return this.inMonth ? '' : 'c-day-not-in-month';
     },
   },
   watch: {
@@ -115,20 +111,21 @@ export default {
 
 <style lang='sass' scoped>
 
-$bgColor: #dae6e7
-
-$dayColor: #333333
-$dayFontSize: 0.8rem
-$dayFontWeight: 500
 $dayWidth: 14.2857%
-$dayHeight: 2.2em
+$dayHeight: 2.2rem
 
-$hoverBgColor: rgba(16, 52, 86, 0.25)
+$dayContentWidth: 2rem
+$dayContentHeight: 2rem
+$dayContentColor: #333333
+$dayContentFontSize: 0.9rem
+$dayContentFontWeight: 500
+$dayContentBorderRadius: 50%
+$dayContentHoverBgColor: rgba(16, 52, 86, 0.25)
+$dayContentTransitionTime: 0.18s ease-in-out
 
-$contentTransitionTime: 0.18s ease-in-out
 $backgroundTransitionTime: .13s ease-in-out
 $scaleTransition: all 0.06s ease-in-out
-$translateTransition: .2s ease-in-out
+$translateTransition: .18s ease-in-out
 
 =box($justify: center, $align: center)
   display: flex
@@ -140,7 +137,10 @@ $translateTransition: .2s ease-in-out
 .c-day
   position: relative
   width: $dayWidth
-  height: $dayHeight
+  // height: $dayHeight
+
+.c-day-not-in-month
+  opacity: 0.4
 
 .c-day-box-center-center
   +box()
@@ -150,12 +150,6 @@ $translateTransition: .2s ease-in-out
 
 .c-day-box-right-center
   +box(flex-end)
-
-.c-day-not-in-month
-  background-color: $bgColor
-  pointer-events: none
-  opacity: 0.5
-  z-index: 100
 
 .c-day-layer
   position: absolute
@@ -169,15 +163,18 @@ $translateTransition: .2s ease-in-out
   
 .c-day-content
   +box()
-  color: $dayColor
-  font-size: $dayFontSize
-  font-weight: $dayFontWeight
+  width: $dayContentWidth
+  height: $dayContentHeight
+  color: $dayContentColor
+  font-size: $dayContentFontSize
+  font-weight: $dayContentFontWeight
+  border-radius: $dayContentBorderRadius
+  transition: all $dayContentTransitionTime
   cursor: pointer
   user-select: none
-  transition: all $contentTransitionTime
   z-index: 10
   &:hover
-    background-color: $hoverBgColor
+    background-color: $dayContentHoverBgColor
 
 .width-height-enter-active
   animation: widthHeightEnter 0.14s

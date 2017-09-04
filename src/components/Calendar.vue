@@ -1,9 +1,6 @@
 <template>
-  <div class='calendar'>
-    <div class='c-header'>
-      <!-- <a class='c-arrow' @click='movePrevYear'>
-        <slot name='prev-year'>&laquo;</slot>
-      </a>  -->
+  <div class='c-wrapper' :style='wrapperStyle'>
+    <div class='c-header' :style='headerStyle'>
       <a class='c-arrow' @click='movePrevMonth'>
         <slot name='prev-month'>
           <p class='c-left'>&lsaquo;</p>
@@ -12,16 +9,16 @@
       <transition-group
         tag='div'
         class='c-title'
-        :name='"header-" + transitionName'>
+        :name='"title-" + transitionName'>
         <div
           class='c-title-1'
-          v-for='page in pages'
-          :key='page.id'
-          v-if='page === activePage'
+          v-for='p in pages'
+          :key='p.id'
+          v-if='p === page_'
           @click='moveThisMonth'>
           <div class='c-title-2'>
-            <slot name='title' :page='page'>
-              {{ page.headerLabel }}
+            <slot name='title' :page='p'>
+              <span class='c-title-3'>{{ p.headerLabel }}</span>
             </slot>
           </div>
         </div>
@@ -31,9 +28,6 @@
           <p class='c-right'>&rsaquo;</p>
         </slot>
       </a>
-      <!-- <a class='c-arrow' @click='moveNextYear'>
-        <slot name='next-year'>&raquo;</slot>
-      </a>  -->
     </div>
      <div class='c-weekdays'>
       <div
@@ -49,17 +43,16 @@
       class='c-weeks'
       :name='"weeks-" + transitionName'>
       <calendar-weeks
-        v-for='page in pages'
-        :key='page.id'
-        :month='page.month'
-        :year='page.year'
-        :isLeapYear='page.isLeapYear'
-        :daysInMonth='page.daysInMonth'
-        :firstWeekdayInMonth='page.firstWeekdayInMonth'
-        :prevMonthComps='page.prevMonthComps'
-        :nextMonthComps='page.nextMonthComps'
-        :theme='computedTheme'
-        v-if='page === activePage'
+        v-for='p in pages'
+        :key='p.id'
+        :month='p.month'
+        :year='p.year'
+        :isLeapYear='p.isLeapYear'
+        :daysInMonth='p.daysInMonth'
+        :firstWeekdayInMonth='p.firstWeekdayInMonth'
+        :prevMonthComps='p.prevMonthComps'
+        :nextMonthComps='p.nextMonthComps'
+        v-if='p === page_'
         v-bind='$attrs'
         v-on='$listeners'>
       </calendar-weeks> 
@@ -74,25 +67,13 @@ import CalendarWeeks from './CalendarWeeks';
 
 // Calendar data
 const _daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const _weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const _monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const _weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const _today = new Date();
 const _todayComps = {
   year: _today.getFullYear(),
   month: _today.getMonth() + 1,
   day: _today.getDate(),
-};
-const _defaultTheme = {
-  dayColor: '#fafafa',
-  dayFontSize: '0.8rem',
-  dayFontWeight: '600',
-  dayHoverHeight: '1.9em',
-  dayHoverBgColor: 'rgba(16, 52, 86, 0.25)',
-  todayBgColor: '#ff7a58',
-  todayColor: 'white',
-  selectBgColor: '#fafafa',
-  selectColor: '#103456',
-  selectHeight: '1.9em',
 };
 
 export default {
@@ -100,68 +81,61 @@ export default {
     CalendarWeeks,
   },
   props: {
-    initPage: {
-      type: Object,
-      default: () => ({ month: _todayComps.month, year: _todayComps.year }),
-    },
-    weekdayLabels: { type: Array, default: () => _weekdayLabels },
-    weekdayStyle: {
-      type: Object,
-      default: () => ({
-        color: '#8f9aab',
-        fontSize: '0.9rem',
-        fontWeight: '500',
-        padding: '0.6em 0',
-      }),
-    },
+    page: { type: Object, default: () => _todayComps },
     monthLabels: { type: Array, default: () => _monthLabels },
-    theme: { type: Object, default: () => {} },
+    weekdayLabels: { type: Array, default: () => _weekdayLabels },
+    wrapperStyle: Object,
+    headerStyle: Object,
+    weekdayStyle: Object,
   },
   data() {
     return {
       pages: [],
-      activePage: null,
+      page_: null,
       transitionName: '',
     };
   },
-  computed: {
-    computedTheme() {
-      return Object.assign({}, _defaultTheme, this.theme);
+  watch: {
+    page(val) {
+      this.move(val);
     },
   },
   created() {
-    this.move(this.initPage);
+    this.page_ = this.loadPage(this.page || _todayComps);
+    this.preloadPages();
   },
   methods: {
     movePrevYear() {
-      this.move({ month: this.activePage.month, year: this.activePage.year - 1 });
+      this.move({ month: this.page_.month, year: this.page_.year - 1 });
     },
     movePrevMonth() {
-      this.move(this.activePage.prevMonthComps);
+      this.move(this.page_.prevMonthComps);
     },
     moveThisMonth() {
       this.move(_todayComps);
     },
     moveNextMonth() {
-      this.move(this.activePage.nextMonthComps);
+      this.move(this.page_.nextMonthComps);
     },
     moveNextYear() {
-      this.move({ month: this.activePage.month, year: this.activePage.year + 1 });
+      this.move({ month: this.page_.month, year: this.page_.year + 1 });
     },
     move(pageInfo) {
+      // Exit if there is no page info or page info matches the current page
+      if (!pageInfo || (pageInfo.month === this.page_.month && pageInfo.year === this.page_.year)) return;
+      // Extract just the month and year info
+      const monthYear = { month: pageInfo.month, year: pageInfo.year };
       // Make sure the next page is loaded
-      const page = this.loadPage(pageInfo);
+      const page = this.loadPage(monthYear);
       // Set up the page transition
-      this.transitionName = this.getTransitionName(this.activePage, page);
+      this.transitionName = this.getTransitionName(this.page_, page);
       // Set the active page
-      this.activePage = page;
-      // Flag that page was moved to
-      this.$emit('move', page);
-      // Load the next and previous pages after move
-      Vue.nextTick(() => {
-        this.loadPage(this.activePage.prevMonthComps);
-        this.loadPage(this.activePage.nextMonthComps);
-      });
+      this.page_ = page;
+      // Flag that page was moved to/updated
+      this.$emit('move', monthYear);
+      this.$emit('update:page', monthYear);
+      // Preload other pages
+      this.preloadPages();
     },
     loadPage({ month, year }) {
       const id = `${year.toString()}.${month.toString()}`;
@@ -199,6 +173,13 @@ export default {
         this.pages.push(page);
       }
       return page;
+    },
+    preloadPages() {
+      // Load the next and previous pages
+      Vue.nextTick(() => {
+        this.loadPage(this.page_.prevMonthComps);
+        this.loadPage(this.page_.nextMonthComps);
+      });
     },
     getTransitionName(fromPage, toPage) {
       if (!fromPage || !toPage) return '';
@@ -245,37 +226,38 @@ export default {
 $minWidth: 320px
 $bgColor: #dae6e7
 $padding: 0.8em 0.4em
-$hoverColor: rgba(0, 0, 0, 0.6)
-$hoverBgColor: rgba(71, 105, 108, 0.15)
 
-$headerFontSize: 1.2rem
-$headerFontWeight: 400
 $headerPadding: 0 0.4em 0.3em 0.4em
-$headerBorderWidth: 1px
-$headerBorderStyle: none
-$headerBorderColor: #aaaaaa
-$headerBackground: transparent
-$headerColor: #637083
-$headerTranslateX: 25px
-$headerTransition: all .3s ease-in-out
+
+$titleColor: #637083
+$titleFontSize: 1.2rem
+$titleFontWeight: 400
+$titleHoverColor: rgba(0, 0, 0, 0.6)
+$titleHoverBgColor: rgba(71, 105, 108, 0.15)
+$titlePadding: 0 8px
+$titleBorderRadius: 4px
+$titleTranslateX: 25px
+$titleTransition: all .3s ease-in-out
 
 $arrowColor: #637083
 $arrowFontSize: 2.6rem
 $arrowFontWeight: 200
 $arrowHoverColor: #8f9aab
+$arrowHoverBgColor: rgba(71, 105, 108, 0.15)
 $arrowSize: 0.7em
 $arrowMarginTop: -.15em
 $arrowMarginHorizontal: .05em
+$arrowTransition: all .3s ease-in-out
 
-$weeksTransition: all .3s ease-in-out
+$weekdayColor: #8f9aab
+$weekdayFontSize: 0.9rem
+$weekdayFontWeight: 500
+$weekdayPadding: 0.6em 0
+
 $weeksTranslateX: 25px
+$weeksTransition: all .3s ease-in-out
 
 $dayWidth: 14.2857%
-
-=pointer()
-  cursor: pointer
-  &:hover
-    color: $hoverColor
 
 =box($justify: center, $align: center)
   display: flex
@@ -284,14 +266,7 @@ $dayWidth: 14.2857%
   margin: 0
   padding: 0
 
-=content($color, $fontSize, $fontWeight, $cursor: pointer)
-  color: $color
-  font-size: $fontSize
-  font-weight: $fontWeight
-  cursor: $cursor
-  user-select: none
-
-.calendar
+.c-wrapper
   display: flex
   flex-direction: column
   min-width: $minWidth
@@ -303,22 +278,22 @@ $dayWidth: 14.2857%
   display: flex
   align-items: stretch
   padding: $headerPadding
-  border-width: $headerBorderWidth
-  border-style: $headerBorderStyle
-  border-color: $headerBorderColor
-  background-color: $headerBackground
   user-select: none
 
   .c-arrow
     +box()
-    +content($arrowColor, $arrowFontSize, $arrowFontWeight)
+    color: $arrowColor
+    font-size: $arrowFontSize
+    font-weight: $arrowFontWeight
     width: $arrowSize
     height: $arrowSize
     border-radius: 50%
-    transition: $headerTransition
+    transition: $arrowTransition
+    cursor: pointer
+    user-select: none
     &:hover
       color: $arrowHoverColor
-      background-color: $hoverBgColor
+      background-color: $arrowHoverBgColor
     .c-left
       margin-top: $arrowMarginTop
       margin-left: -$arrowMarginHorizontal
@@ -333,31 +308,41 @@ $dayWidth: 14.2857%
     align-items: center
     position: relative
     .c-title-1
-      +pointer
       position: absolute
       left: 0
       top: 0
       width: 100%
       height: 100%
-      color: $headerColor
-      font-weight: $headerFontWeight
-      font-size: $headerFontSize
-      transition: $headerTransition
+      transition: $titleTransition
       .c-title-2
         display: flex
         height: 100%
         justify-content: center
         align-items: center
+        .c-title-3
+          color: $titleColor
+          font-weight: $titleFontWeight
+          font-size: $titleFontSize
+          transition: $titleTransition
+          padding: $titlePadding
+          border-radius: $titleBorderRadius
+          cursor: pointer
+          user-select: none
+          &:hover
+            color: $titleHoverColor
+            background-color: $titleHoverBgColor
 
 .c-weekdays
   display: flex
-  
+  padding: $weekdayPadding
+
 .c-weekday
+  +box()
   width: $dayWidth
-  display: flex
-  justify-content: center
-  align-items: center  
   cursor: default
+  color: $weekdayColor
+  font-size: $weekdayFontSize
+  font-weight: $weekdayFontWeight
 
 .c-weeks
   flex-grow: 1
@@ -365,15 +350,15 @@ $dayWidth: 14.2857%
   >div
     transition: $weeksTransition
 
-.header-slide-left-enter,
-.header-slide-right-leave-to
+.title-slide-left-enter,
+.title-slide-right-leave-to
   opacity: 0
-  transform: translateX($headerTranslateX)
+  transform: translateX($titleTranslateX)
 
-.header-slide-left-leave-to,
-.header-slide-right-enter
+.title-slide-left-leave-to,
+.title-slide-right-enter
   opacity: 0
-  transform: translateX(-$headerTranslateX)
+  transform: translateX(-$titleTranslateX)
 
 .weeks-slide-left-leave-active,
 .weeks-slide-right-leave-active

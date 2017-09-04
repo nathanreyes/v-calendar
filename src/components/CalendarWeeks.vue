@@ -5,7 +5,6 @@
       v-for='day in week'
       :key='day.id'
       :backgrounds='day.backgrounds'
-      :content-class='day.contentClass'
       :content-style='day.contentStyle'
       :indicators='day.indicators'
       :label='day.label'
@@ -41,6 +40,7 @@ export default {
     CalendarDay,
   },
   props: {
+    dayContentStyle: Object,
     highlights: Array,
     indicators: Array,
     month: Number,
@@ -48,10 +48,9 @@ export default {
     isLeapYear: Boolean,
     daysInMonth: Number,
     firstWeekdayInMonth: Number,
-    showMaxWeek: { type: Boolean, default: true },
+    showMaxWeeks: { type: Boolean, default: true },
     prevMonthComps: Object,
     nextMonthComps: Object,
-    theme: Object,
   },
   computed: {
     weeks() {
@@ -63,7 +62,7 @@ export default {
       let month = this.prevMonthComps.month;
       let year = this.prevMonthComps.year;
       // Cycle through each week of the month, up to 6 total
-      for (let w = 1; w <= 6 && (!nextMonth || this.showMaxWeek); w += 1) {
+      for (let w = 1; w <= 6 && (!nextMonth || this.showMaxWeeks); w += 1) {
         // Cycle through each weekday
         const week = [];
         for (let d = 1; d <= 7; d += 1) {
@@ -145,11 +144,16 @@ export default {
       });
     },
     assignDayAttributes(dayInfo) {
-      dayInfo.contentStyle = {
-        width: '30px',
-        height: '30px',
-        borderRadius: '30px',
-      };
+      const mapDayContentProps = [
+        { from: 'height', to: 'width' },
+        { from: 'height', to: 'height' },
+        { from: 'color', to: 'color' },
+        { from: 'fontSize', to: 'fontSize' },
+        { from: 'fontWeight', to: 'fontWeight' },
+        { from: 'fontDecoration', to: 'fontDecoration' },
+        { from: 'borderRadius', to: 'borderRadius' },
+      ];
+      dayInfo.contentStyle = { ...this.dayContentStyle };
       dayInfo.backgrounds = [];
       // Done if there are no highlights to process
       if (!this.highlights || !this.highlights.length) return;
@@ -167,10 +171,10 @@ export default {
           if (hasEnd && dayInfo.date > d.end) return;
           // Initialize the background object
           const endWidth = '95%';
-          const span = h.height || dayInfo.contentStyle.height;
+          const height = h.height || dayInfo.contentStyle.height || '2rem';
           const borderWidth = h.borderWidth || '0';
           const borderStyle = h.borderStyle || 'solid';
-          const borderRadius = h.isSquared ? '0' : span;
+          const borderRadius = h.isSquared ? '0' : height;
           const background = {
             key: h.key || i.toString(),
             horizontalAlign: 'center',
@@ -178,12 +182,12 @@ export default {
             transition: 'width-height',
             style: {
               backgroundColor: h.backgroundColor,
-              width: span,
-              height: span,
               borderColor: h.borderColor,
               borderWidth,
               borderStyle,
               borderRadius,
+              width: height,
+              height,
             },
           };
           // Is the highlight a date range
@@ -192,13 +196,11 @@ export default {
             const onEnd = hasEnd && d.end.getTime() === dayInfo.dateTime;
             // Is the day date on the highlight start and end date
             if (onStart && onEnd) {
-              // background.key = `${background.key}-end`;
               background.style.width = endWidth;
               background.style.borderWidth = borderWidth;
               background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
             // Is the day date on the highlight start date
             } else if (onStart) {
-              // background.key = `${background.key}-end`;
               background.transition = 'from-right';
               background.horizontalAlign = 'right';
               background.style.width = endWidth;
@@ -207,7 +209,6 @@ export default {
 
             // Is the day date on the highlight end date
             } else if (onEnd) {
-              // background.key = `${background.key}-end`;
               background.transition = 'from-left';
               background.horizontalAlign = 'left';
               background.style.zIndex = '1';
@@ -216,7 +217,6 @@ export default {
               background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
             // Is the day date between the highlight start/end dates
             } else {
-              // background.key = `${background.key}-span`;
               background.transition = '';
               background.style.width = '100%';
               background.style.borderWidth = `${borderWidth} 0`;
@@ -226,11 +226,9 @@ export default {
           // Add background to the day info
           dayInfo.backgrounds.push(background);
           // Modify content style if needed
-          if (h.color) dayInfo.contentStyle.color = h.color;
-          if (h.fontSize) dayInfo.contentStyle.fontSize = h.fontSize;
-          if (h.fontWeight) dayInfo.contentStyle.fontWeight = h.fontWeight;
-          if (h.fontDecoration) dayInfo.contentStyle.fontDecoration = h.fontDecoration;
-          if (h.height) dayInfo.contentStyle.height = h.height;
+          mapDayContentProps.forEach((m) => {
+            if (Object.prototype.hasOwnProperty.call(h, m.from)) dayInfo.contentStyle[m.to] = h[m.from];
+          });
         });
       });
     },

@@ -1,6 +1,6 @@
 <template>
 <calendar
-  :highlights='highlights'
+  :highlights='highlights_'
   v-bind='$attrs'
   v-on='$listeners'
   @dayClick='selectDay'>
@@ -16,6 +16,8 @@ export default {
   },
   props: {
     value: { type: Array, default: [] },
+    selectHighlight: { type: Object, required: true },
+    highlights: Array,
   },
   computed: {
     hasValues() {
@@ -25,15 +27,12 @@ export default {
       if (!this.hasValues) return [];
       return this.value.map(v => v.getTime());
     },
-    highlights() {
-      return this.hasValues ? [
-        {
-          dates: this.value,
-          backgroundColor: '#686864',
-          color: '#fafafa',
-        },
-      ] :
-      [];
+    selectHighlight_() {
+      return { ...this.selectHighlight, dates: this.value };
+    },
+    highlights_() {
+      if (!this.hasValues) return this.highlights;
+      return this.highlights ? [...this.highlights, this.selectHighlight_] : [this.selectHighlight_];
     },
   },
   methods: {
@@ -48,6 +47,8 @@ export default {
       } else {
         this.$emit('input', [...this.value, day.date]);
       }
+      // Forward the event
+      this.$emit('dayClick', day);
     },
   },
 };

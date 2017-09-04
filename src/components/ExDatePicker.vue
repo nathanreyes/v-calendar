@@ -8,12 +8,19 @@
     </b-field>
   </div>
   <div class='block center-container'>
-    <date-picker :select-mode='selectMode' v-model='selectedDate'>
+    <date-picker
+      :select-mode='selectMode'
+      v-model='selectedValue'
+      @drag='draggedValue = $event'>
     </date-picker>
+  </div>
+  <div v-if='selectMode === "range"'>
+    <h4>Drag Value</h4>
+    <pre><code>{{ JSON.stringify(draggedValue, null, 2)}}</code></pre>
   </div>
   <p>
     <h4>Value</h4>
-    <pre><code>{{ JSON.stringify(selectedDate, null, 2)}}</code></pre>
+    <pre><code>{{ JSON.stringify(selectedValue, null, 2)}}</code></pre>
   </p>
 </div>
 </template>
@@ -27,9 +34,17 @@ export default {
   },
   data() {
     return {
-      selectMode: 'range',
-      selectedDate: null,
+      selectMode: 'single',
+      draggedValue: null,
+      selectedValue: null,
     };
   },
 };
 </script>
+
+<style scoped>
+code {
+  padding: 10px 20px;
+  min-height: 105px;
+}
+</style>

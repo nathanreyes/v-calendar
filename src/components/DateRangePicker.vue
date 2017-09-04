@@ -1,6 +1,6 @@
 <template>
 <calendar
-  :highlights='highlights'
+  :highlights='highlights_'
   v-bind='$attrs'
   v-on='$listeners'
   @dayClick='selectDay'
@@ -22,6 +22,9 @@ export default {
   },
   props: {
     value: { type: Object, default: { } },
+    dragHighlight: { type: Object, required: true },
+    selectHighlight: { type: Object, required: true },
+    highlights: Array,
   },
   computed: {
     valueIsValid() {
@@ -33,29 +36,20 @@ export default {
     normalizedDragRange() {
       return this.normalizeRange(this.dragRange);
     },
-    highlights() {
+    dragHighlight_() {
+      return { ...this.dragHighlight, dates: [this.normalizedDragRange] };
+    },
+    selectHighlight_() {
+      return { ...this.selectHighlight, dates: [this.normalizedValue] };
+    },
+    highlights_() {
       if (this.dragRange) {
-        return [
-          {
-            dates: [this.normalizedDragRange],
-            backgroundColor: '#c1c1be',
-            color: '#103456',
-            height: '27px',
-          },
-        ];
+        return this.highlights ? [...this.highlights, this.dragHighlight_] : [this.dragHighlight_];
       }
       if (this.valueIsValid) {
-        return [
-          {
-            dates: [this.value],
-            backgroundColor: '#9b9b97',
-            borderWidth: '2px',
-            borderColor: '#8f8f8a',
-            color: '#fafafa',
-          },
-        ];
+        return this.highlights ? [...this.highlights, this.selectHighlight_] : [this.selectHighlight_];
       }
-      return null;
+      return this.highlights;
     },
   },
   watch: {
@@ -89,6 +83,8 @@ export default {
         // Signal new value selected on drag complete
         this.$emit('input', { start, end });
       }
+      // Forward the event
+      this.$emit('dayClick', day);
     },
     enterDay(day) {
       if (!this.dragRange) return;
@@ -97,6 +93,8 @@ export default {
         start: new Date(this.dragRange.start.getTime()),
         end: new Date(day.date.getTime()),
       };
+      // Forward the event
+      this.$emit('dayEnter', day);
     },
     // Ranges can privately have end date earlier than start date
     // This function will correct the order before exposing it to to other components
