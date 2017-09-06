@@ -41,10 +41,10 @@ export default {
         default: '<code>["S", "M", "T", "W", "T", "F", "S", "S"]</code>',
       },
       {
-        name: '<code>showMaxWeeks</code>',
-        description: 'Show the max number of weeks (6) for all months. Otherwise, just show up to the last week of the month.',
+        name: '<code>trimMaxWeek</code>',
+        description: 'By default the calendar shows the max number of weeks (6) for all months. Set this prop to trim the 6th week when not needed.',
         type: 'Boolean',
-        default: '<code>true</code>',
+        default: '<code>false</code>',
       },
       {
         name: '<code>highlights</code>',
@@ -79,6 +79,12 @@ export default {
         description: 'Style to apply to content for day cells.',
         type: 'Object',
         default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>dayHeight</code>',
+        description: 'Height of the day cell container. Should be large enough to contain content and highlights.',
+        type: 'String',
+        default: '<code>2.2rem</code>',
       },
     ];
     return {

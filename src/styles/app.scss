@@ -35,5 +35,8 @@ $navbar-item-color: #fafafa;
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
+// Import highlight.js style
+@import "~highlight.js/styles/atelier-cave-light.css";
+
 // Import your library's styles
-@import 'lib.sass'
+@import 'lib.sass';

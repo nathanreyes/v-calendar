@@ -26,3 +26,28 @@ export default {
   name: 'app',
 };
 </script>
+
+<style lang='scss'>
+@import './styles/app';
+
+pre {
+  @include tablet {
+    white-space: pre-wrap;
+  }
+  code {
+    max-height: 400px;
+    &.hljs {
+      background: inherit;
+      color: inherit;
+      padding: 1.25rem 1.5rem;
+    }
+  }
+}
+
+// .example-code {
+//   margin: 0;
+//   + .example-code {
+//     margin-top: -1.5rem;
+//   }
+// }
+</style>

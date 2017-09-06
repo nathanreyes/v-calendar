@@ -21,7 +21,7 @@ export default {
     const props = [
       {
         propertyName: '<code>key</code>',
-        description: 'Key for highlighted region. This may affect how animations are applied when showing or hiding highlights.',
+        description: 'Key for highlighted region. Keys affect how highlight animations are applied when appearing or disappearing.',
         type: 'String',
       },
       {

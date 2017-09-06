@@ -47,13 +47,13 @@ export default {
       {
         name: '<code>dragHighlight</code>',
         description: 'Highlight for the dragged selection. Only valid for "range" select mode.',
-        type: 'Array',
+        type: 'Object',
         default: '<code>{}</code>',
       },
       {
         name: '<code>selectHighlight</code>',
         description: 'Highlight for the date selection. Valid for all select modes.',
-        type: 'Boolean',
+        type: 'Object',
         default: '<code>{}</code>',
       },
     ];

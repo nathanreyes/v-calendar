@@ -14,11 +14,14 @@
           class='c-title-1'
           v-for='p in pages'
           :key='p.id'
-          v-if='p === page_'
-          @click='moveThisMonth'>
+          v-if='p === page_'>
           <div class='c-title-2'>
             <slot name='title' :page='p'>
-              <span class='c-title-3'>{{ p.headerLabel }}</span>
+              <span
+                class='c-title-3'
+                @click='moveThisMonth'>
+                {{ p.headerLabel }}
+              </span>
             </slot>
           </div>
         </div>

@@ -48,7 +48,7 @@ export default {
     isLeapYear: Boolean,
     daysInMonth: Number,
     firstWeekdayInMonth: Number,
-    showMaxWeeks: { type: Boolean, default: true },
+    trimMaxWeek: Boolean,
     prevMonthComps: Object,
     nextMonthComps: Object,
   },
@@ -62,7 +62,7 @@ export default {
       let month = this.prevMonthComps.month;
       let year = this.prevMonthComps.year;
       // Cycle through each week of the month, up to 6 total
-      for (let w = 1; w <= 6 && (!nextMonth || this.showMaxWeeks); w += 1) {
+      for (let w = 1; w <= 6 && (!nextMonth || !this.trimMaxWeek); w += 1) {
         // Cycle through each weekday
         const week = [];
         for (let d = 1; d <= 7; d += 1) {

@@ -44,6 +44,7 @@
         <div class='columns'>
           <div class='column is-tw-thirds'>
             <b-tabs>
+              <!--Highlights Overview-->
               <b-tab-item label='Overview'>
                 <div class='content'>
                   <p class='subtitle'>Every calendar needs a highlighter.</p>
@@ -55,10 +56,9 @@
                   </ul>
                 </div>
               </b-tab-item>
+              <!--Highlights Example Code-->
               <b-tab-item label='Example Code'>
-                <pre v-highlightjs='exHighlightsCode'>
-                  <code class='html'></code>
-                </pre>
+                <pre class='example-code' v-highlight><code class='html'>{{ exHighlightsCode }}</code></pre>
               </b-tab-item>
             </b-tabs>
           </div>
@@ -114,9 +114,7 @@
                 </p>
               </b-tab-item>
               <b-tab-item label='Example Code'>
-                <pre v-highlightjs='exDatePickerCode'>
-                  <code class='html'></code>
-                </pre>
+                <pre class='example-code' v-highlight><code class='html'>{{ exDatePickerCode }}</code></pre>
               </b-tab-item>
             </b-tabs>
           </div>

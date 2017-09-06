@@ -138,6 +138,7 @@ $translateTransition: .18s ease-in-out
   position: relative
   width: $dayWidth
   // height: $dayHeight
+  overflow: hidden
 
 .c-day-not-in-month
   opacity: 0.4
