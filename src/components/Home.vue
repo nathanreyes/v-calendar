@@ -14,7 +14,9 @@
             <ul>
               <li><a>Calendar</a></li>
               <li><a>Highlights</a></li>
+              <li><a>Indicators</a></li>
               <li><a>DatePicker</a></li>
+              <li><a>API</a></li>
             </ul>
           </div>
         </nav>
@@ -42,7 +44,7 @@
       <div class='container'>
         <h4 class='title is-4 has-text-grey-dark is-spaced'>Highlights</h4>
         <div class='columns'>
-          <div class='column is-tw-thirds'>
+          <div class='column is-two-thirds'>
             <b-tabs>
               <!--Highlights Overview-->
               <b-tab-item label='Overview'>
@@ -70,24 +72,34 @@
         </div>
       </div>
     </section>
-    <!--Calendar Api-->
+    <!--Calendar Indicators-->
     <section class='section'>
       <div class='container'>
-        <h4 class='title is-4 has-text-grey-dark is-spaced'>API</h4>
-        <b-tabs>
-          <b-tab-item label='Props'>
-            <calendar-api-props></calendar-api-props>
-          </b-tab-item>
-          <b-tab-item label='Events'>
-            <calendar-api-events></calendar-api-events>
-          </b-tab-item>
-          <b-tab-item label='Slots'>
-            <calendar-api-slots></calendar-api-slots>
-          </b-tab-item>
-          <b-tab-item label='Highlights'>
-            <calendar-api-highlights></calendar-api-highlights>
-          </b-tab-item>
-        </b-tabs>
+        <h4 class='title is-4 has-text-grey-dark is-spaced'>Indicators</h4>
+        <div class='columns'>
+          <div class='column is-two-thirds'>
+            <b-tabs>
+              <!--Indicators Overview-->
+              <b-tab-item label='Overview'>
+                <div class='content'>
+                  <p class='subtitle'></p>
+                  <ul>
+                    <li>Properties for color and size</li>
+                  </ul>
+                </div>
+              </b-tab-item>
+              <!--Indicators Example Code-->
+              <b-tab-item label='Example Code'>
+                <pre class='example-code' v-highlight><code class='html'>{{ exIndicatorsCode }}</code></pre>
+              </b-tab-item>
+            </b-tabs>
+          </div>
+          <div class='column is-one-third'>
+            <div class='center-container'>
+              <ex-indicators></ex-indicators>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
     <!--Date Picker Intro-->
@@ -102,7 +114,7 @@
                   A <i>v-date-picker</i> is just a <i>v-calendar</i> wrapper.
                 </p>
                 <p class='content'>
-                  It supports all native calendar props and events, but also applies a special highlight for the date selection.
+                  It supports all native calendar features, but also applies a special highlight for the date selection.
                 </p>
                 <p class='content'>
                   Supported selection modes include...
@@ -126,18 +138,37 @@
         </div>
       </div>
     </section>
-    <!--Date Picker Api-->
+    <!--Calendar Api-->
     <section class='section'>
       <div class='container'>
-        <h4 class='title is-4 has-text-grey-dark is-spaced'>API</h4>
+        <h3 class='title has-text-primary is-spaced'>API</h3>
+        <b-message type='is-warning'>
+          <span class="tag is-warning">Date Picker</span> Denotes API specific to <i>v-date-picker</i> components only.
+        </b-message>
         <b-tabs>
           <b-tab-item label='Props'>
-            <date-picker-api-props></date-picker-api-props>
+            <calendar-api-props></calendar-api-props>
           </b-tab-item>
           <b-tab-item label='Events'>
-            <date-picker-api-events></date-picker-api-events>
+            <calendar-api-events></calendar-api-events>
+          </b-tab-item>
+          <b-tab-item label='Slots'>
+            <calendar-api-slots></calendar-api-slots>
+          </b-tab-item>
+          <b-tab-item label='Highlights'>
+            <calendar-api-highlights></calendar-api-highlights>
+          </b-tab-item>
+          <b-tab-item label='Indicators'>
+            <calendar-api-indicators></calendar-api-indicators>
           </b-tab-item>
         </b-tabs>
+      </div>
+    </section>
+    <!--Calendar FAQs-->
+    <section class='section'>
+      <div class='container'>
+        <h3 class='title has-text-primary is-spaced'>FAQs</h3>
+        <calendar-faqs></calendar-faqs>
       </div>
     </section>
   </div>
@@ -149,29 +180,33 @@
 /* eslint-disable import/first */
 import ExHighlights from './ExHighlights';
 import ExHighlightsCode from '!!raw-loader!./ExHighlights';
+import ExIndicators from './ExIndicators';
+import ExIndicatorsCode from '!!raw-loader!./ExIndicators';
 import ExDatePicker from './ExDatePicker';
 import ExDatePickerCode from '!!raw-loader!./ExDatePicker';
 import CalendarApiProps from './CalendarApiProps';
 import CalendarApiEvents from './CalendarApiEvents';
 import CalendarApiSlots from './CalendarApiSlots';
 import CalendarApiHighlights from './CalendarApiHighlights';
-import DatePickerApiProps from './DatePickerApiProps';
-import DatePickerApiEvents from './DatePickerApiEvents';
+import CalendarApiIndicators from './CalendarApiIndicators';
+import CalendarFaqs from './CalendarFAQs';
 
 export default {
   components: {
     ExHighlights,
+    ExIndicators,
     ExDatePicker,
     CalendarApiProps,
     CalendarApiEvents,
     CalendarApiSlots,
     CalendarApiHighlights,
-    DatePickerApiProps,
-    DatePickerApiEvents,
+    CalendarApiIndicators,
+    CalendarFaqs,
   },
   data() {
     return {
       exHighlightsCode: ExHighlightsCode,
+      exIndicatorsCode: ExIndicatorsCode,
       exDatePickerCode: ExDatePickerCode,
     };
   },

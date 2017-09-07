@@ -51,6 +51,7 @@ export default {
           backgroundColor: '#bdb499',
           borderWidth: '2px',
           borderColor: '#aea484',
+          borderRadius: '5px',
           color: 'white',
           // Mix dates with date ranges
           dates: [

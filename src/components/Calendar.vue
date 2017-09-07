@@ -350,7 +350,7 @@ $dayWidth: 14.2857%
 .c-weeks
   flex-grow: 1
   position: relative
-  >div
+  &>div
     transition: $weeksTransition
 
 .title-slide-left-enter,
@@ -367,9 +367,9 @@ $dayWidth: 14.2857%
 .weeks-slide-right-leave-active
   position: absolute
   top: 0
-  bottom: 0
   left: 0
-  right: 0
+  width: 100%
+  height: 100%
 
 .weeks-slide-left-enter,
 .weeks-slide-right-leave-to

@@ -1,21 +1,24 @@
 <template>
-<b-table
-  :data='props'>
-  <template scope='props'>
-    <b-table-column label='Name'>
-      <span v-html='props.row.name'></span>
-    </b-table-column>
-    <b-table-column label='Description'>
-      <span v-html='props.row.description'></span>
-    </b-table-column>
-    <b-table-column label='Type'>
-      <span v-html='props.row.type'></span>
-    </b-table-column>
-    <b-table-column label='Default'>
-      <span v-html='props.row.default'></span>
-    </b-table-column>
-  </template>
-</b-table>
+<div>
+  <b-table
+    :data='props'
+    :row-class='(row) => row.class'>
+    <template scope='props'>
+      <b-table-column label='Name'>
+        <span v-html='props.row.name'></span>
+      </b-table-column>
+      <b-table-column label='Description'>
+        <span v-html='props.row.description'></span>
+      </b-table-column>
+      <b-table-column label='Type'>
+        <span v-html='props.row.type'></span>
+      </b-table-column>
+      <b-table-column label='Default'>
+        <span v-html='props.row.default'></span>
+      </b-table-column>
+    </template>
+  </b-table>
+</div>
 </template>
 
 <script>
@@ -86,6 +89,34 @@ export default {
         type: 'String',
         default: '<code>2.2rem</code>',
       },
+      {
+        name: '<code>value</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Selected date, dates or date range.',
+        type: 'Date, Array, Object',
+        default: '<code>null</code>',
+      },
+      {
+        name: '<code>selectMode</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Selection mode.',
+        type: 'String',
+        values: '<code>"single"</code>,<br /><code>"multiple"</code>,<br /><code>"range"</code>',
+        default: '<code>"single"</code>',
+        class: 'is-date-picker',
+      },
+      {
+        name: '<code>dragHighlight</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Highlight for the dragged selection. Only valid for "range" select mode.',
+        type: 'Object',
+        default: '<code>{}</code>',
+        class: 'is-date-picker',
+      },
+      {
+        name: '<code>selectHighlight</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Highlight for the date selection. Valid for all select modes.',
+        type: 'Object',
+        default: '<code>{}</code>',
+        class: 'is-date-picker',
+      },
     ];
     return {
       props,
@@ -93,3 +124,8 @@ export default {
   },
 };
 </script>
+
+<style lang='sass'>
+.tag.is-warning
+  margin-right: 10px
+</style>

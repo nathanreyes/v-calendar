@@ -39,6 +39,16 @@ export default {
         description: 'Calendar moved to a different page.',
         parameters: '<code>page</code> Object',
       },
+      {
+        name: '<code>input</code>',
+        description: '<span class="tag is-warning">Date Picker</span>New date was selected.',
+        parameters: '<code>value</code> Date, Array, Object',
+      },
+      {
+        name: '<code>drag</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Dragged selection was updated. Only valid for "range" selection mode.',
+        parameters: '<code>range</code> Object',
+      },
     ];
     return {
       props,

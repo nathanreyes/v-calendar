@@ -10,6 +10,7 @@
   <div class='block center-container'>
     <date-picker
       :select-mode='selectMode'
+      :day-content-style='{ borderRadius: "5px" }'
       v-model='selectedValue'
       @drag='draggedValue = $event'>
     </date-picker>

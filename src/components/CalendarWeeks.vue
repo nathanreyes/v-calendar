@@ -155,82 +155,110 @@ export default {
       ];
       dayInfo.contentStyle = { ...this.dayContentStyle };
       dayInfo.backgrounds = [];
-      // Done if there are no highlights to process
-      if (!this.highlights || !this.highlights.length) return;
+      dayInfo.indicators = [];
       // Cycle through each highlight
-      this.highlights.forEach((h, i) => {
-        // Cycle through each highlight date
-        if (!h.dates || !h.dates.length) return;
-        h.dates.forEach((d) => {
-          const isDate = !!d.getTime;
-          const hasStart = !!d.start;
-          const hasEnd = !!d.end;
-          if (!isDate && !hasStart && !hasEnd) return;
-          if (isDate && d.getTime() !== dayInfo.dateTime) return;
-          if (hasStart && dayInfo.date < d.start) return;
-          if (hasEnd && dayInfo.date > d.end) return;
-          // Initialize the background object
-          const endWidth = '95%';
-          const height = h.height || dayInfo.contentStyle.height || '2rem';
-          const borderWidth = h.borderWidth || '0';
-          const borderStyle = h.borderStyle || 'solid';
-          const borderRadius = h.isSquared ? '0' : height;
-          const background = {
-            key: h.key || i.toString(),
-            horizontalAlign: 'center',
-            verticalAlign: 'center',
-            transition: 'width-height',
-            style: {
-              backgroundColor: h.backgroundColor,
-              borderColor: h.borderColor,
-              borderWidth,
-              borderStyle,
-              borderRadius,
-              width: height,
-              height,
-            },
-          };
-          // Is the highlight a date range
-          if (!isDate) {
-            const onStart = hasStart && d.start.getTime() === dayInfo.dateTime;
-            const onEnd = hasEnd && d.end.getTime() === dayInfo.dateTime;
-            // Is the day date on the highlight start and end date
-            if (onStart && onEnd) {
-              background.style.width = endWidth;
-              background.style.borderWidth = borderWidth;
-              background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
-            // Is the day date on the highlight start date
-            } else if (onStart) {
-              background.transition = 'from-right';
-              background.horizontalAlign = 'right';
-              background.style.width = endWidth;
-              background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
-              background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
+      if (this.highlights && this.highlights.length) {
+        this.highlights.forEach((h, i) => {
+          // Cycle through highlight dates
+          if (!h.dates || !h.dates.length) return;
+          h.dates.forEach((d) => {
+            const isDate = !!d.getTime;
+            const hasStart = !!d.start;
+            const hasEnd = !!d.end;
+            if (!isDate && !hasStart && !hasEnd) return;
+            if (isDate && d.getTime() !== dayInfo.dateTime) return;
+            if (hasStart && dayInfo.date < d.start) return;
+            if (hasEnd && dayInfo.date > d.end) return;
+            // Initialize the background object
+            const endWidth = '95%';
+            const height = h.height || dayInfo.contentStyle.height || '1.8rem';
+            const borderColor = h.borderColor || '';
+            const borderWidth = h.borderWidth || '0';
+            const borderStyle = h.borderStyle || 'solid';
+            const borderRadius = h.borderRadius || dayInfo.contentStyle.borderRadius || height;
+            const background = {
+              key: h.key || i.toString(),
+              horizontalAlign: 'center',
+              verticalAlign: 'center',
+              transition: 'width-height',
+              style: {
+                backgroundColor: h.backgroundColor,
+                borderColor,
+                borderWidth,
+                borderStyle,
+                borderRadius,
+                width: height,
+                height,
+              },
+            };
+            // Is the highlight a date range
+            if (!isDate) {
+              const onStart = hasStart && d.start.getTime() === dayInfo.dateTime;
+              const onEnd = hasEnd && d.end.getTime() === dayInfo.dateTime;
+              // Is the day date on the highlight start and end date
+              if (onStart && onEnd) {
+                background.style.width = endWidth;
+                background.style.borderWidth = borderWidth;
+                background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
+              // Is the day date on the highlight start date
+              } else if (onStart) {
+                background.transition = 'from-right';
+                background.horizontalAlign = 'right';
+                background.style.width = endWidth;
+                background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
+                background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
 
-            // Is the day date on the highlight end date
-            } else if (onEnd) {
-              background.transition = 'from-left';
-              background.horizontalAlign = 'left';
-              background.style.zIndex = '1';
-              background.style.width = endWidth;
-              background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
-              background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
-            // Is the day date between the highlight start/end dates
-            } else {
-              background.transition = '';
-              background.style.width = '100%';
-              background.style.borderWidth = `${borderWidth} 0`;
-              background.style.borderRadius = '0';
+              // Is the day date on the highlight end date
+              } else if (onEnd) {
+                background.transition = 'from-left';
+                background.horizontalAlign = 'left';
+                background.style.zIndex = '1';
+                background.style.width = endWidth;
+                background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
+                background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
+              // Is the day date between the highlight start/end dates
+              } else {
+                background.transition = '';
+                background.style.width = '100%';
+                background.style.borderWidth = `${borderWidth} 0`;
+                background.style.borderRadius = '0';
+              }
             }
-          }
-          // Add background to the day info
-          dayInfo.backgrounds.push(background);
-          // Modify content style if needed
-          mapDayContentProps.forEach((m) => {
-            if (Object.prototype.hasOwnProperty.call(h, m.from)) dayInfo.contentStyle[m.to] = h[m.from];
+            // Add background to the day info
+            dayInfo.backgrounds.push(background);
+            // Modify content style if needed
+            mapDayContentProps.forEach((m) => {
+              if (Object.prototype.hasOwnProperty.call(h, m.from)) dayInfo.contentStyle[m.to] = h[m.from];
+            });
           });
         });
-      });
+      }
+      // Cycle through each indicator
+      if (this.indicators && this.indicators) {
+        this.indicators.forEach((i, idx) => {
+          // Cycle through indicator dates
+          if (!i.dates || !i.dates.length) return;
+          i.dates.forEach((d) => {
+            if (d.getTime && d.getTime() !== dayInfo.dateTime) return;
+            const backgroundColor = i.backgroundColor || 'grey';
+            const diameter = i.diameter || '5px';
+            const borderWidth = i.borderWidth || '0';
+            const borderStyle = i.borderStyle || 'solid';
+            const borderRadius = i.isSquared ? '0' : diameter;
+            dayInfo.indicators.push({
+              key: i.key || idx.toString(),
+              style: {
+                backgroundColor,
+                borderWidth,
+                borderStyle,
+                borderRadius,
+                width: diameter,
+                height: diameter,
+              },
+            });
+          });
+        });
+      }
     },
   },
 };

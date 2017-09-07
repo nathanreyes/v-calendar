@@ -26,6 +26,17 @@
       {{ label }}
     </div>
   </div>
+  <!-- Indicator layer -->
+  <div class='c-day-layer c-day-box-center-bottom'>
+    <div class='c-day-indicators'>
+      <span
+        v-for='indicator in indicators'
+        :key='indicator.key'
+        class='c-day-indicator'
+        :style='indicator.style'>
+      </span>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -112,10 +123,9 @@ export default {
 <style lang='sass' scoped>
 
 $dayWidth: 14.2857%
-$dayHeight: 2.2rem
 
-$dayContentWidth: 2rem
-$dayContentHeight: 2rem
+$dayContentWidth: 1.8rem
+$dayContentHeight: 1.8rem
 $dayContentColor: #333333
 $dayContentFontSize: 0.9rem
 $dayContentFontWeight: 500
@@ -137,8 +147,6 @@ $translateTransition: .18s ease-in-out
 .c-day
   position: relative
   width: $dayWidth
-  // height: $dayHeight
-  overflow: hidden
 
 .c-day-not-in-month
   opacity: 0.4
@@ -152,12 +160,15 @@ $translateTransition: .18s ease-in-out
 .c-day-box-right-center
   +box(flex-end)
 
+.c-day-box-center-bottom
+  +box(center, flex-end)
+
 .c-day-layer
   position: absolute
-  width: 100%
-  height: 100%
   left: 0
+  right: 0
   top: 0
+  bottom: 0
 
 .c-day-background
   transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
@@ -176,6 +187,17 @@ $translateTransition: .18s ease-in-out
   z-index: 10
   &:hover
     background-color: $dayContentHoverBgColor
+
+.c-day-indicators
+  +box()
+
+.c-day-indicator
+  width: 4px
+  height: 4px
+  border-radius: 50%
+  background-color: blue
+  &:not(:last-child)
+    margin-right: 3px
 
 .width-height-enter-active
   animation: widthHeightEnter 0.14s
