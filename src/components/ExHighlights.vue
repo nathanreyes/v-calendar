@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Calendar from './Calendar';
+import Calendar from './lib/Calendar';
 
 const today = new Date();
 const year = today.getFullYear();

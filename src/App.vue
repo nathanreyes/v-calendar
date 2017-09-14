@@ -43,11 +43,4 @@ pre {
     }
   }
 }
-
-// .example-code {
-//   margin: 0;
-//   + .example-code {
-//     margin-top: -1.5rem;
-//   }
-// }
 </style>

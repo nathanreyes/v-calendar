@@ -15,7 +15,7 @@ export default {
     Calendar,
   },
   props: {
-    value: { type: Array, default: [] },
+    value: { type: Array, default: () => [] },
     selectHighlight: { type: Object, required: true },
     highlights: Array,
   },
@@ -45,7 +45,7 @@ export default {
         this.$emit('input', this.value.filter(v => v.getTime() !== day.dateTime));
       // Value does not contain the selected date
       } else {
-        this.$emit('input', [...this.value, day.date]);
+        this.$emit('input', [...this.value, day.date].sort((a, b) => a.getTime() - b.getTime()));
       }
       // Forward the event
       this.$emit('dayClick', day);

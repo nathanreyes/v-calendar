@@ -2,14 +2,14 @@
 <b-table
   :data='props'>
   <template scope='props'>
-    <b-table-column label='Property Name'>
+    <b-table-column label='Property'>
       <span v-html='props.row.propertyName'></span>
     </b-table-column>
     <b-table-column label='Description'>
       <span v-html='props.row.description'></span>
     </b-table-column>
-    <b-table-column label='Type'>
-      <span v-html='props.row.type'></span>
+    <b-table-column label='Default'>
+      <span v-html='props.row.default'></span>
     </b-table-column>
   </template>
 </b-table>
@@ -20,64 +20,64 @@ export default {
   data() {
     const props = [
       {
-        propertyName: '<code>key</code>',
+        propertyName: '<code>key: String</code>',
         description: 'Key for highlighted region. Keys affect how highlight animations are applied when appearing or disappearing.',
-        type: 'String',
+        default: '<code><i>index</i></code>',
       },
       {
-        propertyName: '<code>dates</code>',
+        propertyName: '<code>dates: Array[Date, Object]</code>',
         description: 'List of dates or date range objects to span. Date ranges must specify <code>start</code> and <code>end</code> dates.',
-        type: 'Array',
+        default: '<code>[]</code>',
       },
       {
-        propertyName: '<code>height</code>',
+        propertyName: '<code>height: String</code>',
         description: 'Height of highlighted region.',
-        type: 'String',
+        default: '<code>dayContentStyle.height || "1.8rem"</code>',
       },
       {
-        propertyName: '<code>backgroundColor</code>',
+        propertyName: '<code>backgroundColor: String</code>',
         description: 'Background color in highlighted region.',
-        type: 'String',
+        default: '<code>"rgba(0, 0, 0, 0.5)"</code>',
       },
       {
-        propertyName: '<code>borderColor</code>',
+        propertyName: '<code>borderColor: String</code>',
         description: 'Border color in highlighted region.',
-        type: 'String',
+        default: '<code>undefined</code>',
       },
       {
-        propertyName: '<code>borderWidth</code>',
+        propertyName: '<code>borderWidth: String</code>',
         description: 'Border width in highlighted region.',
-        type: 'String',
+        default: '<code>"0"</code>',
       },
       {
-        propertyName: '<code>borderStyle</code>',
+        propertyName: '<code>borderStyle: String</code>',
         description: 'Border style in highlighted region.',
-        type: 'String',
+        default: '<code>"solid"</code>',
       },
       {
-        propertyName: '<code>borderRadius</code>',
+        propertyName: '<code>borderRadius: String</code>',
         description: 'Border radius in highlighted region.',
-        type: 'String',
+        default: '<code>dayContentStyle.borderRadius || dayContentStyle.height || "1.8rem"</code>',
       },
       {
-        propertyName: '<code>color</code>',
+        propertyName: '<code>color: String</code>',
         description: 'Color in highlighted region.',
-        type: 'String',
+        default: '<code>undefined</code>',
       },
       {
-        propertyName: '<code>fontSize</code>',
+        propertyName: '<code>fontSize: String</code>',
         description: 'Font size in highlighted region.',
-        type: 'String',
+        default: '<code>undefined</code>',
       },
       {
-        propertyName: '<code>fontWeight</code>',
+        propertyName: '<code>fontWeight: String</code>',
         description: 'Font weight in highlighted region.',
-        type: 'String',
+        default: '<code>undefined</code>',
       },
       {
-        propertyName: '<code>fontDecoration</code>',
+        propertyName: '<code>fontDecoration: String</code>',
         description: 'Font decoration in highlighted region.',
-        type: 'String',
+        default: '<code>undefined</code>',
       },
     ];
     return {

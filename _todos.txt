@@ -1,15 +1,16 @@
-Theme
-  dayBackgroundStyle
-  dayBackgroundClass
-  dayContentStyle
-  dayContentClass
-  dayContentHorizontalAlign: left, center, right
-  dayContentVerticalAlign: top, middle, bottom
+CALENDAR
+- Make highlights optional
+- Allow for custom first day of the week
 
-A calendar can have a default highlight, custom highlights
-Each highlight contains the following properties
-  dates: Array of date objects or date range objects
-  backgroundStyle: Style for the background of the highlight
-  backgroundClass: Class for the background of the highlight
-  contentStyle: Style for the content of the highlight
-  contentClass: Class for the content of the highlight
+DATEPICKER
+- Array of disabled dates and date ranges
+
+DONE - Min and max allowed pages
+DONE - Assign default page depending on date picker selection
+
+FIXES:
+
+Day cell overflow problem:
+For c-day classes, there is catch with setting overflow: hidden.
+If it is set, then sometimes a blank line can appear between day cell highlights.
+If it is not set, then transparent backgrounds can interfere with each other during animations.

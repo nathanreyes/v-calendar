@@ -17,11 +17,12 @@ export default {
   },
   data() {
     return {
-      dragRange: null,
+      dragValue_: this.dragValue,
     };
   },
   props: {
-    value: { type: Object, default: { } },
+    value: { type: Object, default: () => { } },
+    dragValue: { type: Object, default: () => { } },
     dragHighlight: { type: Object, required: true },
     selectHighlight: { type: Object, required: true },
     highlights: Array,
@@ -33,17 +34,17 @@ export default {
     normalizedValue() {
       return this.normalizeRange(this.value);
     },
-    normalizedDragRange() {
-      return this.normalizeRange(this.dragRange);
+    normalizedDragValue() {
+      return this.normalizeRange(this.dragValue_);
     },
     dragHighlight_() {
-      return { ...this.dragHighlight, dates: [this.normalizedDragRange] };
+      return { ...this.dragHighlight, dates: [this.normalizedDragValue] };
     },
     selectHighlight_() {
       return { ...this.selectHighlight, dates: [this.normalizedValue] };
     },
     highlights_() {
-      if (this.dragRange) {
+      if (this.dragValue_) {
         return this.highlights ? [...this.highlights, this.dragHighlight_] : [this.dragHighlight_];
       }
       if (this.valueIsValid) {
@@ -53,33 +54,33 @@ export default {
     },
   },
   watch: {
-    normalizedDragRange(value) {
-      // Any time drag changes, normalize it and emit 'drag' event
-      this.$emit('drag', value ? { start: value.start, end: value.end } : null);
+    dragValue(value) {
+      this.dragValue_ = value;
+    },
+    dragValue_(value) {
+      this.$emit('update:dragValue', value);
+      this.$emit('drag', value);
     },
   },
   created() {
     // Clear drag on escape keydown
     document.addEventListener('keydown', (e) => {
-      if (this.dragRange && e.keyCode === 27) {
-        this.dragRange = null;
+      if (this.dragValue_ && e.keyCode === 27) {
+        this.dragValue_ = null;
       }
     });
   },
   methods: {
     selectDay(day) {
       // Start new drag selection if not dragging
-      if (!this.dragRange) {
+      if (!this.dragValue_) {
         const date = new Date(day.date.getTime());
-        this.dragRange = {
-          start: date,
-          end: date,
-        };
+        this.dragValue_ = { start: date, end: date };
       // Complete drag selection
       } else {
-        const { start, end } = this.normalizedDragRange;
+        const { start, end } = this.normalizedDragValue;
         // Clear drag selection
-        this.dragRange = null;
+        this.dragValue_ = null;
         // Signal new value selected on drag complete
         this.$emit('input', { start, end });
       }
@@ -87,10 +88,10 @@ export default {
       this.$emit('dayClick', day);
     },
     enterDay(day) {
-      if (!this.dragRange) return;
+      if (!this.dragValue_) return;
       // Update drag selection
-      this.dragRange = {
-        start: new Date(this.dragRange.start.getTime()),
+      this.dragValue_ = {
+        start: new Date(this.dragValue_.start.getTime()),
         end: new Date(day.date.getTime()),
       };
       // Forward the event
@@ -110,6 +111,18 @@ export default {
         end: isNormal ? end : start,
         endTime: isNormal ? endTime : startTime,
       };
+    },
+    rangesMatch(aRange, bRange) {
+      if (!aRange && !bRange) return true;
+      if (aRange && bRange) {
+        const aStart = aRange.start.getTime();
+        const aEnd = aRange.end.getTime();
+        const bStart = bRange.start.getTime();
+        const bEnd = bRange.end.getTime();
+        if (aStart === bStart && aEnd === bEnd) return true;
+        if (aStart === bEnd && aEnd === bStart) return true;
+      }
+      return false;
     },
   },
 };

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Calendar from './Calendar';
+import Calendar from './lib/Calendar';
 
 const today = new Date();
 const year = today.getFullYear();
@@ -19,9 +19,9 @@ export default {
     return {
       indicators: [
         {
-          // Light purple background
-          backgroundColor: '#8b5b5b',
-          // Use multiple dates
+          // Red
+          backgroundColor: '#ff3333',
+          // Only dates allowed
           dates: [
             new Date(year, month, 1),
             new Date(year, month, 10),
@@ -29,12 +29,20 @@ export default {
           ],
         },
         {
-          // Light purple background
-          backgroundColor: '#7b6751',
-          // Use multiple dates
+          // Blue
+          backgroundColor: '#0040ff',
           dates: [
             new Date(year, month, 4),
             new Date(year, month, 10),
+            new Date(year, month, 15),
+          ],
+        },
+        {
+          // Orange
+          backgroundColor: '#ff8000',
+          dates: [
+            new Date(year, month, 12),
+            new Date(year, month, 26),
             new Date(year, month, 15),
           ],
         },

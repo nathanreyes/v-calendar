@@ -22,32 +22,32 @@ export default {
       {
         name: '<code>dayClick</code>',
         description: 'Calendar day cell was clicked.',
-        parameters: '<code>day</code> Object',
+        parameters: '<code>day: Object</code>',
       },
       {
         name: '<code>dayEnter</code>',
         description: 'Cursor entered a calendar day cell.',
-        parameters: '<code>day</code> Object',
+        parameters: '<code>day: Object</code>',
       },
       {
         name: '<code>dayLeave</code>',
         description: 'Cursor left a calendar day cell.',
-        parameters: '<code>day</code> Object',
+        parameters: '<code>day: Object</code>',
       },
       {
         name: '<code>move</code>, <code>updated:page</code>',
         description: 'Calendar moved to a different page.',
-        parameters: '<code>page</code> Object',
+        parameters: '<code>page: Object</code>',
       },
       {
         name: '<code>input</code>',
         description: '<span class="tag is-warning">Date Picker</span>New date was selected.',
-        parameters: '<code>value</code> Date, Array, Object',
+        parameters: '<code>value: Date, Array[Date], Object</code>',
       },
       {
         name: '<code>drag</code>',
         description: '<span class="tag is-warning">Date Picker</span>Dragged selection was updated. Only valid for "range" selection mode.',
-        parameters: '<code>range</code> Object',
+        parameters: '<code>range: Object</code>',
       },
     ];
     return {

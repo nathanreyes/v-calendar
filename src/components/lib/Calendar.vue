@@ -1,38 +1,52 @@
 <template>
-  <div class='c-wrapper' :style='wrapperStyle'>
-    <div class='c-header' :style='headerStyle'>
-      <a class='c-arrow' @click='movePrevMonth'>
-        <slot name='prev-month'>
-          <p class='c-left'>&lsaquo;</p>
-        </slot>
-      </a>
-      <transition-group
-        tag='div'
-        class='c-title'
-        :name='"title-" + transitionName'>
-        <div
-          class='c-title-1'
-          v-for='p in pages'
-          :key='p.id'
-          v-if='p === page_'>
-          <div class='c-title-2'>
-            <slot name='title' :page='p'>
-              <span
-                class='c-title-3'
-                @click='moveThisMonth'>
-                {{ p.headerLabel }}
-              </span>
-            </slot>
-          </div>
+  <div class='c-wrapper'>
+    <slot name='header' :page='page_'>
+      <div class='c-header' :style='headerStyle'>
+        <div class='c-arrow-layout'>
+          <slot name='header-left-button' :page='page_'>
+            <span
+              class='c-arrow vc-angle-left'
+              :class='{ "c-disabled": !canMovePrevMonth }'
+              :style='arrowStyle'
+              @click='movePrevMonth'>
+            </span>
+          </slot>
         </div>
-      </transition-group>
-      <a class='c-arrow' @click='moveNextMonth'>
-        <slot name='next-month'>
-          <p class='c-right'>&rsaquo;</p>
-        </slot>
-      </a>
-    </div>
-     <div class='c-weekdays'>
+        <transition-group
+          tag='div'
+          class='c-title'
+          :name='titleTransition_'
+          mode='out-in'>
+          <div
+            class='c-title-1'
+            v-for='p in pages'
+            :key='p.key'
+            v-if='p === page_'>
+            <div class='c-title-2'>
+              <slot name='header-title' :page='p'>
+                <span
+                  class='c-title-3'
+                  :style='titleStyle'
+                  @click='moveThisMonth'>
+                  {{ p.headerLabel }}
+                </span>
+              </slot>
+            </div>
+          </div>
+        </transition-group>
+        <div class='c-arrow-layout'>
+          <slot name='header-right-button' :page='page_'>
+            <span
+              class='c-arrow vc-angle-right'
+              :class='{ "c-disabled": !canMoveNextMonth }'
+              :style='arrowStyle'
+              @click='moveNextMonth'>
+            </span>
+          </slot>
+        </div>
+      </div>
+    </slot>
+    <div class='c-weekdays'>
       <div
         v-for='weekday in weekdayLabels'
         :key='weekday'
@@ -44,10 +58,11 @@
     <transition-group
       tag='div'
       class='c-weeks'
-      :name='"weeks-" + transitionName'>
+      :name='weeksTransition_'
+      mode='out-in'>
       <calendar-weeks
         v-for='p in pages'
-        :key='p.id'
+        :key='p.key'
         :month='p.month'
         :year='p.year'
         :isLeapYear='p.isLeapYear'
@@ -67,44 +82,70 @@
 /* eslint-disable camelcase */
 import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
-
-// Calendar data
-const _daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const _monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const _weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-const _today = new Date();
-const _todayComps = {
-  year: _today.getFullYear(),
-  month: _today.getMonth() + 1,
-  day: _today.getDate(),
-};
+import {
+  daysInMonths,
+  todayComps,
+  monthLabels,
+  weekdayLabels,
+  getPrevMonthComps,
+  getNextMonthComps,
+} from './utils';
 
 export default {
   components: {
     CalendarWeeks,
   },
   props: {
-    page: { type: Object, default: () => _todayComps },
-    monthLabels: { type: Array, default: () => _monthLabels },
-    weekdayLabels: { type: Array, default: () => _weekdayLabels },
-    wrapperStyle: Object,
+    page: { type: Object, default: () => todayComps },
+    minPage: Object,
+    maxPage: Object,
+    monthLabels: { type: Array, default: () => monthLabels },
+    weekdayLabels: { type: Array, default: () => weekdayLabels },
     headerStyle: Object,
+    titleStyle: Object,
+    titleTransition: { type: String, default: 'slide' },
+    arrowStyle: Object,
     weekdayStyle: Object,
+    weeksTransition: { type: String, default: 'slide' },
   },
   data() {
     return {
       pages: [],
       page_: null,
-      transitionName: '',
+      slideTransition: '',
     };
+  },
+  computed: {
+    titleTransition_() {
+      if (this.titleTransition === 'slide') return `title-${this.slideTransition}`;
+      return `title-${this.titleTransition}`;
+    },
+    weeksTransition_() {
+      if (this.weeksTransition === 'slide') return `weeks-${this.slideTransition}`;
+      return `weeks-${this.weeksTransition}`;
+    },
+    canMovePrevMonth() {
+      return this.canMove(this.page_.prevMonthComps);
+    },
+    canMoveNextMonth() {
+      return this.canMove(this.page_.nextMonthComps);
+    },
   },
   watch: {
     page(val) {
       this.move(val);
     },
+    page_(val, oldVal) {
+      this.slideTransition = this.getSlideTransition(oldVal, val);
+    },
   },
   created() {
-    this.page_ = this.loadPage(this.page || _todayComps);
+    if (this.page) {
+      this.page_ = this.loadPage(this.page);
+    } else {
+      this.page_ = this.loadPage(todayComps);
+      this.$emit('update:page');
+    }
     this.preloadPages();
   },
   methods: {
@@ -115,7 +156,13 @@ export default {
       this.move(this.page_.prevMonthComps);
     },
     moveThisMonth() {
-      this.move(_todayComps);
+      if (this.canMove(todayComps)) {
+        this.move(todayComps);
+      } else if (this.pageIsBeforePage(todayComps, this.minPage)) {
+        this.move(this.minPage);
+      } else if (this.pageIsAfterPage(todayComps, this.maxPage)) {
+        this.move(this.maxPage);
+      }
     },
     moveNextMonth() {
       this.move(this.page_.nextMonthComps);
@@ -128,21 +175,36 @@ export default {
       if (!pageInfo || (pageInfo.month === this.page_.month && pageInfo.year === this.page_.year)) return;
       // Extract just the month and year info
       const monthYear = { month: pageInfo.month, year: pageInfo.year };
-      // Make sure the next page is loaded
-      const page = this.loadPage(monthYear);
-      // Set up the page transition
-      this.transitionName = this.getTransitionName(this.page_, page);
       // Set the active page
-      this.page_ = page;
+      this.page_ = this.loadPage(monthYear);
       // Flag that page was moved to/updated
       this.$emit('move', monthYear);
       this.$emit('update:page', monthYear);
       // Preload other pages
       this.preloadPages();
     },
+    canMove(pageInfo) {
+      if (this.minPage && this.pageIsBeforePage(pageInfo, this.minPage)) return false;
+      if (this.maxPage && this.pageIsAfterPage(pageInfo, this.maxPage)) return false;
+      return true;
+    },
+    pageIsBeforePage(page, beforePage) {
+      if (!page || !beforePage) return false;
+      const { month, year } = page;
+      if (year < beforePage.year) return true;
+      if (year === beforePage.year && month < beforePage.month) return true;
+      return false;
+    },
+    pageIsAfterPage(page, afterPage) {
+      if (!afterPage) return false;
+      const { month, year } = page;
+      if (year > afterPage.year) return true;
+      if (year === afterPage.year && month > afterPage.month) return true;
+      return false;
+    },
     loadPage({ month, year }) {
-      const id = `${year.toString()}.${month.toString()}`;
-      let page = this.pages.find(p => (p.id === id));
+      const key = `${year.toString()}.${month.toString()}`;
+      let page = this.pages.find(p => (p.key === key));
       if (!page) {
         const monthLabel = this.monthLabels[month - 1];
         const monthLabel_1 = monthLabel.substring(0, 1);
@@ -152,12 +214,12 @@ export default {
         const yearLabel_2 = yearLabel.substring(2, 4);
         const headerLabel = `${monthLabel} ${yearLabel}`;
         const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-        const daysInMonth = isLeapYear && month === 2 ? 29 : _daysInMonths[month - 1];
+        const daysInMonth = isLeapYear && month === 2 ? 29 : daysInMonths[month - 1];
         const firstWeekdayInMonth = new Date(year, month - 1, 1).getDay() + 1;
-        const prevMonthComps = this.getPrevMonthComps(month, year, isLeapYear);
-        const nextMonthComps = this.getNextMonthComps(month, year, isLeapYear);
+        const prevMonthComps = getPrevMonthComps(month, year, isLeapYear);
+        const nextMonthComps = getNextMonthComps(month, year, isLeapYear);
         page = {
-          id,
+          key,
           month,
           year,
           monthLabel,
@@ -172,6 +234,10 @@ export default {
           firstWeekdayInMonth,
           prevMonthComps,
           nextMonthComps,
+          move: (m, y) => this.move({ month: m, year: y }),
+          moveThisMonth: () => this.moveThisMonth(),
+          movePrevMonth: () => this.move(prevMonthComps),
+          moveNextMonth: () => this.move(nextMonthComps),
         };
         this.pages.push(page);
       }
@@ -184,41 +250,11 @@ export default {
         this.loadPage(this.page_.nextMonthComps);
       });
     },
-    getTransitionName(fromPage, toPage) {
+    getSlideTransition(fromPage, toPage) {
       if (!fromPage || !toPage) return '';
       if (fromPage.year !== toPage.year) return fromPage.year < toPage.year ? 'slide-left' : 'slide-right';
       if (fromPage.month !== toPage.month) return fromPage.month < toPage.month ? 'slide-left' : 'slide-right';
       return '';
-    },
-    // Day/month/year components for previous month
-    getPrevMonthComps(month, year, isLeapYear) {
-      if (month === 1) {
-        return {
-          days: _daysInMonths[11],
-          month: 12,
-          year: year - 1,
-        };
-      }
-      return {
-        days: (month === 3 && isLeapYear) ? 29 : _daysInMonths[month - 2],
-        month: month - 1,
-        year,
-      };
-    },
-    // Day/month/year components for next month
-    getNextMonthComps(month, year, isLeapYear) {
-      if (month === 12) {
-        return {
-          days: _daysInMonths[0],
-          month: 1,
-          year: year + 1,
-        };
-      }
-      return {
-        days: (month === 1 && isLeapYear) ? 29 : _daysInMonths[month],
-        month: month + 1,
-        year,
-      };
     },
   },
 };
@@ -226,38 +262,30 @@ export default {
 
 <style lang='sass' scoped>
 
-$minWidth: 320px
-$bgColor: #dae6e7
-$padding: 0.8em 0.4em
+$minWidth: 260px
+$width: 260px
+$bgColor: #fafafa
+$border: 1px solid #dbdbdb
+$padding: 5px
 
-$headerPadding: 0 0.4em 0.3em 0.4em
+$headerPadding: 5px 5px 5px 5px
 
-$titleColor: #637083
-$titleFontSize: 1.2rem
+$titleFontSize: 1.1rem
 $titleFontWeight: 400
-$titleHoverColor: rgba(0, 0, 0, 0.6)
-$titleHoverBgColor: rgba(71, 105, 108, 0.15)
-$titlePadding: 0 8px
-$titleBorderRadius: 4px
 $titleTranslateX: 25px
 $titleTransition: all .3s ease-in-out
 
-$arrowColor: #637083
-$arrowFontSize: 2.6rem
-$arrowFontWeight: 200
-$arrowHoverColor: #8f9aab
-$arrowHoverBgColor: rgba(71, 105, 108, 0.15)
-$arrowSize: 0.7em
-$arrowMarginTop: -.15em
-$arrowMarginHorizontal: .05em
+$arrowWidth: 26px
+$arrowHeight: 26px
+$arrowFontSize: 1.6rem
 $arrowTransition: all .3s ease-in-out
 
 $weekdayColor: #8f9aab
 $weekdayFontSize: 0.9rem
 $weekdayFontWeight: 500
-$weekdayPadding: 0.6em 0
+$weekdayPadding: 6px 0
 
-$weeksTranslateX: 25px
+$weeksTranslateX: 20px
 $weeksTransition: all .3s ease-in-out
 
 $dayWidth: 14.2857%
@@ -273,7 +301,9 @@ $dayWidth: 14.2857%
   display: flex
   flex-direction: column
   min-width: $minWidth
+  width: $width
   background-color: $bgColor
+  border: $border
   padding: $padding
   overflow: hidden
 
@@ -283,26 +313,18 @@ $dayWidth: 14.2857%
   padding: $headerPadding
   user-select: none
 
-  .c-arrow
+  .c-arrow-layout
     +box()
-    color: $arrowColor
-    font-size: $arrowFontSize
-    font-weight: $arrowFontWeight
-    width: $arrowSize
-    height: $arrowSize
-    border-radius: 50%
-    transition: $arrowTransition
-    cursor: pointer
-    user-select: none
-    &:hover
-      color: $arrowHoverColor
-      background-color: $arrowHoverBgColor
-    .c-left
-      margin-top: $arrowMarginTop
-      margin-left: -$arrowMarginHorizontal
-    .c-right
-      margin-top: $arrowMarginTop
-      margin-left: $arrowMarginHorizontal
+    .c-arrow
+      +box()
+      font-size: $arrowFontSize
+      width: $arrowWidth
+      height: $arrowHeight
+      transition: $arrowTransition
+      cursor: pointer
+      user-select: none
+      &:hover
+        opacity: 0.5
     
   .c-title
     flex-grow: 1
@@ -323,17 +345,18 @@ $dayWidth: 14.2857%
         justify-content: center
         align-items: center
         .c-title-3
-          color: $titleColor
           font-weight: $titleFontWeight
           font-size: $titleFontSize
           transition: $titleTransition
-          padding: $titlePadding
-          border-radius: $titleBorderRadius
           cursor: pointer
           user-select: none
           &:hover
-            color: $titleHoverColor
-            background-color: $titleHoverBgColor
+            opacity: 0.5
+    
+  .c-arrow.c-disabled
+    cursor: not-allowed
+    pointer-events: none
+    opacity: 0.5
 
 .c-weekdays
   display: flex
@@ -364,9 +387,11 @@ $dayWidth: 14.2857%
   transform: translateX(-$titleTranslateX)
 
 .weeks-slide-left-leave-active,
-.weeks-slide-right-leave-active
+.weeks-slide-right-leave-active,
+.weeks-fade-leave-active
   position: absolute
   top: 0
+  bottom: 0
   left: 0
   width: 100%
   height: 100%
@@ -380,5 +405,11 @@ $dayWidth: 14.2857%
 .weeks-slide-right-enter
   opacity: 0
   transform: translateX(-$weeksTranslateX)
+
+.weeks-fade-enter,
+.weeks-fade-leave-to,
+.title-fade-enter,
+.title-fade-leave-to
+  opacity: 0
 
 </style>

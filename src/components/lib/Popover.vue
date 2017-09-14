@@ -1,13 +1,13 @@
 <template>
   <div class='popover-container'>
-    <slot name='trigger'>
-      <div>Popover trigger goes here</div>
+    <slot>
+      <div>Popover anchor goes here</div>
     </slot>
     <transition name='fade'>
       <div class='anchor' :class='["direction-" + direction, "align-" + align]' v-if='visible_'>
         <div class='content-container'>
           <div class='content' :class='["direction-" + direction, "align-" + align]'>
-            <slot name='content'>
+            <slot name='popover-content'>
               <div>Popover content goes here</div>
             </slot>
           </div>

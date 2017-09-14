@@ -4,14 +4,11 @@
     :data='props'
     :row-class='(row) => row.class'>
     <template scope='props'>
-      <b-table-column label='Name'>
+      <b-table-column :style='{minWidth:"280px"}' label='Name'>
         <span v-html='props.row.name'></span>
       </b-table-column>
       <b-table-column label='Description'>
         <span v-html='props.row.description'></span>
-      </b-table-column>
-      <b-table-column label='Type'>
-        <span v-html='props.row.type'></span>
       </b-table-column>
       <b-table-column label='Default'>
         <span v-html='props.row.default'></span>
@@ -26,96 +23,109 @@ export default {
   data() {
     const props = [
       {
-        name: '<code>page</code>',
-        description: 'Active page (month and year). Use the <code>.sync</code> modifier for two-way binding.',
-        type: 'Object',
-        default: '<code>{ month: <i>thisMonth</i>, year: <i>thisYear</i> }</code>',
-      },
-      {
-        name: '<code>monthLabels</code>',
+        name: '<code>monthLabels: Array[String]</code>',
         description: 'Month labels displayed in header.',
-        type: 'Array',
         default: '<code>["January",...,"December"]</code>',
       },
       {
-        name: '<code>weekdayLabels</code>',
+        name: '<code>weekdayLabels: Array[String]</code>',
         description: 'Weekday labels displayed in header.',
-        type: 'Array',
         default: '<code>["S", "M", "T", "W", "T", "F", "S", "S"]</code>',
       },
       {
-        name: '<code>trimMaxWeek</code>',
-        description: 'By default the calendar shows the max number of weeks (6) for all months. Set this prop to trim the 6th week when not needed.',
-        type: 'Boolean',
-        default: '<code>false</code>',
+        name: '<code>page: Object</code>',
+        description: 'Active page (<i>month</i>, <i>year</i>). Use the <code>.sync</code> modifier for two-way binding.',
+        default: '<code>{ month: <i>thisMonth</i>, year: <i>thisYear</i> }</code>',
       },
       {
-        name: '<code>highlights</code>',
-        description: `
-          <p class='field'>
-            List of highlighted calendar dates and/or date ranges.
-          </p>
-        `,
-        type: 'Array',
+        name: '<code>minPage: Object</code>',
+        description: 'Earliest page (<i>month</i>, <i>year</i>) that the user can navigate to.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>maxPage: Object</code>',
+        description: 'Latest page (<i>month</i>, <i>year</i>) that the user can navigate to.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>highlights: Array[Object]</code>',
+        description: 'List of highlighted calendar dates and/or date ranges.',
         default: '<code>[]</code>',
       },
       {
-        name: '<code>wrapperStyle</code>',
-        description: 'Style to apply to calendar wrapper.',
-        type: 'Object',
+        name: '<code>indicators: Array[Object]</code>',
+        description: 'List of calendar indicators.',
+        default: '<code>[]</code>',
+      },
+      {
+        name: '<code>indicatorsOffset: String',
+        description: 'Offset margin of indicators from bottom of day cell.',
+        default: '<code>"0"</code>',
+      },
+      {
+        name: '<code>class: Object</code>, <code>style: Object</code>',
+        description: 'Typical class and style props. Used for calendar wrapper.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>headerStyle</code>',
-        description: 'Style to apply to calendar header.',
-        type: 'Object',
+        name: '<code>headerStyle: Object</code>',
+        description: 'Style for calendar header.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>weekdayStyle</code>',
-        description: 'Style to apply to weekday labels.',
-        type: 'Object',
+        name: '<code>arrowStyle: Object</code>',
+        description: 'Style for calendar header arrows.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>dayContentStyle</code>',
-        description: 'Style to apply to content for day cells.',
-        type: 'Object',
+        name: '<code>titleStyle: Object</code>',
+        description: 'Style for calendar header title.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>dayHeight</code>',
+        name: '<code>titleTransition: String</code>',
+        description: 'Transition type for title when navigating to a new page: <code>"slide"</code>, <code>"fade"</code>, <code>"none"</code>',
+        default: '<code>"slide"</code>',
+      },
+      {
+        name: '<code>weekdayStyle: Object</code>',
+        description: 'Style for weekday labels.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>weeksTransition: String</code>',
+        description: 'Transition type for weeks when navigating to a new page: <code>"slide"</code>, <code>"fade"</code>, <code>"none"</code>',
+        default: '<code>"slide"</code>',
+      },
+      {
+        name: '<code>dayContentStyle: Object</code>',
+        description: 'Style for day cell content.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>dayHeight: String</code>',
         description: 'Height of the day cell container. Should be large enough to contain content and highlights.',
-        type: 'String',
-        default: '<code>2.2rem</code>',
+        default: '<code>"2.2rem"</code>',
       },
       {
-        name: '<code>value</code>',
+        name: '<code>value: Date, Array[Date], Object</code>',
         description: '<span class="tag is-warning">Date Picker</span>Selected date, dates or date range.',
-        type: 'Date, Array, Object',
         default: '<code>null</code>',
       },
       {
-        name: '<code>selectMode</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Selection mode.',
-        type: 'String',
-        values: '<code>"single"</code>,<br /><code>"multiple"</code>,<br /><code>"range"</code>',
+        name: '<code>selectMode: String</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Selection mode: <code>"single"</code>, <code>"multiple"</code>, <code>"range"</code>',
         default: '<code>"single"</code>',
-        class: 'is-date-picker',
       },
       {
-        name: '<code>dragHighlight</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Highlight for the dragged selection. Only valid for "range" select mode.',
-        type: 'Object',
+        name: '<code>selectHighlight: Object</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Highlight for the date selection in all modes.',
         default: '<code>{}</code>',
-        class: 'is-date-picker',
       },
       {
-        name: '<code>selectHighlight</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Highlight for the date selection. Valid for all select modes.',
-        type: 'Object',
+        name: '<code>dragHighlight: Object</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Highlight for the dragged selection in <code>"range"</code> mode.',
         default: '<code>{}</code>',
-        class: 'is-date-picker',
       },
     ];
     return {

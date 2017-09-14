@@ -18,11 +18,30 @@
 <script>
 export default {
   data() {
+    // const movePrevMonthCode = '<code>movePrevMonth(): Function</code>';
+    // const moveNextMonthCode = '<code>moveNextMonth(): Function</code>';
+    // const moveThisMonthCode = '<code>moveThisMonth(): Function</code>';
+    // const moveCode = '<code>move(<i>month</i>: Number, <i>year</i>: Number): Function</code>';
     const props = [
       {
-        name: '<code>title</code>',
-        description: 'Calendar header title.',
-        props: '<code>page</code> Object',
+        name: '<code>header</code>',
+        description: 'Calendar header. Use slots below for specific header sections.',
+        props: '<code>page: Object</code>',
+      },
+      {
+        name: '<code>header-title</code>',
+        description: 'Calendar header title. This slot is animated if animations are enabled.',
+        props: '<code>page: Object</code>',
+      },
+      {
+        name: '<code>header-left-button</code>',
+        description: 'Calendar header button on the left side.',
+        props: '<code>page: Object</code>',
+      },
+      {
+        name: '<code>header-right-button</code>',
+        description: 'Calendar header button on the right side.',
+        props: '<code>page: Object</code>',
       },
     ];
     return {

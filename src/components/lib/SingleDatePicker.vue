@@ -1,10 +1,10 @@
 <template>
-<calendar
-  :highlights='highlights_'
-  v-bind='$attrs'
-  v-on='$listeners'
-  @dayClick='selectDay'>
-</calendar>
+  <calendar
+    :highlights='highlights_'
+    v-bind='$attrs'
+    v-on='$listeners'
+    @dayClick='selectDay'>
+  </calendar>
 </template>
 
 <script>

@@ -145,8 +145,8 @@ export default {
     },
     assignDayAttributes(dayInfo) {
       const mapDayContentProps = [
-        { from: 'height', to: 'width' },
-        { from: 'height', to: 'height' },
+        // { from: 'height', to: 'width' },
+        // { from: 'height', to: 'height' },
         { from: 'color', to: 'color' },
         { from: 'fontSize', to: 'fontSize' },
         { from: 'fontWeight', to: 'fontWeight' },
@@ -172,7 +172,8 @@ export default {
             // Initialize the background object
             const endWidth = '95%';
             const height = h.height || dayInfo.contentStyle.height || '1.8rem';
-            const borderColor = h.borderColor || '';
+            const backgroundColor = h.backgroundColor || 'rgba(0, 0, 0, 0.5)';
+            const borderColor = h.borderColor;
             const borderWidth = h.borderWidth || '0';
             const borderStyle = h.borderStyle || 'solid';
             const borderRadius = h.borderRadius || dayInfo.contentStyle.borderRadius || height;
@@ -182,7 +183,7 @@ export default {
               verticalAlign: 'center',
               transition: 'width-height',
               style: {
-                backgroundColor: h.backgroundColor,
+                backgroundColor,
                 borderColor,
                 borderWidth,
                 borderStyle,
@@ -240,11 +241,11 @@ export default {
           if (!i.dates || !i.dates.length) return;
           i.dates.forEach((d) => {
             if (d.getTime && d.getTime() !== dayInfo.dateTime) return;
-            const backgroundColor = i.backgroundColor || 'grey';
             const diameter = i.diameter || '5px';
+            const backgroundColor = i.backgroundColor || 'rgba(0, 0, 0, 0.5)';
             const borderWidth = i.borderWidth || '0';
             const borderStyle = i.borderStyle || 'solid';
-            const borderRadius = i.isSquared ? '0' : diameter;
+            const borderRadius = i.borderRadius || '50%';
             dayInfo.indicators.push({
               key: i.key || idx.toString(),
               style: {

@@ -27,8 +27,12 @@
     </div>
   </div>
   <!-- Indicator layer -->
-  <div class='c-day-layer c-day-box-center-bottom'>
-    <div class='c-day-indicators'>
+  <div
+    class='c-day-layer c-day-box-center-bottom'
+    v-if='hasIndicators'>
+    <div
+      class='c-day-indicators'
+      :style='{ marginBottom: indicatorsOffset }'>
       <span
         v-for='indicator in indicators'
         :key='indicator.key'
@@ -45,10 +49,11 @@ import Vue from 'vue';
 
 export default {
   props: {
-    dayHeight: { type: String, default: '2.2rem' },
+    dayHeight: { type: String, default: '32px' },
     contentStyle: Object,
     backgrounds: Array,
     indicators: Array,
+    indicatorsOffset: { type: String, default: '0' },
     label: String,
     day: Number,
     date: Date,
@@ -67,7 +72,10 @@ export default {
     };
   },
   computed: {
-    data() {
+    hasIndicators() {
+      return this.indicators && this.indicators.length;
+    },
+    dayInfo() {
       return {
         day: this.day,
         weekday: this.weekday,
@@ -107,13 +115,13 @@ export default {
       return `c-day-layer c-day-box-${horizontalAlign}-${verticalAlign}`;
     },
     click() {
-      this.$emit('dayClick', this.data);
+      this.$emit('dayClick', this.dayInfo);
     },
     enter() {
-      this.$emit('dayEnter', this.data);
+      this.$emit('dayEnter', this.dayInfo);
     },
     leave() {
-      this.$emit('dayLeave', this.data);
+      this.$emit('dayLeave', this.dayInfo);
     },
   },
 };
@@ -132,6 +140,10 @@ $dayContentFontWeight: 500
 $dayContentBorderRadius: 50%
 $dayContentHoverBgColor: rgba(16, 52, 86, 0.25)
 $dayContentTransitionTime: 0.18s ease-in-out
+
+$indicatorDiameter: 5px
+$indicatorBorderRadius: 50%
+$indicatorSpacing: 3px
 
 $backgroundTransitionTime: .13s ease-in-out
 $scaleTransition: all 0.06s ease-in-out
@@ -192,12 +204,12 @@ $translateTransition: .18s ease-in-out
   +box()
 
 .c-day-indicator
-  width: 4px
-  height: 4px
-  border-radius: 50%
+  width: $indicatorDiameter
+  height: $indicatorDiameter
+  border-radius: $indicatorBorderRadius
   background-color: blue
   &:not(:last-child)
-    margin-right: 3px
+    margin-right: $indicatorSpacing
 
 .width-height-enter-active
   animation: widthHeightEnter 0.14s
