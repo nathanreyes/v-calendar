@@ -1,4 +1,7 @@
 CALENDAR
+- Fix paging bug
+- Adjust hover to highlight size
+- Configure calendar examples by using 'Vue.use(VCalendar)'
 - Make highlights optional
 - Allow for custom first day of the week
 

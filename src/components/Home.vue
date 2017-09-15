@@ -30,13 +30,29 @@
         <h3 class='title has-text-primary is-spaced'>Calendar</h3>
         <p class='subtitle'><i>V-Calendar</i> is a calendar component for Vue.js designed with these goals in mind:</p>
         <div class='columns'>
-          <div class='column content'>
-            <ul>
-              <li>Lightweight and dependency-free</li>
-              <li>Extensive customization via props and scoped slots</li>
-              <li>Built-in support for highlights, indicators and datepickers</li>
-              <li>Clean and lively design</li>
-            </ul>
+          <!--Intro Overview/Example Code-->
+          <div class='column is-one-half'>
+            <b-tabs>
+              <b-tab-item label='Overview'>
+                <ul class='content'>
+                  <li>Lightweight and dependency-free</li>
+                  <li>Extensive customization via props and scoped slots</li>
+                  <li>Built-in support for highlights, indicators and datepickers</li>
+                  <li>Clean and lively design</li>
+                </ul>
+              </b-tab-item>
+              <b-tab-item label='Example Code'>
+                <pre v-highlight><code class='html'>{{ exIntroCode }}</code></pre>
+              </b-tab-item>
+            </b-tabs>
+          </div>
+          <div class='column is-one-half'>
+            <b-field>
+              <ex-options-popover>
+                This is the popover
+              </ex-options-popover>
+            </b-field>
+            <ex-intro></ex-intro>
           </div>
         </div>
       </div>
@@ -47,7 +63,7 @@
         <h4 class='title is-4 has-text-grey-dark is-spaced'>Highlights</h4>
         <div class='columns'>
           <!--Highlights Overview/Example Code-->
-          <div class='column is-two-thirds'>
+          <div class='column is-one-half'>
             <b-tabs>
               <!--Highlights Overview-->
               <b-tab-item label='Overview'>
@@ -66,10 +82,8 @@
             </b-tabs>
           </div>
           <!--Highlights Example-->
-          <div class='column is-one-third'>
-            <div class='center-container'>
-              <ex-highlights></ex-highlights>
-            </div>
+          <div class='column is-one-half'>
+            <ex-highlights></ex-highlights>
           </div>
         </div>
       </div>
@@ -79,7 +93,7 @@
       <div class='container'>
         <h4 class='title is-4 has-text-grey-dark is-spaced'>Indicators</h4>
         <div class='columns'>
-          <div class='column is-two-thirds'>
+          <div class='column is-one-half'>
             <b-tabs>
               <!--Indicators Overview-->
               <b-tab-item label='Overview'>
@@ -98,10 +112,8 @@
               </b-tab-item>
             </b-tabs>
           </div>
-          <div class='column is-one-third'>
-            <div class='center-container'>
-              <ex-indicators></ex-indicators>
-            </div>
+          <div class='column is-one-half'>
+            <ex-indicators></ex-indicators>
           </div>
         </div>
       </div>
@@ -183,12 +195,15 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable import/first */
+import ExIntro from './ExIntro';
+import ExIntroCode from '!!raw-loader!./ExIntro';
 import ExHighlights from './ExHighlights';
 import ExHighlightsCode from '!!raw-loader!./ExHighlights';
 import ExIndicators from './ExIndicators';
 import ExIndicatorsCode from '!!raw-loader!./ExIndicators';
 import ExDatePicker from './ExDatePicker';
 import ExDatePickerCode from '!!raw-loader!./ExDatePicker';
+import ExOptionsPopover from './ExOptionsPopover';
 import CalendarApiProps from './CalendarApiProps';
 import CalendarApiEvents from './CalendarApiEvents';
 import CalendarApiSlots from './CalendarApiSlots';
@@ -196,12 +211,15 @@ import CalendarApiHighlights from './CalendarApiHighlights';
 import CalendarApiIndicators from './CalendarApiIndicators';
 import CalendarApiPage from './CalendarApiPage';
 import CalendarFaqs from './CalendarFAQs';
+import Popover from './lib/Popover';
 
 export default {
   components: {
+    ExIntro,
     ExHighlights,
     ExIndicators,
     ExDatePicker,
+    ExOptionsPopover,
     CalendarApiProps,
     CalendarApiEvents,
     CalendarApiSlots,
@@ -209,10 +227,12 @@ export default {
     CalendarApiIndicators,
     CalendarApiPage,
     CalendarFaqs,
+    Popover,
   },
   data() {
     return {
       apiTabIndex: 0,
+      exIntroCode: ExIntroCode,
       exHighlightsCode: ExHighlightsCode,
       exIndicatorsCode: ExIndicatorsCode,
       exDatePickerCode: ExDatePickerCode,

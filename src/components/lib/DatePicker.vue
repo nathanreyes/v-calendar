@@ -7,29 +7,29 @@
         :placeholder='placeholder_'
         @click='pickerVisible = !pickerVisible' />
     </slot>
-    <date-picker-panes
+    <date-picker-pane
       slot='popover-content'
       :value='value'
       v-bind='$attrs'
       v-on='$listeners'>
-    </date-picker-panes>
+    </date-picker-pane>
   </popover>
-  <date-picker-panes
+  <date-picker-pane
     v-else
     :value='value'
     v-bind='$attrs'
     v-on='$listeners'>
-  </date-picker-panes>
+  </date-picker-pane>
 </template>
 
 <script>
 import Popover from './Popover';
-import DatePickerPanes from './DatePickerPanes';
+import DatePickerPane from './DatePickerPane';
 
 export default {
   components: {
     Popover,
-    DatePickerPanes,
+    DatePickerPane,
   },
   props: {
     value: null,

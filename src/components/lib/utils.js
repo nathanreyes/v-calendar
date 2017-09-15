@@ -54,12 +54,18 @@ export const getNextMonthComps = (month, year, isLeapYear) => {
 };
 
 function comparePages(firstPage, secondPage) {
+  if (!firstPage || !secondPage) return 0;
   if (firstPage.year === secondPage.year) {
     if (firstPage.month === secondPage.month) return 0;
     return firstPage.month < secondPage.month ? -1 : 1;
   }
   return firstPage.year < secondPage.year ? -1 : 1;
 }
+
+export const pageIsBeforePage = (page, beforePage) => comparePages(page, beforePage) === -1;
+
+export const pageIsAfterPage = (page, afterPage) => comparePages(page, afterPage) === 1;
+
 
 export const getMinPage = (...args) => args.reduce((prev, curr) => {
   if (!prev) return curr;

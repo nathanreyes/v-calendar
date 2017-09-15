@@ -1,6 +1,7 @@
 <template>
   <calendar
-    :indicators='indicators'>
+    :indicators='indicators'
+    is-double-paned>
   </calendar>
 </template>
 

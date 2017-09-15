@@ -1,6 +1,7 @@
 <template>
   <calendar
-    :highlights='highlights'>
+    :highlights='highlights'
+    is-double-paned>
   </calendar>
 </template>
 
