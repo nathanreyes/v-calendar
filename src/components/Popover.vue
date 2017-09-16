@@ -19,6 +19,7 @@
 
 <script>
 export default {
+  name: 'vPopover',
   data() {
     return {
       visible_: this.visible,

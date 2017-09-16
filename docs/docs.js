@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Buefy from 'buefy';
 import hljs from 'highlight.js';
-
+import VCalendar from '../src/lib';
 import App from './App';
 import router from './router';
 import './styles/app.scss';
@@ -9,6 +9,7 @@ import './styles/app.scss';
 Vue.use(Buefy, {
   defaultIconPack: 'fa',
 });
+Vue.use(VCalendar);
 Vue.config.productionTip = false;
 
 Vue.directive('highlight', {

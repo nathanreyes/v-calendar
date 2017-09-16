@@ -62,13 +62,18 @@ export default {
         type: 'Number',
       },
       {
+        propertyName: '<code>thisMonthComps: Object</code>',
+        description: 'Components <code>{ <i>days</i>, <i>month</i>, <i>year</i> }</code> for the today\'s month.',
+        type: 'Object',
+      },
+      {
         propertyName: '<code>prevMonthComps: Object</code>',
-        description: 'Components <code>{ <i>month</i>, <i>year</i> }</code> for the previous page before the current page.',
+        description: 'Components <code>{ <i>days</i>, <i>month</i>, <i>year</i> }</code> for the previous month.',
         type: 'Object',
       },
       {
         propertyName: '<code>nextMonthComps: Object</code>',
-        description: 'Components <code>{ <i>month</i>, <i>year</i> }</code> for the next page after the current page.',
+        description: 'Components <code>{ <i>days</i>, <i>month</i>, <i>year</i> }</code> for the next month.',
         type: 'Object',
       },
       {

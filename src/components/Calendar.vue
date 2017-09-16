@@ -21,6 +21,8 @@
 
 <script>
 import CalendarPane from './CalendarPane';
+import '../assets/fonts/vcalendar/vcalendar.scss';
+import '../styles/lib.scss';
 
 import {
   todayComps,
@@ -31,11 +33,11 @@ import {
 } from './utils';
 
 export default {
+  name: 'vCalendar',
   components: {
     CalendarPane,
   },
   props: {
-    page: Object,
     minPage: Object,
     maxPage: Object,
     fromPage: Object,
@@ -106,10 +108,11 @@ export default {
 
 <style lang='sass' scoped>
 
+$minWidth: 260px
+
 .c-container
   display: flex
-
-.c-pane-right
-  margin-left: -1px
+  justify-content: center
+  flex-wrap: wrap
 
 </style>

@@ -33,9 +33,14 @@ export default {
         default: '<code>["S", "M", "T", "W", "T", "F", "S", "S"]</code>',
       },
       {
-        name: '<code>page: Object</code>',
-        description: 'Active page (<i>month</i>, <i>year</i>). Use the <code>.sync</code> modifier for two-way binding.',
-        default: '<code>{ month: <i>thisMonth</i>, year: <i>thisYear</i> }</code>',
+        name: '<code>fromPage: Object</code>',
+        description: 'Active page for single paned calendar or the left pane for double paned calendar. Use the <code>.sync</code> modifier for two-way binding.',
+        default: '<code>{ month: <i>thisMonth</i>, year: <i>thisMonthYear</i> }</code>',
+      },
+      {
+        name: '<code>toPage: Object</code>',
+        description: 'Active page for the right pane for double paned calendar. Use the <code>.sync</code> modifier for two-way binding.',
+        default: '<code>{ month: <i>nextMonth</i>, year: <i>nextMonthYear</i> }</code>',
       },
       {
         name: '<code>minPage: Object</code>',
@@ -46,6 +51,11 @@ export default {
         name: '<code>maxPage: Object</code>',
         description: 'Latest page (<i>month</i>, <i>year</i>) that the user can navigate to.',
         default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>isDoublePaned: Boolean</code>',
+        description: 'Puts two calendars side by side.',
+        default: '<code>false</code>',
       },
       {
         name: '<code>highlights: Array[Object]</code>',

@@ -1,11 +1,17 @@
-import Calendar from './components/lib/Calendar';
-import DatePicker from './components/lib/DatePicker';
-import Popover from './components/lib/Popover';
-import './assets/fonts/vcalendar/vcalendar.scss';
-import './styles/lib.scss';
+import Calendar from './components/Calendar';
+import DatePicker from './components/DatePicker';
+import Popover from './components/Popover';
 
-export default {
+const componentPrefix = 'v';
+
+const components = {
   Calendar,
   DatePicker,
   Popover,
+};
+
+export default (Vue) => {
+  Object
+    .keys(components)
+    .forEach(k => Vue.component(`${componentPrefix}${k}`, components[k]));
 };

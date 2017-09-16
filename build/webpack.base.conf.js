@@ -9,7 +9,7 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    docs: './src/docs.js',
+    docs: './docs/docs.js',
     ['v-calendar']: './src/lib.js'
   },
   output: {

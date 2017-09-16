@@ -83,10 +83,12 @@
 import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
 import {
-  daysInMonths,
   todayComps,
   monthLabels,
   weekdayLabels,
+  getIsLeapYear,
+  getMonthComps,
+  getThisMonthComps,
   getPrevMonthComps,
   getNextMonthComps,
   pageIsBeforePage,
@@ -151,6 +153,11 @@ export default {
     this.preloadPages();
   },
   methods: {
+    canMove(pageInfo) {
+      if (this.minPage && pageIsBeforePage(pageInfo, this.minPage)) return false;
+      if (this.maxPage && pageIsAfterPage(pageInfo, this.maxPage)) return false;
+      return true;
+    },
     movePrevYear() {
       this.move({ month: this.page_.month, year: this.page_.year - 1 });
     },
@@ -158,13 +165,7 @@ export default {
       this.move(this.page_.prevMonthComps);
     },
     moveThisMonth() {
-      if (this.canMove(todayComps)) {
-        this.move(todayComps);
-      } else if (pageIsBeforePage(todayComps, this.minPage)) {
-        this.move(this.minPage);
-      } else if (pageIsAfterPage(todayComps, this.maxPage)) {
-        this.move(this.maxPage);
-      }
+      this.move(todayComps);
     },
     moveNextMonth() {
       this.move(this.page_.nextMonthComps);
@@ -173,6 +174,15 @@ export default {
       this.move({ month: this.page_.month, year: this.page_.year + 1 });
     },
     move(pageInfo) {
+      if (this.canMove(pageInfo)) {
+        this.forceMove(pageInfo);
+      } else if (pageIsBeforePage(todayComps, this.minPage)) {
+        this.forceMove(this.minPage);
+      } else if (pageIsAfterPage(pageInfo, this.maxPage)) {
+        this.forceMove(this.maxPage);
+      }
+    },
+    forceMove(pageInfo) {
       // Exit if there is no page info or page info matches the current page
       if (!pageInfo || (pageInfo.month === this.page_.month && pageInfo.year === this.page_.year)) return;
       // Extract just the month and year info
@@ -185,44 +195,37 @@ export default {
       // Preload other pages
       this.preloadPages();
     },
-    canMove(pageInfo) {
-      if (this.minPage && pageIsBeforePage(pageInfo, this.minPage)) return false;
-      if (this.maxPage && pageIsAfterPage(pageInfo, this.maxPage)) return false;
-      return true;
-    },
     loadPage({ month, year }) {
       const key = `${year.toString()}.${month.toString()}`;
       let page = this.pages.find(p => (p.key === key));
       if (!page) {
         const monthLabel = this.monthLabels[month - 1];
-        const monthLabel_1 = monthLabel.substring(0, 1);
-        const monthLabel_2 = monthLabel.substring(0, 2);
-        const monthLabel_3 = monthLabel.substring(0, 3);
         const yearLabel = year.toString();
         const yearLabel_2 = yearLabel.substring(2, 4);
         const headerLabel = `${monthLabel} ${yearLabel}`;
-        const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-        const daysInMonth = isLeapYear && month === 2 ? 29 : daysInMonths[month - 1];
         const firstWeekdayInMonth = new Date(year, month - 1, 1).getDay() + 1;
-        const prevMonthComps = getPrevMonthComps(month, year, isLeapYear);
-        const nextMonthComps = getNextMonthComps(month, year, isLeapYear);
+        const currMonthComps = getMonthComps(month, year);
+        const isLeapYear = getIsLeapYear(year);
+        const daysInMonth = currMonthComps.days;
+        const thisMonthComps = getThisMonthComps();
+        const prevMonthComps = getPrevMonthComps(month, year);
+        const nextMonthComps = getNextMonthComps(month, year);
         page = {
           key,
           month,
           year,
           monthLabel,
-          monthLabel_1,
-          monthLabel_2,
-          monthLabel_3,
           yearLabel,
           yearLabel_2,
           headerLabel,
           isLeapYear,
           daysInMonth,
           firstWeekdayInMonth,
+          thisMonthComps,
           prevMonthComps,
           nextMonthComps,
-          move: (m, y) => this.move({ month: m, year: y }),
+          canMove: pg => this.canMove(pg),
+          move: pg => this.move(pg),
           moveThisMonth: () => this.moveThisMonth(),
           movePrevMonth: () => this.move(prevMonthComps),
           moveNextMonth: () => this.move(nextMonthComps),

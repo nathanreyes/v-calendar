@@ -9,48 +9,34 @@ export const todayComps = {
   day: today.getDate(),
 };
 
+export const getIsLeapYear = year => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+
+// Days/month/year components for a given month and year
+export const getMonthComps = (month, year) => ({
+  days: (month === 2 && getIsLeapYear(year)) ? 29 : daysInMonths[month - 1],
+  month,
+  year,
+});
+
+// Days/month/year components for a given date
 export const getDateComps = (date) => {
   if (!date || !date.getTime) return undefined;
-  const month = date.getMonth() + 1;
-  const days = daysInMonths[month - 1];
-  const year = date.getFullYear();
-  return {
-    days,
-    month,
-    year,
-  };
+  return getMonthComps(date.getMonth() + 1, date.getFullYear());
 };
 
+// Days/month/year components for today's month
+export const getThisMonthComps = () => getMonthComps(todayComps.month, todayComps.year);
+
 // Day/month/year components for previous month
-export const getPrevMonthComps = (month, year, isLeapYear) => {
-  if (month === 1) {
-    return {
-      days: daysInMonths[11],
-      month: 12,
-      year: year - 1,
-    };
-  }
-  return {
-    days: (month === 3 && isLeapYear) ? 29 : daysInMonths[month - 2],
-    month: month - 1,
-    year,
-  };
+export const getPrevMonthComps = (month, year) => {
+  if (month === 1) return getMonthComps(12, year - 1);
+  return getMonthComps(month - 1, year);
 };
 
 // Day/month/year components for next month
-export const getNextMonthComps = (month, year, isLeapYear) => {
-  if (month === 12) {
-    return {
-      days: daysInMonths[0],
-      month: 1,
-      year: year + 1,
-    };
-  }
-  return {
-    days: (month === 1 && isLeapYear) ? 29 : daysInMonths[month],
-    month: month + 1,
-    year,
-  };
+export const getNextMonthComps = (month, year) => {
+  if (month === 12) return getMonthComps(1, year + 1);
+  return getMonthComps(month + 1, year);
 };
 
 function comparePages(firstPage, secondPage) {
