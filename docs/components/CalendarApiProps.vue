@@ -29,8 +29,13 @@ export default {
       },
       {
         name: '<code>weekdayLabels: Array[String]</code>',
-        description: 'Weekday labels displayed in header.',
+        description: 'Weekday labels displayed in header. Start with Sunday, even if it isn\'t set as the first day of the week',
         default: '<code>["S", "M", "T", "W", "T", "F", "S", "S"]</code>',
+      },
+      {
+        name: '<code>firstDayOfWeek: Number</code>',
+        description: 'Weekday number (1-7, Sun-Sat) to use as the first day of the week.',
+        default: '<code>1</code>',
       },
       {
         name: '<code>fromPage: Object</code>',

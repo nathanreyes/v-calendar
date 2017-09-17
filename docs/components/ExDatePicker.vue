@@ -2,7 +2,6 @@
   <v-date-picker
     :select-mode='selectMode'
     :is-popover='isPopover'
-    :day-content-style='{ borderRadius: "5px" }'
     inputClass='input'
     v-model='selectedValue'
     is-double-paned>

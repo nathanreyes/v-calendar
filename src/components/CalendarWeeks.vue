@@ -27,19 +27,14 @@
 
 <script>
 import CalendarDay from './CalendarDay';
-
-const _today = new Date();
-const _todayComps = {
-  year: _today.getFullYear(),
-  month: _today.getMonth() + 1,
-  day: _today.getDate(),
-};
+import { todayComps } from './utils';
 
 export default {
   components: {
     CalendarDay,
   },
   props: {
+    firstDayOfWeek: Number,
     dayContentStyle: Object,
     highlights: Array,
     indicators: Array,
@@ -62,10 +57,10 @@ export default {
       let month = this.prevMonthComps.month;
       let year = this.prevMonthComps.year;
       // Cycle through each week of the month, up to 6 total
-      for (let w = 1; w <= 6 && (!nextMonth || !this.trimMaxWeek); w += 1) {
+      for (let w = 1; w <= 6 && (!nextMonth || !this.trimMaxWeek); w++) {
         // Cycle through each weekday
         const week = [];
-        for (let d = 1; d <= 7; d += 1) {
+        for (let i = 1, d = this.firstDayOfWeek; i <= 7; i++, d += (d === 7) ? -6 : 1) {
           // We need to know when to start counting actual month days
           if (previousMonth && d >= this.firstWeekdayInMonth) {
             // Reset day/month/year counters
@@ -81,7 +76,7 @@ export default {
           //  We don't know how the UI wants to display various days,
           //  so we'll supply all the data we can
           const date = new Date(year, month - 1, day);
-          const isToday = day === _todayComps.day && month === _todayComps.month && year === _todayComps.year;
+          const isToday = day === todayComps.day && month === todayComps.month && year === todayComps.year;
           const dayInfo = {
             id: `${month}.${day}`,
             label: day.toString(),

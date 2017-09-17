@@ -35,9 +35,13 @@
                 <b-radio v-model='selectMode' native-value='range'>Range</b-radio>
               </p>
             </b-field>
+            <b-field label='Border Radius'>
+              <b-input></b-input>
+            </b-field>
             <b-field>
               <b-switch v-model='isPopover'>Popover</b-switch>
             </b-field>
+
             <b-field label='Value'>
               <pre><code class='html'>{{ JSON.stringify(selectedValue, null, 2) }}</code></pre>
             </b-field>

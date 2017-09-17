@@ -48,7 +48,7 @@
     </slot>
     <div class='c-weekdays'>
       <div
-        v-for='weekday in weekdayLabels'
+        v-for='weekday in weekdayLabels_'
         :key='weekday'
         class='c-weekday'
         :style='weekdayStyle'>
@@ -70,6 +70,7 @@
         :firstWeekdayInMonth='p.firstWeekdayInMonth'
         :prevMonthComps='p.prevMonthComps'
         :nextMonthComps='p.nextMonthComps'
+        :first-day-of-week='firstDayOfWeek'
         v-if='p === page_'
         v-bind='$attrs'
         v-on='$listeners'>
@@ -105,6 +106,7 @@ export default {
     maxPage: Object,
     monthLabels: { type: Array, default: () => monthLabels },
     weekdayLabels: { type: Array, default: () => weekdayLabels },
+    firstDayOfWeek: { type: Number, default: 1 },
     headerStyle: Object,
     titleStyle: Object,
     titleTransition: { type: String, default: 'slide' },
@@ -120,6 +122,13 @@ export default {
     };
   },
   computed: {
+    weekdayLabels_() {
+      const labels = [];
+      for (let i = 1, d = this.firstDayOfWeek; i <= 7; i++, d += (d === 7) ? -6 : 1) {
+        labels.push(this.weekdayLabels[d - 1]);
+      }
+      return labels;
+    },
     titleTransition_() {
       if (this.titleTransition === 'slide') return `title-${this.slideTransition}`;
       return `title-${this.titleTransition}`;

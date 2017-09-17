@@ -1,5 +1,5 @@
 CALENDAR
-- Fix paging bug
+
 - Adjust hover to highlight size
 - Make highlights optional
 - Allow for custom first day of the week
@@ -7,6 +7,7 @@ CALENDAR
 DATEPICKER
 - Array of disabled dates and date ranges
 
+DONE - Fix paging bug
 DONE - Configure calendar examples by using 'Vue.use(VCalendar)'
 DONE - Min and max allowed pages
 DONE - Assign default page depending on date picker selection
