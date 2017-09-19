@@ -40,7 +40,7 @@ export default {
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
             new Date(thisMonthYear, thisMonth, 10),
-            new Date(thisMonthYear, thisMonth, 22),
+            new Date(thisMonthYear, thisMonth, 12),
             {
               start: new Date(nextMonthYear, nextMonth, 22),
               end: new Date(nextMonthYear, nextMonth, 26),

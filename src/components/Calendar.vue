@@ -4,6 +4,7 @@
       :page.sync='fromPage_'
       :min-page='minPage'
       :max-page='maxFromPage'
+      :highlights='highlights_'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-pane>
@@ -12,6 +13,7 @@
       :page.sync='toPage_'
       :min-page='minToPage'
       :max-page='maxPage'
+      :highlights='highlights_'
       class='c-pane-right'
       v-bind='$attrs'
       v-on='$listeners'>
@@ -43,6 +45,7 @@ export default {
     fromPage: Object,
     toPage: Object,
     isDoublePaned: Boolean,
+    highlights: Array,
   },
   data() {
     return {
@@ -58,6 +61,25 @@ export default {
     minToPage() {
       if (!this.isDoublePaned) return null;
       return getNextPage(this.fromPage_);
+    },
+    highlights_() {
+      if (!this.highlights || !this.highlights.length) return [];
+      return this.highlights
+        .filter(h => h.dates && h.dates.length)
+        .map(h => Object.assign(h, {
+          dates: h.dates.map((d) => {
+            if (d.start && d.end) {
+              const start = new Date(d.start);
+              const end = new Date(d.end);
+              start.setHours(0, 0, 0, 0);
+              end.setHours(0, 0, 0, 0);
+              return { start, end };
+            }
+            const date = new Date(d);
+            date.setHours(0, 0, 0, 0);
+            return date;
+          }),
+        }));
     },
   },
   watch: {
