@@ -4,7 +4,8 @@
   :style='{height: dayHeight}'>
   <!-- Background layers -->
   <transition-group
-    :name='transitionName'>
+    :name='transitionName'
+    tag='div'>
     <div
       v-for='(background, i) in backgrounds'
       :key='background.key'
@@ -19,10 +20,7 @@
   <div class='c-day-layer c-day-box-center-center'>
     <div
       class='c-day-content'
-      :style='contentStyle'
-      @click='click()'
-      @mouseenter='enter()'
-      @mouseleave='leave()'>
+      :style='contentStyle'>
       {{ label }}
     </div>
   </div>
@@ -41,16 +39,27 @@
       </span>
     </div>
   </div>
+  <!-- Hover layer -->
+  <div class='c-day-layer c-day-box-center-center'>
+    <div
+      :class='["c-day-content-hover", { "c-day-content-hover-show": showHover }]'
+      :style='contentHoverStyle'
+      @click='click()'
+      @mouseenter='enter()'
+      @mouseleave='leave()'>
+    </div>
+  </div>
 </div>
 </template>
 
 <script>
-import Vue from 'vue';
 
 export default {
   props: {
     dayHeight: { type: String, default: '32px' },
     contentStyle: Object,
+    contentHoverStyle: Object,
+    showHover: Boolean,
     backgrounds: Array,
     indicators: Array,
     indicatorsOffset: { type: String, default: '0' },
@@ -63,17 +72,20 @@ export default {
     month: Number,
     year: Number,
     inMonth: Boolean,
-    beforeMonth: Boolean,
-    afterMonth: Boolean,
-  },
-  data() {
-    return {
-      transitionName: '',
-    };
+    inPrevMonth: Boolean,
+    inNextMonth: Boolean,
   },
   computed: {
+    hasBackgrounds() {
+      return this.backgrounds && this.backgrounds.length;
+    },
     hasIndicators() {
       return this.indicators && this.indicators.length;
+    },
+    highlights() {
+      return this.hasBackgrounds ?
+        this.backgrounds.map(b => b.highlight) :
+        [];
     },
     dayInfo() {
       return {
@@ -85,30 +97,17 @@ export default {
         date: this.date,
         dateTime: this.dateTime,
         inMonth: this.inMonth,
-        beforeMonth: this.beforeMonth,
-        afterMonth: this.afterMonth,
+        inPrevMonth: this.inPrevMonth,
+        inNextMonth: this.inNextMonth,
+        highlights: this.highlights,
+        indicators: this.indicators,
       };
     },
-  },
-  watch: {
-    backgrounds() {
-      const transitionName = this.getTransitionName();
-      if (transitionName) {
-        this.transitionName = transitionName;
-      } else {
-        Vue.nextTick(() => { this.transitionName = transitionName; });
-      }
+    transitionName() {
+      return this.hasBackgrounds ? this.backgrounds[this.backgrounds.length - 1].transition : '';
     },
   },
   methods: {
-    getTransitionName() {
-      let transition = '';
-      if (!this.backgrounds || this.backgrounds.length === 0) return transition;
-      this.backgrounds.forEach((b) => {
-        if (b.transition) transition = b.transition;
-      });
-      return transition;
-    },
     getWrapperClass({ horizontalAlign, verticalAlign }) {
       if (!horizontalAlign) horizontalAlign = 'center';
       if (!verticalAlign) verticalAlign = 'center';
@@ -153,8 +152,6 @@ $translateTransition: .18s ease-in-out
   display: flex
   justify-content: $justify
   align-items: $align
-  margin: 0
-  padding: 0
 
 .c-day
   position: relative
@@ -193,12 +190,20 @@ $translateTransition: .18s ease-in-out
   font-size: $dayContentFontSize
   font-weight: $dayContentFontWeight
   border-radius: $dayContentBorderRadius
-  transition: all $dayContentTransitionTime
-  cursor: pointer
-  user-select: none
-  z-index: 10
+  transition: color $dayContentTransitionTime
+  pointer-events: none
+  z-index: 100
+
+.c-day-content-hover
+  width: $dayContentWidth
+  height: $dayContentHeight
+  border-radius: $dayContentBorderRadius
+
+.c-day-content-hover-show
+  transition: $dayContentTransitionTime
   &:hover
     background-color: $dayContentHoverBgColor
+    cursor: pointer
 
 .c-day-indicators
   +box()
@@ -210,6 +215,12 @@ $translateTransition: .18s ease-in-out
   background-color: blue
   &:not(:last-child)
     margin-right: $indicatorSpacing
+
+.fade-enter-active, .fade-leave-active
+  transition: $dayContentTransitionTime
+
+.fade-enter, .fade-leave-to
+  opacity: 0
 
 .width-height-enter-active
   animation: widthHeightEnter 0.14s
@@ -241,15 +252,15 @@ $translateTransition: .18s ease-in-out
 
 .from-left-enter-active.c-day-box-left-center
   transition: $translateTransition
-  .c-day-background
-    animation: fromLeftEnter $translateTransition
-    transform-origin: 0% 50%
+  animation: fromLeftEnter $translateTransition
+  margin: 0 0 0 -1px
+  transform-origin: 0% 50%
 
 .from-right-enter-active.c-day-box-right-center
   transition: $translateTransition
-  .c-day-background
-    animation: fromRightEnter $translateTransition
-    transform-origin: 100% 50%
+  animation: fromRightEnter $translateTransition
+  margin: 0 -1px 0 0
+  transform-origin: 100% 50%
 
 @keyframes fromLeftEnter
   0%

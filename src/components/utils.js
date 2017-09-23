@@ -102,3 +102,34 @@ export const getLastArrayItem = (array) => {
   if (!array) return undefined;
   return array.length ? array[array.length - 1] : undefined;
 };
+
+export const DateWrapper = class DateWrapper {
+  constructor(date) {
+    if (!date) return;
+    const hasStart = !!date.start;
+    const hasEnd = !!date.end;
+    if (hasStart || hasEnd) {
+      this.type = 'range';
+      this.isRange = true;
+      this.start = new Date(date.start);
+      this.start.setHours(0, 0, 0, 0);
+      this.startTime = this.start.getTime();
+      this.end = new Date(date.end);
+      this.end.setHours(0, 0, 0, 0);
+      this.endTime = this.end.getTime();
+    } else {
+      this.type = 'date';
+      this.isDate = true;
+      this.date = new Date(date);
+      this.date.setHours(0, 0, 0, 0);
+      this.dateTime = this.date.getTime();
+    }
+  }
+
+  containsDate(date) {
+    if (this.isDate) return this.dateTime === date.getTime();
+    if (this.start && date < this.start) return false;
+    if (this.end && date > this.end) return false;
+    return true;
+  }
+};

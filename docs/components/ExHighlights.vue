@@ -10,7 +10,11 @@ import { getExampleMonthComps } from './utils';
 
 export default {
   data() {
-    const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthComps();
+    const {
+      thisMonth,
+      thisMonthYear,
+      nextMonth,
+      nextMonthYear } = getExampleMonthComps();
     return {
       highlights: [
         {

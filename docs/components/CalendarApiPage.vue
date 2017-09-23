@@ -24,77 +24,62 @@ export default {
       {
         propertyName: '<code>month: Number</code>',
         description: 'Page month number.',
-        type: 'Number',
       },
       {
         propertyName: '<code>year: Number</code>',
         description: 'Page year number.',
-        type: 'Number',
       },
       {
         propertyName: '<code>monthLabel: String</code>',
         description: 'Page month label as specified by the <code>monthLabels</code> prop.',
-        type: 'String',
       },
       {
         propertyName: '<code>yearLabel: String</code>',
         description: 'Page year label in <i>YYYY</i> format.',
-        type: 'String',
       },
       {
         propertyName: '<code>yearLabel_2: String</code>',
         description: 'Page year label in <i>YY</i> format.',
-        type: 'String',
       },
       {
         propertyName: '<code>isLeapYear: String</code>',
         description: 'Indicator if page year is a leap year.',
-        type: 'Boolean',
       },
       {
         propertyName: '<code>daysInMonth: Number</code>',
         description: 'Number of days in the page month.',
-        type: 'Number',
       },
       {
         propertyName: '<code>firstWeekdayInMonth: Number</code>',
         description: 'Number of the first weekday in the page month.',
-        type: 'Number',
       },
       {
         propertyName: '<code>thisMonthComps: Object</code>',
         description: 'Components <code>{ <i>days</i>, <i>month</i>, <i>year</i> }</code> for the today\'s month.',
-        type: 'Object',
       },
       {
         propertyName: '<code>prevMonthComps: Object</code>',
         description: 'Components <code>{ <i>days</i>, <i>month</i>, <i>year</i> }</code> for the previous month.',
-        type: 'Object',
       },
       {
         propertyName: '<code>nextMonthComps: Object</code>',
         description: 'Components <code>{ <i>days</i>, <i>month</i>, <i>year</i> }</code> for the next month.',
-        type: 'Object',
       },
       {
         propertyName: '<code>move(<i>month</i>, <i>year</i>): Function</code>',
         description: 'Function that moves to a page with a specified month and year.',
-        type: 'Function',
       },
       {
         propertyName: '<code>movePrevMonth(): Function</code>',
         description: 'Function that moves to the page for the previous month.',
-        type: 'Function',
       },
       {
         propertyName: '<code>moveNextMonth(): Function</code>',
         description: 'Function that moves to the page for the next month.',
-        type: 'Function',
       },
       {
         propertyName: '<code>moveThisMonth(): Function</code>',
         description: 'Function that moves to the page for this month.',
-        type: 'Function',
       },
     ];
     return {

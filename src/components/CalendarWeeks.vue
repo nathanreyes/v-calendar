@@ -5,8 +5,9 @@
       v-for='day in week'
       :key='day.id'
       :backgrounds='day.backgrounds'
-      :content-style='day.contentStyle'
       :indicators='day.indicators'
+      :content-style='day.contentStyle'
+      :content-hover-style='day.contentHoverStyle'
       :label='day.label'
       :day='day.day'
       :weekday='day.weekday'
@@ -16,8 +17,8 @@
       :date='day.date'
       :dateTime='day.dateTime'
       :in-month='day.inMonth'
-      :before-month='day.beforeMonth'
-      :after-month='day.afterMonth'
+      :in-prev-month='day.inPrevMonth'
+      :in-next-month='day.inNextMonth'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-day>
@@ -27,7 +28,22 @@
 
 <script>
 import CalendarDay from './CalendarDay';
-import { todayComps } from './utils';
+import { todayComps, getLastArrayItem } from './utils';
+
+const _highlightContentAssignments = [
+  { from: 'color', to: 'color' },
+  { from: 'fontSize', to: 'fontSize' },
+  { from: 'fontWeight', to: 'fontWeight' },
+  { from: 'fontDecoration', to: 'fontDecoration' },
+  { from: 'fontFamily', to: 'fontFamily' },
+  { from: 'fontStyle', to: 'fontStyle' },
+];
+const _highlightContentHoverAssignments = [
+  { from: 'height', to: 'width' },
+  { from: 'height', to: 'height' },
+  { from: 'borderRadius', to: 'borderRadius' },
+  { from: 'cursor', to: 'cursor' },
+];
 
 export default {
   components: {
@@ -36,6 +52,7 @@ export default {
   props: {
     firstDayOfWeek: Number,
     dayContentStyle: Object,
+    dayContentHoverStyle: Object,
     highlights: Array,
     indicators: Array,
     month: Number,
@@ -91,13 +108,13 @@ export default {
             isFirstDay: thisMonth && day === 1,
             isLastDay: thisMonth && day === this.daysInMonth,
             inMonth: thisMonth,
-            beforeMonth: previousMonth,
-            afterMonth: nextMonth,
+            inPrevMonth: previousMonth,
+            inNextMonth: nextMonth,
           };
           this.assignDayAttributes(dayInfo);
           week.push(dayInfo);
 
-          // We've hit the last day of the month
+          // See if we've hit the last day of the month
           if (thisMonth && day >= this.daysInMonth) {
             thisMonth = false;
             nextMonth = true;
@@ -117,21 +134,8 @@ export default {
   },
   methods: {
     assignDayAttributes(dayInfo) {
-      dayInfo.contentStyle = { ...this.dayContentStyle };
       dayInfo.backgrounds = this.getDayBackgrounds(dayInfo);
-      // const mapDayContentProps = [
-      //   // { from: 'height', to: 'width' },
-      //   // { from: 'height', to: 'height' },
-      //   { from: 'color', to: 'color' },
-      //   { from: 'fontSize', to: 'fontSize' },
-      //   { from: 'fontWeight', to: 'fontWeight' },
-      //   { from: 'fontDecoration', to: 'fontDecoration' },
-      //   { from: 'borderRadius', to: 'borderRadius' },
-      // ];
-      // // Modify content style if needed
-      // mapDayContentProps.forEach((m) => {
-      //   if (Object.prototype.hasOwnProperty.call(h, m.from)) dayInfo.contentStyle[m.to] = h[m.from];
-      // });
+      this.assignDayContentStyles(dayInfo);
       dayInfo.indicators = this.getDayIndicators(dayInfo);
     },
     getDayBackgrounds(dayInfo) {
@@ -143,19 +147,12 @@ export default {
         // Cycle through highlight dates
         if (!h.dates || !h.dates.length) return;
         h.dates.forEach((d) => {
-          const isDate = !!d.getTime;
-          const hasStart = !!d.start;
-          const hasEnd = !!d.end;
-          if (!isDate && !hasStart && !hasEnd) return;
-          if (isDate && d.getTime() !== dayInfo.dateTime) return;
-          if (hasStart && dayInfo.date < d.start) return;
-          if (hasEnd && dayInfo.date > d.end) return;
+          if (!d.containsDate(dayInfo.date)) return;
           // Initialize the background object
           const height = h.height || contentStyle.height || '1.8rem';
-
           const background = {
             key: h.key || i.toString(),
-            type: isDate ? 'date' : 'range',
+            highlight: h,
             date: d,
             horizontalAlign: 'center',
             verticalAlign: 'center',
@@ -168,16 +165,16 @@ export default {
               borderRadius: h.borderRadius || contentStyle.borderRadius || height,
               width: height,
               height,
-              zIndex: h.zIndex || '0',
+              zIndex: h.zIndex || 0,
             },
           };
           // Is the highlight a date range
-          if (!isDate) {
+          if (d.isRange) {
+            const onStart = d.startTime === dayInfo.dateTime;
+            const onEnd = d.endTime === dayInfo.dateTime;
             const borderWidth = background.style.borderWidth;
             const borderRadius = background.style.borderRadius;
             const endWidth = '95%';
-            const onStart = hasStart && d.start.getTime() === dayInfo.dateTime;
-            const onEnd = hasEnd && d.end.getTime() === dayInfo.dateTime;
             // Is the day date on the highlight start and end date
             if (onStart && onEnd) {
               background.style.width = endWidth;
@@ -211,10 +208,35 @@ export default {
       });
       return backgrounds.sort((a, b) => {
         if (a.style.zIndex !== '0' || b.style.zIndex !== '0') return (parseInt(a.style.zIndex, 10) - parseInt(b.style.zIndex, 10));
-        if (a.type !== b.type) return a.type === 'date' ? 1 : -1;
-        if (a.type === 'date') return 0;
+        if (a.date.type !== b.date.type) return a.date.isDate ? 1 : -1;
+        if (a.date.isDate) return 0;
         const diff = a.date.start - b.date.start;
         return diff !== 0 ? diff : b.date.end - a.date.end;
+      });
+    },
+    assignDayContentStyles(dayInfo) {
+      // Initialize styles using default properties
+      const contentStyle = { ...this.dayContentStyle };
+      const contentHoverStyle = {};
+      // Modify styles using the top-most background highlight
+      const bgContent = getLastArrayItem(dayInfo.backgrounds);
+      if (bgContent) {
+        const highlight = bgContent.highlight;
+        _highlightContentAssignments.forEach((a) => {
+          if (Object.prototype.hasOwnProperty.call(highlight, a.from)) {
+            contentStyle[a.to] = highlight[a.from];
+          }
+        });
+        _highlightContentHoverAssignments.forEach((a) => {
+          if (Object.prototype.hasOwnProperty.call(highlight, a.from)) {
+            contentHoverStyle[a.to] = highlight[a.from];
+          }
+        });
+      }
+      // Assign the styles
+      Object.assign(dayInfo, {
+        contentStyle,
+        contentHoverStyle,
       });
     },
     getDayIndicators(dayInfo) {
@@ -225,7 +247,7 @@ export default {
         // Cycle through indicator dates
         if (!i.dates || !i.dates.length) return;
         i.dates.forEach((d) => {
-          if (d.getTime && d.getTime() !== dayInfo.dateTime) return;
+          if (!d.containsDate(dayInfo.date)) return;
           const diameter = i.diameter || '5px';
           const backgroundColor = i.backgroundColor || 'rgba(0, 0, 0, 0.5)';
           const borderWidth = i.borderWidth || '0';
@@ -233,6 +255,7 @@ export default {
           const borderRadius = i.borderRadius || '50%';
           indicators.push({
             key: i.key || idx.toString(),
+            date: d,
             style: {
               backgroundColor,
               borderWidth,

@@ -24,6 +24,9 @@
       <b-tab-item label='Page'>
         <calendar-api-page></calendar-api-page>
       </b-tab-item>
+      <b-tab-item label='Day Info'>
+        <calendar-api-day-info></calendar-api-day-info>
+      </b-tab-item>
     </b-tabs>
   </div>
 </section>
@@ -36,6 +39,7 @@ import CalendarApiSlots from './CalendarApiSlots';
 import CalendarApiHighlights from './CalendarApiHighlights';
 import CalendarApiIndicators from './CalendarApiIndicators';
 import CalendarApiPage from './CalendarApiPage';
+import CalendarApiDayInfo from './CalendarApiDayInfo';
 
 export default {
   components: {
@@ -45,6 +49,7 @@ export default {
     CalendarApiHighlights,
     CalendarApiIndicators,
     CalendarApiPage,
+    CalendarApiDayInfo,
   },
   data() {
     return {
@@ -53,7 +58,7 @@ export default {
   },
   methods: {
     selectTab(tab) {
-      this.apiTabIndex = ['props', 'events', 'slots', 'highlights', 'indicators', 'page'].indexOf(tab);
+      this.apiTabIndex = ['props', 'events', 'slots', 'highlights', 'indicators', 'page', 'dayInfo'].indexOf(tab);
     },
   },
 };

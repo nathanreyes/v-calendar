@@ -18,7 +18,7 @@
               <li><a href='#indicators'>Indicators</a></li>
               <li><a href='#datepicker'>DatePicker</a></li>
               <li><a href='#api'>API</a></li>
-              <li><a href='#faqs'>FAQs</a></li>
+              <li><a href='#usage'>Usage</a></li>
             </ul>
           </div>
         </nav>
@@ -34,13 +34,10 @@
     <section-date-picker></section-date-picker>
     <!--Calendar Api-->
     <section-api></section-api>
-    <!--Calendar FAQs-->
-    <section id='faqs' class='section'>
-      <div class='container'>
-        <h3 class='title has-text-primary is-spaced'>FAQs</h3>
-        <calendar-faqs></calendar-faqs>
-      </div>
-    </section>
+    <!--Calendar Usage-->
+    <section-usage></section-usage>
+    <!--Footer-->
+    <section-footer></section-footer>
   </div>
 </template>
 
@@ -53,7 +50,8 @@ import SectionHighlights from './SectionHighlights';
 import SectionIndicators from './SectionIndicators';
 import SectionDatePicker from './SectionDatePicker';
 import SectionApi from './SectionApi';
-import CalendarFaqs from './CalendarFAQs';
+import SectionUsage from './SectionUsage';
+import SectionFooter from './SectionFooter';
 
 export default {
   components: {
@@ -62,7 +60,8 @@ export default {
     SectionIndicators,
     SectionDatePicker,
     SectionApi,
-    CalendarFaqs,
+    SectionUsage,
+    SectionFooter,
   },
 };
 </script>

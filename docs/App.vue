@@ -9,7 +9,7 @@
       <div class='navbar-menu'>
         <div class='navbar-end'>
           <div class='navbar-item'>
-            <a class='button is-outlined is-light'>
+            <a class='button is-outlined is-light' href='https://github.com/nathanreyes/v-calendar' target='_blank'>
               <span class='icon'><i class='fa fa-github'></i></span>
               <span>Github</span>
             </a>

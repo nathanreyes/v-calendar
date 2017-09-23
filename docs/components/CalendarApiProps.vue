@@ -23,43 +23,48 @@ export default {
   data() {
     const props = [
       {
-        name: '<code>monthLabels: Array[String]</code>',
+        name: '<code>month-labels: Array[String]</code>',
         description: 'Month labels displayed in header.',
         default: '<code>["January",...,"December"]</code>',
       },
       {
-        name: '<code>weekdayLabels: Array[String]</code>',
+        name: '<code>weekday-labels: Array[String]</code>',
         description: 'Weekday labels displayed in header. Start with Sunday, even if it isn\'t set as the first day of the week',
         default: '<code>["S", "M", "T", "W", "T", "F", "S", "S"]</code>',
       },
       {
-        name: '<code>firstDayOfWeek: Number</code>',
+        name: '<code>first-day-of-week: Number</code>',
         description: 'Weekday number (1-7, Sun-Sat) to use as the first day of the week.',
         default: '<code>1</code>',
       },
       {
-        name: '<code>fromPage: Object</code>',
+        name: '<code>from-page: Object</code>',
         description: 'Active page for single paned calendar or the left pane for double paned calendar. Use the <code>.sync</code> modifier for two-way binding.',
         default: '<code>{ month: <i>thisMonth</i>, year: <i>thisMonthYear</i> }</code>',
       },
       {
-        name: '<code>toPage: Object</code>',
+        name: '<code>to-page: Object</code>',
         description: 'Active page for the right pane for double paned calendar. Use the <code>.sync</code> modifier for two-way binding.',
         default: '<code>{ month: <i>nextMonth</i>, year: <i>nextMonthYear</i> }</code>',
       },
       {
-        name: '<code>minPage: Object</code>',
+        name: '<code>min-page: Object</code>',
         description: 'Earliest page (<i>month</i>, <i>year</i>) that the user can navigate to.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>maxPage: Object</code>',
+        name: '<code>max-page: Object</code>',
         description: 'Latest page (<i>month</i>, <i>year</i>) that the user can navigate to.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>isDoublePaned: Boolean</code>',
+        name: '<code>is-double-paned: Boolean</code>',
         description: 'Puts two calendars side by side.',
+        default: '<code>false</code>',
+      },
+      {
+        name: '<code>wrap-panes: Boolean</code>',
+        description: 'If calendar is double-paned, wrap the panes when constrained.',
         default: '<code>false</code>',
       },
       {
@@ -73,7 +78,7 @@ export default {
         default: '<code>[]</code>',
       },
       {
-        name: '<code>indicatorsOffset: String',
+        name: '<code>indicators-offset: String',
         description: 'Offset margin of indicators from bottom of day cell.',
         default: '<code>"0"</code>',
       },
@@ -83,42 +88,42 @@ export default {
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>headerStyle: Object</code>',
+        name: '<code>header-style: Object</code>',
         description: 'Style for calendar header.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>arrowStyle: Object</code>',
+        name: '<code>arrow-style: Object</code>',
         description: 'Style for calendar header arrows.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>titleStyle: Object</code>',
+        name: '<code>title-style: Object</code>',
         description: 'Style for calendar header title.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>titleTransition: String</code>',
+        name: '<code>title-transition: String</code>',
         description: 'Transition type for title when navigating to a new page: <code>"slide"</code>, <code>"fade"</code>, <code>"none"</code>',
         default: '<code>"slide"</code>',
       },
       {
-        name: '<code>weekdayStyle: Object</code>',
+        name: '<code>weekday-style: Object</code>',
         description: 'Style for weekday labels.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>weeksTransition: String</code>',
+        name: '<code>weeks-transition: String</code>',
         description: 'Transition type for weeks when navigating to a new page: <code>"slide"</code>, <code>"fade"</code>, <code>"none"</code>',
         default: '<code>"slide"</code>',
       },
       {
-        name: '<code>dayContentStyle: Object</code>',
+        name: '<code>day-content-style: Object</code>',
         description: 'Style for day cell content.',
         default: '<code>undefined</code>',
       },
       {
-        name: '<code>dayHeight: String</code>',
+        name: '<code>day-height: String</code>',
         description: 'Height of the day cell container. Should be large enough to contain content and highlights.',
         default: '<code>"2.2rem"</code>',
       },
@@ -128,17 +133,17 @@ export default {
         default: '<code>null</code>',
       },
       {
-        name: '<code>selectMode: String</code>',
+        name: '<code>select-mode: String</code>',
         description: '<span class="tag is-warning">Date Picker</span>Selection mode: <code>"single"</code>, <code>"multiple"</code>, <code>"range"</code>',
         default: '<code>"single"</code>',
       },
       {
-        name: '<code>selectHighlight: Object</code>',
+        name: '<code>select-highlight: Object</code>',
         description: '<span class="tag is-warning">Date Picker</span>Highlight for the date selection in all modes.',
         default: '<code>{}</code>',
       },
       {
-        name: '<code>dragHighlight: Object</code>',
+        name: '<code>drag-highlight: Object</code>',
         description: '<span class="tag is-warning">Date Picker</span>Highlight for the dragged selection in <code>"range"</code> mode.',
         default: '<code>{}</code>',
       },

@@ -1,10 +1,12 @@
 <template>
-  <div class='c-container'>
+  <div
+    :class='["c-container", { "c-wrap": wrapPanes }]'>
     <calendar-pane
       :page.sync='fromPage_'
       :min-page='minPage'
       :max-page='maxFromPage'
       :highlights='highlights_'
+      :indicators='indicators_'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-pane>
@@ -14,6 +16,7 @@
       :min-page='minToPage'
       :max-page='maxPage'
       :highlights='highlights_'
+      :indicators='indicators_'
       class='c-pane-right'
       v-bind='$attrs'
       v-on='$listeners'>
@@ -32,6 +35,7 @@ import {
   getNextPage,
   getPageBetweenPages,
   getFirstValidPage,
+  DateWrapper,
 } from './utils';
 
 export default {
@@ -45,7 +49,9 @@ export default {
     fromPage: Object,
     toPage: Object,
     isDoublePaned: Boolean,
+    wrapPanes: Boolean,
     highlights: Array,
+    indicators: Array,
   },
   data() {
     return {
@@ -66,20 +72,23 @@ export default {
       if (!this.highlights || !this.highlights.length) return [];
       return this.highlights
         .filter(h => h.dates && h.dates.length)
-        .map(h => Object.assign(h, {
-          dates: h.dates.map((d) => {
-            if (d.start && d.end) {
-              const start = new Date(d.start);
-              const end = new Date(d.end);
-              start.setHours(0, 0, 0, 0);
-              end.setHours(0, 0, 0, 0);
-              return { start, end };
-            }
-            const date = new Date(d);
-            date.setHours(0, 0, 0, 0);
-            return date;
-          }),
-        }));
+        .map(h => Object.assign(
+          h,
+          {
+            dates: h.dates.map(d => new DateWrapper(d)),
+          },
+        ));
+    },
+    indicators_() {
+      if (!this.indicators || !this.indicators.length) return [];
+      return this.indicators
+        .filter(i => i.dates && i.dates.length)
+        .map(i => Object.assign(
+          i,
+          {
+            dates: i.dates.map(d => new DateWrapper(d)),
+          },
+        ));
     },
   },
   watch: {
@@ -134,7 +143,9 @@ $minWidth: 260px
 
 .c-container
   display: flex
-  justify-content: center
+
+.c-container.c-wrap
   flex-wrap: wrap
+  justify-content: center
 
 </style>

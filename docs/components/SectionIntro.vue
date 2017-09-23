@@ -82,7 +82,7 @@ export default {
   data() {
     return {
       exIntroCode: ExIntroCode,
-      isDoublePaned: true,
+      isDoublePaned: false,
       titleTransition: 'slide',
       weeksTransition: 'slide',
       transitions: ['slide', 'fade', 'none'],

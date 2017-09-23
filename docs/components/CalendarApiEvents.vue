@@ -22,21 +22,26 @@ export default {
       {
         name: '<code>dayClick</code>',
         description: 'Calendar day cell was clicked.',
-        parameters: '<code>day: Object</code>',
+        parameters: '<code>dayInfo: Object</code>',
       },
       {
         name: '<code>dayEnter</code>',
         description: 'Cursor entered a calendar day cell.',
-        parameters: '<code>day: Object</code>',
+        parameters: '<code>dayInfo: Object</code>',
       },
       {
         name: '<code>dayLeave</code>',
         description: 'Cursor left a calendar day cell.',
-        parameters: '<code>day: Object</code>',
+        parameters: '<code>dayInfo: Object</code>',
       },
       {
-        name: '<code>move</code>, <code>updated:page</code>',
-        description: 'Calendar moved to a different page.',
+        name: '<code>updated:fromPage</code>',
+        description: 'Calendar left/single pane moved to a different page.',
+        parameters: '<code>page: Object</code>',
+      },
+      {
+        name: '<code>updated:toPage</code>',
+        description: 'Calendar right pane moved to a different page.',
         parameters: '<code>page: Object</code>',
       },
       {

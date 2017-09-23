@@ -2,9 +2,9 @@
   <component
     :is='datePicker'
     :value='value'
-    :drag-value.sync='dragValue_'
     :drag-highlight='dragHighlight'
     :select-highlight='selectHighlight'
+    show-hover
     v-bind='$attrs'
     v-on='$listeners'>
   </component>
@@ -14,19 +14,6 @@
 import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
-
-const _dragHighlight = {
-  backgroundColor: '#c1d6d7',
-  color: '#103456',
-  height: '26px',
-};
-
-const _selectHighlight = {
-  backgroundColor: '#74a4a4',
-  borderWidth: '1px',
-  borderColor: '#65999a',
-  color: '#fafafa',
-};
 
 export default {
   components: {
@@ -38,13 +25,23 @@ export default {
     page: Object,
     value: null,
     selectMode: { type: String, default: 'single' },
-    dragHighlight: { type: Object, default: () => _dragHighlight },
-    selectHighlight: { type: Object, default: () => _selectHighlight },
-  },
-  data() {
-    return {
-      dragValue_: null,
-    };
+    dragHighlight: {
+      type: Object,
+      default: () => ({
+        backgroundColor: '#c1d6d7',
+        color: '#103456',
+        height: '25px',
+      }),
+    },
+    selectHighlight: {
+      type: Object,
+      default: () => ({
+        backgroundColor: '#74a4a4',
+        borderWidth: '1px',
+        borderColor: '#65999a',
+        color: '#fafafa',
+      }),
+    },
   },
   computed: {
     datePicker() {

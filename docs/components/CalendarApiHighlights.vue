@@ -79,6 +79,11 @@ export default {
         description: 'Font decoration in highlighted region.',
         default: '<code>undefined</code>',
       },
+      {
+        propertyName: '<code>zIndex: Number</code>',
+        description: 'Highlights are automatically ordered to display the most information possible. For example, when highlights overlap, single date highlights cover date range highlights, and date range highlights with a later start date cover those with an earlier start date. If you would like to force a highlight to cover all others (overriding these rules), assign a <code>zIndex</code> value greater than 0.',
+        default: '<code>0</code>',
+      }
     ];
     return {
       props,
