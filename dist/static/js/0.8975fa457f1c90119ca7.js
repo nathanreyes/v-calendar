@@ -1796,7 +1796,7 @@ module.exports = "<template>\r\n<v-calendar\r\n  :is-double-paned='isDoublePaned
 /* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "docs/img/attribute.122938b.png";
+module.exports = __webpack_require__.p + "static/img/attribute.122938b.png";
 
 /***/ }),
 /* 337 */
@@ -3290,4 +3290,4 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 
 /***/ })
 ]));
-//# sourceMappingURL=0.2eb695d073bdee9fe722.js.map
+//# sourceMappingURL=0.8975fa457f1c90119ca7.js.map
