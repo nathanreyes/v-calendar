@@ -62,13 +62,8 @@ export default {
         description: 'Day lies in the month after the currently active month.',
       },
       {
-        propertyName: '<code>highlights: Array</code>',
-        description: 'Highlights associated with the day.',
-      },
-      {
-        propertyName: '<code>indicators: Array</code>',
-        description: 'Indicators associated with the day.',
-        type: 'Function',
+        propertyName: '<code>attributes: Array</code>',
+        description: 'Attributes associated with the day.',
       },
     ];
     return {

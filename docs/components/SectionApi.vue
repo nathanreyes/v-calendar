@@ -15,11 +15,18 @@
       <b-tab-item label='Slots'>
         <calendar-api-slots></calendar-api-slots>
       </b-tab-item>
-      <b-tab-item label='Highlights'>
-        <calendar-api-highlights></calendar-api-highlights>
-      </b-tab-item>
-      <b-tab-item label='Indicators'>
-        <calendar-api-indicators></calendar-api-indicators>
+      <b-tab-item label='Attribute'>
+        <b-tabs>
+          <b-tab-item label='Attribute'>
+            <calendar-api-attribute></calendar-api-attribute>
+          </b-tab-item>
+          <b-tab-item label='Highlight'>
+            <calendar-api-highlight></calendar-api-highlight>
+          </b-tab-item>
+          <b-tab-item label='Indicator'>
+            <calendar-api-indicator></calendar-api-indicator>
+          </b-tab-item>
+        </b-tabs>
       </b-tab-item>
       <b-tab-item label='Page'>
         <calendar-api-page></calendar-api-page>
@@ -36,8 +43,9 @@
 import CalendarApiProps from './CalendarApiProps';
 import CalendarApiEvents from './CalendarApiEvents';
 import CalendarApiSlots from './CalendarApiSlots';
-import CalendarApiHighlights from './CalendarApiHighlights';
-import CalendarApiIndicators from './CalendarApiIndicators';
+import CalendarApiAttribute from './CalendarApiAttribute';
+import CalendarApiHighlight from './CalendarApiHighlight';
+import CalendarApiIndicator from './CalendarApiIndicator';
 import CalendarApiPage from './CalendarApiPage';
 import CalendarApiDayInfo from './CalendarApiDayInfo';
 
@@ -46,8 +54,9 @@ export default {
     CalendarApiProps,
     CalendarApiEvents,
     CalendarApiSlots,
-    CalendarApiHighlights,
-    CalendarApiIndicators,
+    CalendarApiAttribute,
+    CalendarApiHighlight,
+    CalendarApiIndicator,
     CalendarApiPage,
     CalendarApiDayInfo,
   },

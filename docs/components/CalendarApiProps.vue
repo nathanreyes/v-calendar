@@ -68,13 +68,8 @@ export default {
         default: '<code>false</code>',
       },
       {
-        name: '<code>highlights: Array[Object]</code>',
-        description: 'List of highlighted calendar dates and/or date ranges.',
-        default: '<code>[]</code>',
-      },
-      {
-        name: '<code>indicators: Array[Object]</code>',
-        description: 'List of calendar indicators.',
+        name: '<code>attributes: Array[Object]</code>',
+        description: 'List of attributes to display in the calendar.',
         default: '<code>[]</code>',
       },
       {
@@ -138,14 +133,54 @@ export default {
         default: '<code>"single"</code>',
       },
       {
-        name: '<code>select-highlight: Object</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Highlight for the date selection in all modes.',
-        default: '<code>{}</code>',
+        name: '<code>disabled-dates: Array</code>',
+        description: '<span class="tag is-warning">Date Picker</span>List of disabled dates or date range objects. Date ranges must specify <code>start</code> and <code>end</code> dates.',
+        default: '<code>undefined</code>',
       },
       {
-        name: '<code>drag-highlight: Object</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Highlight for the dragged selection in <code>"range"</code> mode.',
-        default: '<code>{}</code>',
+        name: '<code>select-attribute: Object</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Attribute to use for the date selection in all modes.',
+        default: `<code>
+          {
+            highlight: {
+              backgroundColor: '#74a4a4',
+              borderWidth: '1px',
+              borderColor: '#65999a'
+            },
+            contentStyle: {
+              color: '#fafafa'
+            }
+          }
+        </code>`,
+      },
+      {
+        name: '<code>drag-attribute: Object</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Attribute to use for the dragged selection in <code>"range"</code> mode.',
+        default: `<code>
+          {
+            highlight: {
+              backgroundColor: '#c1d6d7',
+              height: '25px'
+            },
+            contentStyle: {
+              color: '#103456'
+            }
+          }
+        </code>`,
+      },
+      {
+        name: '<code>disabled-attribute: Object</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Attribute to use for disabled dates.',
+        default: `<code>
+        {
+          order: 100,
+          contentStyle: {
+            color: 'red',
+            textDecoration: 'line-through',
+            cursor: 'not-allowed'
+          }
+        }
+        </code>`,
       },
     ];
     return {

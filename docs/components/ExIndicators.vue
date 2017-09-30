@@ -1,6 +1,6 @@
 <template>
   <v-calendar
-    :indicators='indicators'
+    :attributes='attributes'
     is-double-paned>
   </v-calendar>
 </template>
@@ -12,11 +12,12 @@ export default {
   data() {
     const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthComps();
     return {
-      indicators: [
+      attributes: [
         {
-          // Red
-          backgroundColor: '#ff3333',
-          // Only dates allowed
+          indicator: {
+            // Red
+            backgroundColor: '#ff3333',
+          },
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
             new Date(thisMonthYear, thisMonth, 10),
@@ -26,21 +27,27 @@ export default {
           ],
         },
         {
-          // Blue
-          backgroundColor: '#0040ff',
+          indicator: {
+            // Blue
+            backgroundColor: '#0040ff',
+          },
           dates: [
             new Date(thisMonthYear, thisMonth, 4),
             new Date(thisMonthYear, thisMonth, 10),
             new Date(thisMonthYear, thisMonth, 15),
             new Date(nextMonthYear, nextMonth, 1),
             new Date(nextMonthYear, nextMonth, 12),
-            new Date(nextMonthYear, nextMonth, 24),
-            new Date(nextMonthYear, nextMonth, 25),
+            {
+              start: new Date(nextMonthYear, nextMonth, 20),
+              end: new Date(nextMonthYear, nextMonth, 25),
+            },
           ],
         },
         {
-          // Orange
-          backgroundColor: '#ff8000',
+          indicator: {
+            // Orange
+            backgroundColor: '#ff8000',
+          },
           dates: [
             new Date(thisMonthYear, thisMonth, 12),
             new Date(thisMonthYear, thisMonth, 26),

@@ -1,6 +1,6 @@
 <template>
 <calendar
-  :highlights='highlights_'
+  :attributes='attributes_'
   v-bind='$attrs'
   v-on='$listeners'
   @dayClick='selectDay'>
@@ -16,8 +16,9 @@ export default {
   },
   props: {
     value: { type: Array, default: () => [] },
-    selectHighlight: { type: Object, required: true },
-    highlights: Array,
+    selectAttribute: { type: Object, required: true },
+    attributes: Array,
+    dateValidator: Function,
   },
   computed: {
     hasValues() {
@@ -27,25 +28,28 @@ export default {
       if (!this.hasValues) return [];
       return this.value.map(v => v.getTime());
     },
-    selectHighlight_() {
-      return { ...this.selectHighlight, dates: this.value };
+    selectAttribute_() {
+      return { ...this.selectAttribute, dates: this.value };
     },
-    highlights_() {
-      if (!this.hasValues) return this.highlights;
-      return this.highlights ? [...this.highlights, this.selectHighlight_] : [this.selectHighlight_];
+    attributes_() {
+      if (!this.hasValues) return this.attributes;
+      return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
     },
   },
   methods: {
     selectDay(day) {
-      // Check if no values exist
-      if (!this.hasValues) {
-        this.$emit('input', [day.date]);
-      // Check if value contains the selected date
-      } else if (this.valueTimes.find(dt => dt === day.dateTime)) {
-        this.$emit('input', this.value.filter(v => v.getTime() !== day.dateTime));
-      // Value does not contain the selected date
-      } else {
-        this.$emit('input', [...this.value, day.date].sort((a, b) => a.getTime() - b.getTime()));
+      // Make sure date selection is valid
+      if (this.dateValidator(day.date, 'selectDisabled')) {
+        // Check if no values exist
+        if (!this.hasValues) {
+          this.$emit('input', [day.date]);
+        // Check if value contains the selected date
+        } else if (this.valueTimes.find(dt => dt === day.dateTime)) {
+          this.$emit('input', this.value.filter(v => v.getTime() !== day.dateTime));
+        // Value does not contain the selected date
+        } else {
+          this.$emit('input', [...this.value, day.date].sort((a, b) => a.getTime() - b.getTime()));
+        }
       }
       // Forward the event
       this.$emit('dayClick', day);

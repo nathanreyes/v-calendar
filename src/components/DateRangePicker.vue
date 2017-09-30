@@ -1,6 +1,6 @@
 <template>
 <calendar
-  :highlights='highlights_'
+  :attributes='attributes_'
   v-bind='$attrs'
   v-on='$listeners'
   @dayClick='selectDay'
@@ -10,6 +10,7 @@
 
 <script>
 import Calendar from './Calendar';
+import { DateInfo } from './utils';
 
 export default {
   components: {
@@ -23,9 +24,10 @@ export default {
   props: {
     value: { type: Object, default: () => { } },
     dragValue: { type: Object, default: () => { } },
-    dragHighlight: { type: Object, required: true },
-    selectHighlight: { type: Object, required: true },
-    highlights: Array,
+    dragAttribute: { type: Object, required: true },
+    selectAttribute: { type: Object, required: true },
+    dateValidator: Function,
+    attributes: Array,
   },
   computed: {
     valueIsValid() {
@@ -34,23 +36,23 @@ export default {
     normalizedValue() {
       return this.normalizeRange(this.value);
     },
-    normalizedDragValue() {
-      return this.normalizeRange(this.dragValue_);
+    dragValueInfo() {
+      return new DateInfo(this.dragValue_);
     },
-    dragHighlight_() {
-      return { ...this.dragHighlight, dates: [this.normalizedDragValue] };
+    dragAttribute_() {
+      return { ...this.dragAttribute, dates: [this.dragValueInfo] };
     },
-    selectHighlight_() {
-      return { ...this.selectHighlight, dates: [this.normalizedValue] };
+    selectAttribute_() {
+      return { ...this.selectAttribute, dates: [this.normalizedValue] };
     },
-    highlights_() {
+    attributes_() {
       if (this.dragValue_) {
-        return this.highlights ? [...this.highlights, this.dragHighlight_] : [this.dragHighlight_];
+        return this.attributes ? [...this.attributes, this.dragAttribute_] : [this.dragAttribute_];
       }
       if (this.valueIsValid) {
-        return this.highlights ? [...this.highlights, this.selectHighlight_] : [this.selectHighlight_];
+        return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
       }
-      return this.highlights;
+      return this.attributes;
     },
   },
   watch: {
@@ -74,26 +76,43 @@ export default {
     selectDay(day) {
       // Start new drag selection if not dragging
       if (!this.dragValue_) {
+      // Make sure date selection is valid
         const date = new Date(day.date.getTime());
-        this.dragValue_ = { start: date, end: date };
-      // Complete drag selection
+        if (this.dateValidator(date, 'selectDisabled')) {
+          // Start new drag selection
+          this.dragValue_ = { start: date, end: date };
+        }
       } else {
-        const { start, end } = this.normalizedDragValue;
-        // Clear drag selection
-        this.dragValue_ = null;
-        // Signal new value selected on drag complete
-        this.$emit('input', { start, end });
+        // Construct new value
+        const newValue = new DateInfo({
+          start: new Date(this.dragValue_.start.getTime()),
+          end: new Date(day.date.getTime()),
+        });
+        // Make sure new value is valid
+        if (this.dateValidator(newValue, 'selectDisabled')) {
+          // Clear drag selection
+          this.dragValue_ = null;
+          // Signal new value selected
+          this.$emit('input', newValue.toRange());
+        }
       }
       // Forward the event
       this.$emit('dayClick', day);
     },
     enterDay(day) {
-      if (!this.dragValue_) return;
-      // Update drag selection
-      this.dragValue_ = {
-        start: new Date(this.dragValue_.start.getTime()),
-        end: new Date(day.date.getTime()),
-      };
+      // Make sure drag has been initialized
+      if (this.dragValue_) {
+        // Construct new drag value
+        const newDragValue = {
+          start: new Date(this.dragValue_.start.getTime()),
+          end: new Date(day.date.getTime()),
+        };
+        // Make sure dragged value is valid
+        if (this.dateValidator(newDragValue, 'dragDisabled')) {
+          // Update drag selection
+          this.dragValue_ = newDragValue;
+        }
+      }
       // Forward the event
       this.$emit('dayEnter', day);
     },
@@ -111,18 +130,6 @@ export default {
         end: isNormal ? end : start,
         endTime: isNormal ? endTime : startTime,
       };
-    },
-    rangesMatch(aRange, bRange) {
-      if (!aRange && !bRange) return true;
-      if (aRange && bRange) {
-        const aStart = aRange.start.getTime();
-        const aEnd = aRange.end.getTime();
-        const bStart = bRange.start.getTime();
-        const bEnd = bRange.end.getTime();
-        if (aStart === bStart && aEnd === bEnd) return true;
-        if (aStart === bEnd && aEnd === bStart) return true;
-      }
-      return false;
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <calendar
-    :highlights='highlights_'
+    :attributes='attributes_'
     v-bind='$attrs'
     v-on='$listeners'
     @dayClick='selectDay'>
@@ -16,8 +16,9 @@ export default {
   },
   props: {
     value: { type: Date, default: null },
-    selectHighlight: { type: Object, required: true },
-    highlights: Array,
+    selectAttribute: { type: Object, required: true },
+    attributes: Array,
+    dateValidator: Function,
   },
   computed: {
     hasValue() {
@@ -26,17 +27,20 @@ export default {
     valueTime() {
       return this.hasValue ? this.value.getTime() : null;
     },
-    selectHighlight_() {
-      return { ...this.selectHighlight, dates: [this.value] };
+    selectAttribute_() {
+      return { ...this.selectAttribute, dates: [this.value] };
     },
-    highlights_() {
-      if (!this.hasValue) return this.highlights;
-      return this.highlights ? [...this.highlights, this.selectHighlight_] : [this.selectHighlight_];
+    attributes_() {
+      if (!this.hasValue) return this.attributes;
+      return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
     },
   },
   methods: {
     selectDay(day) {
-      this.$emit('input', (day.date === this.value) ? null : day.date);
+      // Make sure date selection is valid
+      if (this.dateValidator(day.date, 'selectDisabled')) {
+        this.$emit('input', (day.date === this.value) ? null : day.date);
+      }
       // Forward the event
       this.$emit('dayClick', day);
     },

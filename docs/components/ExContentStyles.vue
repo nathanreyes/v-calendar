@@ -18,36 +18,27 @@ export default {
     return {
       attributes: [
         {
-          highlight: {
-            // Light red background
-            backgroundColor: '#bd9999',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-            borderColor: '#ae8484',
-          },
+          // Red
           contentStyle: {
-            color: 'white',
+            color: '#ff3333',
+            fontWeight: 600,
+            fontSize: '1em',
           },
           dates: [
-            // Use date ranges
             {
               start: new Date(thisMonthYear, thisMonth, 1),
               end: new Date(thisMonthYear, thisMonth, 4),
             },
-            // Or single dates
             new Date(nextMonthYear, nextMonth, 6),
             new Date(nextMonthYear, nextMonth, 23),
           ],
         },
         {
-          highlight: {
-            // Light purple background
-            backgroundColor: '#9999bd',
-            borderWidth: '2px',
-            borderColor: '#8484ae',
-          },
+          // Blue
           contentStyle: {
-            color: 'white',
+            color: '#0040ff',
+            fontWeight: 600,
+            fontStyle: 'italic',
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
@@ -60,15 +51,10 @@ export default {
           ],
         },
         {
-          highlight: {
-            // Light tan background
-            backgroundColor: '#bdb499',
-            borderWidth: '2px',
-            borderColor: '#aea484',
-            borderRadius: '5px',
-          },
           contentStyle: {
-            color: 'white',
+            // Orange
+            color: '#ff8000',
+            fontWeight: 600,
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 14),

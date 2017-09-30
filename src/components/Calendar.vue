@@ -5,8 +5,7 @@
       :page.sync='fromPage_'
       :min-page='minPage'
       :max-page='maxFromPage'
-      :highlights='highlights_'
-      :indicators='indicators_'
+      :attributes='attributes_'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-pane>
@@ -15,8 +14,7 @@
       :page.sync='toPage_'
       :min-page='minToPage'
       :max-page='maxPage'
-      :highlights='highlights_'
-      :indicators='indicators_'
+      :attributes='attributes_'
       class='c-pane-right'
       v-bind='$attrs'
       v-on='$listeners'>
@@ -35,7 +33,7 @@ import {
   getNextPage,
   getPageBetweenPages,
   getFirstValidPage,
-  DateWrapper,
+  DateInfo,
 } from './utils';
 
 export default {
@@ -50,8 +48,7 @@ export default {
     toPage: Object,
     isDoublePaned: Boolean,
     wrapPanes: Boolean,
-    highlights: Array,
-    indicators: Array,
+    attributes: Array,
   },
   data() {
     return {
@@ -68,27 +65,16 @@ export default {
       if (!this.isDoublePaned) return null;
       return getNextPage(this.fromPage_);
     },
-    highlights_() {
-      if (!this.highlights || !this.highlights.length) return [];
-      return this.highlights
-        .filter(h => h.dates && h.dates.length)
-        .map(h => Object.assign(
-          h,
-          {
-            dates: h.dates.map(d => new DateWrapper(d)),
-          },
-        ));
-    },
-    indicators_() {
-      if (!this.indicators || !this.indicators.length) return [];
-      return this.indicators
-        .filter(i => i.dates && i.dates.length)
-        .map(i => Object.assign(
-          i,
-          {
-            dates: i.dates.map(d => new DateWrapper(d)),
-          },
-        ));
+    attributes_() {
+      if (!this.attributes || !this.attributes.length) return [];
+      return this.attributes.map((a, i) => Object.assign(
+        {},
+        a,
+        {
+          key: a.key || i.toString(),
+          dates: a.dates.map(d => (d instanceof DateInfo ? d : new DateInfo(d, a.order))),
+        },
+      ));
     },
   },
   watch: {

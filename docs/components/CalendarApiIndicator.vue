@@ -25,11 +25,6 @@ export default {
         default: '<code><i>index</i></code>',
       },
       {
-        propertyName: '<code>dates: Array[Date]</code>',
-        description: 'List of dates where indicator appears.',
-        default: '<code>[]</code>',
-      },
-      {
         propertyName: '<code>diameter: String</code>',
         description: 'Diameter of indicator.',
         default: '<code>"5px"</code>',
@@ -38,6 +33,11 @@ export default {
         propertyName: '<code>backgroundColor: String</code>',
         description: 'Background color of indicator.',
         default: '<code>"rgba(0, 0, 0, 0.5)"</code>',
+      },
+      {
+        propertyName: '<code>border: String</code>',
+        description: 'Border of indicator.',
+        default: '<code>undefined</code>',
       },
       {
         propertyName: '<code>borderColor: String</code>',

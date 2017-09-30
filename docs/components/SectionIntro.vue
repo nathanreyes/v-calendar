@@ -10,7 +10,8 @@
               <div class='content'>
                 <ul>
                   <li>Lightweight and dependency-free</li>
-                  <li>Built-in support for highlights, indicators and datepickers</li>
+                  <li>Single or double-paned</li>
+                  <li>Built-in support for various attributes including highlights, indicators and content styles</li>
                   <li>Clean and lively design</li>
                 </ul>
               </div>

@@ -4,10 +4,6 @@
     <calendar-day
       v-for='day in week'
       :key='day.id'
-      :backgrounds='day.backgrounds'
-      :indicators='day.indicators'
-      :content-style='day.contentStyle'
-      :content-hover-style='day.contentHoverStyle'
       :label='day.label'
       :day='day.day'
       :weekday='day.weekday'
@@ -19,6 +15,7 @@
       :in-month='day.inMonth'
       :in-prev-month='day.inPrevMonth'
       :in-next-month='day.inNextMonth'
+      :attributes='day.attributes'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-day>
@@ -28,22 +25,7 @@
 
 <script>
 import CalendarDay from './CalendarDay';
-import { todayComps, getLastArrayItem } from './utils';
-
-const _highlightContentAssignments = [
-  { from: 'color', to: 'color' },
-  { from: 'fontSize', to: 'fontSize' },
-  { from: 'fontWeight', to: 'fontWeight' },
-  { from: 'fontDecoration', to: 'fontDecoration' },
-  { from: 'fontFamily', to: 'fontFamily' },
-  { from: 'fontStyle', to: 'fontStyle' },
-];
-const _highlightContentHoverAssignments = [
-  { from: 'height', to: 'width' },
-  { from: 'height', to: 'height' },
-  { from: 'borderRadius', to: 'borderRadius' },
-  { from: 'cursor', to: 'cursor' },
-];
+import { todayComps } from './utils';
 
 export default {
   components: {
@@ -51,10 +33,7 @@ export default {
   },
   props: {
     firstDayOfWeek: Number,
-    dayContentStyle: Object,
-    dayContentHoverStyle: Object,
-    highlights: Array,
-    indicators: Array,
+    attributes: Array,
     month: Number,
     year: Number,
     isLeapYear: Boolean,
@@ -110,8 +89,8 @@ export default {
             inMonth: thisMonth,
             inPrevMonth: previousMonth,
             inNextMonth: nextMonth,
+            attributes: this.getDayAttributes(date),
           };
-          this.assignDayAttributes(dayInfo);
           week.push(dayInfo);
 
           // See if we've hit the last day of the month
@@ -133,141 +112,26 @@ export default {
     },
   },
   methods: {
-    assignDayAttributes(dayInfo) {
-      dayInfo.backgrounds = this.getDayBackgrounds(dayInfo);
-      this.assignDayContentStyles(dayInfo);
-      dayInfo.indicators = this.getDayIndicators(dayInfo);
-    },
-    getDayBackgrounds(dayInfo) {
-      if (!this.highlights || !this.highlights.length) return [];
-      const backgrounds = [];
-      const contentStyle = { ...this.dayContentStyle };
-      // Cycle through each highlight
-      this.highlights.forEach((h, i) => {
-        // Cycle through highlight dates
-        if (!h.dates || !h.dates.length) return;
-        h.dates.forEach((d) => {
-          if (!d.containsDate(dayInfo.date)) return;
-          // Initialize the background object
-          const height = h.height || contentStyle.height || '1.8rem';
-          const background = {
-            key: h.key || i.toString(),
-            highlight: h,
-            date: d,
-            horizontalAlign: 'center',
-            verticalAlign: 'center',
-            transition: 'width-height',
-            style: {
-              backgroundColor: h.backgroundColor || 'rgba(0, 0, 0, 0.5)',
-              borderColor: h.borderColor,
-              borderWidth: h.borderWidth || '0',
-              borderStyle: h.borderStyle || 'solid',
-              borderRadius: h.borderRadius || contentStyle.borderRadius || height,
-              width: height,
-              height,
-              zIndex: h.zIndex || 0,
-            },
+    getDayAttributes(date) {
+      if (!this.attributes || !this.attributes.length) return [];
+      const attributes = [];
+      this.attributes.forEach((a) => {
+        // Cycle through each attribute date
+        a.dates.forEach((dateInfo) => {
+          // Done if attribute date doesn't contain the day date
+          if (!dateInfo.containsDate(date)) return;
+          // Create new reference attribute
+          const attribute = {
+            ...a,
+            date: dateInfo.date,
+            dateInfo,
           };
-          // Is the highlight a date range
-          if (d.isRange) {
-            const onStart = d.startTime === dayInfo.dateTime;
-            const onEnd = d.endTime === dayInfo.dateTime;
-            const borderWidth = background.style.borderWidth;
-            const borderRadius = background.style.borderRadius;
-            const endWidth = '95%';
-            // Is the day date on the highlight start and end date
-            if (onStart && onEnd) {
-              background.style.width = endWidth;
-              background.style.borderWidth = borderWidth;
-              background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
-            // Is the day date on the highlight start date
-            } else if (onStart) {
-              background.transition = 'from-right';
-              background.horizontalAlign = 'right';
-              background.style.width = endWidth;
-              background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
-              background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
-            // Is the day date on the highlight end date
-            } else if (onEnd) {
-              background.transition = 'from-left';
-              background.horizontalAlign = 'left';
-              background.style.width = endWidth;
-              background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
-              background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
-            // Is the day date between the highlight start/end dates
-            } else {
-              background.transition = '';
-              background.style.width = '100%';
-              background.style.borderWidth = `${borderWidth} 0`;
-              background.style.borderRadius = '0';
-            }
-          }
-          // Add background to the day info
-          backgrounds.push(background);
+          delete attribute.dates;
+          attributes.push(attribute);
         });
       });
-      return backgrounds.sort((a, b) => {
-        if (a.style.zIndex !== '0' || b.style.zIndex !== '0') return (parseInt(a.style.zIndex, 10) - parseInt(b.style.zIndex, 10));
-        if (a.date.type !== b.date.type) return a.date.isDate ? 1 : -1;
-        if (a.date.isDate) return 0;
-        const diff = a.date.start - b.date.start;
-        return diff !== 0 ? diff : b.date.end - a.date.end;
-      });
-    },
-    assignDayContentStyles(dayInfo) {
-      // Initialize styles using default properties
-      const contentStyle = { ...this.dayContentStyle };
-      const contentHoverStyle = {};
-      // Modify styles using the top-most background highlight
-      const bgContent = getLastArrayItem(dayInfo.backgrounds);
-      if (bgContent) {
-        const highlight = bgContent.highlight;
-        _highlightContentAssignments.forEach((a) => {
-          if (Object.prototype.hasOwnProperty.call(highlight, a.from)) {
-            contentStyle[a.to] = highlight[a.from];
-          }
-        });
-        _highlightContentHoverAssignments.forEach((a) => {
-          if (Object.prototype.hasOwnProperty.call(highlight, a.from)) {
-            contentHoverStyle[a.to] = highlight[a.from];
-          }
-        });
-      }
-      // Assign the styles
-      Object.assign(dayInfo, {
-        contentStyle,
-        contentHoverStyle,
-      });
-    },
-    getDayIndicators(dayInfo) {
-      if (!this.indicators || !this.indicators.length) return [];
-      const indicators = [];
-      // Cycle through each indicator
-      this.indicators.forEach((i, idx) => {
-        // Cycle through indicator dates
-        if (!i.dates || !i.dates.length) return;
-        i.dates.forEach((d) => {
-          if (!d.containsDate(dayInfo.date)) return;
-          const diameter = i.diameter || '5px';
-          const backgroundColor = i.backgroundColor || 'rgba(0, 0, 0, 0.5)';
-          const borderWidth = i.borderWidth || '0';
-          const borderStyle = i.borderStyle || 'solid';
-          const borderRadius = i.borderRadius || '50%';
-          indicators.push({
-            key: i.key || idx.toString(),
-            date: d,
-            style: {
-              backgroundColor,
-              borderWidth,
-              borderStyle,
-              borderRadius,
-              width: diameter,
-              height: diameter,
-            },
-          });
-        });
-      });
-      return indicators;
+      attributes.sort((a, b) => a.dateInfo.compare(b.dateInfo));
+      return attributes;
     },
   },
 };

@@ -42,8 +42,8 @@
   <!-- Hover layer -->
   <div class='c-day-layer c-day-box-center-center'>
     <div
-      :class='["c-day-content-hover", { "c-day-content-hover-show": showHover }]'
-      :style='contentHoverStyle'
+      :class='["c-day-content-hover", { "c-day-content-hover-show": showHover_ }]'
+      :style='contentHoverStyle_'
       @click='click()'
       @mouseenter='enter()'
       @mouseleave='leave()'>
@@ -53,15 +53,12 @@
 </template>
 
 <script>
-
 export default {
   props: {
     dayHeight: { type: String, default: '32px' },
-    contentStyle: Object,
-    contentHoverStyle: Object,
+    dayContentStyle: Object,
+    dayContentHoverStyle: Object,
     showHover: Boolean,
-    backgrounds: Array,
-    indicators: Array,
     indicatorsOffset: { type: String, default: '0' },
     label: String,
     day: Number,
@@ -74,8 +71,22 @@ export default {
     inMonth: Boolean,
     inPrevMonth: Boolean,
     inNextMonth: Boolean,
+    attributes: Array,
+  },
+  data() {
+    return {
+      backgrounds: [],
+      indicators: [],
+      contentStyle: this.dayContentStyle || {},
+      contentHoverStyle: this.dayContentHoverStyle || {},
+      showHover_: this.showHover,
+      isHovered: false,
+    };
   },
   computed: {
+    contentHoverStyle_() {
+      return this.isHovered ? this.contentHoverStyle : null;
+    },
     hasBackgrounds() {
       return this.backgrounds && this.backgrounds.length;
     },
@@ -99,13 +110,26 @@ export default {
         inMonth: this.inMonth,
         inPrevMonth: this.inPrevMonth,
         inNextMonth: this.inNextMonth,
-        highlights: this.highlights,
-        indicators: this.indicators,
+        attributes: this.attributes,
       };
     },
     transitionName() {
       return this.hasBackgrounds ? this.backgrounds[this.backgrounds.length - 1].transition : '';
     },
+  },
+  watch: {
+    attributes() {
+      this.processAttributes();
+    },
+    dayContentStyle() {
+      this.processAttributes();
+    },
+    dayContentHoverStyle() {
+      this.processAttributes();
+    },
+  },
+  created() {
+    this.processAttributes();
   },
   methods: {
     getWrapperClass({ horizontalAlign, verticalAlign }) {
@@ -117,10 +141,115 @@ export default {
       this.$emit('dayClick', this.dayInfo);
     },
     enter() {
+      this.isHovered = true;
       this.$emit('dayEnter', this.dayInfo);
     },
     leave() {
+      this.isHovered = false;
       this.$emit('dayLeave', this.dayInfo);
+    },
+    processAttributes() {
+      const backgrounds = [];
+      const indicators = [];
+      const contentStyles = [];
+      const contentHoverStyles = [];
+      let showHover_ = this.showHover;
+
+      if (this.attributes && this.attributes.length) {
+        // Cycle through each attribute
+        this.attributes.forEach((a) => {
+          // Add background for highlight if needed
+          if (a.highlight) backgrounds.push(this.getBackground(a));
+          // Add indicator if needed
+          if (a.indicator) indicators.push(this.getIndicator(a));
+          // Add content style if needed
+          if (a.contentStyle) contentStyles.push(a.contentStyle);
+          // Add content hover style if needed
+          if (a.contentHoverStyle) contentHoverStyles.push(a.contentHoverStyle);
+          // Overwrite show hover if needed
+          if (Object.prototype.hasOwnProperty.call(a, 'showHover')) showHover_ = a.showHover;
+        });
+      }
+      // Assign day attributes
+      this.backgrounds = backgrounds;
+      this.indicators = indicators;
+      this.contentStyle = Object.assign({}, this.dayContentStyle, ...contentStyles);
+      this.contentHoverStyle = Object.assign({}, this.dayContentHoverStyle, ...contentHoverStyles);
+      this.showHover_ = showHover_;
+    },
+    getBackground(attribute) {
+      // Initialize the background object
+      const dateInfo = attribute.dateInfo;
+      const highlight = attribute.highlight;
+      const height = highlight.height || '1.8rem';
+      const background = {
+        key: attribute.key,
+        highlight,
+        dateInfo,
+        horizontalAlign: 'center',
+        verticalAlign: 'center',
+        transition: 'width-height',
+        style: {
+          backgroundColor: highlight.backgroundColor || 'rgba(0, 0, 0, 0.5)',
+          borderColor: highlight.borderColor,
+          borderWidth: highlight.borderWidth || '0',
+          borderStyle: highlight.borderStyle || 'solid',
+          borderRadius: highlight.borderRadius || height,
+          width: height,
+          height,
+        },
+      };
+      // Is the highlight a date range
+      if (dateInfo.isRange) {
+        const onStart = dateInfo.startTime === this.dateTime;
+        const onEnd = dateInfo.endTime === this.dateTime;
+        const borderWidth = background.style.borderWidth;
+        const borderRadius = background.style.borderRadius;
+        const endWidth = '95%';
+        // Is the day date on the highlight start and end date
+        if (onStart && onEnd) {
+          background.style.width = endWidth;
+          background.style.borderWidth = borderWidth;
+          background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
+        // Is the day date on the highlight start date
+        } else if (onStart) {
+          background.transition = 'from-right';
+          background.horizontalAlign = 'right';
+          background.style.width = endWidth;
+          background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
+          background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
+        // Is the day date on the highlight end date
+        } else if (onEnd) {
+          background.transition = 'from-left';
+          background.horizontalAlign = 'left';
+          background.style.width = endWidth;
+          background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
+          background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
+        // Is the day date between the highlight start/end dates
+        } else {
+          background.transition = '';
+          background.style.width = '100%';
+          background.style.borderWidth = `${borderWidth} 0`;
+          background.style.borderRadius = '0';
+        }
+      }
+      return background;
+    },
+    getIndicator(attribute) {
+      const indicator = attribute.indicator;
+      const diameter = indicator.diameter || '5px';
+      return {
+        key: attribute.key,
+        dateInfo: attribute.dateInfo,
+        style: {
+          backgroundColor: indicator.backgroundColor || 'rgba(0, 0, 0, 0.5)',
+          borderWidth: indicator.borderWidth || '0',
+          borderStyle: indicator.borderStyle || 'solid',
+          borderRadius: indicator.borderRadius || '50%',
+          width: diameter,
+          height: diameter,
+        },
+      };
     },
   },
 };
@@ -191,19 +320,22 @@ $translateTransition: .18s ease-in-out
   font-weight: $dayContentFontWeight
   border-radius: $dayContentBorderRadius
   transition: color $dayContentTransitionTime
+  cursor: default
   pointer-events: none
-  z-index: 100
+  // z-index: 100
 
 .c-day-content-hover
   width: $dayContentWidth
   height: $dayContentHeight
   border-radius: $dayContentBorderRadius
+  background-color: $dayContentHoverBgColor
+  transition: opacity $dayContentTransitionTime
+  opacity: 0
 
 .c-day-content-hover-show
-  transition: $dayContentTransitionTime
   &:hover
-    background-color: $dayContentHoverBgColor
     cursor: pointer
+    opacity: 1
 
 .c-day-indicators
   +box()

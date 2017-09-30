@@ -11,7 +11,7 @@
               A <i>v-date-picker</i> is just a <i>v-calendar</i> wrapper.
             </p>
             <p class='content'>
-              It supports all native calendar features, but also applies a special highlight for the date selection.
+              It supports all native calendar features, but also applies special attributes for dragged date and value selections.
             </p>
             <p class='content'>
               Supported selection modes include...

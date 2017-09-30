@@ -1,10 +1,10 @@
 CALENDAR
-
-- Adjust hover to highlight size
+- Provide option for hiding/showing hover for each attribute (use for datepicker drag attribute)
 
 DATEPICKER
 - Array of disabled dates and date ranges
 
+DONE - Adjust hover to highlight size
 DONE - Allow for custom first day of the week
 DONE - Fix paging bug
 DONE - Configure calendar examples by using 'Vue.use(VCalendar)'

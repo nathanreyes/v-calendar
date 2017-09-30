@@ -1,35 +1,17 @@
 <template>
   <div>
     <!--Hero Header-->
-    <section class='hero is-primary'>
-      <div class='hero-body'>
-        <div class='container has-text-centered'>
-          <h1 class='title'>V-Calendar</h1>
-          <h2 class='subtitle'>A clean & lively calendar for Vue.js</h2>
-        </div>
-      </div>
-      <!-- Hero footer: will stick at the bottom -->
-      <div class="hero-foot">
-        <nav class="tabs">
-          <div class="container">
-            <ul>
-              <li><a href='#intro'>Calendar</a></li>
-              <li><a href='#highlights'>Highlights</a></li>
-              <li><a href='#indicators'>Indicators</a></li>
-              <li><a href='#datepicker'>DatePicker</a></li>
-              <li><a href='#api'>API</a></li>
-              <li><a href='#usage'>Usage</a></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    </section>
+    <section-header></section-header>
     <!--Calendar Intro-->
     <section-intro></section-intro>
+    <!--Calendar Attributes-->
+    <section-attributes></section-attributes>
     <!--Calendar Highlights-->
     <section-highlights></section-highlights>
     <!--Calendar Indicators-->
     <section-indicators></section-indicators>
+    <!--Calendar Content Styles-->
+    <section-content-styles></section-content-styles>
     <!--Date Picker Intro-->
     <section-date-picker></section-date-picker>
     <!--Calendar Api-->
@@ -45,7 +27,10 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable import/first */
+import SectionHeader from './SectionHeader';
 import SectionIntro from './SectionIntro';
+import SectionAttributes from './SectionAttributes';
+import SectionContentStyles from './SectionContentStyles';
 import SectionHighlights from './SectionHighlights';
 import SectionIndicators from './SectionIndicators';
 import SectionDatePicker from './SectionDatePicker';
@@ -55,7 +40,10 @@ import SectionFooter from './SectionFooter';
 
 export default {
   components: {
+    SectionHeader,
     SectionIntro,
+    SectionAttributes,
+    SectionContentStyles,
     SectionHighlights,
     SectionIndicators,
     SectionDatePicker,

@@ -25,14 +25,9 @@ export default {
         default: '<code><i>index</i></code>',
       },
       {
-        propertyName: '<code>dates: Array[Date, Object]</code>',
-        description: 'List of dates or date range objects to span. Date ranges must specify <code>start</code> and <code>end</code> dates.',
-        default: '<code>[]</code>',
-      },
-      {
         propertyName: '<code>height: String</code>',
         description: 'Height of highlighted region.',
-        default: '<code>dayContentStyle.height || "1.8rem"</code>',
+        default: '<code>"1.8rem"</code>',
       },
       {
         propertyName: '<code>backgroundColor: String</code>',
@@ -57,33 +52,8 @@ export default {
       {
         propertyName: '<code>borderRadius: String</code>',
         description: 'Border radius in highlighted region.',
-        default: '<code>dayContentStyle.borderRadius || dayContentStyle.height || "1.8rem"</code>',
+        default: '<code>"1.8rem"</code>',
       },
-      {
-        propertyName: '<code>color: String</code>',
-        description: 'Color in highlighted region.',
-        default: '<code>undefined</code>',
-      },
-      {
-        propertyName: '<code>fontSize: String</code>',
-        description: 'Font size in highlighted region.',
-        default: '<code>undefined</code>',
-      },
-      {
-        propertyName: '<code>fontWeight: String</code>',
-        description: 'Font weight in highlighted region.',
-        default: '<code>undefined</code>',
-      },
-      {
-        propertyName: '<code>fontDecoration: String</code>',
-        description: 'Font decoration in highlighted region.',
-        default: '<code>undefined</code>',
-      },
-      {
-        propertyName: '<code>zIndex: Number</code>',
-        description: 'Highlights are automatically ordered to display the most information possible. For example, when highlights overlap, single date highlights cover date range highlights, and date range highlights with a later start date cover those with an earlier start date. If you would like to force a highlight to cover all others (overriding these rules), assign a <code>zIndex</code> value greater than 0.',
-        default: '<code>0</code>',
-      }
     ];
     return {
       props,
