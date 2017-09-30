@@ -2,7 +2,8 @@
 <v-calendar
   :is-double-paned='isDoublePaned'
   :title-transition='titleTransition'
-  :weeks-transition='weeksTransition'>
+  :weeks-transition='weeksTransition'
+  wrap>
 </v-calendar>
 </template>
 

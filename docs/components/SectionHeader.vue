@@ -1,13 +1,51 @@
 <template>
 <section class='hero is-primary'>
+  <!-- Hero header: will stick at the top -->
+  <div class="hero-head">
+    <header class="nav">
+      <div class="container">
+        <div class="nav-left">
+          <!-- <a class="nav-item">
+            <img src="images/bulma-type-white.png" alt="Logo">
+          </a> -->
+          <router-link class='nav-item logo is-size-4' to=''>
+            V-Calendar
+          </router-link>
+        </div>
+        <span class="nav-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <div class="nav-right nav-menu">
+          <!-- <a class="nav-item is-active">
+            Home
+          </a>
+          <a class="nav-item">
+            Examples
+          </a>
+          <a class="nav-item">
+            Documentation
+          </a> -->
+          <span class="nav-item">
+            <a class='button is-primary is-inverted' href='https://github.com/nathanreyes/v-calendar' target='_blank'>
+              <span class='icon'><i class='fa fa-github'></i></span>
+              <span>Github</span>
+            </a>
+          </span>
+        </div>
+      </div>
+    </header>
+  </div>
+  <!-- Hero content: will be in the middle -->
   <div class='hero-body'>
     <div class='container has-text-centered'>
-      <h1 class='title'>V-Calendar</h1>
-      <h2 class='subtitle'>A clean & lively calendar for Vue.js</h2>
+      <h1 class='title is-2 logo'>V-Calendar</h1>
+      <h2 class='logo-subtitle'>&#8212; A clean, lively calendar plugin for Vue.js &#8212;</h2>
     </div>
   </div>
   <!-- Hero footer: will stick at the bottom -->
-  <div class="hero-foot">
+  <div class='hero-foot'>
     <nav class="tabs">
       <div class="container">
         <ul>

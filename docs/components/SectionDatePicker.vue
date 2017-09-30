@@ -35,13 +35,12 @@
                 <b-radio v-model='selectMode' native-value='range'>Range</b-radio>
               </p>
             </b-field>
-            <b-field label='Border Radius'>
-              <b-input></b-input>
+            <b-field>
+              <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
             </b-field>
             <b-field>
               <b-switch v-model='isPopover'>Popover</b-switch>
             </b-field>
-
             <b-field label='Value'>
               <pre><code class='html'>{{ JSON.stringify(selectedValue, null, 2) }}</code></pre>
             </b-field>
@@ -52,6 +51,7 @@
         <ex-date-picker
           :is-popover='isPopover'
           :select-mode='selectMode'
+          :show-disabled-dates='showDisabledDates'
           @input='selectedValue=$event'>
         </ex-date-picker>
       </div>
@@ -77,6 +77,7 @@ export default {
       isPopover: false,
       selectMode: 'range',
       selectedValue: null,
+      showDisabledDates: false,
     };
   },
 };

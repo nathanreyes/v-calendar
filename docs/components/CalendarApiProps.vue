@@ -63,7 +63,7 @@ export default {
         default: '<code>false</code>',
       },
       {
-        name: '<code>wrap-panes: Boolean</code>',
+        name: '<code>wrap: Boolean</code>',
         description: 'If calendar is double-paned, wrap the panes when constrained.',
         default: '<code>false</code>',
       },

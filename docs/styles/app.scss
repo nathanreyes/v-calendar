@@ -9,6 +9,12 @@ $primary-invert: findColorInvert($primary);
 $twitter: #4099FF;
 $twitter-invert: findColorInvert($twitter);
 
+$accent-red: #ff6666;
+$accent-orange: #ff8c66;
+$accent-blue: #4099FF;
+$accent-green: #42ffd0;
+$accent-purple: #7142ff;
+
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
     "white": ($white, $black),
@@ -37,3 +43,31 @@ $navbar-item-color: #fafafa;
 
 // Import highlight.js style
 @import "~highlight.js/styles/atelier-cave-light.css";
+
+.logo {
+    font-family: 'Bree Serif', serif;
+}
+
+.title {
+    font-family: 'Bree Serif', sans-serif;
+}
+
+.logo-subtitle {
+    font-weight: 300;
+    font-style: italic;
+}
+
+pre {
+    @include tablet {
+        white-space: pre-wrap
+    }
+}
+
+code {
+    max-height: 400px;
+    &.hljs {
+        background: inherit;
+        color: inherit;
+        padding: 1.25rem 1.5rem;
+    }
+}

@@ -2,11 +2,11 @@
   <v-date-picker
     :select-mode='selectMode'
     :is-popover='isPopover'
-    :day-content-style='dayStyle'
-    :disabled-dates='disabledDates'
+    :disabled-dates='showDisabledDates ? disabledDates : null'
     inputClass='input'
     v-model='selectedValue'
-    is-double-paned>
+    is-double-paned
+    :wrap='!isPopover'>
   </v-date-picker>
 </template>
 
@@ -19,13 +19,10 @@ export default {
   props: {
     isPopover: { type: Boolean, default: false },
     selectMode: { type: String, default: 'range' },
+    showDisabledDates: Boolean,
   },
   data() {
     return {
-      dayStyle: {
-        hoverBorder: 'solid blue 3px',
-        hoverBackgroundColor: 'red',
-      },
       selectedValue: {
         start: new Date(thisMonthYear, thisMonth, 6),
         end: new Date(nextMonthYear, nextMonth, 25),

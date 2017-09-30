@@ -1,6 +1,6 @@
 <template>
   <div
-    :class='["c-container", { "c-wrap": wrapPanes }]'>
+    :class='["c-container", { "c-wrap": wrap }]'>
     <calendar-pane
       :page.sync='fromPage_'
       :min-page='minPage'
@@ -47,7 +47,7 @@ export default {
     fromPage: Object,
     toPage: Object,
     isDoublePaned: Boolean,
-    wrapPanes: Boolean,
+    wrap: Boolean,
     attributes: Array,
   },
   data() {
@@ -132,6 +132,5 @@ $minWidth: 260px
 
 .c-container.c-wrap
   flex-wrap: wrap
-  justify-content: center
 
 </style>

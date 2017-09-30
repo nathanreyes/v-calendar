@@ -10,9 +10,9 @@
               <div class='content'>
                 <ul>
                   <li>Lightweight and dependency-free</li>
-                  <li>Single or double-paned</li>
-                  <li>Built-in support for various attributes including highlights, indicators and content styles</li>
                   <li>Clean and lively design</li>
+                  <li>Apply various attributes across dates and date ranges</li>
+                  <li>Built-in date picker support</li>
                 </ul>
               </div>
             </b-tab-item>
