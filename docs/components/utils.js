@@ -9,7 +9,7 @@ export const todayComps = {
   day: today.getDate(),
 };
 
-export const getIsLeapYear = year => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+export const getIsLeapYear = year => ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0);
 
 // Days/month/year components for a given month and year
 export const getMonthComps = (month, year) => ({
@@ -113,4 +113,4 @@ export const getExampleMonthComps = () => {
     nextMonth: nextMonthComps.month - 1,
     nextMonthYear: nextMonthComps.year,
   };
-}
+};

@@ -4,6 +4,10 @@
   "description": "A stylish and extendable calendar written in Vue.js",
   "author": "Nathan Reyes <nathanreyes@me.com>",
   "main": "dist/lib/v-calendar.min.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanreyes/v-calendar"
+  },
   "private": false,
   "license": "MIT",
   "scripts": {
