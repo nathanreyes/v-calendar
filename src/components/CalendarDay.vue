@@ -20,13 +20,16 @@
   <div class='c-day-layer c-day-box-center-center'>
     <div
       class='c-day-content'
-      :style='contentStyle'>
+      :style='contentStyle_'
+      @click='click()'
+      @mouseenter='enter()'
+      @mouseleave='leave()'>
       {{ label }}
     </div>
   </div>
   <!-- Indicator layer -->
   <div
-    class='c-day-layer c-day-box-center-bottom'
+    class='c-day-layer c-day-inactive c-day-box-center-bottom'
     v-if='hasIndicators'>
     <div
       class='c-day-indicators'
@@ -39,16 +42,6 @@
       </span>
     </div>
   </div>
-  <!-- Hover layer -->
-  <div class='c-day-layer c-day-box-center-center'>
-    <div
-      :class='["c-day-content-hover", { "c-day-content-hover-show": showHover_ }]'
-      :style='contentHoverStyle_'
-      @click='click()'
-      @mouseenter='enter()'
-      @mouseleave='leave()'>
-    </div>
-  </div>
 </div>
 </template>
 
@@ -58,7 +51,6 @@ export default {
     dayHeight: { type: String, default: '32px' },
     dayContentStyle: Object,
     dayContentHoverStyle: Object,
-    showHover: Boolean,
     indicatorsOffset: { type: String, default: '0' },
     label: String,
     day: Number,
@@ -79,13 +71,13 @@ export default {
       indicators: [],
       contentStyle: this.dayContentStyle || {},
       contentHoverStyle: this.dayContentHoverStyle || {},
-      showHover_: this.showHover,
       isHovered: false,
     };
   },
   computed: {
-    contentHoverStyle_() {
-      return this.isHovered ? this.contentHoverStyle : null;
+    contentStyle_() {
+      if (this.isHovered) return { ...this.contentStyle, ...this.contentHoverStyle };
+      return this.contentStyle;
     },
     hasBackgrounds() {
       return this.backgrounds && this.backgrounds.length;
@@ -153,8 +145,6 @@ export default {
       const indicators = [];
       const contentStyles = [];
       const contentHoverStyles = [];
-      let showHover_ = this.showHover;
-
       if (this.attributes && this.attributes.length) {
         // Cycle through each attribute
         this.attributes.forEach((a) => {
@@ -166,8 +156,6 @@ export default {
           if (a.contentStyle) contentStyles.push(a.contentStyle);
           // Add content hover style if needed
           if (a.contentHoverStyle) contentHoverStyles.push(a.contentHoverStyle);
-          // Overwrite show hover if needed
-          if (Object.prototype.hasOwnProperty.call(a, 'showHover')) showHover_ = a.showHover;
         });
       }
       // Assign day attributes
@@ -175,7 +163,6 @@ export default {
       this.indicators = indicators;
       this.contentStyle = Object.assign({}, this.dayContentStyle, ...contentStyles);
       this.contentHoverStyle = Object.assign({}, this.dayContentHoverStyle, ...contentHoverStyles);
-      this.showHover_ = showHover_;
     },
     getBackground(attribute) {
       // Initialize the background object
@@ -253,7 +240,6 @@ export default {
     },
   },
 };
-
 </script>
 
 <style lang='sass' scoped>
@@ -285,21 +271,7 @@ $translateTransition: .18s ease-in-out
 .c-day
   position: relative
   width: $dayWidth
-
-.c-day-not-in-month
-  opacity: 0.4
-
-.c-day-box-center-center
-  +box()
-
-.c-day-box-left-center
-  +box(flex-start)
-
-.c-day-box-right-center
-  +box(flex-end)
-
-.c-day-box-center-bottom
-  +box(center, flex-end)
+  overflow: hidden
 
 .c-day-layer
   position: absolute
@@ -307,6 +279,27 @@ $translateTransition: .18s ease-in-out
   right: 0
   top: 0
   bottom: 0
+
+.c-day-inactive
+  pointer-events: none
+
+.c-day-not-in-month
+  opacity: 0.4
+
+.c-day-box-center-center
+  +box()
+  margin: 0 -1px
+
+.c-day-box-left-center
+  +box(flex-start)
+  margin: 0 0 0 -1px
+
+.c-day-box-right-center
+  +box(flex-end)
+  margin: 0 -1px 0 0
+
+.c-day-box-center-bottom
+  +box(center, flex-end)
 
 .c-day-background
   transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
@@ -319,23 +312,8 @@ $translateTransition: .18s ease-in-out
   font-size: $dayContentFontSize
   font-weight: $dayContentFontWeight
   border-radius: $dayContentBorderRadius
-  transition: color $dayContentTransitionTime
+  transition: all $dayContentTransitionTime
   cursor: default
-  pointer-events: none
-  // z-index: 100
-
-.c-day-content-hover
-  width: $dayContentWidth
-  height: $dayContentHeight
-  border-radius: $dayContentBorderRadius
-  background-color: $dayContentHoverBgColor
-  transition: opacity $dayContentTransitionTime
-  opacity: 0
-
-.c-day-content-hover-show
-  &:hover
-    cursor: pointer
-    opacity: 1
 
 .c-day-indicators
   +box()
@@ -385,13 +363,11 @@ $translateTransition: .18s ease-in-out
 .from-left-enter-active.c-day-box-left-center
   transition: $translateTransition
   animation: fromLeftEnter $translateTransition
-  margin: 0 0 0 -1px
   transform-origin: 0% 50%
 
 .from-right-enter-active.c-day-box-right-center
   transition: $translateTransition
   animation: fromRightEnter $translateTransition
-  margin: 0 -1px 0 0
   transform-origin: 100% 50%
 
 @keyframes fromLeftEnter

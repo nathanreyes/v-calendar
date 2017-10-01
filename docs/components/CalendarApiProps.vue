@@ -118,6 +118,11 @@ export default {
         default: '<code>undefined</code>',
       },
       {
+        name: '<code>day-content-hover-style: Object</code>',
+        description: 'This style is merged with the <code>day-content-style</code> prop when the content is hovered.',
+        default: '<code>undefined</code>',
+      },
+      {
         name: '<code>day-height: String</code>',
         description: 'Height of the day cell container. Should be large enough to contain content and highlights.',
         default: '<code>"2.2rem"</code>',

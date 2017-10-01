@@ -35,11 +35,6 @@ export default {
         default: '<code>"rgba(0, 0, 0, 0.5)"</code>',
       },
       {
-        propertyName: '<code>border: String</code>',
-        description: 'Border of indicator.',
-        default: '<code>undefined</code>',
-      },
-      {
         propertyName: '<code>borderColor: String</code>',
         description: 'Border color of indicator.',
         default: '<code>undefined</code>',

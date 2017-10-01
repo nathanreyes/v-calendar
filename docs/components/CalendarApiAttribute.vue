@@ -41,12 +41,7 @@ export default {
       },
       {
         propertyName: '<code>contentHoverStyle: Object</code>',
-        description: 'Day cell content <strong>hover</strong> style to associate with the attribute. This does not affect the content itself, just the hover layer that appears above the content. This property is inherited from the default <code>dayContentHoverStyle</code> calendar property, so only assign this property if it needs to be overwritten by the attribute.',
-        default: '<code>undefined</code>',
-      },
-      {
-        propertyName: '<code>showHover: Boolean</code>',
-        description: 'Determines if hover layer should display. This property is inherited from the default <code>showHover</code> calendar property, so only assign this property if it needs to be overwritten by the attribute.',
+        description: 'This style is merged with the <code>contentStyle</code> property when the content is hovered. This property is inherited from the default <code>dayContentHoverStyle</code> calendar property, so only assign this property if it needs to be overwritten by the attribute.',
         default: '<code>undefined</code>',
       },
       {

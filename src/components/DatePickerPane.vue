@@ -6,8 +6,7 @@
     :select-attribute='selectAttribute'
     :attributes='attributes_'
     :date-validator='dateValidator'
-    :day-content-hover-style='hoverStyle'
-    :show-hover='showHover'
+    :day-content-hover-style='dayContentHoverStyle_'
     v-bind='$attrs'
     v-on='$listeners'>
   </component>
@@ -30,6 +29,13 @@ export default {
     value: null,
     selectMode: { type: String, default: 'single' },
     attributes: Array,
+    dayContentHoverStyle: {
+      type: Object,
+      default: () => ({
+        backgroundColor: 'rgba(16, 52, 86, 0.25)',
+        cursor: 'pointer',
+      }),
+    },
     dragAttribute: {
       type: Object,
       default: () => ({
@@ -41,7 +47,7 @@ export default {
           color: '#103456',
         },
         contentHoverStyle: {
-          opacity: 0,
+          backgroundColor: 'transparent',
         },
       }),
     },
@@ -57,7 +63,7 @@ export default {
           color: '#fafafa',
         },
         contentHoverStyle: {
-          opacity: 0,
+          backgroundColor: 'transparent',
         },
       }),
     },
@@ -69,21 +75,23 @@ export default {
         contentStyle: {
           color: 'red',
           textDecoration: 'line-through',
-        },
-        contentHoverStyle: {
           cursor: 'not-allowed',
         },
-        showHover: false,
+        contentHoverStyle: {
+          backgroudColor: 'transparent',
+        },
       }),
     },
-    showHover: { type: Boolean, default: true },
   },
   data() {
     return {
-      hoverStyle: null,
+      disableContentHoverStyle: null,
     };
   },
   computed: {
+    dayContentHoverStyle_() {
+      return this.disableContentHoverStyle || this.dayContentHoverStyle;
+    },
     disabledDates_() {
       if (this.disabledDates) return this.disabledDates.map(d => new DateInfo(d));
       if (this.disabledAttribute.dates) return this.disableAttribute.dates.map(d => new DateInfo(d));
@@ -96,13 +104,13 @@ export default {
         const disabledDates = this.disabledDates_.filter(d => dateInfo.intersects(d));
         if (disabledDates && disabledDates.length) {
           this.$emit(failEventName, disabledDates);
-          this.hoverStyle = {
+          this.disableContentHoverStyle = {
             cursor: 'not-allowed',
             opacity: 0,
           };
           return false;
         }
-        this.hoverStyle = null;
+        this.disableContentHoverStyle = null;
         return true;
       };
     },
