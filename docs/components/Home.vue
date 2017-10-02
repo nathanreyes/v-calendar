@@ -27,16 +27,16 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable import/first */
-import SectionHeader from './SectionHeader';
-import SectionIntro from './SectionIntro';
-import SectionAttributes from './SectionAttributes';
-import SectionContentStyles from './SectionContentStyles';
-import SectionHighlights from './SectionHighlights';
-import SectionIndicators from './SectionIndicators';
-import SectionDatePicker from './SectionDatePicker';
-import SectionApi from './SectionApi';
-import SectionUsage from './SectionUsage';
-import SectionFooter from './SectionFooter';
+import SectionHeader from './sections/SectionHeader';
+import SectionIntro from './sections/SectionIntro';
+import SectionAttributes from './sections/SectionAttributes';
+import SectionContentStyles from './sections/SectionContentStyles';
+import SectionHighlights from './sections/SectionHighlights';
+import SectionIndicators from './sections/SectionIndicators';
+import SectionDatePicker from './sections/SectionDatePicker';
+import SectionApi from './sections/SectionApi';
+import SectionUsage from './sections/SectionUsage';
+import SectionFooter from './sections/SectionFooter';
 
 export default {
   components: {

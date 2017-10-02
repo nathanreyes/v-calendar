@@ -75,10 +75,10 @@ export default {
         contentStyle: {
           color: 'red',
           textDecoration: 'line-through',
-          cursor: 'not-allowed',
         },
         contentHoverStyle: {
-          backgroudColor: 'transparent',
+          cursor: 'not-allowed',
+          backgroundColor: 'transparent',
         },
       }),
     },
@@ -104,13 +104,13 @@ export default {
         const disabledDates = this.disabledDates_.filter(d => dateInfo.intersects(d));
         if (disabledDates && disabledDates.length) {
           this.$emit(failEventName, disabledDates);
-          this.disableContentHoverStyle = {
-            cursor: 'not-allowed',
-            opacity: 0,
-          };
+          // this.disableContentHoverStyle = {
+          //   cursor: 'not-allowed',
+          //   backgroundColor: 'transparent',
+          // };
           return false;
         }
-        this.disableContentHoverStyle = null;
+        // this.disableContentHoverStyle = null;
         return true;
       };
     },

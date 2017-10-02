@@ -363,11 +363,13 @@ $translateTransition: .18s ease-in-out
 .from-left-enter-active.c-day-box-left-center
   transition: $translateTransition
   animation: fromLeftEnter $translateTransition
+  margin: 0 0 0 -1px
   transform-origin: 0% 50%
 
 .from-right-enter-active.c-day-box-right-center
   transition: $translateTransition
   animation: fromRightEnter $translateTransition
+  margin: 0 -1px 0 0
   transform-origin: 100% 50%
 
 @keyframes fromLeftEnter

@@ -64,8 +64,8 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable import/first */
-import ExDatePicker from './ExDatePicker';
-import ExDatePickerCode from '!!raw-loader!./ExDatePicker';
+import ExDatePicker from '../examples/ExDatePicker';
+import ExDatePickerCode from '!!raw-loader!../examples/ExDatePicker';
 
 export default {
   components: {

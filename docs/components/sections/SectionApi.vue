@@ -40,14 +40,14 @@
 </template>
 
 <script>
-import CalendarApiProps from './CalendarApiProps';
-import CalendarApiEvents from './CalendarApiEvents';
-import CalendarApiSlots from './CalendarApiSlots';
-import CalendarApiAttribute from './CalendarApiAttribute';
-import CalendarApiHighlight from './CalendarApiHighlight';
-import CalendarApiIndicator from './CalendarApiIndicator';
-import CalendarApiPage from './CalendarApiPage';
-import CalendarApiDayInfo from './CalendarApiDayInfo';
+import CalendarApiProps from '../api/CalendarApiProps';
+import CalendarApiEvents from '../api/CalendarApiEvents';
+import CalendarApiSlots from '../api/CalendarApiSlots';
+import CalendarApiAttribute from '../api/CalendarApiAttribute';
+import CalendarApiHighlight from '../api/CalendarApiHighlight';
+import CalendarApiIndicator from '../api/CalendarApiIndicator';
+import CalendarApiPage from '../api/CalendarApiPage';
+import CalendarApiDayInfo from '../api/CalendarApiDayInfo';
 
 export default {
   components: {

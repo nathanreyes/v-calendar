@@ -1,30 +1,29 @@
 <template>
-<section id='content-styles' class='section'>
+<section id='indicators' class='section'>
   <div class='container'>
-    <h4 class='title is-4 has-text-grey-dark is-spaced'>Content Styles</h4>
+    <h4 class='title is-4 has-text-grey-dark is-spaced'>Indicators</h4>
     <div class='columns'>
-      <!--Highlights Overview/Example Code-->
       <div class='column is-one-half'>
         <b-tabs>
-          <!--Highlights Overview-->
+          <!--Indicators Overview-->
           <b-tab-item label='Overview'>
             <div class='content'>
+              <p class='subtitle'></p>
               <ul>
-                <li>Support for custom background, border and content</li>
+                <li>Custom color, border and size properties</li>
                 <li>Spans dates and date ranges</li>
                 <li>Optionally animated on appearance or disappearance</li> 
               </ul>
             </div>
           </b-tab-item>
-          <!--Content Styles Example Code-->
+          <!--Indicators Example Code-->
           <b-tab-item label='Example Code'>
-            <pre v-highlight><code class='html'>{{ exContentStylesCode }}</code></pre>
+            <pre v-highlight><code class='html'>{{ exIndicatorsCode }}</code></pre>
           </b-tab-item>
         </b-tabs>
       </div>
-      <!--Content Styles Example-->
       <div class='column is-one-half is-example'>
-        <ex-content-styles></ex-content-styles>
+        <ex-indicators></ex-indicators>
       </div>
     </div>
   </div>
@@ -35,16 +34,16 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable import/first */
-import ExContentStyles from './ExContentStyles';
-import ExContentStylesCode from '!!raw-loader!./ExContentStyles';
+import ExIndicators from '../examples/ExIndicators';
+import ExIndicatorsCode from '!!raw-loader!../examples/ExIndicators';
 
 export default {
   components: {
-    ExContentStyles,
+    ExIndicators,
   },
   data() {
     return {
-      exContentStylesCode: ExContentStylesCode,
+      exIndicatorsCode: ExIndicatorsCode,
     };
   },
 };

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { getExampleMonthComps } from './utils';
+import { getExampleMonthComps } from '../utils';
 
 export default {
   data() {

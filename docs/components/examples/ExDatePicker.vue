@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { getExampleMonthComps } from './utils';
+import { getExampleMonthComps } from '../utils';
 
 const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthComps();
 

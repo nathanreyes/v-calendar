@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { getExampleMonthComps } from './utils';
+import { getExampleMonthComps } from '../utils';
 
 export default {
   data() {
@@ -20,8 +20,7 @@ export default {
       attributes: [
         {
           highlight: {
-            // Light red background
-            backgroundColor: '#bd9999',
+            backgroundColor: '#bd9999', // Red
             borderWidth: '2px',
             borderStyle: 'solid',
             borderColor: '#ae8484',
@@ -42,8 +41,7 @@ export default {
         },
         {
           highlight: {
-            // Light purple background
-            backgroundColor: '#9999bd',
+            backgroundColor: '#9999bd', // Purple
             borderWidth: '2px',
             borderColor: '#8484ae',
           },
@@ -62,8 +60,7 @@ export default {
         },
         {
           highlight: {
-            // Light tan background
-            backgroundColor: '#bdb499',
+            backgroundColor: '#bdb499', // Tan
             borderWidth: '2px',
             borderColor: '#aea484',
             borderRadius: '5px',
@@ -78,7 +75,7 @@ export default {
               end: new Date(thisMonthYear, thisMonth, 25),
             },
             new Date(thisMonthYear, thisMonth, 28),
-            new Date(thisMonthYear, thisMonth + 1, 4),
+            new Date(nextMonthYear, nextMonth, 4),
             {
               start: new Date(nextMonthYear, nextMonth, 16),
               end: new Date(nextMonthYear, nextMonth, 17),

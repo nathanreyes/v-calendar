@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { getExampleMonthComps } from './utils';
+import { getExampleMonthComps } from '../utils';
 
 export default {
   data() {
@@ -19,9 +19,8 @@ export default {
     return {
       attributes: [
         {
-          // Red
           contentStyle: {
-            color: '#ff3333',
+            color: '#ff3333', // Red
             fontWeight: 600,
             fontSize: '1em',
           },
@@ -35,9 +34,8 @@ export default {
           ],
         },
         {
-          // Blue
           contentStyle: {
-            color: '#0040ff',
+            color: '#0040ff', // Blue
             fontWeight: 600,
             fontStyle: 'italic',
           },
@@ -53,8 +51,7 @@ export default {
         },
         {
           contentStyle: {
-            // Orange
-            color: '#ff8000',
+            color: '#ff8000', // Orange
             fontWeight: 600,
           },
           dates: [

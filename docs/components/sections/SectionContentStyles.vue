@@ -1,7 +1,7 @@
 <template>
-<section id='highlights' class='section'>
+<section id='content-styles' class='section'>
   <div class='container'>
-    <h4 class='title is-4 has-text-grey-dark is-spaced'>Highlights</h4>
+    <h4 class='title is-4 has-text-grey-dark is-spaced'>Content Styles</h4>
     <div class='columns'>
       <!--Highlights Overview/Example Code-->
       <div class='column is-one-half'>
@@ -10,22 +10,21 @@
           <b-tab-item label='Overview'>
             <div class='content'>
               <ul>
-                <li>Custom background and border properties</li>
-                <li>Smart layering for overlapping dates</li>
+                <li>Support for custom background, border and content</li>
+                <li>Spans dates and date ranges</li>
                 <li>Optionally animated on appearance or disappearance</li> 
-                <li>Use a content style to properly display day content</li>
               </ul>
             </div>
           </b-tab-item>
-          <!--Highlights Example Code-->
+          <!--Content Styles Example Code-->
           <b-tab-item label='Example Code'>
-            <pre v-highlight><code class='html'>{{ exHighlightsCode }}</code></pre>
+            <pre v-highlight><code class='html'>{{ exContentStylesCode }}</code></pre>
           </b-tab-item>
         </b-tabs>
       </div>
-      <!--Highlights Example-->
+      <!--Content Styles Example-->
       <div class='column is-one-half is-example'>
-        <ex-highlights></ex-highlights>
+        <ex-content-styles></ex-content-styles>
       </div>
     </div>
   </div>
@@ -36,16 +35,16 @@
 /* eslint-disable import/no-webpack-loader-syntax */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable import/first */
-import ExHighlights from './ExHighlights';
-import ExHighlightsCode from '!!raw-loader!./ExHighlights';
+import ExContentStyles from '../examples/ExContentStyles';
+import ExContentStylesCode from '!!raw-loader!../examples/ExContentStyles';
 
 export default {
   components: {
-    ExHighlights,
+    ExContentStyles,
   },
   data() {
     return {
-      exHighlightsCode: ExHighlightsCode,
+      exContentStylesCode: ExContentStylesCode,
     };
   },
 };
