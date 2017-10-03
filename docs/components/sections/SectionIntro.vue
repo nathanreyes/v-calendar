@@ -9,7 +9,7 @@
             <b-tab-item label='Overview'>
               <div class='content'>
                 <p>
-                  V-Calendar is a lightweight and dependency free plugin for Vue.js used to display simple calendars for web applications.
+                  V-Calendar is a lightweight and dependency free plugin for Vue.js used to display simple annotated calendars.
                 </p>
                 <p>
                   It was designed from the outset with extendability and customization in mind.

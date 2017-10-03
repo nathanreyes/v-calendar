@@ -27,7 +27,6 @@ import Popover from './Popover';
 import DatePickerPane from './DatePickerPane';
 
 export default {
-  name: 'vDatePicker',
   components: {
     Popover,
     DatePickerPane,

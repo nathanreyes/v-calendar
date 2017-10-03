@@ -10,9 +10,10 @@
           <b-tab-item label='Overview'>
             <div class='content'>
               <ul>
-                <li>Support for custom background, border and content</li>
-                <li>Spans dates and date ranges</li>
-                <li>Optionally animated on appearance or disappearance</li> 
+                <li>Custom style objects are applied to day cell content</li>
+                <li>Styles are merged for overlapping dates</li>
+                <li>Support for additional styles during hovered state</li>
+                <li>Provide additional context/clarity for highlights and indicators</li>
               </ul>
             </div>
           </b-tab-item>

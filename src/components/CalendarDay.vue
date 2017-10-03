@@ -1,7 +1,5 @@
 <template>
-<div
-  :class='["c-day", {"c-day-not-in-month": !inMonth}]'
-  :style='{height: dayHeight}'>
+<div class='c-day' :style='{height: dayHeight}'>
   <!-- Background layers -->
   <transition-group
     :name='transitionName'
@@ -9,7 +7,7 @@
     <div
       v-for='(background, i) in backgrounds'
       :key='background.key'
-      :class='getWrapperClass(background)'>
+      :class='background.wrapperClass'>
       <div
         class='c-day-background'
         :style='background.style'>
@@ -42,12 +40,19 @@
       </span>
     </div>
   </div>
+  <!-- Transparency 'not in month' layer -->
+  <div
+    class='c-day-layer c-day-inactive shift-left-right c-day-not-in-month'
+    :style='{ backgroundColor: dayBackgroundColor }'
+    v-if='!inMonth'>
+  </div>
 </div>
 </template>
 
 <script>
 export default {
   props: {
+    dayBackgroundColor: String,
     dayHeight: { type: String, default: '32px' },
     dayContentStyle: Object,
     dayContentHoverStyle: Object,
@@ -124,11 +129,6 @@ export default {
     this.processAttributes();
   },
   methods: {
-    getWrapperClass({ horizontalAlign, verticalAlign }) {
-      if (!horizontalAlign) horizontalAlign = 'center';
-      if (!verticalAlign) verticalAlign = 'center';
-      return `c-day-layer c-day-box-${horizontalAlign}-${verticalAlign}`;
-    },
     click() {
       this.$emit('dayClick', this.dayInfo);
     },
@@ -173,9 +173,8 @@ export default {
         key: attribute.key,
         highlight,
         dateInfo,
-        horizontalAlign: 'center',
-        verticalAlign: 'center',
-        transition: 'width-height',
+        transition: 'scale',
+        wrapperClass: 'c-day-layer c-day-box-center-center',
         style: {
           backgroundColor: highlight.backgroundColor || 'rgba(0, 0, 0, 0.5)',
           borderColor: highlight.borderColor,
@@ -201,20 +200,21 @@ export default {
         // Is the day date on the highlight start date
         } else if (onStart) {
           background.transition = 'from-right';
-          background.horizontalAlign = 'right';
+          background.wrapperClass = 'c-day-layer c-day-box-right-center shift-right';
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
           background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
         // Is the day date on the highlight end date
         } else if (onEnd) {
           background.transition = 'from-left';
-          background.horizontalAlign = 'left';
+          background.wrapperClass = 'c-day-layer c-day-box-left-center shift-left';
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
           background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
         // Is the day date between the highlight start/end dates
         } else {
           background.transition = '';
+          background.wrapperClass = 'c-day-layer c-day-box-center-center shift-left-right';
           background.style.width = '100%';
           background.style.borderWidth = `${borderWidth} 0`;
           background.style.borderRadius = '0';
@@ -244,24 +244,7 @@ export default {
 
 <style lang='sass' scoped>
 
-$dayWidth: 14.2857%
-
-$dayContentWidth: 1.8rem
-$dayContentHeight: 1.8rem
-$dayContentColor: #333333
-$dayContentFontSize: 0.9rem
-$dayContentFontWeight: 500
-$dayContentBorderRadius: 50%
-$dayContentHoverBgColor: rgba(16, 52, 86, 0.25)
-$dayContentTransitionTime: 0.18s ease-in-out
-
-$indicatorDiameter: 5px
-$indicatorBorderRadius: 50%
-$indicatorSpacing: 3px
-
-$backgroundTransitionTime: .13s ease-in-out
-$scaleTransition: all 0.06s ease-in-out
-$translateTransition: .18s ease-in-out
+@import '../styles/vars.sass'
 
 =box($justify: center, $align: center)
   display: flex
@@ -271,7 +254,6 @@ $translateTransition: .18s ease-in-out
 .c-day
   position: relative
   width: $dayWidth
-  overflow: hidden
 
 .c-day-layer
   position: absolute
@@ -284,22 +266,29 @@ $translateTransition: .18s ease-in-out
   pointer-events: none
 
 .c-day-not-in-month
-  opacity: 0.4
+  background-color: $paneBgColor
+  opacity: 1 - $dayNotInMonthOpacity
 
 .c-day-box-center-center
   +box()
-  margin: 0 -1px
 
 .c-day-box-left-center
   +box(flex-start)
-  margin: 0 0 0 -1px
 
 .c-day-box-right-center
   +box(flex-end)
-  margin: 0 -1px 0 0
 
 .c-day-box-center-bottom
   +box(center, flex-end)
+
+.shift-left
+  margin-left: -1px
+
+.shift-right
+  margin-right: -1px
+
+.shift-left-right
+  margin: 0 -1px
 
 .c-day-background
   transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
@@ -313,6 +302,7 @@ $translateTransition: .18s ease-in-out
   font-weight: $dayContentFontWeight
   border-radius: $dayContentBorderRadius
   transition: all $dayContentTransitionTime
+  user-select: none
   cursor: default
 
 .c-day-indicators
@@ -332,13 +322,13 @@ $translateTransition: .18s ease-in-out
 .fade-enter, .fade-leave-to
   opacity: 0
 
-.width-height-enter-active
-  animation: widthHeightEnter 0.14s
+.scale-enter-active
+  animation: scaleEnter $backgroundScaleEnterAnimationTime
 
-.width-height-leave-active
-  animation: widthHeightLeave .18s
+.scale-leave-active
+  animation: scaleLeave $backgroundScaleLeaveAnimationTime
 
-@keyframes widthHeightEnter
+@keyframes scaleEnter
   0%
     transform: scaleX(0.7) scaleY(0.7)
     opacity: 0.3
@@ -350,7 +340,7 @@ $translateTransition: .18s ease-in-out
     transform: scaleX(1) scaleY(1)
     opacity: 1
 
-@keyframes widthHeightLeave
+@keyframes scaleLeave
   0%
     transform: scaleX(1) scaleY(1)
   60%
@@ -361,15 +351,13 @@ $translateTransition: .18s ease-in-out
     opacity: 0
 
 .from-left-enter-active.c-day-box-left-center
-  transition: $translateTransition
-  animation: fromLeftEnter $translateTransition
-  margin: 0 0 0 -1px
+  transition: $backgroundTranslateTransition
+  animation: fromLeftEnter $backgroundTranslateTransition
   transform-origin: 0% 50%
 
 .from-right-enter-active.c-day-box-right-center
-  transition: $translateTransition
-  animation: fromRightEnter $translateTransition
-  margin: 0 -1px 0 0
+  transition: $backgroundTranslateTransition
+  animation: fromRightEnter $backgroundTranslateTransition
   transform-origin: 100% 50%
 
 @keyframes fromLeftEnter

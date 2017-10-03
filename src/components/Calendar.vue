@@ -25,7 +25,7 @@
 <script>
 import CalendarPane from './CalendarPane';
 import '../assets/fonts/vcalendar/vcalendar.scss';
-import '../styles/lib.scss';
+import '../styles/lib.sass';
 
 import {
   todayComps,
@@ -124,8 +124,6 @@ export default {
 </script>
 
 <style lang='sass' scoped>
-
-$minWidth: 260px
 
 .c-container
   display: flex

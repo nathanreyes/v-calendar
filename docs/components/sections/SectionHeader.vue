@@ -5,10 +5,7 @@
     <header class="nav">
       <div class="container">
         <div class="nav-left">
-          <!-- <a class="nav-item">
-            <img src="images/bulma-type-white.png" alt="Logo">
-          </a> -->
-          <router-link class='nav-item logo is-size-4' to=''>
+          <router-link class='nav-item title is-4 logo' to=''>
             V-Calendar
           </router-link>
         </div>

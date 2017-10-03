@@ -1,5 +1,5 @@
 <template>
-  <div class='c-wrapper'>
+  <div class='c-pane' :style='paneStyle'>
     <slot name='header' :page='page_'>
       <div class='c-header' :style='headerStyle'>
         <div class='c-arrow-layout'>
@@ -71,6 +71,7 @@
         :prevMonthComps='p.prevMonthComps'
         :nextMonthComps='p.nextMonthComps'
         :first-day-of-week='firstDayOfWeek'
+        :day-background-color='dayBackgroundColor'
         v-if='p === page_'
         v-bind='$attrs'
         v-on='$listeners'>
@@ -107,6 +108,7 @@ export default {
     monthLabels: { type: Array, default: () => monthLabels },
     weekdayLabels: { type: Array, default: () => weekdayLabels },
     firstDayOfWeek: { type: Number, default: 1 },
+    paneStyle: Object,
     headerStyle: Object,
     titleStyle: Object,
     titleTransition: { type: String, default: 'slide' },
@@ -142,6 +144,10 @@ export default {
     },
     canMoveNextMonth() {
       return this.canMove(this.page_.nextMonthComps);
+    },
+    dayBackgroundColor() {
+      if (this.paneStyle) return this.paneStyle.backgroundColor;
+      return undefined;
     },
   },
   watch: {
@@ -265,33 +271,7 @@ export default {
 
 <style lang='sass' scoped>
 
-$minWidth: 260px
-$width: 260px
-$bgColor: #fafafa
-$border: 1px solid #dbdbdb
-$padding: 5px
-
-$headerPadding: 5px 5px 5px 5px
-
-$titleFontSize: 1.1rem
-$titleFontWeight: 400
-$titleTranslateX: 25px
-$titleTransition: all .3s ease-in-out
-
-$arrowWidth: 26px
-$arrowHeight: 26px
-$arrowFontSize: 1.6rem
-$arrowTransition: all .3s ease-in-out
-
-$weekdayColor: #8f9aab
-$weekdayFontSize: 0.9rem
-$weekdayFontWeight: 500
-$weekdayPadding: 6px 0
-
-$weeksTranslateX: 20px
-$weeksTransition: all .3s ease-in-out
-
-$dayWidth: 14.2857%
+@import '../styles/vars.sass'
 
 =box($justify: center, $align: center)
   display: flex
@@ -300,14 +280,14 @@ $dayWidth: 14.2857%
   margin: 0
   padding: 0
 
-.c-wrapper
+.c-pane
   display: flex
   flex-direction: column
-  min-width: $minWidth
-  width: $width
-  background-color: $bgColor
-  border: $border
-  padding: $padding
+  min-width: $paneMinWidth
+  width: $paneWidth
+  background-color: $paneBgColor
+  border: $paneBorder
+  padding: $panePadding
   overflow: hidden
 
 .c-header

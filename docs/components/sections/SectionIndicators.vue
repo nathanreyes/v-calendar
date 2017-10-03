@@ -8,10 +8,9 @@
           <!--Indicators Overview-->
           <b-tab-item label='Overview'>
             <div class='content'>
-              <p class='subtitle'></p>
               <ul>
                 <li>Custom color, border and size properties</li>
-                <li>Spans dates and date ranges</li>
+                <li>Assignable bottom margin for indicator row</li>
                 <li>Optionally animated on appearance or disappearance</li> 
               </ul>
             </div>

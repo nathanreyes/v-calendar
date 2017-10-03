@@ -7,20 +7,14 @@
         <b-tabs>
           <!--DatePicker Overview-->
           <b-tab-item label='Overview'>
-            <p class='subtitle'>
-              A <i>v-date-picker</i> is just a <i>v-calendar</i> wrapper.
-            </p>
-            <p class='content'>
-              It supports all native calendar features, but also applies special attributes for dragged date and value selections.
-            </p>
-            <p class='content'>
-              Supported selection modes include...
+            <div class='content'>
               <ul>
-                <li>Single date</li>
-                <li>Multiple dates</li>
-                <li>Date range</li>
+                <li>Uses native calendar to support all native props and events</li>
+                <li>3 date selection modes: Single Date, Multiple Dates and Date Range</li>
+                <li>Supports disabling of specific dates or date ranges</li>
+                <li>Display inline or as a popover for a custom slot</li>
               </ul>
-            </p>
+            </div>
           </b-tab-item>
           <!--DatePicker Example Code-->
           <b-tab-item label='Example Code'>

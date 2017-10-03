@@ -3,10 +3,11 @@
     :select-mode='selectMode'
     :is-popover='isPopover'
     :disabled-dates='showDisabledDates ? disabledDates : null'
+    :attributes='[todayAttribute]'
     inputClass='input'
     v-model='selectedValue'
-    is-double-paned
-    :wrap='!isPopover'>
+    :wrap='!isPopover'
+    is-double-paned>
   </v-date-picker>
 </template>
 
@@ -33,6 +34,15 @@ export default {
           end: new Date(nextMonthYear, nextMonth, 28),
         },
       ],
+      todayAttribute: {
+        highlight: {
+          backgroundColor: '#ff8c66',
+        },
+        contentStyle: {
+          color: 'white',
+        },
+        dates: [new Date()],
+      },
     };
   },
   watch: {

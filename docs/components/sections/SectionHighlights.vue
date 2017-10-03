@@ -13,7 +13,7 @@
                 <li>Custom background and border properties</li>
                 <li>Smart layering for overlapping dates</li>
                 <li>Optionally animated on appearance or disappearance</li> 
-                <li>Use a content style to properly display day content</li>
+                <li>Use content styles to properly display day content</li>
               </ul>
             </div>
           </b-tab-item>

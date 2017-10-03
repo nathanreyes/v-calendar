@@ -83,6 +83,11 @@ export default {
         default: '<code>undefined</code>',
       },
       {
+        name: '<code>pane-style: Object</code>',
+        description: 'Style for calendar pane.',
+        default: '<code>undefined</code>',
+      },
+      {
         name: '<code>header-style: Object</code>',
         description: 'Style for calendar header.',
         default: '<code>undefined</code>',
@@ -146,43 +151,52 @@ export default {
         name: '<code>select-attribute: Object</code>',
         description: '<span class="tag is-warning">Date Picker</span>Attribute to use for the date selection in all modes.',
         default: `<code>
-          {
-            highlight: {
-              backgroundColor: '#74a4a4',
-              borderWidth: '1px',
-              borderColor: '#65999a'
-            },
-            contentStyle: {
-              color: '#fafafa'
-            }
+        {
+          highlight: {
+            backgroundColor: '#74a4a4',
+            borderWidth: '1px',
+            borderColor: '#65999a'
+          },
+          contentStyle: {
+            color: '#fafafa'
+          },
+          contentHoverStyle: {
+            backgroundColor: 'transparent'
           }
+        }
         </code>`,
       },
       {
         name: '<code>drag-attribute: Object</code>',
         description: '<span class="tag is-warning">Date Picker</span>Attribute to use for the dragged selection in <code>"range"</code> mode.',
         default: `<code>
-          {
-            highlight: {
-              backgroundColor: '#c1d6d7',
-              height: '25px'
-            },
-            contentStyle: {
-              color: '#103456'
-            }
+        {
+          highlight: {
+            backgroundColor: '#c1d6d7',
+            height: '25px'
+          },
+          contentStyle: {
+            color: '#103456'
+          },
+          contentHoverStyle: {
+            backgroundColor: 'transparent'
           }
+        }
         </code>`,
       },
       {
         name: '<code>disabled-attribute: Object</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Attribute to use for disabled dates.',
+        description: '<span class="tag is-warning">Date Picker</span>Attribute to use for disabled dates. If specified, you may include dates in this prop and ignore the <code>disabled-dates</code> prop.',
         default: `<code>
         {
           order: 100,
           contentStyle: {
             color: 'red',
-            textDecoration: 'line-through',
-            cursor: 'not-allowed'
+            textDecoration: 'line-through'
+          },
+          contentHoverStyle: {
+            cursor: 'not-allowed',
+            backgroundColor: 'transparent'
           }
         }
         </code>`,

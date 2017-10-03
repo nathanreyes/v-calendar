@@ -1,24 +1,14 @@
 <template>
   <div>
-    <!--Hero Header-->
     <section-header></section-header>
-    <!--Calendar Intro-->
     <section-intro></section-intro>
-    <!--Calendar Attributes-->
     <section-attributes></section-attributes>
-    <!--Calendar Highlights-->
     <section-highlights></section-highlights>
-    <!--Calendar Indicators-->
     <section-indicators></section-indicators>
-    <!--Calendar Content Styles-->
     <section-content-styles></section-content-styles>
-    <!--Date Picker Intro-->
     <section-date-picker></section-date-picker>
-    <!--Calendar Api-->
     <section-api></section-api>
-    <!--Calendar Usage-->
     <section-usage></section-usage>
-    <!--Footer-->
     <section-footer></section-footer>
   </div>
 </template>
