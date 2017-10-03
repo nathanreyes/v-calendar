@@ -45,13 +45,5 @@ export default {
       },
     };
   },
-  watch: {
-    selectedValue(val) {
-      this.$emit('input', val);
-    },
-  },
-  created() {
-    this.$emit('input', this.selectedValue);
-  },
 };
 </script>

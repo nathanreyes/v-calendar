@@ -35,9 +35,6 @@
             <b-field>
               <b-switch v-model='isPopover'>Popover</b-switch>
             </b-field>
-            <b-field label='Value'>
-              <pre><code class='html'>{{ JSON.stringify(selectedValue, null, 2) }}</code></pre>
-            </b-field>
           </b-tab-item>
         </b-tabs>
       </div>
@@ -45,8 +42,7 @@
         <ex-date-picker
           :is-popover='isPopover'
           :select-mode='selectMode'
-          :show-disabled-dates='showDisabledDates'
-          @input='selectedValue=$event'>
+          :show-disabled-dates='showDisabledDates'>
         </ex-date-picker>
       </div>
     </div>
