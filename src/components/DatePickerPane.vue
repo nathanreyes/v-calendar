@@ -2,11 +2,12 @@
   <component
     :is='datePicker'
     :value='value'
+    :day-content-hover-style='dayContentHoverStyle'
     :drag-attribute='dragAttribute'
     :select-attribute='selectAttribute'
+    :disabled-attribute='disabledAttribute_'
     :attributes='attributes_'
     :date-validator='dateValidator'
-    :day-content-hover-style='dayContentHoverStyle_'
     v-bind='$attrs'
     v-on='$listeners'>
   </component>
@@ -29,6 +30,12 @@ export default {
     value: null,
     selectMode: { type: String, default: 'single' },
     attributes: Array,
+    // paneStyle: {
+    //   type: Object,
+    //   default: () => ({
+    //     width: '190px',
+    //   }),
+    // },
     dayContentHoverStyle: {
       type: Object,
       default: () => ({
@@ -83,15 +90,7 @@ export default {
       }),
     },
   },
-  data() {
-    return {
-      disableContentHoverStyle: null,
-    };
-  },
   computed: {
-    dayContentHoverStyle_() {
-      return this.disableContentHoverStyle || this.dayContentHoverStyle;
-    },
     disabledDates_() {
       if (this.disabledDates) return this.disabledDates.map(d => new DateInfo(d));
       if (this.disabledAttribute.dates) return this.disableAttribute.dates.map(d => new DateInfo(d));
@@ -104,13 +103,8 @@ export default {
         const disabledDates = this.disabledDates_.filter(d => dateInfo.intersects(d));
         if (disabledDates && disabledDates.length) {
           this.$emit(failEventName, disabledDates);
-          // this.disableContentHoverStyle = {
-          //   cursor: 'not-allowed',
-          //   backgroundColor: 'transparent',
-          // };
           return false;
         }
-        // this.disableContentHoverStyle = null;
         return true;
       };
     },
@@ -147,3 +141,9 @@ export default {
   },
 };
 </script>
+
+<style lang='sass'>
+.dp-footer
+  display: flex
+  justify-content: center
+</style>

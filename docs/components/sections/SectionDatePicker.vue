@@ -35,14 +35,32 @@
             <b-field>
               <b-switch v-model='isPopover'>Popover</b-switch>
             </b-field>
+            <div v-if='isPopover'>
+              <b-field label='Popover Direction'>
+                <b-select v-model='popoverDirection'>
+                  <option v-for='direction in popoverDirections' :value='direction' :key='direction'>
+                    {{ direction }}
+                  </option>
+                </b-select>
+              </b-field>
+              <b-field label='Popover Alignment'>
+                <b-select v-model='popoverAlignment'>
+                  <option v-for='alignment in popoverAlignments' :value='alignment' :key='alignment'>
+                    {{ alignment }}
+                  </option>
+                </b-select>
+              </b-field>
+            </div>
           </b-tab-item>
         </b-tabs>
       </div>
       <div class='column is-one-half is-example'>
         <ex-date-picker
-          :is-popover='isPopover'
           :select-mode='selectMode'
-          :show-disabled-dates='showDisabledDates'>
+          :show-disabled-dates='showDisabledDates'
+          :is-popover='isPopover'
+          :popover-direction='popoverDirection'
+          :popover-align='popoverAlignment'>
         </ex-date-picker>
       </div>
     </div>
@@ -64,10 +82,14 @@ export default {
   data() {
     return {
       exDatePickerCode: ExDatePickerCode,
-      isPopover: false,
       selectMode: 'range',
       selectedValue: null,
       showDisabledDates: false,
+      isPopover: false,
+      popoverDirection: 'bottom',
+      popoverDirections: ['bottom', 'top', 'left', 'right'],
+      popoverAlignment: 'left',
+      popoverAlignments: ['left', 'right', 'top', 'bottom'],
     };
   },
 };

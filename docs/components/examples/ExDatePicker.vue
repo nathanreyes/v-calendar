@@ -1,9 +1,11 @@
 <template>
   <v-date-picker
     :select-mode='selectMode'
-    :is-popover='isPopover'
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[todayAttribute]'
+    :is-popover='isPopover'
+    :popover-direction='popoverDirection'
+    :popover-align='popoverAlign'
     inputClass='input'
     v-model='selectedValue'
     :wrap='!isPopover'
@@ -18,9 +20,11 @@ const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthCo
 
 export default {
   props: {
-    isPopover: { type: Boolean, default: false },
     selectMode: { type: String, default: 'range' },
     showDisabledDates: Boolean,
+    isPopover: { type: Boolean, default: false },
+    popoverDirection: { type: String, default: 'bottom' },
+    popoverAlign: { type: String, default: 'left' },
   },
   data() {
     return {

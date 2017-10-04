@@ -3,7 +3,7 @@
     <slot>
       <div>Popover anchor goes here</div>
     </slot>
-    <transition name='fade'>
+    <transition name='slide-fade'>
       <div class='anchor' :class='["direction-" + direction, "align-" + align]' v-if='visible_'>
         <div class='content-container'>
           <div class='content' :class='["direction-" + direction, "align-" + align]'>
@@ -47,6 +47,8 @@ export default {
 
 <style lang='sass'>
 
+@import '../styles/vars.sass'
+
 .popover-container
   position: relative
 
@@ -56,14 +58,18 @@ export default {
   z-index: 100
   &.direction-top
     bottom: 100%
+    margin-bottom: $popoverOffset
   &.direction-bottom
     top: 100%
+    margin-top: $popoverOffset
   &.direction-left
     top: 0
     right: 100%
+    margin-right: $popoverOffset
   &.direction-right
     top: 0
     left: 100%
+    margin-left: $popoverOffset
   &.direction-left.align-top, &.direction-right.align-top
     top: 0
   &.direction-left.align-middle, &.direction-right.align-middle
@@ -84,11 +90,18 @@ export default {
       &.direction-left.align-middle, &.direction-right.align-middle
         margin-top: -50%
 
-.fade-enter-active, .fade-leave-active
-  transition: all 0.2s ease-in-out
+.slide-fade-enter-active, .slide-fade-leave-active
+  transition: all $popoverSlideTransitionTime
 
-.fade-enter, .fade-leave-to
-  transform: scaleY(0)
+.slide-fade-enter, .slide-fade-leave-to
   opacity: 0
+  &.direction-bottom
+    transform: translateY(-$popoverSlideTranslation)
+  &.direction-top
+    transform: translateY($popoverSlideTranslation)
+  &.direction-left
+    transform: translateX($popoverSlideTranslation)
+  &.direction-right
+    transform: translateX(-$popoverSlideTranslation)
 
 </style>

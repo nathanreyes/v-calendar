@@ -1,5 +1,9 @@
 <template>
-  <popover :visible='pickerVisible' v-if='isPopover'>
+  <popover
+    :visible='pickerVisible'
+    :direction='popoverDirection'
+    :align='popoverAlign'
+    v-if='isPopover'>
     <slot name='input'>
       <input
         :class='inputClass'
@@ -34,6 +38,8 @@ export default {
   props: {
     value: null,
     isPopover: Boolean,
+    popoverDirection: { type: String, default: 'bottom' },
+    popoverAlign: { type: String, default: 'left' },
     inputClass: String,
     inputStyle: Object,
     inputPlaceholder: String,

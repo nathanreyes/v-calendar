@@ -1,5 +1,6 @@
 <template>
 <calendar
+  :dayContentHoverStyle='dayContentHoverStyle_'
   :attributes='attributes_'
   v-bind='$attrs'
   v-on='$listeners'
@@ -16,18 +17,21 @@ export default {
   components: {
     Calendar,
   },
-  data() {
-    return {
-      dragValue_: this.dragValue,
-    };
-  },
   props: {
     value: { type: Object, default: () => { } },
     dragValue: { type: Object, default: () => { } },
     dragAttribute: { type: Object, required: true },
     selectAttribute: { type: Object, required: true },
+    disabledAttribute: { type: Object, required: true },
+    dayContentHoverStyle: Object,
     dateValidator: Function,
     attributes: Array,
+  },
+  data() {
+    return {
+      dragValue_: this.dragValue,
+      dayContentHoverStyle_: this.dayContentHoverStyle,
+    };
   },
   computed: {
     valueIsValid() {
@@ -111,6 +115,11 @@ export default {
         if (this.dateValidator(newDragValue, 'dragDisabled')) {
           // Update drag selection
           this.dragValue_ = newDragValue;
+          // Assign default content hover style
+          this.dayContentHoverStyle_ = this.dayContentHoverStyle;
+        } else {
+          // Assign disabled content hover style
+          this.dayContentHoverStyle_ = this.disabledAttribute.contentHoverStyle;
         }
       }
       // Forward the event
