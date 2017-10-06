@@ -6,16 +6,21 @@
   v-on='$listeners'
   @dayClick='selectDay'
   @dayEnter='enterDay'>
+  <div class='dp-footer' slot='footer'>
+    <date-tag :date='new Date()'></date-tag>
+  </div>
 </calendar> 
 </template>
 
 <script>
 import Calendar from './Calendar';
+import DateTag from './DateTag';
 import { DateInfo } from './utils';
 
 export default {
   components: {
     Calendar,
+    DateTag,
   },
   props: {
     value: { type: Object, default: () => { } },
@@ -143,3 +148,10 @@ export default {
   },
 };
 </script>
+
+<style lang='sass'>
+.dp-footer
+  display: flex
+  justify-content: center
+  padding: 5px 0
+</style>

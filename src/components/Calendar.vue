@@ -1,6 +1,8 @@
 <template>
+<div
+  :class='["c-container", { "center": paneCentered }]'>
   <div
-    :class='["c-container", { "c-wrap": wrap }]'>
+    class='c-pane-container'>
     <calendar-pane
       :page.sync='fromPage_'
       :min-page='minPage'
@@ -10,16 +12,19 @@
       v-on='$listeners'>
     </calendar-pane>
     <calendar-pane
-      v-if='isDoublePaned'
+      v-if='isDoublePaned_'
       :page.sync='toPage_'
       :min-page='minToPage'
       :max-page='maxPage'
       :attributes='attributes_'
-      class='c-pane-right'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-pane>
   </div>
+  <div class='c-footer-container'>
+    <slot name='footer'></slot>
+  </div>
+</div>
 </template>
 
 <script>
@@ -47,22 +52,28 @@ export default {
     fromPage: Object,
     toPage: Object,
     isDoublePaned: Boolean,
-    wrap: Boolean,
     attributes: Array,
   },
   data() {
     return {
+      windowWidth: 0,
       fromPage_: null,
       toPage_: null,
     };
   },
   computed: {
+    isDoublePaned_() {
+      return this.isDoublePaned && this.windowWidth >= 440;
+    },
+    paneCentered() {
+      return this.isDoublePaned && !this.isDoublePaned_;
+    },
     maxFromPage() {
-      if (!this.isDoublePaned) return null;
+      if (!this.isDoublePaned_) return null;
       return getPrevPage(this.toPage_);
     },
     minToPage() {
-      if (!this.isDoublePaned) return null;
+      if (!this.isDoublePaned_) return null;
       return getNextPage(this.fromPage_);
     },
     attributes_() {
@@ -90,15 +101,23 @@ export default {
     toPage_(value) {
       this.$emit('update:toPage', value);
     },
-    isDoublePaned() {
+    isDoublePaned_() {
       this.refreshToPage();
     },
   },
   created() {
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
     this.refreshFromPage();
     this.refreshToPage();
   },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
+  },
   methods: {
+    handleResize() {
+      this.windowWidth = window.innerWidth;
+    },
     refreshFromPage() {
       this.fromPage_ = this.getValidFromPage(this.fromPage, todayComps);
     },
@@ -125,10 +144,20 @@ export default {
 
 <style lang='sass' scoped>
 
-.c-container
-  display: flex
+@import '../styles/vars.sass'
 
-.c-container.c-wrap
-  flex-wrap: wrap
+.c-container
+  display: inline-flex
+  flex-direction: column
+  align-items: center
+  &.center
+    display: flex
+    align-items: center
+
+.c-pane-container
+  display: inline-flex
+
+.c-footer-container
+  width: 100%
 
 </style>

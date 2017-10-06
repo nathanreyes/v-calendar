@@ -1,6 +1,5 @@
 <template>
 <v-calendar
-  is-double-paned
-  wrap>
+  is-double-paned>
 </v-calendar>
 </template>

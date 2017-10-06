@@ -281,8 +281,7 @@ export default {
   padding: 0
 
 .c-pane
-  display: flex
-  flex-direction: column
+  flex-shrink: 1
   min-width: $paneMinWidth
   width: $paneWidth
   background-color: $paneBgColor

@@ -8,7 +8,6 @@
     :popover-align='popoverAlign'
     inputClass='input'
     v-model='selectedValue'
-    :wrap='!isPopover'
     is-double-paned>
   </v-date-picker>
 </template>

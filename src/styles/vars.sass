@@ -1,5 +1,5 @@
 
-$paneMinWidth: 240px
+$paneMinWidth: 200px
 $paneWidth: 260px
 $paneBgColor: #fafafa
 $paneBorder: 1px solid #dbdbdb
@@ -48,3 +48,49 @@ $backgroundTranslateTransition: .18s ease-in-out
 $popoverOffset: 4px
 $popoverSlideTranslation: 15px
 $popoverSlideTransitionTime: 0.13s ease-in-out
+
+$scaleEnterAnimation: scaleEnter .14s ease-in-out
+$scaleLeaveAnimation: scaleLeave .18s ease-in-out
+$slideRightEnterAnimation: slideRightEnter .18s ease-in-out
+$slideLeftEnterAnimation: slideLeftEnter .18s ease-in-out
+$fadeTransition: opacity .2s ease-in-out
+
+// ANIMATION KEY FRAMES
+
+@keyframes scaleEnter
+  0%
+    transform: scaleX(0.7) scaleY(0.7)
+    opacity: 0.3
+  90%
+    transform: scaleX(1.1) scaleY(1.1)
+  95%
+    transform: scaleX(0.95) scaleY(0.95)
+  100%
+    transform: scaleX(1) scaleY(1)
+    opacity: 1
+
+@keyframes scaleLeave
+  0%
+    transform: scaleX(1) scaleY(1)
+  60%
+    transform: scaleX(1.2) scaleY(1.2)
+    opacity: 0.2
+  100%
+    transform: scaleX(1.15) scaleY(1.15)
+    opacity: 0
+
+@keyframes slideRightEnter
+  0%
+    transform: scaleX(0)
+  60%
+    transform: scaleX(1.08)
+  100%
+    transform: scaleX(1)
+
+@keyframes slideLeftEnter
+  0%
+    transform: scaleX(0)
+  60%
+    transform: scaleX(1.08)
+  100%
+    transform: scaleX(1)

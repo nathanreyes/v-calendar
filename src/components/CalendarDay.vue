@@ -2,7 +2,7 @@
 <div class='c-day' :style='{height: dayHeight}'>
   <!-- Background layers -->
   <transition-group
-    :name='transitionName'
+    name='background'
     tag='div'>
     <div
       v-for='(background, i) in backgrounds'
@@ -110,9 +110,6 @@ export default {
         attributes: this.attributes,
       };
     },
-    transitionName() {
-      return this.hasBackgrounds ? this.backgrounds[this.backgrounds.length - 1].transition : '';
-    },
   },
   watch: {
     attributes() {
@@ -173,8 +170,6 @@ export default {
         key: attribute.key,
         highlight,
         dateInfo,
-        transition: 'scale',
-        wrapperClass: 'c-day-layer c-day-box-center-center',
         style: {
           backgroundColor: highlight.backgroundColor || 'rgba(0, 0, 0, 0.5)',
           borderColor: highlight.borderColor,
@@ -185,8 +180,9 @@ export default {
           height,
         },
       };
-      // Is the highlight a date range
-      if (dateInfo.isRange) {
+      if (dateInfo.isDate) {
+        background.wrapperClass = 'c-day-layer c-day-box-center-center c-day-scale-enter c-day-scale-leave';
+      } else {
         const onStart = dateInfo.startTime === this.dateTime;
         const onEnd = dateInfo.endTime === this.dateTime;
         const borderWidth = background.style.borderWidth;
@@ -194,26 +190,24 @@ export default {
         const endWidth = '95%';
         // Is the day date on the highlight start and end date
         if (onStart && onEnd) {
+          background.wrapperClass = 'c-day-layer c-day-box-center-center c-day-scale-enter c-day-scale-leave';
           background.style.width = endWidth;
           background.style.borderWidth = borderWidth;
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
         // Is the day date on the highlight start date
         } else if (onStart) {
-          background.transition = 'from-right';
-          background.wrapperClass = 'c-day-layer c-day-box-right-center shift-right';
+          background.wrapperClass = 'c-day-layer c-day-box-right-center shift-right c-day-slide-left-enter';
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
           background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
         // Is the day date on the highlight end date
         } else if (onEnd) {
-          background.transition = 'from-left';
-          background.wrapperClass = 'c-day-layer c-day-box-left-center shift-left';
+          background.wrapperClass = 'c-day-layer c-day-box-left-center shift-left c-day-slide-right-enter';
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
           background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
         // Is the day date between the highlight start/end dates
         } else {
-          background.transition = '';
           background.wrapperClass = 'c-day-layer c-day-box-center-center shift-left-right';
           background.style.width = '100%';
           background.style.borderWidth = `${borderWidth} 0`;
@@ -316,64 +310,37 @@ export default {
   &:not(:last-child)
     margin-right: $indicatorSpacing
 
-.fade-enter-active, .fade-leave-active
-  transition: $dayContentTransitionTime
+// TRANSITION ANIMATIONS
 
-.fade-enter, .fade-leave-to
-  opacity: 0
+.background-enter-active
 
-.scale-enter-active
-  animation: scaleEnter $backgroundScaleEnterAnimationTime
+  &.c-day-fade-enter
+    transition: $fadeTransition
 
-.scale-leave-active
-  animation: scaleLeave $backgroundScaleLeaveAnimationTime
+  &.c-day-slide-right-enter
+    animation: $slideRightEnterAnimation
+    transform-origin: 0% 50%
 
-@keyframes scaleEnter
-  0%
-    transform: scaleX(0.7) scaleY(0.7)
-    opacity: 0.3
-  90%
-    transform: scaleX(1.1) scaleY(1.1)
-  95%
-    transform: scaleX(0.95) scaleY(0.95)
-  100%
-    transform: scaleX(1) scaleY(1)
-    opacity: 1
+  &.c-day-slide-left-enter
+    animation: $slideLeftEnterAnimation
+    transform-origin: 100% 50%
 
-@keyframes scaleLeave
-  0%
-    transform: scaleX(1) scaleY(1)
-  60%
-    transform: scaleX(1.2) scaleY(1.2)
-    opacity: 0.2
-  100%
-    transform: scaleX(1.15) scaleY(1.15)
+  &.c-day-scale-enter
+    animation: $scaleEnterAnimation
+
+.background-leave-active
+  &.c-day-fade-leave
+    transition: $fadeTransition
+
+  &.c-day-scale-leave
+    animation: $scaleLeaveAnimation
+
+.background-enter
+  &.c-day-fade-enter
     opacity: 0
 
-.from-left-enter-active.c-day-box-left-center
-  transition: $backgroundTranslateTransition
-  animation: fromLeftEnter $backgroundTranslateTransition
-  transform-origin: 0% 50%
-
-.from-right-enter-active.c-day-box-right-center
-  transition: $backgroundTranslateTransition
-  animation: fromRightEnter $backgroundTranslateTransition
-  transform-origin: 100% 50%
-
-@keyframes fromLeftEnter
-  0%
-    transform: scaleX(0)
-  60%
-    transform: scaleX(1.08)
-  100%
-    transform: scaleX(1)
-
-@keyframes fromRightEnter
-  0%
-    transform: scaleX(0)
-  60%
-    transform: scaleX(1.08)
-  100%
-    transform: scaleX(1)
+.background-leave-to
+  &.c-day-fade-leave
+    opacity: 0
 
 </style>

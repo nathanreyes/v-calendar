@@ -1,8 +1,7 @@
 <template>
   <v-calendar
     :attributes='attributes'
-    is-double-paned
-    wrap>
+    is-double-paned>
   </v-calendar>
 </template>
 

@@ -30,12 +30,6 @@ export default {
     value: null,
     selectMode: { type: String, default: 'single' },
     attributes: Array,
-    // paneStyle: {
-    //   type: Object,
-    //   default: () => ({
-    //     width: '190px',
-    //   }),
-    // },
     dayContentHoverStyle: {
       type: Object,
       default: () => ({
@@ -141,9 +135,3 @@ export default {
   },
 };
 </script>
-
-<style lang='sass'>
-.dp-footer
-  display: flex
-  justify-content: center
-</style>
