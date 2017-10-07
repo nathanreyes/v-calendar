@@ -29,7 +29,7 @@ export default {
       },
       {
         name: '<code>weekday-labels: Array[String]</code>',
-        description: 'Weekday labels displayed in header. Start with Sunday, even if it isn\'t set as the first day of the week',
+        description: 'Weekday labels displayed in header. Start with Sunday, even if Sunday isn\'t set as the first day of the week',
         default: '<code>["S", "M", "T", "W", "T", "F", "S", "S"]</code>',
       },
       {
@@ -59,12 +59,7 @@ export default {
       },
       {
         name: '<code>is-double-paned: Boolean</code>',
-        description: 'Puts two calendars side by side.',
-        default: '<code>false</code>',
-      },
-      {
-        name: '<code>wrap: Boolean</code>',
-        description: 'If calendar is double-paned, wrap the panes when constrained.',
+        description: 'Puts two calendars side by side. When window is collapsed only a single calendar is displayed.',
         default: '<code>false</code>',
       },
       {
@@ -78,28 +73,23 @@ export default {
         default: '<code>"0"</code>',
       },
       {
-        name: '<code>class: Object</code>, <code>style: Object</code>',
-        description: 'Typical class and style props. Used for calendar wrapper.',
-        default: '<code>undefined</code>',
-      },
-      {
         name: '<code>pane-style: Object</code>',
         description: 'Style for calendar pane.',
         default: '<code>undefined</code>',
       },
       {
         name: '<code>header-style: Object</code>',
-        description: 'Style for calendar header.',
+        description: 'Style for header section.',
         default: '<code>undefined</code>',
       },
       {
         name: '<code>arrow-style: Object</code>',
-        description: 'Style for calendar header arrows.',
+        description: 'Style for header arrows.',
         default: '<code>undefined</code>',
       },
       {
         name: '<code>title-style: Object</code>',
-        description: 'Style for calendar header title.',
+        description: 'Style for header title.',
         default: '<code>undefined</code>',
       },
       {
@@ -109,7 +99,12 @@ export default {
       },
       {
         name: '<code>weekday-style: Object</code>',
-        description: 'Style for weekday labels.',
+        description: 'Style for weekday labels section.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>weeks-style: Object</code>',
+        description: 'Style for weeks section.',
         default: '<code>undefined</code>',
       },
       {
@@ -124,13 +119,8 @@ export default {
       },
       {
         name: '<code>day-content-hover-style: Object</code>',
-        description: 'This style is merged with the <code>day-content-style</code> prop when the content is hovered.',
+        description: 'Style that is merged with the <code>day-content-style</code> when the content is hovered.',
         default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>day-height: String</code>',
-        description: 'Height of the day cell container. Should be large enough to contain content and highlights.',
-        default: '<code>"2.2rem"</code>',
       },
       {
         name: '<code>value: Date, Array[Date], Object</code>',

@@ -1,5 +1,6 @@
 <template>
   <div class='c-pane' :style='paneStyle'>
+    <!--Header-->
     <slot name='header' :page='page_'>
       <div class='c-header' :style='headerStyle'>
         <div class='c-arrow-layout'>
@@ -46,6 +47,7 @@
         </div>
       </div>
     </slot>
+    <!--Weekday Labels-->
     <div class='c-weekdays'>
       <div
         v-for='weekday in weekdayLabels_'
@@ -55,33 +57,37 @@
         {{ weekday }}
       </div>
     </div> 
+    <!--Weeks-->
     <transition-group
       tag='div'
-      class='c-weeks'
-      :name='weeksTransition_'
-      mode='out-in'>
+      class='c-weeks-container'
+      :style='weeksStyle'
+      :name='weeksTransition_'>
       <calendar-weeks
+        class='c-weeks'
         v-for='p in pages'
         :key='p.key'
         :month='p.month'
         :year='p.year'
-        :isLeapYear='p.isLeapYear'
-        :daysInMonth='p.daysInMonth'
-        :firstWeekdayInMonth='p.firstWeekdayInMonth'
-        :prevMonthComps='p.prevMonthComps'
-        :nextMonthComps='p.nextMonthComps'
+        :is-leap-year='p.isLeapYear'
+        :days-in-month='p.daysInMonth'
+        :first-weekday-in-month='p.firstWeekdayInMonth'
+        :prev-month-comps='p.prevMonthComps'
+        :next-month-comps='p.nextMonthComps'
         :first-day-of-week='firstDayOfWeek'
         :day-background-color='dayBackgroundColor'
-        v-if='p === page_'
         v-bind='$attrs'
-        v-on='$listeners'>
+        @touchstart='touchStart($event)'
+        @touchmove='touchMove($event)'
+        @touchend='touchEnd($event)'
+        v-on='$listeners'
+        v-if='p === page_'>
       </calendar-weeks> 
     </transition-group> 
   </div>
 </template>
 
 <script>
-/* eslint-disable camelcase */
 import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
 import {
@@ -96,6 +102,10 @@ import {
   pageIsBeforePage,
   pageIsAfterPage,
 } from './utils';
+
+const _allowedSwipeTime = 300;
+const _minHorizontalSwipeDistance = 60;
+const _maxVerticalSwipeDistance = 80;
 
 export default {
   components: {
@@ -114,6 +124,7 @@ export default {
     titleTransition: { type: String, default: 'slide' },
     arrowStyle: Object,
     weekdayStyle: Object,
+    weeksStyle: Object,
     weeksTransition: { type: String, default: 'slide' },
   },
   data() {
@@ -121,6 +132,10 @@ export default {
       pages: [],
       page_: null,
       slideTransition: '',
+      prevPageStyle: null,
+      currPageStyle: null,
+      nextPageStyle: null,
+      touchState: {},
     };
   },
   computed: {
@@ -168,6 +183,54 @@ export default {
     this.preloadPages();
   },
   methods: {
+    touchStart(e) {
+      const t = e.changedTouches[0];
+      this.touchState = {
+        active: true,
+        startX: t.screenX,
+        startY: t.screenY,
+        startTime: new Date().getTime(),
+        isSwiping: false,
+        isMonitoringSwipe: true,
+      };
+    },
+    touchMove(e) {
+      if (!this.touchState.isMonitoringSwipe) {
+        if (this.touchState.isSwiping) e.preventDefault();
+        return;
+      }
+      const deltaTime = new Date().getTime() - this.touchState.startTime;
+      if (deltaTime <= 5) {
+        e.preventDefault();
+        return;
+      }
+      const t = e.changedTouches[0];
+      const deltaX = t.screenX - this.touchState.startX;
+      const deltaY = t.screenY - this.touchState.startY;
+      if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+        this.touchState.isSwiping = true;
+        e.preventDefault();
+      }
+      this.touchState.isMonitoringSwipe = false;
+    },
+    touchEnd(e) {
+      const t = e.changedTouches[0];
+      const deltaX = t.screenX - this.touchState.startX;
+      const deltaY = t.screenY - this.touchState.startY;
+      const deltaTime = new Date().getTime() - this.touchState.startTime;
+      if (deltaTime < _allowedSwipeTime) {
+        if (Math.abs(deltaX) >= _minHorizontalSwipeDistance && Math.abs(deltaY) <= _maxVerticalSwipeDistance) {
+          // Swipe left
+          if (deltaX < 0) {
+            // Move to previous month
+            this.moveNextMonth();
+          } else {
+            // Move to next month
+            this.movePrevMonth();
+          }
+        }
+      }
+    },
     canMove(pageInfo) {
       if (this.minPage && pageIsBeforePage(pageInfo, this.minPage)) return false;
       if (this.maxPage && pageIsAfterPage(pageInfo, this.maxPage)) return false;
@@ -210,13 +273,13 @@ export default {
       // Preload other pages
       this.preloadPages();
     },
-    loadPage({ month, year }) {
+    loadPage({ month, year }, position = 0) {
       const key = `${year.toString()}.${month.toString()}`;
       let page = this.pages.find(p => (p.key === key));
       if (!page) {
         const monthLabel = this.monthLabels[month - 1];
         const yearLabel = year.toString();
-        const yearLabel_2 = yearLabel.substring(2, 4);
+        const yearLabel2 = yearLabel.substring(2, 4);
         const headerLabel = `${monthLabel} ${yearLabel}`;
         const firstWeekdayInMonth = new Date(year, month - 1, 1).getDay() + 1;
         const currMonthComps = getMonthComps(month, year);
@@ -231,7 +294,7 @@ export default {
           year,
           monthLabel,
           yearLabel,
-          yearLabel_2,
+          yearLabel_2: yearLabel2,
           headerLabel,
           isLeapYear,
           daysInMonth,
@@ -247,16 +310,19 @@ export default {
         };
         this.pages.push(page);
       }
+      page.position = position;
       page.loaded = true;
       return page;
     },
     preloadPages() {
       // Load the next and previous pages
       Vue.nextTick(() => {
-        this.loadPage(this.page_.prevMonthComps);
-        this.loadPage(this.page_.nextMonthComps);
+        this.loadPage(this.page_.prevMonthComps, -1);
+        this.loadPage(this.page_.nextMonthComps, 1);
         this.pages = this.pages.filter(p => p.loaded);
-        this.pages.forEach((p) => { p.loaded = false; });
+        this.pages.forEach((p) => {
+          p.loaded = false;
+        });
       });
     },
     getSlideTransition(fromPage, toPage) {
@@ -281,7 +347,6 @@ export default {
   padding: 0
 
 .c-pane
-  flex-shrink: 1
   min-width: $paneMinWidth
   width: $paneWidth
   background-color: $paneBgColor
@@ -292,6 +357,7 @@ export default {
 .c-header
   display: flex
   align-items: stretch
+  height: $headerHeight
   padding: $headerPadding
   user-select: none
 
@@ -352,9 +418,15 @@ export default {
   font-size: $weekdayFontSize
   font-weight: $weekdayFontWeight
 
-.c-weeks
-  flex-grow: 1
+.c-weeks-container
   position: relative
+  height: $weeksHeight
+  .c-weeks
+    position: absolute
+    width: 100%
+    height: 100%
+    display: flex
+    flex-direction: column
 
 .title-slide-left-enter-active,
 .title-slide-left-leave-active,
@@ -389,17 +461,6 @@ export default {
 .weeks-none-enter-active,
 .weeks-none-leave-active
   transition-duration: 0s
-
-.weeks-slide-left-leave-active,
-.weeks-slide-right-leave-active,
-.weeks-fade-leave-active,
-.weeks-none-leave-active
-  position: absolute
-  top: 0
-  bottom: 0
-  left: 0
-  width: 100%
-  height: 100%
 
 .weeks-slide-left-enter,
 .weeks-slide-right-leave-to

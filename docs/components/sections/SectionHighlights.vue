@@ -2,9 +2,9 @@
 <section id='highlights' class='section'>
   <div class='container'>
     <h4 class='title is-4 has-text-grey-dark is-spaced'>Highlights</h4>
-    <div class='columns'>
+    <div class='columns is-desktop'>
       <!--Highlights Overview/Example Code-->
-      <div class='column is-one-half'>
+      <div class='column'>
         <b-tabs>
           <!--Highlights Overview-->
           <b-tab-item label='Overview'>
@@ -24,8 +24,10 @@
         </b-tabs>
       </div>
       <!--Highlights Example-->
-      <div class='column is-one-half is-example'>
-        <ex-highlights></ex-highlights>
+      <div class='column'>
+        <div class='example-container'>
+          <ex-highlights></ex-highlights>
+        </div>
       </div>
     </div>
   </div>

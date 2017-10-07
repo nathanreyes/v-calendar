@@ -2,15 +2,15 @@
 <section id='datepicker' class='section'>
   <div class='container'>
     <h3 class='title has-text-primary is-spaced'>Date Picker</h3>
-    <div class='columns is-centered'>
-      <div class='column is-one-half'>
+    <div class='columns is-desktop'>
+      <div class='column'>
         <b-tabs>
           <!--DatePicker Overview-->
           <b-tab-item label='Overview'>
             <div class='content'>
               <ul>
-                <li>Uses native calendar to support all native props and events</li>
-                <li>3 date selection modes: Single Date, Multiple Dates and Date Range</li>
+                <li>Wraps native calendar to support all native props and events</li>
+                <li>3 date selection modes: single date, multiple dates and date range</li>
                 <li>Supports disabling of specific dates or date ranges</li>
                 <li>Display inline or as a popover for a custom slot</li>
               </ul>
@@ -54,14 +54,16 @@
           </b-tab-item>
         </b-tabs>
       </div>
-      <div class='column is-one-half is-example'>
-        <ex-date-picker
-          :select-mode='selectMode'
-          :show-disabled-dates='showDisabledDates'
-          :is-popover='isPopover'
-          :popover-direction='popoverDirection'
-          :popover-align='popoverAlignment'>
-        </ex-date-picker>
+      <div class='column'>
+        <div class='example-container'>
+          <ex-date-picker
+            :select-mode='selectMode'
+            :show-disabled-dates='showDisabledDates'
+            :is-popover='isPopover'
+            :popover-direction='popoverDirection'
+            :popover-align='popoverAlignment'>
+          </ex-date-picker>
+        </div>
       </div>
     </div>
   </div>

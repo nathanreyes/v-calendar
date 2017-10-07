@@ -2,8 +2,8 @@
 <section id='indicators' class='section'>
   <div class='container'>
     <h4 class='title is-4 has-text-grey-dark is-spaced'>Indicators</h4>
-    <div class='columns'>
-      <div class='column is-one-half'>
+    <div class='columns is-desktop'>
+      <div class='column'>
         <b-tabs>
           <!--Indicators Overview-->
           <b-tab-item label='Overview'>
@@ -21,8 +21,10 @@
           </b-tab-item>
         </b-tabs>
       </div>
-      <div class='column is-one-half is-example'>
-        <ex-indicators></ex-indicators>
+      <div class='column'>
+        <div class='example-container'>
+          <ex-indicators></ex-indicators>
+        </div>
       </div>
     </div>
   </div>

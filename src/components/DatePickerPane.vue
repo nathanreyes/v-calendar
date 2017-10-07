@@ -74,7 +74,7 @@ export default {
       default: () => ({
         order: 100,
         contentStyle: {
-          color: 'red',
+          color: '#ff4000',
           textDecoration: 'line-through',
         },
         contentHoverStyle: {

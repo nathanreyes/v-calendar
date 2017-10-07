@@ -1,5 +1,5 @@
 <template>
-<div class='c-day' :style='{height: dayHeight}'>
+<div class='c-day'>
   <!-- Background layers -->
   <transition-group
     name='background'
@@ -53,7 +53,6 @@
 export default {
   props: {
     dayBackgroundColor: String,
-    dayHeight: { type: String, default: '32px' },
     dayContentStyle: Object,
     dayContentHoverStyle: Object,
     indicatorsOffset: { type: String, default: '0' },

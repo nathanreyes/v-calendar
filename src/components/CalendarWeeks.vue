@@ -1,6 +1,12 @@
 <template>
 <div> 
-  <div class='c-week' v-for='(week, i) in weeks' :key='i'>
+  <div
+    class='c-week'
+    v-for='(week, i) in weeks'
+    :key='i'
+    @touchstart='$emit("touchstart", $event)'
+    @touchmove='$emit("touchmove", $event)'
+    @touchend='$emit("touchend", $event)'>
     <calendar-day
       v-for='day in week'
       :key='day.id'
@@ -140,6 +146,7 @@ export default {
 <style lang='sass' scoped>
 
 .c-week
+  flex-grow: 1
   display: flex
 
 </style>

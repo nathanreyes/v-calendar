@@ -40,9 +40,12 @@ export default {
       todayAttribute: {
         highlight: {
           backgroundColor: '#ff8c66',
+          borderColor: '#ff794d',
+          borderWidth: '2px',
         },
         contentStyle: {
           color: 'white',
+          fontWeight: 500,
         },
         dates: [new Date()],
       },

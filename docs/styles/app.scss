@@ -57,6 +57,12 @@ $navbar-item-color: #fafafa;
     font-style: italic;
 }
 
+.example-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
 pre {
     @include tablet {
         white-space: pre-wrap
