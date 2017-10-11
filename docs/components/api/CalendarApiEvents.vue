@@ -20,18 +20,18 @@ export default {
   data() {
     const props = [
       {
-        name: '<code>dayClick</code>',
-        description: 'Calendar day cell was clicked.',
+        name: '<code>daySelect</code>',
+        description: 'Calendar day cell was selected either by tap on touch devices or by mouse click.',
         parameters: '<code>dayInfo: Object</code>',
       },
       {
-        name: '<code>dayEnter</code>',
-        description: 'Cursor entered a calendar day cell.',
+        name: '<code>dayMouseEnter</code>',
+        description: 'Mouse cursor entered a calendar day cell.',
         parameters: '<code>dayInfo: Object</code>',
       },
       {
-        name: '<code>dayLeave</code>',
-        description: 'Cursor left a calendar day cell.',
+        name: '<code>dayMouseLeave</code>',
+        description: 'Mouse cursor left a calendar day cell.',
         parameters: '<code>dayInfo: Object</code>',
       },
       {

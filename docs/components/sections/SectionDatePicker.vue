@@ -55,7 +55,7 @@
         </b-tabs>
       </div>
       <div class='column'>
-        <div class='example-container'>
+        <div :class='{ "example-container": !isPopover }'>
           <ex-date-picker
             :select-mode='selectMode'
             :show-disabled-dates='showDisabledDates'
@@ -91,8 +91,30 @@ export default {
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',
-      popoverAlignments: ['left', 'right', 'top', 'bottom'],
     };
+  },
+  computed: {
+    popoverAlignments() {
+      switch (this.popoverDirection) {
+        case 'bottom':
+        case 'top':
+          return ['left', 'right'];
+        case 'left':
+        case 'right':
+          return ['top', 'bottom'];
+        default:
+          return [];
+      }
+    },
+  },
+  watch: {
+    popoverAlignments(val) {
+      if (val && val.length) {
+        if (!this.popoverAlignment || !val.includes(this.popoverAlignment)) {
+          this.popoverAlignment = val[0];
+        }
+      }
+    },
   },
 };
 </script>

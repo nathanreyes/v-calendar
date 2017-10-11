@@ -3,7 +3,7 @@
   :attributes='attributes_'
   v-bind='$attrs'
   v-on='$listeners'
-  @dayClick='selectDay'>
+  @daySelect='selectDay'>
 </calendar>
 </template>
 

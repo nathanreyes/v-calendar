@@ -19,9 +19,12 @@
     <div
       class='c-day-content'
       :style='contentStyle_'
-      @click='click()'
-      @mouseenter='enter()'
-      @mouseleave='leave()'>
+      @touchstart='touchstart'
+      @touchmove='touchmove'
+      @touchend='touchend'
+      @click='click($event)'
+      @mouseenter='mouseenter'
+      @mouseleave='mouseleave'>
       {{ label }}
     </div>
   </div>
@@ -50,6 +53,9 @@
 </template>
 
 <script>
+const _tapTolerance = 0;
+const _tapMaxDuration = 200; // ms
+
 export default {
   props: {
     dayBackgroundColor: String,
@@ -76,6 +82,7 @@ export default {
       contentStyle: this.dayContentStyle || {},
       contentHoverStyle: this.dayContentHoverStyle || {},
       isHovered: false,
+      touchState: null,
     };
   },
   computed: {
@@ -125,16 +132,46 @@ export default {
     this.processAttributes();
   },
   methods: {
+    touchstart(e) {
+      const t = e.targetTouches[0];
+      this.touchState = {
+        started: true,
+        startX: t.screenX,
+        startY: t.screenY,
+        x: t.screenX,
+        y: t.screenY,
+      };
+      setTimeout(() => {
+        const state = this.touchState;
+        if (!state.started &&
+          Math.abs(state.x - state.startX) <= _tapTolerance &&
+          Math.abs(state.y - state.startY) <= _tapTolerance) {
+          this.$emit('daySelect', this.dayInfo);
+          this.touchState = null;
+        }
+      }, _tapMaxDuration);
+    },
+    touchmove(e) {
+      if (!this.touchState) return;
+      const t = e.targetTouches[0];
+      this.touchState.x = t.screenX;
+      this.touchState.y = t.screenY;
+    },
+    touchend() {
+      if (!this.touchState) return;
+      this.touchState.started = false;
+    },
     click() {
-      this.$emit('dayClick', this.dayInfo);
+      if (this.touchState) return;
+      this.$emit('daySelect', this.dayInfo);
     },
-    enter() {
+    mouseenter() {
       this.isHovered = true;
-      this.$emit('dayEnter', this.dayInfo);
+      this.$emit('dayMouseEnter', this.dayInfo);
     },
-    leave() {
+    mouseleave() {
       this.isHovered = false;
-      this.$emit('dayLeave', this.dayInfo);
+      this.$emit('dayMouseLeave', this.dayInfo);
     },
     processAttributes() {
       const backgrounds = [];
@@ -264,12 +301,15 @@ export default {
 
 .c-day-box-center-center
   +box()
+  transform-origin: 50% 50%
 
 .c-day-box-left-center
   +box(flex-start)
+  transform-origin: 0% 50%
 
 .c-day-box-right-center
   +box(flex-end)
+  transform-origin: 100% 50%
 
 .c-day-box-center-bottom
   +box(center, flex-end)
@@ -318,11 +358,11 @@ export default {
 
   &.c-day-slide-right-enter
     animation: $slideRightEnterAnimation
-    transform-origin: 0% 50%
+    // transform-origin: 0% 50%
 
   &.c-day-slide-left-enter
     animation: $slideLeftEnterAnimation
-    transform-origin: 100% 50%
+    // transform-origin: 100% 50%
 
   &.c-day-scale-enter
     animation: $scaleEnterAnimation

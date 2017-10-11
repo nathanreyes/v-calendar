@@ -1,9 +1,12 @@
+- Add day-height back as a prop
+- Add option for displaying text or select elements in header
+
 CALENDAR
-- Provide option for hiding/showing hover for each attribute (use for datepicker drag attribute)
 
 DATEPICKER
-- Array of disabled dates and date ranges
 
+DONE - Provide option for hiding/showing hover for each attribute (use for datepicker drag attribute)
+DONE - Array of disabled dates and date ranges
 DONE - Adjust hover to highlight size
 DONE - Allow for custom first day of the week
 DONE - Fix paging bug

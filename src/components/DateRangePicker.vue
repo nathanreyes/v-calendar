@@ -4,23 +4,18 @@
   :attributes='attributes_'
   v-bind='$attrs'
   v-on='$listeners'
-  @dayClick='selectDay'
-  @dayEnter='enterDay'>
-  <div class='dp-footer' slot='footer'>
-    <date-tag :date='new Date()'></date-tag>
-  </div>
+  @daySelect='selectDay'
+  @dayMouseEnter='enterDay'>
 </calendar> 
 </template>
 
 <script>
 import Calendar from './Calendar';
-import DateTag from './DateTag';
 import { DateInfo } from './utils';
 
 export default {
   components: {
     Calendar,
-    DateTag,
   },
   props: {
     value: { type: Object, default: () => { } },
@@ -82,6 +77,10 @@ export default {
     });
   },
   methods: {
+    touchStartDay(day) {
+      this.selectDay(day);
+      this.$emit('dayTouchStart', day);
+    },
     selectDay(day) {
       // Start new drag selection if not dragging
       if (!this.dragValue_) {
@@ -148,10 +147,3 @@ export default {
   },
 };
 </script>
-
-<style lang='sass'>
-.dp-footer
-  display: flex
-  justify-content: center
-  padding: 5px 0
-</style>

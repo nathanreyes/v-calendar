@@ -21,14 +21,17 @@
       v-on='$listeners'>
     </calendar-pane>
   </div>
-  <div class='c-footer-container'>
-    <slot name='footer'></slot>
-  </div>
+  <slot name='footer'>
+    <div class='c-footer'>
+      <!-- <tag>1/21/1983</tag> -->
+    </div>
+  </slot>
 </div>
 </template>
 
 <script>
 import CalendarPane from './CalendarPane';
+import Tag from './Tag';
 import '../assets/fonts/vcalendar/vcalendar.scss';
 import '../styles/lib.sass';
 
@@ -45,6 +48,7 @@ export default {
   name: 'vCalendar',
   components: {
     CalendarPane,
+    Tag,
   },
   props: {
     minPage: Object,
@@ -53,6 +57,10 @@ export default {
     toPage: Object,
     isDoublePaned: Boolean,
     attributes: Array,
+    dateFormatter: {
+      type: Function,
+      default: d => d.toLocaleDateString(),
+    },
   },
   data() {
     return {
@@ -158,6 +166,11 @@ export default {
   display: inline-flex
 
 .c-footer-container
-  width: 100%
+  // width: 100%
+
+.c-footer
+  display: flex
+  justify-content: center
+  padding: 5px 0
 
 </style>

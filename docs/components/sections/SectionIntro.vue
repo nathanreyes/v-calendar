@@ -16,7 +16,7 @@
                   However, it also has some neat built-in ways to communicate information to your users through the use of attributes.
                 </p>
                 <p>
-                  And of course, V-Calendar is responsive and mobile friendly. It even responds to touch swipes for navigation.
+                  Of course, V-Calendar is responsive and mobile friendly. It even responds to taps for day selection and touch swipes for navigation.
                 </p>
               </div>
             </b-tab-item>

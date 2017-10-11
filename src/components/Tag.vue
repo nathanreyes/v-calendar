@@ -1,48 +1,30 @@
 <template>
-<span class='c-date-tag'>
-  <span class='c-tag' :style='tagStyle'>
-    {{ dateParser(date) }}
-    <span class='c-delete' @click='$emit("delete", date)'></span>
-  </span>
+<span class='c-tag' @click.prevent='$emit("click")'>
+  <slot></slot>
+  <span class='c-delete' @click.prevent='$emit("delete")'></span>
 </span>
 </template>
 
 <script>
 export default {
   props: {
-    date: Date,
-    dateParser: {
-      type: Function,
-      default: d => `${d.getMonth()}/${d.getDay()}/${d.getFullYear()}`,
-    },
-    tagStyle: {
-      type: Object,
-      default: () => ({
-        backgroundColor: '#74a4a4',
-        color: '#fafafa',
-      }),
-    },
-  },
-  methods: {
-    parseDate(date) {
-      if (!date || !date.getTime) return '';
-      return typeof this.dateParser === 'function' ? this.dateParser(date) : '';
-    },
   },
 };
 </script>
 
 <style lang='sass' scoped>
 
-.c-date-tag
-  display: inline-flex
-  align-items: center
+$borderColor: rgba(0, 0, 0, 0.1)
+$backgroundColor: #fafafa
 
 .c-tag:not(body)
-  align-items: center
-  background-color: #74a4a4
-  border-radius: 5px
   display: inline-flex
+  align-items: center
+  color: #3a3a3a
+  cursor: pointer
+  background-color: $backgroundColor
+  border: solid 1px $borderColor
+  border-radius: 5px
   font-size: 13px
   height: 2em
   justify-content: center
@@ -50,6 +32,9 @@ export default {
   padding-left: 0.75em
   padding-right: 0.75em
   white-space: nowrap
+  transition: all 0.2s ease-in-out
+  &:hover
+    background-color: #eaeaea
   .c-delete
     margin-left: 0.25em
     margin-right: -0.375em
@@ -122,6 +107,5 @@ export default {
   &:hover,
   &:focus
     background-color: rgba(0, 0, 0, 0.4)
-
 
 </style>

@@ -420,7 +420,7 @@ export default {
 
 .c-weeks-container
   position: relative
-  height: $weeksHeight
+  height: $dayHeight * 6
   .c-weeks
     position: absolute
     width: 100%
