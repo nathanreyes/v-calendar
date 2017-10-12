@@ -1,5 +1,6 @@
 - Add day-height back as a prop
 - Add option for displaying text or select elements in header
+- Add missing props for DatePicker component
 
 CALENDAR
 

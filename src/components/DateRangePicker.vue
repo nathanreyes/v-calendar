@@ -18,8 +18,7 @@ export default {
     Calendar,
   },
   props: {
-    value: { type: Object, default: () => { } },
-    dragValue: { type: Object, default: () => { } },
+    value: { type: Object, default: () => {} },
     dragAttribute: { type: Object, required: true },
     selectAttribute: { type: Object, required: true },
     disabledAttribute: { type: Object, required: true },
@@ -29,7 +28,7 @@ export default {
   },
   data() {
     return {
-      dragValue_: this.dragValue,
+      dragValue: null,
       dayContentHoverStyle_: this.dayContentHoverStyle,
     };
   },
@@ -41,7 +40,7 @@ export default {
       return this.normalizeRange(this.value);
     },
     dragValueInfo() {
-      return new DateInfo(this.dragValue_);
+      return new DateInfo(this.dragValue);
     },
     dragAttribute_() {
       return { ...this.dragAttribute, dates: [this.dragValueInfo] };
@@ -50,7 +49,7 @@ export default {
       return { ...this.selectAttribute, dates: [this.normalizedValue] };
     },
     attributes_() {
-      if (this.dragValue_) {
+      if (this.dragValue) {
         return this.attributes ? [...this.attributes, this.dragAttribute_] : [this.dragAttribute_];
       }
       if (this.valueIsValid) {
@@ -60,19 +59,15 @@ export default {
     },
   },
   watch: {
-    dragValue(value) {
-      this.dragValue_ = value;
-    },
-    dragValue_(value) {
-      this.$emit('update:dragValue', value);
-      this.$emit('drag', value);
+    dragValue(val) {
+      this.$emit('drag', this.normalizeRange(val));
     },
   },
   created() {
     // Clear drag on escape keydown
     document.addEventListener('keydown', (e) => {
-      if (this.dragValue_ && e.keyCode === 27) {
-        this.dragValue_ = null;
+      if (this.dragValue && e.keyCode === 27) {
+        this.dragValue = null;
       }
     });
   },
@@ -83,23 +78,23 @@ export default {
     },
     selectDay(day) {
       // Start new drag selection if not dragging
-      if (!this.dragValue_) {
+      if (!this.dragValue) {
       // Make sure date selection is valid
         const date = new Date(day.date.getTime());
         if (this.dateValidator(date, 'selectDisabled')) {
           // Start new drag selection
-          this.dragValue_ = { start: date, end: date };
+          this.dragValue = { start: date, end: date };
         }
       } else {
         // Construct new value
         const newValue = new DateInfo({
-          start: new Date(this.dragValue_.start.getTime()),
+          start: new Date(this.dragValue.start.getTime()),
           end: new Date(day.date.getTime()),
         });
         // Make sure new value is valid
         if (this.dateValidator(newValue, 'selectDisabled')) {
           // Clear drag selection
-          this.dragValue_ = null;
+          this.dragValue = null;
           // Signal new value selected
           this.$emit('input', newValue.toRange());
         }
@@ -109,16 +104,16 @@ export default {
     },
     enterDay(day) {
       // Make sure drag has been initialized
-      if (this.dragValue_) {
+      if (this.dragValue) {
         // Construct new drag value
         const newDragValue = {
-          start: new Date(this.dragValue_.start.getTime()),
+          start: new Date(this.dragValue.start.getTime()),
           end: new Date(day.date.getTime()),
         };
         // Make sure dragged value is valid
         if (this.dateValidator(newDragValue, 'dragDisabled')) {
           // Update drag selection
-          this.dragValue_ = newDragValue;
+          this.dragValue = newDragValue;
           // Assign default content hover style
           this.dayContentHoverStyle_ = this.dayContentHoverStyle;
         } else {

@@ -20,6 +20,16 @@ export default {
   data() {
     const props = [
       {
+        name: '<code>updated:fromPage</code>',
+        description: 'Calendar left/single pane moved to a different page.',
+        parameters: '<code>page: Object</code>',
+      },
+      {
+        name: '<code>updated:toPage</code>',
+        description: 'Calendar right pane moved to a different page.',
+        parameters: '<code>page: Object</code>',
+      },
+      {
         name: '<code>daySelect</code>',
         description: 'Calendar day cell was selected either by tap on touch devices or by mouse click.',
         parameters: '<code>dayInfo: Object</code>',
@@ -33,16 +43,6 @@ export default {
         name: '<code>dayMouseLeave</code>',
         description: 'Mouse cursor left a calendar day cell.',
         parameters: '<code>dayInfo: Object</code>',
-      },
-      {
-        name: '<code>updated:fromPage</code>',
-        description: 'Calendar left/single pane moved to a different page.',
-        parameters: '<code>page: Object</code>',
-      },
-      {
-        name: '<code>updated:toPage</code>',
-        description: 'Calendar right pane moved to a different page.',
-        parameters: '<code>page: Object</code>',
       },
       {
         name: '<code>input</code>',

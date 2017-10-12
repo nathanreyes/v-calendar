@@ -20,7 +20,6 @@
       class='c-day-content'
       :style='contentStyle_'
       @touchstart='touchstart'
-      @touchmove='touchmove'
       @touchend='touchend'
       @click='click($event)'
       @mouseenter='mouseenter'
@@ -83,6 +82,7 @@ export default {
       contentHoverStyle: this.dayContentHoverStyle || {},
       isHovered: false,
       touchState: null,
+      touchCount: 0,
     };
   },
   computed: {
@@ -136,33 +136,30 @@ export default {
       const t = e.targetTouches[0];
       this.touchState = {
         started: true,
+        startedOn: new Date(),
         startX: t.screenX,
         startY: t.screenY,
         x: t.screenX,
         y: t.screenY,
       };
-      setTimeout(() => {
-        const state = this.touchState;
-        if (!state.started &&
-          Math.abs(state.x - state.startX) <= _tapTolerance &&
-          Math.abs(state.y - state.startY) <= _tapTolerance) {
-          this.$emit('daySelect', this.dayInfo);
-          this.touchState = null;
-        }
-      }, _tapMaxDuration);
     },
-    touchmove(e) {
-      if (!this.touchState) return;
-      const t = e.targetTouches[0];
-      this.touchState.x = t.screenX;
-      this.touchState.y = t.screenY;
-    },
-    touchend() {
-      if (!this.touchState) return;
-      this.touchState.started = false;
+    touchend(e) {
+      if (!this.touchState || !this.touchState.started) return;
+      const t = e.changedTouches[0];
+      const state = this.touchState;
+      state.x = t.screenX;
+      state.y = t.screenY;
+      state.tapDetected = new Date() - state.startedOn <= _tapMaxDuration &&
+        Math.abs(state.x - state.startX) <= _tapTolerance &&
+        Math.abs(state.y - state.startY) <= _tapTolerance;
+
+      if (state.tapDetected) {
+        this.$emit('daySelect', this.dayInfo);
+      }
+      state.started = false;
     },
     click() {
-      if (this.touchState) return;
+      if (this.touchState && this.touchState.tapDetected) return;
       this.$emit('daySelect', this.dayInfo);
     },
     mouseenter() {
@@ -284,6 +281,7 @@ export default {
 .c-day
   position: relative
   width: $dayWidth
+  height: $dayHeight
 
 .c-day-layer
   position: absolute

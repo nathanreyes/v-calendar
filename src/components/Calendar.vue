@@ -21,7 +21,7 @@
       v-on='$listeners'>
     </calendar-pane>
   </div>
-  <slot name='footer'>
+  <slot name='footer' v-if='showFooter'>
     <div class='c-footer'>
       <!-- <tag>1/21/1983</tag> -->
     </div>
@@ -45,7 +45,6 @@ import {
 } from './utils';
 
 export default {
-  name: 'vCalendar',
   components: {
     CalendarPane,
     Tag,
@@ -56,6 +55,7 @@ export default {
     fromPage: Object,
     toPage: Object,
     isDoublePaned: Boolean,
+    showTags: Boolean,
     attributes: Array,
     dateFormatter: {
       type: Function,
@@ -72,6 +72,9 @@ export default {
   computed: {
     isDoublePaned_() {
       return this.isDoublePaned && this.windowWidth >= 440;
+    },
+    showFooter() {
+      return this.showTags || this.$slots.footer;
     },
     paneCentered() {
       return this.isDoublePaned && !this.isDoublePaned_;

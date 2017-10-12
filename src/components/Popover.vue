@@ -1,16 +1,20 @@
 <template>
   <div class='popover-container'>
     <slot>
-      <div>Popover anchor goes here</div>
+      <div>Popover anchor slot goes here</div>
     </slot>
-    <transition name='slide-fade'>
-      <div class='anchor' :class='["direction-" + direction, "align-" + align]' v-if='visible_'>
-        <div class='content-container'>
-          <div class='content' :class='["direction-" + direction, "align-" + align]'>
-            <slot name='popover-content'>
-              <div>Popover content goes here</div>
-            </slot>
-          </div>
+    <transition name='slide-fade' tag='div'>
+      <div
+        :class='["anchor", "direction-" + direction, "align-" + align]'
+        v-if='visible_'>
+        <div
+          :tabindex='isFocusable ? 0 : undefined'
+          :class='["content", "direction-" + direction, "align-" + align]'
+          @focus='$emit("contentFocus", $event)'
+          @blur='$emit("contentBlur", $event)'>
+          <slot name='popover-content'>
+            <div>Popover content goes here</div>
+          </slot>
         </div>
       </div>
     </transition>
@@ -19,7 +23,6 @@
 
 <script>
 export default {
-  name: 'vPopover',
   data() {
     return {
       visible_: this.visible,
@@ -27,9 +30,10 @@ export default {
   },
   props: {
     visible: Boolean,
+    isFocusable: Boolean,
     direction: { type: String, default: 'bottom' },
     align: { type: String, default: 'left' },
-    delay: { type: Number, default: 0 }, // Milliseconds
+    delay: { type: Number, default: 10 }, // Milliseconds
   },
   watch: {
     visible(val) {
@@ -45,7 +49,7 @@ export default {
 };
 </script>
 
-<style lang='sass'>
+<style lang='sass' scoped>
 
 @import '../styles/vars.sass'
 
@@ -83,12 +87,12 @@ export default {
     left: 50%
   &.direction-top.align-right, &.direction-bottom.align-right
     right: 0
-  .content-container
-    .content
-      &.direction-top.align-center, &.direction-bottom.align-center
-        margin-left: -50%
-      &.direction-left.align-middle, &.direction-right.align-middle
-        margin-top: -50%
+  .content
+    outline: none
+    &.direction-top.align-center, &.direction-bottom.align-center
+      margin-left: -50%
+    &.direction-left.align-middle, &.direction-right.align-middle
+      margin-top: -50%
 
 .slide-fade-enter-active, .slide-fade-leave-active
   transition: all $popoverSlideTransitionTime

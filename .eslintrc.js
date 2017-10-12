@@ -40,5 +40,6 @@ module.exports = {
     'max-len': 'off',
     'no-plusplus': 'off',
     'linebreak-style': 'off',
+    // 'no-console': 'off',
   }
 }
