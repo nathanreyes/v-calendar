@@ -1,22 +1,26 @@
 <template>
+  <component
+    :is='datePicker'
+    :value='value'
+    :day-content-hover-style='dayContentHoverStyle'
+    :drag-attribute='dragAttribute'
+    :select-attribute='selectAttribute'
+    :disabled-attribute='disabledAttribute_'
+    :attributes='attributes_'
+    :date-validator='dateValidator'
+    @drag='dragValue = $event'
+    v-bind='$attrs'
+    v-on='$listeners'
+    v-if='isInline'>
+  </component>
   <popover
-    :visible='pickerVisible'
+    :visible='popoverVisible_'
     :direction='popoverDirection'
     :align='popoverAlign'
     @contentFocus='popoverFocus'
     @contentBlur='popoverBlur'
-    v-if='isPopover'
-    is-focusable>
-    <slot name='input'>
-      <input
-        :class='[inputClass, { "c-input-drag": dragValue }]'
-        :style='inputStyle'
-        :placeholder='placeholder_'
-        v-model='valueText'
-        @focus='inputFocus'
-        @blur='inputBlur'
-        @keyup.enter='inputEnter' />
-    </slot>
+    is-focusable
+    v-else>
     <component
       slot='popover-content'
       :is='datePicker'
@@ -31,21 +35,20 @@
       v-bind='$attrs'
       v-on='$listeners'>
     </component>
+    <slot
+      :input-value='valueText'
+      :parse-value='parseValue'>
+      <input
+        :class='[inputClass, { "c-input-drag": dragValue }]'
+        :style='inputStyle'
+        :placeholder='placeholder_'
+        v-model='valueText'
+        @focus='inputFocus'
+        @keyup.enter='inputEnter'
+        @blur='inputBlur' />
+    </slot>
   </popover>
-  <component
-    :is='datePicker'
-    :value='value'
-    :day-content-hover-style='dayContentHoverStyle'
-    :drag-attribute='dragAttribute'
-    :select-attribute='selectAttribute'
-    :disabled-attribute='disabledAttribute_'
-    :attributes='attributes_'
-    :date-validator='dateValidator'
-    @drag='dragValue = $event'
-    v-bind='$attrs'
-    v-on='$listeners'
-    v-else>
-  </component>
+
 </template>
 
 <script>
@@ -54,6 +57,9 @@ import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
 import { DateInfo } from './utils';
+
+const POPOVER_AUTO = -1;
+const POPOVER_VISIBLE = 1;
 
 export default {
   components: {
@@ -65,9 +71,10 @@ export default {
   props: {
     selectMode: { type: String, default: 'single' },
     value: null,
-    isPopover: Boolean,
+    isInline: Boolean,
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
+    popoverVisibility: { type: Number, default: POPOVER_AUTO },
     inputClass: String,
     inputStyle: Object,
     inputPlaceholder: String,
@@ -136,7 +143,7 @@ export default {
   },
   data() {
     return {
-      pickerVisible: false,
+      popoverVisible: false,
       dragValue: null,
       valueText: '',
     };
@@ -169,6 +176,10 @@ export default {
         default:
           return '';
       }
+    },
+    popoverVisible_() {
+      if (this.popoverVisibility === POPOVER_AUTO) return this.popoverVisible;
+      return this.popoverVisibility === POPOVER_VISIBLE;
     },
     suggestedInputText() {
       if (!this.value || typeof this.dateFormatter !== 'function') return '';
@@ -237,26 +248,25 @@ export default {
   },
   methods: {
     inputFocus() {
-      this.pickerVisible = true;
-    },
-    inputBlur() {
-      this.pickerVisible = false;
-      this.updateValueFromText();
+      this.popoverVisible = true;
     },
     inputEnter() {
-      this.updateValueFromText();
+      this.updateValue();
+    },
+    inputBlur() {
+      this.popoverVisible = false;
+      this.updateValue();
     },
     popoverFocus() {
-      this.pickerVisible = true;
+      this.popoverVisible = true;
     },
     popoverBlur() {
-      this.pickerVisible = false;
+      this.popoverVisible = false;
     },
-    updateValueFromText() {
-      this.$emit('input', this.getValueForInputText());
+    updateValue(valueText = this.valueText) {
+      this.$emit('input', this.parseValue(valueText));
     },
-    getValueForInputText() {
-      const valueText = this.valueText;
+    parseValue(valueText) {
       let value = null;
       if (this.selectMode === 'single') {
         value = this.dateParser(valueText.trim());

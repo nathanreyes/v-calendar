@@ -133,6 +133,51 @@ export default {
         default: '<code>"single"</code>',
       },
       {
+        name: '<code>is-inline: Boolean</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Displays calendar inline instead of as a popover.',
+        default: '<code>false</code>',
+      },
+      {
+        name: '<code>popover-direction: String</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Direction that popover displays relative to input or slot element: <code>"bottom"</code>, <code>"top"</code>, <code>"left"</code>, <code>"right"</code>',
+        default: '<code>"bottom"<code>'
+      },
+      {
+        name: '<code>popover-align: String</code>',
+        description: '<span class="tag is-warning">Date Picker</span>How the popover is aligned relative to input or slot element: <code>"left"</code>, <code>"right"</code>, <code>"top"</code>, <code>"bottom"</code>',
+        default: '<code>"left"<code>',
+      },
+      {
+        name: '<code>popover-visibility: Number</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Visibility state of the popover: Auto: <code>-1</code>, Hidden: <code>0</code>, Visible: <code>1</code>',
+        default: 'Auto: <code>-1</code>',
+      },
+      {
+        name: '<code>input-class: String</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Class to apply to input element. Not application for inline date-pickers.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>input-style: Object</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Style to apply to input element. Not applicable in for inline date-pickers.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>input-placeholder: String</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Placeholder to user for input element. Not applicable in for inline date-pickers.',
+        default: 'Single: <code>"Enter Date"</code>, Double: <code>"Date 1, Date 2, ..."</code>, Range: <code>"Start Date - End Date"</code>',
+      },
+      {
+        name: '<code>date-formatter: Function</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Function used to convert a date into text.',
+        default: '<code>date => date.toLocaleDateString()</code>',
+      },
+      {
+        name: '<code>date-parser: Function</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Function used to parse text into a date.',
+        default: '<code>text => new Date(Date.parse(text))</code>',
+      },
+      {
         name: '<code>disabled-dates: Array</code>',
         description: '<span class="tag is-warning">Date Picker</span>List of disabled dates or date range objects. Date ranges must specify <code>start</code> and <code>end</code> dates.',
         default: '<code>undefined</code>',

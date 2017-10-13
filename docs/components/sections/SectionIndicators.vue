@@ -32,9 +32,6 @@
 </template>
 
 <script>
-/* eslint-disable import/no-webpack-loader-syntax */
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/first */
 import ExIndicators from '../examples/ExIndicators';
 import ExIndicatorsCode from '!!raw-loader!../examples/ExIndicators';
 

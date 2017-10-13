@@ -55,11 +55,12 @@ export default {
 
 .popover-container
   position: relative
+  z-index: 1
 
 .anchor
   position: absolute
   transform-origin: top center
-  z-index: 100
+  z-index: -1
   &.direction-top
     bottom: 100%
     margin-bottom: $popoverOffset

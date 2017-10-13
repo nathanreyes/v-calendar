@@ -35,9 +35,6 @@
 </template>
 
 <script>
-/* eslint-disable import/no-webpack-loader-syntax */
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/first */
 import ExHighlights from '../examples/ExHighlights';
 import ExHighlightsCode from '!!raw-loader!../examples/ExHighlights';
 

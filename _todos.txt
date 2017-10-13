@@ -1,11 +1,9 @@
 - Add day-height back as a prop
-- Add option for displaying text or select elements in header
-- Add missing props for DatePicker component
 
 CALENDAR
 
 DATEPICKER
-
+DONE - Add missing props for DatePicker component
 DONE - Provide option for hiding/showing hover for each attribute (use for datepicker drag attribute)
 DONE - Array of disabled dates and date ranges
 DONE - Adjust hover to highlight size

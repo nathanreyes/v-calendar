@@ -7,6 +7,7 @@
     <section-indicators></section-indicators>
     <section-content-styles></section-content-styles>
     <section-date-picker></section-date-picker>
+    <section-date-picker-slot></section-date-picker-slot>
     <section-api></section-api>
     <section-usage></section-usage>
     <section-footer></section-footer>
@@ -24,6 +25,7 @@ import SectionContentStyles from './sections/SectionContentStyles';
 import SectionHighlights from './sections/SectionHighlights';
 import SectionIndicators from './sections/SectionIndicators';
 import SectionDatePicker from './sections/SectionDatePicker';
+import SectionDatePickerSlot from './sections/SectionDatePickerSlot';
 import SectionApi from './sections/SectionApi';
 import SectionUsage from './sections/SectionUsage';
 import SectionFooter from './sections/SectionFooter';
@@ -37,6 +39,7 @@ export default {
     SectionHighlights,
     SectionIndicators,
     SectionDatePicker,
+    SectionDatePickerSlot,
     SectionApi,
     SectionUsage,
     SectionFooter,

@@ -38,9 +38,6 @@
 </template>
 
 <script>
-/* eslint-disable import/no-webpack-loader-syntax */
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/first */
 import ExIntro from '../examples/ExIntro';
 import ExIntroCode from '!!raw-loader!../examples/ExIntro';
 

@@ -35,9 +35,6 @@
 </template>
 
 <script>
-/* eslint-disable import/no-webpack-loader-syntax */
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/first */
 import ExContentStyles from '../examples/ExContentStyles';
 import ExContentStylesCode from '!!raw-loader!../examples/ExContentStyles';
 

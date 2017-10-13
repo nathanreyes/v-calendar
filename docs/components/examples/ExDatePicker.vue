@@ -3,7 +3,7 @@
     :select-mode='selectMode'
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[todayAttribute]'
-    :is-popover='isPopover'
+    :is-inline='isInline'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
     inputClass='input'
@@ -21,7 +21,7 @@ export default {
   props: {
     selectMode: { type: String, default: 'range' },
     showDisabledDates: Boolean,
-    isPopover: { type: Boolean, default: false },
+    isInline: Boolean,
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
   },

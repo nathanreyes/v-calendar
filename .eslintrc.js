@@ -40,6 +40,9 @@ module.exports = {
     'max-len': 'off',
     'no-plusplus': 'off',
     'linebreak-style': 'off',
-    // 'no-console': 'off',
+    'import/no-duplicates': 'off',
+    'import/no-webpack-loader-syntax': 'off',
+    'import/first': 'off',
+    'no-console': 'off',
   }
 }

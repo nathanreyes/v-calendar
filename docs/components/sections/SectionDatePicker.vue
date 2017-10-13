@@ -33,9 +33,9 @@
               <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
             </b-field>
             <b-field>
-              <b-switch v-model='isPopover'>Popover</b-switch>
+              <b-switch v-model='isInline'>Inline</b-switch>
             </b-field>
-            <div v-if='isPopover'>
+            <div v-if='!isInline'>
               <b-field label='Popover Direction'>
                 <b-select v-model='popoverDirection'>
                   <option v-for='direction in popoverDirections' :value='direction' :key='direction'>
@@ -55,11 +55,11 @@
         </b-tabs>
       </div>
       <div class='column'>
-        <div :class='{ "example-container": !isPopover }'>
+        <div :class='{ "example-container": isInline }'>
           <ex-date-picker
             :select-mode='selectMode'
             :show-disabled-dates='showDisabledDates'
-            :is-popover='isPopover'
+            :is-inline='isInline'
             :popover-direction='popoverDirection'
             :popover-align='popoverAlignment'>
           </ex-date-picker>
@@ -71,9 +71,6 @@
 </template>
 
 <script>
-/* eslint-disable import/no-webpack-loader-syntax */
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/first */
 import ExDatePicker from '../examples/ExDatePicker';
 import ExDatePickerCode from '!!raw-loader!../examples/ExDatePicker';
 
@@ -87,7 +84,7 @@ export default {
       selectMode: 'range',
       selectedValue: null,
       showDisabledDates: false,
-      isPopover: false,
+      isInline: false,
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',
