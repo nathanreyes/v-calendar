@@ -6,6 +6,10 @@
   "homepage": "vcalendar.netlify.com",
   "author": "Nathan Reyes <nathanreyes@me.com>",
   "main": "dist/lib/v-calendar.min.js",
+  "files": [
+    "src",
+    "dist/lib"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanreyes/v-calendar"
