@@ -9,11 +9,11 @@
             V-Calendar
           </router-link>
         </div>
-        <span class="nav-toggle">
+        <!-- <span class="nav-toggle">
           <span></span>
           <span></span>
           <span></span>
-        </span>
+        </span> -->
         <div class="nav-right nav-menu">
           <!-- <a class="nav-item is-active">
             Home
@@ -39,6 +39,7 @@
     <div class='container has-text-centered'>
       <h1 class='title is-2 logo'>V-Calendar</h1>
       <h2 class='logo-subtitle'>&#8212; A clean, lively calendar plugin for Vue.js &#8212;</h2>
+      <b-tag>v0.0.1</b-tag>
     </div>
   </div>
   <!-- Hero footer: will stick at the bottom -->
@@ -57,3 +58,8 @@
   </div>
 </section>
 </template>
+
+<style lang='sass' scoped>
+.tag
+  margin-top: 10px
+</style>
