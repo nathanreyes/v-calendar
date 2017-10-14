@@ -39,7 +39,7 @@
     <div class='container has-text-centered'>
       <h1 class='title is-2 logo'>V-Calendar</h1>
       <h2 class='logo-subtitle'>&#8212; A clean, lively calendar plugin for Vue.js &#8212;</h2>
-      <b-tag>v0.0.1</b-tag>
+      <b-tag>{{ version }}</b-tag>
     </div>
   </div>
   <!-- Hero footer: will stick at the bottom -->
@@ -58,6 +58,18 @@
   </div>
 </section>
 </template>
+
+<script>
+import Package from '../../../package.json';
+
+export default {
+  data() {
+    return {
+      version: Package.version,
+    };
+  },
+};
+</script>
 
 <style lang='sass' scoped>
 .tag
