@@ -3,7 +3,7 @@
   <div class='container'>
     <h3 class='title has-text-primary is-spaced'>Usage</h3>
     <b-message type='is-warning'>
-      <a href='https://vuejs.org' target='_blank'>Vue.js</a> version <strong>2.4+</strong> is required.
+      <a href='https://vuejs.org' target='_blank'>Vue.js</a> version <strong>2.4.2+</strong> is required.
     </b-message>
     <article class='media'>
       <div class='media-left'>
@@ -33,7 +33,7 @@
         <p class='title is-5'>3</p>
       </div>
       <div class='media-content'>
-        <p class='title is-5'>Reference in your Vue component templates</p>
+        <p class='title is-5'>Reference in your component templates</p>
         <figure class='highlight'>
           <pre v-highlight><code class='html'>{{ componentCode | pre }}</code></pre>
         </figure>
@@ -50,7 +50,7 @@ export default {
       importCode: `
         import Vue from 'vue';
         import VCalendar from 'v-calendar';
-        import 'vcalendar/lib/vcalendar.css';
+        import 'vcalendar/lib/vcalendar.min.css';
 
         Vue.use(VCalendar);`,
       componentCode: `
