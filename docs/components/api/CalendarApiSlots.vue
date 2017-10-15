@@ -18,10 +18,6 @@
 <script>
 export default {
   data() {
-    // const movePrevMonthCode = '<code>movePrevMonth(): Function</code>';
-    // const moveNextMonthCode = '<code>moveNextMonth(): Function</code>';
-    // const moveThisMonthCode = '<code>moveThisMonth(): Function</code>';
-    // const moveCode = '<code>move(<i>month</i>: Number, <i>year</i>: Number): Function</code>';
     const props = [
       {
         name: '<code>header</code>',
@@ -42,6 +38,11 @@ export default {
         name: '<code>header-right-button</code>',
         description: 'Calendar header button on the right side.',
         props: '<code>page: Object</code>',
+      },
+      {
+        name: '<code>v-date-picker >> <i>default</i></code>',
+        description: '<span class="tag is-warning">Date Picker</span>Default slot to use as the popover anchor for <code>v-date-picker</code>. Most likely this slot will contain a custom <code>input</code> element. Not valid for inline date pickers.',
+        props: '<code>inputValue: String</code>, <code>parseValue: Function</code>',
       },
     ];
     return {

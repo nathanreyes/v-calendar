@@ -35,6 +35,9 @@
             <b-field>
               <b-switch v-model='isInline'>Inline</b-switch>
             </b-field>
+            <b-field>
+              <b-switch v-model='isExpanded'>Expanded</b-switch>
+            </b-field>
             <div v-if='!isInline'>
               <b-field label='Popover Direction'>
                 <b-select v-model='popoverDirection'>
@@ -60,6 +63,7 @@
             :select-mode='selectMode'
             :show-disabled-dates='showDisabledDates'
             :is-inline='isInline'
+            :is-expanded='isExpanded'
             :popover-direction='popoverDirection'
             :popover-align='popoverAlignment'>
           </ex-date-picker>
@@ -85,6 +89,7 @@ export default {
       selectedValue: null,
       showDisabledDates: false,
       isInline: false,
+      isExpanded: true,
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',

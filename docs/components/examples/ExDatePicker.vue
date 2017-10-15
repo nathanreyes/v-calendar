@@ -4,6 +4,7 @@
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[todayAttribute]'
     :is-inline='isInline'
+    :is-expanded='isExpanded'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
     inputClass='input'
@@ -22,6 +23,7 @@ export default {
     selectMode: { type: String, default: 'range' },
     showDisabledDates: Boolean,
     isInline: Boolean,
+    isExpanded: Boolean,
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
   },

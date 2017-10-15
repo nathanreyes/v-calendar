@@ -2,9 +2,9 @@
   <component
     :is='datePicker'
     :value='value'
-    :day-content-hover-style='dayContentHoverStyle'
-    :drag-attribute='dragAttribute'
-    :select-attribute='selectAttribute'
+    :day-content-hover-style='dayContentHoverStyle_'
+    :drag-attribute='dragAttribute_'
+    :select-attribute='selectAttribute_'
     :disabled-attribute='disabledAttribute_'
     :attributes='attributes_'
     :date-validator='dateValidator'
@@ -14,27 +14,11 @@
     v-if='isInline'>
   </component>
   <popover
-    :visible='popoverVisible_'
     :direction='popoverDirection'
     :align='popoverAlign'
-    @contentFocus='popoverFocus'
-    @contentBlur='popoverBlur'
-    is-focusable
+    :visibility='popoverVisibility'
+    :is-expanded='isExpanded'
     v-else>
-    <component
-      slot='popover-content'
-      :is='datePicker'
-      :value='value'
-      :day-content-hover-style='dayContentHoverStyle'
-      :drag-attribute='dragAttribute'
-      :select-attribute='selectAttribute'
-      :disabled-attribute='disabledAttribute_'
-      :attributes='attributes_'
-      :date-validator='dateValidator'
-      @drag='dragValue = $event'
-      v-bind='$attrs'
-      v-on='$listeners'>
-    </component>
     <slot
       :input-value='valueText'
       :parse-value='parseValue'>
@@ -43,10 +27,23 @@
         :style='inputStyle'
         :placeholder='placeholder_'
         v-model='valueText'
-        @focus='inputFocus'
         @keyup.enter='inputEnter'
         @blur='inputBlur' />
     </slot>
+    <component
+      slot='popover-content'
+      :is='datePicker'
+      :value='value'
+      :day-content-hover-style='dayContentHoverStyle_'
+      :drag-attribute='dragAttribute_'
+      :select-attribute='selectAttribute_'
+      :disabled-attribute='disabledAttribute_'
+      :attributes='attributes_'
+      :date-validator='dateValidator'
+      @drag='dragValue = $event'
+      v-bind='$attrs'
+      v-on='$listeners'>
+    </component>
   </popover>
 
 </template>
@@ -57,9 +54,10 @@ import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
 import { DateInfo } from './utils';
+import { shadeBlendConvert } from './legacy';
 
 const POPOVER_AUTO = -1;
-const POPOVER_VISIBLE = 1;
+const _defaultTintColor = '#74a4a4';
 
 export default {
   components: {
@@ -72,6 +70,7 @@ export default {
     selectMode: { type: String, default: 'single' },
     value: null,
     isInline: Boolean,
+    isExpanded: Boolean,
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
     popoverVisibility: { type: Number, default: POPOVER_AUTO },
@@ -86,64 +85,16 @@ export default {
       type: Function,
       default: s => new Date(Date.parse(s)),
     },
-    attributes: Array,
-    dayContentHoverStyle: {
-      type: Object,
-      default: () => ({
-        backgroundColor: 'rgba(16, 52, 86, 0.25)',
-        cursor: 'pointer',
-      }),
-    },
-    dragAttribute: {
-      type: Object,
-      default: () => ({
-        highlight: {
-          backgroundColor: '#c1d6d7',
-          height: '25px',
-        },
-        contentStyle: {
-          color: '#103456',
-        },
-        contentHoverStyle: {
-          backgroundColor: 'transparent',
-        },
-      }),
-    },
-    selectAttribute: {
-      type: Object,
-      default: () => ({
-        highlight: {
-          backgroundColor: '#74a4a4',
-          borderWidth: '1px',
-          borderColor: '#65999a',
-        },
-        contentStyle: {
-          color: '#fafafa',
-        },
-        contentHoverStyle: {
-          backgroundColor: 'transparent',
-        },
-      }),
-    },
+    dayContentHoverStyle: Object,
+    tintColor: { type: String, default: _defaultTintColor },
+    selectAttribute: Object,
+    dragAttribute: Object,
     disabledDates: Array,
-    disabledAttribute: {
-      type: Object,
-      default: () => ({
-        order: 100,
-        contentStyle: {
-          color: '#ff4000',
-          textDecoration: 'line-through',
-        },
-        contentHoverStyle: {
-          cursor: 'not-allowed',
-          backgroundColor: 'transparent',
-        },
-      }),
-    },
+    disabledAttribute: Object,
+    attributes: Array,
   },
   data() {
     return {
-      popoverVisible: false,
       dragValue: null,
       valueText: '',
     };
@@ -177,10 +128,6 @@ export default {
           return '';
       }
     },
-    popoverVisible_() {
-      if (this.popoverVisibility === POPOVER_AUTO) return this.popoverVisible;
-      return this.popoverVisibility === POPOVER_VISIBLE;
-    },
     suggestedInputText() {
       if (!this.value || typeof this.dateFormatter !== 'function') return '';
       if (this.selectMode === 'single') {
@@ -205,7 +152,7 @@ export default {
     },
     disabledDates_() {
       if (this.disabledDates) return this.disabledDates.map(d => new DateInfo(d));
-      if (this.disabledAttribute.dates) return this.disableAttribute.dates.map(d => new DateInfo(d));
+      if (this.disabledAttribute && this.disabledAttribute.dates) return this.disableAttribute.dates.map(d => new DateInfo(d));
       return [];
     },
     dateValidator() {
@@ -220,10 +167,56 @@ export default {
         return true;
       };
     },
+    dayContentHoverStyle_() {
+      return this.dayContentHoverStyle || {
+        backgroundColor: 'rgba(16, 52, 86, 0.25)',
+        cursor: 'pointer',
+      };
+    },
+    selectAttribute_() {
+      return this.selectAttribute || {
+        highlight: {
+          backgroundColor: this.tintColor,
+          borderWidth: '1px',
+          borderColor: shadeBlendConvert(0.1, this.tintColor, '#000000'), // '#65999a',
+        },
+        contentStyle: {
+          color: '#fafafa',
+        },
+        contentHoverStyle: {
+          backgroundColor: 'transparent',
+        },
+      };
+    },
+    dragAttribute_() {
+      return this.dragAttribute || {
+        highlight: {
+          backgroundColor: shadeBlendConvert(0.5, this.tintColor, '#fafafa'), // '#c1d6d7',
+          height: '25px',
+        },
+        contentStyle: {
+          color: '#103456',
+        },
+        contentHoverStyle: {
+          backgroundColor: 'transparent',
+        },
+      };
+    },
     disabledAttribute_() {
+      const baseAttribute = this.disabledAttribute || {
+        order: 100,
+        contentStyle: {
+          color: '#ff4000',
+          textDecoration: 'line-through',
+        },
+        contentHoverStyle: {
+          cursor: 'not-allowed',
+          backgroundColor: 'transparent',
+        },
+      };
       return {
         key: 'disabled',
-        ...this.disabledAttribute,
+        ...baseAttribute,
         dates: this.disabledDates_,
       };
     },
@@ -247,21 +240,11 @@ export default {
     },
   },
   methods: {
-    inputFocus() {
-      this.popoverVisible = true;
-    },
     inputEnter() {
       this.updateValue();
     },
     inputBlur() {
-      this.popoverVisible = false;
       this.updateValue();
-    },
-    popoverFocus() {
-      this.popoverVisible = true;
-    },
-    popoverBlur() {
-      this.popoverVisible = false;
     },
     updateValue(valueText = this.valueText) {
       this.$emit('input', this.parseValue(valueText));

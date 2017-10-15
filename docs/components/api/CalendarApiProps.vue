@@ -133,6 +133,11 @@ export default {
         default: '<code>"single"</code>',
       },
       {
+        name: '<code>tint-color: String</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Tint color to use for the selected highlight. If <code>selected-attribute</code> or <code>drag-attribute</code> are assigned they will overwrite this value.',
+        default: '<code>"#74a4a4"</code>',
+      },
+      {
         name: '<code>is-inline: Boolean</code>',
         description: '<span class="tag is-warning">Date Picker</span>Displays calendar inline instead of as a popover.',
         default: '<code>false</code>',

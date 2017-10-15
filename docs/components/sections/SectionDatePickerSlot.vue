@@ -3,7 +3,7 @@
   <div class='container'>
     <h4 class='title is-4 has-text-grey-dark is-spaced'>Custom Slot</h4>
     <div class='columns is-desktop'>
-      <div class='column'>
+      <div class='column is-two-thirds'>
         <b-tabs>
           <b-tab-item label='Overview'>
             <div class='content'>
@@ -16,6 +16,10 @@
                 <li>Use <code>props.parseValue(<span style='font-style:italic'>[input value here]</span>)</code> to help parse your input value whenever needed (input blur, enter key, button action, etc).</li>
               </ol>
             </div>
+            <b-message type='is-info'>
+              <strong>Note:</strong> By default, <code>v-date-picker</code> will manage popover visibility for you with <code>popover-visibility</code> set to auto (<code>-1</code>).
+              If you want to manage it yourself, set <code>popover-visibility</code> to visible (<code>1</code>) or hidden (<code>0</code>) within your template.
+            </b-message>
           </b-tab-item>
           <b-tab-item label='Example Code'>
             <pre v-highlight><code class='html'>{{ exDatePickerSlotCode }}</code></pre>
@@ -26,7 +30,7 @@
           </b-tab-item>
         </b-tabs>
       </div>
-      <div class='column'>
+      <div class='column is-one-third'>
         <ex-date-picker-slot></ex-date-picker-slot>
       </div>
     </div>

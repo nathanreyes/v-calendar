@@ -1,49 +1,70 @@
 <template>
-  <div class='popover-container'>
-    <slot>
-      <div>Popover anchor slot goes here</div>
-    </slot>
+  <div
+    :class='["popover-container", { expanded: isExpanded }]'
+    :tabindex='visibility === -1 ? 0 : undefined'
+    @focusin='focusin'
+    @focusout='focusout'>
     <transition name='slide-fade' tag='div'>
       <div
         :class='["anchor", "direction-" + direction, "align-" + align]'
-        v-if='visible_'>
+        v-if='visibleDelay'>
         <div
-          :tabindex='isFocusable ? 0 : undefined'
-          :class='["content", "direction-" + direction, "align-" + align]'
-          @focus='$emit("contentFocus", $event)'
-          @blur='$emit("contentBlur", $event)'>
+          :class='["content", "direction-" + direction, "align-" + align]'>
           <slot name='popover-content'>
             <div>Popover content goes here</div>
           </slot>
         </div>
       </div>
     </transition>
+    <slot>
+      <div>Popover anchor slot goes here</div>
+    </slot>
   </div>
 </template>
 
 <script>
+const POPOVER_AUTO = -1;
+const POPOVER_VISIBLE = 1;
+
 export default {
-  data() {
-    return {
-      visible_: this.visible,
-    };
-  },
   props: {
-    visible: Boolean,
-    isFocusable: Boolean,
+    isExpanded: Boolean,
     direction: { type: String, default: 'bottom' },
     align: { type: String, default: 'left' },
-    delay: { type: Number, default: 10 }, // Milliseconds
+    visibility: { type: Number, default: POPOVER_AUTO },
+    delay: { type: Number, default: 50 }, // Milliseconds
+  },
+  data() {
+    return {
+      visible: false,
+      visibleDelay: false,
+    };
+  },
+  computed: {
+    visible_() {
+      if (this.visibility === POPOVER_AUTO) return this.visible;
+      return this.visibility === POPOVER_VISIBLE;
+    },
   },
   watch: {
-    visible(val) {
+    visible_(val) {
       if (!this.delay) {
-        this.visible_ = val;
+        this.visibleDelay = val;
       } else {
         setTimeout(() => {
-          if (val === this.visible) this.visible_ = val;
+          if (val === this.visible_) this.visibleDelay = val;
         }, this.delay);
       }
+    },
+  },
+  methods: {
+    focusin(e) {
+      this.visible = true;
+      this.$emit('focusin', e);
+    },
+    focusout(e) {
+      this.visible = false;
+      this.$emit('focusout', e);
     },
   },
 };
@@ -55,7 +76,11 @@ export default {
 
 .popover-container
   position: relative
+  display: inline-block
   z-index: 1
+  outline: none
+  &.expanded
+    display: block
 
 .anchor
   position: absolute
