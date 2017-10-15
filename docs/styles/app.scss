@@ -63,7 +63,12 @@ $navbar-item-color: #fafafa;
     margin-top: 40px;
 }
 
+figure.offset {
+    margin: 20px 0px 10px 20px;
+}
+
 pre {
+    padding: 0;
     @include tablet {
         white-space: pre-wrap
     }

@@ -11,34 +11,33 @@
       </div>
       <div class='media-content'>
         <p class='title is-5'>Use <strong>NPM</strong></p>
-        <figure class='highlight'>
-          <pre v-highlight><code class='bash'><span class='is-unselectable'>$ </span>npm install v-calendar</code></pre>
-        </figure>
       </div>
     </article>
+    <figure class='highlight offset'>
+      <pre v-highlight><code class='bash'><span class='is-unselectable'>$ </span>npm install v-calendar</code></pre>
+    </figure>
     <article class='media'>
       <div class='media-left'>
         <p class='title is-5'>2</p>
       </div>
       <div class='media-content'>
         <p class='title is-5'>Import into your project</p>
-        <figure class='highlight'>
-          <pre v-highlight><code class='javascript'>{{ importCode | pre }}</code></pre>
-        </figure>
-        <p class='content'>This gives you access to the <i>v-calendar</i>, <i>v-date-picker</i>, and <i>v-popover</i> components</p>
       </div>
     </article>
+    <figure class='highlight offset'>
+      <pre v-highlight><code class='javascript'>{{ importCode | pre }}</code></pre>
+    </figure>
     <article class='media'>
       <div class='media-left'>
         <p class='title is-5'>3</p>
       </div>
       <div class='media-content'>
         <p class='title is-5'>Reference in your component templates</p>
-        <figure class='highlight'>
-          <pre v-highlight><code class='html'>{{ componentCode | pre }}</code></pre>
-        </figure>
       </div>
     </article>
+    <figure class='highlight offset'>
+      <pre v-highlight><code class='html'>{{ componentCode | pre }}</code></pre>
+    </figure>
   </div>
 </section>
 </template>
@@ -52,6 +51,7 @@ export default {
         import VCalendar from 'v-calendar';
         import 'vcalendar/lib/vcalendar.min.css';
 
+        // Access v-calendar, v-date-packer and v-popover components
         Vue.use(VCalendar);`,
       componentCode: `
         <template>
