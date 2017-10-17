@@ -42,12 +42,6 @@
       </span>
     </div>
   </div>
-  <!-- Transparency 'not in month' layer -->
-  <div
-    class='c-day-layer c-day-inactive shift-left-right c-day-not-in-month'
-    :style='{ backgroundColor: dayBackgroundColor }'
-    v-if='!inMonth'>
-  </div>
 </div>
 </template>
 
@@ -59,7 +53,9 @@ export default {
   props: {
     dayBackgroundColor: String,
     dayContentStyle: Object,
+    nimDayContentStyle: Object,
     dayContentHoverStyle: Object,
+    nimDayContentHoverStyle: Object,
     indicatorsOffset: { type: String, default: '0' },
     label: String,
     day: Number,
@@ -78,8 +74,8 @@ export default {
     return {
       backgrounds: [],
       indicators: [],
-      contentStyle: this.dayContentStyle || {},
-      contentHoverStyle: this.dayContentHoverStyle || {},
+      contentStyle: null,
+      contentHoverStyle: null,
       isHovered: false,
       touchState: null,
       touchCount: 0,
@@ -152,7 +148,6 @@ export default {
       state.tapDetected = new Date() - state.startedOn <= _tapMaxDuration &&
         Math.abs(state.x - state.startX) <= _tapTolerance &&
         Math.abs(state.y - state.startY) <= _tapTolerance;
-
       if (state.tapDetected) {
         this.$emit('daySelect', this.dayInfo);
       }
@@ -183,34 +178,33 @@ export default {
           // Add indicator if needed
           if (a.indicator) indicators.push(this.getIndicator(a));
           // Add content style if needed
-          if (a.contentStyle) contentStyles.push(a.contentStyle);
+          if (a.contentStyle) contentStyles.push(this.inMonth ? a.contentStyle : a.nimContentStyle);
           // Add content hover style if needed
-          if (a.contentHoverStyle) contentHoverStyles.push(a.contentHoverStyle);
+          if (a.contentHoverStyle) contentHoverStyles.push(this.inMonth ? a.contentHoverStyle : a.nimContentHoverStyle);
         });
       }
       // Assign day attributes
       this.backgrounds = backgrounds;
       this.indicators = indicators;
-      this.contentStyle = Object.assign({}, this.dayContentStyle, ...contentStyles);
-      this.contentHoverStyle = Object.assign({}, this.dayContentHoverStyle, ...contentHoverStyles);
+      this.contentStyle = Object.assign({}, this.inMonth ? this.dayContentStyle : this.nimDayContentStyle, ...contentStyles);
+      this.contentHoverStyle = Object.assign({}, this.inMonth ? this.dayContentHoverStyle : this.nimDayContentHoverStyle, ...contentHoverStyles);
     },
     getBackground(attribute) {
       // Initialize the background object
       const dateInfo = attribute.dateInfo;
-      const highlight = attribute.highlight;
-      const height = highlight.height || '1.8rem';
+      const highlight = this.inMonth ? attribute.highlight : attribute.nimHighlight;
       const background = {
         key: attribute.key,
-        highlight,
         dateInfo,
+        highlight,
         style: {
-          backgroundColor: highlight.backgroundColor || 'rgba(0, 0, 0, 0.5)',
+          width: highlight.height,
+          height: highlight.height,
+          backgroundColor: highlight.backgroundColor,
           borderColor: highlight.borderColor,
-          borderWidth: highlight.borderWidth || '0',
-          borderStyle: highlight.borderStyle || 'solid',
-          borderRadius: highlight.borderRadius || height,
-          width: height,
-          height,
+          borderWidth: highlight.borderWidth,
+          borderStyle: highlight.borderStyle,
+          borderRadius: highlight.borderRadius,
         },
       };
       if (dateInfo.isDate) {
@@ -250,20 +244,22 @@ export default {
       return background;
     },
     getIndicator(attribute) {
-      const indicator = attribute.indicator;
-      const diameter = indicator.diameter || '5px';
-      return {
+      const indicator = this.inMonth ? attribute.indicator : attribute.nimIndicator;
+      const nIndicator = {
         key: attribute.key,
         dateInfo: attribute.dateInfo,
+        indicator,
         style: {
-          backgroundColor: indicator.backgroundColor || 'rgba(0, 0, 0, 0.5)',
-          borderWidth: indicator.borderWidth || '0',
-          borderStyle: indicator.borderStyle || 'solid',
-          borderRadius: indicator.borderRadius || '50%',
-          width: diameter,
-          height: diameter,
+          width: indicator.diameter,
+          height: indicator.diameter,
+          backgroundColor: indicator.backgroundColor,
+          borderColor: indicator.borderColor,
+          borderWidth: indicator.borderWidth,
+          borderStyle: indicator.borderStyle,
+          borderRadius: indicator.borderRadius,
         },
       };
+      return nIndicator;
     },
   },
 };
@@ -328,7 +324,6 @@ export default {
   +box()
   width: $dayContentWidth
   height: $dayContentHeight
-  color: $dayContentColor
   font-size: $dayContentFontSize
   font-weight: $dayContentFontWeight
   border-radius: $dayContentBorderRadius

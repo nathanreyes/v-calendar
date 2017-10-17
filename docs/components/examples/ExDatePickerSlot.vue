@@ -1,15 +1,17 @@
 <template>
 <v-date-picker
   select-mode='single'
-  v-model='selectedValue'>
+  v-model='selectedValue'
+  is-expanded>
   <template scope='props'>
     <b-field :type='inputState.type'>
       <b-input
+        type='text'
         icon='calendar'
         :value='props.inputValue'
         :placeholder='inputState.message'
-        @keyup.native.enter='selectedValue = props.parseValue($event.target.value)'
-        @blur='selectedValue = props.parseValue($event.target.value)'>
+        @change.native='selectedValue = props.updateValue($event.target.value)'
+        expanded>
       </b-input>
       <p
         class='control'

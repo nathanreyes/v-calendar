@@ -35,9 +35,6 @@
             <b-field>
               <b-switch v-model='isInline'>Inline</b-switch>
             </b-field>
-            <b-field>
-              <b-switch v-model='isExpanded'>Expanded</b-switch>
-            </b-field>
             <div v-if='!isInline'>
               <b-field label='Popover Direction'>
                 <b-select v-model='popoverDirection'>
@@ -53,6 +50,9 @@
                   </option>
                 </b-select>
               </b-field>
+              <b-field label='Tint Color' message='Accepts color names, hex and rgb values'>
+                <b-input v-model='tintColor'></b-input>
+              </b-field>
             </div>
           </b-tab-item>
         </b-tabs>
@@ -63,9 +63,9 @@
             :select-mode='selectMode'
             :show-disabled-dates='showDisabledDates'
             :is-inline='isInline'
-            :is-expanded='isExpanded'
             :popover-direction='popoverDirection'
-            :popover-align='popoverAlignment'>
+            :popover-align='popoverAlignment'
+            :tint-color='tintColor'>
           </ex-date-picker>
         </div>
       </div>
@@ -89,10 +89,10 @@ export default {
       selectedValue: null,
       showDisabledDates: false,
       isInline: false,
-      isExpanded: true,
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',
+      tintColor: '#65999a',
     };
   },
   computed: {
@@ -120,3 +120,10 @@ export default {
   },
 };
 </script>
+
+<style lang='sass' scoped>
+  .color
+    width: 40px
+    height: 20px
+    background-color: red
+</style>

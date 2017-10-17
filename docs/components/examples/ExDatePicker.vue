@@ -1,15 +1,17 @@
 <template>
   <v-date-picker
     :select-mode='selectMode'
+    :tint-color='tintColor'
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[todayAttribute]'
     :is-inline='isInline'
-    :is-expanded='isExpanded'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
+    indicators-offset='4px'
     inputClass='input'
     v-model='selectedValue'
-    is-double-paned>
+    is-double-paned
+    is-expanded>
   </v-date-picker>
 </template>
 
@@ -21,6 +23,7 @@ const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthCo
 export default {
   props: {
     selectMode: { type: String, default: 'range' },
+    tintColor: { type: String, default: '#65999a' },
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,
@@ -40,14 +43,13 @@ export default {
         },
       ],
       todayAttribute: {
-        highlight: {
-          backgroundColor: '#ff8c66',
-          borderColor: '#ff794d',
-          borderWidth: '2px',
+        indicator: {
+          backgroundColor: '#ff794d',
         },
         contentStyle: {
-          color: 'white',
-          fontWeight: 500,
+          color: '#ff794d',
+          fontWeight: 600,
+          marginBottom: '2px',
         },
         dates: [new Date()],
       },

@@ -134,7 +134,7 @@ export default {
       },
       {
         name: '<code>tint-color: String</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Tint color to use for the selected highlight. If <code>selected-attribute</code> or <code>drag-attribute</code> are assigned they will overwrite this value.',
+        description: '<span class="tag is-warning">Date Picker</span>Color used for selected attribute. Drag and hover colors are derived from this color. If <code>selected-attribute</code> or <code>drag-attribute</code> are assigned they will overwrite this behavior.',
         default: '<code>"#74a4a4"</code>',
       },
       {
@@ -145,7 +145,7 @@ export default {
       {
         name: '<code>popover-direction: String</code>',
         description: '<span class="tag is-warning">Date Picker</span>Direction that popover displays relative to input or slot element: <code>"bottom"</code>, <code>"top"</code>, <code>"left"</code>, <code>"right"</code>',
-        default: '<code>"bottom"<code>'
+        default: '<code>"bottom"<code>',
       },
       {
         name: '<code>popover-align: String</code>',
@@ -159,12 +159,12 @@ export default {
       },
       {
         name: '<code>input-class: String</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Class to apply to input element. Not application for inline date-pickers.',
+        description: '<span class="tag is-warning">Date Picker</span>Class to apply to input element. Not applicable for inline date-pickers.',
         default: '<code>undefined</code>',
       },
       {
         name: '<code>input-style: Object</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Style to apply to input element. Not applicable in for inline date-pickers.',
+        description: '<span class="tag is-warning">Date Picker</span>Style to apply to input element. Not applicable for inline date-pickers.',
         default: '<code>undefined</code>',
       },
       {

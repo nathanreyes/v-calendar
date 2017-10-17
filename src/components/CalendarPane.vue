@@ -101,7 +101,7 @@ import {
   getNextMonthComps,
   pageIsBeforePage,
   pageIsAfterPage,
-} from './utils';
+} from '../utils/helpers';
 
 const _allowedSwipeTime = 300;
 const _minHorizontalSwipeDistance = 60;

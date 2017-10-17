@@ -31,7 +31,7 @@
 
 <script>
 import CalendarDay from './CalendarDay';
-import { todayComps } from './utils';
+import { todayComps } from '../utils/helpers';
 
 export default {
   components: {

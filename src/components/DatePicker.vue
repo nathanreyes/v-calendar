@@ -21,14 +21,14 @@
     v-else>
     <slot
       :input-value='valueText'
-      :parse-value='parseValue'>
+      :update-value='updateValue'>
       <input
+        type='text'
         :class='[inputClass, { "c-input-drag": dragValue }]'
         :style='inputStyle'
         :placeholder='placeholder_'
-        v-model='valueText'
-        @keyup.enter='inputEnter'
-        @blur='inputBlur' />
+        :value='valueText'
+        @change='updateValue($event.target.value)' />
     </slot>
     <component
       slot='popover-content'
@@ -53,8 +53,7 @@ import Popover from './Popover';
 import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
-import { DateInfo } from './utils';
-import { shadeBlendConvert } from './legacy';
+import { DateInfo, blendColors } from '../utils/helpers';
 
 const POPOVER_AUTO = -1;
 const _defaultTintColor = '#74a4a4';
@@ -169,7 +168,7 @@ export default {
     },
     dayContentHoverStyle_() {
       return this.dayContentHoverStyle || {
-        backgroundColor: 'rgba(16, 52, 86, 0.25)',
+        backgroundColor: blendColors(this.tintColor, '#fafafa', 0.7),
         cursor: 'pointer',
       };
     },
@@ -178,7 +177,7 @@ export default {
         highlight: {
           backgroundColor: this.tintColor,
           borderWidth: '1px',
-          borderColor: shadeBlendConvert(0.1, this.tintColor, '#000000'), // '#65999a',
+          borderColor: blendColors(this.tintColor, '#000000', 0.1),
         },
         contentStyle: {
           color: '#fafafa',
@@ -191,7 +190,7 @@ export default {
     dragAttribute_() {
       return this.dragAttribute || {
         highlight: {
-          backgroundColor: shadeBlendConvert(0.5, this.tintColor, '#fafafa'), // '#c1d6d7',
+          backgroundColor: blendColors(this.tintColor, '#fafafa', 0.5),
           height: '25px',
         },
         contentStyle: {
@@ -240,14 +239,12 @@ export default {
     },
   },
   methods: {
-    inputEnter() {
-      this.updateValue();
-    },
-    inputBlur() {
-      this.updateValue();
-    },
-    updateValue(valueText = this.valueText) {
-      this.$emit('input', this.parseValue(valueText));
+    updateValue(value = this.valueText) {
+      if (typeof value === 'string') {
+        this.$emit('input', this.parseValue(value));
+      } else {
+        this.$emit('input', value);
+      }
     },
     parseValue(valueText) {
       let value = null;

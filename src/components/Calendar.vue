@@ -7,6 +7,10 @@
       :page.sync='fromPage_'
       :min-page='minPage'
       :max-page='maxFromPage'
+      :day-content-style='dayContentStyle_'
+      :day-content-hover-style='dayContentHoverStyle'
+      :nim-day-content-style='nimDayContentStyle'
+      :nim-day-content-hover-style='nimDayContentHoverStyle'
       :attributes='attributes_'
       v-bind='$attrs'
       v-on='$listeners'>
@@ -16,6 +20,10 @@
       :page.sync='toPage_'
       :min-page='minToPage'
       :max-page='maxPage'
+      :day-content-style='dayContentStyle_'
+      :day-content-hover-style='dayContentHoverStyle'
+      :nim-day-content-style='nimDayContentStyle'
+      :nim-day-content-hover-style='nimDayContentHoverStyle'
       :attributes='attributes_'
       v-bind='$attrs'
       v-on='$listeners'>
@@ -42,7 +50,8 @@ import {
   getPageBetweenPages,
   getFirstValidPage,
   DateInfo,
-} from './utils';
+  blendObjectColors,
+} from '../utils/helpers';
 
 export default {
   components: {
@@ -56,6 +65,9 @@ export default {
     toPage: Object,
     isDoublePaned: Boolean,
     showTags: Boolean,
+    dayBackgroundColor: { type: String, default: '#fafafa' },
+    dayContentStyle: Object,
+    dayContentHoverStyle: Object,
     attributes: Array,
     dateFormatter: {
       type: Function,
@@ -87,16 +99,68 @@ export default {
       if (!this.isDoublePaned_) return null;
       return getNextPage(this.fromPage_);
     },
+    dayContentStyle_() {
+      return { color: '#333333', ...this.dayContentStyle };
+    },
+    nimDayContentStyle() {
+      const cs = { ...this.dayContentStyle_ };
+      blendObjectColors(cs, ['color', 'backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+      return cs;
+    },
+    nimDayContentHoverStyle() {
+      const chs = { ...this.dayContentHoverStyle };
+      blendObjectColors(chs, ['color', 'backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+      return chs;
+    },
     attributes_() {
       if (!this.attributes || !this.attributes.length) return [];
-      return this.attributes.map((a, i) => Object.assign(
-        {},
-        a,
-        {
+      return this.attributes.map((a, i) => {
+        const newAttribute = {
           key: a.key || i.toString(),
           dates: a.dates.map(d => (d instanceof DateInfo ? d : new DateInfo(d, a.order))),
-        },
-      ));
+          order: a.order || 0,
+        };
+        if (a.highlight) {
+          newAttribute.highlight = {
+            height: '1.8rem',
+            backgroundColor: '#65999a',
+            borderWidth: '0',
+            borderStyle: 'solid',
+            borderRadius: '1.8rem',
+            ...a.highlight,
+          };
+          newAttribute.nimHighlight = { ...newAttribute.highlight };
+          blendObjectColors(newAttribute.nimHighlight, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+        }
+        if (a.indicator) {
+          newAttribute.indicator = {
+            diameter: '5px',
+            backgroundColor: '#65999a',
+            borderWidth: '0',
+            borderStyle: 'solid',
+            borderRadius: '50%',
+            ...a.indicator,
+          };
+          newAttribute.nimIndicator = { ...newAttribute.indicator };
+          blendObjectColors(newAttribute.nimIndicator, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+        }
+        if (a.contentStyle) {
+          newAttribute.contentStyle = {
+            color: '#333333',
+            ...a.contentStyle,
+          };
+          newAttribute.nimContentStyle = { ...newAttribute.contentStyle };
+          blendObjectColors(newAttribute.nimContentStyle, ['color', 'backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+        }
+        if (a.contentHoverStyle) {
+          newAttribute.contentHoverStyle = {
+            ...a.contentHoverStyle,
+          };
+          newAttribute.nimContentHoverStyle = { ...newAttribute.contentHoverStyle };
+          blendObjectColors(newAttribute.nimContentHoverStyle, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+        }
+        return newAttribute;
+      });
     },
   },
   watch: {

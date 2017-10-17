@@ -1,5 +1,6 @@
 <template>
   <div
+    ref='popover'
     :class='["popover-container", { expanded: isExpanded }]'
     :tabindex='visibility === -1 ? 0 : undefined'
     @focusin='focusin'
@@ -25,6 +26,8 @@
 <script>
 const POPOVER_AUTO = -1;
 const POPOVER_VISIBLE = 1;
+const _tapTolerance = 0;
+const _tapMaxDuration = 200; // ms
 
 export default {
   props: {
@@ -38,6 +41,7 @@ export default {
     return {
       visible: false,
       visibleDelay: false,
+      touchState: null,
     };
   },
   computed: {
@@ -57,7 +61,41 @@ export default {
       }
     },
   },
+  created() {
+    window.addEventListener('touchstart', this.touchStart);
+    window.addEventListener('touchend', this.touchEnd);
+  },
   methods: {
+    touchStart(e) {
+      if (!this.viewTouched(e.target)) {
+        const t = e.targetTouches[0];
+        this.touchState = {
+          started: true,
+          startedOn: new Date(),
+          startX: t.screenX,
+          startY: t.screenY,
+          x: t.screenX,
+          y: t.screenY,
+        };
+      }
+    },
+    viewTouched(element) {
+      if (element === this.$refs.popover) return element;
+      if (element.parentNode) return this.viewTouched(element.parentNode);
+      return undefined;
+    },
+    touchEnd(e) {
+      if (!this.touchState || !this.touchState.started) return;
+      const t = e.changedTouches[0];
+      const state = this.touchState;
+      state.x = t.screenX;
+      state.y = t.screenY;
+      state.tapDetected = new Date() - state.startedOn <= _tapMaxDuration &&
+        Math.abs(state.x - state.startX) <= _tapTolerance &&
+        Math.abs(state.y - state.startY) <= _tapTolerance;
+      if (state.tapDetected) this.visible = false;
+      state.started = false;
+    },
     focusin(e) {
       this.visible = true;
       this.$emit('focusin', e);
