@@ -1,5 +1,8 @@
 <template>
   <v-calendar
+    :pane-style='paneStyle'
+    :header-style='headerStyle'
+    :weekday-style='weekdayStyle'
     :attributes='attributes'
     is-double-paned>
   </v-calendar>
@@ -16,13 +19,29 @@ export default {
       nextMonth,
       nextMonthYear } = getExampleMonthComps();
     return {
+      paneStyle: {
+        padding: '0 0 10px 0',
+        border: '0',
+      },
+      headerStyle: {
+        color: '#fafafa',
+        backgroundColor: '#4a5867',
+        padding: '15px 5px 0px 5px',
+      },
+      weekdayStyle: {
+        backgroundColor: '#4a5867',
+        padding: '15px 0',
+      },
+      weeksStyle: {
+        border: '1px solid #dadada',
+      },
       attributes: [
         {
           highlight: {
-            backgroundColor: '#bd9999', // Red
+            backgroundColor: '#ff8080', // Red
+            borderColor: '#ff6666',
             borderWidth: '2px',
             borderStyle: 'solid',
-            borderColor: '#ae8484',
           },
           contentStyle: {
             color: 'white',
@@ -40,9 +59,9 @@ export default {
         },
         {
           highlight: {
-            backgroundColor: '#9999bd', // Purple
+            backgroundColor: '#9f80ff', // Purple
+            borderColor: '#8c66ff',
             borderWidth: '2px',
-            borderColor: '#8484ae',
           },
           contentStyle: {
             color: 'white',
@@ -59,9 +78,9 @@ export default {
         },
         {
           highlight: {
-            backgroundColor: '#bdb499', // Tan
+            backgroundColor: '#66b3cc', // Orange
+            borderColor: '#53a9c6',
             borderWidth: '2px',
-            borderColor: '#aea484',
             borderRadius: '5px',
           },
           contentStyle: {

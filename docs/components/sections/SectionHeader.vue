@@ -7,7 +7,7 @@
         <b-tag>{{ version }}</b-tag>
       </div>
     </div>
-    <div class='hero-foot'>
+    <div class='hero-foot is-hidden-mobile'>
       <div class='container'>
         <nav class='tabs is-boxed'>
           <ul>

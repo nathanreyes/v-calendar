@@ -205,7 +205,7 @@ export default {
       const baseAttribute = this.disabledAttribute || {
         order: 100,
         contentStyle: {
-          color: '#ff4000',
+          color: '#bcbcbc',
           textDecoration: 'line-through',
         },
         contentHoverStyle: {

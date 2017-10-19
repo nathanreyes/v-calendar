@@ -10,13 +10,11 @@
             <li>highlights</li>
             <li>indicators</li>
             <li>content styles</li>
+            <li>content hover styles</li>
           </ul>
           <p>A single attribute may include one of each. To specify which dates you would like to apply an attribute to, use an array of single date or date range objects (start and end date).</p>
           <p>Any overlapping dates are ordered to display the most information possible but manual ordering is also supported.</p>
         </div>
-      </div>
-      <div class='column has-text-centered' :style='{ marginTop: "10px" }'>
-        <img class='attribute-img' src='../../assets/attribute.png'/>
       </div>
     </div>
   </div>

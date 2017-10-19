@@ -356,11 +356,12 @@ export default {
   border: $paneBorder
   padding: $panePadding
   overflow: hidden
+  &:not(:first-child)
+    margin-left: -1px
 
 .c-header
   display: flex
   align-items: stretch
-  height: $headerHeight
   padding: $headerPadding
   user-select: none
 
@@ -416,7 +417,6 @@ export default {
 
 .c-weekdays
   display: flex
-  padding: $weekdayPadding
 
 .c-weekday
   +box()
@@ -425,6 +425,7 @@ export default {
   color: $weekdayColor
   font-size: $weekdayFontSize
   font-weight: $weekdayFontWeight
+  padding: $weekdayPadding
 
 .c-weeks-container
   position: relative
