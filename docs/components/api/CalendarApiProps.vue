@@ -93,6 +93,11 @@ export default {
         default: '<code>undefined</code>',
       },
       {
+        name: '<code>title-position: String</code>',
+        description: 'Position of header title.',
+        default: '<code>"center"</center>',
+      },
+      {
         name: '<code>title-transition: String</code>',
         description: 'Transition type for title when navigating to a new page: <code>"slide"</code>, <code>"fade"</code>, <code>"none"</code>',
         default: '<code>"slide"</code>',

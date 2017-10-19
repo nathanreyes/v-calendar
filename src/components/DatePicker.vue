@@ -56,7 +56,7 @@ import DateRangePicker from './DateRangePicker';
 import { DateInfo, blendColors } from '../utils/helpers';
 
 const POPOVER_AUTO = -1;
-const _defaultTintColor = '#74a4a4';
+const _defaultTintColor = '#409fbf';
 
 export default {
   components: {

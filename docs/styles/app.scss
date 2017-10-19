@@ -4,7 +4,7 @@
 @import "~bulma/sass/utilities/_all";
 
 // Set your colors
-$primary: #65999a;
+$primary: #66b3cc;
 $primary-invert: findColorInvert($primary);
 $twitter: #4099FF;
 $twitter-invert: findColorInvert($twitter);
@@ -34,8 +34,8 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
-$navbar-background-color: $primary;
-$navbar-item-color: #fafafa;
+$navbar-background-color: #fafafa;
+$navbar-item-color: #333333;
 
 // Import Bulma and Buefy styles
 @import "~bulma";
@@ -43,14 +43,6 @@ $navbar-item-color: #fafafa;
 
 // Import highlight.js style
 @import "~highlight.js/styles/atelier-cave-light.css";
-
-.logo {
-    font-family: 'Bree Serif', serif;
-}
-
-.title {
-    font-family: 'Bree Serif', sans-serif;
-}
 
 .logo-subtitle {
     font-weight: 300;
@@ -61,24 +53,4 @@ $navbar-item-color: #fafafa;
     display: flex;
     justify-content: center;
     margin-top: 40px;
-}
-
-figure.offset {
-    margin: 20px 0px 10px 20px;
-}
-
-pre {
-    padding: 0;
-    @include tablet {
-        white-space: pre-wrap
-    }
-}
-
-code {
-    max-height: 400px;
-    &.hljs {
-        background: inherit;
-        color: inherit;
-        padding: 1.25rem 1.5rem;
-    }
 }

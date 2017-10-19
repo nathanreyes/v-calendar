@@ -4,14 +4,15 @@ import hljs from 'highlight.js';
 import VCalendar from '../src/lib';
 import App from './App';
 import router from './router';
+import CodeBlock from './components/blocks/CodeBlock';
 import './styles/app.scss';
 
+Vue.config.productionTip = false;
 Vue.use(Buefy, {
   defaultIconPack: 'fa',
 });
 Vue.use(VCalendar);
-Vue.config.productionTip = false;
-
+Vue.component('CodeBlock', CodeBlock);
 Vue.directive('highlight', {
   deep: true,
   bind(el, binding) {

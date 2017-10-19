@@ -19,7 +19,7 @@
           </b-tab-item>
           <!--Content Styles Example Code-->
           <b-tab-item label='Example Code'>
-            <pre v-highlight><code class='html'>{{ exContentStylesCode }}</code></pre>
+            <code-block :code='exContentStylesCode'></code-block>
           </b-tab-item>
         </b-tabs>
       </div>

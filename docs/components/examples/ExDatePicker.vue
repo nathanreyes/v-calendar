@@ -23,7 +23,7 @@ const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthCo
 export default {
   props: {
     selectMode: { type: String, default: 'range' },
-    tintColor: { type: String, default: '#65999a' },
+    tintColor: { type: String, default: '#66b3cc' },
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,
@@ -43,13 +43,11 @@ export default {
         },
       ],
       todayAttribute: {
-        indicator: {
-          backgroundColor: '#ff794d',
-        },
         contentStyle: {
-          color: '#ff794d',
+          color: '#ffffff',
+          backgroundColor: '#ff9999',
+          border: 'solid 1px #ff8080',
           fontWeight: 600,
-          marginBottom: '2px',
         },
         dates: [new Date()],
       },

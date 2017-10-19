@@ -1,7 +1,6 @@
 <template>
 <section id='api' class='section'>
   <div class='container'>
-    <h3 class='title has-text-primary is-spaced'>API</h3>
     <b-message type='is-warning'>
       <span class="tag is-warning">Date Picker</span> Denotes API specific to <i>v-date-picker</i> components only.
     </b-message>

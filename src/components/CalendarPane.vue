@@ -15,9 +15,8 @@
         </div>
         <transition-group
           tag='div'
-          class='c-title'
-          :name='titleTransition_'
-          mode='out-in'>
+          :class='["c-title", titleClass]'
+          :name='titleTransition_'>
           <div
             class='c-title-1'
             v-for='p in pages'
@@ -121,6 +120,7 @@ export default {
     paneStyle: Object,
     headerStyle: Object,
     titleStyle: Object,
+    titlePosition: String,
     titleTransition: { type: String, default: 'slide' },
     arrowStyle: Object,
     weekdayStyle: Object,
@@ -145,6 +145,9 @@ export default {
         labels.push(this.weekdayLabels[d - 1]);
       }
       return labels;
+    },
+    titleClass() {
+      return this.titlePosition ? `align-${this.titlePosition}` : '';
     },
     titleTransition_() {
       if (this.titleTransition === 'slide') return `title-${this.slideTransition}`;
@@ -375,10 +378,8 @@ export default {
         opacity: 0.5
     
   .c-title
+    +box()
     flex-grow: 1
-    display: flex
-    justify-content: center
-    align-items: center
     position: relative
     overflow: hidden
     .c-title-1
@@ -388,18 +389,25 @@ export default {
       width: 100%
       height: 100%
       .c-title-2
-        display: flex
+        +box()
         height: 100%
-        justify-content: center
-        align-items: center
         .c-title-3
           font-weight: $titleFontWeight
           font-size: $titleFontSize
           transition: $titleTransition
           cursor: pointer
           user-select: none
+          margin: $titleMargin
           &:hover
             opacity: 0.5
+    &.align-left
+      order: -1
+      .c-title-2
+        justify-content: flex-start
+    &.align-right
+      order: 1
+      .c-title-2
+        justify-content: flex-end
     
   .c-arrow.c-disabled
     cursor: not-allowed
@@ -437,7 +445,7 @@ export default {
 
 .title-none-enter-active,
 .title-none-leave-active
-  traisition: all 0s
+  transition-duration: 0s
 
 .title-slide-left-enter,
 .title-slide-right-leave-to
@@ -473,8 +481,12 @@ export default {
 
 .weeks-fade-enter,
 .weeks-fade-leave-to,
+.weeks-none-enter,
+.weeks-none-leave-to,
 .title-fade-enter,
-.title-fade-leave-to
+.title-fade-leave-to,
+.title-none-enter,
+.title-none-leave-to,
   opacity: 0
 
 </style>

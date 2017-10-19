@@ -22,7 +22,7 @@
             </b-message>
           </b-tab-item>
           <b-tab-item label='Example Code'>
-            <pre v-highlight><code class='html'>{{ exDatePickerSlotCode }}</code></pre>
+            <code-block :code='exDatePickerSlotCode'></code-block>
             <br />
             <b-message type='is-info' has-icon>
               Reference <a href='https://buefy.github.io/#/documentation/input' target='_blank'>Buefy</a> for component references.

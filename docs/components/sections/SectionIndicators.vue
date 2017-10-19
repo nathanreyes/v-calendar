@@ -17,7 +17,7 @@
           </b-tab-item>
           <!--Indicators Example Code-->
           <b-tab-item label='Example Code'>
-            <pre v-highlight><code class='html'>{{ exIndicatorsCode }}</code></pre>
+            <code-block :code='exIndicatorsCode'></code-block>
           </b-tab-item>
         </b-tabs>
       </div>

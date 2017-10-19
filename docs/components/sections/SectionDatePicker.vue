@@ -18,7 +18,7 @@
           </b-tab-item>
           <!--DatePicker Example Code-->
           <b-tab-item label='Example Code'>
-            <pre v-highlight><code class='html'>{{ exDatePickerCode }}</code></pre>
+            <code-block :code='exDatePickerCode'></code-block>
           </b-tab-item>
           <!--DatePicker Example Options-->
           <b-tab-item label='Options' icon='gear'>
@@ -92,7 +92,7 @@ export default {
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',
-      tintColor: '#65999a',
+      tintColor: '#66b3cc',
     };
   },
   computed: {
