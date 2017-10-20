@@ -3,6 +3,7 @@
     :pane-style='paneStyle'
     :header-style='headerStyle'
     :weekday-style='weekdayStyle'
+    :weeks-style='weeksStyle'
     :attributes='attributes'
     is-double-paned>
   </v-calendar>
@@ -20,20 +21,21 @@ export default {
       nextMonthYear } = getExampleMonthComps();
     return {
       paneStyle: {
-        padding: '0 0 10px 0',
+        padding: '0',
         border: '0',
       },
       headerStyle: {
         color: '#fafafa',
         backgroundColor: '#4a5867',
-        padding: '15px 5px 0px 5px',
+        padding: '15px 10px 0px 10px',
       },
       weekdayStyle: {
         backgroundColor: '#4a5867',
-        padding: '15px 0',
+        padding: '15px 5px 10px 5px',
       },
       weeksStyle: {
         border: '1px solid #dadada',
+        padding: '5px',
       },
       attributes: [
         {

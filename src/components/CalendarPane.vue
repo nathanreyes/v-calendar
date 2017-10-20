@@ -47,42 +47,45 @@
       </div>
     </slot>
     <!--Weekday Labels-->
-    <div class='c-weekdays'>
+    <div
+      class='c-weekdays'
+      :style='weekdayStyle'>
       <div
         v-for='weekday in weekdayLabels_'
         :key='weekday'
-        class='c-weekday'
-        :style='weekdayStyle'>
+        class='c-weekday'>
         {{ weekday }}
       </div>
     </div> 
     <!--Weeks-->
-    <transition-group
-      tag='div'
-      class='c-weeks-container'
-      :style='weeksStyle'
-      :name='weeksTransition_'>
-      <calendar-weeks
-        class='c-weeks'
-        v-for='p in pages'
-        :key='p.key'
-        :month='p.month'
-        :year='p.year'
-        :is-leap-year='p.isLeapYear'
-        :days-in-month='p.daysInMonth'
-        :first-weekday-in-month='p.firstWeekdayInMonth'
-        :prev-month-comps='p.prevMonthComps'
-        :next-month-comps='p.nextMonthComps'
-        :first-day-of-week='firstDayOfWeek'
-        :day-background-color='dayBackgroundColor'
-        v-bind='$attrs'
-        @touchstart='touchStart($event)'
-        @touchmove='touchMove($event)'
-        @touchend='touchEnd($event)'
-        v-on='$listeners'
-        v-if='p === page_'>
-      </calendar-weeks> 
-    </transition-group> 
+    <div
+      :style='weeksStyle'>
+      <transition-group
+        tag='div'
+        class='c-weeks-rel'
+        :name='weeksTransition_'>
+        <calendar-weeks
+          class='c-weeks-abs'
+          v-for='p in pages'
+          :key='p.key'
+          :month='p.month'
+          :year='p.year'
+          :is-leap-year='p.isLeapYear'
+          :days-in-month='p.daysInMonth'
+          :first-weekday-in-month='p.firstWeekdayInMonth'
+          :prev-month-comps='p.prevMonthComps'
+          :next-month-comps='p.nextMonthComps'
+          :first-day-of-week='firstDayOfWeek'
+          :day-background-color='dayBackgroundColor'
+          v-bind='$attrs'
+          @touchstart='touchStart($event)'
+          @touchmove='touchMove($event)'
+          @touchend='touchEnd($event)'
+          v-on='$listeners'
+          v-if='p === page_'>
+        </calendar-weeks>
+      </transition-group> 
+    </div>
   </div>
 </template>
 
@@ -356,8 +359,6 @@ export default {
   border: $paneBorder
   padding: $panePadding
   overflow: hidden
-  &:not(:first-child)
-    margin-left: -1px
 
 .c-header
   display: flex
@@ -427,10 +428,10 @@ export default {
   font-weight: $weekdayFontWeight
   padding: $weekdayPadding
 
-.c-weeks-container
+.c-weeks-rel
   position: relative
   height: $dayHeight * 6
-  .c-weeks
+  .c-weeks-abs
     position: absolute
     width: 100%
     display: flex

@@ -41,5 +41,22 @@ export default {
       version: Package.version,
     };
   },
+  watch: {
+    $route() {
+      this.isMenuActive = false;
+    },
+  },
 };
 </script>
+
+<style lang='sass' scoped>
+
+.menu-enter-active, .menu-leave-active
+  transition: all 0.3s
+  background-color: transparent
+
+.menu-enter, .menu-leave-to
+  transform: translateY(-30px)
+  opacity: 0
+
+</style>
