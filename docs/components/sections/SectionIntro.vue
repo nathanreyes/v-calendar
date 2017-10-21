@@ -39,14 +39,16 @@
               <b-field label='Title Transition'>
                 <p class='control'>
                   <b-radio v-model='titleTransition' native-value='none'>None</b-radio>
-                  <b-radio v-model='titleTransition' native-value='slide'>Slide</b-radio>
+                  <b-radio v-model='titleTransition' native-value='slide-h'>Horizontal Slide</b-radio>
+                  <b-radio v-model='titleTransition' native-value='slide-v'>Vertical Slide</b-radio>
                   <b-radio v-model='titleTransition' native-value='fade'>Fade</b-radio>
                 </p>
               </b-field>
               <b-field label='Weeks Transition'>
                 <p class='control'>
                   <b-radio v-model='weeksTransition' native-value='none'>None</b-radio>
-                  <b-radio v-model='weeksTransition' native-value='slide'>Slide</b-radio>
+                  <b-radio v-model='weeksTransition' native-value='slide-h'>Horizontal Slide</b-radio>
+                  <b-radio v-model='weeksTransition' native-value='slide-v'>Vertical Slide</b-radio>
                   <b-radio v-model='weeksTransition' native-value='fade'>Fade</b-radio>
                 </p>
               </b-field>
@@ -87,8 +89,8 @@ export default {
       exIntroCode: ExIntroCode,
       isDoublePaned: true,
       titlePosition: '',
-      titleTransition: 'slide',
-      weeksTransition: 'slide',
+      titleTransition: 'slide-h',
+      weeksTransition: 'slide-h',
     };
   },
 };

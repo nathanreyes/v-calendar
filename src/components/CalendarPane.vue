@@ -124,17 +124,17 @@ export default {
     headerStyle: Object,
     titleStyle: Object,
     titlePosition: String,
-    titleTransition: { type: String, default: 'slide' },
+    titleTransition: { type: String, default: 'slide-h' },
     arrowStyle: Object,
     weekdayStyle: Object,
     weeksStyle: Object,
-    weeksTransition: { type: String, default: 'slide' },
+    weeksTransition: { type: String, default: 'slide-h' },
   },
   data() {
     return {
       pages: [],
       page_: null,
-      slideTransition: '',
+      transitionDirection: '',
       prevPageStyle: null,
       currPageStyle: null,
       nextPageStyle: null,
@@ -153,12 +153,10 @@ export default {
       return this.titlePosition ? `align-${this.titlePosition}` : '';
     },
     titleTransition_() {
-      if (this.titleTransition === 'slide') return `title-${this.slideTransition}`;
-      return `title-${this.titleTransition}`;
+      return this.getTransitionName(this.titleTransition, this.transitionDirection);
     },
     weeksTransition_() {
-      if (this.weeksTransition === 'slide') return `weeks-${this.slideTransition}`;
-      return `weeks-${this.weeksTransition}`;
+      return this.getTransitionName(this.weeksTransition, this.transitionDirection);
     },
     canMovePrevMonth() {
       return this.canMove(this.page_.prevMonthComps);
@@ -176,7 +174,7 @@ export default {
       this.move(val);
     },
     page_(val, oldVal) {
-      this.slideTransition = this.getSlideTransition(oldVal, val);
+      this.transitionDirection = this.getTransitionDirection(oldVal, val);
     },
   },
   created() {
@@ -331,11 +329,19 @@ export default {
         });
       });
     },
-    getSlideTransition(fromPage, toPage) {
+    getTransitionDirection(fromPage, toPage) {
       if (!fromPage || !toPage) return '';
-      if (fromPage.year !== toPage.year) return fromPage.year < toPage.year ? 'slide-left' : 'slide-right';
-      if (fromPage.month !== toPage.month) return fromPage.month < toPage.month ? 'slide-left' : 'slide-right';
+      if (fromPage.year !== toPage.year) return fromPage.year < toPage.year ? 'next' : 'prev';
+      if (fromPage.month !== toPage.month) return fromPage.month < toPage.month ? 'next' : 'prev';
       return '';
+    },
+    getTransitionName(type, direction) {
+      if (type === 'slide-h') {
+        return `title-${direction === 'next' ? 'slide-left' : 'slide-right'}`;
+      } else if (type === 'slide-v') {
+        return `title-${direction === 'next' ? 'slide-up' : 'slide-down'}`;
+      }
+      return `title-${type}`;
     },
   },
 };
@@ -441,6 +447,10 @@ export default {
 .title-slide-left-leave-active,
 .title-slide-right-enter-active,
 .title-slide-right-leave-active,
+.title-slide-up-enter-active,
+.title-slide-up-leave-active,
+.title-slide-down-enter-active,
+.title-slide-down-leave-active,
 .title-fade-enter-active,
 .title-fade-leave-active
   transition: $titleTransition
@@ -459,10 +469,24 @@ export default {
   opacity: 0
   transform: translateX(-$titleTranslateX)
 
+.title-slide-up-enter,
+.title-slide-down-leave-to
+  opacity: 0
+  transform: translateY($weeksTranslateX)
+
+.title-slide-down-enter,
+.title-slide-up-leave-to
+  opacity: 0
+  transform: translateY(-$weeksTranslateX)
+
 .weeks-slide-left-enter-active,
 .weeks-slide-left-leave-active,
 .weeks-slide-right-enter-active,
 .weeks-slide-right-leave-active,
+.weeks-slide-up-enter-active,
+.weeks-slide-up-leave-active,
+.weeks-slide-down-enter-active,
+.weeks-slide-down-leave-active,
 .weeks-fade-enter-active,
 .weeks-fade-leave-active
   transition: $weeksTransition
@@ -480,6 +504,16 @@ export default {
 .weeks-slide-right-enter
   opacity: 0
   transform: translateX(-$weeksTranslateX)
+
+.weeks-slide-up-enter,
+.weeks-slide-down-leave-to
+  opacity: 0
+  transform: translateY($weeksTranslateX)
+
+.weeks-slide-down-enter,
+.weeks-slide-up-leave-to
+  opacity: 0
+  transform: translateY(-$weeksTranslateX)
 
 .weeks-fade-enter,
 .weeks-fade-leave-to,

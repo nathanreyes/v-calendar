@@ -99,8 +99,8 @@ export default {
       },
       {
         name: '<code>title-transition: String</code>',
-        description: 'Transition type for title when navigating to a new page: <code>"slide"</code>, <code>"fade"</code>, <code>"none"</code>',
-        default: '<code>"slide"</code>',
+        description: 'Transition type for title when navigating to a new page: <code>"slide-h"</code>, <code>"slide-v"</code>, <code>"fade"</code>, <code>"none"</code>',
+        default: '<code>"slide-h"</code>',
       },
       {
         name: '<code>weekday-style: Object</code>',
@@ -114,8 +114,8 @@ export default {
       },
       {
         name: '<code>weeks-transition: String</code>',
-        description: 'Transition type for weeks when navigating to a new page: <code>"slide"</code>, <code>"fade"</code>, <code>"none"</code>',
-        default: '<code>"slide"</code>',
+        description: 'Transition type for weeks when navigating to a new page: <code>"slide-h"</code>, <code>"slide-v"</code>, <code>"fade"</code>, <code>"none"</code>',
+        default: '<code>"slide-h"</code>',
       },
       {
         name: '<code>day-content-style: Object</code>',

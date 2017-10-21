@@ -12,8 +12,8 @@ export default {
   props: {
     isDoublePaned: { type: Boolean, default: true },
     titlePosition: { type: String, default: 'center' },
-    titleTransition: { type: String, default: 'slide' },
-    weeksTransition: { type: String, default: 'slide' },
+    titleTransition: { type: String, default: 'slide-h' },
+    weeksTransition: { type: String, default: 'slide-h' },
   },
 };
 </script>
