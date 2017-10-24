@@ -73,13 +73,18 @@ export default {
         default: '<code>"0"</code>',
       },
       {
-        name: '<code>pane-style: Object</code>',
-        description: 'Style for calendar pane.',
-        default: '<code>undefined</code>',
+        name: '<code>divider-color: String</code>',
+        description: 'Color for divider when calendar is double-paned.',
+        default: '<code>"#dadada"</code>'
       },
       {
         name: '<code>header-style: Object</code>',
         description: 'Style for header section.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>header-divider-color: String</code>',
+        description: 'Color for header section divider when calendar is double-paned. Overrides <code>divider-color</code> if specified.',
         default: '<code>undefined</code>',
       },
       {
@@ -94,7 +99,7 @@ export default {
       },
       {
         name: '<code>title-position: String</code>',
-        description: 'Position of header title.',
+        description: 'Position of header title: <code>"left"</code>, <code>"center"</code>, <code>"right"</code>',
         default: '<code>"center"</center>',
       },
       {
@@ -108,8 +113,18 @@ export default {
         default: '<code>undefined</code>',
       },
       {
+        name: '<code>weekday-divider-color: String</code>',
+        description: 'Color for weekday section divider when calendar is double-paned. Overrides <code>divider-color</code> if specified.',
+        default: '<code>undefined</code>',
+      },
+      {
         name: '<code>weeks-style: Object</code>',
         description: 'Style for weeks section.',
+        default: '<code>undefined</code>',
+      },
+      {
+        name: '<code>weeks-divider-color: String</code>',
+        description: 'Color for weeks section divider when calendar is double-paned. Overrides <code>divider-color</code> if specified.',
         default: '<code>undefined</code>',
       },
       {

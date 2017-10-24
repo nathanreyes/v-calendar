@@ -20,11 +20,6 @@ export default {
   data() {
     const props = [
       {
-        propertyName: '<code>key: String</code>',
-        description: 'Key for highlighted region. Keys affect how highlight animations are applied when appearing or disappearing.',
-        default: '<code><i>index</i></code>',
-      },
-      {
         propertyName: '<code>height: String</code>',
         description: 'Height of highlighted region.',
         default: '<code>"1.8rem"</code>',

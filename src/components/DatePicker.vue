@@ -169,6 +169,7 @@ export default {
     dayContentHoverStyle_() {
       return this.dayContentHoverStyle || {
         backgroundColor: blendColors(this.tintColor, '#fafafa', 0.7),
+        border: '0',
         cursor: 'pointer',
       };
     },
@@ -184,6 +185,7 @@ export default {
         },
         contentHoverStyle: {
           backgroundColor: 'transparent',
+          border: '0',
         },
       };
     },
@@ -198,6 +200,7 @@ export default {
         },
         contentHoverStyle: {
           backgroundColor: 'transparent',
+          border: '0',
         },
       };
     },

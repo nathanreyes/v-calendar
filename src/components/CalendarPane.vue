@@ -1,55 +1,63 @@
 <template>
-  <div class='c-pane' :style='paneStyle'>
+  <div
+    class='c-pane'>
     <!--Header-->
-    <slot name='header' :page='page_'>
-      <div class='c-header' :style='headerStyle'>
-        <div class='c-arrow-layout'>
-          <slot name='header-left-button' :page='page_'>
-            <span
-              class='c-arrow vc-angle-left'
-              :class='{ "c-disabled": !canMovePrevMonth }'
-              :style='arrowStyle'
-              @click='movePrevMonth'>
-            </span>
-          </slot>
-        </div>
-        <transition-group
-          tag='div'
-          :class='["c-title", titleClass]'
-          :name='titleTransition_'>
-          <div
-            class='c-title-1'
-            v-for='p in pages'
-            :key='p.key'
-            v-if='p === page_'>
-            <div class='c-title-2'>
-              <slot name='header-title' :page='p'>
-                <span
-                  class='c-title-3'
-                  :style='titleStyle'
-                  @click='moveThisMonth'>
-                  {{ p.headerLabel }}
-                </span>
-              </slot>
-            </div>
+    <div
+      class="c-header-wrapper"
+      :style='headerStyle_'>
+      <slot name='header' :page='page_'>
+        <div class='c-header'>
+          <!--Header prev button-->
+          <div class='c-arrow-layout'>
+            <slot name='header-left-button' :page='page_'>
+              <span
+                class='c-arrow vc-angle-left'
+                :class='{ "c-disabled": !canMovePrevMonth }'
+                :style='arrowStyle'
+                @click='movePrevMonth'>
+              </span>
+            </slot>
           </div>
-        </transition-group>
-        <div class='c-arrow-layout'>
-          <slot name='header-right-button' :page='page_'>
-            <span
-              class='c-arrow vc-angle-right'
-              :class='{ "c-disabled": !canMoveNextMonth }'
-              :style='arrowStyle'
-              @click='moveNextMonth'>
-            </span>
-          </slot>
+          <!--Header title-->
+          <transition-group
+            tag='div'
+            :class='["c-title", titleClass]'
+            :name='titleTransition_'>
+            <div
+              class='c-title-1'
+              v-for='p in pages'
+              :key='p.key'
+              v-if='p === page_'>
+              <div class='c-title-2'>
+                <slot name='header-title' :page='p'>
+                  <span
+                    class='c-title-3'
+                    :style='titleStyle'
+                    @click='moveThisMonth'>
+                    {{ p.headerLabel }}
+                  </span>
+                </slot>
+              </div>
+            </div>
+          </transition-group>
+          <!--Header next button-->
+          <div class='c-arrow-layout'>
+            <slot name='header-right-button' :page='page_'>
+              <span
+                class='c-arrow vc-angle-right'
+                :class='{ "c-disabled": !canMoveNextMonth }'
+                :style='arrowStyle'
+                @click='moveNextMonth'>
+              </span>
+            </slot>
+          </div>
         </div>
-      </div>
-    </slot>
+      </slot>
+    </div>
     <!--Weekday Labels-->
     <div
       class='c-weekdays'
-      :style='weekdayStyle'>
+      :style='weekdayStyle_'>
       <div
         v-for='weekday in weekdayLabels_'
         :key='weekday'
@@ -59,7 +67,8 @@
     </div> 
     <!--Weeks-->
     <div
-      :style='weeksStyle'>
+      class='c-weeks'
+      :style='weeksStyle_'>
       <transition-group
         tag='div'
         class='c-weeks-rel'
@@ -76,7 +85,6 @@
           :prev-month-comps='p.prevMonthComps'
           :next-month-comps='p.nextMonthComps'
           :first-day-of-week='firstDayOfWeek'
-          :day-background-color='dayBackgroundColor'
           v-bind='$attrs'
           @touchstart='touchStart($event)'
           @touchmove='touchMove($event)'
@@ -105,6 +113,8 @@ import {
   pageIsAfterPage,
 } from '../utils/helpers';
 
+const _defaultTransition = 'slide-h';
+const _defaultDividerColor = '#dadada';
 const _allowedSwipeTime = 300;
 const _minHorizontalSwipeDistance = 60;
 const _maxVerticalSwipeDistance = 80;
@@ -114,21 +124,25 @@ export default {
     CalendarWeeks,
   },
   props: {
+    position: { type: Number, default: 1 },
     page: { type: Object, default: () => todayComps },
     minPage: Object,
     maxPage: Object,
     monthLabels: { type: Array, default: () => monthLabels },
     weekdayLabels: { type: Array, default: () => weekdayLabels },
     firstDayOfWeek: { type: Number, default: 1 },
-    paneStyle: Object,
+    dividerColor: { type: String, default: _defaultDividerColor },
     headerStyle: Object,
+    headerDividerColor: String,
     titleStyle: Object,
     titlePosition: String,
-    titleTransition: { type: String, default: 'slide-h' },
+    titleTransition: { type: String, default: _defaultTransition },
     arrowStyle: Object,
     weekdayStyle: Object,
+    weekdayDividerColor: String,
     weeksStyle: Object,
-    weeksTransition: { type: String, default: 'slide-h' },
+    weeksTransition: { type: String, default: _defaultTransition },
+    weeksDividerColor: String,
   },
   data() {
     return {
@@ -158,15 +172,20 @@ export default {
     weeksTransition_() {
       return this.getTransitionName(this.weeksTransition, this.transitionDirection);
     },
+    headerStyle_() {
+      return this.getDividerStyle(this.headerStyle, this.headerDividerColor);
+    },
+    weekdayStyle_() {
+      return this.getDividerStyle(this.weekdayStyle, this.weekdayDividerColor);
+    },
+    weeksStyle_() {
+      return this.getDividerStyle(this.weeksStyle, this.weeksDividerColor);
+    },
     canMovePrevMonth() {
       return this.canMove(this.page_.prevMonthComps);
     },
     canMoveNextMonth() {
       return this.canMove(this.page_.nextMonthComps);
-    },
-    dayBackgroundColor() {
-      if (this.paneStyle) return this.paneStyle.backgroundColor;
-      return undefined;
     },
   },
   watch: {
@@ -343,6 +362,11 @@ export default {
       }
       return `title-${type}`;
     },
+    getDividerStyle(defaultStyle, color = this.dividerColor) {
+      if (!this.position) return defaultStyle;
+      if (this.position === 1) return { ...defaultStyle, borderRight: '0' };
+      return { ...defaultStyle, borderLeft: `1px solid ${color}` };
+    },
   },
 };
 </script>
@@ -361,15 +385,14 @@ export default {
 .c-pane
   min-width: $paneMinWidth
   width: $paneWidth
-  background-color: $paneBgColor
-  border: $paneBorder
-  padding: $panePadding
   overflow: hidden
+
+.c-header-wrapper
+  padding: $headerPadding
 
 .c-header
   display: flex
   align-items: stretch
-  padding: $headerPadding
   user-select: none
 
   .c-arrow-layout
@@ -424,6 +447,7 @@ export default {
 
 .c-weekdays
   display: flex
+  padding: $weekdayPadding
 
 .c-weekday
   +box()
@@ -432,7 +456,9 @@ export default {
   color: $weekdayColor
   font-size: $weekdayFontSize
   font-weight: $weekdayFontWeight
-  padding: $weekdayPadding
+
+.c-weeks
+  padding: $weeksPadding
 
 .c-weeks-rel
   position: relative

@@ -20,11 +20,6 @@ export default {
   data() {
     const props = [
       {
-        propertyName: '<code>key: String</code>',
-        description: 'Key for indicator. Keys affect how highlight animations are applied when appearing or disappearing.',
-        default: '<code><i>index</i></code>',
-      },
-      {
         propertyName: '<code>diameter: String</code>',
         description: 'Diameter of indicator.',
         default: '<code>"5px"</code>',

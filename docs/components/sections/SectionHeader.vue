@@ -13,6 +13,7 @@
           <ul>
             <router-link tag='li' to='/' exact><a>Intro</a></router-link>
             <router-link tag='li' to='/setup'><a>Setup</a></router-link>
+            <router-link tag='li' to='/styling'><a>Styling</a></router-link>
             <router-link tag='li' to='/api'><a>API</a></router-link>
           </ul>
         </nav>

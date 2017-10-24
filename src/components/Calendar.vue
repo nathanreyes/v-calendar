@@ -4,6 +4,7 @@
   <div
     class='c-pane-container'>
     <calendar-pane
+      :position='isDoublePaned_ ? 1 : 0'
       :page.sync='fromPage_'
       :min-page='minPage'
       :max-page='maxFromPage'
@@ -17,6 +18,7 @@
     </calendar-pane>
     <calendar-pane
       v-if='isDoublePaned_'
+      :position='2'
       :page.sync='toPage_'
       :min-page='minToPage'
       :max-page='maxPage'
@@ -53,6 +55,8 @@ import {
   blendObjectColors,
 } from '../utils/helpers';
 
+const _defContentStyle = { color: '#333333' };
+
 export default {
   components: {
     CalendarPane,
@@ -65,7 +69,6 @@ export default {
     toPage: Object,
     isDoublePaned: Boolean,
     showTags: Boolean,
-    dayBackgroundColor: { type: String, default: '#fafafa' },
     dayContentStyle: Object,
     dayContentHoverStyle: Object,
     attributes: Array,
@@ -99,8 +102,13 @@ export default {
       if (!this.isDoublePaned_) return null;
       return getNextPage(this.fromPage_);
     },
+    dayBackgroundColor() {
+      if (this.weeksStyle && this.weeksStyle.backgroundColor) return this.weeksStyle.backgroundColor;
+      if (this.style && this.style.backgroundColor) return this.style.backgroundColor;
+      return '#fafafa';
+    },
     dayContentStyle_() {
-      return { color: '#333333', ...this.dayContentStyle };
+      return { ..._defContentStyle, ...this.dayContentStyle };
     },
     nimDayContentStyle() {
       const cs = { ...this.dayContentStyle_ };
@@ -225,12 +233,21 @@ export default {
   display: inline-flex
   flex-direction: column
   align-items: center
+  background-color: $paneBgColor
+  border: $paneBorder
   &.center
     display: flex
     align-items: center
 
 .c-pane-container
   display: inline-flex
+  flex: 1
+  align-items: stretch
+
+.c-pane-divider
+  width: 1px
+  border: 1px inset
+  border-color: #e3e3e3
 
 .c-footer-container
   // width: 100%

@@ -82,8 +82,6 @@ export default {
   components: {
     ExIntro,
   },
-  props: {
-  },
   data() {
     return {
       exIntroCode: ExIntroCode,
