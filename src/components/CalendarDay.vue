@@ -27,18 +27,33 @@
       {{ label }}
     </div>
   </div>
-  <!-- Indicator layer -->
+  <!-- Dots layer -->
   <div
     class='c-day-layer c-day-inactive c-day-box-center-bottom'
-    v-if='hasIndicators'>
+    v-if='hasDots'>
     <div
-      class='c-day-indicators'
-      :style='{ marginBottom: indicatorsOffset }'>
+      class='c-day-dots'
+      :style='{ marginBottom: dotsOffset }'>
       <span
-        v-for='indicator in indicators'
-        :key='indicator.key'
-        class='c-day-indicator'
-        :style='indicator.style'>
+        v-for='dot in dots'
+        :key='dot.key'
+        class='c-day-dot'
+        :style='dot.style'>
+      </span>
+    </div>
+  </div>
+  <!-- Bars layer -->
+  <div
+    class='c-day-layer c-day-inactive c-day-box-center-bottom'
+    v-if='hasBars'>
+    <div
+      class='c-day-bars'
+      :style='{ marginBottom: barsOffset }'>
+      <span
+        v-for='bar in bars'
+        :key='bar.key'
+        class='c-day-bar'
+        :style='bar.style'>
       </span>
     </div>
   </div>
@@ -56,7 +71,8 @@ export default {
     nimDayContentStyle: Object,
     dayContentHoverStyle: Object,
     nimDayContentHoverStyle: Object,
-    indicatorsOffset: { type: String, default: '0' },
+    dotsOffset: { type: String, default: '0' },
+    barsOffset: { type: String, default: '0' },
     label: String,
     day: Number,
     date: Date,
@@ -73,7 +89,8 @@ export default {
   data() {
     return {
       backgrounds: [],
-      indicators: [],
+      dots: [],
+      bars: [],
       contentStyle: null,
       contentHoverStyle: null,
       isHovered: false,
@@ -89,8 +106,11 @@ export default {
     hasBackgrounds() {
       return this.backgrounds && this.backgrounds.length;
     },
-    hasIndicators() {
-      return this.indicators && this.indicators.length;
+    hasDots() {
+      return this.dots && this.dots.length;
+    },
+    hasBars() {
+      return this.bars && this.bars.length;
     },
     highlights() {
       return this.hasBackgrounds ?
@@ -167,7 +187,8 @@ export default {
     },
     processAttributes() {
       const backgrounds = [];
-      const indicators = [];
+      const dots = [];
+      const bars = [];
       const contentStyles = [];
       const contentHoverStyles = [];
       if (this.attributes && this.attributes.length) {
@@ -175,8 +196,10 @@ export default {
         this.attributes.forEach((a) => {
           // Add background for highlight if needed
           if (a.highlight) backgrounds.push(this.getBackground(a));
-          // Add indicator if needed
-          if (a.indicator) indicators.push(this.getIndicator(a));
+          // Add dot if needed
+          if (a.dot) dots.push(this.getDot(a));
+          // Add bar if needed
+          if (a.bar) bars.push(this.getBar(a));
           // Add content style if needed
           if (a.contentStyle) contentStyles.push(this.inMonth ? a.contentStyle : a.nimContentStyle);
           // Add content hover style if needed
@@ -185,7 +208,8 @@ export default {
       }
       // Assign day attributes
       this.backgrounds = backgrounds;
-      this.indicators = indicators;
+      this.dots = dots;
+      this.bars = bars;
       this.contentStyle = Object.assign({}, this.inMonth ? this.dayContentStyle : this.nimDayContentStyle, ...contentStyles);
       this.contentHoverStyle = Object.assign({}, this.inMonth ? this.dayContentHoverStyle : this.nimDayContentHoverStyle, ...contentHoverStyles);
     },
@@ -243,23 +267,39 @@ export default {
       }
       return background;
     },
-    getIndicator(attribute) {
-      const indicator = this.inMonth ? attribute.indicator : attribute.nimIndicator;
-      const nIndicator = {
+    getDot(attribute) {
+      const dot = this.inMonth ? attribute.dot : attribute.nimDot;
+      const nDot = {
         key: attribute.key,
         dateInfo: attribute.dateInfo,
-        indicator,
+        dot,
         style: {
-          width: indicator.diameter,
-          height: indicator.diameter,
-          backgroundColor: indicator.backgroundColor,
-          borderColor: indicator.borderColor,
-          borderWidth: indicator.borderWidth,
-          borderStyle: indicator.borderStyle,
-          borderRadius: indicator.borderRadius,
+          width: dot.diameter,
+          height: dot.diameter,
+          backgroundColor: dot.backgroundColor,
+          borderColor: dot.borderColor,
+          borderWidth: dot.borderWidth,
+          borderStyle: dot.borderStyle,
+          borderRadius: dot.borderRadius,
         },
       };
-      return nIndicator;
+      return nDot;
+    },
+    getBar(attribute) {
+      const bar = this.inMonth ? attribute.bar : attribute.nimBar;
+      const nBar = {
+        key: attribute.key,
+        dateInfo: attribute.dateInfo,
+        bar,
+        style: {
+          height: bar.height,
+          backgroundColor: bar.backgroundColor,
+          borderColor: bar.borderColor,
+          borderWidth: bar.borderWidth,
+          borderStyle: bar.borderStyle,
+        },
+      };
+      return nBar;
     },
   },
 };
@@ -331,16 +371,25 @@ export default {
   user-select: none
   cursor: default
 
-.c-day-indicators
+.c-day-dots
   +box()
 
-.c-day-indicator
-  width: $indicatorDiameter
-  height: $indicatorDiameter
-  border-radius: $indicatorBorderRadius
-  background-color: blue
+.c-day-dot
+  width: $dotDiameter
+  height: $dotDiameter
+  border-radius: $dotBorderRadius
+  background-color: $dotBackgroundColor
   &:not(:last-child)
-    margin-right: $indicatorSpacing
+    margin-right: $dotSpacing
+
+.c-day-bars
+  +box(flex-start)
+  width: $barWidth
+
+.c-day-bar
+  flex-grow: 1
+  height: $barHeight
+  background-color: $barBackgroundColor
 
 // TRANSITION ANIMATIONS
 
@@ -351,11 +400,9 @@ export default {
 
   &.c-day-slide-right-enter
     animation: $slideRightEnterAnimation
-    // transform-origin: 0% 50%
 
   &.c-day-slide-left-enter
     animation: $slideLeftEnterAnimation
-    // transform-origin: 100% 50%
 
   &.c-day-scale-enter
     animation: $scaleEnterAnimation

@@ -8,7 +8,8 @@
           <p>Attributes are used to decorate the calendar with the following objects:</p>
           <ul>
             <li>highlights</li>
-            <li>indicators</li>
+            <li>dot indicators</li>
+            <li>bar indicators</li>
             <li>content styles</li>
             <li>content hover styles</li>
           </ul>

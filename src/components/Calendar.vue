@@ -140,17 +140,28 @@ export default {
           newAttribute.nimHighlight = { ...newAttribute.highlight };
           blendObjectColors(newAttribute.nimHighlight, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
         }
-        if (a.indicator) {
-          newAttribute.indicator = {
+        if (a.dot) {
+          newAttribute.dot = {
             diameter: '5px',
             backgroundColor: '#65999a',
             borderWidth: '0',
             borderStyle: 'solid',
             borderRadius: '50%',
-            ...a.indicator,
+            ...a.dot,
           };
-          newAttribute.nimIndicator = { ...newAttribute.indicator };
-          blendObjectColors(newAttribute.nimIndicator, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+          newAttribute.nimDot = { ...newAttribute.dot };
+          blendObjectColors(newAttribute.nimDot, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+        }
+        if (a.bar) {
+          newAttribute.bar = {
+            height: '3px',
+            backgroundColor: '#65999a',
+            borderWidth: '0',
+            borderStyle: 'solid',
+            ...a.bar,
+          };
+          newAttribute.nimBar = { ...newAttribute.bar };
+          blendObjectColors(newAttribute.nimBar, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
         }
         if (a.contentStyle) {
           newAttribute.contentStyle = {

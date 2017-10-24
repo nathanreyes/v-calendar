@@ -22,8 +22,11 @@
           <b-tab-item label='Highlight'>
             <calendar-api-highlight></calendar-api-highlight>
           </b-tab-item>
-          <b-tab-item label='Indicator'>
-            <calendar-api-indicator></calendar-api-indicator>
+          <b-tab-item label='Dot'>
+            <calendar-api-dot></calendar-api-dot>
+          </b-tab-item>
+          <b-tab-item label='Bar'>
+            <calendar-api-bar></calendar-api-bar>
           </b-tab-item>
         </b-tabs>
       </b-tab-item>
@@ -44,7 +47,8 @@ import CalendarApiEvents from '../api/CalendarApiEvents';
 import CalendarApiSlots from '../api/CalendarApiSlots';
 import CalendarApiAttribute from '../api/CalendarApiAttribute';
 import CalendarApiHighlight from '../api/CalendarApiHighlight';
-import CalendarApiIndicator from '../api/CalendarApiIndicator';
+import CalendarApiDot from '../api/CalendarApiDot';
+import CalendarApiBar from '../api/CalendarApiBar';
 import CalendarApiPage from '../api/CalendarApiPage';
 import CalendarApiDayInfo from '../api/CalendarApiDayInfo';
 
@@ -55,7 +59,8 @@ export default {
     CalendarApiSlots,
     CalendarApiAttribute,
     CalendarApiHighlight,
-    CalendarApiIndicator,
+    CalendarApiDot,
+    CalendarApiBar,
     CalendarApiPage,
     CalendarApiDayInfo,
   },

@@ -1,4 +1,6 @@
 - Add day-height back as a prop
+- Add 'Star on Github' button
+
 
 CALENDAR
 

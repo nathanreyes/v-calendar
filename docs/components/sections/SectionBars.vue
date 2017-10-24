@@ -1,29 +1,28 @@
 <template>
 <section id='indicators' class='section'>
   <div class='container'>
-    <h4 class='title is-4 has-text-grey-dark is-spaced'>Indicators</h4>
+    <h4 class='title is-4 has-text-grey-dark is-spaced'>Bars</h4>
     <div class='columns is-desktop'>
       <div class='column'>
         <b-tabs>
-          <!--Indicators Overview-->
+          <!--Bars Overview-->
           <b-tab-item label='Overview'>
             <div class='content'>
               <ul>
                 <li>Custom color, border and size properties</li>
                 <li>Assignable bottom margin for indicator row</li>
-                <li>Optionally animated on appearance or disappearance</li> 
               </ul>
             </div>
           </b-tab-item>
-          <!--Indicators Example Code-->
+          <!--Bars Example Code-->
           <b-tab-item label='Example Code'>
-            <code-block :code='exIndicatorsCode'></code-block>
+            <code-block :code='exBarsCode'></code-block>
           </b-tab-item>
         </b-tabs>
       </div>
       <div class='column'>
         <div class='example-container'>
-          <ex-indicators></ex-indicators>
+          <ex-bars></ex-bars>
         </div>
       </div>
     </div>
@@ -32,16 +31,16 @@
 </template>
 
 <script>
-import ExIndicators from '../examples/ExIndicators';
-import ExIndicatorsCode from '!!raw-loader!../examples/ExIndicators';
+import ExBars from '../examples/ExBars';
+import ExBarsCode from '!!raw-loader!../examples/ExBars';
 
 export default {
   components: {
-    ExIndicators,
+    ExBars,
   },
   data() {
     return {
-      exIndicatorsCode: ExIndicatorsCode,
+      exBarsCode: ExBarsCode,
     };
   },
 };

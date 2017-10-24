@@ -14,8 +14,8 @@ export default {
     return {
       attributes: [
         {
-          indicator: {
-            backgroundColor: '#ff3333', // Red
+          dot: {
+            backgroundColor: '#ff4d4d', // Red
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
@@ -26,8 +26,8 @@ export default {
           ],
         },
         {
-          indicator: {
-            backgroundColor: '#0040ff', // Blue
+          dot: {
+            backgroundColor: '#398fac', // Turqoise
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 4),
@@ -42,8 +42,8 @@ export default {
           ],
         },
         {
-          indicator: {
-            backgroundColor: '#ff8000', // Orange
+          dot: {
+            backgroundColor: '#794dff', // Purple
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 12),

@@ -21,32 +21,32 @@ export default {
     const props = [
       {
         propertyName: '<code>diameter: String</code>',
-        description: 'Diameter of indicator.',
+        description: 'Diameter of dot.',
         default: '<code>"5px"</code>',
       },
       {
         propertyName: '<code>backgroundColor: String</code>',
-        description: 'Background color of indicator.',
+        description: 'Background color of dot.',
         default: '<code>"rgba(0, 0, 0, 0.5)"</code>',
       },
       {
         propertyName: '<code>borderColor: String</code>',
-        description: 'Border color of indicator.',
+        description: 'Border color of dot.',
         default: '<code>undefined</code>',
       },
       {
         propertyName: '<code>borderWidth: String</code>',
-        description: 'Border width of indicator.',
+        description: 'Border width of dot.',
         default: '<code>"0"</code>',
       },
       {
         propertyName: '<code>borderStyle: String</code>',
-        description: 'Border style of indicator.',
+        description: 'Border style of dot.',
         default: '<code>"solid"</code>',
       },
       {
         propertyName: '<code>borderRadius: String</code>',
-        description: 'Border radius of indicator.',
+        description: 'Border radius of dot.',
         default: '<code>"50%"<code>',
       },
     ];

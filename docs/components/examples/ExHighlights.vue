@@ -59,7 +59,7 @@ export default {
         },
         {
           highlight: {
-            backgroundColor: '#66b3cc', // Orange
+            backgroundColor: '#66b3cc', // Turqoise
             borderColor: '#53a9c6',
             borderWidth: '2px',
             borderRadius: '5px',

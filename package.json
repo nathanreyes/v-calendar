@@ -8,7 +8,7 @@
   "main": "dist/lib/v-calendar.min.js",
   "files": [
     "src",
-    "dist/lib"
+    "lib"
   ],
   "repository": {
     "type": "git",

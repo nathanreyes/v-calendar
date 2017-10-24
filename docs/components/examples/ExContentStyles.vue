@@ -19,7 +19,7 @@ export default {
       attributes: [
         {
           contentStyle: {
-            color: '#ff3333', // Red
+            color: '#ff4d4d', // Red
             fontWeight: 600,
             fontSize: '1em',
           },
@@ -34,7 +34,7 @@ export default {
         },
         {
           contentStyle: {
-            color: '#0040ff', // Blue
+            color: '#398fac', // Blue
             fontWeight: 600,
             fontStyle: 'italic',
           },
@@ -50,7 +50,7 @@ export default {
         },
         {
           contentStyle: {
-            color: '#ff8000', // Orange
+            color: '#794dff', // Turqoise
             fontWeight: 600,
           },
           dates: [

@@ -68,8 +68,13 @@ export default {
         default: '<code>[]</code>',
       },
       {
-        name: '<code>indicators-offset: String',
-        description: 'Offset margin of indicators from bottom of day cell.',
+        name: '<code>dots-offset: String',
+        description: 'Offset margin of dots from bottom of day cell.',
+        default: '<code>"0"</code>',
+      },
+      {
+        name: '<code>bars-offset: String',
+        description: 'Offset margin of bars from bottom of day cell.',
         default: '<code>"0"</code>',
       },
       {
