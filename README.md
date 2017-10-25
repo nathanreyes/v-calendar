@@ -35,7 +35,7 @@ npm install v-calendar
 ```javascript
 import Vue from 'vue';
 import VCalendar from 'v-calendar';
-import 'vcalendar/lib/vcalendar.min.css';
+import 'v-calendar/lib/v-calendar.min.css';
 
 Vue.use(VCalendar);
 ```

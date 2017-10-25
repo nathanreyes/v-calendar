@@ -1,11 +1,11 @@
 {
   "name": "v-calendar",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "keywords": ["vue", "calendar", "highlights", "indicators"],
   "homepage": "vcalendar.netlify.com",
   "author": "Nathan Reyes <nathanreyes@me.com>",
-  "main": "dist/lib/v-calendar.min.js",
+  "main": "lib/v-calendar.min.js",
   "files": [
     "src",
     "lib"
