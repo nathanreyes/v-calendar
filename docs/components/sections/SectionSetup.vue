@@ -93,7 +93,7 @@ export default {
         </template>`,
       loadResourcesCode: `
         <!-- VCalendar CSS -->
-        <link rel='stylesheet' href='https://unpkg.com/vcalendar/dist/lib/vcalendar.min.css'>
+        <link rel='stylesheet' href='https://unpkg.com/vcalendar/lib/vcalendar.min.css'>
         <!-- VCalendar JavaScript -->
         <script src='https://unpkg.com/vcalendar'><\/script>`,
     };
