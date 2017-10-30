@@ -1,6 +1,6 @@
 <template>
 <v-date-picker
-  select-mode='single'
+  mode='single'
   v-model='selectedValue'
   is-expanded>
   <template scope='props'>

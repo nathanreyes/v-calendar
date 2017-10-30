@@ -4,11 +4,19 @@
     <b-message type='is-warning'>
       <a href='https://vuejs.org' target='_blank'>Vue.js</a> version <strong>2.4.2+</strong> is required.
     </b-message>
-    <b-tabs>
-      <b-tab-item label='NPM'>
+    <article class='media'>
+      <div class='media-left'>
+        <p class='title is-5'>1</p>
+      </div>
+      <div class='media-content'>
+        <p class='title is-5'>Select method</p>
+      </div>
+    </article>
+    <b-tabs type='is-toggle' class='offset'>
+      <b-tab-item label='Use NPM'>
         <article class='media'>
           <div class='media-left'>
-            <p class='title is-5'>1</p>
+            <p class='title is-5'>2</p>
           </div>
           <div class='media-content'>
             <p class='title is-5'>Install</p>
@@ -17,7 +25,7 @@
         <code-block lang='javascript' code='npm install v-calendar' offset></code-block>
         <article class='media'>
           <div class='media-left'>
-            <p class='title is-5'>2</p>
+            <p class='title is-5'>3</p>
           </div>
           <div class='media-content'>
             <p class='title is-5'>Import into your project</p>
@@ -26,7 +34,7 @@
         <code-block lang='javascript' :code='importCode | pre' offset></code-block>
         <article class='media'>
           <div class='media-left'>
-            <p class='title is-5'>3</p>
+            <p class='title is-5'>4</p>
           </div>
           <div class='media-content'>
             <p class='title is-5'>Reference in your component templates</p>
@@ -34,10 +42,10 @@
         </article>
         <code-block :code='componentCode | pre' offset></code-block>
       </b-tab-item>
-      <b-tab-item label='CDN'>
+      <b-tab-item label='Use CDN'>
         <article class='media'>
           <div class="media-left">
-            <p class="title is-5">1</p>
+            <p class="title is-5">2</p>
           </div>
           <div class="media-content">
             <p class="title is-5">Load external resources</p>
@@ -46,7 +54,7 @@
         <code-block :code='loadResourcesCode | pre' offset></code-block>
         <article class="media">
           <div class="media-left">
-            <p class="title is-5">2</p>
+            <p class="title is-5">3</p>
           </div>
           <div class="media-content">
             <p class="title is-5">Use the global VCalendar object</p>
@@ -55,7 +63,7 @@
         <code-block lang='javascript' code='Vue.use(VCalendar.default);' offset></code-block>
         <article class='media'>
           <div class='media-left'>
-            <p class='title is-5'>3</p>
+            <p class='title is-5'>4</p>
           </div>
           <div class='media-content'>
             <p class='title is-5'>Reference in your component templates</p>
@@ -93,7 +101,7 @@ export default {
         </template>`,
       loadResourcesCode: `
         <!-- VCalendar CSS -->
-        <link rel='stylesheet' href='https://unpkg.com/vcalendar/lib/vcalendar.min.css'>
+        <link rel='stylesheet' href='https://unpkg.com/vcalendar/dist/lib/vcalendar.min.css'>
         <!-- VCalendar JavaScript -->
         <script src='https://unpkg.com/vcalendar'><\/script>`,
     };
@@ -108,3 +116,14 @@ export default {
   },
 };
 </script>
+
+<style lang='sass' scoped>
+
+.offset
+  margin-top: 20px
+
+.b-tabs
+  .tabs
+    margin-left: 20px
+
+</style>

@@ -2,7 +2,7 @@
 
 > V-Calendar is a lightweight, dependency-free plugin for building attributed calendars in Vue.js.
 
-Visit http://vcalendar.netlify.com for demos and API reference.
+Visit http://vcalendar.netlify.com for demos and API reference. This plug-in is currently in beta state.
 
 ## Features
 

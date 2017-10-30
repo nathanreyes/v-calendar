@@ -1,7 +1,8 @@
 <template>
   <v-date-picker
-    :select-mode='selectMode'
-    :tint-color='tintColor'
+    :mode='mode'
+    :select-color='selectColor'
+    :drag-color='dragColor'
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[todayAttribute]'
     :is-inline='isInline'
@@ -22,8 +23,9 @@ const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthCo
 
 export default {
   props: {
-    selectMode: { type: String, default: 'range' },
-    tintColor: { type: String, default: '#66b3cc' },
+    mode: { type: String, default: 'range' },
+    selectColor: { type: String, default: '#66b3cc' },
+    dragColor: { type: String, default: '#9fcfdf' },
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,

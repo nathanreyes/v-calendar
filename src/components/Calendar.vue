@@ -1,41 +1,29 @@
 <template>
 <div
-  :class='["c-container", { "center": paneCentered }]'>
-  <div
-    class='c-pane-container'>
-    <calendar-pane
-      :position='isDoublePaned_ ? 1 : 0'
-      :page.sync='fromPage_'
-      :min-page='minPage'
-      :max-page='maxFromPage'
-      :day-content-style='dayContentStyle_'
-      :day-content-hover-style='dayContentHoverStyle'
-      :nim-day-content-style='nimDayContentStyle'
-      :nim-day-content-hover-style='nimDayContentHoverStyle'
-      :attributes='attributes_'
-      v-bind='$attrs'
-      v-on='$listeners'>
-    </calendar-pane>
-    <calendar-pane
-      v-if='isDoublePaned_'
-      :position='2'
-      :page.sync='toPage_'
-      :min-page='minToPage'
-      :max-page='maxPage'
-      :day-content-style='dayContentStyle_'
-      :day-content-hover-style='dayContentHoverStyle'
-      :nim-day-content-style='nimDayContentStyle'
-      :nim-day-content-hover-style='nimDayContentHoverStyle'
-      :attributes='attributes_'
-      v-bind='$attrs'
-      v-on='$listeners'>
-    </calendar-pane>
-  </div>
-  <slot name='footer' v-if='showFooter'>
-    <div class='c-footer'>
-      <!-- <tag>1/21/1983</tag> -->
-    </div>
-  </slot>
+  class='c-pane-container'
+  :class='{ "is-double-paned": isDoublePaned_, "is-expanded": isExpanded }'
+  :style='themeStyles_.wrapper'>
+  <calendar-pane
+    :position='isDoublePaned_ ? 1 : 0'
+    :page.sync='fromPage_'
+    :min-page='minPage'
+    :max-page='maxFromPage'
+    :styles='themeStyles_'
+    :attributes='attributes_'
+    v-bind='$attrs'
+    v-on='$listeners'>
+  </calendar-pane>
+  <calendar-pane
+    v-if='isDoublePaned_'
+    :position='2'
+    :page.sync='toPage_'
+    :min-page='minToPage'
+    :max-page='maxPage'
+    :styles='themeStyles_'
+    :attributes='attributes_'
+    v-bind='$attrs'
+    v-on='$listeners'>
+  </calendar-pane>
 </div>
 </template>
 
@@ -45,6 +33,8 @@ import Tag from './Tag';
 import '../assets/fonts/vcalendar/vcalendar.scss';
 import '../styles/lib.sass';
 
+import { themeStyles, getHighlight, dot, bar } from '../utils/defaults';
+
 import {
   todayComps,
   getPrevPage,
@@ -52,10 +42,7 @@ import {
   getPageBetweenPages,
   getFirstValidPage,
   DateInfo,
-  blendObjectColors,
 } from '../utils/helpers';
-
-const _defContentStyle = { color: '#333333' };
 
 export default {
   components: {
@@ -68,9 +55,9 @@ export default {
     fromPage: Object,
     toPage: Object,
     isDoublePaned: Boolean,
+    isExpanded: Boolean,
     showTags: Boolean,
-    dayContentStyle: Object,
-    dayContentHoverStyle: Object,
+    themeStyles: Object,
     attributes: Array,
     dateFormatter: {
       type: Function,
@@ -86,7 +73,7 @@ export default {
   },
   computed: {
     isDoublePaned_() {
-      return this.isDoublePaned && this.windowWidth >= 440;
+      return this.isDoublePaned && this.windowWidth >= 480;
     },
     showFooter() {
       return this.showTags || this.$slots.footer;
@@ -102,23 +89,9 @@ export default {
       if (!this.isDoublePaned_) return null;
       return getNextPage(this.fromPage_);
     },
-    dayBackgroundColor() {
-      if (this.weeksStyle && this.weeksStyle.backgroundColor) return this.weeksStyle.backgroundColor;
-      if (this.style && this.style.backgroundColor) return this.style.backgroundColor;
-      return '#fafafa';
-    },
-    dayContentStyle_() {
-      return { ..._defContentStyle, ...this.dayContentStyle };
-    },
-    nimDayContentStyle() {
-      const cs = { ...this.dayContentStyle_ };
-      blendObjectColors(cs, ['color', 'backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
-      return cs;
-    },
-    nimDayContentHoverStyle() {
-      const chs = { ...this.dayContentHoverStyle };
-      blendObjectColors(chs, ['color', 'backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
-      return chs;
+    themeStyles_() {
+      // Mix user supplied styles with default styles
+      return { ...themeStyles, ...this.themeStyles };
     },
     attributes_() {
       if (!this.attributes || !this.attributes.length) return [];
@@ -129,54 +102,29 @@ export default {
           order: a.order || 0,
         };
         if (a.highlight) {
-          newAttribute.highlight = {
-            height: '1.8rem',
-            backgroundColor: '#65999a',
-            borderWidth: '0',
-            borderStyle: 'solid',
-            borderRadius: '1.8rem',
-            ...a.highlight,
-          };
-          newAttribute.nimHighlight = { ...newAttribute.highlight };
-          blendObjectColors(newAttribute.nimHighlight, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
+          newAttribute.highlight = getHighlight(a.highlight);
         }
         if (a.dot) {
           newAttribute.dot = {
-            diameter: '5px',
-            backgroundColor: '#65999a',
-            borderWidth: '0',
-            borderStyle: 'solid',
-            borderRadius: '50%',
+            ...dot,
             ...a.dot,
           };
-          newAttribute.nimDot = { ...newAttribute.dot };
-          blendObjectColors(newAttribute.nimDot, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
         }
         if (a.bar) {
           newAttribute.bar = {
-            height: '3px',
-            backgroundColor: '#65999a',
-            borderWidth: '0',
-            borderStyle: 'solid',
+            ...bar,
             ...a.bar,
           };
-          newAttribute.nimBar = { ...newAttribute.bar };
-          blendObjectColors(newAttribute.nimBar, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
         }
         if (a.contentStyle) {
           newAttribute.contentStyle = {
-            color: '#333333',
             ...a.contentStyle,
           };
-          newAttribute.nimContentStyle = { ...newAttribute.contentStyle };
-          blendObjectColors(newAttribute.nimContentStyle, ['color', 'backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
         }
         if (a.contentHoverStyle) {
           newAttribute.contentHoverStyle = {
             ...a.contentHoverStyle,
           };
-          newAttribute.nimContentHoverStyle = { ...newAttribute.contentHoverStyle };
-          blendObjectColors(newAttribute.nimContentHoverStyle, ['backgroundColor', 'borderColor'], this.dayBackgroundColor, 0.6);
         }
         return newAttribute;
       });
@@ -243,7 +191,6 @@ export default {
 .c-container
   display: inline-flex
   flex-direction: column
-  align-items: center
   background-color: $paneBgColor
   border: $paneBorder
   &.center
@@ -251,9 +198,17 @@ export default {
     align-items: center
 
 .c-pane-container
+  flex-shrink: 1
   display: inline-flex
-  flex: 1
-  align-items: stretch
+  min-width: $paneMinWidth
+  width: $paneWidth
+  background-color: $paneBgColor
+  border: $paneBorder
+  &.is-double-paned
+    min-width: $paneMinWidth * 2
+    width: $paneWidth * 2
+  &.is-expanded
+    display: flex
 
 .c-pane-divider
   width: 1px

@@ -2,11 +2,15 @@
   <div
     class='c-pane'>
     <!--Header-->
-    <div
-      class="c-header-wrapper"
-      :style='headerStyle_'>
+    <div class='c-header-wrapper'>
+      <!--Header vertical divider-->
+      <div
+        :style='verticalDividers.header'
+        v-if='verticalDividers.header'>
+      </div>
+      <!--Header slot-->
       <slot name='header' :page='page_'>
-        <div class='c-header'>
+        <div class='c-header' :style='headerStyle'>
           <!--Header prev button-->
           <div class='c-arrow-layout'>
             <slot name='header-left-button' :page='page_'>
@@ -28,16 +32,14 @@
               v-for='p in pages'
               :key='p.key'
               v-if='p === page_'>
-              <div class='c-title-2'>
-                <slot name='header-title' :page='p'>
-                  <span
-                    class='c-title-3'
-                    :style='titleStyle'
-                    @click='moveThisMonth'>
-                    {{ p.headerLabel }}
-                  </span>
-                </slot>
-              </div>
+              <slot name='header-title' :page='p'>
+                <div
+                  class='c-title-2'
+                  :style='titleStyle'
+                  @click='moveThisMonth'>
+                  {{ p.headerLabel }}
+                </div>
+              </slot>
             </div>
           </transition-group>
           <!--Header next button-->
@@ -54,45 +56,75 @@
         </div>
       </slot>
     </div>
-    <!--Weekday Labels-->
+    <!--Header horizontal divider-->
     <div
-      class='c-weekdays'
-      :style='weekdayStyle_'>
+      class='c-horizontal-divider'
+      :style='headerHorizontalDividerStyle_'
+      v-if='headerHorizontalDividerStyle_'>
+    </div>
+    <!--Weekdays-->
+    <div class='c-weekdays-wrapper'>
+      <!--Weekday vertical divider-->
       <div
-        v-for='weekday in weekdayLabels_'
-        :key='weekday'
-        class='c-weekday'>
-        {{ weekday }}
+        :style='verticalDividers.weekdays'
+        v-if='verticalDividers.weekdays'>
       </div>
-    </div> 
-    <!--Weeks-->
+      <div
+        class='c-weekdays'
+        :style='weekdayStyle_'>
+        <!--Weekday labels-->
+        <div
+          v-for='weekday in weekdayLabels_'
+          :key='weekday'
+          class='c-weekday'>
+          {{ weekday }}
+        </div>
+      </div>
+    </div>
+    <!--Weekday horizontal divider-->
     <div
-      class='c-weeks'
-      :style='weeksStyle_'>
-      <transition-group
-        tag='div'
-        class='c-weeks-rel'
-        :name='weeksTransition_'>
-        <calendar-weeks
-          class='c-weeks-abs'
-          v-for='p in pages'
-          :key='p.key'
-          :month='p.month'
-          :year='p.year'
-          :is-leap-year='p.isLeapYear'
-          :days-in-month='p.daysInMonth'
-          :first-weekday-in-month='p.firstWeekdayInMonth'
-          :prev-month-comps='p.prevMonthComps'
-          :next-month-comps='p.nextMonthComps'
-          :first-day-of-week='firstDayOfWeek'
-          v-bind='$attrs'
-          @touchstart='touchStart($event)'
-          @touchmove='touchMove($event)'
-          @touchend='touchEnd($event)'
-          v-on='$listeners'
-          v-if='p === page_'>
-        </calendar-weeks>
-      </transition-group> 
+      class='c-horizontal-divider'
+      :style='weekdaysHorizontalDividerStyle_'
+      v-if='weekdaysHorizontalDividerStyle_'>
+    </div>
+    <!--Weeks-->
+    <div class='c-weeks-wrapper'>
+      <!--Weeks vertical divider-->
+      <div
+        :style='verticalDividers.weeks'
+        v-if='verticalDividers.weeks'>
+      </div>
+      <!--Week rows-->
+      <div
+        class='c-weeks'
+        :style='weeksStyle_'>
+        <transition-group
+          tag='div'
+          class='c-weeks-rel'
+          :style='weekRowsStyle'
+          :name='weeksTransition_'>
+          <calendar-weeks
+            class='c-weeks-abs'
+            v-for='p in pages'
+            :key='p.key'
+            :month='p.month'
+            :year='p.year'
+            :is-leap-year='p.isLeapYear'
+            :days-in-month='p.daysInMonth'
+            :first-weekday-in-month='p.firstWeekdayInMonth'
+            :prev-month-comps='p.prevMonthComps'
+            :next-month-comps='p.nextMonthComps'
+            :first-day-of-week='firstDayOfWeek'
+            :styles='styles'
+            v-bind='$attrs'
+            @touchstart='touchStart($event)'
+            @touchmove='touchMove($event)'
+            @touchend='touchEnd($event)'
+            v-on='$listeners'
+            v-if='p === page_'>
+          </calendar-weeks>
+        </transition-group> 
+      </div>
     </div>
   </div>
 </template>
@@ -102,8 +134,6 @@ import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
 import {
   todayComps,
-  monthLabels,
-  weekdayLabels,
   getIsLeapYear,
   getMonthComps,
   getThisMonthComps,
@@ -112,12 +142,15 @@ import {
   pageIsBeforePage,
   pageIsAfterPage,
 } from '../utils/helpers';
-
-const _defaultTransition = 'slide-h';
-const _defaultDividerColor = '#dadada';
-const _allowedSwipeTime = 300;
-const _minHorizontalSwipeDistance = 60;
-const _maxVerticalSwipeDistance = 80;
+import {
+  monthLabels,
+  weekdayLabels,
+  titleTransition,
+  weeksTransition,
+  maxSwipeTimeMs,
+  minHorizontalSwipeDistance,
+  maxVerticalSwipeDistance,
+} from '../utils/defaults';
 
 export default {
   components: {
@@ -131,18 +164,10 @@ export default {
     monthLabels: { type: Array, default: () => monthLabels },
     weekdayLabels: { type: Array, default: () => weekdayLabels },
     firstDayOfWeek: { type: Number, default: 1 },
-    dividerColor: { type: String, default: _defaultDividerColor },
-    headerStyle: Object,
-    headerDividerColor: String,
-    titleStyle: Object,
+    styles: Object,
     titlePosition: String,
-    titleTransition: { type: String, default: _defaultTransition },
-    arrowStyle: Object,
-    weekdayStyle: Object,
-    weekdayDividerColor: String,
-    weeksStyle: Object,
-    weeksTransition: { type: String, default: _defaultTransition },
-    weeksDividerColor: String,
+    titleTransition: { type: String, default: titleTransition },
+    weeksTransition: { type: String, default: weeksTransition },
   },
   data() {
     return {
@@ -172,14 +197,38 @@ export default {
     weeksTransition_() {
       return this.getTransitionName(this.weeksTransition, this.transitionDirection);
     },
-    headerStyle_() {
-      return this.getDividerStyle(this.headerStyle, this.headerDividerColor);
+    headerStyle() {
+      return this.getDividerStyle(this.styles.header);
+    },
+    titleStyle() {
+      return this.styles.headerTitle;
+    },
+    arrowStyle() {
+      return this.styles.headerArrows;
+    },
+    verticalDividers() {
+      return this.position === 2 ? {
+        header: this.styles.headerVerticalDivider || this.styles.verticalDivider,
+        weekdays: this.styles.weekdaysVerticalDivider || this.styles.verticalDivider,
+        weeks: this.styles.weeksVerticalDivider || this.styles.verticalDivider,
+      } : {};
+    },
+    headerHorizontalDividerStyle_() {
+      return this.styles.headerHorizontalDivider;
     },
     weekdayStyle_() {
-      return this.getDividerStyle(this.weekdayStyle, this.weekdayDividerColor);
+      return this.getDividerStyle(this.styles.weekdays);
+    },
+    weekdaysHorizontalDividerStyle_() {
+      return this.styles.weekdaysHorizontalDivider;
     },
     weeksStyle_() {
-      return this.getDividerStyle(this.weeksStyle, this.weeksDividerColor);
+      return this.getDividerStyle(this.styles.weeks);
+    },
+    weekRowsStyle() {
+      return {
+        height: '192px',
+      };
     },
     canMovePrevMonth() {
       return this.canMove(this.page_.prevMonthComps);
@@ -241,8 +290,8 @@ export default {
       const deltaX = t.screenX - this.touchState.startX;
       const deltaY = t.screenY - this.touchState.startY;
       const deltaTime = new Date().getTime() - this.touchState.startTime;
-      if (deltaTime < _allowedSwipeTime) {
-        if (Math.abs(deltaX) >= _minHorizontalSwipeDistance && Math.abs(deltaY) <= _maxVerticalSwipeDistance) {
+      if (deltaTime < maxSwipeTimeMs) {
+        if (Math.abs(deltaX) >= minHorizontalSwipeDistance && Math.abs(deltaY) <= maxVerticalSwipeDistance) {
           // Swipe left
           if (deltaX < 0) {
             // Move to previous month
@@ -362,10 +411,10 @@ export default {
       }
       return `title-${type}`;
     },
-    getDividerStyle(defaultStyle, color = this.dividerColor) {
-      if (!this.position) return defaultStyle;
+    getDividerStyle(defaultStyle) {
       if (this.position === 1) return { ...defaultStyle, borderRight: '0' };
-      return { ...defaultStyle, borderLeft: `1px solid ${color}` };
+      if (this.position === 2) return { ...defaultStyle, borderLeft: '0' };
+      return defaultStyle;
     },
   },
 };
@@ -383,17 +432,24 @@ export default {
   padding: 0
 
 .c-pane
-  min-width: $paneMinWidth
-  width: $paneWidth
+  flex-grow: 1
+  flex-shrink: 1
+  // min-width: $paneMinWidth
+  // width: $paneWidth
+  display: flex
+  flex-direction: column
+  align-items: stretch
   overflow: hidden
 
 .c-header-wrapper
-  padding: $headerPadding
+  display: flex
 
 .c-header
+  flex: 1
   display: flex
   align-items: stretch
   user-select: none
+  padding: $headerPadding
 
   .c-arrow-layout
     +box()
@@ -419,18 +475,18 @@ export default {
       top: 0
       width: 100%
       height: 100%
+      display: flex
       .c-title-2
-        +box()
-        height: 100%
-        .c-title-3
-          font-weight: $titleFontWeight
-          font-size: $titleFontSize
-          transition: $titleTransition
-          cursor: pointer
-          user-select: none
-          margin: $titleMargin
-          &:hover
-            opacity: 0.5
+        font-weight: $titleFontWeight
+        font-size: $titleFontSize
+        transition: $titleTransition
+        cursor: pointer
+        user-select: none
+        margin: $titleMargin
+        text-align: center
+        width: 100%
+        &:hover
+          opacity: 0.5
     &.align-left
       order: -1
       .c-title-2
@@ -445,24 +501,34 @@ export default {
     pointer-events: none
     opacity: 0.2
 
+.c-horizontal-divider
+  align-self: center
+
+.c-weekdays-wrapper
+  display: flex
+
 .c-weekdays
+  flex-grow: 1
   display: flex
   padding: $weekdayPadding
-
-.c-weekday
-  +box()
-  width: $dayWidth
-  cursor: default
   color: $weekdayColor
   font-size: $weekdayFontSize
   font-weight: $weekdayFontWeight
 
+.c-weekday
+  +box()
+  flex-grow: 1
+  cursor: default
+
+.c-weeks-wrapper
+  display: flex
+
 .c-weeks
+  flex-grow: 1
   padding: $weeksPadding
 
 .c-weeks-rel
   position: relative
-  height: $dayHeight * 6
   .c-weeks-abs
     position: absolute
     width: 100%
