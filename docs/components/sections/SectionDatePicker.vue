@@ -24,9 +24,9 @@
           <b-tab-item label='Options' icon='gear'>
             <b-field label='Select Mode'>
               <p class='control'>
-                <b-radio v-model='selectMode' native-value='single'>Single</b-radio>
-                <b-radio v-model='selectMode' native-value='multiple'>Multiple</b-radio>
-                <b-radio v-model='selectMode' native-value='range'>Range</b-radio>
+                <b-radio v-model='mode' native-value='single'>Single</b-radio>
+                <b-radio v-model='mode' native-value='multiple'>Multiple</b-radio>
+                <b-radio v-model='mode' native-value='range'>Range</b-radio>
               </p>
             </b-field>
             <b-field>
@@ -60,7 +60,7 @@
       <div class='column'>
         <div :class='{ "example-container": isInline }'>
           <ex-date-picker
-            :select-mode='selectMode'
+            :mode='mode'
             :show-disabled-dates='showDisabledDates'
             :is-inline='isInline'
             :popover-direction='popoverDirection'
@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       exDatePickerCode: ExDatePickerCode,
-      selectMode: 'range',
+      mode: 'range',
       selectedValue: null,
       showDisabledDates: false,
       isInline: false,

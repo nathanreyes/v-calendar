@@ -19,6 +19,7 @@
         <div class='navbar-end'>
           <router-link class='navbar-item is-hidden-tablet' to='/' exact><a>Intro</a></router-link>
           <router-link class='navbar-item is-hidden-tablet' to='/setup'><a>Setup</a></router-link>
+          <router-link class='navbar-item is-hidden-tablet' to='/styling'><a>Styling</a></router-link>
           <router-link class='navbar-item is-hidden-tablet' to='/api'><a>API</a></router-link>
           <a class='navbar-item' title='Github' href='https://github.com/nathanreyes/v-calendar' target='_blank'>
             <b-icon icon='github'></b-icon>

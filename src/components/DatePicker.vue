@@ -2,7 +2,7 @@
   <component
     :is='datePicker'
     :value='value'
-    :day-content-hover-style='dayContentHoverStyle_'
+    :styles='styles_'
     :drag-attribute='dragAttribute_'
     :select-attribute='selectAttribute_'
     :disabled-attribute='disabledAttribute_'
@@ -34,7 +34,7 @@
       slot='popover-content'
       :is='datePicker'
       :value='value'
-      :day-content-hover-style='dayContentHoverStyle_'
+      :styles='styles_'
       :drag-attribute='dragAttribute_'
       :select-attribute='selectAttribute_'
       :disabled-attribute='disabledAttribute_'
@@ -56,7 +56,8 @@ import DateRangePicker from './DateRangePicker';
 import { DateInfo, blendColors } from '../utils/helpers';
 
 const POPOVER_AUTO = -1;
-const _defaultTintColor = '#409fbf';
+const _defaultSelectColor = 'rgba(0, 0, 0, 0.2)';
+const _defaultDragColor = 'rgba(0, 0, 0, 0.1)';
 
 export default {
   components: {
@@ -66,7 +67,7 @@ export default {
     DateRangePicker,
   },
   props: {
-    selectMode: { type: String, default: 'single' },
+    mode: { type: String, default: 'single' },
     value: null,
     isInline: Boolean,
     isExpanded: Boolean,
@@ -84,8 +85,9 @@ export default {
       type: Function,
       default: s => new Date(Date.parse(s)),
     },
-    dayContentHoverStyle: Object,
-    tintColor: { type: String, default: _defaultTintColor },
+    styles: Object,
+    selectColor: { type: String, default: _defaultSelectColor },
+    dragColor: { type: String, default: _defaultDragColor },
     selectAttribute: Object,
     dragAttribute: Object,
     disabledDates: Array,
@@ -103,7 +105,7 @@ export default {
   },
   computed: {
     datePicker() {
-      switch (this.selectMode) {
+      switch (this.mode) {
         case 'single':
           return 'single-date-picker';
         case 'multiple':
@@ -116,7 +118,7 @@ export default {
     },
     placeholder_() {
       if (this.inputPlaceholder) return this.inputPlaceholder;
-      switch (this.selectMode) {
+      switch (this.mode) {
         case 'single':
           return 'Enter Date';
         case 'multiple':
@@ -129,12 +131,12 @@ export default {
     },
     suggestedInputText() {
       if (!this.value || typeof this.dateFormatter !== 'function') return '';
-      if (this.selectMode === 'single') {
+      if (this.mode === 'single') {
         if (typeof this.value.getTime !== 'function') return '';
         return this.dateFormatter(this.value);
-      } else if (this.selectMode === 'multiple') {
+      } else if (this.mode === 'multiple') {
         return this.value.length ? this.value.map(d => this.dateFormatter(d)).join(', ') : '';
-      } else if (this.selectMode === 'range') {
+      } else if (this.mode === 'range') {
         if (this.dragValue) {
           const startText = this.dateFormatter(this.dragValue.start);
           const endText = this.dateFormatter(this.dragValue.end);
@@ -166,19 +168,22 @@ export default {
         return true;
       };
     },
-    dayContentHoverStyle_() {
-      return this.dayContentHoverStyle || {
-        backgroundColor: blendColors(this.tintColor, '#fafafa', 0.7),
-        border: '0',
-        cursor: 'pointer',
+    styles_() {
+      return {
+        dayContentHover: {
+          backgroundColor: '#dadada',
+          border: '0',
+          cursor: 'pointer',
+        },
+        ...this.styles,
       };
     },
     selectAttribute_() {
       return this.selectAttribute || {
         highlight: {
-          backgroundColor: this.tintColor,
+          backgroundColor: this.selectColor,
           borderWidth: '1px',
-          borderColor: blendColors(this.tintColor, '#000000', 0.1),
+          borderColor: blendColors(this.selectColor, '#000000', 0.1),
         },
         contentStyle: {
           color: '#fafafa',
@@ -192,11 +197,8 @@ export default {
     dragAttribute_() {
       return this.dragAttribute || {
         highlight: {
-          backgroundColor: blendColors(this.tintColor, '#fafafa', 0.5),
+          backgroundColor: this.dragColor,
           height: '25px',
-        },
-        contentStyle: {
-          color: '#103456',
         },
         contentHoverStyle: {
           backgroundColor: 'transparent',
@@ -233,7 +235,7 @@ export default {
       // Forward drag event
       this.$emit('drag', val);
     },
-    selectMode() {
+    mode() {
       // Clear value on select mode change
       this.$emit('input', null);
     },
@@ -251,15 +253,15 @@ export default {
     },
     parseValue(valueText) {
       let value = null;
-      if (this.selectMode === 'single') {
+      if (this.mode === 'single') {
         value = this.dateParser(valueText.trim());
         if (isNaN(value.getTime())) value = null;
-      } else if (this.selectMode === 'multiple') {
+      } else if (this.mode === 'multiple') {
         value = valueText
           .split(',')
           .map(s => this.dateParser(s.trim()))
           .filter(d => !isNaN(d.getTime()));
-      } else if (this.selectMode === 'range') {
+      } else if (this.mode === 'range') {
         const dates = valueText.split('-').map(s => s.trim());
         if (!dates.length) {
           value = null;

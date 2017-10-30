@@ -1,5 +1,5 @@
 <template>
-<div class='c-day'>
+<div class='c-day' :style='dayCellStyle'>
   <!-- Background layers -->
   <transition-group
     name='background'
@@ -33,7 +33,7 @@
     v-if='hasDots'>
     <div
       class='c-day-dots'
-      :style='{ marginBottom: dotsOffset }'>
+      :style='dotsStyle_'>
       <span
         v-for='dot in dots'
         :key='dot.key'
@@ -48,7 +48,7 @@
     v-if='hasBars'>
     <div
       class='c-day-bars'
-      :style='{ marginBottom: barsOffset }'>
+      :style='barsStyle_'>
       <span
         v-for='bar in bars'
         :key='bar.key'
@@ -66,13 +66,6 @@ const _tapMaxDuration = 200; // ms
 
 export default {
   props: {
-    dayBackgroundColor: String,
-    dayContentStyle: Object,
-    nimDayContentStyle: Object,
-    dayContentHoverStyle: Object,
-    nimDayContentHoverStyle: Object,
-    dotsOffset: { type: String, default: '0' },
-    barsOffset: { type: String, default: '0' },
     label: String,
     day: Number,
     date: Date,
@@ -85,6 +78,7 @@ export default {
     inPrevMonth: Boolean,
     inNextMonth: Boolean,
     attributes: Array,
+    styles: Object,
   },
   data() {
     return {
@@ -99,6 +93,9 @@ export default {
     };
   },
   computed: {
+    dayCellStyle() {
+      return this.inMonth ? this.styles.dayCell : this.styles.dayCellNotInMonth;
+    },
     contentStyle_() {
       if (this.isHovered) return { ...this.contentStyle, ...this.contentHoverStyle };
       return this.contentStyle;
@@ -109,8 +106,14 @@ export default {
     hasDots() {
       return this.dots && this.dots.length;
     },
+    dotsStyle_() {
+      return this.styles.dots;
+    },
     hasBars() {
       return this.bars && this.bars.length;
+    },
+    barsStyle_() {
+      return this.styles.bars;
     },
     highlights() {
       return this.hasBackgrounds ?
@@ -137,10 +140,7 @@ export default {
     attributes() {
       this.processAttributes();
     },
-    dayContentStyle() {
-      this.processAttributes();
-    },
-    dayContentHoverStyle() {
+    styles() {
       this.processAttributes();
     },
   },
@@ -201,22 +201,22 @@ export default {
           // Add bar if needed
           if (a.bar) bars.push(this.getBar(a));
           // Add content style if needed
-          if (a.contentStyle) contentStyles.push(this.inMonth ? a.contentStyle : a.nimContentStyle);
+          if (a.contentStyle) contentStyles.push(a.contentStyle);
           // Add content hover style if needed
-          if (a.contentHoverStyle) contentHoverStyles.push(this.inMonth ? a.contentHoverStyle : a.nimContentHoverStyle);
+          if (a.contentHoverStyle) contentHoverStyles.push(a.contentHoverStyle);
         });
       }
       // Assign day attributes
       this.backgrounds = backgrounds;
       this.dots = dots;
       this.bars = bars;
-      this.contentStyle = Object.assign({}, this.inMonth ? this.dayContentStyle : this.nimDayContentStyle, ...contentStyles);
-      this.contentHoverStyle = Object.assign({}, this.inMonth ? this.dayContentHoverStyle : this.nimDayContentHoverStyle, ...contentHoverStyles);
+      this.contentStyle = Object.assign({}, this.styles.dayContent, ...contentStyles);
+      this.contentHoverStyle = Object.assign({}, this.styles.dayContentHover, ...contentHoverStyles);
     },
     getBackground(attribute) {
       // Initialize the background object
       const dateInfo = attribute.dateInfo;
-      const highlight = this.inMonth ? attribute.highlight : attribute.nimHighlight;
+      const highlight = attribute.highlight;
       const background = {
         key: attribute.key,
         dateInfo,
@@ -232,7 +232,7 @@ export default {
         },
       };
       if (dateInfo.isDate) {
-        background.wrapperClass = 'c-day-layer c-day-box-center-center c-day-scale-enter c-day-scale-leave';
+        background.wrapperClass = `c-day-layer c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
       } else {
         const onStart = dateInfo.startTime === this.dateTime;
         const onEnd = dateInfo.endTime === this.dateTime;
@@ -241,19 +241,19 @@ export default {
         const endWidth = '95%';
         // Is the day date on the highlight start and end date
         if (onStart && onEnd) {
-          background.wrapperClass = 'c-day-layer c-day-box-center-center c-day-scale-enter c-day-scale-leave';
+          background.wrapperClass = `c-day-layer c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
           background.style.width = endWidth;
           background.style.borderWidth = borderWidth;
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
         // Is the day date on the highlight start date
         } else if (onStart) {
-          background.wrapperClass = 'c-day-layer c-day-box-right-center shift-right c-day-slide-left-enter';
+          background.wrapperClass = `c-day-layer c-day-box-right-center shift-right${highlight.animated ? ' c-day-slide-left-enter' : ''}`;
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
           background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
         // Is the day date on the highlight end date
         } else if (onEnd) {
-          background.wrapperClass = 'c-day-layer c-day-box-left-center shift-left c-day-slide-right-enter';
+          background.wrapperClass = `c-day-layer c-day-box-left-center shift-left${highlight.animated ? ' c-day-slide-right-enter' : ''}`;
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
           background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
@@ -268,7 +268,7 @@ export default {
       return background;
     },
     getDot(attribute) {
-      const dot = this.inMonth ? attribute.dot : attribute.nimDot;
+      const dot = attribute.dot;
       const nDot = {
         key: attribute.key,
         dateInfo: attribute.dateInfo,
@@ -286,7 +286,7 @@ export default {
       return nDot;
     },
     getBar(attribute) {
-      const bar = this.inMonth ? attribute.bar : attribute.nimBar;
+      const bar = attribute.bar;
       const nBar = {
         key: attribute.key,
         dateInfo: attribute.dateInfo,
@@ -316,8 +316,8 @@ export default {
 
 .c-day
   position: relative
-  width: $dayWidth
-  height: $dayHeight
+  flex-grow: 1
+  overflow: hidden
 
 .c-day-layer
   position: absolute
@@ -328,10 +328,6 @@ export default {
 
 .c-day-inactive
   pointer-events: none
-
-.c-day-not-in-month
-  background-color: $paneBgColor
-  opacity: 1 - $dayNotInMonthOpacity
 
 .c-day-box-center-center
   +box()
@@ -348,6 +344,9 @@ export default {
 .c-day-box-center-bottom
   +box(center, flex-end)
 
+.c-day-background
+  transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
+
 .shift-left
   margin-left: -1px
 
@@ -356,20 +355,6 @@ export default {
 
 .shift-left-right
   margin: 0 -1px
-
-.c-day-background
-  transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
-  
-.c-day-content
-  +box()
-  width: $dayContentWidth
-  height: $dayContentHeight
-  font-size: $dayContentFontSize
-  font-weight: $dayContentFontWeight
-  border-radius: $dayContentBorderRadius
-  transition: all $dayContentTransitionTime
-  user-select: none
-  cursor: default
 
 .c-day-dots
   +box()
@@ -390,6 +375,17 @@ export default {
   flex-grow: 1
   height: $barHeight
   background-color: $barBackgroundColor
+
+.c-day-content
+  +box()
+  width: $dayContentWidth
+  height: $dayContentHeight
+  font-size: $dayContentFontSize
+  font-weight: $dayContentFontWeight
+  border-radius: $dayContentBorderRadius
+  transition: all $dayContentTransitionTime
+  user-select: none
+  cursor: default
 
 // TRANSITION ANIMATIONS
 

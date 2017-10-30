@@ -63,44 +63,14 @@ export default {
         default: '<code>false</code>',
       },
       {
+        name: '<code>theme-styles: Object</code>',
+        description: 'A variety of styles that are used to customize different components of the calendar.',
+        default: 'Reference the <a href="/styling">styling</a> page for more details',
+      },
+      {
         name: '<code>attributes: Array[Object]</code>',
         description: 'List of attributes to display in the calendar.',
         default: '<code>[]</code>',
-      },
-      {
-        name: '<code>dots-offset: String',
-        description: 'Offset margin of dots from bottom of day cell.',
-        default: '<code>"0"</code>',
-      },
-      {
-        name: '<code>bars-offset: String',
-        description: 'Offset margin of bars from bottom of day cell.',
-        default: '<code>"0"</code>',
-      },
-      {
-        name: '<code>divider-color: String</code>',
-        description: 'Color for divider when calendar is double-paned.',
-        default: '<code>"#dadada"</code>'
-      },
-      {
-        name: '<code>header-style: Object</code>',
-        description: 'Style for header section.',
-        default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>header-divider-color: String</code>',
-        description: 'Color for header section divider when calendar is double-paned. Overrides <code>divider-color</code> if specified.',
-        default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>arrow-style: Object</code>',
-        description: 'Style for header arrows.',
-        default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>title-style: Object</code>',
-        description: 'Style for header title.',
-        default: '<code>undefined</code>',
       },
       {
         name: '<code>title-position: String</code>',
@@ -113,39 +83,9 @@ export default {
         default: '<code>"slide-h"</code>',
       },
       {
-        name: '<code>weekday-style: Object</code>',
-        description: 'Style for weekday labels section.',
-        default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>weekday-divider-color: String</code>',
-        description: 'Color for weekday section divider when calendar is double-paned. Overrides <code>divider-color</code> if specified.',
-        default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>weeks-style: Object</code>',
-        description: 'Style for weeks section.',
-        default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>weeks-divider-color: String</code>',
-        description: 'Color for weeks section divider when calendar is double-paned. Overrides <code>divider-color</code> if specified.',
-        default: '<code>undefined</code>',
-      },
-      {
         name: '<code>weeks-transition: String</code>',
         description: 'Transition type for weeks when navigating to a new page: <code>"slide-h"</code>, <code>"slide-v"</code>, <code>"fade"</code>, <code>"none"</code>',
         default: '<code>"slide-h"</code>',
-      },
-      {
-        name: '<code>day-content-style: Object</code>',
-        description: 'Style for day cell content.',
-        default: '<code>undefined</code>',
-      },
-      {
-        name: '<code>day-content-hover-style: Object</code>',
-        description: 'Style that is merged with the <code>day-content-style</code> when the content is hovered.',
-        default: '<code>undefined</code>',
       },
       {
         name: '<code>value: Date, Array[Date], Object</code>',
@@ -153,14 +93,9 @@ export default {
         default: '<code>null</code>',
       },
       {
-        name: '<code>select-mode: String</code>',
+        name: '<code>mode: String</code>',
         description: '<span class="tag is-warning">Date Picker</span>Selection mode: <code>"single"</code>, <code>"multiple"</code>, <code>"range"</code>',
         default: '<code>"single"</code>',
-      },
-      {
-        name: '<code>tint-color: String</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Color used for selected attribute. Drag and hover colors are derived from this color. If <code>selected-attribute</code> or <code>drag-attribute</code> are assigned they will overwrite this behavior.',
-        default: '<code>"#74a4a4"</code>',
       },
       {
         name: '<code>is-inline: Boolean</code>',

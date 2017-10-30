@@ -20,6 +20,11 @@ export default {
   data() {
     const props = [
       {
+        propertyName: '<code>animated: Boolean</code>',
+        description: 'Highlight is animated on appearing, disappearing or range change.',
+        default: '<code>true</code>',
+      },
+      {
         propertyName: '<code>height: String</code>',
         description: 'Height of highlighted region.',
         default: '<code>"1.8rem"</code>',

@@ -44,6 +44,10 @@ $navbar-item-color: #333333;
 // Import highlight.js style
 @import "~highlight.js/styles/atelier-cave-light.css";
 
+.tab-content {
+    margin-top: 20px;
+}
+
 .logo-subtitle {
     font-weight: 300;
     font-style: italic;

@@ -1,8 +1,6 @@
 import colors from './colors';
 
 // Calendar data
-export const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-export const weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 export const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 export const today = new Date();
 export const todayComps = {
