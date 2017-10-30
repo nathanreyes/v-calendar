@@ -30,8 +30,13 @@ export default {
         default: '<code>undefined</code>',
       },
       {
-        propertyName: '<code>indicator: Object</code>',
-        description: 'Indicator to associate with the attribute.',
+        propertyName: '<code>dot: Object</code>',
+        description: 'Dot to associate with the attribute.',
+        default: '<code>undefined</code>',
+      },
+      {
+        propertyName: '<code>bar: Object</code>',
+        description: 'Bar to associate with the attribute.',
         default: '<code>undefined</code>',
       },
       {
