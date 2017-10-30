@@ -51,25 +51,7 @@
             <p class="title is-5">Load external resources</p>
           </div>
         </article>
-        <code-block :code='loadResourcesCode | pre' offset></code-block>
-        <article class="media">
-          <div class="media-left">
-            <p class="title is-5">3</p>
-          </div>
-          <div class="media-content">
-            <p class="title is-5">Use the global VCalendar object</p>
-          </div>
-        </article>
-        <code-block lang='javascript' code='Vue.use(VCalendar.default);' offset></code-block>
-        <article class='media'>
-          <div class='media-left'>
-            <p class='title is-5'>4</p>
-          </div>
-          <div class='media-content'>
-            <p class='title is-5'>Reference in your component templates</p>
-          </div>
-        </article>
-        <code-block :code='componentCode | pre' offset></code-block>
+        <code-block :code='cdnHtml | pre' offset></code-block>
       </b-tab-item>
     </b-tabs>
   </div>
@@ -77,6 +59,7 @@
 </template>
 
 <script>
+import cdnHtml from '!!raw-loader!../../../index-cdn.html';
 
 export default {
   data() {
@@ -85,7 +68,7 @@ export default {
       importCode: `
         import Vue from 'vue';
         import VCalendar from 'v-calendar';
-        import 'vcalendar/lib/vcalendar.min.css';
+        import 'v-calendar/lib/v-calendar.min.css';
 
         // Access v-calendar, v-date-packer and v-popover components
         Vue.use(VCalendar);`,
@@ -99,11 +82,7 @@ export default {
             v-model='mySelection'>
           </v-date-picker>
         </template>`,
-      loadResourcesCode: `
-        <!-- VCalendar CSS -->
-        <link rel='stylesheet' href='https://unpkg.com/vcalendar/dist/lib/vcalendar.min.css'>
-        <!-- VCalendar JavaScript -->
-        <script src='https://unpkg.com/vcalendar'><\/script>`,
+      cdnHtml,
     };
   },
   computed: {

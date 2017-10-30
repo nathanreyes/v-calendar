@@ -2,7 +2,7 @@
   <component
     :is='datePicker'
     :value='value'
-    :styles='styles_'
+    :theme-styles='themeStyles_'
     :drag-attribute='dragAttribute_'
     :select-attribute='selectAttribute_'
     :disabled-attribute='disabledAttribute_'
@@ -34,7 +34,7 @@
       slot='popover-content'
       :is='datePicker'
       :value='value'
-      :styles='styles_'
+      :theme-styles='themeStyles_'
       :drag-attribute='dragAttribute_'
       :select-attribute='selectAttribute_'
       :disabled-attribute='disabledAttribute_'
@@ -56,8 +56,8 @@ import DateRangePicker from './DateRangePicker';
 import { DateInfo, blendColors } from '../utils/helpers';
 
 const POPOVER_AUTO = -1;
-const _defaultSelectColor = 'rgba(0, 0, 0, 0.2)';
-const _defaultDragColor = 'rgba(0, 0, 0, 0.1)';
+const _defaultSelectColor = '#66b3cc';
+const _defaultDragColor = '#9fcfdf';
 
 export default {
   components: {
@@ -85,7 +85,7 @@ export default {
       type: Function,
       default: s => new Date(Date.parse(s)),
     },
-    styles: Object,
+    themeStyles: Object,
     selectColor: { type: String, default: _defaultSelectColor },
     dragColor: { type: String, default: _defaultDragColor },
     selectAttribute: Object,
@@ -168,14 +168,14 @@ export default {
         return true;
       };
     },
-    styles_() {
+    themeStyles_() {
       return {
         dayContentHover: {
           backgroundColor: '#dadada',
           border: '0',
           cursor: 'pointer',
         },
-        ...this.styles,
+        ...this.themeStyles,
       };
     },
     selectAttribute_() {

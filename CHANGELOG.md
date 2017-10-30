@@ -1,3 +1,10 @@
+## 0.0.8
+* Add support for installing via CDN
+* Add licensing and copyright to README
+* Fix vertically centering header title
+* Fix styling bug with date picker
+* Fix setup instructions
+
 ## 0.0.7
 * Add 'theme-styles' prop to calendar for theming
 * Remove a number of '...-style' replaced by theme-styles object

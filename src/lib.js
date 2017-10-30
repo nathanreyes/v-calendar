@@ -10,8 +10,15 @@ const components = {
   Popover,
 };
 
-export default (Vue) => {
-  Object
+const VCalendar = {
+  ...components,
+  install: Vue => Object
     .keys(components)
-    .forEach(k => Vue.component(`${componentPrefix}${k}`, components[k]));
+    .forEach(k => Vue.component(`${componentPrefix}${k}`, components[k])),
 };
+
+export default VCalendar;
+
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(VCalendar);
+}

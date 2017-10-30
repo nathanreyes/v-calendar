@@ -476,6 +476,7 @@ export default {
       width: 100%
       height: 100%
       display: flex
+      align-items: center
       .c-title-2
         font-weight: $titleFontWeight
         font-size: $titleFontSize

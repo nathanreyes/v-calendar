@@ -63,3 +63,42 @@ export default {
 };
 </script>
 ```
+
+### Or use a CDN
+```html
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <meta http-equiv='x-ua-compatible' content='ie=edge'>
+    <!--1. Link VCalendar CSS-->
+    <link rel='stylesheet' href='https://unpkg.com/v-calendar/lib/v-calendar.min.css'>
+  </head>
+  <body>
+    <div id='app'>
+      <v-calendar></v-calendar>
+      <v-date-picker :mode='mode' v-model='selectedDate'></v-date-picker>
+    </div>
+    <!--2. Link Vue Javascript-->
+    <script src='https://unpkg.com/vue/dist/vue.js'></script>
+    <!--3. Link VCalendar Javascript (Plugin automatically installed)-->
+    <script src='https://unpkg.com/v-calendar'></script>
+    <!--4. Create the Vue instance-->
+    <script>
+      new Vue({
+        el: '#app',
+        data: {
+          // Data used by the date picker
+          mode: 'single',
+          selectedDate: null,
+        }
+      })
+    </script>
+  </body>
+</html>
+```
+
+##License
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2017-present, Nathan Reyes

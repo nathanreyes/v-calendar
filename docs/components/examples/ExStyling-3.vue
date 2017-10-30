@@ -2,6 +2,7 @@
   <v-date-picker
     mode='range'
     v-model='selectedDate'
+    :drag-color='dragColor'
     :select-attribute='selectAttribute'
     :attributes='attributes'
     :theme-styles='themeStyles'
@@ -61,6 +62,7 @@ export default {
           width: '60%',
         },
       },
+      dragColor: 'rgba(0, 0, 0, 0.1)',
       selectAttribute: {
         highlight: {
           backgroundColor: 'rgba(0, 0, 0, 0.2)',
