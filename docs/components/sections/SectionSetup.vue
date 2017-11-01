@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import cdnHtml from '!!raw-loader!../../../index-cdn.html';
+import cdnHtml from '!!raw-loader!../index-cdn.html';
 
 export default {
   data() {

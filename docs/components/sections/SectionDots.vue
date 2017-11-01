@@ -10,7 +10,8 @@
             <div class='content'>
               <ul>
                 <li>Custom color, border and size properties</li>
-                <li>Assignable bottom margin for indicator row</li>
+                <li>Support single dates and date ranges</li>
+                <li>Stylizable container for custom width and margins</li>
               </ul>
             </div>
           </b-tab-item>

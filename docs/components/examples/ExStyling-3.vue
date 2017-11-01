@@ -20,7 +20,8 @@ export default {
     const barDate = new Date();
     // Get start and end dates for the current week
     const startDate = new Date(thisMonthYear, thisMonth, barDate.getDate() - barDate.getDay());
-    const endDate = new Date(thisMonthYear, thisMonth, startDate.getDate() + 6);
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 6);
     return {
       selectedDate: {
         start: startDate,
