@@ -1,7 +1,7 @@
 <template>
   <section class='hero is-primary is-bold'>
     <div class='hero-body'>
-      <div class='container' @click='showBannerCalendar = !showBannerCalendar'>
+      <div class='container'>
         <div>
           <p class='title'>V-Calendar</p>
           <h2 class='logo-subtitle'>&#8212; A clean and lightweight calendar plugin for Vue.js &#8212;</h2>
@@ -45,12 +45,12 @@ export default {
   data() {
     return {
       version: Package.version,
-      showBannerCalendar: true,
+      showBannerCalendar: false,
     };
   },
   watch: {
     $route() {
-      // this.showBannerCalendar = this.$route.path === '/';
+      this.showBannerCalendar = this.$route.path === '/';
     },
   },
 };
@@ -82,10 +82,13 @@ export default {
   width: 100%
   z-index: 20
 
-.from-top-enter-active
-  transition: all 2s
+.from-top-enter-active, .from-top-leave-active
+  transition: all 0.2s
 
-.from-top-enter
+.from-top-leave-active
+  transition: all 0.3s
+
+.from-top-enter, .from-top-leave-to
   transformY: -20px
   opacity: 0
 
