@@ -10,8 +10,8 @@
             <div class='content'>
               <ul>
                 <li>Custom color, border and size properties</li>
-                <li>Support single dates and date ranges</li>
-                <li>Stylizable container for custom width and margins</li>
+                <li>Supports single dates and date ranges</li>
+                <li>Custom style support for dots container</li>
               </ul>
             </div>
           </b-tab-item>

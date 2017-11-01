@@ -11,7 +11,7 @@
               <ul>
                 <li>Custom color, border and size properties</li>
                 <li>Support single dates and date ranges</li>
-                <li>Stylizable container for custom width and margins</li>
+                <li>Custom style support for bars container</li>
               </ul>
             </div>
           </b-tab-item>
