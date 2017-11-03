@@ -32,11 +32,17 @@ import CalendarPane from './CalendarPane';
 import Tag from './Tag';
 import '../assets/fonts/vcalendar/vcalendar.scss';
 import '../styles/lib.sass';
-
-import { themeStyles, getHighlight, dot, bar } from '../utils/defaults';
+import {
+  themeStyles,
+  getHighlight,
+  dot,
+  bar,
+} from '../utils/defaults';
 
 import {
   todayComps,
+  pageIsBeforePage,
+  pageIsAfterPage,
   getPrevPage,
   getNextPage,
   getPageBetweenPages,
@@ -82,12 +88,12 @@ export default {
       return this.isDoublePaned && !this.isDoublePaned_;
     },
     maxFromPage() {
-      if (!this.isDoublePaned_) return null;
-      return getPrevPage(this.toPage_);
+      if (this.isDoublePaned_) return getPrevPage(this.maxPage);
+      return this.maxPage;
     },
     minToPage() {
-      if (!this.isDoublePaned_) return null;
-      return getNextPage(this.fromPage_);
+      if (this.isDoublePaned_) return getNextPage(this.minPage);
+      return null;
     },
     themeStyles_() {
       // Mix user supplied styles with default styles
@@ -139,9 +145,15 @@ export default {
     },
     fromPage_(value) {
       this.$emit('update:fromPage', value);
+      if (!pageIsBeforePage(value, this.toPage_)) {
+        this.toPage_ = getNextPage(this.fromPage_);
+      }
     },
     toPage_(value) {
       this.$emit('update:toPage', value);
+      if (!pageIsAfterPage(value, this.fromPage_)) {
+        this.fromPage_ = getPrevPage(this.toPage_);
+      }
     },
     isDoublePaned_() {
       this.refreshToPage();

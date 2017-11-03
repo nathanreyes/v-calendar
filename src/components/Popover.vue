@@ -64,6 +64,7 @@ export default {
   created() {
     window.addEventListener('touchstart', this.touchStart);
     window.addEventListener('touchend', this.touchEnd);
+    this.visibleDelay = this.visible_;
   },
   methods: {
     touchStart(e) {

@@ -1,3 +1,8 @@
+## 0.0.9
+* Add support for more flexible month/year navigation
+* Fix popover visibility bug
+* Fix styling bug in date example
+
 ## 0.0.8
 * Add support for installing via CDN
 * Add licensing and copyright to README

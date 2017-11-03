@@ -2,6 +2,7 @@ import colors from './colors';
 
 // Calendar data
 export const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+export const yearList = Array.apply(null, Array(201)).map((_, i) => 1900 + i); // eslint-disable-line prefer-spread
 export const today = new Date();
 export const todayComps = {
   year: today.getFullYear(),
@@ -51,7 +52,6 @@ function comparePages(firstPage, secondPage) {
 export const pageIsBeforePage = (page, beforePage) => comparePages(page, beforePage) === -1;
 
 export const pageIsAfterPage = (page, afterPage) => comparePages(page, afterPage) === 1;
-
 
 export const getMinPage = (...args) => args.reduce((prev, curr) => {
   if (!prev) return curr;

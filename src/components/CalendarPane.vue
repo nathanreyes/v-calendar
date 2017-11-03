@@ -35,9 +35,35 @@
               <slot name='header-title' :page='p'>
                 <div
                   class='c-title-2'
-                  :style='titleStyle'
-                  @click='moveThisMonth'>
-                  {{ p.headerLabel }}
+                  :style='titleStyle'>
+                  <div class='c-select-container'>
+                    <span class='c-select-span'>
+                      {{ p.monthLabel }}
+                    </span>
+                    <select class='c-select' v-model='monthNumber'>
+                      <option
+                        v-for='(monthLabel, i) in monthLabels'
+                        :key='monthLabel'
+                        :value='i + 1'
+                        :disabled='monthIsDisabled(i + 1)'>
+                        {{ monthLabel }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class='c-select-container'>
+                    <span class='c-select-span'>
+                      {{ p.yearLabel }}
+                    </span>
+                    <select class='c-select' v-model='yearNumber'>
+                      <option
+                        v-for='year in yearList'
+                        :key='year'
+                        :value='year'
+                        :disabled='yearIsDisabled(year)'>
+                        {{ year }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </slot>
             </div>
@@ -134,6 +160,7 @@ import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
 import {
   todayComps,
+  yearList,
   getIsLeapYear,
   getMonthComps,
   getThisMonthComps,
@@ -174,10 +201,10 @@ export default {
       pages: [],
       page_: null,
       transitionDirection: '',
-      prevPageStyle: null,
-      currPageStyle: null,
-      nextPageStyle: null,
+      monthNumber: 0,
+      yearNumber: 0,
       touchState: {},
+      yearList,
     };
   },
   computed: {
@@ -243,6 +270,24 @@ export default {
     },
     page_(val, oldVal) {
       this.transitionDirection = this.getTransitionDirection(oldVal, val);
+      this.monthNumber = val.month;
+      this.yearNumber = val.year;
+    },
+    monthNumber(val) {
+      if (val !== this.page_.month) {
+        this.move({
+          month: val,
+          year: this.yearNumber,
+        });
+      }
+    },
+    yearNumber(val) {
+      if (val !== this.page_.year) {
+        this.move({
+          month: this.monthNumber,
+          year: val,
+        });
+      }
     },
   },
   created() {
@@ -255,6 +300,16 @@ export default {
     this.preloadPages();
   },
   methods: {
+    monthIsDisabled(month) {
+      if (this.minPage && this.yearNumber === this.minPage.year) return month < this.minPage.month;
+      if (this.maxPage && this.yearNumber === this.maxPage.year) return month > this.maxPage.month;
+      return false;
+    },
+    yearIsDisabled(year) {
+      if (this.minPage && year < this.minPage.year) return true;
+      if (this.maxPage && year > this.maxPage.year) return true;
+      return false;
+    },
     touchStart(e) {
       const t = e.changedTouches[0];
       this.touchState = {
@@ -468,7 +523,6 @@ export default {
     +box()
     flex-grow: 1
     position: relative
-    overflow: hidden
     .c-title-1
       position: absolute
       left: 0
@@ -478,16 +532,33 @@ export default {
       display: flex
       align-items: center
       .c-title-2
+        +box()
         font-weight: $titleFontWeight
         font-size: $titleFontSize
-        transition: $titleTransition
-        cursor: pointer
         user-select: none
         margin: $titleMargin
         text-align: center
         width: 100%
-        &:hover
-          opacity: 0.5
+
+        .c-select-container
+          position: relative
+          transition: $titleTransition
+          &:hover
+            opacity: 0.5
+          &:not(:first-child)
+            margin-left: 5px
+          .c-select-span
+            height: 100%
+          .c-select
+            position: absolute
+            top: 0
+            left: 0
+            width: 100%
+            height: 100%
+            border: none
+            font-size: 1rem
+            opacity: 0
+            cursor: pointer
     &.align-left
       order: -1
       .c-title-2
