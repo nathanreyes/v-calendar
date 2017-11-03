@@ -10,7 +10,7 @@
         icon='calendar'
         :value='props.inputValue'
         :placeholder='inputState.message'
-        @change.native='selectedValue = props.updateValue($event.target.value)'
+        @change.native='props.updateValue($event.target.value)'
         expanded>
       </b-input>
       <p

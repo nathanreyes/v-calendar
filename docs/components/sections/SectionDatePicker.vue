@@ -50,8 +50,11 @@
                   </option>
                 </b-select>
               </b-field>
-              <b-field label='Tint Color' message='Accepts color names, hex and rgb values'>
-                <b-input v-model='tintColor'></b-input>
+              <b-field label='Select Color' message='Accepts color names, hex and rgb values'>
+                <b-input v-model='selectColor'></b-input>
+              </b-field>
+              <b-field label='Drag Color'>
+                <b-input v-model='dragColor'></b-input>
               </b-field>
             </div>
           </b-tab-item>
@@ -65,7 +68,8 @@
             :is-inline='isInline'
             :popover-direction='popoverDirection'
             :popover-align='popoverAlignment'
-            :tint-color='tintColor'>
+            :select-color='selectColor'
+            :drag-color='dragColor'>
           </ex-date-picker>
         </div>
       </div>
@@ -92,7 +96,8 @@ export default {
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',
-      tintColor: '#66b3cc',
+      selectColor: '#66b3cc',
+      dragColor: '#9fcfdf',
     };
   },
   computed: {

@@ -41,8 +41,8 @@ export default {
       },
       {
         name: '<code>v-date-picker >> <i>default</i></code>',
-        description: '<span class="tag is-warning">Date Picker</span>Default slot to use as the popover anchor for <code>v-date-picker</code>. Most likely this slot will contain a custom <code>input</code> element. Not valid for inline date pickers.',
-        props: '<code>inputValue: String</code>, <code>parseValue: Function</code>',
+        description: '<span class="tag is-warning">Date Picker</span>Default slot to use as the popover anchor for <code>v-date-picker</code>. Most likely this slot will contain a custom <code>&lt;input :value="props.inputValue" @change.native="props.updateValue($event.target.value)" /&gt;</code> element. Not valid for inline date pickers.',
+        props: '<code>inputValue: String</code>, <code>updateValue: Function</code>',
       },
     ];
     return {
