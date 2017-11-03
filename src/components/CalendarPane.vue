@@ -198,6 +198,7 @@ export default {
   },
   data() {
     return {
+      todayComps,
       pages: [],
       page_: null,
       transitionDirection: '',

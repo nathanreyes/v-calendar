@@ -103,6 +103,20 @@ export const getLastArrayItem = (array) => {
   return array.length ? array[array.length - 1] : undefined;
 };
 
+export const composedPath = (el) => {
+  const path = [];
+  while (el) {
+    path.push(el);
+    if (el.tagName === 'HTML') {
+      path.push(document);
+      path.push(window);
+      return path;
+    }
+    el = el.parentElement;
+  }
+  return path;
+};
+
 export const isMobile = {
   andriod() {
     return navigator.userAgent.match(/Android/i);

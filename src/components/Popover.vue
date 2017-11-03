@@ -10,6 +10,7 @@
         :class='["anchor", "direction-" + direction, "align-" + align]'
         v-if='visibleDelay'>
         <div
+          ref='popoverContent'
           :class='["content", "direction-" + direction, "align-" + align]'>
           <slot name='popover-content'>
             <div>Popover content goes here</div>
@@ -24,6 +25,9 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import { composedPath } from '../utils/helpers';
+
 const POPOVER_AUTO = -1;
 const POPOVER_VISIBLE = 1;
 const _tapTolerance = 0;
@@ -102,6 +106,10 @@ export default {
       this.$emit('focusin', e);
     },
     focusout(e) {
+      // Trap focus if element losing focus is nested within the popover content
+      if (e.target !== this.$refs.popover && composedPath(e.target).includes(this.$refs.popoverContent)) {
+        Vue.nextTick(() => this.$refs.popover.focus());
+      }
       this.visible = false;
       this.$emit('focusout', e);
     },
