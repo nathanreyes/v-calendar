@@ -2,16 +2,22 @@
 <calendar
   :dayContentHoverStyle='dayContentHoverStyle_'
   :attributes='attributes_'
+  :monthLabels='monthLabels_'
+  :weekdayLabels='weekdayLabels_'
   v-bind='$attrs'
   v-on='$listeners'
   @daySelect='selectDay'
   @dayMouseEnter='enterDay'>
-</calendar> 
+</calendar>
 </template>
 
 <script>
 import Calendar from './Calendar';
-import { DateInfo } from '../utils/helpers';
+import {
+  DateInfo,
+  validateMonths,
+  validateWeekdays,
+} from '../utils/helpers';
 
 export default {
   components: {
@@ -25,6 +31,8 @@ export default {
     dayContentHoverStyle: Object,
     dateValidator: Function,
     attributes: Array,
+    monthLabels: Array,
+    weekdayLabels: Array,
   },
   data() {
     return {
@@ -56,6 +64,12 @@ export default {
         return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
       }
       return this.attributes;
+    },
+    monthLabels_() {
+      return validateMonths(this.monthLabels);
+    },
+    weekdayLabels_() {
+      return validateWeekdays(this.weekdayLabels);
     },
   },
   watch: {

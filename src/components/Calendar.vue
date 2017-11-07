@@ -10,6 +10,8 @@
     :max-page='maxFromPage'
     :styles='themeStyles_'
     :attributes='attributes_'
+    :monthLabels='monthLabels_'
+    :weekdayLabels='weekdayLabels_'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar-pane>
@@ -21,6 +23,8 @@
     :max-page='maxPage'
     :styles='themeStyles_'
     :attributes='attributes_'
+    :monthLabels='monthLabels_'
+    :weekdayLabels='weekdayLabels_'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar-pane>
@@ -65,6 +69,8 @@ export default {
     showTags: Boolean,
     themeStyles: Object,
     attributes: Array,
+    monthLabels: Array,
+    weekdayLabels: Array,
     dateFormatter: {
       type: Function,
       default: d => d.toLocaleDateString(),
@@ -134,6 +140,12 @@ export default {
         }
         return newAttribute;
       });
+    },
+    monthLabels_() {
+      return this.monthLabels;
+    },
+    weekdayLabels_() {
+      return this.weekdayLabels;
     },
   },
   watch: {

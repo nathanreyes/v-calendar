@@ -27,7 +27,7 @@ export default {
     return {
       examples: [
         {
-          title: 'Styled Header & Weekday Sections',
+          title: 'Styled Header with custom labels & Weekday Sections',
           code: ExStyling1Code,
           component: ExStyling1,
         },
