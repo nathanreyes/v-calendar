@@ -23,51 +23,43 @@
             </slot>
           </div>
           <!--Header title-->
-          <transition-group
-            tag='div'
+          <popover
+            align='center'
             :class='["c-title", titleClass]'
-            :name='titleTransition_'>
-            <div
-              class='c-title-1'
-              v-for='p in pages'
-              :key='p.key'
-              v-if='p === page_'>
-              <slot name='header-title' :page='p'>
-                <div
-                  class='c-title-2'
-                  :style='titleStyle'>
-                  <div class='c-select-container'>
-                    <span class='c-select-span'>
-                      {{ p.monthLabel }}
-                    </span>
-                    <select class='c-select' v-model='monthNumber'>
-                      <option
-                        v-for='(monthLabel, i) in monthLabels'
-                        :key='monthLabel'
-                        :value='i + 1'
-                        :disabled='monthIsDisabled(i + 1)'>
-                        {{ monthLabel }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class='c-select-container'>
-                    <span class='c-select-span'>
-                      {{ p.yearLabel }}
-                    </span>
-                    <select class='c-select' v-model='yearNumber'>
-                      <option
-                        v-for='year in yearList'
-                        :key='year'
-                        :value='year'
-                        :disabled='yearIsDisabled(year)'>
-                        {{ year }}
-                      </option>
-                    </select>
-                  </div>
+            :style='{ width: "100%" }'>
+            <transition-group
+              tag='div'
+              :name='titleTransition_'>
+              <div
+                class='c-title-1'
+                v-for='p in pages'
+                :key='p.key'
+                v-if='p === page_'>
+                <div class='c-title-2'>
+                  <slot name='header-title' :page='p'>
+                    <div class='c-title-span' :style='titleStyle'>
+                      <span @click='navMode = "month"'>
+                        {{ p.monthLabel }}
+                      </span>
+                      <span @click='navMode = "year"'>
+                        {{ p.yearLabel }}
+                      </span>
+                    </div>
+                  </slot>
                 </div>
-              </slot>
-            </div>
-          </transition-group>
+              </div>
+            </transition-group>
+            <!--Navigation pane-->
+            <calendar-nav
+              slot='popover-content'
+              :mode='navMode'
+              :monthLabels='monthLabels'
+              :value='page_'
+              :min-page='minPage'
+              :max-page='maxPage'
+              @input='move($event)'>
+            </calendar-nav>
+          </popover>
           <!--Header next button-->
           <div class='c-arrow-layout'>
             <slot name='header-right-button' :page='page_'>
@@ -158,9 +150,11 @@
 <script>
 import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
+import CalendarNav from './CalendarNav';
+import Popover from './Popover';
+
 import {
   todayComps,
-  yearList,
   getIsLeapYear,
   getMonthComps,
   getThisMonthComps,
@@ -182,6 +176,8 @@ import {
 export default {
   components: {
     CalendarWeeks,
+    CalendarNav,
+    Popover,
   },
   props: {
     position: { type: Number, default: 1 },
@@ -202,10 +198,8 @@ export default {
       pages: [],
       page_: null,
       transitionDirection: '',
-      monthNumber: 0,
-      yearNumber: 0,
+      navMode: 'month',
       touchState: {},
-      yearList,
     };
   },
   computed: {
@@ -271,24 +265,6 @@ export default {
     },
     page_(val, oldVal) {
       this.transitionDirection = this.getTransitionDirection(oldVal, val);
-      this.monthNumber = val.month;
-      this.yearNumber = val.year;
-    },
-    monthNumber(val) {
-      if (val !== this.page_.month) {
-        this.move({
-          month: val,
-          year: this.yearNumber,
-        });
-      }
-    },
-    yearNumber(val) {
-      if (val !== this.page_.year) {
-        this.move({
-          month: this.monthNumber,
-          year: val,
-        });
-      }
     },
   },
   created() {
@@ -479,13 +455,7 @@ export default {
 <style lang='sass' scoped>
 
 @import '../styles/vars.sass'
-
-=box($justify: center, $align: center)
-  display: flex
-  justify-content: $justify
-  align-items: $align
-  margin: 0
-  padding: 0
+@import '../styles/mixins.sass'
 
 .c-pane
   flex-grow: 1
@@ -499,6 +469,7 @@ export default {
 
 .c-header-wrapper
   display: flex
+  z-index: 1
 
 .c-header
   flex: 1
@@ -506,7 +477,6 @@ export default {
   align-items: stretch
   user-select: none
   padding: $headerPadding
-
   .c-arrow-layout
     +box()
     .c-arrow
@@ -534,32 +504,18 @@ export default {
       align-items: center
       .c-title-2
         +box()
-        font-weight: $titleFontWeight
-        font-size: $titleFontSize
-        user-select: none
-        margin: $titleMargin
-        text-align: center
         width: 100%
-
-        .c-select-container
-          position: relative
-          transition: $titleTransition
-          &:hover
-            opacity: 0.5
-          &:not(:first-child)
-            margin-left: 5px
-          .c-select-span
-            height: 100%
-          .c-select
-            position: absolute
-            top: 0
-            left: 0
-            width: 100%
-            height: 100%
-            border: none
-            font-size: 1rem
-            opacity: 0
+        .c-title-span
+          font-weight: $titleFontWeight
+          font-size: $titleFontSize
+          user-select: none
+          text-align: center
+          span
+            transition: $titleTransition
             cursor: pointer
+            &:hover
+              opacity: 0.5
+
     &.align-left
       order: -1
       .c-title-2

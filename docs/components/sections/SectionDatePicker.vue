@@ -105,10 +105,10 @@ export default {
       switch (this.popoverDirection) {
         case 'bottom':
         case 'top':
-          return ['left', 'right'];
+          return ['left', 'center', 'right'];
         case 'left':
         case 'right':
-          return ['top', 'bottom'];
+          return ['top', 'middle', 'bottom'];
         default:
           return [];
       }

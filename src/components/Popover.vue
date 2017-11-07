@@ -7,19 +7,27 @@
     @focusout='focusout'>
     <transition name='slide-fade' tag='div'>
       <div
-        :class='["anchor", "direction-" + direction, "align-" + align]'
+        :class='["popover-origin", "direction-" + direction, "align-" + align]'
         v-if='visibleDelay'>
         <div
-          ref='popoverContent'
-          :class='["content", "direction-" + direction, "align-" + align]'>
-          <slot name='popover-content'>
-            <div>Popover content goes here</div>
-          </slot>
+          :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'>
+          <div
+            ref='popoverContent'
+            :class='["popover-content", "direction-" + direction, "align-" + align]'
+            :style='contentStyle_'>
+            <div
+              class='popover-content-mask'
+              :style='maskStyle_'>
+              <slot name='popover-content'>
+                <div>Popover content goes here</div>
+              </slot>
+            </div>
+          </div>
         </div>
       </div>
     </transition>
     <slot>
-      <div>Popover anchor slot goes here</div>
+      <div>Popover trigger goes here</div>
     </slot>
   </div>
 </template>
@@ -27,11 +35,10 @@
 <script>
 import Vue from 'vue';
 import { composedPath } from '../utils/helpers';
+import { maxTapTolerance, maxTapDuration } from '../utils/defaults';
 
 const POPOVER_AUTO = -1;
 const POPOVER_VISIBLE = 1;
-const _tapTolerance = 0;
-const _tapMaxDuration = 200; // ms
 
 export default {
   props: {
@@ -39,6 +46,7 @@ export default {
     direction: { type: String, default: 'bottom' },
     align: { type: String, default: 'left' },
     visibility: { type: Number, default: POPOVER_AUTO },
+    contentStyle: { type: Object, default: () => ({}) },
     delay: { type: Number, default: 50 }, // Milliseconds
   },
   data() {
@@ -52,6 +60,19 @@ export default {
     visible_() {
       if (this.visibility === POPOVER_AUTO) return this.visible;
       return this.visibility === POPOVER_VISIBLE;
+    },
+    contentStyle_() {
+      const style = { ...this.contentStyle };
+      delete style.zIndex;
+      delete style.padding;
+      return style;
+    },
+    maskStyle_() {
+      const cs = this.contentStyle;
+      const style = {};
+      if (cs.padding) style.padding = cs.padding;
+      if (cs.borderRadius) style.borderRadius = cs.borderRadius;
+      return style;
     },
   },
   watch: {
@@ -95,9 +116,9 @@ export default {
       const state = this.touchState;
       state.x = t.screenX;
       state.y = t.screenY;
-      state.tapDetected = new Date() - state.startedOn <= _tapMaxDuration &&
-        Math.abs(state.x - state.startX) <= _tapTolerance &&
-        Math.abs(state.y - state.startY) <= _tapTolerance;
+      state.tapDetected = new Date() - state.startedOn <= maxTapDuration &&
+        Math.abs(state.x - state.startX) <= maxTapTolerance &&
+        Math.abs(state.y - state.startY) <= maxTapTolerance;
       if (state.tapDetected) this.visible = false;
       state.started = false;
     },
@@ -121,6 +142,8 @@ export default {
 
 @import '../styles/vars.sass'
 
+$popoverCaretOffset: 16px
+
 .popover-container
   position: relative
   display: inline-block
@@ -129,24 +152,26 @@ export default {
   &.expanded
     display: block
 
-.anchor
+.popover-origin
   position: absolute
   transform-origin: top center
   z-index: -1
   &.direction-top
     bottom: 100%
-    margin-bottom: $popoverOffset
   &.direction-bottom
     top: 100%
-    margin-top: $popoverOffset
   &.direction-left
     top: 0
     right: 100%
-    margin-right: $popoverOffset
   &.direction-right
     top: 0
     left: 100%
-    margin-left: $popoverOffset
+  &.direction-bottom.align-left, &.direction-top.align-left
+    left: 0
+  &.direction-bottom.align-center, &.direction-top.align-center
+    left: 50%
+  &.direction-bottom.align-right, &.direction-top.align-right
+    right: 0
   &.direction-left.align-top, &.direction-right.align-top
     top: 0
   &.direction-left.align-middle, &.direction-right.align-middle
@@ -154,18 +179,73 @@ export default {
   &.direction-left.align-bottom, &.direction-right.align-bottom
     top: initial
     bottom: 0
-  &.direction-top.align-left, &.direction-bottom.align-left
-    left: 0
-  &.direction-top.align-center, &.direction-bottom.align-center
-    left: 50%
-  &.direction-top.align-right, &.direction-bottom.align-right
-    right: 0
-  .content
+  .popover-content-wrapper
+    position: relative
     outline: none
-    &.direction-top.align-center, &.direction-bottom.align-center
-      margin-left: -50%
-    &.direction-left.align-middle, &.direction-right.align-middle
-      margin-top: -50%
+    &.align-center
+      transform: translateX(-50%)
+    &.align-middle
+      transform: translateY(-50%)
+    .popover-content
+      position: relative
+      background-color: $popoverBackgroundColor
+      border: $popoverBorder
+      border-radius: $popoverBorderRadius
+      box-shadow: $popoverBoxShadow
+      .popover-content-mask
+        position: relative
+        z-index: 1
+        border-radius: $popoverBorderRadius
+        padding: $popoverPadding
+        overflow: hidden
+      &:after
+        display: block
+        position: absolute
+        background-color: $popoverBackgroundColor
+        border: $popoverBorder
+        border-width: 1px 1px 0 0
+        width: 12px
+        height: 12px
+        content: ''
+        transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+      &.direction-bottom
+        margin-top: $popoverOffset
+        &:after
+          top: 0
+          border-width: 1px 1px 0 0
+      &.direction-top
+        margin-bottom: $popoverOffset
+        &:after
+          top: 100%
+          border-width: 0 0 1px 1px
+      &.direction-left
+        margin-right: $popoverOffset
+        &:after
+          left: 100%
+          border-width: 0 1px 1px 0
+      &.direction-right
+        margin-left: $popoverOffset
+        &:after
+          left: 0
+          border-width: 1px 0 0 1px
+      &.align-left
+        &:after
+          left: $popoverCaretOffset
+      &.align-right
+        &:after
+          right: $popoverCaretOffset
+      &.align-center
+        &:after
+          left: 50%
+      &.align-top
+        &:after
+          top: $popoverCaretOffset
+      &.align-middle
+        &:after
+          top: 50%
+      &.align-bottom
+        &:after
+          bottom: $popoverCaretOffset
 
 .slide-fade-enter-active, .slide-fade-leave-active
   transition: all $popoverSlideTransitionTime

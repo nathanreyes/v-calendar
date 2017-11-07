@@ -18,6 +18,7 @@
     :align='popoverAlign'
     :visibility='popoverVisibility'
     :is-expanded='isExpanded'
+    :content-style='popoverContentStyle'
     v-else>
     <slot
       :input-value='valueText'
@@ -85,7 +86,7 @@ export default {
       type: Function,
       default: s => new Date(Date.parse(s)),
     },
-    themeStyles: Object,
+    themeStyles: { type: Object, default: () => ({}) },
     selectColor: { type: String, default: _defaultSelectColor },
     dragColor: { type: String, default: _defaultDragColor },
     selectAttribute: Object,
@@ -169,13 +170,25 @@ export default {
       };
     },
     themeStyles_() {
-      return {
+      const styles = {
         dayContentHover: {
           backgroundColor: '#dadada',
           border: '0',
           cursor: 'pointer',
         },
         ...this.themeStyles,
+      };
+      if (!this.isInline) {
+        styles.wrapper = {
+          border: '0',
+        };
+      }
+      return styles;
+    },
+    popoverContentStyle() {
+      return {
+        ...this.themeStyles.wrapper,
+        padding: '0',
       };
     },
     selectAttribute_() {

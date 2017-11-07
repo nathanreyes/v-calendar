@@ -32,6 +32,8 @@ export const weeksTransition = 'slide-h';
 export const maxSwipeTimeMs = 300;
 export const minHorizontalSwipeDistance = 60;
 export const maxVerticalSwipeDistance = 80;
+export const maxTapTolerance = 0;
+export const maxTapDuration = 200; // ms
 export const getHighlight = uh => ({
   animated: uh.animated || true,
   height: uh.height || '1.8rem',

@@ -93,14 +93,14 @@ export const getPageBetweenPages = (page, fromPage, toPage) => {
 
 export const getFirstValidPage = (...args) => args.find(p => !!p);
 
-export const getFirstArrayItem = (array) => {
-  if (!array) return undefined;
-  return array.length ? array[0] : undefined;
+export const getFirstArrayItem = (array, fallbackValue) => {
+  if (!array) return fallbackValue;
+  return array.length ? array[0] : fallbackValue;
 };
 
-export const getLastArrayItem = (array) => {
-  if (!array) return undefined;
-  return array.length ? array[array.length - 1] : undefined;
+export const getLastArrayItem = (array, fallbackValue) => {
+  if (!array) return fallbackValue;
+  return array.length ? array[array.length - 1] : fallbackValue;
 };
 
 export const composedPath = (el) => {
