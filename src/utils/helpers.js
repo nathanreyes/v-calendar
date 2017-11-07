@@ -1,4 +1,5 @@
 import colors from './colors';
+import { monthLabels, weekdayLabels } from '../utils/defaults';
 
 // Calendar data
 export const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -197,6 +198,18 @@ export const DateInfo = class DateInfo {
     if (other.isDate) return this.containsDate(other.date);
     return this.containsDate(other.start) || this.containsDate(other.end);
   }
+};
+
+// Check if month array has proper length - any other validation or formatting could be here
+export const validateMonths = (array) => {
+  if (!array) return monthLabels;
+  return array.length === 12 ? array : monthLabels;
+};
+
+// Check if weekday array has proper length - any other validation  or formatting could be here
+export const validateWeekdays = (array) => {
+  if (!array) return weekdayLabels;
+  return array.length === 7 ? array : weekdayLabels;
 };
 
 /* eslint-disable */

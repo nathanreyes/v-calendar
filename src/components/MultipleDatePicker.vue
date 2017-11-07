@@ -1,6 +1,8 @@
 <template>
 <calendar
   :attributes='attributes_'
+  :monthLabels='monthLabels_'
+  :weekdayLabels='weekdayLabels_'
   v-bind='$attrs'
   v-on='$listeners'
   @daySelect='selectDay'>
@@ -9,6 +11,7 @@
 
 <script>
 import Calendar from './Calendar';
+import { validateMonths, validateWeekdays } from '../utils/helpers';
 
 export default {
   components: {
@@ -18,6 +21,8 @@ export default {
     value: { type: Array, default: () => [] },
     selectAttribute: { type: Object, required: true },
     attributes: Array,
+    monthLabels: Array,
+    weekdayLabels: Array,
     dateValidator: Function,
   },
   computed: {
@@ -34,6 +39,12 @@ export default {
     attributes_() {
       if (!this.hasValues) return this.attributes;
       return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
+    },
+    monthLabels_() {
+      return validateMonths(this.monthLabels);
+    },
+    weekdayLabels_() {
+      return validateWeekdays(this.weekdayLabels);
     },
   },
   methods: {

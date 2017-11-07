@@ -4,6 +4,8 @@
     tint-color='#ff6666'
     v-model='selectedDate'
     :theme-styles='themeStyles'
+    :monthLabels='monthsInSpanish'
+    :weekdayLabels='weekdaysInSpanish'
     is-double-paned
     is-inline>
   </v-date-picker>
@@ -41,6 +43,21 @@ export default {
           border: '1px solid #dadada',
         },
       },
+      weekdaysInSpanish: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
+      monthsInSpanish: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre',
+      ],
     };
   },
 };
