@@ -40,6 +40,18 @@ export const getNextMonthComps = (month, year) => {
   return getMonthComps(month + 1, year);
 };
 
+export const getExampleMonthComps = () => {
+  const thisMonthComps = getThisMonthComps();
+  const nextMonthComps = getNextMonthComps(thisMonthComps.month, thisMonthComps.year);
+
+  return {
+    thisMonth: thisMonthComps.month - 1,
+    thisMonthYear: thisMonthComps.year,
+    nextMonth: nextMonthComps.month - 1,
+    nextMonthYear: nextMonthComps.year,
+  };
+};
+
 function comparePages(firstPage, secondPage) {
   if (!firstPage || !secondPage) return 0;
   if (firstPage.year === secondPage.year) {

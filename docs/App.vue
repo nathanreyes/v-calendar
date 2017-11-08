@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import SectionNavbar from './components/sections/SectionNavbar';
-import SectionHeader from './components/sections/SectionHeader';
-import SectionFooter from './components/sections/SectionFooter';
+import SectionNavbar from './components/app/sections/SectionNavbar';
+import SectionHeader from './components/app/sections/SectionHeader';
+import SectionFooter from './components/app/sections/SectionFooter';
 
 export default {
   name: 'app',

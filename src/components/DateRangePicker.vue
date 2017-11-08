@@ -100,7 +100,7 @@ export default {
         }
       }
       // Forward the event
-      this.$emit('dayClick', day);
+      this.$emit('daySelect', day);
     },
     enterDay(day) {
       // Make sure drag has been initialized
@@ -122,7 +122,7 @@ export default {
         }
       }
       // Forward the event
-      this.$emit('dayEnter', day);
+      this.$emit('dayMouseEnter', day);
     },
     // Ranges can privately have end date earlier than start date
     // This function will correct the order before exposing it to to other components

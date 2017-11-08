@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-const PageHome = () => import('../components/pages/PageHome');
-const PageSetup = () => import('../components/pages/PageSetup');
-const PageStyling = () => import('../components/pages/PageStyling');
-const PageApi = () => import('../components/pages/PageApi');
+const PageHome = () => import('../components/home/pages/PageHome');
+const PageSetup = () => import('../components/setup/pages/PageSetup');
+const PageTheming = () => import('../components/theming/pages/PageTheming');
+const PageApi = () => import('../components/api/pages/PageApi');
 
 Vue.use(Router);
 
@@ -21,8 +21,8 @@ export default new Router({
       component: PageSetup,
     },
     {
-      path: '/styling',
-      component: PageStyling,
+      path: '/theming',
+      component: PageTheming,
     },
     {
       path: '/api',
