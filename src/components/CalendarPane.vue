@@ -118,11 +118,10 @@
         :style='weeksStyle_'>
         <transition-group
           tag='div'
-          class='c-weeks-rel'
-          :style='weekRowsStyle'
+          class='c-weeks-rows-wrapper'
           :name='weeksTransition_'>
           <calendar-weeks
-            class='c-weeks-abs'
+            class='c-weeks-rows'
             v-for='p in pages'
             :key='p.key'
             :month='p.month'
@@ -214,10 +213,10 @@ export default {
       return this.titlePosition ? `align-${this.titlePosition}` : '';
     },
     titleTransition_() {
-      return this.getTransitionName(this.titleTransition, this.transitionDirection);
+      return this.getTransitionName('title', this.titleTransition, this.transitionDirection);
     },
     weeksTransition_() {
-      return this.getTransitionName(this.weeksTransition, this.transitionDirection);
+      return this.getTransitionName('weeks', this.weeksTransition, this.transitionDirection);
     },
     headerStyle() {
       return this.getDividerStyle(this.styles.header);
@@ -246,11 +245,6 @@ export default {
     },
     weeksStyle_() {
       return this.getDividerStyle(this.styles.weeks);
-    },
-    weekRowsStyle() {
-      return {
-        height: '192px',
-      };
     },
     canMovePrevMonth() {
       return this.canMove(this.page_.prevMonthComps);
@@ -435,13 +429,13 @@ export default {
       if (fromPage.month !== toPage.month) return fromPage.month < toPage.month ? 'next' : 'prev';
       return '';
     },
-    getTransitionName(type, direction) {
+    getTransitionName(prefix, type, direction) {
       if (type === 'slide-h') {
-        return `title-${direction === 'next' ? 'slide-left' : 'slide-right'}`;
+        return `${prefix}-${direction === 'next' ? 'slide-left' : 'slide-right'}`;
       } else if (type === 'slide-v') {
-        return `title-${direction === 'next' ? 'slide-up' : 'slide-down'}`;
+        return `${prefix}-${direction === 'next' ? 'slide-up' : 'slide-down'}`;
       }
-      return `title-${type}`;
+      return `${prefix}-${type}`;
     },
     getDividerStyle(defaultStyle) {
       if (this.position === 1) return { ...defaultStyle, borderRight: '0' };
@@ -556,13 +550,13 @@ export default {
   flex-grow: 1
   padding: $weeksPadding
 
-.c-weeks-rel
+.c-weeks-rows-wrapper
   position: relative
-  .c-weeks-abs
-    position: absolute
-    width: 100%
-    display: flex
-    flex-direction: column
+
+.c-weeks-rows
+  display: flex
+  flex-direction: column
+  width: 100%
 
 .title-slide-left-enter-active,
 .title-slide-left-leave-active,
@@ -611,6 +605,13 @@ export default {
 .weeks-fade-enter-active,
 .weeks-fade-leave-active
   transition: $weeksTransition
+
+.weeks-slide-left-leave-active,
+.weeks-slide-right-leave-active,
+.weeks-slide-up-leave-active,
+.weeks-slide-down-leave-active,
+.weeks-fade-leave-active
+  position: absolute
 
 .weeks-none-enter-active,
 .weeks-none-leave-active

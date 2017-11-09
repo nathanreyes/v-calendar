@@ -42,7 +42,7 @@ export default {
         this.$emit('input', (day.date === this.value) ? null : day.date);
       }
       // Forward the event
-      this.$emit('dayClick', day);
+      this.$emit('daySelect', day);
     },
   },
 };

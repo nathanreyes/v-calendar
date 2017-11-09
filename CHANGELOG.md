@@ -1,3 +1,13 @@
+## 0.1.1
+* Add documentation for custom theming
+* Restructure docs component hierarchy
+* Remove lib files from git tracking
+* Fix layout bug in calendar pane
+* Fix event forwarding for date picker
+
+## 0.1.0
+* Add navigation pickers in calendar headers
+
 ## 0.0.9
 * Add support for more flexible month/year navigation
 * Fix popover visibility bug

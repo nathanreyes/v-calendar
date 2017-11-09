@@ -52,7 +52,7 @@ export default {
         }
       }
       // Forward the event
-      this.$emit('dayClick', day);
+      this.$emit('daySelect', day);
     },
   },
 };

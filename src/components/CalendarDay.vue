@@ -1,5 +1,7 @@
 <template>
-<div class='c-day' :style='dayCellStyle'>
+<div
+  :class='["c-day", { "c-day-not-in-month": !inMonth }]'
+  :style='dayCellStyle'>
   <!-- Background layers -->
   <transition-group
     name='background'
@@ -94,7 +96,10 @@ export default {
   },
   computed: {
     dayCellStyle() {
-      return this.inMonth ? this.styles.dayCell : this.styles.dayCellNotInMonth;
+      return this.inMonth ? this.styles.dayCell : {
+        ...this.styles.dayCell,
+        ...this.styles.dayCellNotInMonth,
+      };
     },
     contentStyle_() {
       if (this.isHovered) return { ...this.contentStyle, ...this.contentHoverStyle };
@@ -318,6 +323,10 @@ export default {
   position: relative
   flex-grow: 1
   overflow: hidden
+  height: $dayHeight
+
+.c-day-not-in-month
+  opacity: $dayNotInMonthOpacity
 
 .c-day-layer
   position: absolute
