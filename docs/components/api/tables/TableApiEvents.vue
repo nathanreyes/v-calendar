@@ -20,12 +20,12 @@ export default {
   data() {
     const props = [
       {
-        name: '<code>updated:fromPage</code>',
+        name: '<code>update:fromPage</code>',
         description: 'Calendar left/single pane moved to a different page.',
         parameters: '<code>page: Object</code>',
       },
       {
-        name: '<code>updated:toPage</code>',
+        name: '<code>update:toPage</code>',
         description: 'Calendar right pane moved to a different page.',
         parameters: '<code>page: Object</code>',
       },
