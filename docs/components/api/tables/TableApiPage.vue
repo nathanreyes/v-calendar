@@ -66,6 +66,10 @@ export default {
         description: 'Components <code>{ <i>days</i>, <i>month</i>, <i>year</i> }</code> for the next month.',
       },
       {
+        propertyName: '<code>position: Number</code>',
+        description: 'Position of the page. Single Pane: <code>0</code>, Left Pane: <code>1</code>, Right Pane: <code>2</code>',
+      },
+      {
         propertyName: '<code>move(<i>month</i>, <i>year</i>): Function</code>',
         description: 'Function that moves to a page with a specified month and year.',
       },

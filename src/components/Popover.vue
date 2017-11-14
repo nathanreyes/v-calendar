@@ -2,13 +2,16 @@
   <div
     ref='popover'
     :class='["popover-container", { expanded: isExpanded }]'
-    :tabindex='visibility === -1 ? 0 : undefined'
+    :tabindex='visibilityIsManaged ? 0 : undefined'
     @focusin='focusin'
-    @focusout='focusout'>
+    @focusout='focusout'
+    @mouseleave='mouseleave'
+    @mouseover='mouseover'>
     <transition name='slide-fade' tag='div'>
       <div
+        ref='popoverOrigin'
         :class='["popover-origin", "direction-" + direction, "align-" + align]'
-        v-if='visibleDelay'>
+        v-if='visibleAfterDelay'>
         <div
           :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'>
           <div
@@ -37,29 +40,37 @@ import Vue from 'vue';
 import { composedPath } from '../utils/helpers';
 import { maxTapTolerance, maxTapDuration } from '../utils/defaults';
 
-const POPOVER_AUTO = -1;
-const POPOVER_VISIBLE = 1;
+const VISIBILITIES = {
+  HOVER: 'hover',
+  FOCUS: 'focus',
+  HIDDEN: 'hidden',
+  VISIBLE: 'visible',
+};
 
 export default {
   props: {
     isExpanded: Boolean,
     direction: { type: String, default: 'bottom' },
     align: { type: String, default: 'left' },
-    visibility: { type: Number, default: POPOVER_AUTO },
+    visibility: { type: String, default: VISIBILITIES.HOVER },
     contentStyle: { type: Object, default: () => ({}) },
-    delay: { type: Number, default: 50 }, // Milliseconds
+    enterDelay: { type: Number, default: 200 }, // ms
+    leaveDelay: { type: Number, default: 300 }, // ms
   },
   data() {
     return {
-      visible: false,
-      visibleDelay: false,
+      visibleManaged: false,
+      visibleAfterDelay: false,
       touchState: null,
     };
   },
   computed: {
-    visible_() {
-      if (this.visibility === POPOVER_AUTO) return this.visible;
-      return this.visibility === POPOVER_VISIBLE;
+    visibilityIsManaged() {
+      return this.visibility === VISIBILITIES.HOVER || this.visibility === VISIBILITIES.FOCUS;
+    },
+    visibleBeforeDelay() {
+      if (this.visibilityIsManaged) return this.visibleManaged;
+      return this.visibility === VISIBILITIES.VISIBLE;
     },
     contentStyle_() {
       const style = { ...this.contentStyle };
@@ -71,25 +82,28 @@ export default {
       const cs = this.contentStyle;
       const style = {};
       if (cs.padding) style.padding = cs.padding;
-      if (cs.borderRadius) style.borderRadius = cs.borderRadius;
       return style;
     },
   },
   watch: {
-    visible_(val) {
-      if (!this.delay) {
-        this.visibleDelay = val;
-      } else {
+    visibleBeforeDelay(val) {
+      // Ignore if already waiting for a visibility change
+      if (val === this.visibleAfterDelay) return;
+      // Delay visibility change?
+      if ((val && this.enterDelay) || (!val && this.leaveDelay)) {
         setTimeout(() => {
-          if (val === this.visible_) this.visibleDelay = val;
-        }, this.delay);
+          if (val === this.visibleBeforeDelay) this.visibleAfterDelay = val;
+        }, val ? this.enterDelay : this.leaveDelay);
+      } else {
+        this.visibleAfterDelay = val;
       }
     },
   },
   created() {
+    this.VISIBILITIES = VISIBILITIES;
+    this.visibleAfterDelay = this.visibleBeforeDelay;
     window.addEventListener('touchstart', this.touchStart);
     window.addEventListener('touchend', this.touchEnd);
-    this.visibleDelay = this.visible_;
   },
   methods: {
     touchStart(e) {
@@ -119,20 +133,29 @@ export default {
       state.tapDetected = new Date() - state.startedOn <= maxTapDuration &&
         Math.abs(state.x - state.startX) <= maxTapTolerance &&
         Math.abs(state.y - state.startY) <= maxTapTolerance;
-      if (state.tapDetected) this.visible = false;
+      if (state.tapDetected) this.visibleManaged = false;
       state.started = false;
     },
     focusin(e) {
-      this.visible = true;
+      if (this.visibility === VISIBILITIES.FOCUS) this.visibleManaged = true;
       this.$emit('focusin', e);
     },
     focusout(e) {
-      // Trap focus if element losing focus is nested within the popover content
-      if (e.target !== this.$refs.popover && composedPath(e.target).includes(this.$refs.popoverContent)) {
-        Vue.nextTick(() => this.$refs.popover.focus());
+      if (this.visibility === VISIBILITIES.FOCUS) {
+        // Trap focus if element losing focus is nested within the popover content
+        if (e.target !== this.$refs.popover && composedPath(e.target).includes(this.$refs.popoverContent)) {
+          Vue.nextTick(() => this.$refs.popover.focus());
+        }
+        this.visibleManaged = false;
       }
-      this.visible = false;
       this.$emit('focusout', e);
+    },
+    mouseleave() {
+      if (this.visibility === VISIBILITIES.HOVER) this.visibleManaged = false;
+    },
+    mouseover(e) {
+      // Show if moused over, but ignore the popover origin because it is transformed
+      if (this.visibility === VISIBILITIES.HOVER) this.visibleManaged = e.target !== this.$refs.popoverOrigin;
     },
   },
 };
@@ -141,8 +164,6 @@ export default {
 <style lang='sass' scoped>
 
 @import '../styles/vars.sass'
-
-$popoverCaretOffset: 16px
 
 .popover-container
   position: relative
@@ -195,19 +216,18 @@ $popoverCaretOffset: 16px
       .popover-content-mask
         position: relative
         z-index: 1
-        border-radius: $popoverBorderRadius
+        border-radius: inherit
         padding: $popoverPadding
         overflow: hidden
       &:after
         display: block
         position: absolute
-        background-color: $popoverBackgroundColor
-        border: $popoverBorder
+        background-color: inherit
+        border: inherit
         border-width: 1px 1px 0 0
         width: 12px
         height: 12px
         content: ''
-        transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.direction-bottom
         margin-top: $popoverOffset
         &:after
@@ -230,25 +250,31 @@ $popoverCaretOffset: 16px
           border-width: 1px 0 0 1px
       &.align-left
         &:after
-          left: $popoverCaretOffset
+          left: $popoverCaretHorizontalOffset
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-right
         &:after
-          right: $popoverCaretOffset
+          right: $popoverCaretHorizontalOffset
+          transform: translateY(-50%) translateX(50%) rotate(-45deg)
       &.align-center
         &:after
           left: 50%
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-top
         &:after
-          top: $popoverCaretOffset
+          top: $popoverCaretVerticalOffset
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-middle
         &:after
           top: 50%
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-bottom
         &:after
-          bottom: $popoverCaretOffset
+          bottom: $popoverCaretVerticalOffset
+          transform: translateY(50%) translateX(-50%) rotate(-45deg)
 
 .slide-fade-enter-active, .slide-fade-leave-active
-  transition: all $popoverSlideTransitionTime
+  transition: all $popoverTransitionTime
 
 .slide-fade-enter, .slide-fade-leave-to
   opacity: 0

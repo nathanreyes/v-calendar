@@ -6,6 +6,7 @@
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[todayAttribute]'
     :is-inline='isInline'
+    :popover-visibility='popoverVisibility'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
     indicators-offset='4px'
@@ -29,6 +30,7 @@ export default {
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,
+    popoverVisibility: { type: String, default: 'hover' },
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
   },

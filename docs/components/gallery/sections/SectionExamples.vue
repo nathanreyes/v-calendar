@@ -1,8 +1,10 @@
 <template>
 <section id='examples' class='section'>
   <div class='container'>
-    <h4 class='title is-4 is-spaced'>Examples</h4>
-    <hr>
+    <h3 class='title has-text-primary is-spaced'>Gallery</h3>
+    <b-message type='is-warning'>
+      <strong>Note:</strong> This page is currently in work.
+    </b-message>
     <div
       class='example'
       v-for='(example, i) in examples'
@@ -42,7 +44,7 @@ export default {
     return {
       examples: [
         {
-          title: 'Datepicker w/ styled header & weekdays',
+          title: 'Date picker w/ styled header & weekdays',
           code: ExStyling1Code,
           component: ExStyling1,
         },

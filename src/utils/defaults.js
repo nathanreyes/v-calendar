@@ -1,5 +1,6 @@
 
 export const themeStyles = {
+  // wrapper: null,
   verticalDivider: { borderLeft: '1px solid #dadada' },
   // header: null,
   // headerTitle: null,
@@ -20,6 +21,7 @@ export const themeStyles = {
 };
 export const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+export const titlePosition = 'center';
 export const titleTransition = 'slide-h';
 export const weeksTransition = 'slide-h';
 export const maxSwipeTimeMs = 300;

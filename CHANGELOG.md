@@ -1,3 +1,13 @@
+## 0.2.0
+* Simplify header title layout
+* Add navigation panel popover with indicators
+* Add passive event modifiers for touch events
+* Add 'go to today' with header title click
+* Add 'hover' as visibility option for popovers
+* Redesign popovers to display caret arrows
+* Move DateInfo class into separate file
+* Fix date logic for range intersections
+
 ## 0.1.1
 * Add documentation for custom theming
 * Restructure docs component hierarchy

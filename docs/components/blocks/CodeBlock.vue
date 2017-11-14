@@ -1,6 +1,6 @@
 <template>
   <figure class='highlight' :class=' { "offset": offset }'>
-    <button class='button is-small copy-code'>Copy</button>
+    <button class='button is-small copy-code' v-clipboard:copy='code'>Copy</button>
     <pre v-highlight><code :class='lang'>{{ code }}</code></pre>
   </figure>
 </template>

@@ -4,9 +4,9 @@
     class='c-week'
     v-for='(week, i) in weeks'
     :key='i'
-    @touchstart='$emit("touchstart", $event)'
-    @touchmove='$emit("touchmove", $event)'
-    @touchend='$emit("touchend", $event)'>
+    @touchstart.passive='$emit("touchstart", $event)'
+    @touchmove.passive='$emit("touchmove", $event)'
+    @touchend.passive='$emit("touchend", $event)'>
     <calendar-day
       v-for='day in week'
       :key='day.id'
@@ -21,7 +21,7 @@
       :in-month='day.inMonth'
       :in-prev-month='day.inPrevMonth'
       :in-next-month='day.inNextMonth'
-      :attributes='day.attributes'
+      :attributes='getDayAttributes(day.date)'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-day>
@@ -31,6 +31,7 @@
 
 <script>
 import CalendarDay from './CalendarDay';
+import DateInfo from '../utils/dateInfo';
 import { todayComps } from '../utils/helpers';
 
 export default {
@@ -95,7 +96,6 @@ export default {
             inMonth: thisMonth,
             inPrevMonth: previousMonth,
             inNextMonth: nextMonth,
-            attributes: this.getDayAttributes(date),
           };
           week.push(dayInfo);
 
@@ -116,12 +116,20 @@ export default {
       }
       return weeks;
     },
+    weeksRange() {
+      const start = this.weeks[0][0].date;
+      const end = this.weeks[5][6].date;
+      return new DateInfo({ start, end });
+    },
+    weeksAttributes() {
+      return this.attributes.filter(a => a.dates.find(d => d.intersects(this.weeksRange)));
+    },
   },
   methods: {
     getDayAttributes(date) {
-      if (!this.attributes || !this.attributes.length) return [];
+      if (!this.weeksAttributes || !this.weeksAttributes.length) return [];
       const attributes = [];
-      this.attributes.forEach((a) => {
+      this.weeksAttributes.forEach((a) => {
         // Cycle through each attribute date
         a.dates.forEach((dateInfo) => {
           // Done if attribute date doesn't contain the day date

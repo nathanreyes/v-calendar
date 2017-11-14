@@ -11,7 +11,7 @@
           This requires that if you are displaying a calendar in your application, it may need to fit within an overall design theme set up for your site.
         </p>
         <p>
-          Generally speaking, these are some specific props that can be used to customize the overall display of calendar components.
+          Generally speaking, these are some specific props that can be used to customize the overall display of your calendar.
         </p>
       </div>
       <table-props></table-props>

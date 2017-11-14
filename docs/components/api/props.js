@@ -105,8 +105,8 @@ export default [
   },
   {
     name: '<code>popover-visibility: Number</code>',
-    description: '<span class="tag is-warning">Date Picker</span>Visibility state of the popover: Auto: <code>-1</code>, Hidden: <code>0</code>, Visible: <code>1</code>',
-    default: 'Auto: <code>-1</code>',
+    description: '<span class="tag is-warning">Date Picker</span>Visibility state of the popover: <code>"hover"</code>, <code>"focus"</code>, <code>"hidden"</code>, <code>"visible"</code>',
+    default: '<code>"hover"</code>',
   },
   {
     name: '<code>input-class: String</code>',
