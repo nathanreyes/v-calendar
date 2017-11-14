@@ -10,6 +10,7 @@
     :max-page='maxFromPage'
     :styles='themeStyles_'
     :attributes='attributes_'
+    @titleClick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar-pane>
@@ -21,6 +22,7 @@
     :max-page='maxPage'
     :styles='themeStyles_'
     :attributes='attributes_'
+    @titleClick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar-pane>
@@ -32,22 +34,22 @@ import CalendarPane from './CalendarPane';
 import Tag from './Tag';
 import '../assets/fonts/vcalendar/vcalendar.scss';
 import '../styles/lib.sass';
+import DateInfo from '../utils/dateInfo';
 import {
   themeStyles,
   getHighlight,
   dot,
   bar,
 } from '../utils/defaults';
-
 import {
   todayComps,
+  pageIsEqualToPage,
   pageIsBeforePage,
   pageIsAfterPage,
   getPrevPage,
   getNextPage,
   getPageBetweenPages,
   getFirstValidPage,
-  DateInfo,
 } from '../utils/helpers';
 
 export default {
@@ -103,7 +105,7 @@ export default {
       if (!this.attributes || !this.attributes.length) return [];
       return this.attributes.map((a, i) => {
         const newAttribute = {
-          key: a.key || i.toString(),
+          key: a.key || (i + 1).toString(),
           dates: a.dates.map(d => (d instanceof DateInfo ? d : new DateInfo(d, a.order))),
           order: a.order || 0,
         };
@@ -177,6 +179,14 @@ export default {
     },
     refreshToPage() {
       this.toPage_ = this.getValidToPage(this.toPage, getNextPage(this.fromPage_));
+    },
+    titleClick(page) {
+      if (pageIsEqualToPage(page, todayComps)) return;
+      if (page.position < 2) {
+        this.fromPage_ = getFirstValidPage(todayComps, pageIsBeforePage(page, todayComps) ? this.maxFromPage : this.minPage);
+      } else {
+        this.toPage_ = getFirstValidPage(todayComps, pageIsBeforePage(page, todayComps) ? this.maxPage : this.minToPage);
+      }
     },
     getValidFromPage(...args) {
       return getFirstValidPage(

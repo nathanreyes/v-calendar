@@ -18,6 +18,7 @@
     :align='popoverAlign'
     :visibility='popoverVisibility'
     :is-expanded='isExpanded'
+    :content-style='popoverContentStyle'
     v-else>
     <slot
       :input-value='valueText'
@@ -53,9 +54,9 @@ import Popover from './Popover';
 import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
-import { DateInfo, blendColors } from '../utils/helpers';
+import DateInfo from '../utils/dateInfo';
+import { blendColors } from '../utils/helpers';
 
-const POPOVER_AUTO = -1;
 const _defaultSelectColor = '#66b3cc';
 const _defaultDragColor = '#9fcfdf';
 
@@ -73,7 +74,7 @@ export default {
     isExpanded: Boolean,
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
-    popoverVisibility: { type: Number, default: POPOVER_AUTO },
+    popoverVisibility: { type: String, default: 'hover' },
     inputClass: String,
     inputStyle: Object,
     inputPlaceholder: String,
@@ -85,7 +86,7 @@ export default {
       type: Function,
       default: s => new Date(Date.parse(s)),
     },
-    themeStyles: Object,
+    themeStyles: { type: Object, default: () => ({}) },
     selectColor: { type: String, default: _defaultSelectColor },
     dragColor: { type: String, default: _defaultDragColor },
     selectAttribute: Object,
@@ -169,13 +170,25 @@ export default {
       };
     },
     themeStyles_() {
-      return {
+      const styles = {
         dayContentHover: {
           backgroundColor: '#dadada',
           border: '0',
           cursor: 'pointer',
         },
         ...this.themeStyles,
+      };
+      if (!this.isInline) {
+        styles.wrapper = {
+          border: '0',
+        };
+      }
+      return styles;
+    },
+    popoverContentStyle() {
+      return {
+        ...this.themeStyles.wrapper,
+        padding: '0',
       };
     },
     selectAttribute_() {

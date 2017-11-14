@@ -1,6 +1,6 @@
 <template>
   <div
-    class='c-pane'>
+    :class='["c-pane", { "is-full-width": position === 0 }]'>
     <!--Header-->
     <div class='c-header-wrapper'>
       <!--Header vertical divider-->
@@ -23,51 +23,45 @@
             </slot>
           </div>
           <!--Header title-->
-          <transition-group
-            tag='div'
-            :class='["c-title", titleClass]'
-            :name='titleTransition_'>
-            <div
-              class='c-title-1'
-              v-for='p in pages'
-              :key='p.key'
-              v-if='p === page_'>
-              <slot name='header-title' :page='p'>
+          <div
+            :class='["c-title-layout", titleClass]'>   
+            <!--Navigation popover--> 
+            <popover
+              class='c-title-popover'
+              visibility='hover'
+              :align='titlePosition'
+              :content-style='{ padding: "0" }'
+              :enter-delay='300'>
+              <!--Title content-->
+              <transition-group
+                tag='div'
+                class='c-title-anchor'
+                :name='titleTransition_'>
                 <div
-                  class='c-title-2'
-                  :style='titleStyle'>
-                  <div class='c-select-container'>
-                    <span class='c-select-span'>
-                      {{ p.monthLabel }}
-                    </span>
-                    <select class='c-select' v-model='monthNumber'>
-                      <option
-                        v-for='(monthLabel, i) in monthLabels'
-                        :key='monthLabel'
-                        :value='i + 1'
-                        :disabled='monthIsDisabled(i + 1)'>
-                        {{ monthLabel }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class='c-select-container'>
-                    <span class='c-select-span'>
-                      {{ p.yearLabel }}
-                    </span>
-                    <select class='c-select' v-model='yearNumber'>
-                      <option
-                        v-for='year in yearList'
-                        :key='year'
-                        :value='year'
-                        :disabled='yearIsDisabled(year)'>
-                        {{ year }}
-                      </option>
-                    </select>
-                  </div>
+                  class='c-title'
+                  :style='titleStyle'
+                  v-for='p in pages'
+                  :key='p.key'
+                  v-if='p === page_'
+                  @click='$emit("titleClick", p)'>
+                  <slot
+                    name='header-title'>
+                    {{ `${p.monthLabel} ${p.yearLabel}` }}
+                  </slot>
                 </div>
-              </slot>
-            </div>
-          </transition-group>
+              </transition-group>
+              <!--Navigation pane-->
+              <calendar-nav
+                slot='popover-content'
+                :mode.sync='navMode'
+                :monthLabels='monthLabels'
+                :value='page_'
+                :validator='canMove'
+                :attributes='attributes'
+                @input='move($event)'>
+              </calendar-nav>
+            </popover>
+          </div>
           <!--Header next button-->
           <div class='c-arrow-layout'>
             <slot name='header-right-button' :page='page_'>
@@ -141,10 +135,11 @@
             :next-month-comps='p.nextMonthComps'
             :first-day-of-week='firstDayOfWeek'
             :styles='styles'
+            :attributes='attributes'
             v-bind='$attrs'
-            @touchstart='touchStart($event)'
-            @touchmove='touchMove($event)'
-            @touchend='touchEnd($event)'
+            @touchstart.passive='touchStart($event)'
+            @touchmove.passive='touchMove($event)'
+            @touchend.passive='touchEnd($event)'
             v-on='$listeners'
             v-if='p === page_'>
           </calendar-weeks>
@@ -157,9 +152,11 @@
 <script>
 import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
+import CalendarNav from './CalendarNav';
+import Popover from './Popover';
+
 import {
   todayComps,
-  yearList,
   getIsLeapYear,
   getMonthComps,
   getThisMonthComps,
@@ -171,6 +168,7 @@ import {
 import {
   monthLabels,
   weekdayLabels,
+  titlePosition,
   titleTransition,
   weeksTransition,
   maxSwipeTimeMs,
@@ -181,6 +179,8 @@ import {
 export default {
   components: {
     CalendarWeeks,
+    CalendarNav,
+    Popover,
   },
   props: {
     position: { type: Number, default: 1 },
@@ -191,9 +191,10 @@ export default {
     weekdayLabels: { type: Array, default: () => weekdayLabels },
     firstDayOfWeek: { type: Number, default: 1 },
     styles: Object,
-    titlePosition: String,
+    titlePosition: { type: String, default: titlePosition },
     titleTransition: { type: String, default: titleTransition },
     weeksTransition: { type: String, default: weeksTransition },
+    attributes: Array,
   },
   data() {
     return {
@@ -201,10 +202,8 @@ export default {
       pages: [],
       page_: null,
       transitionDirection: '',
-      monthNumber: 0,
-      yearNumber: 0,
+      navMode: 'month',
       touchState: {},
-      yearList,
     };
   },
   computed: {
@@ -265,24 +264,6 @@ export default {
     },
     page_(val, oldVal) {
       this.transitionDirection = this.getTransitionDirection(oldVal, val);
-      this.monthNumber = val.month;
-      this.yearNumber = val.year;
-    },
-    monthNumber(val) {
-      if (val !== this.page_.month) {
-        this.move({
-          month: val,
-          year: this.yearNumber,
-        });
-      }
-    },
-    yearNumber(val) {
-      if (val !== this.page_.year) {
-        this.move({
-          month: this.monthNumber,
-          year: val,
-        });
-      }
     },
   },
   created() {
@@ -395,7 +376,7 @@ export default {
       // Preload other pages
       this.preloadPages();
     },
-    loadPage({ month, year }, position = 0) {
+    loadPage({ month, year }) {
       const key = `${year.toString()}.${month.toString()}`;
       let page = this.pages.find(p => (p.key === key));
       if (!page) {
@@ -432,15 +413,15 @@ export default {
         };
         this.pages.push(page);
       }
-      page.position = position;
+      page.position = this.position;
       page.loaded = true;
       return page;
     },
     preloadPages() {
       // Load the next and previous pages
       Vue.nextTick(() => {
-        this.loadPage(this.page_.prevMonthComps, -1);
-        this.loadPage(this.page_.nextMonthComps, 1);
+        this.loadPage(this.page_.prevMonthComps);
+        this.loadPage(this.page_.nextMonthComps);
         this.pages = this.pages.filter(p => p.loaded);
         this.pages.forEach((p) => {
           p.loaded = false;
@@ -473,26 +454,20 @@ export default {
 <style lang='sass' scoped>
 
 @import '../styles/vars.sass'
-
-=box($justify: center, $align: center)
-  display: flex
-  justify-content: $justify
-  align-items: $align
-  margin: 0
-  padding: 0
+@import '../styles/mixins.sass'
 
 .c-pane
-  flex-grow: 1
-  flex-shrink: 1
-  // min-width: $paneMinWidth
-  // width: $paneWidth
+  width: 50%
   display: flex
   flex-direction: column
   align-items: stretch
   overflow: hidden
+  &.is-full-width
+    width: 100%
 
 .c-header-wrapper
   display: flex
+  z-index: 1
 
 .c-header
   flex: 1
@@ -500,7 +475,6 @@ export default {
   align-items: stretch
   user-select: none
   padding: $headerPadding
-
   .c-arrow-layout
     +box()
     .c-arrow
@@ -513,55 +487,30 @@ export default {
       user-select: none
       &:hover
         opacity: 0.5
-    
-  .c-title
-    +box()
+  .c-title-layout
+    display: inline-flex
+    justify-content: center
+    align-items: center
     flex-grow: 1
-    position: relative
-    .c-title-1
-      position: absolute
-      left: 0
-      top: 0
-      width: 100%
-      height: 100%
+    .c-title-popover
       display: flex
-      align-items: center
-      .c-title-2
-        +box()
-        font-weight: $titleFontWeight
-        font-size: $titleFontSize
-        user-select: none
-        margin: $titleMargin
-        text-align: center
-        width: 100%
-
-        .c-select-container
-          position: relative
+      justify-content: inherit
+      .c-title-anchor
+        display: flex
+        justify-content: inherit
+        .c-title
+          font-weight: $titleFontWeight
+          font-size: $titleFontSize
           transition: $titleTransition
-          &:hover
-            opacity: 0.5
-          &:not(:first-child)
-            margin-left: 5px
-          .c-select-span
-            height: 100%
-          .c-select
-            position: absolute
-            top: 0
-            left: 0
-            width: 100%
-            height: 100%
-            border: none
-            font-size: 1rem
-            opacity: 0
-            cursor: pointer
+          cursor: pointer
+          user-select: none
+          white-space: nowrap
     &.align-left
       order: -1
-      .c-title-2
-        justify-content: flex-start
+      justify-content: flex-start
     &.align-right
       order: 1
-      .c-title-2
-        justify-content: flex-end
+      justify-content: flex-end
     
   .c-arrow.c-disabled
     cursor: not-allowed
@@ -602,17 +551,18 @@ export default {
   flex-direction: column
   width: 100%
 
-.title-slide-left-enter-active,
 .title-slide-left-leave-active,
-.title-slide-right-enter-active,
 .title-slide-right-leave-active,
-.title-slide-up-enter-active,
 .title-slide-up-leave-active,
-.title-slide-down-enter-active,
 .title-slide-down-leave-active,
-.title-fade-enter-active,
 .title-fade-leave-active
-  transition: $titleTransition
+  position: absolute
+
+.title-slide-left-leave,
+.title-slide-right-leave,
+.title-slide-up-leave,
+.title-slide-down-leave
+  opacity: 1
 
 .title-none-enter-active,
 .title-none-leave-active

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Buefy from 'buefy';
 import hljs from 'highlight.js';
+import VueClipboard from 'vue-clipboard2';
 import VCalendar from '../src/lib';
 import App from './App';
 import router from './router';
@@ -8,6 +9,7 @@ import CodeBlock from './components/blocks/CodeBlock';
 import './styles/app.scss';
 
 Vue.config.productionTip = false;
+Vue.use(VueClipboard);
 Vue.use(Buefy, {
   defaultIconPack: 'fa',
 });

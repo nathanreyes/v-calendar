@@ -21,8 +21,8 @@
     <div
       class='c-day-content'
       :style='contentStyle_'
-      @touchstart='touchstart'
-      @touchend='touchend'
+      @touchstart.passive='touchstart'
+      @touchend.passive='touchend'
       @click='click($event)'
       @mouseenter='mouseenter'
       @mouseleave='mouseleave'>

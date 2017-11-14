@@ -1,17 +1,18 @@
 # V-Calendar
 
-> V-Calendar is a lightweight, dependency-free plugin for building attributed calendars in Vue.js.
+> V-Calendar is a clean and lightweight plugin for building attributed calendars in Vue.js.
 
-Visit http://vcalendar.netlify.com for demos and API reference. This plug-in is currently in beta state.
+Visit https://vcalendar.netlify.com for demos and API reference. This plug-in is currently in beta state.
 
 ## Features
 
 * Display clean and simple attributed calendars
 * Built-in support for various attributes, including
   * highlighted regions
-  * indicators
+  * dot and bar indicators
   * day content styles (hovered and non-hovered)
-* Apply attributes over multiple dates or date ranges (start & end dates)
+* Apply attributes for multiple dates or date ranges (start & end dates)
+* Semantic inspired popover navigation panel with month-level attribute indicators
 * Date-picker supporting all native v-calendar props/events with various selection modes
   * single date
   * multiple dates
@@ -37,6 +38,7 @@ import Vue from 'vue';
 import VCalendar from 'v-calendar';
 import 'v-calendar/lib/v-calendar.min.css';
 
+// Use v-calendar, v-date-picker & v-popover components
 Vue.use(VCalendar);
 ```
 

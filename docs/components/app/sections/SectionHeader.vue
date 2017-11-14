@@ -24,9 +24,10 @@
         <nav class='tabs is-boxed'>
           <ul>
             <router-link tag='li' to='/' exact><a>Intro</a></router-link>
-            <router-link tag='li' to='/setup'><a>Setup</a></router-link>
             <router-link tag='li' to='/theming'><a>Theming</a></router-link>
             <router-link tag='li' to='/api'><a>API</a></router-link>
+            <router-link tag='li' to='/gallery'><a>Gallery</a></router-link>
+            <router-link tag='li' to='/setup'><a>Setup</a></router-link>
           </ul>
         </nav>
       </div>

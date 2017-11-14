@@ -1,5 +1,6 @@
 
 export const themeStyles = {
+  // wrapper: null,
   verticalDivider: { borderLeft: '1px solid #dadada' },
   // header: null,
   // headerTitle: null,
@@ -20,11 +21,14 @@ export const themeStyles = {
 };
 export const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+export const titlePosition = 'center';
 export const titleTransition = 'slide-h';
 export const weeksTransition = 'slide-h';
 export const maxSwipeTimeMs = 300;
 export const minHorizontalSwipeDistance = 60;
 export const maxVerticalSwipeDistance = 80;
+export const maxTapTolerance = 0;
+export const maxTapDuration = 200; // ms
 export const getHighlight = uh => ({
   animated: uh.animated || true,
   height: uh.height || '1.8rem',

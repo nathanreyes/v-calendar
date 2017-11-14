@@ -11,7 +11,7 @@
 
 <script>
 import Calendar from './Calendar';
-import { DateInfo } from '../utils/helpers';
+import DateInfo from '../utils/dateInfo';
 
 export default {
   components: {

@@ -1,7 +1,8 @@
 <template>
   <v-calendar
     :attributes='attributes'
-    is-double-paned>
+    is-double-paned
+    :min-page='minPage'>
   </v-calendar>
 </template>
 
@@ -16,6 +17,10 @@ export default {
       nextMonth,
       nextMonthYear } = getExampleMonthComps();
     return {
+      minPage: {
+        month: 4,
+        year: 2016,
+      },
       attributes: [
         {
           contentStyle: {

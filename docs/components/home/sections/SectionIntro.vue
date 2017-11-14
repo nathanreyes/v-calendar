@@ -32,7 +32,7 @@
               <b-field label='Title Position'>
                 <p class='control'>
                   <b-radio v-model='titlePosition' native-value='left'>Left</b-radio>
-                  <b-radio v-model='titlePosition' native-value=''>Center</b-radio>
+                  <b-radio v-model='titlePosition' native-value='center'>Center</b-radio>
                   <b-radio v-model='titlePosition' native-value='right'>Right</b-radio>
                 </p>
               </b-field>
@@ -86,7 +86,7 @@ export default {
     return {
       exIntroCode: ExIntroCode,
       isDoublePaned: true,
-      titlePosition: '',
+      titlePosition: 'center',
       titleTransition: 'slide-h',
       weeksTransition: 'slide-h',
     };

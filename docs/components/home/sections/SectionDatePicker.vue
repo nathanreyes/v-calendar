@@ -36,6 +36,13 @@
               <b-switch v-model='isInline'>Inline</b-switch>
             </b-field>
             <div v-if='!isInline'>
+              <b-field label='Popover Visibility'>
+                <b-select v-model='popoverVisibility'>
+                  <option v-for='visibility in popoverVisibilities' :value='visibility' :key='visibility'>
+                    {{ visibility }}
+                  </option>
+                </b-select>
+              </b-field>
               <b-field label='Popover Direction'>
                 <b-select v-model='popoverDirection'>
                   <option v-for='direction in popoverDirections' :value='direction' :key='direction'>
@@ -66,6 +73,7 @@
             :mode='mode'
             :show-disabled-dates='showDisabledDates'
             :is-inline='isInline'
+            :popover-visibility='popoverVisibility'
             :popover-direction='popoverDirection'
             :popover-align='popoverAlignment'
             :select-color='selectColor'
@@ -93,6 +101,8 @@ export default {
       selectedValue: null,
       showDisabledDates: false,
       isInline: false,
+      popoverVisibility: 'hover',
+      popoverVisibilities: ['hover', 'focus', 'visible', 'hidden'],
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',
@@ -105,10 +115,10 @@ export default {
       switch (this.popoverDirection) {
         case 'bottom':
         case 'top':
-          return ['left', 'right'];
+          return ['left', 'center', 'right'];
         case 'left':
         case 'right':
-          return ['top', 'bottom'];
+          return ['top', 'middle', 'bottom'];
         default:
           return [];
       }
