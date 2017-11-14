@@ -17,8 +17,8 @@
               </ol>
             </div>
             <b-message type='is-info'>
-              <strong>Note:</strong> By default, <code>v-date-picker</code> will manage popover visibility for you with <code>popover-visibility</code> set to auto (<code>-1</code>).
-              If you want to manage it yourself, set <code>popover-visibility</code> to visible (<code>1</code>) or hidden (<code>0</code>) within your template.
+              <strong>Note:</strong> By default, <code>v-date-picker</code> will manage popover visibility for you with <code>popover-visibility</code> set to <code>"hover"</code>.
+              You also have the option of having it managed with <code>"focus"</code>, but if you want to manage it yourself, set to <code>"visible"</code> or <code>"hidden"</code> within your template.
             </b-message>
           </b-tab-item>
           <b-tab-item label='Example Code'>
