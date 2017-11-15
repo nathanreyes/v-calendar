@@ -355,9 +355,10 @@ $cellTransition: all 0.1s ease-in-out
 
 .c-table-cell
   position: relative
-  display: flex
-  justify-content: center
-  align-items: center
+  // display: flex
+  // flex-direction: column
+  // justify-content: center
+  // align-items: center
   user-select: none
   cursor: pointer
   width: 100%
@@ -381,15 +382,20 @@ $cellTransition: all 0.1s ease-in-out
 .c-label
   position: absolute
   font-size: 0.9rem
-  transition: padding-bottom 0.1s ease-in-out
+  top: 6px
+  width: 100%
+  text-align: center
+  transition: top 0.1s ease-in-out
   &.has-indicators
-    padding-bottom: 10px
+    top: 2px
 
 .c-indicators
+  position: absolute
   display: flex
   justify-content: center
   align-items: center
-  margin-top: 14px
+  bottom: 5px
+  width: 100%
   transition: $cellTransition
   .c-indicator
     width: 5px

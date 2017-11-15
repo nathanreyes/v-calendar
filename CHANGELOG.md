@@ -1,3 +1,6 @@
+## 0.2.1
+* Fix layout bug with navigation panel in Firefox
+
 ## 0.2.0
 * Simplify header title layout
 * Add navigation panel popover with indicators
