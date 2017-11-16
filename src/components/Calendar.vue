@@ -230,7 +230,7 @@ export default {
     min-width: $paneMinWidth * 2
     width: $paneWidth * 2
   &.is-expanded
-    display: flex
+    width: 100%
 
 .c-pane-divider
   width: 1px
