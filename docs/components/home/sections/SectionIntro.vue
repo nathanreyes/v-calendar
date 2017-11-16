@@ -26,8 +26,13 @@
             </b-tab-item>
             <!--Intro Options-->
             <b-tab-item label='Options' icon='gear'>
-              <b-field>
-                <b-switch v-model='isDoublePaned'>Double Paned</b-switch>
+              <b-field grouped>
+                <b-field>
+                  <b-switch v-model='isDoublePaned'>Double Paned</b-switch>
+                </b-field>
+                <b-field>
+                  <b-switch v-model='isExpanded'>Is Expanded</b-switch>
+                </b-field>
               </b-field>
               <b-field label='Title Position'>
                 <p class='control'>
@@ -63,6 +68,7 @@
           <div class='example-container'>
             <ex-intro
               :is-double-paned='isDoublePaned'
+              :is-expanded='isExpanded'
               :title-position='titlePosition'
               :title-transition='titleTransition'
               :weeks-transition='weeksTransition'>
@@ -86,6 +92,7 @@ export default {
     return {
       exIntroCode: ExIntroCode,
       isDoublePaned: true,
+      isExpanded: false,
       titlePosition: 'center',
       titleTransition: 'slide-h',
       weeksTransition: 'slide-h',

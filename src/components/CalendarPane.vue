@@ -1,6 +1,6 @@
 <template>
   <div
-    :class='["c-pane", { "is-full-width": position === 0 }]'>
+    :class='["c-pane", { "is-single": position === 0 }]'>
     <!--Header-->
     <div class='c-header-wrapper'>
       <!--Header vertical divider-->
@@ -462,7 +462,7 @@ export default {
   flex-direction: column
   align-items: stretch
   overflow: hidden
-  &.is-full-width
+  &.is-single
     width: 100%
 
 .c-header-wrapper
