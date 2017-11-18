@@ -6,7 +6,7 @@
 
 <script>
 import TableProps from '../../app/tables/TableProps';
-import props from '../../api/props';
+import props from '../../home/util/calendarProps';
 
 export default {
   components: {

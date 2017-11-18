@@ -22,40 +22,54 @@
           </b-tab-item>
           <!--DatePicker Example Options-->
           <b-tab-item label='Options' icon='gear'>
-            <b-field label='Select Mode'>
-              <p class='control'>
+            <b-field grouped>
+              <b-field>
+                <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
+              </b-field>
+              <b-field>
+                <b-switch v-model='isInline'>Inline</b-switch>
+              </b-field>
+            </b-field>
+            <b-field label='Mode'>
+              <p class='control-offset'>
                 <b-radio v-model='mode' native-value='single'>Single</b-radio>
                 <b-radio v-model='mode' native-value='multiple'>Multiple</b-radio>
                 <b-radio v-model='mode' native-value='range'>Range</b-radio>
               </p>
             </b-field>
-            <b-field>
-              <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
-            </b-field>
-            <b-field>
-              <b-switch v-model='isInline'>Inline</b-switch>
-            </b-field>
             <div v-if='!isInline'>
-              <b-field label='Popover Visibility'>
-                <b-select v-model='popoverVisibility'>
-                  <option v-for='visibility in popoverVisibilities' :value='visibility' :key='visibility'>
-                    {{ visibility }}
-                  </option>
-                </b-select>
+              <b-field label='Visibility'>
+                <p class='control-offset'>
+                  <b-radio
+                    v-for='v in popoverVisibilities'
+                    :key='v'
+                    :native-value='v'
+                    v-model='popoverVisibility'>
+                    {{ v }}
+                  </b-radio>
+                </p>
               </b-field>
-              <b-field label='Popover Direction'>
-                <b-select v-model='popoverDirection'>
-                  <option v-for='direction in popoverDirections' :value='direction' :key='direction'>
-                    {{ direction }}
-                  </option>
-                </b-select>
+              <b-field label='Direction'>
+                <p class='control-offset'>
+                  <b-radio
+                    v-for='d in popoverDirections'
+                    :key='d'
+                    :native-value='d'
+                    v-model='popoverDirection'>
+                    {{ d }}
+                  </b-radio>
+                </p>
               </b-field>
-              <b-field label='Popover Alignment'>
-                <b-select v-model='popoverAlignment'>
-                  <option v-for='alignment in popoverAlignments' :value='alignment' :key='alignment'>
-                    {{ alignment }}
-                  </option>
-                </b-select>
+              <b-field label='Alignment'>
+                <p class='control-offset'>
+                  <b-radio
+                    v-for='a in popoverAlignments'
+                    :key='a'
+                    :native-value='a'
+                    v-model='popoverAlignment'>
+                    {{ a }}
+                  </b-radio>
+                </p>
               </b-field>
               <b-field label='Select Color' message='Accepts color names, hex and rgb values'>
                 <b-input v-model='selectColor'></b-input>
@@ -137,8 +151,6 @@ export default {
 </script>
 
 <style lang='sass' scoped>
-  .color
-    width: 40px
-    height: 20px
-    background-color: red
+  .control-offset
+    margin-left: 20px
 </style>

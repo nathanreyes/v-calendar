@@ -53,9 +53,9 @@ export default {
     direction: { type: String, default: 'bottom' },
     align: { type: String, default: 'left' },
     visibility: { type: String, default: VISIBILITIES.HOVER },
-    contentStyle: { type: Object, default: () => ({}) },
     enterDelay: { type: Number, default: 200 }, // ms
     leaveDelay: { type: Number, default: 300 }, // ms
+    contentStyle: Object,
   },
   data() {
     return {
@@ -81,7 +81,7 @@ export default {
     maskStyle_() {
       const cs = this.contentStyle;
       const style = {};
-      if (cs.padding) style.padding = cs.padding;
+      if (cs && cs.padding) style.padding = cs.padding;
       return style;
     },
   },
