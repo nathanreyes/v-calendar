@@ -1,3 +1,7 @@
+## 0.2.2
+* Dismiss popovers on navigation month select
+* Dismiss popovers on date selection
+
 ## 0.2.1
 * Fix layout bug with navigation panel in Firefox
 

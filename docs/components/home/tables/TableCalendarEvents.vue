@@ -44,16 +44,6 @@ export default {
         description: 'Mouse cursor left a calendar day cell.',
         parameters: '<code>dayInfo: Object</code>',
       },
-      {
-        name: '<code>input</code>',
-        description: '<span class="tag is-warning">Date Picker</span>New date was selected.',
-        parameters: '<code>value: Date, Array[Date], Object</code>',
-      },
-      {
-        name: '<code>drag</code>',
-        description: '<span class="tag is-warning">Date Picker</span>Dragged selection was updated. Only valid for "range" selection mode.',
-        parameters: '<code>range: Object</code>',
-      },
     ];
     return {
       props,

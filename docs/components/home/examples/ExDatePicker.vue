@@ -9,7 +9,6 @@
     :popover-visibility='popoverVisibility'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
-    indicators-offset='4px'
     inputClass='input'
     v-model='selectedValue'
     is-double-paned

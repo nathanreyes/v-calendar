@@ -5,7 +5,7 @@
 
 <script>
 import TableProps from '../../app/tables/TableProps';
-import props from '../props';
+import props from '../util/popoverProps';
 
 export default {
   components: {
