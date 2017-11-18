@@ -9,6 +9,7 @@
     :attributes='attributes_'
     :date-validator='dateValidator'
     @drag='dragValue = $event'
+    @input='updateValue'
     v-bind='$attrs'
     v-on='$listeners'
     v-if='isInline'>
@@ -19,6 +20,7 @@
     :visibility='popoverVisibility'
     :is-expanded='isExpanded'
     :content-style='popoverContentStyle'
+    :force-hidden.sync='popoverForceHidden'
     v-else>
     <slot
       :input-value='valueText'
@@ -42,6 +44,7 @@
       :attributes='attributes_'
       :date-validator='dateValidator'
       @drag='dragValue = $event'
+      @input='updateValue'
       v-bind='$attrs'
       v-on='$listeners'>
     </component>
@@ -75,6 +78,7 @@ export default {
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
     popoverVisibility: { type: String, default: 'hover' },
+    popoverKeepOpenOnInput: Boolean,
     inputClass: String,
     inputStyle: Object,
     inputPlaceholder: String,
@@ -99,6 +103,7 @@ export default {
     return {
       dragValue: null,
       valueText: '',
+      popoverForceHidden: false,
     };
   },
   created() {
@@ -263,6 +268,7 @@ export default {
       } else {
         this.$emit('input', value);
       }
+      if (!this.popoverKeepOpenOnInput) this.popoverForceHidden = true;
     },
     parseValue(valueText) {
       let value = null;

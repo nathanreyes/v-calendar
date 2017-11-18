@@ -31,7 +31,8 @@
               visibility='hover'
               :align='titlePosition'
               :content-style='{ padding: "0" }'
-              :enter-delay='300'>
+              :force-hidden.sync='navForceHidden'
+              :force-hidden-delay='140'>
               <!--Title content-->
               <transition-group
                 tag='div'
@@ -53,12 +54,11 @@
               <!--Navigation pane-->
               <calendar-nav
                 slot='popover-content'
-                :mode.sync='navMode'
-                :monthLabels='monthLabels'
+                :month-labels='monthLabels'
                 :value='page_'
                 :validator='canMove'
                 :attributes='attributes'
-                @input='move($event)'>
+                @input='navPageSelected($event)'>
               </calendar-nav>
             </popover>
           </div>
@@ -202,8 +202,8 @@ export default {
       pages: [],
       page_: null,
       transitionDirection: '',
-      navMode: 'month',
       touchState: {},
+      navForceHidden: false,
     };
   },
   computed: {
@@ -276,6 +276,10 @@ export default {
     this.preloadPages();
   },
   methods: {
+    navPageSelected(page) {
+      this.navForceHidden = true;
+      this.move(page);
+    },
     monthIsDisabled(month) {
       if (this.minPage && this.yearNumber === this.minPage.year) return month < this.minPage.month;
       if (this.maxPage && this.yearNumber === this.maxPage.year) return month > this.maxPage.month;

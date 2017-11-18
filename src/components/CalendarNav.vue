@@ -5,7 +5,7 @@
   <div
     key='months'
     class='c-nav-months-container'
-    v-if='mode === "month"'>
+    v-if='mode_ === "month"'>
     <!--Months header-->
     <div class='c-header'>
       <!--Previous year button-->
@@ -14,7 +14,7 @@
         :class='{ "c-disabled": !canMovePrevYear }'
         @click='yearIndex--'>
       </span>
-      <!--Current year button-->
+      <!--Mode switch button-->
       <span
         class='c-title'
         @click='selectMode("year")'>
@@ -67,7 +67,7 @@
   <div
     key='years'
     class='c-nav-years-container'
-    v-if='mode === "year"'>
+    v-if='mode_ === "year"'>
     <div class='c-header'>
       <!--Previous year group button-->
       <span
@@ -75,7 +75,7 @@
         :class='{ "c-disabled": !canMovePrevYearGroup }'
         @click='yearGroupIndex--'>
       </span>
-      <!--Current year group button-->
+      <!--Mode switch button-->
       <span
         class='c-title'
         @click='selectMode("month")'>
@@ -112,7 +112,6 @@
 <script>
 import DateInfo from '../utils/dateInfo';
 import {
-  todayComps,
   getMonthComps,
   getFirstArrayItem,
   getLastArrayItem } from '../utils/helpers';
@@ -129,6 +128,7 @@ export default {
   },
   data() {
     return {
+      mode_: '',
       yearIndex: 0,
       yearGroupIndex: 0,
       attributesMap: {},
@@ -191,6 +191,9 @@ export default {
     },
   },
   watch: {
+    mode(val) {
+      this.mode_ = val;
+    },
     year() {
       this.yearIndex = this.year;
     },
@@ -205,6 +208,7 @@ export default {
     },
   },
   created() {
+    this.mode_ = this.mode;
     this.yearIndex = this.year;
   },
   methods: {
@@ -268,36 +272,19 @@ export default {
         },
       };
     },
-    selectMode(mode) {
-      this.$emit('update:mode', mode);
-    },
     getYearGroupIndex(year) {
       return Math.floor(year / _yearGroupCount);
     },
     monthClick(month) {
-      this.selectValue(month, this.yearIndex);
+      this.$emit('input', { month, year: this.yearIndex });
     },
     yearClick(year) {
-      this.selectValue(this.month, year);
+      this.yearIndex = year;
       this.selectMode('month');
     },
-    selectValue(month, year) {
-      this.$emit('input', { month, year });
-    },
-    selectCurrentYearIndex() {
-      if (this.yearIndex !== todayComps.year) {
-        this.yearIndex = todayComps.year;
-      } else {
-        this.selectValue(todayComps.month, todayComps.year);
-      }
-    },
-    selectCurrentYearGroupIndex() {
-      const currYearGroupIndex = this.getYearGroupIndex(todayComps.year);
-      if (this.yearGroupIndex !== currYearGroupIndex) {
-        this.yearGroupIndex = currYearGroupIndex;
-      } else {
-        this.selectValue(this.month, todayComps.year);
-      }
+    selectMode(mode) {
+      this.mode_ = mode;
+      this.$emit('update:mode', mode);
     },
     createRows(items, columnCount) {
       const rows = [];
@@ -355,10 +342,6 @@ $cellTransition: all 0.1s ease-in-out
 
 .c-table-cell
   position: relative
-  // display: flex
-  // flex-direction: column
-  // justify-content: center
-  // align-items: center
   user-select: none
   cursor: pointer
   width: 100%

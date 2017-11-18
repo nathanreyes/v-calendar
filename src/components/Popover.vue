@@ -39,13 +39,7 @@
 import Vue from 'vue';
 import { composedPath } from '../utils/helpers';
 import { maxTapTolerance, maxTapDuration } from '../utils/defaults';
-
-const VISIBILITIES = {
-  HOVER: 'hover',
-  FOCUS: 'focus',
-  HIDDEN: 'hidden',
-  VISIBLE: 'visible',
-};
+import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
 
 export default {
   props: {
@@ -56,6 +50,8 @@ export default {
     contentStyle: { type: Object, default: () => ({}) },
     enterDelay: { type: Number, default: 200 }, // ms
     leaveDelay: { type: Number, default: 300 }, // ms
+    forceHidden: Boolean,
+    forceHiddenDelay: { type: Number, default: -1 },
   },
   data() {
     return {
@@ -65,11 +61,14 @@ export default {
     };
   },
   computed: {
+    leaveDelay_() {
+      return this.forceHidden && this.forceHiddenDelay >= 0 ? this.forceHiddenDelay : this.leaveDelay;
+    },
     visibilityIsManaged() {
-      return this.visibility === VISIBILITIES.HOVER || this.visibility === VISIBILITIES.FOCUS;
+      return VISIBILITIES.isManaged(this.visibility);
     },
     visibleBeforeDelay() {
-      if (this.visibilityIsManaged) return this.visibleManaged;
+      if (this.visibilityIsManaged) return this.forceHidden ? false : this.visibleManaged;
       return this.visibility === VISIBILITIES.VISIBLE;
     },
     contentStyle_() {
@@ -86,21 +85,35 @@ export default {
     },
   },
   watch: {
+    forceHidden() {
+      // Reset managed visibile state
+      this.visibleManaged = false;
+    },
+    visibility() {
+      // Reset managed visibile state
+      this.visibleManaged = false;
+    },
     visibleBeforeDelay(val) {
       // Ignore if already waiting for a visibility change
       if (val === this.visibleAfterDelay) return;
       // Delay visibility change?
-      if ((val && this.enterDelay) || (!val && this.leaveDelay)) {
+      if ((val && this.enterDelay) || (!val && this.leaveDelay_)) {
         setTimeout(() => {
           if (val === this.visibleBeforeDelay) this.visibleAfterDelay = val;
-        }, val ? this.enterDelay : this.leaveDelay);
+        }, val ? this.enterDelay : this.leaveDelay_);
       } else {
         this.visibleAfterDelay = val;
       }
     },
+    visibleAfterDelay(val) {
+      if (!val && this.forceHidden) {
+        setTimeout(() => {
+          this.$emit('update:forceHidden', false);
+        }, 300);
+      }
+    },
   },
   created() {
-    this.VISIBILITIES = VISIBILITIES;
     this.visibleAfterDelay = this.visibleBeforeDelay;
     window.addEventListener('touchstart', this.touchStart);
     window.addEventListener('touchend', this.touchEnd);
