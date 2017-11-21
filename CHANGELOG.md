@@ -1,4 +1,4 @@
-## 0.2.3
+## 0.3.0
 * Add support for accepting various defaults when calling Vue.use(VCalendar, { ...defaults... })
 * Set default calendar pages to best show date picker values
 * Fix issue where inline date picker would not respond to is-expanded. Fixes #8.
