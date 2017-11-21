@@ -117,7 +117,7 @@ export const getLastArrayItem = (array, fallbackValue) => {
   return array.length ? array[array.length - 1] : fallbackValue;
 };
 
-export const composedPath = (el) => {
+export const ancestorElements = (el) => {
   const path = [];
   while (el) {
     path.push(el);

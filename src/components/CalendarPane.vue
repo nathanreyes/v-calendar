@@ -29,6 +29,7 @@
             <popover
               class='c-title-popover'
               visibility='hover'
+              direction='bottom'
               :align='titlePosition'
               :content-style='{ padding: "0" }'
               :force-hidden.sync='navForceHidden'
@@ -154,6 +155,7 @@ import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
 import Popover from './Popover';
+import defaults from '../utils/defaults';
 
 import {
   todayComps,
@@ -165,16 +167,6 @@ import {
   pageIsBeforePage,
   pageIsAfterPage,
 } from '../utils/helpers';
-import {
-  monthLabels,
-  weekdayLabels,
-  titlePosition,
-  titleTransition,
-  weeksTransition,
-  maxSwipeTimeMs,
-  minHorizontalSwipeDistance,
-  maxVerticalSwipeDistance,
-} from '../utils/defaults';
 
 export default {
   components: {
@@ -187,13 +179,13 @@ export default {
     page: { type: Object, default: () => todayComps },
     minPage: Object,
     maxPage: Object,
-    monthLabels: { type: Array, default: () => monthLabels },
-    weekdayLabels: { type: Array, default: () => weekdayLabels },
-    firstDayOfWeek: { type: Number, default: 1 },
+    monthLabels: { type: Array, default: () => defaults.monthLabels },
+    weekdayLabels: { type: Array, default: () => defaults.weekdayLabels },
+    firstDayOfWeek: { type: Number, default: () => defaults.firstDayOfWeek },
     styles: Object,
-    titlePosition: { type: String, default: titlePosition },
-    titleTransition: { type: String, default: titleTransition },
-    weeksTransition: { type: String, default: weeksTransition },
+    titlePosition: { type: String, default: () => defaults.titlePosition },
+    titleTransition: { type: String, default: () => defaults.titleTransition },
+    weeksTransition: { type: String, default: () => defaults.weeksTransition },
     attributes: Array,
   },
   data() {
@@ -325,8 +317,8 @@ export default {
       const deltaX = t.screenX - this.touchState.startX;
       const deltaY = t.screenY - this.touchState.startY;
       const deltaTime = new Date().getTime() - this.touchState.startTime;
-      if (deltaTime < maxSwipeTimeMs) {
-        if (Math.abs(deltaX) >= minHorizontalSwipeDistance && Math.abs(deltaY) <= maxVerticalSwipeDistance) {
+      if (deltaTime < defaults.maxSwipeTimeMs) {
+        if (Math.abs(deltaX) >= defaults.minHorizontalSwipeDistance && Math.abs(deltaY) <= defaults.maxVerticalSwipeDistance) {
           // Swipe left
           if (deltaX < 0) {
             // Move to previous month

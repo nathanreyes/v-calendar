@@ -69,6 +69,6 @@ export default class DateInfo {
       return other.isDate ? this.dateTime === other.dateTime : other.containsDate(this.date);
     }
     if (other.isDate) return this.containsDate(other.date);
-    return this.start < other.end && this.end > other.start;
+    return this.start <= other.end && this.end >= other.start;
   }
 }

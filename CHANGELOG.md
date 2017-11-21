@@ -1,6 +1,13 @@
+## 0.2.3
+* Add support for accepting various defaults when calling Vue.use(VCalendar, { ...defaults... })
+* Set default calendar pages to best show date picker values
+* Fix issue where inline date picker would not respond to is-expanded. Fixes #8.
+* Dismiss popovers on navigation month select and date selection. Fixes #9.
+* Fix issue where popover content not properly layered. Fixes #10.
+* Add locale detection and support user-supplied locales for month/weekday labels. Fixes #11.
+
 ## 0.2.2
-* Dismiss popovers on navigation month select
-* Dismiss popovers on date selection
+* Fix bug where is-expanded prop not working for calendar component
 
 ## 0.2.1
 * Fix layout bug with navigation panel in Firefox

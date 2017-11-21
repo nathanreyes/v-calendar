@@ -30,7 +30,7 @@
           <!--Popover Example Options-->
           <b-tab-item label='Options' icon='gear'>
             <b-field label='Visibility'>
-              <p class='control'>
+              <p class='control-offset'>
                 <b-radio
                   v-for='v in visibilities'
                   :key='v'
@@ -41,7 +41,7 @@
               </p>
             </b-field>
             <b-field label='Direction'>
-              <p class='control'>
+              <p class='control-offset'>
                 <b-radio
                   v-for='d in directions'
                   :key='d'
@@ -52,7 +52,7 @@
               </p>
             </b-field>
             <b-field label='Alignment'>
-              <p class='control'>
+              <p class='control-offset'>
                 <b-radio
                   v-for='a in alignments'
                   :key='a'
@@ -62,12 +62,18 @@
                 </b-radio>
               </p>
             </b-field>
+            <b-field label='Content Offset'>
+              <b-input
+                v-model='contentOffset'>
+              </b-input>
+            </b-field>
           </b-tab-item>
         </b-tabs>
       </div>
       <div class='column'>
         <div class='example-container'>
           <ex-popover
+            :content-offset='contentOffset'
             :visibility='visibility'
             :direction='direction'
             :align='alignment'>
@@ -91,6 +97,7 @@ export default {
     return {
       exPopoverCode: ExPopoverCode,
       isInline: false,
+      contentOffset: '10px',
       visibility: 'visible',
       visibilities: ['hover', 'focus', 'visible', 'hidden'],
       direction: 'bottom',
@@ -127,6 +134,6 @@ export default {
 </script>
 
 <style lang='sass' scoped>
-  .control
+  .control-offset
     margin-left: 20px
 </style>

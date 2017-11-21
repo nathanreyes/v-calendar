@@ -2,6 +2,8 @@
   <component
     :is='datePicker'
     :value='value'
+    :from-page.sync='fromPage_'
+    :to-page.sync='toPage_'
     :theme-styles='themeStyles_'
     :drag-attribute='dragAttribute_'
     :select-attribute='selectAttribute_'
@@ -18,9 +20,11 @@
     :direction='popoverDirection'
     :align='popoverAlign'
     :visibility='popoverVisibility'
-    :is-expanded='isExpanded'
+    :is-expanded='popoverExpanded'
     :content-style='popoverContentStyle'
     :force-hidden.sync='popoverForceHidden'
+    :force-hidden-delay='400'
+    @didDisappear='popoverDidDisappear'
     v-else>
     <slot
       :input-value='valueText'
@@ -37,6 +41,8 @@
       slot='popover-content'
       :is='datePicker'
       :value='value'
+      :from-page.sync='fromPage_'
+      :to-page.sync='toPage_'
       :theme-styles='themeStyles_'
       :drag-attribute='dragAttribute_'
       :select-attribute='selectAttribute_'
@@ -44,7 +50,7 @@
       :attributes='attributes_'
       :date-validator='dateValidator'
       @drag='dragValue = $event'
-      @input='updateValue'
+      @input='popoverInput'
       v-bind='$attrs'
       v-on='$listeners'>
     </component>
@@ -58,10 +64,8 @@ import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
 import DateInfo from '../utils/dateInfo';
-import { blendColors } from '../utils/helpers';
-
-const _defaultSelectColor = '#66b3cc';
-const _defaultDragColor = '#9fcfdf';
+import defaults from '../utils/defaults';
+import { getDateComps, getNextPage, getMaxPage, blendColors } from '../utils/helpers';
 
 export default {
   components: {
@@ -74,25 +78,21 @@ export default {
     mode: { type: String, default: 'single' },
     value: null,
     isInline: Boolean,
-    isExpanded: Boolean,
-    popoverDirection: { type: String, default: 'bottom' },
-    popoverAlign: { type: String, default: 'left' },
-    popoverVisibility: { type: String, default: 'hover' },
-    popoverKeepOpenOnInput: Boolean,
-    inputClass: String,
-    inputStyle: Object,
+    fromPage: Object,
+    toPage: Object,
+    popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
+    popoverDirection: { type: String, default: () => defaults.popoverDirection },
+    popoverAlign: { type: String, default: () => defaults.popoverAlign },
+    popoverVisibility: { type: String, default: () => defaults.popoverVisibility },
+    popoverKeepVisibleOnInput: Boolean,
+    inputClass: { type: String, default: () => defaults.datePickerInputClass },
+    inputStyle: { type: Object, default: () => defaults.datePickerInputStyle },
     inputPlaceholder: String,
-    dateFormatter: {
-      type: Function,
-      default: d => d.toLocaleDateString(),
-    },
-    dateParser: {
-      type: Function,
-      default: s => new Date(Date.parse(s)),
-    },
+    dateFormatter: { type: Function, default: defaults.dateFormatter },
+    dateParser: { type: Function, default: defaults.dateParser },
     themeStyles: { type: Object, default: () => ({}) },
-    selectColor: { type: String, default: _defaultSelectColor },
-    dragColor: { type: String, default: _defaultDragColor },
+    selectColor: { type: String, default: () => defaults.datePickerSelectColor },
+    dragColor: { type: String, default: () => defaults.datePickerDragColor },
     selectAttribute: Object,
     dragAttribute: Object,
     disabledDates: Array,
@@ -101,13 +101,12 @@ export default {
   },
   data() {
     return {
+      fromPage_: null,
+      toPage_: null,
       dragValue: null,
       valueText: '',
       popoverForceHidden: false,
     };
-  },
-  created() {
-    this.valueText = this.suggestedInputText;
   },
   computed: {
     datePicker() {
@@ -249,6 +248,18 @@ export default {
     },
   },
   watch: {
+    fromPage(val) {
+      this.fromPage_ = val;
+    },
+    toPage(val) {
+      this.toPage_ = val;
+    },
+    fromPage_(val) {
+      this.$emit('update:fromPage', val);
+    },
+    toPage_(val) {
+      this.$emit('update:toPage', val);
+    },
     dragValue(val) {
       // Forward drag event
       this.$emit('drag', val);
@@ -261,14 +272,31 @@ export default {
       this.valueText = val;
     },
   },
+  created() {
+    this.assignPageRange();
+    this.valueText = this.suggestedInputText;
+  },
   methods: {
+    popoverDidDisappear() {
+      this.assignPageRange();
+    },
+    assignPageRange() {
+      if (this.value) {
+        this.fromPage_ = this.value.start ? getDateComps(this.value.start) : getDateComps(this.value);
+        if (this.value.end) this.toPage_ = getMaxPage(getDateComps(this.value.end), getNextPage(this.fromPage_));
+      }
+    },
+    popoverInput(e) {
+      this.updateValue(e);
+      // if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
+    },
     updateValue(value = this.valueText) {
       if (typeof value === 'string') {
         this.$emit('input', this.parseValue(value));
       } else {
         this.$emit('input', value);
       }
-      if (!this.popoverKeepOpenOnInput) this.popoverForceHidden = true;
+      if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
     },
     parseValue(valueText) {
       let value = null;
@@ -282,14 +310,14 @@ export default {
           .filter(d => !isNaN(d.getTime()));
       } else if (this.mode === 'range') {
         const dates = valueText.split('-').map(s => s.trim());
-        if (!dates.length) {
+        if (dates.length < 2) {
           value = null;
         } else {
           let start = this.dateParser(dates[0]);
           if (isNaN(start.getTime())) start = null;
           let end = dates.length > 1 ? this.dateParser(dates[1]) : null;
           if (end && isNaN(end)) end = null;
-          value = { start, end };
+          value = start && end ? { start, end } : null;
         }
       }
       return value;

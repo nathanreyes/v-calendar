@@ -4,7 +4,13 @@
     <h3 class='title has-text-primary is-spaced'>API</h3>
     <b-tabs>
       <b-tab-item label='Props'>
-        <table-props :props='props'></table-props>
+        <table-popover-props></table-popover-props>
+      </b-tab-item>
+      <b-tab-item label='Events'>
+        <table-popover-events></table-popover-events>
+      </b-tab-item>
+      <b-tab-item label='Slots'>
+        <table-popover-slots></table-popover-slots>
       </b-tab-item>
     </b-tabs>
   </div>
@@ -12,17 +18,15 @@
 </template>
 
 <script>
-import TableProps from '../../app/tables/TableProps';
-import props from '../util/popoverProps';
+import TablePopoverProps from '../tables/TablePopoverProps';
+import TablePopoverEvents from '../tables/TablePopoverEvents';
+import TablePopoverSlots from '../tables/TablePopoverSlots';
 
 export default {
   components: {
-    TableProps,
-  },
-  data() {
-    return {
-      props,
-    };
+    TablePopoverProps,
+    TablePopoverEvents,
+    TablePopoverSlots,
   },
 };
 </script>

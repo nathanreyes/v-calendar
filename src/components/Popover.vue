@@ -7,7 +7,13 @@
     @focusout='focusout'
     @mouseleave='mouseleave'
     @mouseover='mouseover'>
-    <transition name='slide-fade' tag='div'>
+    <transition
+      name='slide-fade'
+      tag='div'
+      @before-enter='beforeContentEnter'
+      @after-enter='afterContentEnter'
+      @before-leave='beforeContentLeave'
+      @after-leave='afterContentLeave'>
       <div
         ref='popoverOrigin'
         :class='["popover-origin", "direction-" + direction, "align-" + align]'
@@ -37,42 +43,35 @@
 
 <script>
 import Vue from 'vue';
-import { composedPath } from '../utils/helpers';
-import { maxTapTolerance, maxTapDuration } from '../utils/defaults';
+import defaults from '../utils/defaults';
+import { ancestorElements } from '../utils/helpers';
 import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
 
 export default {
   props: {
-    isExpanded: Boolean,
-    direction: { type: String, default: 'bottom' },
-    align: { type: String, default: 'left' },
-    visibility: { type: String, default: VISIBILITIES.HOVER },
-    enterDelay: { type: Number, default: 200 }, // ms
-    leaveDelay: { type: Number, default: 300 }, // ms
+    isExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
+    direction: { type: String, default: () => defaults.popoverDirection },
+    align: { type: String, default: () => defaults.popoverAlign },
+    visibility: { type: String, default: () => defaults.popoverVisibility },
+    visibleDelay: { type: Number, default: () => defaults.popoverVisibleDelay }, // ms
+    hiddenDelay: { type: Number, default: () => defaults.popoverHiddenDelay }, // ms
     forceHidden: Boolean,
     forceHiddenDelay: { type: Number, default: -1 },
     contentStyle: Object,
+    contentOffset: { type: String, default: () => defaults.popoverContentOffset },
   },
   data() {
     return {
       visibleManaged: false,
       visibleAfterDelay: false,
       touchState: null,
+      contentTransitioning: false,
     };
   },
   computed: {
-    leaveDelay_() {
-      return this.forceHidden && this.forceHiddenDelay >= 0 ? this.forceHiddenDelay : this.leaveDelay;
-    },
-    visibilityIsManaged() {
-      return VISIBILITIES.isManaged(this.visibility);
-    },
-    visibleBeforeDelay() {
-      if (this.visibilityIsManaged) return this.forceHidden ? false : this.visibleManaged;
-      return this.visibility === VISIBILITIES.VISIBLE;
-    },
     contentStyle_() {
       const style = { ...this.contentStyle };
+      style[this.contentOffsetMargin] = this.contentOffset;
       delete style.zIndex;
       delete style.padding;
       return style;
@@ -83,34 +82,52 @@ export default {
       if (cs && cs.padding) style.padding = cs.padding;
       return style;
     },
+    contentOffsetMargin() {
+      switch (this.direction) {
+        case 'bottom': return 'marginTop';
+        case 'top': return 'marginBottom';
+        case 'left': return 'marginRight';
+        case 'right': return 'marginLeft';
+        default: return '';
+      }
+    },
+    visibilityIsManaged() {
+      return VISIBILITIES.isManaged(this.visibility);
+    },
+    hiddenDelay_() {
+      return this.forceHidden && this.forceHiddenDelay >= 0 ? this.forceHiddenDelay : this.hiddenDelay;
+    },
+    visibleBeforeDelay() {
+      return this.visibilityIsManaged ? this.visibleManaged : this.visibility === VISIBILITIES.VISIBLE;
+    },
   },
   watch: {
     forceHidden() {
-      // Reset managed visibile state
-      this.visibleManaged = false;
+      // Reset managed visible state
+      if (this.visibleManaged) this.visibleManaged = false;
+      else this.$emit('update:forceHidden', false);
     },
     visibility() {
-      // Reset managed visibile state
+      // Reset managed visible state
       this.visibleManaged = false;
     },
     visibleBeforeDelay(val) {
       // Ignore if already waiting for a visibility change
       if (val === this.visibleAfterDelay) return;
       // Delay visibility change?
-      if ((val && this.enterDelay) || (!val && this.leaveDelay_)) {
+      if ((val && this.visibleDelay) || (!val && this.hiddenDelay_)) {
         setTimeout(() => {
-          if (val === this.visibleBeforeDelay) this.visibleAfterDelay = val;
-        }, val ? this.enterDelay : this.leaveDelay_);
+          // Update visible state if it remained constant after delay
+          if (val === this.visibleBeforeDelay || this.forceHidden) this.visibleAfterDelay = val;
+        }, val ? this.visibleDelay : this.hiddenDelay_);
       } else {
+        // Update visible state immediately
         this.visibleAfterDelay = val;
       }
     },
     visibleAfterDelay(val) {
-      if (!val && this.forceHidden) {
-        setTimeout(() => {
-          this.$emit('update:forceHidden', false);
-        }, 300);
-      }
+      // Reset forceHidden state if needed
+      if (!val && this.forceHidden) this.$emit('update:forceHidden', false);
     },
   },
   created() {
@@ -143,9 +160,9 @@ export default {
       const state = this.touchState;
       state.x = t.screenX;
       state.y = t.screenY;
-      state.tapDetected = new Date() - state.startedOn <= maxTapDuration &&
-        Math.abs(state.x - state.startX) <= maxTapTolerance &&
-        Math.abs(state.y - state.startY) <= maxTapTolerance;
+      state.tapDetected = new Date() - state.startedOn <= defaults.maxTapDuration &&
+        Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
+        Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
       if (state.tapDetected) this.visibleManaged = false;
       state.started = false;
     },
@@ -156,7 +173,7 @@ export default {
     focusout(e) {
       if (this.visibility === VISIBILITIES.FOCUS) {
         // Trap focus if element losing focus is nested within the popover content
-        if (e.target !== this.$refs.popover && composedPath(e.target).includes(this.$refs.popoverContent)) {
+        if (e.target !== this.$refs.popover && ancestorElements(e.target).includes(this.$refs.popoverContent)) {
           Vue.nextTick(() => this.$refs.popover.focus());
         }
         this.visibleManaged = false;
@@ -164,11 +181,34 @@ export default {
       this.$emit('focusout', e);
     },
     mouseleave() {
-      if (this.visibility === VISIBILITIES.HOVER) this.visibleManaged = false;
+      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden) {
+        this.visibleManaged = false;
+      }
     },
     mouseover(e) {
-      // Show if moused over, but ignore the popover origin because it is transformed
-      if (this.visibility === VISIBILITIES.HOVER) this.visibleManaged = e.target !== this.$refs.popoverOrigin;
+      const ignoreHover = e.target === this.$refs.popoverOrigin;
+      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !this.contentTransitioning) {
+        // Show if moused over, but ignore the popover origin because it is transformed
+        this.visibleManaged = !ignoreHover;
+      }
+    },
+    beforeContentEnter() {
+      this.contentTransitioning = true;
+      this.$emit('willAppear');
+    },
+    afterContentEnter() {
+      this.contentTransitioning = false;
+      this.$emit('didAppear');
+    },
+    beforeContentLeave() {
+      this.contentTransitioning = true;
+      this.$emit('willDisappear');
+    },
+    afterContentLeave() {
+      this.contentTransitioning = false;
+      this.$emit('didDisappear');
+      // Reset forceHidden state if needed
+      if (this.forceHidden) this.$emit('update:forceHidden', false);
     },
   },
 };
@@ -181,7 +221,6 @@ export default {
 .popover-container
   position: relative
   display: inline-block
-  z-index: 1
   outline: none
   &.expanded
     display: block
@@ -189,7 +228,7 @@ export default {
 .popover-origin
   position: absolute
   transform-origin: top center
-  z-index: -1
+  z-index: 10
   &.direction-top
     bottom: 100%
   &.direction-bottom

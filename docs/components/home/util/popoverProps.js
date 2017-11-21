@@ -19,7 +19,17 @@ export default [
     default: '<code>"left"</code>',
   },
   {
-    name: '<code>visibility</code>',
+    name: '<code>content-style: Object</code>',
+    description: 'Style to apply to popover content wrapper.',
+    default: '<code>undefined</code>',
+  },
+  {
+    name: '<code>content-offset: String</code>',
+    description: 'Offset distance of the popover content.',
+    default: '<code>"10px"</code>',
+  },
+  {
+    name: '<code>visibility: String</code>',
     description: `
       Visibility state of the popover content.
       <br />Use <code>"hover"</code> for automatic control when popover trigger is hovered on non-touch devices or tapped on touch devices.
@@ -29,18 +39,37 @@ export default [
     default: '<code>"hover"</code>',
   },
   {
-    name: '<code>enter-delay</code>',
+    name: '<code>visible-delay: Number</code>',
     description: 'Time in milliseconds to wait before showing popover when directed.',
     default: '<code>200</code>',
   },
   {
-    name: '<code>leave-delay</code>',
+    name: '<code>hidden-delay: Number</code>',
     description: 'Time in milliseconds to wait before hiding popover when directed.',
     default: '<code>300</code>',
   },
   {
-    name: '<code>content-style</code>',
-    description: 'Style to apply to popover content wrapper.',
-    default: '<code>undefined</code>',
+    name: '<code>force-hidden: Boolean</code>',
+    description: `
+      If popover visibility is managed (<code>"hover"</code> or <code>"focus"</code>), set this prop to hide the popover until it is retriggered by the user.
+      Usually this would happen when the user has performed an action within the popover and it is no longer needed.
+      <br /><br />
+      <article class='message is-warning'>
+        <div class='message-header'>Warning</div>
+        <div class='message-body'>
+          The sync attribute (<code>force-hidden.sync</code>) is required for this prop in order to properly sync the visibility state.
+          Be sure to bind this prop to a data state variable in the parent component.
+        </div>
+      </article>
+    `,
+    default: '<code>false</code>',
+  },
+  {
+    name: '<code>force-hidden-delay: Number</code>',
+    description: `
+      If provided, this delay will override <code>hidden-delay</code> when the popover is forcefully hidden.
+      Usually this value will be shorter than <code>hidden-delay</code>, but this is optional.
+    `,
+    default: '<code>-1</code>',
   },
 ];

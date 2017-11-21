@@ -30,6 +30,11 @@ export default [
     default: '<code>"hover"</code>',
   },
   {
+    name: '<code>popover-keep-visible-on-input</code>',
+    description: 'Keep the popover visible after a valid input has been selected.',
+    default: '<code>false</code>',
+  },
+  {
     name: '<code>input-class: String</code>',
     description: 'Class to apply to input element. Not applicable for inline date-pickers.',
     default: '<code>undefined</code>',

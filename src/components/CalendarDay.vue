@@ -63,8 +63,7 @@
 </template>
 
 <script>
-const _tapTolerance = 0;
-const _tapMaxDuration = 200; // ms
+import defaults from '../utils/defaults';
 
 export default {
   props: {
@@ -170,9 +169,9 @@ export default {
       const state = this.touchState;
       state.x = t.screenX;
       state.y = t.screenY;
-      state.tapDetected = new Date() - state.startedOn <= _tapMaxDuration &&
-        Math.abs(state.x - state.startX) <= _tapTolerance &&
-        Math.abs(state.y - state.startY) <= _tapTolerance;
+      state.tapDetected = new Date() - state.startedOn <= defaults.maxTapDuration &&
+        Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
+        Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
       if (state.tapDetected) {
         this.$emit('daySelect', this.dayInfo);
       }

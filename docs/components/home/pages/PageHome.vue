@@ -15,10 +15,10 @@
       <section-date-picker-slot></section-date-picker-slot>
       <section-date-picker-api></section-date-picker-api>
     </b-tab-item>
-    <b-tab-item label='Popover'>
+    <!-- <b-tab-item label='Popover'>
       <section-popover></section-popover>
       <section-popover-api></section-popover-api>
-    </b-tab-item>
+    </b-tab-item> -->
   </b-tabs>
 </div>
 </template>

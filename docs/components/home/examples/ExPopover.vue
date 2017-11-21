@@ -1,6 +1,7 @@
 <template>
   <v-popover
     class='popover'
+    :content-offset='contentOffset'
     :visibility='visibility'
     :direction='direction'
     :align='align'
@@ -26,6 +27,7 @@
 export default {
   props: {
     isExpanded: Boolean,
+    contentOffset: { type: String, default: '10px' },
     visibility: { type: String, default: 'visible' },
     direction: { type: String, default: 'bottom' },
     align: { type: String, default: 'left' },

@@ -1,53 +1,90 @@
+import { POPOVER_VISIBILITIES } from './constants';
+import locales from './locales';
 
-export const themeStyles = {
-  // wrapper: null,
-  verticalDivider: { borderLeft: '1px solid #dadada' },
-  // header: null,
-  // headerTitle: null,
-  // headerArrows: null,
-  // headerVerticalDivider: null,
-  // headerHorizontalDivider: null,
-  // weekdays: null,
-  // weekdaysVerticalDivider: null,
-  // weekdaysHorizontalDivider: null,
-  // weeks: null,
-  // weeksVerticalDivider: null,
-  // dayCell: null,
-  // dayCellNotInMonth: null,
-  // dayContent: null,
-  // dayContentHover: null,
-  // dots: null,
-  // bars: null,
+const defaults = {
+  themeStyles: {
+    // wrapper: null,
+    verticalDivider: { borderLeft: '1px solid #dadada' },
+    // header: null,
+    // headerTitle: null,
+    // headerArrows: null,
+    // headerVerticalDivider: null,
+    // headerHorizontalDivider: null,
+    // weekdays: null,
+    // weekdaysVerticalDivider: null,
+    // weekdaysHorizontalDivider: null,
+    // weeks: null,
+    // weeksVerticalDivider: null,
+    // dayCell: null,
+    // dayCellNotInMonth: null,
+    // dayContent: null,
+    // dayContentHover: null,
+    // dots: null,
+    // bars: null,
+  },
+  firstDayOfWeek: 1,
+  titlePosition: 'center',
+  titleTransition: 'slide-h',
+  weeksTransition: 'slide-h',
+  dateFormatter: d => d.toLocaleDateString(),
+  dateParser: s => new Date(Date.parse(s)),
+  datePickerInputClass: '',
+  datePickerInputStyle: null,
+  datePickerInputPlaceholder: '',
+  datePickerSelectColor: '#66b3cc',
+  datePickerDragColor: '#9fcfdf',
+  popoverExpanded: false,
+  popoverDirection: 'bottom',
+  popoverAlign: 'left',
+  popoverVisibility: POPOVER_VISIBILITIES.HOVER,
+  popoverVisibleDelay: 200,
+  popoverHiddenDelay: 300,
+  popoverContentOffset: '10px',
+  maxSwipeTimeMs: 300,
+  minHorizontalSwipeDistance: 60,
+  maxVerticalSwipeDistance: 80,
+  maxTapTolerance: 0, // ms
+  maxTapDuration: 200, // ms
+  highlight: {
+    animated: true,
+    height: '1.8rem',
+    backgroundColor: '#65999a',
+    borderWidth: '0',
+    borderStyle: 'solid',
+    borderRadius: '1.8rem',
+  },
+  dot: {
+    diameter: '5px',
+    backgroundColor: '#65999a',
+    borderWidth: '0',
+    borderStyle: 'solid',
+    borderRadius: '50%',
+  },
+  bar: {
+    height: '3px',
+    backgroundColor: '#65999a',
+    borderWidth: '0',
+    borderStyle: 'solid',
+  },
 };
-export const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-export const weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-export const titlePosition = 'center';
-export const titleTransition = 'slide-h';
-export const weeksTransition = 'slide-h';
-export const maxSwipeTimeMs = 300;
-export const minHorizontalSwipeDistance = 60;
-export const maxVerticalSwipeDistance = 80;
-export const maxTapTolerance = 0;
-export const maxTapDuration = 200; // ms
-export const getHighlight = uh => ({
-  animated: uh.animated || true,
-  height: uh.height || '1.8rem',
-  backgroundColor: uh.backgroundColor || '#65999a',
-  borderColor: uh.borderColor,
-  borderWidth: uh.borderWidth || '0',
-  borderStyle: uh.borderStyle || 'solid',
-  borderRadius: uh.borderRadius || uh.height || '1.8rem',
-});
-export const dot = {
-  diameter: '5px',
-  backgroundColor: '#65999a',
-  borderWidth: '0',
-  borderStyle: 'solid',
-  borderRadius: '50%',
-};
-export const bar = {
-  height: '3px',
-  backgroundColor: '#65999a',
-  borderWidth: '0',
-  borderStyle: 'solid',
+
+export default defaults;
+
+export const mergeDefaults = (otherDefaults) => {
+  // Get the locale supplied by the user
+  let locale;
+  // Get the user supplied locale
+  if (otherDefaults && otherDefaults.locale) locale = locales[otherDefaults.locale.substring(0, 2)];
+  // Get the detected browser locale if needed
+  if (!locale) locale = locales[(window.navigator.userLanguage || window.navigator.language).substring(0, 2)];
+  // Fall back to english locale if needed
+  if (!locale) locale = locales.en;
+  // Assign the language defaults
+  const languageDefaults = {
+    monthLabels: locale.months,
+    monthNavLabels: locale.monthsShort,
+    weekdayLabels: locale.weekdaysMin,
+  };
+  // Assign the defaults
+  Object.assign(defaults, languageDefaults, otherDefaults);
 };

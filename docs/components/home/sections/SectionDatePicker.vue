@@ -29,6 +29,12 @@
               <b-field>
                 <b-switch v-model='isInline'>Inline</b-switch>
               </b-field>
+              <b-field v-if='isInline'>
+                <b-switch v-model='isExpanded'>Expanded</b-switch>
+              </b-field>
+              <b-field v-else>
+                <b-switch v-model='popoverExpanded'>Popover Expanded</b-switch>
+              </b-field>
             </b-field>
             <b-field label='Mode'>
               <p class='control-offset'>
@@ -37,8 +43,17 @@
                 <b-radio v-model='mode' native-value='range'>Range</b-radio>
               </p>
             </b-field>
+            <b-field grouped>
+              <b-field label='Select Color'>
+                <b-input v-model='selectColor'></b-input>
+              </b-field>
+              <b-field label='Drag Color'>
+                <b-input v-model='dragColor'></b-input>
+              </b-field>
+            </b-field>
+            <p class='tip'><strong>Note:</strong> Accepts color names, hex and rgb values</p>
             <div v-if='!isInline'>
-              <b-field label='Visibility'>
+              <b-field label='Popover Visibility'>
                 <p class='control-offset'>
                   <b-radio
                     v-for='v in popoverVisibilities'
@@ -49,7 +64,7 @@
                   </b-radio>
                 </p>
               </b-field>
-              <b-field label='Direction'>
+              <b-field label='Popover Direction'>
                 <p class='control-offset'>
                   <b-radio
                     v-for='d in popoverDirections'
@@ -60,7 +75,7 @@
                   </b-radio>
                 </p>
               </b-field>
-              <b-field label='Alignment'>
+              <b-field label='Popover Alignment'>
                 <p class='control-offset'>
                   <b-radio
                     v-for='a in popoverAlignments'
@@ -70,12 +85,6 @@
                     {{ a }}
                   </b-radio>
                 </p>
-              </b-field>
-              <b-field label='Select Color' message='Accepts color names, hex and rgb values'>
-                <b-input v-model='selectColor'></b-input>
-              </b-field>
-              <b-field label='Drag Color'>
-                <b-input v-model='dragColor'></b-input>
               </b-field>
             </div>
           </b-tab-item>
@@ -87,6 +96,8 @@
             :mode='mode'
             :show-disabled-dates='showDisabledDates'
             :is-inline='isInline'
+            :is-expanded='isExpanded'
+            :popover-expanded='popoverExpanded'
             :popover-visibility='popoverVisibility'
             :popover-direction='popoverDirection'
             :popover-align='popoverAlignment'
@@ -115,6 +126,8 @@ export default {
       selectedValue: null,
       showDisabledDates: false,
       isInline: false,
+      isExpanded: false,
+      popoverExpanded: false,
       popoverVisibility: 'hover',
       popoverVisibilities: ['hover', 'focus', 'visible', 'hidden'],
       popoverDirection: 'bottom',
@@ -153,4 +166,7 @@ export default {
 <style lang='sass' scoped>
   .control-offset
     margin-left: 20px
+  .tip
+    font-size: 0.8rem
+    margin: -14px 0 10px 10px
 </style>

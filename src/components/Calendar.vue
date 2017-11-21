@@ -35,12 +35,7 @@ import Tag from './Tag';
 import '../assets/fonts/vcalendar/vcalendar.scss';
 import '../styles/lib.sass';
 import DateInfo from '../utils/dateInfo';
-import {
-  themeStyles,
-  getHighlight,
-  dot,
-  bar,
-} from '../utils/defaults';
+import defaults from '../utils/defaults';
 import {
   todayComps,
   pageIsEqualToPage,
@@ -64,13 +59,8 @@ export default {
     toPage: Object,
     isDoublePaned: Boolean,
     isExpanded: Boolean,
-    showTags: Boolean,
     themeStyles: Object,
     attributes: Array,
-    dateFormatter: {
-      type: Function,
-      default: d => d.toLocaleDateString(),
-    },
   },
   data() {
     return {
@@ -82,9 +72,6 @@ export default {
   computed: {
     isDoublePaned_() {
       return this.isDoublePaned && this.windowWidth >= 480;
-    },
-    showFooter() {
-      return this.showTags || this.$slots.footer;
     },
     paneCentered() {
       return this.isDoublePaned && !this.isDoublePaned_;
@@ -99,7 +86,7 @@ export default {
     },
     themeStyles_() {
       // Mix user supplied styles with default styles
-      return { ...themeStyles, ...this.themeStyles };
+      return { ...defaults.themeStyles, ...this.themeStyles };
     },
     attributes_() {
       if (!this.attributes || !this.attributes.length) return [];
@@ -110,17 +97,21 @@ export default {
           order: a.order || 0,
         };
         if (a.highlight) {
-          newAttribute.highlight = getHighlight(a.highlight);
+          newAttribute.highlight = {
+            ...defaults.highlight,
+            ...a.highlight,
+          };
+          if (!newAttribute.highlight.borderRadius) newAttribute.highlight.borderRadius = newAttribute.highlight.height;
         }
         if (a.dot) {
           newAttribute.dot = {
-            ...dot,
+            ...defaults.dot,
             ...a.dot,
           };
         }
         if (a.bar) {
           newAttribute.bar = {
-            ...bar,
+            ...defaults.bar,
             ...a.bar,
           };
         }
@@ -145,16 +136,16 @@ export default {
     toPage() {
       this.refreshToPage();
     },
-    fromPage_(value) {
-      this.$emit('update:fromPage', value);
-      if (!pageIsBeforePage(value, this.toPage_)) {
-        this.toPage_ = getNextPage(this.fromPage_);
+    fromPage_(val) {
+      this.$emit('update:fromPage', val);
+      if (!pageIsBeforePage(val, this.toPage_)) {
+        this.toPage_ = getNextPage(val);
       }
     },
-    toPage_(value) {
-      this.$emit('update:toPage', value);
-      if (!pageIsAfterPage(value, this.fromPage_)) {
-        this.fromPage_ = getPrevPage(this.toPage_);
+    toPage_(val) {
+      this.$emit('update:toPage', val);
+      if (!pageIsAfterPage(val, this.fromPage_)) {
+        this.fromPage_ = getPrevPage(val);
       }
     },
     isDoublePaned_() {
@@ -171,14 +162,22 @@ export default {
     window.removeEventListener('resize', this.handleResize);
   },
   methods: {
-    handleResize() {
-      this.windowWidth = window.innerWidth;
-    },
     refreshFromPage() {
-      this.fromPage_ = this.getValidFromPage(this.fromPage, todayComps);
+      this.fromPage_ = getFirstValidPage(
+        ...[
+          this.fromPage,
+          { month: todayComps.month, year: todayComps.year }]
+            .map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
+        this.minPage,
+        getPrevPage(this.maxPage),
+      );
     },
     refreshToPage() {
-      this.toPage_ = this.getValidToPage(this.toPage, getNextPage(this.fromPage_));
+      this.toPage_ = getFirstValidPage(
+        ...[this.toPage, getNextPage(this.fromPage_)].map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
+        this.maxPage,
+        getNextPage(this.minPage),
+      );
     },
     titleClick(page) {
       if (pageIsEqualToPage(page, todayComps)) return;
@@ -188,19 +187,8 @@ export default {
         this.toPage_ = getFirstValidPage(todayComps, pageIsBeforePage(page, todayComps) ? this.maxPage : this.minToPage);
       }
     },
-    getValidFromPage(...args) {
-      return getFirstValidPage(
-        ...args.map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
-        this.minPage,
-        getPrevPage(this.maxPage),
-      );
-    },
-    getValidToPage(...args) {
-      return getFirstValidPage(
-        ...args.map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
-        this.maxPage,
-        getNextPage(this.minPage),
-      );
+    handleResize() {
+      this.windowWidth = window.innerWidth;
     },
   },
 };
@@ -222,12 +210,12 @@ export default {
 .c-pane-container
   flex-shrink: 1
   display: inline-flex
-  min-width: $paneMinWidth
+  min-width: $paneWidth
   width: $paneWidth
   background-color: $paneBgColor
   border: $paneBorder
   &.is-double-paned
-    min-width: $paneMinWidth * 2
+    min-width: $paneWidth * 2
     width: $paneWidth * 2
   &.is-expanded
     width: 100%

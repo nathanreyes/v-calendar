@@ -79,7 +79,7 @@ export default {
     selectDay(day) {
       // Start new drag selection if not dragging
       if (!this.dragValue) {
-      // Make sure date selection is valid
+        // Make sure date selection is valid
         const date = new Date(day.date.getTime());
         if (this.dateValidator(date, 'selectDisabled')) {
           // Start new drag selection

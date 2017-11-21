@@ -31,7 +31,7 @@
                   <b-switch v-model='isDoublePaned'>Double Paned</b-switch>
                 </b-field>
                 <b-field>
-                  <b-switch v-model='isExpanded'>Is Expanded</b-switch>
+                  <b-switch v-model='isExpanded'>Expanded</b-switch>
                 </b-field>
               </b-field>
               <b-field label='Title Position'>
