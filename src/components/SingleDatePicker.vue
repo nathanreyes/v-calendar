@@ -41,8 +41,6 @@ export default {
       if (this.dateValidator(day.date, 'selectDisabled')) {
         this.$emit('input', (day.date === this.value) ? null : day.date);
       }
-      // Forward the event
-      this.$emit('daySelect', day);
     },
   },
 };

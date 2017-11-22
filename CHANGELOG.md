@@ -1,3 +1,6 @@
+## 0.3.1
+* Fix bug with duplicate events being fired
+
 ## 0.3.0
 * Add support for accepting various defaults when calling Vue.use(VCalendar, { ...defaults... })
 * Set default calendar pages to best show date picker values
