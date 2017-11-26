@@ -312,7 +312,10 @@ export default {
       } else {
         this.$emit('input', value);
       }
-      if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
+      if (!this.popoverKeepVisibleOnInput) {
+        console.log('popoverForceHidden');
+        this.popoverForceHidden = true;
+      }
     },
     parseValue(valueText) {
       let value = null;

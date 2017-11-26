@@ -1,5 +1,6 @@
 <template>
 <div
+  ref='dayCell'
   :class='["c-day", { "c-day-not-in-month": !inMonth }]'
   :style='dayCellStyle'>
   <!-- Background layers -->
@@ -18,16 +19,29 @@
   </transition-group>
   <!-- Content layer -->
   <div class='c-day-layer c-day-box-center-center'>
-    <div
-      class='c-day-content'
-      :style='contentStyle_'
-      @touchstart.passive='touchstart'
-      @touchend.passive='touchend'
-      @click='click($event)'
-      @mouseenter='mouseenter'
-      @mouseleave='mouseleave'>
-      {{ label }}
-    </div>
+    <popover
+      align='center'
+      visibility='hover'
+      transition='fade'
+      :content-style='{ backgroundColor: "red" }'
+      :visible-delay='0'
+      :hidden-delay='0'>
+      <div
+        class='c-day-content'
+        :style='contentStyle_'
+        @touchstart.passive='touchstart'
+        @touchend.passive='touchend'
+        @click='click($event)'
+        @mouseenter='mouseenter'
+        @mouseleave='mouseleave'>
+        {{ label }}
+      </div>
+      <div
+        slot='popover-content'
+        class='c-day-popover'>
+        This is the popover content!!
+      </div>
+    </popover>
   </div>
   <!-- Dots layer -->
   <div
@@ -64,8 +78,12 @@
 
 <script>
 import defaults from '../utils/defaults';
+import Popover from './Popover';
 
 export default {
+  components: {
+    Popover,
+  },
   props: {
     label: String,
     day: Number,
@@ -321,7 +339,7 @@ export default {
 .c-day
   position: relative
   flex-grow: 1
-  overflow: hidden
+  // overflow: hidden
   height: $dayHeight
 
 .c-day-not-in-month
@@ -394,6 +412,9 @@ export default {
   transition: all $dayContentTransitionTime
   user-select: none
   cursor: default
+
+.c-day-popover
+  opacity: 1
 
 // TRANSITION ANIMATIONS
 

@@ -457,7 +457,7 @@ export default {
   display: flex
   flex-direction: column
   align-items: stretch
-  overflow: hidden
+  // overflow: hidden
   &.is-single
     width: 100%
 

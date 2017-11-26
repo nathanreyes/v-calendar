@@ -8,7 +8,7 @@
     @mouseleave='mouseleave'
     @mouseover='mouseover'>
     <transition
-      name='slide-fade'
+      :name='transition'
       tag='div'
       @before-enter='beforeContentEnter'
       @after-enter='afterContentEnter'
@@ -17,9 +17,10 @@
       <div
         ref='popoverOrigin'
         :class='["popover-origin", "direction-" + direction, "align-" + align]'
-        v-if='visibleAfterDelay'>
+        v-if='visible'>
         <div
-          :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'>
+          :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'
+          :style='contentWrapperStyle'>
           <div
             ref='popoverContent'
             :class='["popover-content", "direction-" + direction, "align-" + align]'
@@ -53,25 +54,28 @@ export default {
     direction: { type: String, default: () => defaults.popoverDirection },
     align: { type: String, default: () => defaults.popoverAlign },
     visibility: { type: String, default: () => defaults.popoverVisibility },
-    visibleDelay: { type: Number, default: () => defaults.popoverVisibleDelay }, // ms
-    hiddenDelay: { type: Number, default: () => defaults.popoverHiddenDelay }, // ms
     forceHidden: Boolean,
-    forceHiddenDelay: { type: Number, default: -1 },
     contentStyle: Object,
     contentOffset: { type: String, default: () => defaults.popoverContentOffset },
+    transition: { type: String, default: 'slide-fade' },
   },
   data() {
     return {
       visibleManaged: false,
-      visibleAfterDelay: false,
       touchState: null,
       contentTransitioning: false,
     };
   },
   computed: {
+    contentWrapperStyle() {
+      const style = {};
+      style[`margin${this.contentOffsetDirection}`] = `-${this.contentOffset}`;
+      style[`padding${this.contentOffsetDirection}`] = this.contentOffset;
+      return style;
+    },
     contentStyle_() {
       const style = { ...this.contentStyle };
-      style[this.contentOffsetMargin] = this.contentOffset;
+      style[`margin${this.contentOffsetDirection}`] = this.contentOffset;
       delete style.zIndex;
       delete style.padding;
       return style;
@@ -82,27 +86,25 @@ export default {
       if (cs && cs.padding) style.padding = cs.padding;
       return style;
     },
-    contentOffsetMargin() {
+    contentOffsetDirection() {
       switch (this.direction) {
-        case 'bottom': return 'marginTop';
-        case 'top': return 'marginBottom';
-        case 'left': return 'marginRight';
-        case 'right': return 'marginLeft';
+        case 'bottom': return 'Top';
+        case 'top': return 'Bottom';
+        case 'left': return 'Right';
+        case 'right': return 'Left';
         default: return '';
       }
     },
     visibilityIsManaged() {
       return VISIBILITIES.isManaged(this.visibility);
     },
-    hiddenDelay_() {
-      return this.forceHidden && this.forceHiddenDelay >= 0 ? this.forceHiddenDelay : this.hiddenDelay;
-    },
-    visibleBeforeDelay() {
+    visible() {
       return this.visibilityIsManaged ? this.visibleManaged : this.visibility === VISIBILITIES.VISIBLE;
     },
   },
   watch: {
-    forceHidden() {
+    forceHidden(val) {
+      console.log('forceHidden', val);
       // Reset managed visible state
       if (this.visibleManaged) this.visibleManaged = false;
       else this.$emit('update:forceHidden', false);
@@ -111,27 +113,12 @@ export default {
       // Reset managed visible state
       this.visibleManaged = false;
     },
-    visibleBeforeDelay(val) {
-      // Ignore if already waiting for a visibility change
-      if (val === this.visibleAfterDelay) return;
-      // Delay visibility change?
-      if ((val && this.visibleDelay) || (!val && this.hiddenDelay_)) {
-        setTimeout(() => {
-          // Update visible state if it remained constant after delay
-          if (val === this.visibleBeforeDelay || this.forceHidden) this.visibleAfterDelay = val;
-        }, val ? this.visibleDelay : this.hiddenDelay_);
-      } else {
-        // Update visible state immediately
-        this.visibleAfterDelay = val;
-      }
-    },
-    visibleAfterDelay(val) {
-      // Reset forceHidden state if needed
-      if (!val && this.forceHidden) this.$emit('update:forceHidden', false);
-    },
+    // visible(val) {
+    //   // Reset forceHidden state if needed
+    //   if (!val && this.forceHidden) this.$emit('update:forceHidden', false);
+    // },
   },
   created() {
-    this.visibleAfterDelay = this.visibleBeforeDelay;
     window.addEventListener('touchstart', this.touchStart);
     window.addEventListener('touchend', this.touchEnd);
   },
@@ -325,10 +312,18 @@ export default {
           bottom: $popoverCaretVerticalOffset
           transform: translateY(50%) translateX(-50%) rotate(-45deg)
 
-.slide-fade-enter-active, .slide-fade-leave-active
+.fade-enter-active,
+.fade-leave-active,
+.slide-fade-enter-active,
+.slide-fade-leave-active
   transition: all $popoverTransitionTime
 
-.slide-fade-enter, .slide-fade-leave-to
+.fade-enter,
+.fade-leave-to
+  opacity: 0
+
+.slide-fade-enter,
+.slide-fade-leave-to
   opacity: 0
   &.direction-bottom
     transform: translateY(-$popoverSlideTranslation)
