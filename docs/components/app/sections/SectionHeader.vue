@@ -79,7 +79,6 @@ export default {
   margin-top: -170px
   margin-left: -150px
   border-radius: 5px
-  width: 100%
   z-index: 20
 
 .from-top-enter-active, .from-top-leave-active

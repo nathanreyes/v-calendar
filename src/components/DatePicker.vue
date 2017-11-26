@@ -11,6 +11,7 @@
     :attributes='attributes_'
     :date-validator='dateValidator'
     @drag='dragValue = $event'
+    @input='updateValue'
     v-bind='$attrs'
     v-on='filteredListeners()'
     v-if='isInline'>
@@ -270,6 +271,9 @@ export default {
     suggestedInputText(val) {
       this.valueText = val;
     },
+    value() {
+      if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
+    },
   },
   created() {
     this.assignPageRange();
@@ -311,10 +315,6 @@ export default {
         this.$emit('input', this.parseValue(value));
       } else {
         this.$emit('input', value);
-      }
-      if (!this.popoverKeepVisibleOnInput) {
-        console.log('popoverForceHidden');
-        this.popoverForceHidden = true;
       }
     },
     parseValue(valueText) {
