@@ -19,6 +19,7 @@
         :class='["popover-origin", "direction-" + direction, "align-" + align]'
         v-if='visible'>
         <div
+          ref='popoverContentWrapper'
           :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'
           :style='contentWrapperStyle'>
           <div
@@ -43,9 +44,8 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import defaults from '../utils/defaults';
-import { ancestorElements } from '../utils/helpers';
+import { elementHasAncestor } from '../utils/helpers';
 import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
 
 export default {
@@ -103,8 +103,7 @@ export default {
     },
   },
   watch: {
-    forceHidden(val) {
-      console.log('forceHidden', val);
+    forceHidden() {
       // Reset managed visible state
       if (this.visibleManaged) this.visibleManaged = false;
       else this.$emit('update:forceHidden', false);
@@ -113,10 +112,6 @@ export default {
       // Reset managed visible state
       this.visibleManaged = false;
     },
-    // visible(val) {
-    //   // Reset forceHidden state if needed
-    //   if (!val && this.forceHidden) this.$emit('update:forceHidden', false);
-    // },
   },
   created() {
     window.addEventListener('touchstart', this.touchStart);
@@ -153,19 +148,15 @@ export default {
       if (state.tapDetected) this.visibleManaged = false;
       state.started = false;
     },
-    focusin(e) {
-      if (this.visibility === VISIBILITIES.FOCUS) this.visibleManaged = true;
-      this.$emit('focusin', e);
+    focusin() {
+      if (this.visibility === VISIBILITIES.FOCUS && !this.visibleManaged) {
+        this.visibleManaged = true;
+      }
     },
     focusout(e) {
-      if (this.visibility === VISIBILITIES.FOCUS) {
-        // Trap focus if element losing focus is nested within the popover content
-        if (e.target !== this.$refs.popover && ancestorElements(e.target).includes(this.$refs.popoverContent)) {
-          Vue.nextTick(() => this.$refs.popover.focus());
-        }
+      if (this.visibility === VISIBILITIES.FOCUS && this.visibleManaged && !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
         this.visibleManaged = false;
       }
-      this.$emit('focusout', e);
     },
     mouseleave() {
       if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden) {
@@ -174,7 +165,7 @@ export default {
     },
     mouseover(e) {
       const ignoreHover = e.target === this.$refs.popoverOrigin;
-      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !this.contentTransitioning) {
+      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden) {
         // Show if moused over, but ignore the popover origin because it is transformed
         this.visibleManaged = !ignoreHover;
       }
@@ -254,7 +245,7 @@ export default {
       box-shadow: $popoverBoxShadow
       .popover-content-mask
         position: relative
-        z-index: 1
+        z-index: 10
         border-radius: inherit
         padding: $popoverPadding
         overflow: hidden

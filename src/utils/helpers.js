@@ -117,18 +117,24 @@ export const getLastArrayItem = (array, fallbackValue) => {
   return array.length ? array[array.length - 1] : fallbackValue;
 };
 
-export const ancestorElements = (el) => {
-  const path = [];
-  while (el) {
-    path.push(el);
-    if (el.tagName === 'HTML') {
-      path.push(document);
-      path.push(window);
-      return path;
-    }
-    el = el.parentElement;
-  }
-  return path;
+export const elementHasAncestor = (el, ancestor) => {
+  if (!el) return false;
+  if (el === ancestor) return true;
+  return elementHasAncestor(el.parentElement);
+};
+
+export const elementPositionInAncestor = (el, ancestor) => {
+  let top = 0;
+  let left = 0;
+  do {
+    top += el.offsetTop || 0;
+    left += el.offsetLeft || 0;
+    el = el.offsetParent;
+  } while (el && el !== ancestor);
+  return {
+    top,
+    left,
+  };
 };
 
 export const isMobile = {

@@ -1,5 +1,43 @@
 <template>
+<component
+  :is='datePicker'
+  :value='value'
+  :from-page.sync='fromPage_'
+  :to-page.sync='toPage_'
+  :theme-styles='themeStyles_'
+  :drag-attribute='dragAttribute_'
+  :select-attribute='selectAttribute_'
+  :disabled-attribute='disabledAttribute_'
+  :attributes='attributes_'
+  :date-validator='dateValidator'
+  @drag='dragValue = $event'
+  v-bind='$attrs'
+  v-on='filteredListeners()'
+  v-if='isInline'>
+</component>
+<popover
+  :direction='popoverDirection'
+  :align='popoverAlign'
+  :visibility='popoverVisibility'
+  :is-expanded='popoverExpanded'
+  :content-style='popoverContentStyle'
+  :force-hidden.sync='popoverForceHidden'
+  :force-hidden-delay='400'
+  @didDisappear='popoverDidDisappear'
+  v-else>
+  <slot
+    :input-value='valueText'
+    :update-value='updateValue'>
+    <input
+      type='text'
+      :class='[inputClass, { "c-input-drag": dragValue }]'
+      :style='inputStyle'
+      :placeholder='placeholder_'
+      :value='valueText'
+      @change='updateValue($event.target.value)' />
+  </slot>
   <component
+    slot='popover-content'
     :is='datePicker'
     :value='value'
     :from-page.sync='fromPage_'
@@ -11,50 +49,10 @@
     :attributes='attributes_'
     :date-validator='dateValidator'
     @drag='dragValue = $event'
-    @input='updateValue'
     v-bind='$attrs'
-    v-on='filteredListeners()'
-    v-if='isInline'>
+    v-on='filteredListeners()'>
   </component>
-  <popover
-    :direction='popoverDirection'
-    :align='popoverAlign'
-    :visibility='popoverVisibility'
-    :is-expanded='popoverExpanded'
-    :content-style='popoverContentStyle'
-    :force-hidden.sync='popoverForceHidden'
-    :force-hidden-delay='400'
-    @didDisappear='popoverDidDisappear'
-    v-else>
-    <slot
-      :input-value='valueText'
-      :update-value='updateValue'>
-      <input
-        type='text'
-        :class='[inputClass, { "c-input-drag": dragValue }]'
-        :style='inputStyle'
-        :placeholder='placeholder_'
-        :value='valueText'
-        @change='updateValue($event.target.value)' />
-    </slot>
-    <component
-      slot='popover-content'
-      :is='datePicker'
-      :value='value'
-      :from-page.sync='fromPage_'
-      :to-page.sync='toPage_'
-      :theme-styles='themeStyles_'
-      :drag-attribute='dragAttribute_'
-      :select-attribute='selectAttribute_'
-      :disabled-attribute='disabledAttribute_'
-      :attributes='attributes_'
-      :date-validator='dateValidator'
-      @drag='dragValue = $event'
-      v-bind='$attrs'
-      v-on='filteredListeners()'>
-    </component>
-  </popover>
-
+</popover>
 </template>
 
 <script>

@@ -1,7 +1,6 @@
 <template>
 <div
-  ref='dayCell'
-  :class='["c-day", { "c-day-not-in-month": !inMonth }]'
+  class='c-day'
   :style='dayCellStyle'>
   <!-- Background layers -->
   <transition-group
@@ -21,13 +20,13 @@
   <div class='c-day-layer c-day-box-center-center'>
     <popover
       align='center'
-      visibility='hover'
       transition='fade'
-      :content-style='{ backgroundColor: "red" }'
+      :visibility='popover ? "hidden" : "hover"'
       :visible-delay='0'
       :hidden-delay='0'>
       <div
-        class='c-day-content'
+        ref='dayContent'
+        :class='["c-day-content", { "c-day-not-in-month": !inMonth }]'
         :style='contentStyle_'
         @touchstart.passive='touchstart'
         @touchend.passive='touchend'
@@ -36,10 +35,8 @@
         @mouseleave='mouseleave'>
         {{ label }}
       </div>
-      <div
-        slot='popover-content'
-        class='c-day-popover'>
-        This is the popover content!!
+      <div slot='popover-content' v-if='popover'>
+        <component :is='popover.component' :dayInfo='dayInfo'></component>
       </div>
     </popover>
   </div>
@@ -77,8 +74,9 @@
 </template>
 
 <script>
-import defaults from '../utils/defaults';
 import Popover from './Popover';
+import defaults from '../utils/defaults';
+import { getLastArrayItem } from '../utils/helpers';
 
 export default {
   components: {
@@ -106,6 +104,7 @@ export default {
       bars: [],
       contentStyle: null,
       contentHoverStyle: null,
+      popover: null,
       isHovered: false,
       touchState: null,
       touchCount: 0,
@@ -113,14 +112,17 @@ export default {
   },
   computed: {
     dayCellStyle() {
-      return this.inMonth ? this.styles.dayCell : {
-        ...this.styles.dayCell,
-        ...this.styles.dayCellNotInMonth,
-      };
+      return this.styles.dayCell;
+      // return this.inMonth ? this.styles.dayCell : {
+      //   ...this.styles.dayCell,
+      //   ...this.styles.dayCellNotInMonth,
+      // };
     },
     contentStyle_() {
-      if (this.isHovered) return { ...this.contentStyle, ...this.contentHoverStyle };
-      return this.contentStyle;
+      let style = this.contentStyle;
+      if (this.isHovered) style = { ...style, ...this.contentHoverStyle };
+      if (!this.inMonth) style = { ...style, ...this.styles.dayCellNotInMonth };
+      return style;
     },
     hasBackgrounds() {
       return this.backgrounds && this.backgrounds.length;
@@ -155,6 +157,7 @@ export default {
         inPrevMonth: this.inPrevMonth,
         inNextMonth: this.inNextMonth,
         attributes: this.attributes,
+        el: this.$refs.dayContent,
       };
     },
   },
@@ -213,6 +216,7 @@ export default {
       const bars = [];
       const contentStyles = [];
       const contentHoverStyles = [];
+      const popovers = [];
       if (this.attributes && this.attributes.length) {
         // Cycle through each attribute
         this.attributes.forEach((a) => {
@@ -226,6 +230,8 @@ export default {
           if (a.contentStyle) contentStyles.push(a.contentStyle);
           // Add content hover style if needed
           if (a.contentHoverStyle) contentHoverStyles.push(a.contentHoverStyle);
+          // Add popover component if needed
+          if (a.popover) popovers.push(a.popover);
         });
       }
       // Assign day attributes
@@ -234,6 +240,7 @@ export default {
       this.bars = bars;
       this.contentStyle = Object.assign({}, this.styles.dayContent, ...contentStyles);
       this.contentHoverStyle = Object.assign({}, this.styles.dayContentHover, ...contentHoverStyles);
+      this.popover = getLastArrayItem(popovers);
     },
     getBackground(attribute) {
       // Initialize the background object

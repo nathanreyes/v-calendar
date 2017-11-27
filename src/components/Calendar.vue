@@ -125,6 +125,11 @@ export default {
             ...a.contentHoverStyle,
           };
         }
+        if (a.popover) {
+          newAttribute.popover = {
+            ...a.popover,
+          };
+        }
         return newAttribute;
       });
     },
@@ -197,15 +202,6 @@ export default {
 <style lang='sass' scoped>
 
 @import '../styles/vars.sass'
-
-.c-container
-  display: inline-flex
-  flex-direction: column
-  background-color: $paneBgColor
-  border: $paneBorder
-  &.center
-    display: flex
-    align-items: center
 
 .c-pane-container
   flex-shrink: 1

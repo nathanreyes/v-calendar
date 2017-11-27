@@ -11,6 +11,7 @@
 
 <script>
 import Calendar from './Calendar';
+// import DateRangeAttribute from './DateRangeAttribute';
 import DateInfo from '../utils/dateInfo';
 
 export default {
@@ -48,18 +49,25 @@ export default {
     selectAttribute_() {
       return { ...this.selectAttribute, dates: [this.normalizedValue] };
     },
+    // rangeAttribute() {
+    //   return (this.dragValue || this.valueIsValid) ? {
+    //     popover: {
+    //       component: DateRangeAttribute,
+    //     },
+    //     dates: [this.dragValue ? new Date(this.dragValue.end) : new Date(this.value.end)],
+    //   } : null;
+    // },
     attributes_() {
-      if (this.dragValue) {
-        return this.attributes ? [...this.attributes, this.dragAttribute_] : [this.dragAttribute_];
-      }
-      if (this.valueIsValid) {
-        return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
-      }
-      return this.attributes;
+      const attributes = this.attributes ? [...this.attributes] : [];
+      if (this.dragValue) attributes.push(this.dragAttribute_);
+      if (this.valueIsValid) attributes.push(this.selectAttribute_);
+      // if (this.rangeAttribute) attributes.push(this.rangeAttribute);
+      return attributes;
     },
   },
   watch: {
     dragValue(val) {
+      console.log('drag', val);
       this.$emit('drag', this.normalizeRange(val));
     },
   },
@@ -93,6 +101,7 @@ export default {
         });
         // Make sure new value is valid
         if (this.dateValidator(newValue, 'selectDisabled')) {
+          console.log('clear drag from ', this.dragValue);
           // Clear drag selection
           this.dragValue = null;
           // Signal new value selected

@@ -457,7 +457,6 @@ export default {
   display: flex
   flex-direction: column
   align-items: stretch
-  // overflow: hidden
   &.is-single
     width: 100%
 
@@ -534,6 +533,7 @@ export default {
 
 .c-weeks-wrapper
   display: flex
+  overflow: hidden
 
 .c-weeks
   flex-grow: 1
