@@ -11,7 +11,6 @@
     :attributes='attributes_'
     :date-validator='dateValidator'
     @drag='dragValue = $event'
-    @input='updateValue'
     v-bind='$attrs'
     v-on='filteredListeners()'
     v-if='isInline'>

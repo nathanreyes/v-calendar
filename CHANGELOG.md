@@ -1,3 +1,6 @@
+## 0.3.3
+* Fix duplicate input event for inline date picker
+
 ## 0.3.2
 * Fix styling bug introduced by v0.3.1.
 
