@@ -182,11 +182,8 @@ export default {
         },
         ...this.themeStyles,
       };
-      if (!this.isInline) {
-        styles.wrapper = {
-          border: '0',
-        };
-      }
+      // Strip border from the wrapper when used in a popover
+      if (!this.isInline && styles.wrapper) styles.wrapper.border = '0';
       return styles;
     },
     popoverContentStyle() {

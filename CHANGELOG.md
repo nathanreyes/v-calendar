@@ -1,3 +1,6 @@
+## 0.3.1
+* Fix application of styling for date pickers when not inline. Closes #17.
+
 ## 0.3.0
 * Add support for accepting various defaults when calling Vue.use(VCalendar, { ...defaults... })
 * Set default calendar pages to best show date picker values
