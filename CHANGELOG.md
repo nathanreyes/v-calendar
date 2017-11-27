@@ -1,3 +1,6 @@
+## 0.3.2
+* Fix styling bug introduced by v0.3.1.
+
 ## 0.3.1
 * Fix bug with duplicate events being fired. Closes #15.
 * Fix application of styling for date pickers when not inline. Closes #17.

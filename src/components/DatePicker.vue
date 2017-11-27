@@ -185,7 +185,12 @@ export default {
         ...this.themeStyles,
       };
       // Strip border from the wrapper when used in a popover
-      if (!this.isInline && styles.wrapper) styles.wrapper.border = '0';
+      if (!this.isInline) {
+        styles.wrapper = {
+          ...styles.wrapper,
+          border: '0',
+        };
+      }
       return styles;
     },
     popoverContentStyle() {
@@ -340,7 +345,7 @@ export default {
 };
 </script>
 
-<style lang='sass'>
+<style lang='sass' scoped>
   .c-input-drag
     color: rgba(0, 0, 0, 0.3)
 </style>
