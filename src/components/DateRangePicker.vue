@@ -1,6 +1,5 @@
 <template>
 <calendar
-  :dayContentHoverStyle='dayContentHoverStyle_'
   :attributes='attributes_'
   @daySelect='selectDay'
   @dayMouseEnter='enterDay'
@@ -11,7 +10,7 @@
 
 <script>
 import Calendar from './Calendar';
-// import DateRangeAttribute from './DateRangeAttribute';
+import DateRangeAttribute from './DateRangeAttribute';
 import DateInfo from '../utils/dateInfo';
 
 export default {
@@ -23,14 +22,12 @@ export default {
     dragAttribute: { type: Object, required: true },
     selectAttribute: { type: Object, required: true },
     disabledAttribute: { type: Object, required: true },
-    dayContentHoverStyle: Object,
     dateValidator: Function,
     attributes: Array,
   },
   data() {
     return {
       dragValue: null,
-      dayContentHoverStyle_: this.dayContentHoverStyle,
     };
   },
   computed: {
@@ -49,25 +46,24 @@ export default {
     selectAttribute_() {
       return { ...this.selectAttribute, dates: [this.normalizedValue] };
     },
-    // rangeAttribute() {
-    //   return (this.dragValue || this.valueIsValid) ? {
-    //     popover: {
-    //       component: DateRangeAttribute,
-    //     },
-    //     dates: [this.dragValue ? new Date(this.dragValue.end) : new Date(this.value.end)],
-    //   } : null;
-    // },
+    rangeAttribute() {
+      return (this.dragValue || this.valueIsValid) ? {
+        popover: {
+          component: DateRangeAttribute,
+        },
+        dates: [this.dragValue ? new Date(this.dragValue.end) : new Date(this.value.end)],
+      } : null;
+    },
     attributes_() {
       const attributes = this.attributes ? [...this.attributes] : [];
       if (this.dragValue) attributes.push(this.dragAttribute_);
-      if (this.valueIsValid) attributes.push(this.selectAttribute_);
-      // if (this.rangeAttribute) attributes.push(this.rangeAttribute);
+      else if (this.valueIsValid) attributes.push(this.selectAttribute_);
+      if (this.rangeAttribute) attributes.push(this.rangeAttribute);
       return attributes;
     },
   },
   watch: {
     dragValue(val) {
-      console.log('drag', val);
       this.$emit('drag', this.normalizeRange(val));
     },
   },
@@ -101,7 +97,6 @@ export default {
         });
         // Make sure new value is valid
         if (this.dateValidator(newValue, 'selectDisabled')) {
-          console.log('clear drag from ', this.dragValue);
           // Clear drag selection
           this.dragValue = null;
           // Signal new value selected
@@ -121,11 +116,6 @@ export default {
         if (this.dateValidator(newDragValue, 'dragDisabled')) {
           // Update drag selection
           this.dragValue = newDragValue;
-          // Assign default content hover style
-          this.dayContentHoverStyle_ = this.dayContentHoverStyle;
-        } else {
-          // Assign disabled content hover style
-          this.dayContentHoverStyle_ = this.disabledAttribute.contentHoverStyle;
         }
       }
     },

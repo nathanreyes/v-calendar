@@ -21,7 +21,7 @@
     <popover
       align='center'
       transition='fade'
-      :visibility='popover ? "hidden" : "hover"'
+      :visibility='popover ? "visible" : "hidden"'
       :visible-delay='0'
       :hidden-delay='0'>
       <div
