@@ -1,5 +1,6 @@
 ## 0.3.1
-* Fix bug with duplicate events being fired
+* Fix bug with duplicate events being fired. Closes #15.
+* Fix application of styling for date pickers when not inline. Closes #17.
 
 ## 0.3.0
 * Add support for accepting various defaults when calling Vue.use(VCalendar, { ...defaults... })
