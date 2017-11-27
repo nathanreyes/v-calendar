@@ -13,7 +13,7 @@
     @drag='dragValue = $event'
     @input='updateValue'
     v-bind='$attrs'
-    v-on='$listeners'
+    v-on='filteredListeners()'
     v-if='isInline'>
   </component>
   <popover
@@ -50,9 +50,8 @@
       :attributes='attributes_'
       :date-validator='dateValidator'
       @drag='dragValue = $event'
-      @input='popoverInput'
       v-bind='$attrs'
-      v-on='$listeners'>
+      v-on='filteredListeners()'>
     </component>
   </popover>
 
@@ -65,7 +64,12 @@ import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
 import DateInfo from '../utils/dateInfo';
 import defaults from '../utils/defaults';
-import { getDateComps, getNextPage, getMaxPage, blendColors } from '../utils/helpers';
+import {
+  getDateComps,
+  getNextPage,
+  getMaxPage,
+  getLastArrayItem,
+  blendColors } from '../utils/helpers';
 
 export default {
   components: {
@@ -257,10 +261,6 @@ export default {
     toPage_(val) {
       this.$emit('update:toPage', val);
     },
-    dragValue(val) {
-      // Forward drag event
-      this.$emit('drag', val);
-    },
     mode() {
       // Clear value on select mode change
       this.$emit('input', null);
@@ -268,24 +268,44 @@ export default {
     suggestedInputText(val) {
       this.valueText = val;
     },
+    value() {
+      if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
+    },
   },
   created() {
     this.assignPageRange();
     this.valueText = this.suggestedInputText;
   },
   methods: {
+    filteredListeners() {
+      // Remove parent listeners that we want to intercept and re-broadcast
+      const listeners = { ...this.$listeners };
+      delete listeners['update:fromPage'];
+      delete listeners['update:toPage'];
+      return listeners;
+    },
     popoverDidDisappear() {
       this.assignPageRange();
     },
     assignPageRange() {
-      if (this.value) {
-        this.fromPage_ = this.value.start ? getDateComps(this.value.start) : getDateComps(this.value);
-        if (this.value.end) this.toPage_ = getMaxPage(getDateComps(this.value.end), getNextPage(this.fromPage_));
+      if (!this.value) return;
+      switch (this.mode) {
+        case 'single':
+          this.fromPage_ = getDateComps(this.value);
+          this.toPage_ = getNextPage(this.fromPage_);
+          break;
+        case 'multiple':
+          if (!this.value.length) return;
+          this.fromPage_ = getDateComps(this.value[0]);
+          this.toPage_ = getMaxPage(getDateComps(getLastArrayItem(this.value)), getNextPage(this.fromPage_));
+          break;
+        case 'range':
+          if (!this.value.start || !this.value.end) return;
+          this.fromPage_ = getDateComps(this.value.start);
+          this.toPage_ = getMaxPage(getDateComps(this.value.end), getNextPage(this.fromPage_));
+          break;
+        default:
       }
-    },
-    popoverInput(e) {
-      this.updateValue(e);
-      // if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
     },
     updateValue(value = this.valueText) {
       if (typeof value === 'string') {
@@ -293,7 +313,6 @@ export default {
       } else {
         this.$emit('input', value);
       }
-      if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
     },
     parseValue(valueText) {
       let value = null;

@@ -2,10 +2,10 @@
 <calendar
   :dayContentHoverStyle='dayContentHoverStyle_'
   :attributes='attributes_'
-  v-bind='$attrs'
-  v-on='$listeners'
   @daySelect='selectDay'
-  @dayMouseEnter='enterDay'>
+  @dayMouseEnter='enterDay'
+  v-bind='$attrs'
+  v-on='$listeners'>
 </calendar> 
 </template>
 
@@ -99,8 +99,6 @@ export default {
           this.$emit('input', newValue.toRange());
         }
       }
-      // Forward the event
-      this.$emit('daySelect', day);
     },
     enterDay(day) {
       // Make sure drag has been initialized
@@ -121,8 +119,6 @@ export default {
           this.dayContentHoverStyle_ = this.disabledAttribute.contentHoverStyle;
         }
       }
-      // Forward the event
-      this.$emit('dayMouseEnter', day);
     },
     // Ranges can privately have end date earlier than start date
     // This function will correct the order before exposing it to to other components

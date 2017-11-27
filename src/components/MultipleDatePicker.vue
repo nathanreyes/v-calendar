@@ -1,9 +1,9 @@
 <template>
 <calendar
   :attributes='attributes_'
+  @daySelect='selectDay'
   v-bind='$attrs'
-  v-on='$listeners'
-  @daySelect='selectDay'>
+  v-on='$listeners'>
 </calendar>
 </template>
 
@@ -51,8 +51,6 @@ export default {
           this.$emit('input', [...this.value, day.date].sort((a, b) => a.getTime() - b.getTime()));
         }
       }
-      // Forward the event
-      this.$emit('daySelect', day);
     },
   },
 };

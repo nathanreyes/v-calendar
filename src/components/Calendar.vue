@@ -225,12 +225,4 @@ export default {
   border: 1px inset
   border-color: #e3e3e3
 
-.c-footer-container
-  // width: 100%
-
-.c-footer
-  display: flex
-  justify-content: center
-  padding: 5px 0
-
 </style>
