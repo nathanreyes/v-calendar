@@ -21,12 +21,10 @@
     <popover
       align='center'
       transition='fade'
-      :visibility='popover ? "visible" : "hidden"'
-      :visible-delay='0'
-      :hidden-delay='0'>
+      :visibility='isHovered && popover ? "visible" : "hidden"'>
       <div
         ref='dayContent'
-        :class='["c-day-content", { "c-day-not-in-month": !inMonth }]'
+        class='c-day-content'
         :style='contentStyle_'
         @touchstart.passive='touchstart'
         @touchend.passive='touchend'
@@ -76,7 +74,7 @@
 <script>
 import Popover from './Popover';
 import defaults from '../utils/defaults';
-import { getLastArrayItem } from '../utils/helpers';
+import { getLastArrayItem, objectFromArray } from '../utils/helpers';
 
 export default {
   components: {
@@ -112,16 +110,14 @@ export default {
   },
   computed: {
     dayCellStyle() {
-      return this.styles.dayCell;
-      // return this.inMonth ? this.styles.dayCell : {
-      //   ...this.styles.dayCell,
-      //   ...this.styles.dayCellNotInMonth,
-      // };
+      return this.inMonth ? this.styles.dayCell : {
+        ...this.styles.dayCell,
+        ...this.styles.dayCellNotInMonth,
+      };
     },
     contentStyle_() {
       let style = this.contentStyle;
       if (this.isHovered) style = { ...style, ...this.contentHoverStyle };
-      if (!this.inMonth) style = { ...style, ...this.styles.dayCellNotInMonth };
       return style;
     },
     hasBackgrounds() {
@@ -144,6 +140,9 @@ export default {
         this.backgrounds.map(b => b.highlight) :
         [];
     },
+    attributesMap() {
+      return objectFromArray(this.attributes);
+    },
     dayInfo() {
       return {
         day: this.day,
@@ -156,7 +155,7 @@ export default {
         inMonth: this.inMonth,
         inPrevMonth: this.inPrevMonth,
         inNextMonth: this.inNextMonth,
-        attributes: this.attributes,
+        attributes: this.attributesMap,
         el: this.$refs.dayContent,
       };
     },
@@ -346,11 +345,8 @@ export default {
 .c-day
   position: relative
   flex-grow: 1
-  // overflow: hidden
+  overflow: hidden
   height: $dayHeight
-
-.c-day-not-in-month
-  opacity: $dayNotInMonthOpacity
 
 .c-day-layer
   position: absolute

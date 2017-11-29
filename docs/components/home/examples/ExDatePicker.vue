@@ -11,7 +11,7 @@
     :is-inline='isInline'
     :is-expanded='isExpanded'
     :popover-expanded='popoverExpanded'
-    :popover-visibility='"visible"'
+    :popover-visibility='popoverVisibility'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
     inputClass='input'

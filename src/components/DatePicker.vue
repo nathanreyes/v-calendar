@@ -22,7 +22,6 @@
   :is-expanded='popoverExpanded'
   :content-style='popoverContentStyle'
   :force-hidden.sync='popoverForceHidden'
-  :force-hidden-delay='400'
   @didDisappear='popoverDidDisappear'
   v-else>
   <slot
@@ -185,6 +184,7 @@ export default {
         ...this.themeStyles,
       };
       // Strip border from the wrapper when used in a popover
+      // It will get applied to the popover content style instead so that the caret inherits it
       if (!this.isInline) {
         styles.wrapper = {
           ...styles.wrapper,
@@ -196,7 +196,9 @@ export default {
     popoverContentStyle() {
       return {
         ...this.themeStyles.wrapper,
+        ...this.themeStyles.header,
         padding: '0',
+        margin: '0',
       };
     },
     selectAttribute_() {
@@ -272,7 +274,11 @@ export default {
       this.valueText = val;
     },
     value() {
-      if (!this.popoverKeepVisibleOnInput) this.popoverForceHidden = true;
+      // Hide popover on value selection unless user wants to keep it open
+      if (!this.popoverKeepVisibleOnInput) {
+        // Add a little delay to allow the animation to reinforce the selection
+        setTimeout(() => { this.popoverForceHidden = true; }, 400);
+      }
     },
   },
   created() {

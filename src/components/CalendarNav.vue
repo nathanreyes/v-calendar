@@ -3,8 +3,6 @@
 <div class='c-nav'>
   <!--Nav months-->
   <div
-    key='months'
-    class='c-nav-months-container'
     v-if='mode_ === "month"'>
     <!--Months header-->
     <div class='c-header'>
@@ -28,45 +26,41 @@
       </span>
     </div>
     <!--Months table-->
-    <div class='c-nav-months'>
-      <table class='c-table'>
-        <tr v-for='(row, i) in monthRows' :key='i'>
-          <td
-            v-for='item in row'
-            :key='item.month'>
+    <table class='c-table'>
+      <tr v-for='(row, i) in monthRows' :key='i'>
+        <td
+          v-for='item in row'
+          :key='item.month'>
+          <div
+            class='c-table-cell'
+            :class='{ "c-active": item.isActive, "c-disabled": item.isDisabled }'
+            @click='monthClick(item.month)'>
+            <!--Month label-->
             <div
-              class='c-table-cell'
-              :class='{ "c-active": item.isActive, "c-disabled": item.isDisabled }'
-              @click='monthClick(item.month)'>
-              <!--Month label-->
-              <div
-                class='c-label'
-                :class='{ "has-indicators": item.attributes }'>
-                {{ item.label.substring(0, 3) }}
-              </div>
-              <!--Attribute indicators-->
-              <transition name='indicators'>
-                <div
-                  v-if='item.attributes'
-                  class='c-indicators'>
-                  <span
-                    class='c-indicator'
-                    v-for='attribute in item.attributes'
-                    :key='attribute.key'
-                    :style='attribute.style'>
-                  </span>
-                </div>
-              </transition>
+              class='c-label'
+              :class='{ "has-indicators": item.attributes }'>
+              {{ item.label.substring(0, 3) }}
             </div>
-          </td>
-        </tr>
-      </table>
-    </div>
+            <!--Attribute indicators-->
+            <transition name='indicators'>
+              <div
+                v-if='item.attributes'
+                class='c-indicators'>
+                <span
+                  class='c-indicator'
+                  v-for='attribute in item.attributes'
+                  :key='attribute.key'
+                  :style='attribute.style'>
+                </span>
+              </div>
+            </transition>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
   <!--Nav years-->
   <div
-    key='years'
-    class='c-nav-years-container'
     v-if='mode_ === "year"'>
     <div class='c-header'>
       <!--Previous year group button-->
@@ -89,22 +83,20 @@
       </span>
     </div>
     <!--Years table-->
-    <div class='c-nav-years'>
-      <table class='c-table'>
-        <tr v-for='(row, i) in yearRows' :key='i'>
-          <td
-            v-for='item in row'
-            :key='item.year'>
-            <div
-              class='c-table-cell'
-              :class='{ "c-active": item.year === year, "c-disabled": item.isDisabled }'
-              @click='yearClick(item.year)'>
-              <span class='c-label'>{{ item.year }}</span>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
+    <table class='c-table'>
+      <tr v-for='(row, i) in yearRows' :key='i'>
+        <td
+          v-for='item in row'
+          :key='item.year'>
+          <div
+            class='c-table-cell'
+            :class='{ "c-active": item.year === year, "c-disabled": item.isDisabled }'
+            @click='yearClick(item.year)'>
+            <span class='c-label'>{{ item.year }}</span>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
 </template>

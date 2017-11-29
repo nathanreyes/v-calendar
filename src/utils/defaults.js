@@ -3,7 +3,7 @@ import locales from './locales';
 
 const defaults = {
   themeStyles: {
-    // wrapper: null,
+    wrapper: { backgroundColor: '#fafafa', border: '1px solid #dadada' },
     verticalDivider: { borderLeft: '1px solid #dadada' },
     // header: null,
     // headerTitle: null,
@@ -16,7 +16,7 @@ const defaults = {
     // weeks: null,
     // weeksVerticalDivider: null,
     // dayCell: null,
-    // dayCellNotInMonth: null,
+    dayCellNotInMonth: { opacity: 0.4 },
     // dayContent: null,
     // dayContentHover: null,
     // dots: null,
@@ -48,21 +48,21 @@ const defaults = {
   highlight: {
     animated: true,
     height: '1.8rem',
-    backgroundColor: '#65999a',
+    backgroundColor: '#66b3cc',
     borderWidth: '0',
     borderStyle: 'solid',
     borderRadius: '1.8rem',
   },
   dot: {
     diameter: '5px',
-    backgroundColor: '#65999a',
+    backgroundColor: '#66b3cc',
     borderWidth: '0',
     borderStyle: 'solid',
     borderRadius: '50%',
   },
   bar: {
     height: '3px',
-    backgroundColor: '#65999a',
+    backgroundColor: '#66b3cc',
     borderWidth: '0',
     borderStyle: 'solid',
   },

@@ -50,18 +50,6 @@ export default {
           padding: '20px 5px 10px 5px',
         },
       },
-      headerDividerColor: '#404c59',
-      weekdayStyle: {
-        color: '#2ecdba',
-        fontWeight: '600',
-        border: 'solid #8f9aab',
-        borderWidth: '1px 0 0 0',
-        padding: '20px 5px 10px 5px',
-      },
-      dayContentStyle: {
-        color: '#fafafa',
-        fontSize: '0.9em',
-      },
       attributes: [
         {
           highlight: {

@@ -28,12 +28,12 @@
             <!--Navigation popover--> 
             <popover
               class='c-title-popover'
-              visibility='hover'
+              visibility='focus'
               direction='bottom'
               :align='titlePosition'
               :content-style='{ padding: "0" }'
               :force-hidden.sync='navForceHidden'
-              :force-hidden-delay='140'>
+              toggle-visible-on-click>
               <!--Title content-->
               <transition-group
                 tag='div'
@@ -44,8 +44,7 @@
                   :style='titleStyle'
                   v-for='p in pages'
                   :key='p.key'
-                  v-if='p === page_'
-                  @click='$emit("titleClick", p)'>
+                  v-if='p === page_'>
                   <slot
                     name='header-title'>
                     {{ `${p.monthLabel} ${p.yearLabel}` }}
@@ -122,7 +121,9 @@
         <transition-group
           tag='div'
           class='c-weeks-rows-wrapper'
-          :name='weeksTransition_'>
+          :name='weeksTransition_'
+          @before-enter='weeksTransitioning = true'
+          @after-enter='weeksTransitioning = false'>
           <calendar-weeks
             class='c-weeks-rows'
             v-for='p in pages'
@@ -196,6 +197,7 @@ export default {
       transitionDirection: '',
       touchState: {},
       navForceHidden: false,
+      weeksTransitioning: false,
     };
   },
   computed: {
@@ -241,7 +243,10 @@ export default {
       return this.styles.weekdaysHorizontalDivider;
     },
     weeksStyle_() {
-      return this.getDividerStyle(this.styles.weeks);
+      return {
+        ...this.getDividerStyle(this.styles.weeks),
+        ...(this.weeksTransitioning ? { overflow: 'hidden' } : null),
+      };
     },
     canMovePrevMonth() {
       return this.canMove(this.page_.prevMonthComps);
@@ -533,7 +538,6 @@ export default {
 
 .c-weeks-wrapper
   display: flex
-  overflow: hidden
 
 .c-weeks
   flex-grow: 1

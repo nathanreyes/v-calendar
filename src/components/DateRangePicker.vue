@@ -47,11 +47,12 @@ export default {
       return { ...this.selectAttribute, dates: [this.normalizedValue] };
     },
     rangeAttribute() {
-      return (this.dragValue || this.valueIsValid) ? {
+      return (this.dragValue) ? {
+        key: 'drag',
         popover: {
           component: DateRangeAttribute,
         },
-        dates: [this.dragValue ? new Date(this.dragValue.end) : new Date(this.value.end)],
+        dates: [this.dragValue],
       } : null;
     },
     attributes_() {

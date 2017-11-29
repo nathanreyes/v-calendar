@@ -208,8 +208,6 @@ export default {
   display: inline-flex
   min-width: $paneWidth
   width: $paneWidth
-  background-color: $paneBgColor
-  border: $paneBorder
   &.is-double-paned
     min-width: $paneWidth * 2
     width: $paneWidth * 2

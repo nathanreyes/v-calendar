@@ -1,5 +1,6 @@
-- Add day-height back as a prop
-- Code copy button does not work
+DONE - Popover infringes on trigger content
+DONE - Find solution for popover content styling without overflow = hidden
+DONE - Fix header title nav appearance
 
 CALENDAR
 

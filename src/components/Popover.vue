@@ -1,46 +1,43 @@
 <template>
-  <div
-    ref='popover'
-    :class='["popover-container", { expanded: isExpanded }]'
-    :tabindex='visibilityIsManaged ? 0 : undefined'
-    @focusin='focusin'
-    @focusout='focusout'
-    @mouseleave='mouseleave'
-    @mouseover='mouseover'>
-    <transition
-      :name='transition'
-      tag='div'
-      @before-enter='beforeContentEnter'
-      @after-enter='afterContentEnter'
-      @before-leave='beforeContentLeave'
-      @after-leave='afterContentLeave'>
+<div
+  ref='popover'
+  :class='["popover-container", { expanded: isExpanded }]'
+  :tabindex='visibilityIsManaged ? 0 : undefined'
+  @focusin='focusin'
+  @focusout='focusout'
+  @mouseleave='mouseleave'
+  @mouseover='mouseover'
+  @click.stop='click'>
+  <transition
+    tag='div'
+    :name='transition'
+    @before-enter='beforeContentEnter'
+    @after-enter='afterContentEnter'
+    @before-leave='beforeContentLeave'
+    @after-leave='afterContentLeave'>
+    <div
+      ref='popoverOrigin'
+      :class='["popover-origin", "direction-" + direction, "align-" + align]'
+      v-if='visible'>
       <div
-        ref='popoverOrigin'
-        :class='["popover-origin", "direction-" + direction, "align-" + align]'
-        v-if='visible'>
+        ref='popoverContentWrapper'
+        :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'
+        :style='contentWrapperStyle'>
         <div
-          ref='popoverContentWrapper'
-          :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'
-          :style='contentWrapperStyle'>
-          <div
-            ref='popoverContent'
-            :class='["popover-content", "direction-" + direction, "align-" + align]'
-            :style='contentStyle_'>
-            <div
-              class='popover-content-mask'
-              :style='maskStyle_'>
-              <slot name='popover-content'>
-                <div>Popover content goes here</div>
-              </slot>
-            </div>
-          </div>
+          ref='popoverContent'
+          :class='["popover-content", "direction-" + direction, "align-" + align]'
+          :style='contentStyle'>
+          <slot name='popover-content'>
+            <div>Popover content goes here</div>
+          </slot>
         </div>
       </div>
-    </transition>
-    <slot>
-      <div>Popover trigger goes here</div>
-    </slot>
-  </div>
+    </div>
+  </transition>
+  <slot>
+    <span>Popover trigger goes here</span>
+  </slot>
+</div>
 </template>
 
 <script>
@@ -55,6 +52,7 @@ export default {
     align: { type: String, default: () => defaults.popoverAlign },
     visibility: { type: String, default: () => defaults.popoverVisibility },
     forceHidden: Boolean,
+    toggleVisibleOnClick: Boolean, // Only valid when visibility === "focus"
     contentStyle: Object,
     contentOffset: { type: String, default: () => defaults.popoverContentOffset },
     transition: { type: String, default: 'slide-fade' },
@@ -62,28 +60,14 @@ export default {
   data() {
     return {
       visibleManaged: false,
-      touchState: null,
       contentTransitioning: false,
+      disableNextClick: false,
     };
   },
   computed: {
     contentWrapperStyle() {
       const style = {};
-      style[`margin${this.contentOffsetDirection}`] = `-${this.contentOffset}`;
       style[`padding${this.contentOffsetDirection}`] = this.contentOffset;
-      return style;
-    },
-    contentStyle_() {
-      const style = { ...this.contentStyle };
-      style[`margin${this.contentOffsetDirection}`] = this.contentOffset;
-      delete style.zIndex;
-      delete style.padding;
-      return style;
-    },
-    maskStyle_() {
-      const cs = this.contentStyle;
-      const style = {};
-      if (cs && cs.padding) style.padding = cs.padding;
       return style;
     },
     contentOffsetDirection() {
@@ -114,43 +98,31 @@ export default {
     },
   },
   created() {
-    window.addEventListener('touchstart', this.touchStart);
-    window.addEventListener('touchend', this.touchEnd);
+    window.addEventListener('click', this.windowClick);
   },
   methods: {
-    touchStart(e) {
-      if (!this.viewTouched(e.target)) {
-        const t = e.targetTouches[0];
-        this.touchState = {
-          started: true,
-          startedOn: new Date(),
-          startX: t.screenX,
-          startY: t.screenY,
-          x: t.screenX,
-          y: t.screenY,
-        };
+    focusin() {
+      if (this.visibility === VISIBILITIES.FOCUS && !this.visibleManaged && !this.contentTransitioning) {
+        this.visibleManaged = true;
+        this.disableNextClick = true;
       }
     },
-    viewTouched(element) {
-      if (element === this.$refs.popover) return element;
-      if (element.parentNode) return this.viewTouched(element.parentNode);
-      return undefined;
+    click(e) {
+      if (
+        this.visibility === VISIBILITIES.FOCUS
+        && this.toggleVisibleOnClick
+        && !this.contentTransitioning
+        && elementHasAncestor(e.target, this.$refs.popover)
+        && !elementHasAncestor(e.target, this.$refs.popoverOrigin)) {
+        if (!this.disableNextClick) {
+          this.visibleManaged = !this.visibleManaged;
+        }
+      }
+      this.disableNextClick = false;
     },
-    touchEnd(e) {
-      if (!this.touchState || !this.touchState.started) return;
-      const t = e.changedTouches[0];
-      const state = this.touchState;
-      state.x = t.screenX;
-      state.y = t.screenY;
-      state.tapDetected = new Date() - state.startedOn <= defaults.maxTapDuration &&
-        Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
-        Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
-      if (state.tapDetected) this.visibleManaged = false;
-      state.started = false;
-    },
-    focusin() {
-      if (this.visibility === VISIBILITIES.FOCUS && !this.visibleManaged) {
-        this.visibleManaged = true;
+    windowClick(e) {
+      if (this.visibility === VISIBILITIES.FOCUS && this.visibleManaged && !elementHasAncestor(e.target, this.$refs.popover)) {
+        this.visibleManaged = false;
       }
     },
     focusout(e) {
@@ -158,16 +130,14 @@ export default {
         this.visibleManaged = false;
       }
     },
-    mouseleave() {
-      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden) {
-        this.visibleManaged = false;
+    mouseover() {
+      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !this.contentTransitioning) {
+        this.visibleManaged = true;
       }
     },
-    mouseover(e) {
-      const ignoreHover = e.target === this.$refs.popoverOrigin;
-      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden) {
-        // Show if moused over, but ignore the popover origin because it is transformed
-        this.visibleManaged = !ignoreHover;
+    mouseleave(e) {
+      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+        this.visibleManaged = false;
       }
     },
     beforeContentEnter() {
@@ -207,6 +177,7 @@ export default {
   position: absolute
   transform-origin: top center
   z-index: 10
+  pointer-events: none
   &.direction-top
     bottom: 100%
   &.direction-bottom
@@ -233,6 +204,7 @@ export default {
   .popover-content-wrapper
     position: relative
     outline: none
+    pointer-events: initial
     &.align-center
       transform: translateX(-50%)
     &.align-middle
@@ -243,12 +215,7 @@ export default {
       border: $popoverBorder
       border-radius: $popoverBorderRadius
       box-shadow: $popoverBoxShadow
-      .popover-content-mask
-        position: relative
-        z-index: 10
-        border-radius: inherit
-        padding: $popoverPadding
-        overflow: hidden
+      padding: $popoverPadding
       &:after
         display: block
         position: absolute
@@ -259,22 +226,18 @@ export default {
         height: 12px
         content: ''
       &.direction-bottom
-        margin-top: $popoverOffset
         &:after
           top: 0
           border-width: 1px 1px 0 0
       &.direction-top
-        margin-bottom: $popoverOffset
         &:after
           top: 100%
           border-width: 0 0 1px 1px
       &.direction-left
-        margin-right: $popoverOffset
         &:after
           left: 100%
           border-width: 0 1px 1px 0
       &.direction-right
-        margin-left: $popoverOffset
         &:after
           left: 0
           border-width: 1px 0 0 1px

@@ -120,7 +120,7 @@ export const getLastArrayItem = (array, fallbackValue) => {
 export const elementHasAncestor = (el, ancestor) => {
   if (!el) return false;
   if (el === ancestor) return true;
-  return elementHasAncestor(el.parentElement);
+  return elementHasAncestor(el.parentElement, ancestor);
 };
 
 export const elementPositionInAncestor = (el, ancestor) => {
@@ -135,6 +135,11 @@ export const elementPositionInAncestor = (el, ancestor) => {
     top,
     left,
   };
+};
+
+export const objectFromArray = (array, keyProp = 'key') => {
+  if (!array || !array.length) return {};
+  return array.reduce((prev, curr) => ({ ...prev, ...{ [`${curr[keyProp]}`]: curr } }), {});
 };
 
 export const isMobile = {
