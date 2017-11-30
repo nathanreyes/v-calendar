@@ -50,6 +50,7 @@ export default {
       return (this.dragValue) ? {
         key: 'drag',
         popover: {
+          label: 'This is a test label.',
           component: DateRangeAttribute,
         },
         dates: [this.dragValue],

@@ -18,25 +18,17 @@
   </transition-group>
   <!-- Content layer -->
   <div class='c-day-layer c-day-box-center-center'>
-    <popover
-      align='center'
-      transition='fade'
-      :visibility='isHovered && popover ? "visible" : "hidden"'>
-      <div
-        ref='dayContent'
-        class='c-day-content'
-        :style='contentStyle_'
-        @touchstart.passive='touchstart'
-        @touchend.passive='touchend'
-        @click='click($event)'
-        @mouseenter='mouseenter'
-        @mouseleave='mouseleave'>
-        {{ label }}
-      </div>
-      <div slot='popover-content' v-if='popover'>
-        <component :is='popover.component' :dayInfo='dayInfo'></component>
-      </div>
-    </popover>
+    <div
+      ref='dayContent'
+      class='c-day-content'
+      :style='contentStyle_'
+      @touchstart.passive='touchstart'
+      @touchend.passive='touchend'
+      @click='click($event)'
+      @mouseenter='mouseenter'
+      @mouseleave='mouseleave'>
+      {{ label }}
+    </div>
   </div>
   <!-- Dots layer -->
   <div
@@ -155,7 +147,7 @@ export default {
         inMonth: this.inMonth,
         inPrevMonth: this.inPrevMonth,
         inNextMonth: this.inNextMonth,
-        attributes: this.attributesMap,
+        attributes: this.attributes,
         el: this.$refs.dayContent,
       };
     },

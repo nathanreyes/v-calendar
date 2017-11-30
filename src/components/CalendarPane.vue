@@ -1,161 +1,172 @@
 <template>
-  <div
-    :class='["c-pane", { "is-single": position === 0 }]'>
-    <!--Header-->
-    <div class='c-header-wrapper'>
-      <!--Header vertical divider-->
-      <div
-        :style='verticalDividers.header'
-        v-if='verticalDividers.header'>
-      </div>
-      <!--Header slot-->
-      <slot name='header' :page='page_'>
-        <div class='c-header' :style='headerStyle'>
-          <!--Header prev button-->
-          <div class='c-arrow-layout'>
-            <slot name='header-left-button' :page='page_'>
-              <span
-                class='c-arrow vc-angle-left'
-                :class='{ "c-disabled": !canMovePrevMonth }'
-                :style='arrowStyle'
-                @click='movePrevMonth'>
-              </span>
-            </slot>
-          </div>
-          <!--Header title-->
-          <div
-            :class='["c-title-layout", titleClass]'>   
-            <!--Navigation popover--> 
-            <popover
-              class='c-title-popover'
-              visibility='focus'
-              direction='bottom'
-              :align='titlePosition'
-              :content-style='{ padding: "0" }'
-              :force-hidden.sync='navForceHidden'
-              toggle-visible-on-click>
-              <!--Title content-->
-              <transition-group
-                tag='div'
-                class='c-title-anchor'
-                :name='titleTransition_'>
-                <div
-                  class='c-title'
-                  :style='titleStyle'
-                  v-for='p in pages'
-                  :key='p.key'
-                  v-if='p === page_'>
-                  <slot
-                    name='header-title'>
-                    {{ `${p.monthLabel} ${p.yearLabel}` }}
-                  </slot>
-                </div>
-              </transition-group>
-              <!--Navigation pane-->
-              <calendar-nav
-                slot='popover-content'
-                :month-labels='monthLabels'
-                :value='page_'
-                :validator='canMove'
-                :attributes='attributes'
-                @input='navPageSelected($event)'>
-              </calendar-nav>
-            </popover>
-          </div>
-          <!--Header next button-->
-          <div class='c-arrow-layout'>
-            <slot name='header-right-button' :page='page_'>
-              <span
-                class='c-arrow vc-angle-right'
-                :class='{ "c-disabled": !canMoveNextMonth }'
-                :style='arrowStyle'
-                @click='moveNextMonth'>
-              </span>
-            </slot>
-          </div>
-        </div>
-      </slot>
-    </div>
-    <!--Header horizontal divider-->
+<div
+  ref='pane'
+  :class='["c-pane", { "is-single": position === 0 }]'>
+  <!--Header-->
+  <div class='c-header-wrapper'>
+    <!--Header vertical divider-->
     <div
-      class='c-horizontal-divider'
-      :style='headerHorizontalDividerStyle_'
-      v-if='headerHorizontalDividerStyle_'>
+      :style='verticalDividers.header'
+      v-if='verticalDividers.header'>
     </div>
-    <!--Weekdays-->
-    <div class='c-weekdays-wrapper'>
-      <!--Weekday vertical divider-->
-      <div
-        :style='verticalDividers.weekdays'
-        v-if='verticalDividers.weekdays'>
-      </div>
-      <div
-        class='c-weekdays'
-        :style='weekdayStyle_'>
-        <!--Weekday labels-->
+    <!--Header slot-->
+    <slot name='header' :page='page_'>
+      <div class='c-header' :style='headerStyle'>
+        <!--Header prev button-->
+        <div class='c-arrow-layout'>
+          <slot name='header-left-button' :page='page_'>
+            <span
+              class='c-arrow vc-angle-left'
+              :class='{ "c-disabled": !canMovePrevMonth }'
+              :style='arrowStyle'
+              @click='movePrevMonth'>
+            </span>
+          </slot>
+        </div>
+        <!--Header title-->
         <div
-          v-for='weekday in weekdayLabels_'
-          :key='weekday'
-          class='c-weekday'>
-          {{ weekday }}
+          :class='["c-title-layout", titleClass]'>   
+          <!--Navigation popover--> 
+          <popover
+            class='c-title-popover'
+            visibility='focus'
+            direction='bottom'
+            :align='titlePosition'
+            :content-style='{ padding: "0" }'
+            :force-hidden.sync='navForceHidden'
+            toggle-visible-on-click>
+            <!--Title content-->
+            <transition-group
+              tag='div'
+              class='c-title-anchor'
+              :name='titleTransition_'>
+              <div
+                class='c-title'
+                :style='titleStyle'
+                v-for='p in pages'
+                :key='p.key'
+                v-if='p === page_'>
+                <slot
+                  name='header-title'>
+                  {{ `${p.monthLabel} ${p.yearLabel}` }}
+                </slot>
+              </div>
+            </transition-group>
+            <!--Navigation pane-->
+            <calendar-nav
+              slot='popover-content'
+              :month-labels='monthLabels'
+              :value='page_'
+              :validator='canMove'
+              :attributes='attributes'
+              @input='navPageSelected($event)'>
+            </calendar-nav>
+          </popover>
+        </div>
+        <!--Header next button-->
+        <div class='c-arrow-layout'>
+          <slot name='header-right-button' :page='page_'>
+            <span
+              class='c-arrow vc-angle-right'
+              :class='{ "c-disabled": !canMoveNextMonth }'
+              :style='arrowStyle'
+              @click='moveNextMonth'>
+            </span>
+          </slot>
         </div>
       </div>
-    </div>
-    <!--Weekday horizontal divider-->
+    </slot>
+  </div>
+  <!--Header horizontal divider-->
+  <div
+    class='c-horizontal-divider'
+    :style='headerHorizontalDividerStyle_'
+    v-if='headerHorizontalDividerStyle_'>
+  </div>
+  <!--Weekdays-->
+  <div class='c-weekdays-wrapper'>
+    <!--Weekday vertical divider-->
     <div
-      class='c-horizontal-divider'
-      :style='weekdaysHorizontalDividerStyle_'
-      v-if='weekdaysHorizontalDividerStyle_'>
+      :style='verticalDividers.weekdays'
+      v-if='verticalDividers.weekdays'>
     </div>
-    <!--Weeks-->
-    <div class='c-weeks-wrapper'>
-      <!--Weeks vertical divider-->
+    <div
+      class='c-weekdays'
+      :style='weekdayStyle_'>
+      <!--Weekday labels-->
       <div
-        :style='verticalDividers.weeks'
-        v-if='verticalDividers.weeks'>
-      </div>
-      <!--Week rows-->
-      <div
-        class='c-weeks'
-        :style='weeksStyle_'>
-        <transition-group
-          tag='div'
-          class='c-weeks-rows-wrapper'
-          :name='weeksTransition_'
-          @before-enter='weeksTransitioning = true'
-          @after-enter='weeksTransitioning = false'>
-          <calendar-weeks
-            class='c-weeks-rows'
-            v-for='p in pages'
-            :key='p.key'
-            :month='p.month'
-            :year='p.year'
-            :is-leap-year='p.isLeapYear'
-            :days-in-month='p.daysInMonth'
-            :first-weekday-in-month='p.firstWeekdayInMonth'
-            :prev-month-comps='p.prevMonthComps'
-            :next-month-comps='p.nextMonthComps'
-            :first-day-of-week='firstDayOfWeek'
-            :styles='styles'
-            :attributes='attributes'
-            v-bind='$attrs'
-            @touchstart.passive='touchStart($event)'
-            @touchmove.passive='touchMove($event)'
-            @touchend.passive='touchEnd($event)'
-            v-on='$listeners'
-            v-if='p === page_'>
-          </calendar-weeks>
-        </transition-group> 
+        v-for='weekday in weekdayLabels_'
+        :key='weekday'
+        class='c-weekday'>
+        {{ weekday }}
       </div>
     </div>
   </div>
+  <!--Weekday horizontal divider-->
+  <div
+    class='c-horizontal-divider'
+    :style='weekdaysHorizontalDividerStyle_'
+    v-if='weekdaysHorizontalDividerStyle_'>
+  </div>
+  <!--Weeks-->
+  <div class='c-weeks-wrapper'>
+    <!--Weeks vertical divider-->
+    <div
+      :style='verticalDividers.weeks'
+      v-if='verticalDividers.weeks'>
+    </div>
+    <!--Week rows-->
+    <div
+      class='c-weeks'
+      :style='weeksStyle_'>
+      <transition-group
+        tag='div'
+        class='c-weeks-rows-wrapper'
+        :name='weeksTransition_'
+        @before-enter='weeksTransitioning = true'
+        @after-enter='weeksTransitioning = false'>
+        <calendar-weeks
+          class='c-weeks-rows'
+          v-for='p in pages'
+          :key='p.key'
+          :month='p.month'
+          :year='p.year'
+          :is-leap-year='p.isLeapYear'
+          :days-in-month='p.daysInMonth'
+          :first-weekday-in-month='p.firstWeekdayInMonth'
+          :prev-month-comps='p.prevMonthComps'
+          :next-month-comps='p.nextMonthComps'
+          :first-day-of-week='firstDayOfWeek'
+          :styles='styles'
+          :attributes='attributes'
+          v-bind='$attrs'
+          @dayMouseEnter='dayMouseEnter'
+          @dayMouseLeave='dayMouseLeave'
+          @touchstart.passive='touchStart($event)'
+          @touchmove.passive='touchMove($event)'
+          @touchend.passive='touchEnd($event)'
+          v-on='$listeners'
+          v-if='p === page_'>
+        </calendar-weeks>
+      </transition-group> 
+    </div>
+  </div>
+  <calendar-day-popover
+    align='center'
+    transition='fade'
+    content-offset='8px'
+    :day-info='popoverDayInfo'
+    is-dark>
+  </calendar-day-popover>
+</div>
 </template>
 
 <script>
 import Vue from 'vue';
+import Popover from './Popover';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
-import Popover from './Popover';
+import CalendarDayPopover from './CalendarDayPopover';
 import defaults from '../utils/defaults';
 
 import {
@@ -173,6 +184,7 @@ export default {
   components: {
     CalendarWeeks,
     CalendarNav,
+    CalendarDayPopover,
     Popover,
   },
   props: {
@@ -198,6 +210,7 @@ export default {
       touchState: {},
       navForceHidden: false,
       weeksTransitioning: false,
+      popoverDayInfo: null,
     };
   },
   computed: {
@@ -273,6 +286,12 @@ export default {
     this.preloadPages();
   },
   methods: {
+    dayMouseEnter(d) {
+      this.popoverDayInfo = d;
+    },
+    dayMouseLeave() {
+      this.popoverDayInfo = null;
+    },
     navPageSelected(page) {
       this.navForceHidden = true;
       this.move(page);
@@ -462,6 +481,7 @@ export default {
   display: flex
   flex-direction: column
   align-items: stretch
+  position: relative
   &.is-single
     width: 100%
 
