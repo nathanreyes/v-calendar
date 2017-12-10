@@ -43,6 +43,7 @@ module.exports = {
     'import/no-duplicates': 'off',
     'import/no-webpack-loader-syntax': 'off',
     'import/first': 'off',
+    'import/prefer-default-export': 'off',
     'no-console': 'off',
   }
 }

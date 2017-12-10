@@ -28,14 +28,19 @@ export default {
             color: 'white',
           },
           dates: [
-            // Use date ranges
+            // Use single dates
+            new Date(nextMonthYear, nextMonth, 6),
+            new Date(nextMonthYear, nextMonth, 23),
+            // ...or date ranges
             {
               start: new Date(thisMonthYear, thisMonth, 1),
               end: new Date(thisMonthYear, thisMonth, 4),
             },
-            // Or single dates
-            new Date(nextMonthYear, nextMonth, 6),
-            new Date(nextMonthYear, nextMonth, 23),
+            // ...or complex date patterns
+            {
+              start: new Date(thisMonthYear, thisMonth, 1),
+              ordinalWeekdays: { [-1]: 7 }, // Last Saturday of the month
+            },
           ],
         },
         {

@@ -12,6 +12,8 @@
 <script>
 import Calendar from './Calendar';
 import DateInfo from '../utils/dateInfo';
+import defaults from '../utils/defaults';
+import { rangeHasValue } from '../utils/pickerProfiles';
 
 export default {
   components: {
@@ -19,9 +21,11 @@ export default {
   },
   props: {
     value: { type: Object, default: () => {} },
-    dragAttribute: { type: Object, required: true },
-    selectAttribute: { type: Object, required: true },
-    disabledAttribute: { type: Object, required: true },
+    selectColor: { type: String, default: () => defaults.datePickerSelectColor },
+    dragColor: { type: String, default: () => defaults.datePickerDragColor },
+    dragAttribute: Object,
+    selectAttribute: Object,
+    disabledAttribute: Object,
     dayContentHoverStyle: Object,
     dateValidator: Function,
     attributes: Array,
@@ -33,29 +37,30 @@ export default {
     };
   },
   computed: {
-    valueIsValid() {
-      return this.value && this.value.start && this.value.end;
-    },
-    normalizedValue() {
-      return this.normalizeRange(this.value);
-    },
-    dragValueInfo() {
-      return new DateInfo(this.dragValue);
-    },
     dragAttribute_() {
-      return { ...this.dragAttribute, dates: [this.dragValueInfo] };
+      const normValue = this.normalizeRange(this.dragValue);
+      if (!normValue) return null;
+      return {
+        ...defaults.datePickerDragAttribute(this.dragColor),
+        ...this.dragAttribute,
+        dates: [this.dragValue],
+      };
     },
     selectAttribute_() {
-      return { ...this.selectAttribute, dates: [this.normalizedValue] };
+      const normValue = this.normalizeRange(this.value);
+      if (!normValue) return null;
+      return {
+        ...defaults.datePickerSelectAttribute(this.selectColor),
+        ...this.selectAttribute,
+        dates: [normValue],
+      };
     },
     attributes_() {
-      if (this.dragValue) {
-        return this.attributes ? [...this.attributes, this.dragAttribute_] : [this.dragAttribute_];
-      }
-      if (this.valueIsValid) {
-        return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
-      }
-      return this.attributes;
+      const attributes = [...this.attributes];
+      if (this.dragAttribute_) attributes.push(this.dragAttribute_);
+      else if (this.selectAttribute_) attributes.push(this.selectAttribute_);
+      if (this.disabledAttribute) attributes.push(this.disabledAttribute);
+      return attributes;
     },
   },
   watch: {
@@ -77,53 +82,48 @@ export default {
       this.$emit('dayTouchStart', day);
     },
     selectDay(day) {
+      // Done if date selection is invalid
+      if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) return;
       // Start new drag selection if not dragging
       if (!this.dragValue) {
         // Make sure date selection is valid
-        const date = new Date(day.date.getTime());
-        if (this.dateValidator(date, 'selectDisabled')) {
-          // Start new drag selection
-          this.dragValue = { start: date, end: date };
-        }
+        const date = new Date(day.dateTime);
+        // Start new drag selection
+        this.dragValue = { start: date, end: date };
       } else {
         // Construct new value
         const newValue = new DateInfo({
           start: new Date(this.dragValue.start.getTime()),
-          end: new Date(day.date.getTime()),
+          end: new Date(day.dateTime),
         });
-        // Make sure new value is valid
-        if (this.dateValidator(newValue, 'selectDisabled')) {
-          // Clear drag selection
-          this.dragValue = null;
-          // Signal new value selected
-          this.$emit('input', newValue.toRange());
-        }
+        // Clear drag selection
+        this.dragValue = null;
+        // Signal new value selected
+        this.$emit('input', newValue.toRange());
       }
     },
     enterDay(day) {
       // Make sure drag has been initialized
       if (this.dragValue) {
-        // Construct new drag value
-        const newDragValue = {
-          start: new Date(this.dragValue.start.getTime()),
-          end: new Date(day.date.getTime()),
-        };
         // Make sure dragged value is valid
-        if (this.dateValidator(newDragValue, 'dragDisabled')) {
-          // Update drag selection
-          this.dragValue = newDragValue;
-          // Assign default content hover style
-          this.dayContentHoverStyle_ = this.dayContentHoverStyle;
-        } else {
+        if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) {
           // Assign disabled content hover style
           this.dayContentHoverStyle_ = this.disabledAttribute.contentHoverStyle;
+        } else {
+          // Update drag selection
+          this.dragValue = {
+            start: new Date(this.dragValue.start.getTime()),
+            end: new Date(day.dateTime),
+          };
+          // Assign default content hover style
+          this.dayContentHoverStyle_ = this.dayContentHoverStyle;
         }
       }
     },
     // Ranges can privately have end date earlier than start date
     // This function will correct the order before exposing it to to other components
     normalizeRange(range) {
-      if (!range) return null;
+      if (!rangeHasValue(range)) return null;
       const { start, end } = range;
       const startTime = start.getTime();
       const endTime = end.getTime();
