@@ -21,20 +21,16 @@
 </template>
 
 <script>
-import { getExampleMonthComps } from '@/utils/helpers';
-
-const { thisMonth, thisMonthYear, nextMonth, nextMonthYear } = getExampleMonthComps();
-
 export default {
   props: {
-    mode: { type: String, default: 'range' },
+    mode: { type: String, default: 'single' },
     selectColor: { type: String, default: '#66b3cc' },
     dragColor: { type: String, default: '#9fcfdf' },
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,
     popoverExpanded: Boolean,
-    popoverVisibility: { type: String, default: 'hover' },
+    popoverVisibility: { type: String, default: 'visible' },
     popoverDirection: { type: String, default: 'bottom' },
     popoverAlign: { type: String, default: 'left' },
   },
@@ -42,16 +38,8 @@ export default {
     return {
       fromPage: null,
       toPage: null,
-      selectedValue: {
-        start: new Date(thisMonthYear, thisMonth, 6),
-        end: new Date(nextMonthYear, nextMonth, 25),
-      },
-      disabledDates: [
-        {
-          start: new Date(nextMonthYear, nextMonth, 26),
-          end: new Date(nextMonthYear, nextMonth, 28),
-        },
-      ],
+      selectedValue: new Date(),
+      disabledDates: { weekdays: [1, 7] },
       todayAttribute: {
         contentStyle: {
           color: '#ffffff',

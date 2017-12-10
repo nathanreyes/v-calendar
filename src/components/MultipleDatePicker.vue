@@ -9,6 +9,8 @@
 
 <script>
 import Calendar from './Calendar';
+import defaults from '../utils/defaults';
+import { multipleHasValue } from '../utils/pickerProfiles';
 
 export default {
   components: {
@@ -16,40 +18,40 @@ export default {
   },
   props: {
     value: { type: Array, default: () => [] },
-    selectAttribute: { type: Object, required: true },
+    selectColor: { type: String, default: () => defaults.datePickerSelectColor },
+    selectAttribute: Object,
+    disabledAttribute: Object,
     attributes: Array,
-    dateValidator: Function,
   },
   computed: {
-    hasValues() {
-      return Array.isArray(this.value) && this.value.length > 0;
-    },
-    valueTimes() {
-      if (!this.hasValues) return [];
-      return this.value.map(v => v.getTime());
-    },
     selectAttribute_() {
-      return { ...this.selectAttribute, dates: this.value };
+      if (!multipleHasValue(this.value)) return null;
+      return {
+        ...defaults.datePickerSelectAttribute(this.selectColor),
+        ...this.selectAttribute,
+        dates: this.value,
+      };
     },
     attributes_() {
-      if (!this.hasValues) return this.attributes;
-      return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
+      const attributes = [...this.attributes];
+      if (this.selectAttribute_) attributes.push(this.selectAttribute_);
+      if (this.disabledAttribute) attributes.push(this.disabledAttribute);
+      return attributes;
     },
   },
   methods: {
     selectDay(day) {
-      // Make sure date selection is valid
-      if (this.dateValidator(day.date, 'selectDisabled')) {
-        // Check if no values exist
-        if (!this.hasValues) {
-          this.$emit('input', [day.date]);
-        // Check if value contains the selected date
-        } else if (this.valueTimes.find(dt => dt === day.dateTime)) {
-          this.$emit('input', this.value.filter(v => v.getTime() !== day.dateTime));
-        // Value does not contain the selected date
-        } else {
-          this.$emit('input', [...this.value, day.date].sort((a, b) => a.getTime() - b.getTime()));
-        }
+      // Done if date selection is invalid
+      if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) return;
+      // Check if no values exist
+      if (!multipleHasValue(this.value)) {
+        this.$emit('input', [day.date]);
+      // Check if value contains the selected date
+      } else if (this.value.find(d => d.getTime() === day.dateTime)) {
+        this.$emit('input', this.value.filter(v => v.getTime() !== day.dateTime));
+      // Append selected date
+      } else {
+        this.$emit('input', [...this.value, day.date].sort((a, b) => a.getTime() - b.getTime()));
       }
     },
   },

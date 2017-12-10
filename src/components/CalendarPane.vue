@@ -58,7 +58,6 @@
                 :month-labels='monthLabels'
                 :value='page_'
                 :validator='canMove'
-                :attributes='attributes'
                 @input='navPageSelected($event)'>
               </calendar-nav>
             </popover>
@@ -127,16 +126,10 @@
             class='c-weeks-rows'
             v-for='p in pages'
             :key='p.key'
-            :month='p.month'
-            :year='p.year'
-            :is-leap-year='p.isLeapYear'
-            :days-in-month='p.daysInMonth'
-            :first-weekday-in-month='p.firstWeekdayInMonth'
+            :month-comps='p.monthComps'
             :prev-month-comps='p.prevMonthComps'
             :next-month-comps='p.nextMonthComps'
-            :first-day-of-week='firstDayOfWeek'
             :styles='styles'
-            :attributes='attributes'
             v-bind='$attrs'
             @touchstart.passive='touchStart($event)'
             @touchmove.passive='touchMove($event)'
@@ -159,9 +152,7 @@ import defaults from '../utils/defaults';
 
 import {
   todayComps,
-  getIsLeapYear,
   getMonthComps,
-  getThisMonthComps,
   getPrevMonthComps,
   getNextMonthComps,
   pageIsBeforePage,
@@ -181,12 +172,10 @@ export default {
     maxPage: Object,
     monthLabels: { type: Array, default: () => defaults.monthLabels },
     weekdayLabels: { type: Array, default: () => defaults.weekdayLabels },
-    firstDayOfWeek: { type: Number, default: () => defaults.firstDayOfWeek },
     styles: Object,
     titlePosition: { type: String, default: () => defaults.titlePosition },
     titleTransition: { type: String, default: () => defaults.titleTransition },
     weeksTransition: { type: String, default: () => defaults.weeksTransition },
-    attributes: Array,
   },
   data() {
     return {
@@ -201,7 +190,7 @@ export default {
   computed: {
     weekdayLabels_() {
       const labels = [];
-      for (let i = 1, d = this.firstDayOfWeek; i <= 7; i++, d += (d === 7) ? -6 : 1) {
+      for (let i = 1, d = defaults.firstDayOfWeek; i <= 7; i++, d += (d === 7) ? -6 : 1) {
         labels.push(this.weekdayLabels[d - 1]);
       }
       return labels;
@@ -376,29 +365,16 @@ export default {
       const key = `${year.toString()}.${month.toString()}`;
       let page = this.pages.find(p => (p.key === key));
       if (!page) {
-        const monthLabel = this.monthLabels[month - 1];
-        const yearLabel = year.toString();
-        const yearLabel2 = yearLabel.substring(2, 4);
-        const headerLabel = `${monthLabel} ${yearLabel}`;
-        const firstWeekdayInMonth = new Date(year, month - 1, 1).getDay() + 1;
-        const currMonthComps = getMonthComps(month, year);
-        const isLeapYear = getIsLeapYear(year);
-        const daysInMonth = currMonthComps.days;
-        const thisMonthComps = getThisMonthComps();
+        const monthComps = getMonthComps(month, year);
         const prevMonthComps = getPrevMonthComps(month, year);
         const nextMonthComps = getNextMonthComps(month, year);
         page = {
           key,
           month,
           year,
-          monthLabel,
-          yearLabel,
-          yearLabel_2: yearLabel2,
-          headerLabel,
-          isLeapYear,
-          daysInMonth,
-          firstWeekdayInMonth,
-          thisMonthComps,
+          monthLabel: this.monthLabels[month - 1],
+          yearLabel: year.toString(),
+          monthComps,
           prevMonthComps,
           nextMonthComps,
           canMove: pg => this.canMove(pg),
@@ -529,7 +505,7 @@ export default {
 
 .c-weekday
   +box()
-  flex-grow: 1
+  flex: 1
   cursor: default
 
 .c-weeks-wrapper

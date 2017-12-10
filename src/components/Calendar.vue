@@ -32,9 +32,7 @@
 <script>
 import CalendarPane from './CalendarPane';
 import Tag from './Tag';
-import '../assets/fonts/vcalendar/vcalendar.scss';
-import '../styles/lib.sass';
-import DateInfo from '../utils/dateInfo';
+import AttributeStore from '../utils/attributeStore';
 import defaults from '../utils/defaults';
 import {
   todayComps,
@@ -46,6 +44,8 @@ import {
   getPageBetweenPages,
   getFirstValidPage,
 } from '../utils/helpers';
+import '../assets/fonts/vcalendar/vcalendar.scss';
+import '../styles/lib.sass';
 
 export default {
   components: {
@@ -89,44 +89,7 @@ export default {
       return { ...defaults.themeStyles, ...this.themeStyles };
     },
     attributes_() {
-      if (!this.attributes || !this.attributes.length) return [];
-      return this.attributes.map((a, i) => {
-        const newAttribute = {
-          key: a.key || (i + 1).toString(),
-          dates: a.dates.map(d => (d instanceof DateInfo ? d : new DateInfo(d, a.order))),
-          order: a.order || 0,
-        };
-        if (a.highlight) {
-          newAttribute.highlight = {
-            ...defaults.highlight,
-            ...a.highlight,
-          };
-          if (!newAttribute.highlight.borderRadius) newAttribute.highlight.borderRadius = newAttribute.highlight.height;
-        }
-        if (a.dot) {
-          newAttribute.dot = {
-            ...defaults.dot,
-            ...a.dot,
-          };
-        }
-        if (a.bar) {
-          newAttribute.bar = {
-            ...defaults.bar,
-            ...a.bar,
-          };
-        }
-        if (a.contentStyle) {
-          newAttribute.contentStyle = {
-            ...a.contentStyle,
-          };
-        }
-        if (a.contentHoverStyle) {
-          newAttribute.contentHoverStyle = {
-            ...a.contentHoverStyle,
-          };
-        }
-        return newAttribute;
-      });
+      return AttributeStore(this.attributes);
     },
   },
   watch: {
@@ -166,15 +129,18 @@ export default {
       this.fromPage_ = getFirstValidPage(
         ...[
           this.fromPage,
-          { month: todayComps.month, year: todayComps.year }]
-            .map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
+          { month: todayComps.month, year: todayComps.year },
+        ].map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
         this.minPage,
         getPrevPage(this.maxPage),
       );
     },
     refreshToPage() {
       this.toPage_ = getFirstValidPage(
-        ...[this.toPage, getNextPage(this.fromPage_)].map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
+        ...[
+          this.toPage,
+          getNextPage(this.fromPage_),
+        ].map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
         this.maxPage,
         getNextPage(this.minPage),
       );

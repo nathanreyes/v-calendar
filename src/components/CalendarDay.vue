@@ -67,18 +67,8 @@ import defaults from '../utils/defaults';
 
 export default {
   props: {
-    label: String,
-    day: Number,
-    date: Date,
-    dateTime: Number,
-    weekday: Number,
-    week: Number,
-    month: Number,
-    year: Number,
-    inMonth: Boolean,
-    inPrevMonth: Boolean,
-    inNextMonth: Boolean,
-    attributes: Array,
+    dayInfo: { type: Object, required: true },
+    attributes: Object,
     styles: Object,
   },
   data() {
@@ -94,6 +84,15 @@ export default {
     };
   },
   computed: {
+    label() {
+      return this.dayInfo.label;
+    },
+    dateTime() {
+      return this.dayInfo.dateTime;
+    },
+    inMonth() {
+      return this.dayInfo.inMonth;
+    },
     dayCellStyle() {
       return this.inMonth ? this.styles.dayCell : {
         ...this.styles.dayCell,
@@ -103,6 +102,9 @@ export default {
     contentStyle_() {
       if (this.isHovered) return { ...this.contentStyle, ...this.contentHoverStyle };
       return this.contentStyle;
+    },
+    attributeDates() {
+      return this.attributes.find(this.dayInfo);
     },
     hasBackgrounds() {
       return this.backgrounds && this.backgrounds.length;
@@ -123,21 +125,6 @@ export default {
       return this.hasBackgrounds ?
         this.backgrounds.map(b => b.highlight) :
         [];
-    },
-    dayInfo() {
-      return {
-        day: this.day,
-        weekday: this.weekday,
-        week: this.week,
-        month: this.month,
-        year: this.year,
-        date: this.date,
-        dateTime: this.dateTime,
-        inMonth: this.inMonth,
-        inPrevMonth: this.inPrevMonth,
-        inNextMonth: this.inNextMonth,
-        attributes: this.attributes,
-      };
     },
   },
   watch: {
@@ -195,21 +182,21 @@ export default {
       const bars = [];
       const contentStyles = [];
       const contentHoverStyles = [];
-      if (this.attributes && this.attributes.length) {
-        // Cycle through each attribute
-        this.attributes.forEach((a) => {
+      // Get the day attributes
+      this
+        .attributeDates
+        .forEach(({ attribute, dateInfo }) => {
           // Add background for highlight if needed
-          if (a.highlight) backgrounds.push(this.getBackground(a));
+          if (attribute.highlight) backgrounds.push(this.getBackground(attribute, dateInfo));
           // Add dot if needed
-          if (a.dot) dots.push(this.getDot(a));
+          if (attribute.dot) dots.push(this.getDot(attribute, dateInfo));
           // Add bar if needed
-          if (a.bar) bars.push(this.getBar(a));
+          if (attribute.bar) bars.push(this.getBar(attribute, dateInfo));
           // Add content style if needed
-          if (a.contentStyle) contentStyles.push(a.contentStyle);
+          if (attribute.contentStyle) contentStyles.push(attribute.contentStyle);
           // Add content hover style if needed
-          if (a.contentHoverStyle) contentHoverStyles.push(a.contentHoverStyle);
+          if (attribute.contentHoverStyle) contentHoverStyles.push(attribute.contentHoverStyle);
         });
-      }
       // Assign day attributes
       this.backgrounds = backgrounds;
       this.dots = dots;
@@ -217,9 +204,8 @@ export default {
       this.contentStyle = Object.assign({}, this.styles.dayContent, ...contentStyles);
       this.contentHoverStyle = Object.assign({}, this.styles.dayContentHover, ...contentHoverStyles);
     },
-    getBackground(attribute) {
+    getBackground(attribute, dateInfo) {
       // Initialize the background object
-      const dateInfo = attribute.dateInfo;
       const highlight = attribute.highlight;
       const background = {
         key: attribute.key,
@@ -271,39 +257,35 @@ export default {
       }
       return background;
     },
-    getDot(attribute) {
-      const dot = attribute.dot;
-      const nDot = {
+    getDot(attribute, dateInfo) {
+      return {
         key: attribute.key,
-        dateInfo: attribute.dateInfo,
-        dot,
+        dateInfo,
+        dot: attribute.dot,
         style: {
-          width: dot.diameter,
-          height: dot.diameter,
-          backgroundColor: dot.backgroundColor,
-          borderColor: dot.borderColor,
-          borderWidth: dot.borderWidth,
-          borderStyle: dot.borderStyle,
-          borderRadius: dot.borderRadius,
+          width: attribute.dot.diameter,
+          height: attribute.dot.diameter,
+          backgroundColor: attribute.dot.backgroundColor,
+          borderColor: attribute.dot.borderColor,
+          borderWidth: attribute.dot.borderWidth,
+          borderStyle: attribute.dot.borderStyle,
+          borderRadius: attribute.dot.borderRadius,
         },
       };
-      return nDot;
     },
-    getBar(attribute) {
-      const bar = attribute.bar;
-      const nBar = {
+    getBar(attribute, dateInfo) {
+      return {
         key: attribute.key,
-        dateInfo: attribute.dateInfo,
-        bar,
+        dateInfo,
+        bar: attribute.bar,
         style: {
-          height: bar.height,
-          backgroundColor: bar.backgroundColor,
-          borderColor: bar.borderColor,
-          borderWidth: bar.borderWidth,
-          borderStyle: bar.borderStyle,
+          height: attribute.bar.height,
+          backgroundColor: attribute.bar.backgroundColor,
+          borderColor: attribute.bar.borderColor,
+          borderWidth: attribute.bar.borderWidth,
+          borderStyle: attribute.bar.borderStyle,
         },
       };
-      return nBar;
     },
   },
 };
@@ -320,7 +302,7 @@ export default {
 
 .c-day
   position: relative
-  flex-grow: 1
+  flex: 1
   overflow: hidden
   height: $dayHeight
 
