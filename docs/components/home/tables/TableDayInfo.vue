@@ -26,20 +26,36 @@ export default {
         description: 'Day number (1-31).',
       },
       {
+        propertyName: '<code>dayFromEnd: Number</code>',
+        description: 'Day number from the end of the month (1-31).',
+      },
+      {
         propertyName: '<code>weekday: Number</code>',
         description: 'Day weekday number (1-7, Sun-Sat).',
       },
       {
+        propertyName: '<code>weekdayOrdinal: Number</code>',
+        description: 'Weekday ordinal position from the start of the month (1-6).',
+      },
+      {
+        propertyName: '<code>weekdayOrdinalFromEnd: Number</code>',
+        description: 'Weekday ordinal position from the end of the month (1-6).',
+      },
+      {
         propertyName: '<code>week: Number</code>',
-        description: 'Number of week that contains this day (1-6).',
+        description: 'Week number from the start of the month (1-6).',
+      },
+      {
+        propertyName: '<code>weekFromEnd: Number</code>',
+        description: 'Week number from the end of the month (1-6).',
       },
       {
         propertyName: '<code>month: Number</code>',
-        description: 'Number of month that contains this day (1-12).',
+        description: 'Month number (1-12).',
       },
       {
         propertyName: '<code>year: Number</code>',
-        description: 'Number of year that contains this day.',
+        description: 'Year number.',
       },
       {
         propertyName: '<code>date: Date</code>',
