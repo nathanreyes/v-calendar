@@ -1,3 +1,13 @@
+## 0.4.0
+* Fix weekday labels not always having same exact width
+* Add support for complex attribute dates. Closes #7 and #12.
+* Add support for attribute `excludeDates`, date picker `availableDates`. Closes #19.
+* Add support for endless date ranges using null for start/end dates. Closes #20.
+* Add support for attaching custom data to attributes via `customData` property. Closes #21.
+
+## 0.3.3
+* Fix duplicate input event for inline date picker
+
 ## 0.3.2
 * Fix styling bug introduced by v0.3.1.
 

@@ -22,20 +22,6 @@
           </b-tab-item>
           <!--DatePicker Example Options-->
           <b-tab-item label='Options' icon='gear'>
-            <b-field grouped>
-              <b-field>
-                <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
-              </b-field>
-              <b-field>
-                <b-switch v-model='isInline'>Inline</b-switch>
-              </b-field>
-              <b-field v-if='isInline'>
-                <b-switch v-model='isExpanded'>Expanded</b-switch>
-              </b-field>
-              <b-field v-else>
-                <b-switch v-model='popoverExpanded'>Popover Expanded</b-switch>
-              </b-field>
-            </b-field>
             <b-field label='Mode'>
               <p class='control-offset'>
                 <b-radio v-model='mode' native-value='single'>Single</b-radio>
@@ -52,6 +38,21 @@
               </b-field>
             </b-field>
             <p class='tip'><strong>Note:</strong> Accepts color names, hex and rgb values</p>
+            <br />
+            <b-field grouped>
+              <b-field>
+                <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
+              </b-field>
+              <b-field>
+                <b-switch v-model='isInline'>Inline</b-switch>
+              </b-field>
+              <b-field v-if='isInline'>
+                <b-switch v-model='isExpanded'>Expanded</b-switch>
+              </b-field>
+              <b-field v-else>
+                <b-switch v-model='popoverExpanded'>Popover Expanded</b-switch>
+              </b-field>
+            </b-field>
             <div v-if='!isInline'>
               <b-field label='Popover Visibility'>
                 <p class='control-offset'>
@@ -122,13 +123,13 @@ export default {
   data() {
     return {
       exDatePickerCode: ExDatePickerCode,
-      mode: 'range',
+      mode: 'single',
       selectedValue: null,
       showDisabledDates: false,
       isInline: false,
       isExpanded: false,
-      popoverExpanded: false,
-      popoverVisibility: 'hover',
+      popoverExpanded: true,
+      popoverVisibility: 'visible',
       popoverVisibilities: ['hover', 'focus', 'visible', 'hidden'],
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],

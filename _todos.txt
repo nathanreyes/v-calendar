@@ -1,5 +1,4 @@
-- Add day-height back as a prop
-- Code copy button does not work
+- Add ordinalWeekday and ordinalWeekdayFromEnd props to dayInfo
 
 CALENDAR
 
@@ -20,3 +19,9 @@ Day cell overflow problem:
 For c-day classes, there is catch with setting overflow: hidden.
 If it is set, then sometimes a blank line can appear between day cell highlights.
 If it is not set, then transparent backgrounds can interfere with each other during animations.
+
+THOUGHTS:
+
+An attribute date specified as a range may also specify a filter function that slices up that range.
+If a filter function is specified, then a new scanEnd date will need to be calculated using a maxLength
+parameter on the date in order to know when to stop testing for a date match on that attribute.
