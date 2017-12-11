@@ -13,8 +13,14 @@
             <li>content styles</li>
             <li>content hover styles</li>
           </ul>
-          <p>A single attribute may include one of each. To specify which dates you would like to apply an attribute to, use an array of single date or date range objects (start and end date).</p>
-          <p>Any overlapping dates are ordered to display the most information possible but manual ordering is also supported.</p>
+          <p>A single attribute may include one of each. To specify which dates you would like to apply an attribute to, use an array of single date or date range objects (start and end date). Any overlapping dates are ordered to display the most information possible but manual ordering is also supported.</p>
+          <p>Another great feature is using complex date patterns to display attributes as well (details below). For example, here are a few examples of what kinds of patterns are supported:</p>
+          <ul>
+            <li>Every other Friday</li>
+            <li>1st and the 15th of every month</li>
+            <li>Last Saturday of the month</li>
+            <li>Every year on January 21st (...oh hey my birthday)</li>
+          </ul>
         </div>
       </div>
     </div>

@@ -55,6 +55,11 @@ export default {
         default: '<code>[]</code>',
       },
       {
+        propertyName: '<code>customData: Any<code>',
+        description: 'Assign any custom data to this property for easy access when handling <code>daySelect</code>, <code>dayMouseEnter</code>, or <code>dayMouseLeave</code> events.',
+        default: '<code>undefined</code>',
+      },
+      {
         propertyName: '<code>order: Number</code>',
         description: 'By default, attributes are ordered to display the most information possible. For example, when attributes overlap, single date attributes appear above/before date range attributes, and date range attributes with a later start date appear above/before those with an earlier start date. If you would like to force an attribute to prioritize above all others (overriding these rules), assign an <code>order</code> value greater than 0.',
         default: '<code>0</code>',
