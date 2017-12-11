@@ -64,6 +64,7 @@
 
 <script>
 import defaults from '../utils/defaults';
+import { arrayHasItems } from '../utils/helpers';
 
 export default {
   props: {
@@ -107,16 +108,16 @@ export default {
       return this.attributes.find(this.dayInfo);
     },
     hasBackgrounds() {
-      return this.backgrounds && this.backgrounds.length;
+      return arrayHasItems(this.backgrounds);
     },
     hasDots() {
-      return this.dots && this.dots.length;
+      return arrayHasItems(this.dots);
     },
     dotsStyle_() {
       return this.styles.dots;
     },
     hasBars() {
-      return this.bars && this.bars.length;
+      return arrayHasItems(this.bars);
     },
     barsStyle_() {
       return this.styles.bars;
@@ -125,6 +126,15 @@ export default {
       return this.hasBackgrounds ?
         this.backgrounds.map(b => b.highlight) :
         [];
+    },
+    attributesMap() {
+      return this.attributeDates.reduce((map, ad) => {
+        map[ad.attribute.key] = {
+          ...ad.attribute,
+          targetDate: ad.dateInfo,
+        };
+        return map;
+      }, {});
     },
   },
   watch: {
@@ -160,21 +170,21 @@ export default {
         Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
         Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
       if (state.tapDetected) {
-        this.$emit('daySelect', this.dayInfo);
+        this.$emit('daySelect', this.dayInfo, this.attributesMap);
       }
       state.started = false;
     },
     click() {
       if (this.touchState && this.touchState.tapDetected) return;
-      this.$emit('daySelect', this.dayInfo);
+      this.$emit('daySelect', this.dayInfo, this.attributesMap);
     },
     mouseenter() {
       this.isHovered = true;
-      this.$emit('dayMouseEnter', this.dayInfo);
+      this.$emit('dayMouseEnter', this.dayInfo, this.attributesMap);
     },
     mouseleave() {
       this.isHovered = false;
-      this.$emit('dayMouseLeave', this.dayInfo);
+      this.$emit('dayMouseLeave', this.dayInfo, this.attributesMap);
     },
     processAttributes() {
       const backgrounds = [];

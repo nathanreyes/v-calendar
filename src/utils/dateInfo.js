@@ -180,7 +180,7 @@ const DateInfo = (config, order) => {
       }
     }
     // Assign flag if date info is complex
-    info.isComplex = info.on;
+    info.isComplex = !!info.on;
   }
   // Determines if any part of this date intersects any part of the other date
   info.intersectsDate = (other) => {

@@ -36,7 +36,6 @@ const Attribute = (config) => {
     },
     // Accepts: DayInfo object
     // Returns: First attribute date or date range that occurs on given day.
-    // includesDay: dayInfo => dates.map(d => d.includesDay(dayInfo)).find(d => d),
     includesDay: (dayInfo) => {
       const matchDate = dates
         .map(d => d.includesDay(dayInfo))
