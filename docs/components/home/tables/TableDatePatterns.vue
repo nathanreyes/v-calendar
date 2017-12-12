@@ -65,7 +65,7 @@ export default {
         range: 'n > 0',
       },
       {
-        propertyName: '<code>yearlyInterval</code>',
+        propertyName: '<code>yearlyInterval: Number</code>',
         description: 'Interval number of years from the start date (or today).',
         range: 'n > 0',
       },

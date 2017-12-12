@@ -77,10 +77,6 @@ export default {
         propertyName: '<code>inNextMonth: Boolean</code>',
         description: 'Day lies in the month after the currently active month.',
       },
-      {
-        propertyName: '<code>attributes: Array</code>',
-        description: 'Attributes associated with the day.',
-      },
     ];
     return {
       props,

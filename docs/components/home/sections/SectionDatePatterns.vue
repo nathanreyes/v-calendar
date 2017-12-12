@@ -12,10 +12,11 @@
                 Date patterns allow for more flexible styling and can even be used to add robust features for your web applications. Here are a few benefits they provide:
               </p>
               <ul>
+                <li>Created by adding conditions to date ranges</li>
                 <li>Declarative and serializable syntax</li>
                 <li>Over 10 differents types of supported patterns</li>
                 <li>Combine pattern sets together for complex applications</li>
-                <li>Support custom date functions for more flexibility</li>
+                <li>Supports custom date functions for more flexibility</li>
               </ul>
             </div>
           </b-tab-item>
@@ -26,7 +27,7 @@
           <!--Date Patterns Options-->
           <b-tab-item label='Options' icon='gear'>
             <p class='content'>
-              Reference table below for valid patterns. Nest multiple patterns in an array assigned to the <code>on</code> property to conditionally <i>OR</i> them together.
+              Reference the <a @click.prevent='$emit("viewDatePatternsTable")'>pattern table in the API section</a> below for valid patterns. Nest multiple patterns in an array assigned to the <code>on</code> property to conditionally <i>OR</i> them together.
             </p>
             <b-field
               label='Enter your own patterns'

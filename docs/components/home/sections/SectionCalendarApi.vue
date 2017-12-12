@@ -2,7 +2,7 @@
 <section id='api' class='section'>
   <div class='container'>
     <h3 class='title has-text-primary is-spaced'>API</h3>
-    <b-tabs>
+    <b-tabs v-model='index_level_0'>
       <b-tab-item label='Props'>
         <table-calendar-props></table-calendar-props>
       </b-tab-item>
@@ -68,5 +68,25 @@ export default {
     TablePage,
     TableDayInfo,
   },
+  props: {
+    selectedTab: { type: null, default: '' },
+  },
+  data() {
+    return {
+      index_level_0: this.getTabIndex(0),
+    };
+  },
+  watch: {
+    selectedTab(val) {
+      this.index_level_0 = this.getTabIndex(0);
+    },
+  },
+  methods: {
+    getTabIndex(level) {
+      const indices = this.selectedTab.toString().split('.');
+      if (level > indices.length) return 0;
+      return parseInt(indices[level], 10);
+    }
+  }
 };
 </script>

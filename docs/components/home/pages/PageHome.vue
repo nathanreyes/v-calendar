@@ -8,8 +8,8 @@
       <section-dots></section-dots>
       <section-bars></section-bars>
       <section-content-styles></section-content-styles>
-      <section-date-patterns></section-date-patterns>
-      <section-calendar-api></section-calendar-api>
+      <section-date-patterns @viewDatePatternsTable='selectedApiTab = 4'></section-date-patterns>
+      <section-calendar-api :selectedTab='selectedApiTab'></section-calendar-api>
     </b-tab-item>
     <b-tab-item label='Date Picker'>
       <section-date-picker></section-date-picker>
@@ -54,6 +54,11 @@ export default {
     SectionDatePickerApi,
     SectionPopover,
     SectionPopoverApi,
+  },
+  data() {
+    return {
+      selectedApiTab: 0,
+    };
   },
 };
 </script>
