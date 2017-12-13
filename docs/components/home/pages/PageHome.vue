@@ -8,7 +8,8 @@
       <section-dots></section-dots>
       <section-bars></section-bars>
       <section-content-styles></section-content-styles>
-      <section-calendar-api></section-calendar-api>
+      <section-date-patterns @viewDatePatternsTable='selectedApiTab = 4'></section-date-patterns>
+      <section-calendar-api :selectedTab='selectedApiTab'></section-calendar-api>
     </b-tab-item>
     <b-tab-item label='Date Picker'>
       <section-date-picker></section-date-picker>
@@ -30,6 +31,7 @@ import SectionContentStyles from '../sections/SectionContentStyles';
 import SectionHighlights from '../sections/SectionHighlights';
 import SectionDots from '../sections/SectionDots';
 import SectionBars from '../sections/SectionBars';
+import SectionDatePatterns from '../sections/SectionDatePatterns';
 import SectionCalendarApi from '../sections/SectionCalendarApi';
 import SectionDatePicker from '../sections/SectionDatePicker';
 import SectionDatePickerSlot from '../sections/SectionDatePickerSlot';
@@ -45,12 +47,18 @@ export default {
     SectionHighlights,
     SectionDots,
     SectionBars,
+    SectionDatePatterns,
     SectionCalendarApi,
     SectionDatePicker,
     SectionDatePickerSlot,
     SectionDatePickerApi,
     SectionPopover,
     SectionPopoverApi,
+  },
+  data() {
+    return {
+      selectedApiTab: 0,
+    };
   },
 };
 </script>

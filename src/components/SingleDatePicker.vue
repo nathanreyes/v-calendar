@@ -1,14 +1,16 @@
 <template>
   <calendar
     :attributes='attributes_'
+    @daySelect='selectDay'
     v-bind='$attrs'
-    v-on='$listeners'
-    @daySelect='selectDay'>
+    v-on='$listeners'>
   </calendar>
 </template>
 
 <script>
 import Calendar from './Calendar';
+import defaults from '../utils/defaults';
+import { singleHasValue, singleValuesAreEqual } from '../utils/pickerProfiles';
 
 export default {
   components: {
@@ -16,31 +18,32 @@ export default {
   },
   props: {
     value: { type: Date, default: null },
-    selectAttribute: { type: Object, required: true },
+    selectColor: { type: String, default: () => defaults.datePickerSelectColor },
+    selectAttribute: Object,
+    disabledAttribute: Object,
     attributes: Array,
-    dateValidator: Function,
   },
   computed: {
-    hasValue() {
-      return this.value && typeof this.value.getTime === 'function';
-    },
-    valueTime() {
-      return this.hasValue ? this.value.getTime() : null;
-    },
     selectAttribute_() {
-      return { ...this.selectAttribute, dates: [this.value] };
+      if (!singleHasValue(this.value)) return null;
+      return {
+        ...defaults.datePickerSelectAttribute(this.selectColor),
+        ...this.selectAttribute,
+        dates: [this.value],
+      };
     },
     attributes_() {
-      if (!this.hasValue) return this.attributes;
-      return this.attributes ? [...this.attributes, this.selectAttribute_] : [this.selectAttribute_];
+      const attributes = [...(this.attributes || [])];
+      if (this.selectAttribute_) attributes.push(this.selectAttribute_);
+      if (this.disabledAttribute) attributes.push(this.disabledAttribute);
+      return attributes;
     },
   },
   methods: {
     selectDay(day) {
-      // Make sure date selection is valid
-      if (this.dateValidator(day.date, 'selectDisabled')) {
-        this.$emit('input', (day.date === this.value) ? null : day.date);
-      }
+      // Done if day selection is invalid
+      if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) return;
+      this.$emit('input', singleValuesAreEqual(day.date, this.value) ? null : day.date);
     },
   },
 };

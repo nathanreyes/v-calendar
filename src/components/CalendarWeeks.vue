@@ -10,18 +10,7 @@
     <calendar-day
       v-for='day in week'
       :key='day.id'
-      :label='day.label'
-      :day='day.day'
-      :weekday='day.weekday'
-      :week='day.week'
-      :month='day.month'
-      :year='day.year'
-      :date='day.date'
-      :dateTime='day.dateTime'
-      :in-month='day.inMonth'
-      :in-prev-month='day.inPrevMonth'
-      :in-next-month='day.inNextMonth'
-      :attributes='getDayAttributes(day.date)'
+      :dayInfo='day'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-day>
@@ -31,7 +20,6 @@
 
 <script>
 import CalendarDay from './CalendarDay';
-import DateInfo from '../utils/dateInfo';
 import { todayComps } from '../utils/helpers';
 
 export default {
@@ -39,39 +27,46 @@ export default {
     CalendarDay,
   },
   props: {
-    firstDayOfWeek: Number,
-    attributes: Array,
-    month: Number,
-    year: Number,
-    isLeapYear: Boolean,
-    daysInMonth: Number,
-    firstWeekdayInMonth: Number,
-    trimMaxWeek: Boolean,
+    monthComps: Object,
     prevMonthComps: Object,
     nextMonthComps: Object,
+    trimMaxWeek: Boolean,
   },
   computed: {
     weeks() {
       const weeks = [];
-      let previousMonth = true;
+      const { firstDayOfWeek, firstWeekday } = this.monthComps;
+      let prevMonth = true;
       let thisMonth = false;
       let nextMonth = false;
-      let day = (this.prevMonthComps.days - this.firstWeekdayInMonth) + 2;
+      // Init counters with previous month's data
+      let day = (this.prevMonthComps.days - Math.abs(firstWeekday - firstDayOfWeek)) + 1;
+      let dayFromEnd = (this.prevMonthComps.days - day) + 1;
+      let weekdayOrdinal = Math.floor(((day - 1) / 7) + 1);
+      let weekdayOrdinalFromEnd = 1;
+      let week = this.prevMonthComps.weeks;
+      let weekFromEnd = 1;
       let month = this.prevMonthComps.month;
       let year = this.prevMonthComps.year;
-      // Cycle through each week of the month, up to 6 total
+      // Cycle through 6 weeks (max in month)
       for (let w = 1; w <= 6 && (!nextMonth || !this.trimMaxWeek); w++) {
         // Cycle through each weekday
-        const week = [];
-        for (let i = 1, d = this.firstDayOfWeek; i <= 7; i++, d += (d === 7) ? -6 : 1) {
+        const days = [];
+        // Cycle through 7 days
+        for (let i = 1, weekday = firstDayOfWeek; i <= 7; i++, weekday += (weekday === 7) ? -6 : 1) {
           // We need to know when to start counting actual month days
-          if (previousMonth && d >= this.firstWeekdayInMonth) {
-            // Reset day/month/year counters
+          if (prevMonth && weekday === firstWeekday) {
+            // Reset counters for current month
             day = 1;
-            month = this.month;
-            year = this.year;
+            dayFromEnd = this.monthComps.days;
+            weekdayOrdinal = Math.floor(((day - 1) / 7) + 1);
+            weekdayOrdinalFromEnd = Math.floor(((this.monthComps.days - day) / 7) + 1);
+            week = 1;
+            weekFromEnd = this.monthComps.weeks;
+            month = this.monthComps.month;
+            year = this.monthComps.year;
             // ...and flag we're tracking actual month days
-            previousMonth = false;
+            prevMonth = false;
             thisMonth = true;
           }
           // Append day info for the current week
@@ -84,68 +79,52 @@ export default {
             id: `${month}.${day}`,
             label: day.toString(),
             day,
-            weekday: d,
-            week: w,
+            dayFromEnd,
+            weekday,
+            weekdayOrdinal,
+            weekdayOrdinalFromEnd,
+            week,
+            weekFromEnd,
             month,
             year,
             date,
             dateTime: date.getTime(),
             isToday,
             isFirstDay: thisMonth && day === 1,
-            isLastDay: thisMonth && day === this.daysInMonth,
+            isLastDay: thisMonth && day === this.monthComps.days,
             inMonth: thisMonth,
-            inPrevMonth: previousMonth,
+            inPrevMonth: prevMonth,
             inNextMonth: nextMonth,
           };
-          week.push(dayInfo);
-
+          days.push(dayInfo);
           // See if we've hit the last day of the month
-          if (thisMonth && day >= this.daysInMonth) {
+          if (thisMonth && dayInfo.isLastDay) {
             thisMonth = false;
             nextMonth = true;
+            // Reset counters to next month's data
             day = 1;
+            dayFromEnd = this.nextMonthComps.days;
+            weekdayOrdinal = 1;
+            weekdayOrdinalFromEnd = Math.floor(((this.nextMonthComps.days - day) / 7) + 1);
+            week = 1;
+            weekFromEnd = this.nextMonthComps.weeks;
             month = this.nextMonthComps.month;
             year = this.nextMonthComps.year;
           // Still in the middle of the month (hasn't ended yet)
           } else {
-            day += 1;
+            day++;
+            dayFromEnd--;
+            weekdayOrdinal = Math.floor(((day - 1) / 7) + 1);
+            weekdayOrdinalFromEnd = Math.floor(((this.monthComps.days - day) / 7) + 1);
           }
         }
-        // Append week info for the month
-        weeks.push(week);
+        // Append week days
+        weeks.push(days);
+        //
+        week++;
+        weekFromEnd--;
       }
       return weeks;
-    },
-    weeksRange() {
-      const start = this.weeks[0][0].date;
-      const end = this.weeks[5][6].date;
-      return new DateInfo({ start, end });
-    },
-    weeksAttributes() {
-      return this.attributes.filter(a => a.dates.find(d => d.intersects(this.weeksRange)));
-    },
-  },
-  methods: {
-    getDayAttributes(date) {
-      if (!this.weeksAttributes || !this.weeksAttributes.length) return [];
-      const attributes = [];
-      this.weeksAttributes.forEach((a) => {
-        // Cycle through each attribute date
-        a.dates.forEach((dateInfo) => {
-          // Done if attribute date doesn't contain the day date
-          if (!dateInfo.containsDate(date)) return;
-          // Create new reference attribute
-          const attribute = {
-            ...a,
-            date: dateInfo.date,
-            dateInfo,
-          };
-          delete attribute.dates;
-          attributes.push(attribute);
-        });
-      });
-      attributes.sort((a, b) => a.dateInfo.compare(b.dateInfo));
-      return attributes;
     },
   },
 };

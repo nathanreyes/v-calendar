@@ -60,8 +60,13 @@ export default [
     default: '<code>text => new Date(Date.parse(text))</code>',
   },
   {
-    name: '<code>disabled-dates: Array</code>',
-    description: 'List of disabled dates or date range objects. Date ranges must specify <code>start</code> and <code>end</code> dates.',
+    name: '<code>disabled-dates: Array, Date, Object</code>',
+    description: 'Disabled dates or date range objects. Is date patterns are used input controls become read-only.',
+    default: '<code>undefined</code>',
+  },
+  {
+    name: '<code>available-dates: Array, Date, Object</code>',
+    description: 'Available dates or date range objects. All other dates are disabled. Is date patterns are used input controls become read-only.',
     default: '<code>undefined</code>',
   },
   {
@@ -96,23 +101,6 @@ export default [
         color: '#103456'
       },
       contentHoverStyle: {
-        backgroundColor: 'transparent'
-      }
-    }
-    </code>`,
-  },
-  {
-    name: '<code>disabled-attribute: Object</code>',
-    description: 'Attribute to use for disabled dates. If specified, you may include dates in this prop and ignore the <code>disabled-dates</code> prop.',
-    default: `<code>
-    {
-      order: 100,
-      contentStyle: {
-        color: 'red',
-        textDecoration: 'line-through'
-      },
-      contentHoverStyle: {
-        cursor: 'not-allowed',
         backgroundColor: 'transparent'
       }
     }

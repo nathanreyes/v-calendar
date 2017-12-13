@@ -6,7 +6,7 @@
   @focusin='focusin'
   @focusout='focusout'
   @mouseleave='mouseleave'
-  @mouseover='mouseover'
+  @mousemove='mousemove'
   @click.stop='click'>
   <transition
     tag='div'
@@ -94,7 +94,7 @@ export default {
     },
     visibility() {
       // Reset managed visible state
-      this.visibleManaged = false;
+      // this.visibleManaged = false;
     },
   },
   created() {
@@ -130,7 +130,12 @@ export default {
         this.visibleManaged = false;
       }
     },
-    mouseover() {
+    // mouseover() {
+    //   if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !this.contentTransitioning) {
+    //     this.visibleManaged = true;
+    //   }
+    // },
+    mousemove() {
       if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !this.contentTransitioning) {
         this.visibleManaged = true;
       }

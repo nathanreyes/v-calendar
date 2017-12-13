@@ -1,16 +1,21 @@
 <template>
-<div class='c-popover-container' ref='popoverContainer'>
+<div
+  class='c-popover-container'
+  ref='popoverContainer'>
   <popover
     v-bind='$attrs'
-    :visibility='dayInfo ? "visible" : "hidden"'
     :style='popoverStyle'
+    :visibility='popoverVisibility'
     :content-style='contentStyle'>
     <div slot='popover-content'>
       <div :class='["c-popover-content", { "is-dark": isDark }]'>
-        <!-- <span v-for='a in attributes' :key='a.key'>
-          {{ getPopoverLabel(a) }}
-        </span> -->
-        <span>{{ getLabel() }}</span>
+        <slot
+          v-if='$slots.popover'
+          name='popover'
+          :attribute='displayAttribute'
+          :day-info='dayInfo'>
+        </slot>
+        <!-- <span v-if='displayLabel'>{{ displayLabel }}</span> -->
       </div>
     </div>
     <div></div>
@@ -20,8 +25,10 @@
 
 <script>
 import Popover from './Popover';
+import { isString, isFunction } from '../utils/typeCheckers';
 import {
   elementPositionInAncestor,
+  getLastArrayItem,
 } from '../utils/helpers';
 
 export default {
@@ -29,18 +36,56 @@ export default {
     Popover,
   },
   props: {
+    isVisible: Boolean,
     dayInfo: Object,
+    attributes: Object,
     isDark: Boolean,
+    visibility: String,
   },
   data() {
     return {
       popoverStyle: null,
     };
   },
+  watch: {
+    dayInfo() {
+      this.refreshPopoverStyle();
+    },
+    displayAttribute() {
+      this.refreshPopoverStyle();
+    },
+  },
+  methods: {
+    refreshPopoverStyle() {
+      if (!this.dayInfo || !this.displayAttribute) return;
+      const el = this.dayInfo.el;
+      const location = elementPositionInAncestor(el, this.$refs.popoverContainer.offsetParent);
+      this.popoverStyle = {
+        width: `${el.offsetWidth}px`,
+        height: `${el.offsetHeight}px`,
+        top: `${location.top}px`,
+        left: `${location.left}px`,
+      };
+    },
+  },
   computed: {
-    attributes() {
-      if (!this.dayInfo || !this.dayInfo.attributes) return [];
-      return this.dayInfo.attributes.filter(a => a.popover);
+    popoverAttributes() {
+      if (!this.attributes) return [];
+      return Object.values(this.attributes).filter(a => a.popover);
+    },
+    displayAttribute() {
+      return getLastArrayItem(this.popoverAttributes);
+    },
+    displayLabel() {
+      const attr = this.displayAttribute;
+      const label = attr && attr.popover.label;
+      if (isString(label)) return label;
+      if (isFunction(label)) return label(attr, this.dayInfo);
+      return '';
+    },
+    popoverVisibility() {
+      // if (!this.popoverStyle || !this.displayLabel) return 'hidden';
+      return this.visibility;
     },
     contentStyle() {
       const base = {
@@ -60,31 +105,6 @@ export default {
       };
     },
   },
-  watch: {
-    dayInfo(val) {
-      if (!val) return;
-      const el = val.el;
-      const location = elementPositionInAncestor(el, this.$refs.popoverContainer.offsetParent);
-      this.popoverStyle = {
-        width: `${el.offsetWidth}px`,
-        height: `${el.offsetHeight}px`,
-        top: `${location.top}px`,
-        left: `${location.left}px`,
-      };
-    },
-  },
-  methods: {
-    getLabel() {
-      return 'This is a test label.';
-    },
-    getPopoverLabel(attr) {
-      const p = attr.popover;
-      if (!p) return '';
-      if (typeof p.label === 'string') return p.label;
-      if (typeof p.label === 'function') return p.label(attr, this.dayInfo);
-      return '';
-    },
-  },
 };
 </script>
 
@@ -93,5 +113,9 @@ export default {
 .c-popover-container
   position: absolute
   pointer-events: none
+  white-space: nowrap
+
+.c-popover-content
+  pointer-events: all
 
 </style>

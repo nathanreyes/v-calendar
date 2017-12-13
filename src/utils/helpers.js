@@ -1,8 +1,9 @@
+import defaults from './defaults';
 import colors from './colors';
+import { isArray } from './typeCheckers';
 
 // Calendar data
 export const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-export const yearList = Array.apply(null, Array(201)).map((_, i) => 1900 + i); // eslint-disable-line prefer-spread
 export const today = new Date();
 export const todayComps = {
   year: today.getFullYear(),
@@ -10,14 +11,23 @@ export const todayComps = {
   day: today.getDate(),
 };
 
-export const getIsLeapYear = year => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-
 // Days/month/year components for a given month and year
-export const getMonthComps = (month, year) => ({
-  days: (month === 2 && getIsLeapYear(year)) ? 29 : daysInMonths[month - 1],
-  month,
-  year,
-});
+export const getMonthComps = (month, year) => {
+  const firstDayOfWeek = defaults.firstDayOfWeek;
+  const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
+  const days = (month === 2 && inLeapYear) ? 29 : daysInMonths[month - 1];
+  const weeks = Math.ceil((days + Math.abs(firstWeekday - firstDayOfWeek)) / 7);
+  return {
+    firstDayOfWeek,
+    inLeapYear,
+    firstWeekday,
+    days,
+    weeks,
+    month,
+    year,
+  };
+};
 
 // Days/month/year components for a given date
 export const getDateComps = (date) => {
@@ -117,6 +127,8 @@ export const getLastArrayItem = (array, fallbackValue) => {
   return array.length ? array[array.length - 1] : fallbackValue;
 };
 
+export const arrayHasItems = array => isArray(array) && array.length;
+
 export const elementHasAncestor = (el, ancestor) => {
   if (!el) return false;
   if (el === ancestor) return true;
@@ -140,6 +152,24 @@ export const elementPositionInAncestor = (el, ancestor) => {
 export const objectFromArray = (array, keyProp = 'key') => {
   if (!array || !array.length) return {};
   return array.reduce((prev, curr) => ({ ...prev, ...{ [`${curr[keyProp]}`]: curr } }), {});
+};
+
+export const mixinOptionalProps = (source, target, props) => {
+  const assigned = [];
+  props.forEach((p) => {
+    const name = p.name || p.toString();
+    const mixin = p.mixin;
+    const validate = p.validate;
+    if (Object.prototype.hasOwnProperty.call(source, name)) {
+      const value = validate ? validate(source[name]) : source[name];
+      target[name] = mixin ? { ...mixin, ...value } : value;
+      assigned.push(name);
+    }
+  });
+  return {
+    target,
+    assigned: assigned.length ? assigned : null,
+  };
 };
 
 export const isMobile = {

@@ -62,4 +62,11 @@ export default {
     weekdaysShort: ['日', '月', '火', '水', '木', '金', '土'],
     weekdaysMin: ['日', '月', '火', '水', '木', '金', '土'],
   },
+  tr: { // Turkish
+    months: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+    monthsShort: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+    weekdays: ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'],
+    weekdaysShort: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
+    weekdaysMin: ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'],
+  },
 };

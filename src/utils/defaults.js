@@ -1,5 +1,12 @@
-import { POPOVER_VISIBILITIES } from './constants';
 import locales from './locales';
+import { POPOVER_VISIBILITIES } from './constants';
+import { blendColors } from './helpers';
+
+const popoverLabel = (attr) => {
+  if (!attr.targetDate.isRange) return '';
+  const diff = attr.targetDate.daySpan;
+  return `${diff + 1} Day${diff === 0 ? '' : 's'}, ${diff} Night${diff === 1 ? '' : 's'}`;
+};
 
 const defaults = {
   themeStyles: {
@@ -33,6 +40,50 @@ const defaults = {
   datePickerInputPlaceholder: '',
   datePickerSelectColor: '#66b3cc',
   datePickerDragColor: '#9fcfdf',
+  datePickerSelectAttribute: color => ({
+    key: 'drag-select',
+    highlight: {
+      backgroundColor: color,
+      borderWidth: '1px',
+      borderColor: blendColors(color, '#000000', 0.1),
+    },
+    contentStyle: {
+      color: '#fafafa',
+    },
+    contentHoverStyle: {
+      backgroundColor: 'transparent',
+      border: '0',
+    },
+    popover: {
+      label: popoverLabel,
+    },
+  }),
+  datePickerDragAttribute: color => ({
+    key: 'drag-select',
+    highlight: {
+      backgroundColor: color,
+      height: '25px',
+    },
+    contentHoverStyle: {
+      backgroundColor: 'transparent',
+      border: '0',
+    },
+    popover: {
+      label: popoverLabel,
+    },
+  }),
+  datePickerDisabledAttribute: {
+    key: 'disabled',
+    order: 100,
+    contentStyle: {
+      color: '#bcbcbc',
+      textDecoration: 'line-through',
+    },
+    contentHoverStyle: {
+      cursor: 'not-allowed',
+      backgroundColor: 'transparent',
+    },
+  },
   popoverExpanded: false,
   popoverDirection: 'bottom',
   popoverAlign: 'left',
