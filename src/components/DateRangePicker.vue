@@ -56,7 +56,7 @@ export default {
       };
     },
     attributes_() {
-      const attributes = [...this.attributes];
+      const attributes = [...(this.attributes || [])];
       if (this.dragAttribute_) attributes.push(this.dragAttribute_);
       else if (this.selectAttribute_) attributes.push(this.selectAttribute_);
       if (this.disabledAttribute) attributes.push(this.disabledAttribute);
