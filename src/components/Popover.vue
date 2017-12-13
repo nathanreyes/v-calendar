@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import defaults from '../utils/defaults';
 import { ancestorElements } from '../utils/helpers';
 import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
@@ -174,7 +173,7 @@ export default {
       if (this.visibility === VISIBILITIES.FOCUS) {
         // Trap focus if element losing focus is nested within the popover content
         if (e.target !== this.$refs.popover && ancestorElements(e.target).includes(this.$refs.popoverContent)) {
-          Vue.nextTick(() => this.$refs.popover.focus());
+          this.$nextTick(() => this.$refs.popover.focus());
         }
         this.visibleManaged = false;
       }

@@ -144,7 +144,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
 import Popover from './Popover';
@@ -391,7 +390,7 @@ export default {
     },
     preloadPages() {
       // Load the next and previous pages
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.loadPage(this.page_.prevMonthComps);
         this.loadPage(this.page_.nextMonthComps);
         this.pages = this.pages.filter(p => p.loaded);

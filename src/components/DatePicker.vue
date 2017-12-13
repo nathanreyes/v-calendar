@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import Popover from './Popover';
 import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
@@ -215,7 +214,7 @@ export default {
       this.updateInputValue();
     },
     updateInputValue() {
-      Vue.nextTick(() => { this.inputValue = this.profile.formatValue(this.value, this.dragValue); });
+      this.$nextTick(() => { this.inputValue = this.profile.formatValue(this.value, this.dragValue); });
     },
   },
 };
