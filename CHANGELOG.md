@@ -1,3 +1,7 @@
+## 0.4.1
+* Use local nextTick reference, deleting Vue scope dependency.
+* Fix null attribute bug in date picker.
+
 ## 0.4.0
 * Fix weekday labels not always having same exact width
 * Add support for complex attribute dates. Closes #7 and #12.
