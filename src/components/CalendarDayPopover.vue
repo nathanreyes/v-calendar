@@ -8,7 +8,11 @@
     :visibility='popoverVisibility'
     :content-style='contentStyle'>
     <div slot='popover-content'>
-      <div :class='["c-popover-content", { "is-dark": isDark }]'>
+      <div
+        ref='popoverContent'
+        tabindex='0'
+        :class='["c-popover-content", { "is-dark": isDark }]'
+        @focusin='focusin'>
         <slot
           v-if='$slots.popover'
           name='popover'
@@ -45,6 +49,7 @@ export default {
   data() {
     return {
       popoverStyle: null,
+      popoverVisibility: '',
     };
   },
   watch: {
@@ -54,8 +59,23 @@ export default {
     displayAttribute() {
       this.refreshPopoverStyle();
     },
+    visibility(val) {
+      if (val === 'hidden' && this.$refs.popoverContent === window.document.activeElement) {
+        return;
+      }
+      if (val === 'focus') {
+        this.$nextTick(() => {
+          if (this.$refs.popoverContent) this.$refs.popoverContent.focus();
+        });
+      }
+      console.log(val);
+      this.popoverVisibility = val;
+    },
   },
   methods: {
+    focusin() {
+      console.log('got focus');
+    },
     refreshPopoverStyle() {
       if (!this.dayInfo || !this.displayAttribute) return;
       const el = this.dayInfo.el;
@@ -82,10 +102,6 @@ export default {
       if (isString(label)) return label;
       if (isFunction(label)) return label(attr, this.dayInfo);
       return '';
-    },
-    popoverVisibility() {
-      // if (!this.popoverStyle || !this.displayLabel) return 'hidden';
-      return this.visibility;
     },
     contentStyle() {
       const base = {

@@ -133,6 +133,7 @@
           :next-month-comps='p.nextMonthComps'
           :styles='styles'
           v-bind='$attrs'
+          @daySelect='daySelect'
           @dayMouseEnter='dayMouseEnter'
           @dayMouseLeave='dayMouseLeave'
           @dayUpdated='dayUpdated'
@@ -161,7 +162,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import Popover from './Popover';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
@@ -286,6 +286,10 @@ export default {
     popoverExists(attr) {
       if (!attr) return false;
       return Object.values(attr).find(a => a.popover);
+    },
+    daySelect() {
+      console.log('day select');
+      this.popoverVisibility = 'focus';
     },
     dayMouseEnter(d, attr) {
       this.popoverDayInfo = d;
@@ -437,7 +441,7 @@ export default {
     },
     preloadPages() {
       // Load the next and previous pages
-      Vue.nextTick(() => {
+      this.$nextTick(() => {
         this.loadPage(this.page_.prevMonthComps);
         this.loadPage(this.page_.nextMonthComps);
         this.pages = this.pages.filter(p => p.loaded);

@@ -1,6 +1,9 @@
-## 0.4.1
+## 0.4.2
 * Add attribute popover support
-* Fix bug when processing null attributes in date pickers
+
+## 0.4.1
+* Use local nextTick reference, deleting Vue scope dependency.
+* Fix null attribute bug in date picker.
 
 ## 0.4.0
 * Fix weekday labels not always having same exact width

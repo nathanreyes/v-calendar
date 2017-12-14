@@ -98,6 +98,7 @@ export const rangeParser = (text, parser) => {
 };
 export const rangeFilterDisabled = (value, attr) => {
   if (!rangeHasValue(value) || !attr) return value;
+  console.log(value);
   return attr.intersectsDate(value) ? null : value;
 };
 export const rangeValuesAreEqual = (a, b) => {

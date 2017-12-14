@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import Popover from './Popover';
 import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
@@ -82,8 +81,8 @@ export default {
     dateFormatter: { type: Function, default: defaults.dateFormatter },
     dateParser: { type: Function, default: defaults.dateParser },
     themeStyles: { type: Object, default: () => ({}) },
-    availableDates: Array,
-    disabledDates: Array,
+    availableDates: null,
+    disabledDates: null,
   },
   data() {
     return {
@@ -216,7 +215,7 @@ export default {
       this.updateInputValue();
     },
     updateInputValue() {
-      Vue.nextTick(() => { this.inputValue = this.profile.formatValue(this.value, this.dragValue); });
+      this.$nextTick(() => { this.inputValue = this.profile.formatValue(this.value, this.dragValue); });
     },
   },
 };

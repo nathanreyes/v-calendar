@@ -24,7 +24,7 @@ function startOfWeek(date) {
   return addDays(date, daysToAdd);
 }
 
-export function diffInDays(d1, d2) {
+function diffInDays(d1, d2) {
   return Math.round((d2 - d1) / millisecondsPerDay);
 }
 
