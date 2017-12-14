@@ -170,21 +170,21 @@ export default {
         Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
         Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
       if (state.tapDetected) {
-        this.$emit('daySelect', this.dayInfo, this.attributesMap);
+        this.$emit('dayselect', this.dayInfo, this.attributesMap);
       }
       state.started = false;
     },
     click() {
       if (this.touchState && this.touchState.tapDetected) return;
-      this.$emit('daySelect', this.dayInfo, this.attributesMap);
+      this.$emit('dayselect', this.dayInfo, this.attributesMap);
     },
     mouseenter() {
       this.isHovered = true;
-      this.$emit('dayMouseEnter', this.dayInfo, this.attributesMap);
+      this.$emit('daymouseenter', this.dayInfo, this.attributesMap);
     },
     mouseleave() {
       this.isHovered = false;
-      this.$emit('dayMouseLeave', this.dayInfo, this.attributesMap);
+      this.$emit('daymouseleave', this.dayInfo, this.attributesMap);
     },
     processAttributes() {
       const backgrounds = [];

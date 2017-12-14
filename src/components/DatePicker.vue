@@ -153,10 +153,10 @@ export default {
       this.toPage_ = val;
     },
     fromPage_(val) {
-      this.$emit('update:fromPage', val);
+      this.$emit('update:frompage', val);
     },
     toPage_(val) {
-      this.$emit('update:toPage', val);
+      this.$emit('update:topage', val);
     },
     mode() {
       // Clear value on select mode change
@@ -184,8 +184,8 @@ export default {
     filteredListeners() {
       // Remove parent listeners that we want to intercept and re-broadcast
       const listeners = { ...this.$listeners };
-      delete listeners['update:fromPage'];
-      delete listeners['update:toPage'];
+      delete listeners['update:frompage'];
+      delete listeners['update:topage'];
       return listeners;
     },
     popoverDidDisappear() {
