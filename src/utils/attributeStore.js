@@ -17,9 +17,12 @@ const AttributeStore = (attrs) => {
     // ...and the first matching date info
     find(dayInfo) {
       return list
-        .map(attribute => ({ attribute, dateInfo: attribute.includesDay(dayInfo) }))
-        .filter(a => a.dateInfo)
-        .sort((a, b) => a.dateInfo.compare(b.dateInfo));
+        .map(attribute => ({
+          ...attribute,
+          targetDate: attribute.includesDay(dayInfo),
+        }))
+        .filter(a => a.targetDate)
+        .sort((a, b) => a.targetDate.compare(b.targetDate));
     },
   };
 };

@@ -17,7 +17,7 @@
     @after-leave='afterContentLeave'>
     <div
       ref='popoverOrigin'
-      :class='["popover-origin", "direction-" + direction, "align-" + align]'
+      :class='["popover-origin", "direction-" + direction, "align-" + align, { "interactive": isInteractive }]'
       v-if='visible'>
       <div
         ref='popoverContentWrapper'
@@ -51,6 +51,7 @@ export default {
     direction: { type: String, default: () => defaults.popoverDirection },
     align: { type: String, default: () => defaults.popoverAlign },
     visibility: { type: String, default: () => defaults.popoverVisibility },
+    isInteractive: Boolean,
     forceHidden: Boolean,
     toggleVisibleOnClick: Boolean, // Only valid when visibility === "focus"
     contentStyle: Object,
@@ -94,7 +95,7 @@ export default {
     },
     visibility() {
       // Reset managed visible state
-      // this.visibleManaged = false;
+      this.visibleManaged = false;
     },
   },
   created() {
@@ -136,12 +137,18 @@ export default {
     //   }
     // },
     mousemove() {
-      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !this.contentTransitioning) {
+      if (
+        (this.visibility === VISIBILITIES.HOVER || !this.visibilityIsManaged) &&
+        !this.forceHidden &&
+        !this.contentTransitioning) {
         this.visibleManaged = true;
       }
     },
     mouseleave(e) {
-      if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+      if (
+        (this.visibility === VISIBILITIES.HOVER || !this.visibilityIsManaged) &&
+        !this.forceHidden &&
+        !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
         this.visibleManaged = false;
       }
     },
@@ -206,10 +213,12 @@ export default {
   &.direction-left.align-bottom, &.direction-right.align-bottom
     top: initial
     bottom: 0
+  &.interactive
+    .popover-content-wrapper
+      pointer-events: all
   .popover-content-wrapper
     position: relative
     outline: none
-    pointer-events: initial
     &.align-center
       transform: translateX(-50%)
     &.align-middle

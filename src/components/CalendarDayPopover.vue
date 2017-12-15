@@ -5,14 +5,13 @@
   <popover
     v-bind='$attrs'
     :style='popoverStyle'
-    :visibility='popoverVisibility'
+    :visibility='isVisible ? "visible" : "hidden"'
     :content-style='contentStyle'>
     <div slot='popover-content'>
       <div
         ref='popoverContent'
         tabindex='0'
-        :class='["c-popover-content", { "is-dark": isDark }]'
-        @focusin='focusin'>
+        :class='["c-popover-content", { "is-dark": isDark }]'>
         <slot
           v-if='$slots.popover'
           name='popover'
@@ -44,12 +43,11 @@ export default {
     dayInfo: Object,
     attributes: Object,
     isDark: Boolean,
-    visibility: String,
   },
   data() {
     return {
       popoverStyle: null,
-      popoverVisibility: '',
+      hasFocus: false,
     };
   },
   watch: {
@@ -59,23 +57,8 @@ export default {
     displayAttribute() {
       this.refreshPopoverStyle();
     },
-    visibility(val) {
-      if (val === 'hidden' && this.$refs.popoverContent === window.document.activeElement) {
-        return;
-      }
-      if (val === 'focus') {
-        this.$nextTick(() => {
-          if (this.$refs.popoverContent) this.$refs.popoverContent.focus();
-        });
-      }
-      console.log(val);
-      this.popoverVisibility = val;
-    },
   },
   methods: {
-    focusin() {
-      console.log('got focus');
-    },
     refreshPopoverStyle() {
       if (!this.dayInfo || !this.displayAttribute) return;
       const el = this.dayInfo.el;

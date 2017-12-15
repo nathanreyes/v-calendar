@@ -55,6 +55,8 @@ const defaults = {
       border: '0',
     },
     popover: {
+      isDark: true,
+      isInteractive: true,
       label: popoverLabel,
     },
   }),
@@ -69,6 +71,7 @@ const defaults = {
       border: '0',
     },
     popover: {
+      isDark: true,
       label: popoverLabel,
     },
   }),

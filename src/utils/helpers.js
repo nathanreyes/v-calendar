@@ -151,7 +151,7 @@ export const elementPositionInAncestor = (el, ancestor) => {
 
 export const objectFromArray = (array, keyProp = 'key') => {
   if (!array || !array.length) return {};
-  return array.reduce((prev, curr) => ({ ...prev, ...{ [`${curr[keyProp]}`]: curr } }), {});
+  return array.reduce((obj, curr) => { obj[curr[keyProp]] = curr[keyProp]; return obj; }, {});
 };
 
 export const mixinOptionalProps = (source, target, props) => {

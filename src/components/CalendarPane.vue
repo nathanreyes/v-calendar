@@ -133,10 +133,6 @@
           :next-month-comps='p.nextMonthComps'
           :styles='styles'
           v-bind='$attrs'
-          @daySelect='daySelect'
-          @dayMouseEnter='dayMouseEnter'
-          @dayMouseLeave='dayMouseLeave'
-          @dayUpdated='dayUpdated'
           @touchstart.passive='touchStart($event)'
           @touchmove.passive='touchMove($event)'
           @touchend.passive='touchEnd($event)'
@@ -146,18 +142,6 @@
       </transition-group> 
     </div>
   </div>
-  <calendar-day-popover
-    align='center'
-    transition='fade'
-    content-offset='8px'
-    :day-info='popoverDayInfo'
-    :attributes='popoverAttributes'
-    :visibility='popoverVisibility'
-    >
-    <div slot='popover'>
-      This is a test
-    </div>
-  </calendar-day-popover>
 </div>
 </template>
 
@@ -205,9 +189,6 @@ export default {
       touchState: {},
       navForceHidden: false,
       weeksTransitioning: false,
-      popoverDayInfo: null,
-      popoverAttributes: null,
-      popoverVisibility: 'hidden',
     };
   },
   computed: {
@@ -283,30 +264,6 @@ export default {
     this.preloadPages();
   },
   methods: {
-    popoverExists(attr) {
-      if (!attr) return false;
-      return Object.values(attr).find(a => a.popover);
-    },
-    daySelect() {
-      console.log('day select');
-      this.popoverVisibility = 'focus';
-    },
-    dayMouseEnter(d, attr) {
-      this.popoverDayInfo = d;
-      this.popoverAttributes = attr;
-      this.popoverVisibility = this.popoverExists(attr) ? 'visible' : 'hidden';
-    },
-    dayMouseLeave() {
-      this.popoverDayInfo = null;
-      this.popoverAttributes = null;
-      this.popoverVisibility = 'hidden';
-    },
-    dayUpdated(d, attr) {
-      if (d === this.popoverDayInfo) {
-        this.popoverAttributes = attr;
-        this.popoverVisibility = this.popoverExists(attr) ? 'visible' : 'hidden';
-      }
-    },
     navPageSelected(page) {
       this.navForceHidden = true;
       this.move(page);

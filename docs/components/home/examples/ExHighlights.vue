@@ -27,6 +27,9 @@ export default {
           contentStyle: {
             color: 'white',
           },
+          popover: {
+            label: 'This is a test.',
+          },
           dates: [
             // Use single dates
             new Date(nextMonthYear, nextMonth, 6),

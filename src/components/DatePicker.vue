@@ -6,6 +6,7 @@
   :to-page.sync='toPage_'
   :theme-styles='themeStyles_'
   :disabled-attribute='disabledAttribute'
+  :date-formatter='dateFormatter'
   @drag='dragValue = $event'
   v-bind='$attrs'
   v-on='filteredListeners()'
@@ -40,6 +41,7 @@
     :to-page.sync='toPage_'
     :theme-styles='themeStyles_'
     :disabled-attribute='disabledAttribute'
+    :date-formatter='dateFormatter'
     @drag='dragValue = $event'
     v-bind='$attrs'
     v-on='filteredListeners()'>
