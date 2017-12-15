@@ -153,10 +153,12 @@ export default {
       this.toPage_ = val;
     },
     fromPage_(val) {
-      this.$emit('update:frompage', val);
+      this.$emit('update:frompage', val); // Support in-DOM templates (:frompage.sync)
+      this.$emit('update:fromPage', val); // Allow using :from-page.sync
     },
     toPage_(val) {
-      this.$emit('update:topage', val);
+      this.$emit('update:topage', val);   // Support in-DOM templates (:topage.sync)
+      this.$emit('update:toPage', val);   // Allow using :to-page.sync
     },
     mode() {
       // Clear value on select mode change
@@ -185,7 +187,9 @@ export default {
       // Remove parent listeners that we want to intercept and re-broadcast
       const listeners = { ...this.$listeners };
       delete listeners['update:frompage'];
+      delete listeners['update:fromPage'];
       delete listeners['update:topage'];
+      delete listeners['update:toPage'];
       return listeners;
     },
     popoverDidDisappear() {

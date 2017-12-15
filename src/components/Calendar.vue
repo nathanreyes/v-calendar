@@ -101,12 +101,14 @@ export default {
     },
     fromPage_(val) {
       this.$emit('update:frompage', val);
+      this.$emit('update:fromPage', val);
       if (!pageIsBeforePage(val, this.toPage_)) {
         this.toPage_ = getNextPage(val);
       }
     },
     toPage_(val) {
       this.$emit('update:topage', val);
+      this.$emit('update:toPage', val);
       if (!pageIsAfterPage(val, this.fromPage_)) {
         this.fromPage_ = getPrevPage(val);
       }

@@ -104,7 +104,10 @@ export default {
     forceHidden() {
       // Reset managed visible state
       if (this.visibleManaged) this.visibleManaged = false;
-      else this.$emit('update:forceHidden', false);
+      else {
+        this.$emit('update:forcehidden', false);
+        this.$emit('update:forceHidden', false);
+      }
     },
     visibility() {
       // Reset managed visible state
@@ -126,7 +129,10 @@ export default {
     },
     visibleAfterDelay(val) {
       // Reset forceHidden state if needed
-      if (!val && this.forceHidden) this.$emit('update:forceHidden', false);
+      if (!val && this.forceHidden) {
+        this.$emit('update:forcehidden', false);
+        this.$emit('update:forceHidden', false);
+      }
     },
   },
   created() {
@@ -193,21 +199,24 @@ export default {
     },
     beforeContentEnter() {
       this.contentTransitioning = true;
-      this.$emit('willAppear');
+      this.$emit('willappear');
     },
     afterContentEnter() {
       this.contentTransitioning = false;
-      this.$emit('didAppear');
+      this.$emit('didappear');
     },
     beforeContentLeave() {
       this.contentTransitioning = true;
-      this.$emit('willDisappear');
+      this.$emit('willdisappear');
     },
     afterContentLeave() {
       this.contentTransitioning = false;
-      this.$emit('didDisappear');
+      this.$emit('diddisappear');
       // Reset forceHidden state if needed
-      if (this.forceHidden) this.$emit('update:forceHidden', false);
+      if (this.forceHidden) {
+        this.$emit('update:forcehidden', false);
+        this.$emit('update:forceHidden', false);
+      }
     },
   },
 };

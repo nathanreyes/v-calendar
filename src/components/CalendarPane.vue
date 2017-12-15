@@ -45,7 +45,7 @@
                   v-for='p in pages'
                   :key='p.key'
                   v-if='p === page_'
-                  @click='$emit("titleClick", p)'>
+                  @click='$emit("titleclick", p)'>
                   <slot
                     name='header-title'>
                     {{ `${p.monthLabel} ${p.yearLabel}` }}

@@ -2,8 +2,8 @@
 <calendar
   :dayContentHoverStyle='dayContentHoverStyle_'
   :attributes='attributes_'
-  @daySelect='selectDay'
-  @dayMouseEnter='enterDay'
+  @dayselect='selectDay'
+  @daymouseenter='enterDay'
   v-bind='$attrs'
   v-on='$listeners'>
 </calendar> 
@@ -79,7 +79,7 @@ export default {
   methods: {
     touchStartDay(day) {
       this.selectDay(day);
-      this.$emit('dayTouchStart', day);
+      this.$emit('daytouchstart', day);
     },
     selectDay(day) {
       // Done if date selection is invalid
