@@ -26,7 +26,8 @@
       @click='click($event)'
       @mouseenter='mouseenter'
       @mouseleave='mouseleave'>
-      {{ label }}
+      <div class='c-day-label'>{{ label }}</div>
+      <div class='c-day-rate' :style='rateStyle_' v-if="hasRate">{{rate}}</div>
     </div>
   </div>
   <!-- Dots layer -->
@@ -77,6 +78,8 @@ export default {
       backgrounds: [],
       dots: [],
       bars: [],
+      rate: null,
+      rateStyle: null,
       contentStyle: null,
       contentHoverStyle: null,
       isHovered: false,
@@ -121,6 +124,12 @@ export default {
     },
     barsStyle_() {
       return this.styles.bars;
+    },
+    hasRate() {
+      return this.rate;
+    },
+    rateStyle_() {
+      return this.rateStyle;
     },
     highlights() {
       return this.hasBackgrounds ?
@@ -192,6 +201,8 @@ export default {
       const bars = [];
       const contentStyles = [];
       const contentHoverStyles = [];
+      const rateStyles = [];
+      let rate = null;
       // Get the day attributes
       this
         .attributeDates
@@ -206,6 +217,10 @@ export default {
           if (attribute.contentStyle) contentStyles.push(attribute.contentStyle);
           // Add content hover style if needed
           if (attribute.contentHoverStyle) contentHoverStyles.push(attribute.contentHoverStyle);
+          // Add rate style if needed
+          if (attribute.rateStyle) rateStyles.push(attribute.rateStyle);
+          // Add rates if exists
+          if (attribute.rate) rate = this.getRate(attribute);
         });
       // Assign day attributes
       this.backgrounds = backgrounds;
@@ -213,6 +228,8 @@ export default {
       this.bars = bars;
       this.contentStyle = Object.assign({}, this.styles.dayContent, ...contentStyles);
       this.contentHoverStyle = Object.assign({}, this.styles.dayContentHover, ...contentHoverStyles);
+      this.rateStyle = Object.assign({}, this.styles.dayRate, ...rateStyles);
+      this.rate = rate;
     },
     getBackground(attribute, dateInfo) {
       // Initialize the background object
@@ -297,6 +314,9 @@ export default {
         },
       };
     },
+    getRate(attribute) {
+      return attribute.rate.value + attribute.rate.currency;
+    },
   },
 };
 </script>
@@ -378,6 +398,7 @@ export default {
 
 .c-day-content
   +box()
+  flex-wrap: wrap
   width: $dayContentWidth
   height: $dayContentHeight
   font-size: $dayContentFontSize
