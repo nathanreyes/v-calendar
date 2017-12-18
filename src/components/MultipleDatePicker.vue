@@ -1,6 +1,7 @@
 <template>
 <calendar
   :attributes='attributes_'
+  :month-interval='monthInterval'
   @dayselect='selectDay'
   v-bind='$attrs'
   v-on='$listeners'>
@@ -22,6 +23,7 @@ export default {
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
+    monthInterval: Number,
   },
   computed: {
     selectAttribute_() {

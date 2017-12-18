@@ -39,10 +39,14 @@ import {
   pageIsEqualToPage,
   pageIsBeforePage,
   pageIsAfterPage,
+  pageBeforeInInterval,
+  pageAfterInInterval,
   getPrevPage,
   getNextPage,
   getPageBetweenPages,
   getFirstValidPage,
+  getNPrevPage,
+  getNNextPage,
 } from '../utils/helpers';
 import '../assets/fonts/vcalendar/vcalendar.scss';
 import '../styles/lib.sass';
@@ -61,6 +65,7 @@ export default {
     isExpanded: Boolean,
     themeStyles: Object,
     attributes: Array,
+    monthInterval: Number,
   },
   data() {
     return {
@@ -104,6 +109,8 @@ export default {
       this.$emit('update:fromPage', val);
       if (!pageIsBeforePage(val, this.toPage_)) {
         this.toPage_ = getNextPage(val);
+      } else if (this.monthInterval && !pageAfterInInterval(val, this.toPage_, this.monthInterval)) {
+        this.toPage_ = getNNextPage(val, this.monthInterval);
       }
     },
     toPage_(val) {
@@ -111,6 +118,8 @@ export default {
       this.$emit('update:toPage', val);
       if (!pageIsAfterPage(val, this.fromPage_)) {
         this.fromPage_ = getPrevPage(val);
+      } else if (this.monthInterval && !pageBeforeInInterval(val, this.fromPage_, this.monthInterval)) {
+        this.fromPage_ = getNPrevPage(val, this.monthInterval);
       }
     },
     isDoublePaned_() {
