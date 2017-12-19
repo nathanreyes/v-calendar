@@ -10,6 +10,7 @@
     :max-page='maxFromPage'
     :styles='themeStyles_'
     :attributes='attributes_'
+    :only-in-month='onlyInMonth'
     @titleClick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
@@ -22,6 +23,7 @@
     :max-page='maxPage'
     :styles='themeStyles_'
     :attributes='attributes_'
+    :only-in-month='onlyInMonth'
     @titleClick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
@@ -66,6 +68,7 @@ export default {
     themeStyles: Object,
     attributes: Array,
     monthInterval: Number,
+    onlyInMonth: Boolean,
   },
   data() {
     return {

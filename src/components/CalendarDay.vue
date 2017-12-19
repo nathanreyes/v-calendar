@@ -5,7 +5,8 @@
   <!-- Background layers -->
   <transition-group
     name='background'
-    tag='div'>
+    tag='div'
+    v-if='showNotInMonth'>
     <div
       v-for='(background, i) in backgrounds'
       :key='background.key'
@@ -17,7 +18,7 @@
     </div>
   </transition-group>
   <!-- Content layer -->
-  <div class='c-day-layer c-day-box-center-center'>
+  <div class='c-day-layer c-day-box-center-center' v-if='showNotInMonth'>
     <div
       class='c-day-content'
       :style='contentStyle_'
@@ -27,13 +28,13 @@
       @mouseenter='mouseenter'
       @mouseleave='mouseleave'>
       <div class='c-day-label'>{{ label }}</div>
-      <div class='c-day-rate' :style='rateStyle_' v-if="hasRate">{{rate}}</div>
+      <div class='c-day-rate' :style='rateStyle_' v-if='hasRate'>{{rate}}</div>
     </div>
   </div>
   <!-- Dots layer -->
   <div
     class='c-day-layer c-day-inactive c-day-box-center-bottom'
-    v-if='hasDots'>
+    v-if='showNotInMonth && hasDots'>
     <div
       class='c-day-dots'
       :style='dotsStyle_'>
@@ -48,7 +49,7 @@
   <!-- Bars layer -->
   <div
     class='c-day-layer c-day-inactive c-day-box-center-bottom'
-    v-if='hasBars'>
+    v-if='showNotInMonth && hasBars'>
     <div
       class='c-day-bars'
       :style='barsStyle_'>
@@ -72,6 +73,7 @@ export default {
     dayInfo: { type: Object, required: true },
     attributes: Object,
     styles: Object,
+    onlyInMonth: { type: Boolean, default: () => false },
   },
   data() {
     return {
@@ -96,6 +98,9 @@ export default {
     },
     inMonth() {
       return this.dayInfo.inMonth;
+    },
+    showNotInMonth() {
+      return (this.onlyInMonth && this.dayInfo.inMonth) || !this.onlyInMonth;
     },
     dayCellStyle() {
       return this.inMonth ? this.styles.dayCell : {

@@ -11,6 +11,7 @@
       v-for='day in week'
       :key='day.id'
       :dayInfo='day'
+      :only-in-month='onlyInMonth'
       v-bind='$attrs'
       v-on='$listeners'>
     </calendar-day>
@@ -31,6 +32,7 @@ export default {
     prevMonthComps: Object,
     nextMonthComps: Object,
     trimMaxWeek: Boolean,
+    onlyInMonth: Boolean,
   },
   computed: {
     weeks() {

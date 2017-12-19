@@ -2,6 +2,7 @@
   <calendar
     :attributes='attributes_'
     :month-interval='monthInterval'
+    :only-in-month='onlyInMonth'
     @dayselect='selectDay'
     v-bind='$attrs'
     v-on='$listeners'>
@@ -24,6 +25,7 @@ export default {
     disabledAttribute: Object,
     attributes: Array,
     monthInterval: Number,
+    onlyInMonth: Boolean,
   },
   computed: {
     selectAttribute_() {
