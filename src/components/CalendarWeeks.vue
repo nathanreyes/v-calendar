@@ -3,7 +3,7 @@
   <div
     class='c-week'
     v-for='(week, i) in weeks'
-    :key='i'
+    :key='i + 1'
     @touchstart.passive='$emit("touchstart", $event)'
     @touchmove.passive='$emit("touchmove", $event)'
     @touchend.passive='$emit("touchend", $event)'>

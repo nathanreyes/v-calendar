@@ -94,8 +94,8 @@
         :style='weekdayStyle_'>
         <!--Weekday labels-->
         <div
-          v-for='weekday in weekdayLabels_'
-          :key='weekday'
+          v-for='(weekday, i) in weekdayLabels_'
+          :key='i + 1'
           class='c-weekday'>
           {{ weekday }}
         </div>

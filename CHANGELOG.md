@@ -1,3 +1,6 @@
+## 0.4.3
+* Fix bug for duplicated weekday label keys. Closes #28.
+
 ## 0.4.2
 * Convert event names to all lowercase to support in-DOM templates. Closes #26.
 
