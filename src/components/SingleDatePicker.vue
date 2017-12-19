@@ -1,7 +1,7 @@
 <template>
   <calendar
     :attributes='attributes_'
-    @daySelect='selectDay'
+    @dayselect='selectDay'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar>

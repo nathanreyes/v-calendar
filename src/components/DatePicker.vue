@@ -20,13 +20,15 @@
   :content-style='popoverContentStyle'
   :force-hidden.sync='popoverForceHidden'
   @didDisappear='popoverDidDisappear'
+  is-interactive
   v-else>
   <slot
     :input-value='inputValue'
     :update-value='updateValue'>
     <input
+      ref='input'
       type='text'
-      :class='[inputClass, { "c-input-drag": dragValue }]'
+      :class='[inputClass, { "c-input-drag": !value && dragValue }]'
       :style='inputStyle'
       :placeholder='inputPlaceholder_'
       :value='inputValue'
@@ -156,10 +158,12 @@ export default {
       this.toPage_ = val;
     },
     fromPage_(val) {
-      this.$emit('update:fromPage', val);
+      this.$emit('update:frompage', val); // Support in-DOM templates (:frompage.sync)
+      this.$emit('update:fromPage', val); // Allow using :from-page.sync
     },
     toPage_(val) {
-      this.$emit('update:toPage', val);
+      this.$emit('update:topage', val);   // Support in-DOM templates (:topage.sync)
+      this.$emit('update:toPage', val);   // Allow using :to-page.sync
     },
     mode() {
       // Clear value on select mode change
@@ -168,8 +172,13 @@ export default {
     value() {
       this.updateInputValue();
       if (this.popoverKeepVisibleOnInput) return;
-      if (this.mode === 'multiple') return;
-      if (!this.disablePopoverForceHidden) this.popoverForceHidden = true;
+      // if (this.mode === 'multiple') return;
+      if (this.mode !== 'multiple' && !this.disablePopoverForceHidden) {
+        setTimeout(() => {
+          this.popoverForceHidden = true;
+        }, 300);
+      }
+      if (this.$refs.input) this.$refs.input.blur();
       this.disablePopoverForceHidden = false;
     },
     dragValue() {
@@ -187,7 +196,9 @@ export default {
     filteredListeners() {
       // Remove parent listeners that we want to intercept and re-broadcast
       const listeners = { ...this.$listeners };
+      delete listeners['update:frompage'];
       delete listeners['update:fromPage'];
+      delete listeners['update:topage'];
       delete listeners['update:toPage'];
       return listeners;
     },
@@ -208,6 +219,7 @@ export default {
       if (this.profile.valuesAreEqual(parsedValue, filteredValue)) {
         // Everything user entered was accepted so hide popover
         this.popoverForceHidden = true;
+        if (this.$refs.input) this.$refs.input.blur();
       } else {
         // Keep the popover open because something they entered was modified
         this.disablePopoverForceHidden = true;

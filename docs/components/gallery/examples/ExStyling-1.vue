@@ -1,8 +1,8 @@
 <template>
   <v-date-picker
     mode='single'
-    tint-color='#ff6666'
     v-model='selectedDate'
+    select-color='#ff6666'
     :theme-styles='themeStyles'
     is-double-paned
     is-inline>

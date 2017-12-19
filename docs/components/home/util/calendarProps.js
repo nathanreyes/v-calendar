@@ -1,5 +1,14 @@
 export default [
   {
+    name: '<code>nav-visibility: String</code>',
+    description: `
+      Visibility state of the navigation panel.
+      <br />Use <code>"hover"</code> to automatically show when title is hovered on non-touch devices or tapped on touch devices.
+      <br />Use <code>"focus"</code> to automatically show when title enters or leaves focus.
+      <br />Use <code>"visible"</code> and <code>"hidden"</code> for manual control.
+      `,
+  },
+  {
     name: '<code>month-labels: Array[String]</code>',
     description: 'Month labels displayed in header.',
     default: '<code>["January",...,"December"]</code>',
@@ -11,12 +20,12 @@ export default [
     default: '<code>["S", "M", "T", "W", "T", "F", "S", "S"]</code>',
     themable: true,
   },
-  {
-    name: '<code>first-day-of-week: Number</code>',
-    description: 'Weekday number (1-7, Sun-Sat) to use as the first day of the week.',
-    default: '<code>1</code>',
-    themable: true,
-  },
+  // {
+  //   name: '<code>first-day-of-week: Number</code>',
+  //   description: 'Weekday number (1-7, Sun-Sat) to use as the first day of the week.',
+  //   default: '<code>1</code>',
+  //   themable: true,
+  // },
   {
     name: '<code>from-page: Object</code>',
     description: 'Active page for single paned calendar or the left pane for double paned calendar. Use the <code>.sync</code> modifier for two-way binding.',

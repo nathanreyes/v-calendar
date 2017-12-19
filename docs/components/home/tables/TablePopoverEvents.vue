@@ -20,19 +20,19 @@ export default {
   data() {
     const props = [
       {
-        name: '<code>willAppear</code>',
+        name: '<code>willappear</code>',
         description: 'Content popover is about to appear.',
       },
       {
-        name: '<code>didAppear</code>',
+        name: '<code>didappear</code>',
         description: 'Content popover is about to appear.',
       },
       {
-        name: '<code>willDisappear</code>',
+        name: '<code>willdisappear</code>',
         description: 'Content popover is about to disappear.',
       },
       {
-        name: '<code>didDisappear</code>',
+        name: '<code>diddisappear</code>',
         description: 'Content popover is about to disappear.',
       },
 

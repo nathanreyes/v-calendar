@@ -10,7 +10,7 @@
     :max-page='maxFromPage'
     :styles='themeStyles_'
     :attributes='attributes_'
-    @titleClick='titleClick'
+    @titleclick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar-pane>
@@ -22,7 +22,7 @@
     :max-page='maxPage'
     :styles='themeStyles_'
     :attributes='attributes_'
-    @titleClick='titleClick'
+    @titleclick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar-pane>
@@ -100,12 +100,14 @@ export default {
       this.refreshToPage();
     },
     fromPage_(val) {
+      this.$emit('update:frompage', val);
       this.$emit('update:fromPage', val);
       if (!pageIsBeforePage(val, this.toPage_)) {
         this.toPage_ = getNextPage(val);
       }
     },
     toPage_(val) {
+      this.$emit('update:topage', val);
       this.$emit('update:toPage', val);
       if (!pageIsAfterPage(val, this.fromPage_)) {
         this.fromPage_ = getPrevPage(val);

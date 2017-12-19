@@ -17,11 +17,11 @@
     @after-leave='afterContentLeave'>
     <div
       ref='popoverOrigin'
-      :class='["popover-origin", "direction-" + direction, "align-" + align, { "interactive": isInteractive }]'
+      :class='["popover-origin", "direction-" + direction, "align-" + align]'
       v-if='visible'>
       <div
         ref='popoverContentWrapper'
-        :class='["popover-content-wrapper", "direction-" + direction, "align-" + align]'
+        :class='["popover-content-wrapper", "direction-" + direction, "align-" + align, { "interactive": isInteractive }]'
         :style='contentWrapperStyle'>
         <div
           ref='popoverContent'
@@ -91,11 +91,10 @@ export default {
     forceHidden() {
       // Reset managed visible state
       if (this.visibleManaged) this.visibleManaged = false;
-      else this.$emit('update:forceHidden', false);
-    },
-    visibility() {
-      // Reset managed visible state
-      this.visibleManaged = false;
+      else {
+        this.$emit('update:forcehidden', false);
+        this.$emit('update:forceHidden', false);
+      }
     },
   },
   created() {
@@ -154,21 +153,24 @@ export default {
     },
     beforeContentEnter() {
       this.contentTransitioning = true;
-      this.$emit('willAppear');
+      this.$emit('willappear');
     },
     afterContentEnter() {
       this.contentTransitioning = false;
-      this.$emit('didAppear');
+      this.$emit('didappear');
     },
     beforeContentLeave() {
       this.contentTransitioning = true;
-      this.$emit('willDisappear');
+      this.$emit('willdisappear');
     },
     afterContentLeave() {
       this.contentTransitioning = false;
-      this.$emit('didDisappear');
+      this.$emit('diddisappear');
       // Reset forceHidden state if needed
-      if (this.forceHidden) this.$emit('update:forceHidden', false);
+      if (this.forceHidden) {
+        this.$emit('update:forcehidden', false);
+        this.$emit('update:forceHidden', false);
+      }
     },
   },
 };
@@ -213,12 +215,11 @@ export default {
   &.direction-left.align-bottom, &.direction-right.align-bottom
     top: initial
     bottom: 0
-  &.interactive
-    .popover-content-wrapper
-      pointer-events: all
   .popover-content-wrapper
     position: relative
     outline: none
+    &.interactive
+      pointer-events: all
     &.align-center
       transform: translateX(-50%)
     &.align-middle

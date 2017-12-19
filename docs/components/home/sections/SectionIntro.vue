@@ -34,6 +34,17 @@
                 <b-switch v-model='isExpanded'>Expanded</b-switch>
               </b-field>
             </b-field>
+            <b-field label='Navigation Visibility'>
+              <p class='control-offset'>
+                <b-radio
+                  v-for='v in navVisibilities'
+                  :key='v'
+                  :native-value='v'
+                  v-model='navVisibility'>
+                  {{ v }}
+                </b-radio>
+              </p>
+            </b-field>
             <b-field label='Title Position'>
               <p class='control'>
                 <b-radio v-model='titlePosition' native-value='left'>Left</b-radio>
@@ -69,6 +80,7 @@
           <ex-intro
             :is-double-paned='isDoublePaned'
             :is-expanded='isExpanded'
+            :nav-visibility='navVisibility'
             :title-position='titlePosition'
             :title-transition='titleTransition'
             :weeks-transition='weeksTransition'>
@@ -93,6 +105,8 @@ export default {
       exIntroCode: ExIntroCode,
       isDoublePaned: true,
       isExpanded: false,
+      navVisibility: 'focus',
+      navVisibilities: ['focus', 'hover', 'visible', 'hidden'],
       titlePosition: 'center',
       titleTransition: 'slide-h',
       weeksTransition: 'slide-h',

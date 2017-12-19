@@ -26,6 +26,9 @@
           <b-tab-item label='Bar'>
             <table-bar></table-bar>
           </b-tab-item>
+          <b-tab-item label='Popover'>
+            <table-popover></table-popover>
+          </b-tab-item>
         </b-tabs>
       </b-tab-item>
       <b-tab-item label='Date Patterns'>
@@ -50,6 +53,7 @@ import TableAttribute from '../tables/TableAttribute';
 import TableHighlight from '../tables/TableHighlight';
 import TableDot from '../tables/TableDot';
 import TableBar from '../tables/TableBar';
+import TablePopover from '../tables/TablePopover';
 import TableDatePatterns from '../tables/TableDatePatterns';
 import TablePage from '../tables/TablePage';
 import TableDayInfo from '../tables/TableDayInfo';
@@ -64,6 +68,7 @@ export default {
     TableHighlight,
     TableDot,
     TableBar,
+    TablePopover,
     TableDatePatterns,
     TablePage,
     TableDayInfo,

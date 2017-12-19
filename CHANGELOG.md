@@ -1,5 +1,8 @@
-## 0.4.2
+## 0.5.0
 * Add attribute popover support
+
+## 0.4.2
+* Convert event names to all lowercase to support in-DOM templates. Closes #26.
 
 ## 0.4.1
 * Use local nextTick reference, deleting Vue scope dependency.

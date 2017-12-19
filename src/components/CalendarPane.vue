@@ -29,12 +29,13 @@
           <!--Navigation popover--> 
           <popover
             class='c-title-popover'
-            visibility='focus'
             direction='bottom'
             :align='titlePosition'
+            :visibility='navVisibility'
             :content-style='{ padding: "0" }'
             :force-hidden.sync='navForceHidden'
-            toggle-visible-on-click>
+            toggle-visible-on-click
+            is-interactive>
             <!--Title content-->
             <transition-group
               tag='div'
@@ -94,8 +95,8 @@
       :style='weekdayStyle_'>
       <!--Weekday labels-->
       <div
-        v-for='weekday in weekdayLabels_'
-        :key='weekday'
+        v-for='(weekday, i) in weekdayLabels_'
+        :key='i'
         class='c-weekday'>
         {{ weekday }}
       </div>
@@ -171,6 +172,7 @@ export default {
   props: {
     position: { type: Number, default: 1 },
     page: { type: Object, default: () => todayComps },
+    navVisibility: { type: String, default: () => defaults.navVisibility },
     minPage: Object,
     maxPage: Object,
     monthLabels: { type: Array, default: () => defaults.monthLabels },

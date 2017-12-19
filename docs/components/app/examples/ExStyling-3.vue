@@ -74,7 +74,7 @@ export default {
           bar: {
             backgroundColor: '#fafafa',
           },
-          dates: [barDate],
+          dates: barDate,
         },
       ],
     };

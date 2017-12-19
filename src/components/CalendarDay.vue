@@ -44,7 +44,7 @@
       v-if='hasDots'>
       <div
         class='c-day-dots'
-        :style='dotsStyle_'>
+        :style='dotsStyle'>
         <span
           v-for='dot in dots'
           :key='dot.key'
@@ -59,7 +59,7 @@
       v-if='hasBars'>
       <div
         class='c-day-bars'
-        :style='barsStyle_'>
+        :style='barsStyle'>
         <span
           v-for='bar in bars'
           :key='bar.key'
@@ -71,17 +71,42 @@
   </div>
   <!-- Popover content -->
   <div slot='popover-content'>
-    <div v-for='(popover, i) in popovers' :key='i'>
-      <div v-if='popover.label'>
+    <!-- Popover header label -->
+    <div class='c-day-popover-header'>{{ longLabel }}</div>
+    <!-- Popover content rows -->
+    <div
+      :class='["c-day-popover-row", { "selectable": popover.onSelect }]'
+      v-for='(popover, i) in popovers'
+      :key='i'
+      @click='popoverClick(popover)'>
+      <!-- Popover indicator -->
+      <div
+        class='c-day-popover-indicator'
+        v-if='popover.indicatorStyle'>
+        <span :style='popover.indicatorStyle'></span>
+      </div>
+      <!-- Popover label -->
+      <div
+        class='c-day-popover-content'
+        :style='popover.labelStyle'
+        v-if='popover.label'>
         {{ popover.label }}
       </div>
-      <div v-if='popover.component'>
+      <!-- Popover component -->
+      <div
+        class='c-day-popover-content'
+        v-if='popover.component'>
         <component
           :is='content.component'
           :dayInfo='dayInfo'
           :attribute='popover.attribute'>
         </component>
       </div>
+      <a
+        v-if='popover.onDelete'
+        :class='["c-delete", "is-" + popover.size, { "is-disabled": popover.deleteDisabled}]'
+        @click.stop='popoverDelete(popover)'>
+      </a>
     </div>
   </div>
 </popover>
@@ -125,6 +150,10 @@ export default {
     inMonth() {
       return this.dayInfo.inMonth;
     },
+    longLabel() {
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      return this.dayInfo.date.toLocaleDateString(window.navigator.userLanguage || window.navigator.language, options);
+    },
     dayCellStyle() {
       return this.inMonth ? this.styles.dayCell : {
         ...this.styles.dayCell,
@@ -148,14 +177,17 @@ export default {
     hasDots() {
       return arrayHasItems(this.dots);
     },
-    dotsStyle_() {
+    dotsStyle() {
       return this.styles.dots;
     },
     hasBars() {
       return arrayHasItems(this.bars);
     },
-    barsStyle_() {
+    barsStyle() {
       return this.styles.bars;
+    },
+    popoverContentStyle() {
+      return this.styles.dayPopoverContent;
     },
     highlights() {
       return this.hasBackgrounds ?
@@ -168,9 +200,6 @@ export default {
     popoverVisibility() {
       if (arrayHasItems(this.popovers) && this.popovers.some(p => p.label || p.component)) return 'hover';
       return 'hidden';
-    },
-    popoverContentStyle() {
-      return this.activePopover && this.activePopover.contentStyle;
     },
     popoverIsInteractive() {
       return (this.activePopover && this.popovers.some(p => p.isInteractive));
@@ -218,21 +247,21 @@ export default {
         Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
         Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
       if (state.tapDetected) {
-        this.$emit('daySelect', this.dayInfo, this.attributesMap);
+        this.$emit('dayselect', this.dayInfo, this.attributesMap);
       }
       state.started = false;
     },
     click() {
       if (this.touchState && this.touchState.tapDetected) return;
-      this.$emit('daySelect', this.eventDayInfo, this.attributesMap);
+      this.$emit('dayselect', this.dayInfo, this.attributesMap);
     },
     mouseenter() {
       this.isHovered = true;
-      this.$emit('dayMouseEnter', this.eventDayInfo, this.attributesMap);
+      this.$emit('daymouseenter', this.dayInfo, this.attributesMap);
     },
     mouseleave() {
       this.isHovered = false;
-      this.$emit('dayMouseLeave', this.eventDayInfo, this.attributesMap);
+      this.$emit('daymouseleave', this.dayInfo, this.attributesMap);
     },
     processAttributes() {
       const backgrounds = [];
@@ -252,7 +281,7 @@ export default {
           // Add bar if needed
           if (attribute.bar) bars.push(this.getBar(attribute));
           // Add popover if needed
-          if (attribute.popover) popovers.push(this.getPopover(attribute));
+          if (attribute.popover) popovers.unshift(this.getPopover(attribute));
           // Add content style if needed
           if (attribute.contentStyle) contentStyles.push(attribute.contentStyle);
           // Add content hover style if needed
@@ -350,30 +379,86 @@ export default {
     getPopover(attribute) {
       const {
         label,
+        labelStyle,
         component,
-        contentStyle,
-        isDark,
+        hideIndicator,
+        size,
+        selectDisabled,
+        onSelect,
+        deleteDisabled,
+        onDelete,
         isInteractive,
       } = attribute.popover;
       const popover = {
         key: attribute.key,
         attribute,
-        isDark,
-        isInteractive,
-        contentStyle: contentStyle || {
-          color: '#333333',
-          fontSize: '.8rem',
-          whiteSpace: 'nowrap',
-          ...(isDark ? {
-            color: '#fafafa',
-            backgroundColor: '#333333',
-          } : null),
-        },
+        size: size || 'small',
+        selectDisabled,
+        onSelect,
+        deleteDisabled,
+        onDelete,
       };
-      if (isString(label)) popover.label = label;
-      else if (isFunction(label)) popover.label = label(attribute, this.dayInfo);
+      // Assign style for indicator if needed
+      if (!hideIndicator) popover.indicatorStyle = this.getPopoverIndicatorStyle(attribute);
+      // Assign popover content label
+      if (isString(label)) {
+        popover.label = label;
+        popover.labelStyle = labelStyle;
+      } else if (isFunction(label)) {
+        popover.label = label(attribute, this.dayInfo);
+        popover.labelStyle = labelStyle;
+      }
+      // Assign popover content component
       if (component) popover.component = component;
+      // Assign interactive flag
+      popover.isInteractive =
+        (isInteractive !== undefined) ?
+        isInteractive :
+        !!(this.$listeners.attributeselect || this.$listeners.attributedelete || onSelect || onDelete);
       return popover;
+    },
+    popoverClick(popover) {
+      const { onSelect, attribute } = popover;
+      if (isFunction(onSelect)) onSelect(attribute, this.dayInfo);
+      this.$emit('attributeselect', attribute, this.dayInfo);
+    },
+    popoverDelete(popover) {
+      const { onDelete, attribute } = popover;
+      if (isFunction(onDelete)) onDelete(attribute, this.dayInfo);
+      this.$emit('attributedelete', attribute, this.dayInfo);
+    },
+    getPopoverIndicatorStyle(attribute) {
+      if (attribute.highlight) {
+        return {
+          backgroundColor: attribute.highlight.backgroundColor,
+          width: '10px',
+          height: '5px',
+          borderRadius: '3px',
+        };
+      }
+      if (attribute.dot) {
+        return {
+          backgroundColor: attribute.dot.backgroundColor,
+          width: '5px',
+          height: '5px',
+          borderRadius: '50%',
+        };
+      }
+      if (attribute.bar) {
+        return {
+          backgroundColor: attribute.bar.backgroundColor,
+          width: '10px',
+          height: '3px',
+        };
+      }
+      if (attribute.contentStyle) {
+        return {
+          backgroundColor: attribute.contentStyle.color,
+          width: '5px',
+          height: '5px',
+        };
+      }
+      return null;
     },
   },
 };
@@ -382,11 +467,7 @@ export default {
 <style lang='sass' scoped>
 
 @import '../styles/vars.sass'
-
-=box($justify: center, $align: center)
-  display: flex
-  justify-content: $justify
-  align-items: $align
+@import '../styles/mixins.sass'
 
 .c-popover
   flex: 1
@@ -442,6 +523,7 @@ export default {
   height: $dotDiameter
   border-radius: $dotBorderRadius
   background-color: $dotBackgroundColor
+  transition: all $dayContentTransitionTime
   &:not(:last-child)
     margin-right: $dotSpacing
 
@@ -453,6 +535,43 @@ export default {
   flex-grow: 1
   height: $barHeight
   background-color: $barBackgroundColor
+  transition: all $dayContentTransitionTime
+
+.c-day-popover-header
+  text-align: center
+  padding-bottom: 3px
+  border-bottom: 1px solid #dadada
+  margin-bottom: 3px
+  opacity: 0.7
+
+.c-day-popover-row
+  display: flex
+  align-items: center
+  padding: 2px 5px
+  transition: all $dayContentTransitionTime
+  &.selectable
+    cursor: pointer
+    &:hover
+      background-color: rgba(0, 0, 0, 0.1)
+  &:not(:first-child)
+    margin-top: 3px
+  .c-day-popover-indicator
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-grow: 0
+    width: 15px
+    margin-right: 3px
+    span
+      transition: all $dayContentTransitionTime
+  .c-day-popover-content
+    flex-grow: 1
+    transition: all $dayContentTransitionTime
+  .c-delete
+    +delete
+    margin-left: 7px
+    &.disabled
+      pointer-events: none
 
 .c-day-content
   +box()
@@ -464,9 +583,6 @@ export default {
   transition: all $dayContentTransitionTime
   user-select: none
   cursor: default
-
-.c-day-popover
-  opacity: 1
 
 // TRANSITION ANIMATIONS
 

@@ -7,6 +7,7 @@
       <section-highlights></section-highlights>
       <section-dots></section-dots>
       <section-bars></section-bars>
+      <section-popovers></section-popovers>
       <section-content-styles></section-content-styles>
       <section-date-patterns @viewDatePatternsTable='selectedApiTab = 4'></section-date-patterns>
       <section-calendar-api :selectedTab='selectedApiTab'></section-calendar-api>
@@ -31,6 +32,7 @@ import SectionContentStyles from '../sections/SectionContentStyles';
 import SectionHighlights from '../sections/SectionHighlights';
 import SectionDots from '../sections/SectionDots';
 import SectionBars from '../sections/SectionBars';
+import SectionPopovers from '../sections/SectionPopovers';
 import SectionDatePatterns from '../sections/SectionDatePatterns';
 import SectionCalendarApi from '../sections/SectionCalendarApi';
 import SectionDatePicker from '../sections/SectionDatePicker';
@@ -47,6 +49,7 @@ export default {
     SectionHighlights,
     SectionDots,
     SectionBars,
+    SectionPopovers,
     SectionDatePatterns,
     SectionCalendarApi,
     SectionDatePicker,

@@ -13,8 +13,8 @@
               </p>
               <ul>
                 <li>Created by adding conditions to date ranges</li>
-                <li>Declarative and serializable syntax</li>
-                <li>Over 10 differents types of supported patterns</li>
+                <li>Uses a declarative, serializable syntax</li>
+                <li>Up to 10 differents types of supported patterns</li>
                 <li>Combine pattern sets together for complex applications</li>
                 <li>Supports custom date functions for more flexibility</li>
               </ul>

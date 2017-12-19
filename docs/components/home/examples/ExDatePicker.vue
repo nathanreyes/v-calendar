@@ -40,15 +40,6 @@ export default {
       toPage: null,
       selectedValue: new Date(),
       disabledDates: { weekdays: [1, 7] },
-      todayAttribute: {
-        contentStyle: {
-          color: '#ffffff',
-          backgroundColor: '#ff9999',
-          border: 'solid 1px #ff8080',
-          fontWeight: 600,
-        },
-        dates: [new Date()],
-      },
     };
   },
 };

@@ -28,8 +28,15 @@ const defaults = {
     // dayContentHover: null,
     // dots: null,
     // bars: null,
+    dayPopoverContent: {
+      color: '#333333',
+      fontSize: '.8rem',
+      whiteSpace: 'nowrap',
+      padding: '5px',
+    },
   },
   firstDayOfWeek: 1,
+  navVisibility: 'focus',
   titlePosition: 'center',
   titleTransition: 'slide-h',
   weeksTransition: 'slide-h',
@@ -55,9 +62,8 @@ const defaults = {
       border: '0',
     },
     popover: {
-      isDark: true,
-      isInteractive: true,
       label: popoverLabel,
+      hideIndicator: true,
     },
   }),
   datePickerDragAttribute: color => ({
@@ -71,8 +77,8 @@ const defaults = {
       border: '0',
     },
     popover: {
-      isDark: true,
       label: popoverLabel,
+      hideIndicator: true,
     },
   }),
   datePickerDisabledAttribute: {

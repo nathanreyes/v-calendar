@@ -16,9 +16,9 @@ export default {
     // Show a bar for today's date
     const barDate = new Date();
     // Get start and end dates for the current week
-    const startDate = new Date(thisMonthYear, thisMonth, barDate.getDate() - barDate.getDay());
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 6);
+    const start = new Date(thisMonthYear, thisMonth, barDate.getDate() - barDate.getDay());
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
     return {
       selectedDate: null,
       themeStyles: {
@@ -56,18 +56,13 @@ export default {
             backgroundColor: 'rgba(0, 0, 0, 0.2)',
             height: '38px',
           },
-          dates: [
-            {
-              start: startDate,
-              end: endDate,
-            },
-          ],
+          dates: { start, end },
         },
         {
           bar: {
             backgroundColor: '#fafafa',
           },
-          dates: [barDate],
+          dates: barDate,
         },
       ],
     };
