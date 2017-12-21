@@ -5,7 +5,8 @@
   <!-- Background layers -->
   <transition-group
     name='background'
-    tag='div'>
+    tag='div'
+    v-if='showNotInMonth'>
     <div
       v-for='(background, i) in backgrounds'
       :key='background.key'
@@ -17,7 +18,7 @@
     </div>
   </transition-group>
   <!-- Content layer -->
-  <div class='c-day-layer c-day-box-center-center'>
+  <div class='c-day-layer c-day-box-center-center' v-if='showNotInMonth'>
     <div
       class='c-day-content'
       :style='contentStyle_'
@@ -26,13 +27,14 @@
       @click='click($event)'
       @mouseenter='mouseenter'
       @mouseleave='mouseleave'>
-      {{ label }}
+      <div class='c-day-label'>{{ label }}</div>
+      <div class='c-day-rate' :style='rateStyle_' v-if='hasRate'>{{rate}}</div>
     </div>
   </div>
   <!-- Dots layer -->
   <div
     class='c-day-layer c-day-inactive c-day-box-center-bottom'
-    v-if='hasDots'>
+    v-if='showNotInMonth && hasDots'>
     <div
       class='c-day-dots'
       :style='dotsStyle_'>
@@ -47,7 +49,7 @@
   <!-- Bars layer -->
   <div
     class='c-day-layer c-day-inactive c-day-box-center-bottom'
-    v-if='hasBars'>
+    v-if='showNotInMonth && hasBars'>
     <div
       class='c-day-bars'
       :style='barsStyle_'>
@@ -71,12 +73,15 @@ export default {
     dayInfo: { type: Object, required: true },
     attributes: Object,
     styles: Object,
+    onlyInMonth: { type: Boolean, default: () => false },
   },
   data() {
     return {
       backgrounds: [],
       dots: [],
       bars: [],
+      rate: null,
+      rateStyle: null,
       contentStyle: null,
       contentHoverStyle: null,
       isHovered: false,
@@ -93,6 +98,9 @@ export default {
     },
     inMonth() {
       return this.dayInfo.inMonth;
+    },
+    showNotInMonth() {
+      return (this.onlyInMonth && this.dayInfo.inMonth) || !this.onlyInMonth;
     },
     dayCellStyle() {
       return this.inMonth ? this.styles.dayCell : {
@@ -121,6 +129,12 @@ export default {
     },
     barsStyle_() {
       return this.styles.bars;
+    },
+    hasRate() {
+      return this.rate;
+    },
+    rateStyle_() {
+      return this.rateStyle;
     },
     highlights() {
       return this.hasBackgrounds ?
@@ -192,6 +206,8 @@ export default {
       const bars = [];
       const contentStyles = [];
       const contentHoverStyles = [];
+      const rateStyles = [];
+      let rate = null;
       // Get the day attributes
       this
         .attributeDates
@@ -206,6 +222,10 @@ export default {
           if (attribute.contentStyle) contentStyles.push(attribute.contentStyle);
           // Add content hover style if needed
           if (attribute.contentHoverStyle) contentHoverStyles.push(attribute.contentHoverStyle);
+          // Add rate style if needed
+          if (attribute.rateStyle) rateStyles.push(attribute.rateStyle);
+          // Add rates if exists
+          if (attribute.rate) rate = this.getRate(attribute);
         });
       // Assign day attributes
       this.backgrounds = backgrounds;
@@ -213,6 +233,8 @@ export default {
       this.bars = bars;
       this.contentStyle = Object.assign({}, this.styles.dayContent, ...contentStyles);
       this.contentHoverStyle = Object.assign({}, this.styles.dayContentHover, ...contentHoverStyles);
+      this.rateStyle = Object.assign({}, this.styles.dayRate, ...rateStyles);
+      this.rate = rate;
     },
     getBackground(attribute, dateInfo) {
       // Initialize the background object
@@ -297,6 +319,9 @@ export default {
         },
       };
     },
+    getRate(attribute) {
+      return attribute.rate.value + attribute.rate.currency;
+    },
   },
 };
 </script>
@@ -378,6 +403,7 @@ export default {
 
 .c-day-content
   +box()
+  flex-wrap: wrap
   width: $dayContentWidth
   height: $dayContentHeight
   font-size: $dayContentFontSize
@@ -386,6 +412,15 @@ export default {
   transition: all $dayContentTransitionTime
   user-select: none
   cursor: default
+
+.c-day-label
+  flex: 0 0 100%
+  text-align: center
+
+.c-day-rate
+  flex: 0 0 100%
+  text-align: center
+  font-size: $dayContentRateFontSize
 
 // TRANSITION ANIMATIONS
 

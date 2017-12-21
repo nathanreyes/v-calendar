@@ -50,6 +50,28 @@ export const getNextMonthComps = (month, year) => {
   return getMonthComps(month + 1, year);
 };
 
+// Day/month/year components for month - n
+export const getNPrevMonthComps = (month, year, n) => {
+  if (!month || !year || !n) return undefined;
+  month -= n;
+  if (month < 1) {
+    month += 12;
+    year--;
+  }
+  return getMonthComps(month, year);
+};
+
+// Day/month/year components for month + n
+export const getNNextMonthComps = (month, year, n) => {
+  if (!month || !year || !n) return undefined;
+  month += n;
+  if (month > 12) {
+    month -= 12;
+    year++;
+  }
+  return getMonthComps(month, year);
+};
+
 export const getExampleMonthComps = () => {
   const thisMonthComps = getThisMonthComps();
   const nextMonthComps = getNextMonthComps(thisMonthComps.month, thisMonthComps.year);
@@ -71,11 +93,20 @@ function comparePages(firstPage, secondPage) {
   return firstPage.year < secondPage.year ? -1 : 1;
 }
 
+function getMonthInterval(firstPage, secondPage) {
+  if (!firstPage || !secondPage) return 0;
+  return ((12 * (firstPage.year - secondPage.year)) - secondPage.month) + firstPage.month;
+}
+
 export const pageIsEqualToPage = (page, otherPage) => comparePages(page, otherPage) === 0;
 
 export const pageIsBeforePage = (page, beforePage) => comparePages(page, beforePage) === -1;
 
 export const pageIsAfterPage = (page, afterPage) => comparePages(page, afterPage) === 1;
+
+export const pageBeforeInInterval = (page, beforePage, interval) => getMonthInterval(page, beforePage) <= interval;
+
+export const pageAfterInInterval = (page, afterPage, interval) => getMonthInterval(afterPage, page) <= interval;
 
 export const getMinPage = (...args) => args.reduce((prev, curr) => {
   if (!prev) return curr;
@@ -98,9 +129,27 @@ export const getPrevPage = (page) => {
   };
 };
 
+export const getNPrevPage = (page, n) => {
+  if (!page || !n) return undefined;
+  const prevComps = getNPrevMonthComps(page.month, page.year, n);
+  return {
+    month: prevComps.month,
+    year: prevComps.year,
+  };
+};
+
 export const getNextPage = (page) => {
   if (!page) return undefined;
   const nextComps = getNextMonthComps(page.month, page.year);
+  return {
+    month: nextComps.month,
+    year: nextComps.year,
+  };
+};
+
+export const getNNextPage = (page, n) => {
+  if (!page || !n) return undefined;
+  const nextComps = getNNextMonthComps(page.month, page.year, n);
   return {
     month: nextComps.month,
     year: nextComps.year,

@@ -2,6 +2,8 @@
 <calendar
   :dayContentHoverStyle='dayContentHoverStyle_'
   :attributes='attributes_'
+  :month-interval='monthInterval'
+  :only-in-month='onlyInMonth'
   @dayselect='selectDay'
   @daymouseenter='enterDay'
   v-bind='$attrs'
@@ -29,6 +31,8 @@ export default {
     dayContentHoverStyle: Object,
     dateValidator: Function,
     attributes: Array,
+    monthInterval: Number,
+    onlyInMonth: Boolean,
   },
   data() {
     return {

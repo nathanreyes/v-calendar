@@ -129,6 +129,7 @@
             :month-comps='p.monthComps'
             :prev-month-comps='p.prevMonthComps'
             :next-month-comps='p.nextMonthComps'
+            :only-in-month='onlyInMonth'
             :styles='styles'
             v-bind='$attrs'
             @touchstart.passive='touchStart($event)'
@@ -175,6 +176,7 @@ export default {
     titlePosition: { type: String, default: () => defaults.titlePosition },
     titleTransition: { type: String, default: () => defaults.titleTransition },
     weeksTransition: { type: String, default: () => defaults.weeksTransition },
+    onlyInMonth: Boolean,
   },
   data() {
     return {

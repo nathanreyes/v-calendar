@@ -51,6 +51,8 @@ const Attribute = (config) => {
     { name: 'highlight', mixin: defaults.highlight },
     { name: 'dot', mixin: defaults.dot },
     { name: 'bar', mixin: defaults.bar },
+    { name: 'rate' },
+    { name: 'rateStyle' },
     { name: 'contentStyle' },
     { name: 'contentHoverStyle' },
     { name: 'customData' },
