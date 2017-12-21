@@ -415,6 +415,7 @@ export default {
 
 .c-day-label
   flex: 0 0 100%
+  text-align: center
 
 .c-day-rate
   flex: 0 0 100%
