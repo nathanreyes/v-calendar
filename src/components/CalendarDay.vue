@@ -413,6 +413,14 @@ export default {
   user-select: none
   cursor: default
 
+.c-day-label
+  flex: 0 0 100%
+
+.c-day-rate
+  flex: 0 0 100%
+  text-align: center
+  font-size: $dayContentRateFontSize
+
 // TRANSITION ANIMATIONS
 
 .background-enter-active
