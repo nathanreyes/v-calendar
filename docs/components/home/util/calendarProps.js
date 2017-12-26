@@ -61,7 +61,7 @@ export default [
   {
     name: '<code>theme-styles: Object</code>',
     description: 'A variety of styles that are used to customize different components of the calendar.',
-    default: 'Reference the <a href="/theming">theming</a> page for more details',
+    default: 'Reference the theming tab for more details',
     themable: true,
   },
   {

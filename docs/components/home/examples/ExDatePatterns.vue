@@ -19,7 +19,7 @@ export default {
       type: Object,
       default: () => ({
         weeklyInterval: 2,
-        weekdays: 6,
+        weekdays: [4, 7],
       }),
     },
   },

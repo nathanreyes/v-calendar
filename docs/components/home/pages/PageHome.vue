@@ -1,26 +1,39 @@
 <template>
-<div class='tabs-wrapper'>
+<div class='container'>
   <b-tabs>
-    <b-tab-item label='Calendar'>
+    <b-tab-item label='Overview' icon='calendar-o'>
       <section-intro></section-intro>
-      <section-attributes></section-attributes>
-      <section-highlights></section-highlights>
-      <section-dots></section-dots>
-      <section-bars></section-bars>
-      <section-popovers></section-popovers>
-      <section-content-styles></section-content-styles>
-      <section-date-patterns @viewDatePatternsTable='selectedApiTab = 4'></section-date-patterns>
       <section-calendar-api :selectedTab='selectedApiTab'></section-calendar-api>
     </b-tab-item>
-    <b-tab-item label='Date Picker'>
-      <section-date-picker></section-date-picker>
-      <section-date-picker-slot></section-date-picker-slot>
-      <section-date-picker-api></section-date-picker-api>
+    <b-tab-item label='Attributes' icon='calendar-check-o'>
+      <b-tabs>
+        <b-tab-item label='Overview'>
+          <section-attributes></section-attributes>
+        </b-tab-item>
+        <b-tab-item label='Highlights'>
+          <section-highlights></section-highlights>
+        </b-tab-item>
+        <b-tab-item label='Dots'>
+          <section-dots></section-dots>
+        </b-tab-item>
+        <b-tab-item label='Bars'>
+          <section-bars></section-bars>
+        </b-tab-item>
+        <b-tab-item label='Popovers'>
+          <section-popovers></section-popovers>
+        </b-tab-item>
+        <b-tab-item label='Content Styles'>
+          <section-content-styles></section-content-styles>
+        </b-tab-item>
+      </b-tabs>
     </b-tab-item>
-    <!-- <b-tab-item label='Popover'>
-      <section-popover></section-popover>
-      <section-popover-api></section-popover-api>
-    </b-tab-item> -->
+    <b-tab-item label='Date Patterns' icon='repeat'>
+      <section-date-patterns @viewDatePatternsTable='selectedApiTab = 4'></section-date-patterns>
+    </b-tab-item>
+    <b-tab-item label='Theming' icon='paint-brush'>
+      <section-theming></section-theming>
+      <section-styles></section-styles>
+    </b-tab-item>
   </b-tabs>
 </div>
 </template>
@@ -34,12 +47,9 @@ import SectionDots from '../sections/SectionDots';
 import SectionBars from '../sections/SectionBars';
 import SectionPopovers from '../sections/SectionPopovers';
 import SectionDatePatterns from '../sections/SectionDatePatterns';
+import SectionTheming from '../sections/SectionTheming';
+import SectionStyles from '../sections/SectionStyles';
 import SectionCalendarApi from '../sections/SectionCalendarApi';
-import SectionDatePicker from '../sections/SectionDatePicker';
-import SectionDatePickerSlot from '../sections/SectionDatePickerSlot';
-import SectionDatePickerApi from '../sections/SectionDatePickerApi';
-import SectionPopover from '../sections/SectionPopover';
-import SectionPopoverApi from '../sections/SectionPopoverApi';
 
 export default {
   components: {
@@ -51,12 +61,9 @@ export default {
     SectionBars,
     SectionPopovers,
     SectionDatePatterns,
+    SectionTheming,
+    SectionStyles,
     SectionCalendarApi,
-    SectionDatePicker,
-    SectionDatePickerSlot,
-    SectionDatePickerApi,
-    SectionPopover,
-    SectionPopoverApi,
   },
   data() {
     return {
@@ -67,10 +74,6 @@ export default {
 </script>
 
 <style lang='sass' scoped>
-.tabs-wrapper
+.container
   margin-top: 30px
-  /deep/ > .b-tabs
-    > .tabs
-      li:first-child
-        margin-left: 40px
 </style>

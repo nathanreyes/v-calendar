@@ -13,6 +13,9 @@
     @titleclick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
+    <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
+      <slot :name='slot' v-bind='props'></slot>
+    </template>
   </calendar-pane>
   <calendar-pane
     v-if='isDoublePaned_'
@@ -25,6 +28,9 @@
     @titleclick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
+    <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
+      <slot :name='slot' v-bind='props'></slot>
+    </template>
   </calendar-pane>
 </div>
 </template>

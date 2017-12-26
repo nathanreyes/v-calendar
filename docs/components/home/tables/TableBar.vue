@@ -1,7 +1,7 @@
 <template>
 <b-table
   :data='props'>
-  <template scope='props'>
+  <template slot-scope='props'>
     <b-table-column label='Property'>
       <span v-html='props.row.propertyName'></span>
     </b-table-column>
@@ -43,6 +43,11 @@ export default {
         propertyName: '<code>borderStyle: String</code>',
         description: 'Border style of bar.',
         default: '<code>"solid"</code>',
+      },
+      {
+        propertyName: '<code>opacity: Number</code>',
+        description: 'Opacity of bar.',
+        default: '<code>1</code>',
       },
     ];
     return {

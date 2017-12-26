@@ -42,6 +42,7 @@
 
 <script>
 import defaults from '../utils/defaults';
+import { registerTapOrClick } from '../utils/touchHandlers';
 import { elementHasAncestor } from '../utils/helpers';
 import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
 
@@ -60,9 +61,11 @@ export default {
   },
   data() {
     return {
-      visibleManaged: false,
+      hoverVisible: false,
+      focusVisible: false,
       contentTransitioning: false,
       disableNextClick: false,
+      windowTapClickRegistration: null,
     };
   },
   computed: {
@@ -84,71 +87,66 @@ export default {
       return VISIBILITIES.isManaged(this.visibility);
     },
     visible() {
-      return this.visibilityIsManaged ? this.visibleManaged : this.visibility === VISIBILITIES.VISIBLE;
+      if (this.visibility === VISIBILITIES.HOVER) return this.hoverVisible;
+      if (this.visibility === VISIBILITIES.FOCUS) return this.focusVisible;
+      return this.visibility === VISIBILITIES.VISIBLE;
     },
   },
   watch: {
     forceHidden() {
-      // Reset managed visible state
-      if (this.visibleManaged) this.visibleManaged = false;
-      else {
+      if (this.hoverVisible || this.focusVisible) {
+        this.hoverVisible = false;
+        this.focusVisible = false;
+      } else {
         this.$emit('update:forcehidden', false);
         this.$emit('update:forceHidden', false);
       }
     },
   },
   created() {
-    window.addEventListener('click', this.windowClick);
+    this.windowTapClickRegistration = registerTapOrClick(window, this.windowTapOrClick);
+  },
+  beforeDestroy() {
+    this.windowTapClickRegistration.cleanup();
   },
   methods: {
     focusin() {
-      if (this.visibility === VISIBILITIES.FOCUS && !this.visibleManaged && !this.contentTransitioning) {
-        this.visibleManaged = true;
+      if (!this.contentTransitioning) {
+        this.focusVisible = true;
         this.disableNextClick = true;
+      }
+    },
+    focusout(e) {
+      if (!elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+        this.focusVisible = false;
       }
     },
     click(e) {
       if (
-        this.visibility === VISIBILITIES.FOCUS
-        && this.toggleVisibleOnClick
+        this.toggleVisibleOnClick
         && !this.contentTransitioning
         && elementHasAncestor(e.target, this.$refs.popover)
         && !elementHasAncestor(e.target, this.$refs.popoverOrigin)) {
         if (!this.disableNextClick) {
-          this.visibleManaged = !this.visibleManaged;
+          this.focusVisible = !this.focusVisible;
         }
       }
       this.disableNextClick = false;
     },
-    windowClick(e) {
-      if (this.visibility === VISIBILITIES.FOCUS && this.visibleManaged && !elementHasAncestor(e.target, this.$refs.popover)) {
-        this.visibleManaged = false;
-      }
-    },
-    focusout(e) {
-      if (this.visibility === VISIBILITIES.FOCUS && this.visibleManaged && !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
-        this.visibleManaged = false;
-      }
-    },
-    // mouseover() {
-    //   if (this.visibility === VISIBILITIES.HOVER && !this.forceHidden && !this.contentTransitioning) {
-    //     this.visibleManaged = true;
-    //   }
-    // },
     mousemove() {
-      if (
-        (this.visibility === VISIBILITIES.HOVER || !this.visibilityIsManaged) &&
-        !this.forceHidden &&
-        !this.contentTransitioning) {
-        this.visibleManaged = true;
+      if (!this.forceHidden && !this.contentTransitioning) {
+        this.hoverVisible = true;
       }
     },
     mouseleave(e) {
-      if (
-        (this.visibility === VISIBILITIES.HOVER || !this.visibilityIsManaged) &&
-        !this.forceHidden &&
-        !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
-        this.visibleManaged = false;
+      if (!this.forceHidden && !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+        this.hoverVisible = false;
+      }
+    },
+    windowTapOrClick(e) {
+      if (!elementHasAncestor(e.target, this.$refs.popover)) {
+        this.hoverVisible = false;
+        this.focusVisible = false;
       }
     },
     beforeContentEnter() {
@@ -186,7 +184,6 @@ export default {
   outline: none
   &.expanded
     display: block
-
 .popover-origin
   position: absolute
   transform-origin: top center

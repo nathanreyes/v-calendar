@@ -3,7 +3,7 @@
   mode='single'
   v-model='selectedValue'
   is-expanded>
-  <template scope='props'>
+  <template slot-scope='props'>
     <b-field :type='inputState.type'>
       <b-input
         type='text'

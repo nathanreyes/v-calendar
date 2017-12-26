@@ -32,7 +32,6 @@ const defaults = {
       color: '#333333',
       fontSize: '.8rem',
       whiteSpace: 'nowrap',
-      padding: '5px',
     },
   },
   firstDayOfWeek: 1,
@@ -47,15 +46,11 @@ const defaults = {
   datePickerInputPlaceholder: '',
   datePickerSelectColor: '#66b3cc',
   datePickerDragColor: '#9fcfdf',
-  datePickerSelectAttribute: color => ({
+  datePickerDragAttribute: color => ({
     key: 'drag-select',
     highlight: {
       backgroundColor: color,
-      borderWidth: '1px',
-      borderColor: blendColors(color, '#000000', 0.1),
-    },
-    contentStyle: {
-      color: '#fafafa',
+      height: '25px',
     },
     contentHoverStyle: {
       backgroundColor: 'transparent',
@@ -66,11 +61,15 @@ const defaults = {
       hideIndicator: true,
     },
   }),
-  datePickerDragAttribute: color => ({
+  datePickerSelectAttribute: color => ({
     key: 'drag-select',
     highlight: {
       backgroundColor: color,
-      height: '25px',
+      borderWidth: '1px',
+      borderColor: blendColors(color, '#000000', 0.1),
+    },
+    contentStyle: {
+      color: '#fafafa',
     },
     contentHoverStyle: {
       backgroundColor: 'transparent',
@@ -108,10 +107,10 @@ const defaults = {
   highlight: {
     animated: true,
     height: '1.8rem',
-    backgroundColor: '#66b3cc',
     borderWidth: '0',
     borderStyle: 'solid',
     borderRadius: '1.8rem',
+    opacity: 1,
   },
   dot: {
     diameter: '5px',
@@ -119,12 +118,14 @@ const defaults = {
     borderWidth: '0',
     borderStyle: 'solid',
     borderRadius: '50%',
+    opacity: 1,
   },
   bar: {
     height: '3px',
     backgroundColor: '#66b3cc',
     borderWidth: '0',
     borderStyle: 'solid',
+    opacity: 1,
   },
 };
 

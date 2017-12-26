@@ -1,7 +1,7 @@
 <template>
 <b-table
   :data='props'>
-  <template scope='props'>
+  <template slot-scope='props'>
     <b-table-column label='Property'>
       <span v-html='props.row.propertyName'></span>
     </b-table-column>
@@ -53,6 +53,11 @@ export default {
         propertyName: '<code>borderRadius: String</code>',
         description: 'Border radius in highlighted region.',
         default: '<code>"1.8rem"</code>',
+      },
+      {
+        propertyName: '<code>opacity: Number</code>',
+        description: 'Opacity of highlighted region.',
+        default: '<code>1</code>',
       },
     ];
     return {

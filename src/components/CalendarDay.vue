@@ -2,11 +2,12 @@
 <popover
   align='center'
   transition='fade'
-  class='c-popover'
-  content-offset='7px'
+  class='c-day-popover'
+  :content-offset='popoverContentOffset'
   :visibility='popoverVisibility'
   :content-style='popoverContentStyle'
-  :is-interactive='popoverIsInteractive'>
+  :is-interactive='popoverIsInteractive'
+  toggle-visible-on-click>
   <div
     class='c-day'
     :style='dayCellStyle'>
@@ -15,7 +16,7 @@
       name='background'
       tag='div'>
       <div
-        v-for='(background, i) in backgrounds'
+        v-for='background in backgrounds'
         :key='background.key'
         :class='background.wrapperClass'>
         <div
@@ -30,17 +31,16 @@
         ref='dayContent'
         class='c-day-content'
         :style='contentStyle_'
-        @touchstart.passive='touchstart'
-        @touchend.passive='touchend'
-        @click='click($event)'
+        @click='click'
         @mouseenter='mouseenter'
+        @mouseover='mouseover'
         @mouseleave='mouseleave'>
         {{ label }}
       </div>
     </div>
     <!-- Dots layer -->
     <div
-      class='c-day-layer c-day-inactive c-day-box-center-bottom'
+      class='c-day-layer c-day-box-center-bottom'
       v-if='hasDots'>
       <div
         class='c-day-dots'
@@ -55,7 +55,7 @@
     </div>
     <!-- Bars layer -->
     <div
-      class='c-day-layer c-day-inactive c-day-box-center-bottom'
+      class='c-day-layer c-day-box-center-bottom'
       v-if='hasBars'>
       <div
         class='c-day-bars'
@@ -71,60 +71,49 @@
   </div>
   <!-- Popover content -->
   <div slot='popover-content'>
-    <!-- Popover header label -->
-    <div class='c-day-popover-header'>{{ longLabel }}</div>
-    <!-- Popover content rows -->
-    <div
-      :class='["c-day-popover-row", { "selectable": popover.onSelect }]'
-      v-for='(popover, i) in popovers'
-      :key='i'
-      @click='popoverClick(popover)'>
-      <!-- Popover indicator -->
-      <div
-        class='c-day-popover-indicator'
-        v-if='popover.indicatorStyle'>
-        <span :style='popover.indicatorStyle'></span>
-      </div>
-      <!-- Popover label -->
-      <div
-        class='c-day-popover-content'
-        :style='popover.labelStyle'
-        v-if='popover.label'>
-        {{ popover.label }}
-      </div>
-      <!-- Popover component -->
-      <div
-        class='c-day-popover-content'
-        v-if='popover.component'>
-        <component
-          :is='content.component'
-          :dayInfo='dayInfo'
-          :attribute='popover.attribute'>
-        </component>
-      </div>
-      <a
-        v-if='popover.onDelete'
-        :class='["c-delete", "is-" + popover.size, { "is-disabled": popover.deleteDisabled}]'
-        @click.stop='popoverDelete(popover)'>
-      </a>
-    </div>
+    <!-- Header slot -->
+    <slot
+      name='popover-header'
+      :day-info='dayInfo'
+      :attributes='attributesList'>
+    </slot>
+    <!-- Content row slots -->
+    <calendar-day-popover-row
+      v-for='popover in popovers'
+      :key='popover.key'
+      :attribute='popover.attribute'
+      :hide-indicator='popover.hideIndicator'>
+      <slot
+        :name='popover.slot'
+        :attribute='popover.attribute'
+        :custom-data='popover.attribute.customData'
+        :day-info='dayInfo'>
+        <span
+          :style='popover.labelStyle' 
+          :key='popover.key'>
+          {{ popover.label }}
+        </span>
+      </slot>
+    </calendar-day-popover-row>
   </div>
 </popover>
 </template>
 
 <script>
 import Popover from './Popover';
-import defaults from '../utils/defaults';
-import { arrayHasItems, objectFromArray, getLastArrayItem } from '../utils/helpers';
-import { isString, isFunction } from '../utils/typeCheckers';
+import CalendarDayPopoverRow from './CalendarDayPopoverRow';
+import { arrayHasItems, objectFromArray } from '../utils/helpers';
+import { isFunction } from '../utils/typeCheckers';
 
 export default {
   components: {
     Popover,
+    CalendarDayPopoverRow,
   },
   props: {
     dayInfo: { type: Object, required: true },
     attributes: Object,
+    popoverContentOffset: { type: String, default: '7px' },
     styles: Object,
   },
   data() {
@@ -135,9 +124,9 @@ export default {
       popovers: [],
       contentStyle: null,
       contentHoverStyle: null,
+      popoverVisibility: 'hidden',
+      popoverIsInteractive: false,
       isHovered: false,
-      touchState: null,
-      touchCount: 0,
     };
   },
   computed: {
@@ -149,10 +138,6 @@ export default {
     },
     inMonth() {
       return this.dayInfo.inMonth;
-    },
-    longLabel() {
-      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-      return this.dayInfo.date.toLocaleDateString(window.navigator.userLanguage || window.navigator.language, options);
     },
     dayCellStyle() {
       return this.inMonth ? this.styles.dayCell : {
@@ -186,23 +171,16 @@ export default {
     barsStyle() {
       return this.styles.bars;
     },
-    popoverContentStyle() {
-      return this.styles.dayPopoverContent;
-    },
     highlights() {
       return this.hasBackgrounds ?
         this.backgrounds.map(b => b.highlight) :
         [];
     },
-    activePopover() {
-      return getLastArrayItem(this.popovers);
+    hasPopovers() {
+      return !!arrayHasItems(this.popovers);
     },
-    popoverVisibility() {
-      if (arrayHasItems(this.popovers) && this.popovers.some(p => p.label || p.component)) return 'hover';
-      return 'hidden';
-    },
-    popoverIsInteractive() {
-      return (this.activePopover && this.popovers.some(p => p.isInteractive));
+    popoverContentStyle() {
+      return this.styles.dayPopoverContent;
     },
     eventDayInfo() {
       return {
@@ -218,46 +196,32 @@ export default {
     styles() {
       this.processAttributes();
     },
-    attributesMap(val) {
-      this.$emit('dayUpdated', this.eventDayInfo, val);
+    popovers(val) {
+      let visibility = '';
+      let isInteractive = false;
+      let content;
+      val.forEach((popover) => {
+        if (!visibility && popover.visibility) visibility = popover.visibility;
+        isInteractive = isInteractive || popover.isInteractive;
+        content = content || popover.label || popover.slot;
+      });
+      this.popoverVisibility = visibility || (content && 'hover') || 'hidden';
+      this.popoverIsInteractive = isInteractive;
     },
   },
   created() {
     this.processAttributes();
   },
   methods: {
-    touchstart(e) {
-      const t = e.targetTouches[0];
-      this.touchState = {
-        started: true,
-        startedOn: new Date(),
-        startX: t.screenX,
-        startY: t.screenY,
-        x: t.screenX,
-        y: t.screenY,
-      };
-    },
-    touchend(e) {
-      if (!this.touchState || !this.touchState.started) return;
-      const t = e.changedTouches[0];
-      const state = this.touchState;
-      state.x = t.screenX;
-      state.y = t.screenY;
-      state.tapDetected = new Date() - state.startedOn <= defaults.maxTapDuration &&
-        Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
-        Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
-      if (state.tapDetected) {
-        this.$emit('dayselect', this.dayInfo, this.attributesMap);
-      }
-      state.started = false;
-    },
     click() {
-      if (this.touchState && this.touchState.tapDetected) return;
       this.$emit('dayselect', this.dayInfo, this.attributesMap);
     },
     mouseenter() {
-      this.isHovered = true;
       this.$emit('daymouseenter', this.dayInfo, this.attributesMap);
+    },
+    mouseover() {
+      this.isHovered = true;
+      this.$emit('daymouseover', this.dayInfo, this.attributesMap);
     },
     mouseleave() {
       this.isHovered = false;
@@ -310,6 +274,7 @@ export default {
           borderWidth: highlight.borderWidth,
           borderStyle: highlight.borderStyle,
           borderRadius: highlight.borderRadius,
+          opacity: highlight.opacity,
         },
       };
       if (dateInfo.isDate) {
@@ -360,6 +325,7 @@ export default {
           borderWidth: attribute.dot.borderWidth,
           borderStyle: attribute.dot.borderStyle,
           borderRadius: attribute.dot.borderRadius,
+          opacity: attribute.dot.opacity,
         },
       };
     },
@@ -373,6 +339,7 @@ export default {
           borderColor: attribute.bar.borderColor,
           borderWidth: attribute.bar.borderWidth,
           borderStyle: attribute.bar.borderStyle,
+          opacity: attribute.bar.opacity,
         },
       };
     },
@@ -380,85 +347,22 @@ export default {
       const {
         label,
         labelStyle,
-        component,
         hideIndicator,
-        size,
-        selectDisabled,
-        onSelect,
-        deleteDisabled,
-        onDelete,
+        slot,
+        visibility,
         isInteractive,
       } = attribute.popover;
-      const popover = {
+      return {
         key: attribute.key,
+        customData: attribute.customData,
         attribute,
-        size: size || 'small',
-        selectDisabled,
-        onSelect,
-        deleteDisabled,
-        onDelete,
+        label: isFunction(label) ? label(attribute, this.dayInfo) : label,
+        labelStyle: isFunction(labelStyle) ? labelStyle(attribute, this.dayInfo) : labelStyle,
+        hideIndicator,
+        slot,
+        visibility,
+        isInteractive: isInteractive !== undefined ? isInteractive : !!slot,
       };
-      // Assign style for indicator if needed
-      if (!hideIndicator) popover.indicatorStyle = this.getPopoverIndicatorStyle(attribute);
-      // Assign popover content label
-      if (isString(label)) {
-        popover.label = label;
-        popover.labelStyle = labelStyle;
-      } else if (isFunction(label)) {
-        popover.label = label(attribute, this.dayInfo);
-        popover.labelStyle = labelStyle;
-      }
-      // Assign popover content component
-      if (component) popover.component = component;
-      // Assign interactive flag
-      popover.isInteractive =
-        (isInteractive !== undefined) ?
-        isInteractive :
-        !!(this.$listeners.attributeselect || this.$listeners.attributedelete || onSelect || onDelete);
-      return popover;
-    },
-    popoverClick(popover) {
-      const { onSelect, attribute } = popover;
-      if (isFunction(onSelect)) onSelect(attribute, this.dayInfo);
-      this.$emit('attributeselect', attribute, this.dayInfo);
-    },
-    popoverDelete(popover) {
-      const { onDelete, attribute } = popover;
-      if (isFunction(onDelete)) onDelete(attribute, this.dayInfo);
-      this.$emit('attributedelete', attribute, this.dayInfo);
-    },
-    getPopoverIndicatorStyle(attribute) {
-      if (attribute.highlight) {
-        return {
-          backgroundColor: attribute.highlight.backgroundColor,
-          width: '10px',
-          height: '5px',
-          borderRadius: '3px',
-        };
-      }
-      if (attribute.dot) {
-        return {
-          backgroundColor: attribute.dot.backgroundColor,
-          width: '5px',
-          height: '5px',
-          borderRadius: '50%',
-        };
-      }
-      if (attribute.bar) {
-        return {
-          backgroundColor: attribute.bar.backgroundColor,
-          width: '10px',
-          height: '3px',
-        };
-      }
-      if (attribute.contentStyle) {
-        return {
-          backgroundColor: attribute.contentStyle.color,
-          width: '5px',
-          height: '5px',
-        };
-      }
-      return null;
     },
   },
 };
@@ -469,9 +373,8 @@ export default {
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
-.c-popover
+.c-day-popover
   flex: 1
-  // height: $dayHeight
 
 .c-day
   position: relative
@@ -484,9 +387,8 @@ export default {
   right: 0
   top: 0
   bottom: 0
-
-.c-day-inactive
   pointer-events: none
+  overflow: hidden
 
 .c-day-box-center-center
   +box()
@@ -537,42 +439,6 @@ export default {
   background-color: $barBackgroundColor
   transition: all $dayContentTransitionTime
 
-.c-day-popover-header
-  text-align: center
-  padding-bottom: 3px
-  border-bottom: 1px solid #dadada
-  margin-bottom: 3px
-  opacity: 0.7
-
-.c-day-popover-row
-  display: flex
-  align-items: center
-  padding: 2px 5px
-  transition: all $dayContentTransitionTime
-  &.selectable
-    cursor: pointer
-    &:hover
-      background-color: rgba(0, 0, 0, 0.1)
-  &:not(:first-child)
-    margin-top: 3px
-  .c-day-popover-indicator
-    display: flex
-    justify-content: center
-    align-items: center
-    flex-grow: 0
-    width: 15px
-    margin-right: 3px
-    span
-      transition: all $dayContentTransitionTime
-  .c-day-popover-content
-    flex-grow: 1
-    transition: all $dayContentTransitionTime
-  .c-delete
-    +delete
-    margin-left: 7px
-    &.disabled
-      pointer-events: none
-
 .c-day-content
   +box()
   width: $dayContentWidth
@@ -583,6 +449,7 @@ export default {
   transition: all $dayContentTransitionTime
   user-select: none
   cursor: default
+  pointer-events: all
 
 // TRANSITION ANIMATIONS
 

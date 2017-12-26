@@ -96,7 +96,7 @@
       <!--Weekday labels-->
       <div
         v-for='(weekday, i) in weekdayLabels_'
-        :key='i'
+        :key='i + 1'
         class='c-weekday'>
         {{ weekday }}
       </div>
@@ -139,6 +139,9 @@
           @touchend.passive='touchEnd($event)'
           v-on='$listeners'
           v-if='p === page_'>
+          <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
+            <slot :name='slot' v-bind='props'></slot>
+          </template>
         </calendar-weeks>
       </transition-group> 
     </div>
@@ -150,7 +153,6 @@
 import Popover from './Popover';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
-import CalendarDayPopover from './CalendarDayPopover';
 import defaults from '../utils/defaults';
 
 import {
@@ -166,7 +168,6 @@ export default {
   components: {
     CalendarWeeks,
     CalendarNav,
-    CalendarDayPopover,
     Popover,
   },
   props: {

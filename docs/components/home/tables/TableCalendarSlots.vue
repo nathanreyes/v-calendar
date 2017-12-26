@@ -1,15 +1,15 @@
 <template>
 <b-table
   :data='props'>
-  <template scope='props'>
+  <template slot-scope='{ row }'>
     <b-table-column label='Name'>
-      <span v-html='props.row.name'></span>
+      <span v-html='row.name'></span>
     </b-table-column>
     <b-table-column label='Description'>
-      <span v-html='props.row.description'></span>
+      <span v-html='row.description'></span>
     </b-table-column>
     <b-table-column label='Props (If Scoped)'>
-      <span v-html='props.row.props'></span>
+      <span v-html='row.props'></span>
     </b-table-column>
   </template>
 </b-table>
@@ -39,6 +39,11 @@ export default {
         description: 'Calendar header button on the right side.',
         props: '<code>page: Object</code>',
       },
+      {
+        name: '<code>day-popover-header</code>',
+        description: 'If popover content is visible, this slot displays as the header.',
+        props: '<code>attributes: Array</code>, <code>day-info: Object</code>',
+      }
     ];
     return {
       props,

@@ -3,7 +3,7 @@
   <div
     class='c-week'
     v-for='(week, i) in weeks'
-    :key='i'
+    :key='i + 1'
     @touchstart.passive='$emit("touchstart", $event)'
     @touchmove.passive='$emit("touchmove", $event)'
     @touchend.passive='$emit("touchend", $event)'>
@@ -13,6 +13,9 @@
       :dayInfo='day'
       v-bind='$attrs'
       v-on='$listeners'>
+      <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
+        <slot :name='slot' v-bind='props'></slot>
+      </template>
     </calendar-day>
   </div>
 </div>

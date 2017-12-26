@@ -15,8 +15,7 @@
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
     inputClass='input'
-    v-model='selectedValue'
-    is-double-paned>
+    v-model='selectedValue'>
   </v-date-picker>
 </template>
 

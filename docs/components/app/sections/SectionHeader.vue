@@ -19,12 +19,12 @@
         </transition>
       </div>
     </div>
-    <div class='hero-foot is-hidden-touch'>
+    <div class='hero-foot'>
       <div class='container'>
         <nav class='tabs is-boxed'>
           <ul>
-            <router-link tag='li' to='/' exact><a>Components</a></router-link>
-            <router-link tag='li' to='/theming'><a>Theming</a></router-link>
+            <router-link tag='li' to='/' exact><a>Calendar</a></router-link>
+            <router-link tag='li' to='/datepicker'><a>Date Picker</a></router-link>
             <router-link tag='li' to='/gallery'><a>Gallery</a></router-link>
             <router-link tag='li' to='/setup'><a>Setup</a></router-link>
           </ul>
@@ -61,6 +61,7 @@ export default {
 .hero-body
   margin-top: 30px
   margin-bottom: 30px
+  min-height: 300px
 
 .tag
   margin-top: 10px
@@ -76,7 +77,7 @@ export default {
 .c-container-2
   position: absolute
   left: 70%
-  margin-top: -170px
+  margin-top: -160px
   margin-left: -150px
   border-radius: 5px
   z-index: 20
@@ -101,7 +102,7 @@ export default {
   .c-container-2
     position: relative
     left: 0
-    margin-top: 20px
+    margin-top: 40px
     margin-left: 0
   
 </style>
