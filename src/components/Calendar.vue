@@ -10,9 +10,12 @@
     :max-page='maxFromPage'
     :styles='themeStyles_'
     :attributes='attributes_'
-    @titleClick='titleClick'
+    @titleclick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
+    <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
+      <slot :name='slot' v-bind='props'></slot>
+    </template>
   </calendar-pane>
   <calendar-pane
     v-if='isDoublePaned_'
@@ -22,9 +25,12 @@
     :max-page='maxPage'
     :styles='themeStyles_'
     :attributes='attributes_'
-    @titleClick='titleClick'
+    @titleclick='titleClick'
     v-bind='$attrs'
     v-on='$listeners'>
+    <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
+      <slot :name='slot' v-bind='props'></slot>
+    </template>
   </calendar-pane>
 </div>
 </template>
@@ -166,22 +172,11 @@ export default {
 
 @import '../styles/vars.sass'
 
-.c-container
-  display: inline-flex
-  flex-direction: column
-  background-color: $paneBgColor
-  border: $paneBorder
-  &.center
-    display: flex
-    align-items: center
-
 .c-pane-container
   flex-shrink: 1
   display: inline-flex
   min-width: $paneWidth
   width: $paneWidth
-  background-color: $paneBgColor
-  border: $paneBorder
   &.is-double-paned
     min-width: $paneWidth * 2
     width: $paneWidth * 2

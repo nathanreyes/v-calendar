@@ -5,7 +5,7 @@
   </p>
   <b-table
     :data='props'>
-    <template scope='props'>
+    <template slot-scope='props'>
       <b-table-column label='Property'>
         <span v-html='props.row.propertyName'></span>
       </b-table-column>

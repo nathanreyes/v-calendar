@@ -6,7 +6,7 @@
 
 <script>
 import TableObject from '../../app/tables/TableObject';
-import themeStyleProperties from '../themeStyleProperties';
+import themeStyleProperties from '../util/themeStyleProperties';
 
 export default {
   components: {

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 const PageHome = () => import('../components/home/pages/PageHome');
-const PageTheming = () => import('../components/theming/pages/PageTheming');
+const PageDatePicker = () => import('../components/date-picker/pages/PageDatePicker');
 const PageGallery = () => import('../components/gallery/pages/PageGallery');
 const PageSetup = () => import('../components/setup/pages/PageSetup');
 
@@ -17,8 +17,8 @@ export default new Router({
       component: PageHome,
     },
     {
-      path: '/theming',
-      component: PageTheming,
+      path: '/datepicker',
+      component: PageDatePicker,
     },
     {
       path: '/gallery',

@@ -1,7 +1,7 @@
 <template>
 <b-table
   :data='props'>
-  <template scope='props'>
+  <template slot-scope='props'>
     <b-table-column label='Property'>
       <span v-html='props.row.propertyName'></span>
     </b-table-column>
@@ -40,6 +40,11 @@ export default {
         default: '<code>undefined</code>',
       },
       {
+        propertyName: '<code>popover: Object</code>',
+        description: 'Popover to associate with the attribute.',
+        default: '<code>undefined</code>',
+      },
+      {
         propertyName: '<code>contentStyle: Object</code>',
         description: 'Day cell content style to associate with the attribute.',
         default: '<code>undefined</code>',
@@ -50,13 +55,18 @@ export default {
         default: '<code>undefined</code>',
       },
       {
-        propertyName: '<code>dates: Array[Date, Object]</code>',
-        description: 'List of dates or date range objects for the attribute. Date ranges must specify <code>start</code> and <code>end</code> dates.',
-        default: '<code>[]</code>',
+        propertyName: '<code>dates: Date, Object, Array[Date, Object]</code>',
+        description: 'Dates or date range objects (patterns supported) for the attribute.',
+        default: '<code>undefined</code>',
+      },
+      {
+        propertyName: '<code>excludeDates: Date, Object, Array[Date, Object]</code>',
+        description: 'Dates or date range objects (patterns supported) to exclude.',
+        default: '<code>undefined</code>',
       },
       {
         propertyName: '<code>customData: Any<code>',
-        description: 'Assign any custom data to this property for easy access when handling <code>daySelect</code>, <code>dayMouseEnter</code>, or <code>dayMouseLeave</code> events.',
+        description: 'Assign any custom data to this property for easy access within event handlers.',
         default: '<code>undefined</code>',
       },
       {

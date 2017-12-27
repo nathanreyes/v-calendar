@@ -129,18 +129,29 @@ export const getLastArrayItem = (array, fallbackValue) => {
 
 export const arrayHasItems = array => isArray(array) && array.length;
 
-export const ancestorElements = (el) => {
-  const path = [];
-  while (el) {
-    path.push(el);
-    if (el.tagName === 'HTML') {
-      path.push(document);
-      path.push(window);
-      return path;
-    }
-    el = el.parentElement;
-  }
-  return path;
+export const elementHasAncestor = (el, ancestor) => {
+  if (!el) return false;
+  if (el === ancestor) return true;
+  return elementHasAncestor(el.parentElement, ancestor);
+};
+
+export const elementPositionInAncestor = (el, ancestor) => {
+  let top = 0;
+  let left = 0;
+  do {
+    top += el.offsetTop || 0;
+    left += el.offsetLeft || 0;
+    el = el.offsetParent;
+  } while (el && el !== ancestor);
+  return {
+    top,
+    left,
+  };
+};
+
+export const objectFromArray = (array, keyProp = 'key') => {
+  if (!array || !array.length) return {};
+  return array.reduce((obj, curr) => { obj[curr[keyProp]] = curr[keyProp]; return obj; }, {});
 };
 
 export const mixinOptionalProps = (source, target, props) => {

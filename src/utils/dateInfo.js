@@ -161,6 +161,13 @@ const DateInfo = (config, order) => {
       info.end = end;
       info.startTime = start && start.getTime();
       info.endTime = end && end.getTime();
+      // Assign span info
+      if (start && end) {
+        info.daySpan = diffInDays(start, end);
+        info.weekSpan = diffInWeeks(start, end);
+        info.monthSpan = diffInMonths(start, end);
+        info.yearSpan = diffInYears(start, end);
+      }
       // Assign 'and' condition
       const andOpt = mixinOptionalProps(config, {}, _patternProps);
       if (andOpt.assigned) {

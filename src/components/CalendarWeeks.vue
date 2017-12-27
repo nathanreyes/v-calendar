@@ -13,6 +13,9 @@
       :dayInfo='day'
       v-bind='$attrs'
       v-on='$listeners'>
+      <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
+        <slot :name='slot' v-bind='props'></slot>
+      </template>
     </calendar-day>
   </div>
 </div>

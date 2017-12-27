@@ -1,52 +1,54 @@
 <template>
+<component
+  :is='componentName'
+  :value='value'
+  :from-page.sync='fromPage_'
+  :to-page.sync='toPage_'
+  :theme-styles='themeStyles_'
+  :disabled-attribute='disabledAttribute'
+  :date-formatter='dateFormatter'
+  @drag='dragValue = $event'
+  v-bind='$attrs'
+  v-on='filteredListeners()'
+  v-if='isInline'>
+</component>
+<popover
+  :direction='popoverDirection'
+  :align='popoverAlign'
+  :visibility='popoverVisibility'
+  :is-expanded='popoverExpanded'
+  :content-style='popoverContentStyle'
+  :force-hidden.sync='popoverForceHidden'
+  @didDisappear='popoverDidDisappear'
+  is-interactive
+  v-else>
+  <slot
+    :input-value='inputValue'
+    :update-value='updateValue'>
+    <input
+      ref='input'
+      type='text'
+      :class='[inputClass, { "c-input-drag": !value && dragValue }]'
+      :style='inputStyle'
+      :placeholder='inputPlaceholder_'
+      :value='inputValue'
+      :readonly='inputIsReadOnly'
+      @change='updateValue($event.target.value)' />
+  </slot>
   <component
+    slot='popover-content'
     :is='componentName'
     :value='value'
     :from-page.sync='fromPage_'
     :to-page.sync='toPage_'
     :theme-styles='themeStyles_'
     :disabled-attribute='disabledAttribute'
+    :date-formatter='dateFormatter'
     @drag='dragValue = $event'
     v-bind='$attrs'
-    v-on='filteredListeners()'
-    v-if='isInline'>
+    v-on='filteredListeners()'>
   </component>
-  <popover
-    :direction='popoverDirection'
-    :align='popoverAlign'
-    :visibility='popoverVisibility'
-    :is-expanded='popoverExpanded'
-    :content-style='popoverContentStyle'
-    :force-hidden.sync='popoverForceHidden'
-    :force-hidden-delay='400'
-    @didDisappear='popoverDidDisappear'
-    v-else>
-    <slot
-      :input-value='inputValue'
-      :update-value='updateValue'>
-      <input
-        type='text'
-        :class='[inputClass, { "c-input-drag": dragValue }]'
-        :style='inputStyle'
-        :placeholder='inputPlaceholder_'
-        :value='inputValue'
-        :readonly='inputIsReadOnly'
-        @change='updateValue($event.target.value)' />
-    </slot>
-    <component
-      slot='popover-content'
-      :is='componentName'
-      :value='value'
-      :from-page.sync='fromPage_'
-      :to-page.sync='toPage_'
-      :theme-styles='themeStyles_'
-      :disabled-attribute='disabledAttribute'
-      @drag='dragValue = $event'
-      v-bind='$attrs'
-      v-on='filteredListeners()'>
-    </component>
-  </popover>
-
+</popover>
 </template>
 
 <script>
@@ -83,8 +85,8 @@ export default {
     dateFormatter: { type: Function, default: defaults.dateFormatter },
     dateParser: { type: Function, default: defaults.dateParser },
     themeStyles: { type: Object, default: () => ({}) },
-    availableDates: Array,
-    disabledDates: Array,
+    availableDates: null,
+    disabledDates: null,
   },
   data() {
     return {
@@ -122,6 +124,7 @@ export default {
         ...this.themeStyles,
       };
       // Strip border from the wrapper when used in a popover
+      // It will get applied to the popover content style instead so that the caret inherits it
       if (!this.isInline) {
         styles.wrapper = {
           ...styles.wrapper,
@@ -133,7 +136,9 @@ export default {
     popoverContentStyle() {
       return {
         ...this.themeStyles.wrapper,
+        ...this.themeStyles.header,
         padding: '0',
+        margin: '0',
       };
     },
     disabledAttribute() {
@@ -167,8 +172,12 @@ export default {
     value() {
       this.updateInputValue();
       if (this.popoverKeepVisibleOnInput) return;
-      if (this.mode === 'multiple') return;
-      if (!this.disablePopoverForceHidden) this.popoverForceHidden = true;
+      if (this.mode !== 'multiple' && !this.disablePopoverForceHidden) {
+        setTimeout(() => {
+          this.popoverForceHidden = true;
+        }, 300);
+      }
+      if (this.$refs.input) this.$refs.input.blur();
       this.disablePopoverForceHidden = false;
     },
     dragValue() {
@@ -209,6 +218,7 @@ export default {
       if (this.profile.valuesAreEqual(parsedValue, filteredValue)) {
         // Everything user entered was accepted so hide popover
         this.popoverForceHidden = true;
+        if (this.$refs.input) this.$refs.input.blur();
       } else {
         // Keep the popover open because something they entered was modified
         this.disablePopoverForceHidden = true;

@@ -1,6 +1,5 @@
 <template>
 <calendar
-  :dayContentHoverStyle='dayContentHoverStyle_'
   :attributes='attributes_'
   @dayselect='selectDay'
   @daymouseenter='enterDay'
@@ -27,13 +26,11 @@ export default {
     selectAttribute: Object,
     disabledAttribute: Object,
     dayContentHoverStyle: Object,
-    dateValidator: Function,
     attributes: Array,
   },
   data() {
     return {
       dragValue: null,
-      dayContentHoverStyle_: this.dayContentHoverStyle,
     };
   },
   computed: {

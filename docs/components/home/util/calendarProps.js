@@ -1,5 +1,14 @@
 export default [
   {
+    name: '<code>nav-visibility: String</code>',
+    description: `
+      Visibility state of the navigation panel.
+      <br />Use <code>"hover"</code> to automatically show when title is hovered on non-touch devices or tapped on touch devices.
+      <br />Use <code>"focus"</code> to automatically show when title enters or leaves focus.
+      <br />Use <code>"visible"</code> and <code>"hidden"</code> for manual control.
+      `,
+  },
+  {
     name: '<code>month-labels: Array[String]</code>',
     description: 'Month labels displayed in header.',
     default: '<code>["January",...,"December"]</code>',
@@ -52,7 +61,7 @@ export default [
   {
     name: '<code>theme-styles: Object</code>',
     description: 'A variety of styles that are used to customize different components of the calendar.',
-    default: 'Reference the <a href="/theming">theming</a> page for more details',
+    default: 'Reference the theming tab for more details',
     themable: true,
   },
   {

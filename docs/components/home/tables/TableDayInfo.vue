@@ -5,7 +5,7 @@
   </p>
   <b-table
     :data='props'>
-    <template scope='props'>
+    <template slot-scope='props'>
       <b-table-column label='Property'>
         <span v-html='props.row.propertyName'></span>
       </b-table-column>
@@ -77,6 +77,10 @@ export default {
         propertyName: '<code>inNextMonth: Boolean</code>',
         description: 'Day lies in the month after the currently active month.',
       },
+      {
+        propertyName: '<code>el: DOM Object</code>',
+        description: 'DOM element for the day content.',
+      }
     ];
     return {
       props,

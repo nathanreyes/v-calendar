@@ -102,6 +102,13 @@ export default [
     `,
   },
   {
+    propertyName: '<code>dayPopoverContent</code>',
+    description: `
+      Day popover content container.
+      <br /><strong>Common assignments:</strong> <code>background</code>, <code>border</code>, <code>borderRadius</code>, <code>font</code>      
+    `,
+  },
+  {
     propertyName: '<code>dots</code>',
     description: `
       Container for dot indicators.

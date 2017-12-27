@@ -2,7 +2,7 @@
 <div>
   <b-table
     :data='props'>
-    <template scope='props'>
+    <template slot-scope='props'>
       <b-table-column :style='{minWidth:"280px"}' label='Name'>
         <span v-html='props.row.name'></span>
       </b-table-column>

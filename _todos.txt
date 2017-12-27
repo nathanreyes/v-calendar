@@ -1,3 +1,6 @@
+DONE - Popover infringes on trigger content
+DONE - Find solution for popover content styling without overflow = hidden
+DONE - Fix header title nav appearance
 - Add ordinalWeekday and ordinalWeekdayFromEnd props to dayInfo
 
 CALENDAR

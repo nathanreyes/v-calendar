@@ -13,11 +13,16 @@ const Attribute = (config) => {
   const dates =
     (
       (hasDates && config.dates) || // Use provided dates if they have items
-      (hasExcludeDates && [{}]) ||  // Use infinite range if exlude dates were provided
+      (hasExcludeDates && [{}]) ||  // Use infinite range if exclude dates were provided
       []                            // Use just an empty array
     )
     .map(d => (d.isDateInfo ? d : DateInfo(d, config.order)));
-  const excludeDates = (config.excludeDates || []).map(d => (d.isDateInfo ? d : DateInfo(d, config.order)));
+  const excludeDates =
+    (
+      (hasExcludeDates && config.excludeDates) ||
+      []
+    )
+    .map(d => (d.isDateInfo ? d : DateInfo(d, config.order)));
   const isComplex = dates.some(d => d.isComplex);
   const attr = {
     isAttribute: true,
@@ -53,6 +58,7 @@ const Attribute = (config) => {
     { name: 'bar', mixin: defaults.bar },
     { name: 'contentStyle' },
     { name: 'contentHoverStyle' },
+    { name: 'popover' },
     { name: 'customData' },
   ]);
   // Do some cleanup configuration for highlights

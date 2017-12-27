@@ -3,7 +3,7 @@
   <div class='container'>
     <h3 class='title has-text-primary is-spaced'>Setup</h3>
     <b-message type='is-warning'>
-      <a href='https://vuejs.org' target='_blank'>Vue.js</a> version <strong>2.4.2+</strong> is required.
+      <a href='https://vuejs.org' target='_blank'>Vue.js</a> version <strong>2.5.0+</strong> is required.
     </b-message>
     <article class='media'>
       <div class='media-left'>
