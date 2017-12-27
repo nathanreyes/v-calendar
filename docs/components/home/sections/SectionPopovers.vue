@@ -9,10 +9,10 @@
         <b-tab-item label='Overview'>
           <div class='content'>
             <ul>
-              <li>Supports both simple toolips and custom slot content</li>
+              <li>Assign simple toolips and custom slot content per attribute</li>
               <li>Makes inline editing possible for custom data</li>
-              <li>Optionally animated on appearance or disappearance</li> 
-              <li>Use content styles to properly display day content</li>
+              <li>Multiple visibility options like 'hover' and 'focus'</li> 
+              <li>Assignable slots for header and footer content</li>
             </ul>
           </div>
         </b-tab-item>

@@ -8,65 +8,67 @@
   :content-style='popoverContentStyle'
   :is-interactive='popoverIsInteractive'
   toggle-visible-on-click>
+  <!-- Background layers -->
+  <transition-group
+    name='background'
+    tag='div'
+    class='c-day-backgrounds'>
+    <div
+      v-for='background in backgrounds'
+      :key='background.key'
+      :class='background.wrapperClass'
+      :style='dayOpacityStyle'>
+      <div
+        class='c-day-background'
+        :style='background.style'>
+      </div>
+    </div>
+  </transition-group>
+  <!-- Content layer -->
   <div
-    class='c-day'
-    :style='dayCellStyle'>
-    <!-- Background layers -->
-    <transition-group
-      name='background'
-      tag='div'>
-      <div
-        v-for='background in backgrounds'
-        :key='background.key'
-        :class='background.wrapperClass'>
-        <div
-          class='c-day-background'
-          :style='background.style'>
-        </div>
-      </div>
-    </transition-group>
-    <!-- Content layer -->
-    <div class='c-day-layer c-day-box-center-center'>
-      <div
-        ref='dayContent'
-        class='c-day-content'
-        :style='contentStyle_'
-        @click='click'
-        @mouseenter='mouseenter'
-        @mouseover='mouseover'
-        @mouseleave='mouseleave'>
-        {{ label }}
-      </div>
-    </div>
-    <!-- Dots layer -->
+    class='c-day-layer c-day-box-center-center'
+    :style='dayOpacityStyle'>
     <div
-      class='c-day-layer c-day-box-center-bottom'
-      v-if='hasDots'>
-      <div
-        class='c-day-dots'
-        :style='dotsStyle'>
-        <span
-          v-for='dot in dots'
-          :key='dot.key'
-          class='c-day-dot'
-          :style='dot.style'>
-        </span>
-      </div>
+      ref='dayContent'
+      class='c-day-content'
+      :style='contentStyle_'
+      @click='click'
+      @mouseenter='mouseenter'
+      @mouseover='mouseover'
+      @mouseleave='mouseleave'>
+      {{ label }}
     </div>
-    <!-- Bars layer -->
+  </div>
+  <!-- Dots layer -->
+  <div
+    class='c-day-layer c-day-box-center-bottom'
+    :style='dayOpacityStyle'
+    v-if='hasDots'>
     <div
-      class='c-day-layer c-day-box-center-bottom'
-      v-if='hasBars'>
-      <div
-        class='c-day-bars'
-        :style='barsStyle'>
-        <span
-          v-for='bar in bars'
-          :key='bar.key'
-          class='c-day-bar'
-          :style='bar.style'>
-        </span>
-      </div>
+      class='c-day-dots'
+      :style='dotsStyle'>
+      <span
+        v-for='dot in dots'
+        :key='dot.key'
+        class='c-day-dot'
+        :style='dot.style'>
+      </span>
+    </div>
+  </div>
+  <!-- Bars layer -->
+  <div
+    class='c-day-layer c-day-box-center-bottom'
+    :style='dayOpacityStyle'
+    v-if='hasBars'>
+    <div
+      class='c-day-bars'
+      :style='barsStyle'>
+      <span
+        v-for='bar in bars'
+        :key='bar.key'
+        class='c-day-bar'
+        :style='bar.style'>
+      </span>
     </div>
   </div>
   <!-- Popover content -->
@@ -139,11 +141,26 @@ export default {
     inMonth() {
       return this.dayInfo.inMonth;
     },
+    dayOpacityStyle() {
+      const dayCell = this.styles.dayCell;
+      const dayCellNotInMonth = this.styles.dayCellNotInMonth;
+      // Assign default opacity
+      let opacity = (dayCell && dayCell.opacity) || 1;
+      // Reassign to 'not in month' opacity if it was specified
+      if (!this.inMonth && Object.prototype.hasOwnProperty.call(dayCellNotInMonth, 'opacity')) opacity = dayCellNotInMonth.opacity;
+      return {
+        opacity,
+      };
+    },
     dayCellStyle() {
-      return this.inMonth ? this.styles.dayCell : {
+      // Merge 'not in month' style if needed
+      const style = this.inMonth ? this.styles.dayCell : {
         ...this.styles.dayCell,
         ...this.styles.dayCellNotInMonth,
       };
+      // Due to some rendering glitches in Chrome, we need to remove opacity from top level style
+      delete style.opacity;
+      return style;
     },
     contentStyle_() {
       let style = this.contentStyle;
@@ -278,7 +295,7 @@ export default {
         },
       };
       if (dateInfo.isDate) {
-        background.wrapperClass = `c-day-layer c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
+        background.wrapperClass = `c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
       } else {
         const onStart = dateInfo.startTime === this.dateTime;
         const onEnd = dateInfo.endTime === this.dateTime;
@@ -287,25 +304,25 @@ export default {
         const endWidth = '95%';
         // Is the day date on the highlight start and end date
         if (onStart && onEnd) {
-          background.wrapperClass = `c-day-layer c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
+          background.wrapperClass = `c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
           background.style.width = endWidth;
           background.style.borderWidth = borderWidth;
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
         // Is the day date on the highlight start date
         } else if (onStart) {
-          background.wrapperClass = `c-day-layer c-day-box-right-center shift-right${highlight.animated ? ' c-day-slide-left-enter' : ''}`;
+          background.wrapperClass = `c-day-box-right-center shift-right${highlight.animated ? ' c-day-slide-left-enter' : ''}`;
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
           background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
         // Is the day date on the highlight end date
         } else if (onEnd) {
-          background.wrapperClass = `c-day-layer c-day-box-left-center shift-left${highlight.animated ? ' c-day-slide-right-enter' : ''}`;
+          background.wrapperClass = `c-day-box-left-center shift-left${highlight.animated ? ' c-day-slide-right-enter' : ''}`;
           background.style.width = endWidth;
           background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
           background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
         // Is the day date between the highlight start/end dates
         } else {
-          background.wrapperClass = 'c-day-layer c-day-box-center-center shift-left-right';
+          background.wrapperClass = 'c-day-box-center-center shift-left-right';
           background.style.width = '100%';
           background.style.borderWidth = `${borderWidth} 0`;
           background.style.borderRadius = '0';
@@ -374,11 +391,8 @@ export default {
 @import '../styles/mixins.sass'
 
 .c-day-popover
-  flex: 1
-
-.c-day
   position: relative
-  overflow: hidden
+  flex: 1
   height: $dayHeight
 
 .c-day-layer
@@ -388,22 +402,31 @@ export default {
   top: 0
   bottom: 0
   pointer-events: none
-  overflow: hidden
 
 .c-day-box-center-center
   +box()
+  height: 100%
   transform-origin: 50% 50%
 
 .c-day-box-left-center
   +box(flex-start)
+  height: 100%
   transform-origin: 0% 50%
 
 .c-day-box-right-center
   +box(flex-end)
+  height: 100%
   transform-origin: 100% 50%
 
 .c-day-box-center-bottom
   +box(center, flex-end)
+
+.c-day-box-not-in-month
+  opacity: 0.4
+
+.c-day-backgrounds
+  height: 100%
+  overflow: hidden
 
 .c-day-background
   transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
@@ -445,6 +468,7 @@ export default {
   height: $dayContentHeight
   font-size: $dayContentFontSize
   font-weight: $dayContentFontWeight
+  line-height: 1
   border-radius: $dayContentBorderRadius
   transition: all $dayContentTransitionTime
   user-select: none

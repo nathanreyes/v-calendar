@@ -101,10 +101,6 @@ export default {
             backgroundColor: todo.color,
             opacity: todo.isComplete ? 0.3 : 1,
           },
-          contentHoverStyle: {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            cursor: 'pointer',
-          },
           popover: {
             label: todo.description,
           },
