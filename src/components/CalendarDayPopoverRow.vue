@@ -5,7 +5,7 @@
   @click='$emit("select")'>
   <!-- Indicator -->
   <div
-    v-if='!hideIndicator'
+    v-if='!hideIndicator && indicatorStyle'
     class='c-day-popover-indicator'>
     <span :style='indicatorStyle'></span>
   </div>
