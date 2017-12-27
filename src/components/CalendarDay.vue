@@ -72,7 +72,9 @@
     </div>
   </div>
   <!-- Popover content -->
-  <div slot='popover-content'>
+  <div
+    class='c-day-popover-content'
+    slot='popover-content'>
     <!-- Header slot -->
     <slot
       name='popover-header'
@@ -91,7 +93,8 @@
         :custom-data='popover.attribute.customData'
         :day-info='dayInfo'>
         <span
-          :style='popover.labelStyle' 
+          class='popover-label'
+          :style='popover.labelStyle'
           :key='popover.key'>
           {{ popover.label }}
         </span>
@@ -393,7 +396,7 @@ export default {
 .c-day-popover
   position: relative
   flex: 1
-  height: $dayHeight
+  height: $day-height
 
 .c-day-layer
   position: absolute
@@ -426,7 +429,7 @@ export default {
   overflow: hidden
 
 .c-day-background
-  transition: height $backgroundTransitionTime, background-color $backgroundTransitionTime
+  transition: height $background-transition-time, background-color $background-transition-time
 
 .shift-left
   margin-left: -1px
@@ -441,59 +444,63 @@ export default {
   +box()
 
 .c-day-dot
-  width: $dotDiameter
-  height: $dotDiameter
-  border-radius: $dotBorderRadius
-  background-color: $dotBackgroundColor
-  transition: all $dayContentTransitionTime
+  width: $dot-diameter
+  height: $dot-diameter
+  border-radius: $dot-border-radius
+  background-color: $dot-background-color
+  transition: all $day-content-transition-time
   &:not(:last-child)
-    margin-right: $dotSpacing
+    margin-right: $dot-spacing
 
 .c-day-bars
   +box(flex-start)
-  width: $barWidth
+  width: $bars-width
 
 .c-day-bar
   flex-grow: 1
-  height: $barHeight
-  background-color: $barBackgroundColor
-  transition: all $dayContentTransitionTime
+  height: $bar-height
+  background-color: $bar-background-color
+  transition: all $day-content-transition-time
 
 .c-day-content
   +box()
-  width: $dayContentWidth
-  height: $dayContentHeight
-  font-size: $dayContentFontSize
-  font-weight: $dayContentFontWeight
+  width: $day-content-width
+  height: $day-content-height
+  font-size: $day-content-font-size
+  font-weight: $day-content-font-weight
   line-height: 1
-  border-radius: $dayContentBorderRadius
-  transition: all $dayContentTransitionTime
+  border-radius: $day-content-border-radius
+  transition: all $day-content-transition-time
   user-select: none
   cursor: default
   pointer-events: all
+
+.c-day-popover-content
+  font-size: $day-popover-font-size
+  font-weight: $day-popover-font-weight
 
 // TRANSITION ANIMATIONS
 
 .background-enter-active
 
   &.c-day-fade-enter
-    transition: $fadeTransition
+    transition: $fade-transition
 
   &.c-day-slide-right-enter
-    animation: $slideRightEnterAnimation
+    animation: $slide-right-enter-animation
 
   &.c-day-slide-left-enter
-    animation: $slideLeftEnterAnimation
+    animation: $slide-left-enter-animation
 
   &.c-day-scale-enter
-    animation: $scaleEnterAnimation
+    animation: $scale-enter-animation
 
 .background-leave-active
   &.c-day-fade-leave
-    transition: $fadeTransition
+    transition: $fade-transition
 
   &.c-day-scale-leave
-    animation: $scaleLeaveAnimation
+    animation: $scale-leave-animation
 
 .background-enter
   &.c-day-fade-enter

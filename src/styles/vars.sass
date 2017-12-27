@@ -1,70 +1,105 @@
-$black: hsl(0, 0%, 4%) !default
-$white: hsl(0, 0%, 100%) !default
+$black:        hsl(0, 0%, 4%) !default
+$black-bis:    hsl(0, 0%, 7%) !default
+$black-ter:    hsl(0, 0%, 14%) !default
+
+$grey-darker:  #637083 !default
+$grey-dark:    #7c899c !default
+$grey:         #8f9aab !default
+$grey-light:   #a8b0bd !default
+$grey-lighter: #c5cad3 !default
+
+$white-ter:    hsl(0, 0%, 96%) !default
+$white-bis:    hsl(0, 0%, 98%) !default
+$white:        hsl(0, 0%, 100%) !default
+
+$theme: #66b3cc
+
+$weight-light: 300 !default
+$weight-normal: 400 !default
+$weight-medium: 500 !default
+$weight-semibold: 600 !default
+$weight-bold: 700 !default
+
+$size-3: 1.15rem
+$size-4: 1.1rem
+$size-5: 1rem
+$size-6: 0.9rem !default
+$size-7: 0.8rem !default
+
 $radius-rounded: 290486px !default
 
-$horizontalPadding: 5px
+$font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default
+$font-weight: $weight-normal !default
 
-$paneWidth: 256px
-$panePadding: 5px 5px 10px 5px
+$pane-width: 256px !default
+$pane-horizontal-padding: 5px !default
+$pane-border-color: $white-bis !default
 
-$headerPadding: 10px $horizontalPadding+5
+$header-padding: 10px $pane-horizontal-padding + 5
 
-$titleFontSize: 1.14rem
-$titleFontWeight: 400
-$titleTranslateX: 25px
-$titleTransition: all .25s ease-in-out
+$title-font-size: $size-3
+$title-font-weight: $weight-normal
+$title-translate-x: 25px
+$title-transition: all .25s ease-in-out
 
-$arrowWidth: 28px
-$arrowHeight: 26px
-$arrowFontSize: 1.6rem
-$arrowTransition: all .3s ease-in-out
+$nav-title-font-size: $size-6
+$nav-title-font-weight: $weight-medium
+$nav-table-font-size: $size-6
+$nav-table-font-weight: $weight-normal
 
-$weekdayColor: #8f9aab
-$weekdayFontSize: 0.9rem
-$weekdayFontWeight: 500
-$weekdayPadding: 0 $horizontalPadding
+$arrow-width: 28px
+$arrow-height: 26px
+$arrow-font-size: 1.6rem
+$arrow-transition: all .3s ease-in-out
 
-$weeksPadding: 5px $horizontalPadding 7px $horizontalPadding
-$weeksTranslateX: 20px
-$weeksTransition: all .25s ease-in-out
+$weekday-color: $grey
+$weekday-font-size: $size-6
+$weekday-font-weight: 500
+$weekday-padding: 0 $pane-horizontal-padding
 
-$dayHeight: 32px
-$dayContentWidth: 1.8rem
-$dayContentHeight: 1.8rem
-$dayContentFontSize: 0.9rem
-$dayContentFontWeight: 500
-$dayContentBorderRadius: 50%
-$dayContentTransitionTime: 0.18s ease-in-out
+$weeks-padding: 5px $pane-horizontal-padding 7px $pane-horizontal-padding
+$weeks-translate-x: 20px
+$weeks-transition: all .25s ease-in-out
 
-$dotDiameter: 5px
-$dotBackgroundColor: #66b3cc
-$dotBorderRadius: 50%
-$dotSpacing: 3px
+$day-height: 32px
+$day-content-width: 1.8rem
+$day-content-height: 1.8rem
+$day-content-font-size: $size-6
+$day-content-font-weight: $weight-medium
+$day-content-border-radius: 50%
+$day-content-transition-time: 0.18s ease-in-out
+$day-popover-font-size: $size-7
+$day-popover-font-weight: $weight-normal
 
-$barHeight: 3px
-$barBackgroundColor: #66b3cc
-$barWidth: 75%
+$dot-diameter: 5px
+$dot-background-color: $theme
+$dot-border-radius: 50%
+$dot-spacing: 3px
 
-$backgroundTransitionTime: .13s ease-in-out
-$backgroundScaleEnterAnimationTime: 0.14s
-$backgroundScaleLeaveAnimationTime: .18s
-$backgroundTranslateTransition: .18s ease-in-out
+$bar-height: 3px
+$bar-background-color: $theme
+$bars-width: 75%
 
-$popoverSlideTranslation: 15px
-$popoverTransitionTime: 0.14s ease-in-out
-$popoverBackgroundColor: #fafafa
-$popoverBorder: 1px solid rgba(34,36,38,.15)
-$popoverBorderRadius: 5px
-$popoverPadding: 4px
-$popoverBoxShadow: 0 1px 2px 0 rgba(34,36,38,.15)
-$popoverCaretHorizontalOffset: 20px
-$popoverCaretVerticalOffset: 18px
+$background-transition-time: .13s ease-in-out
+$background-scale-enter-animation-time: 0.14s
+$background-scale-leave-animation-time: .18s
+$background-translate-transition: .18s ease-in-out
 
-$scaleEnterAnimation: scaleEnter .18s ease-in-out
-$scaleLeaveAnimation: scaleLeave .2s ease-in-out
-$slideRightEnterAnimation: slideRightEnter .18s ease-in-out
-$slideLeftEnterAnimation: slideLeftEnter .18s ease-in-out
-$fadeTransition: opacity .2s ease-in-out
+$popover-slide-translation: 15px
+$popover-transition-time: 0.14s ease-in-out
+$popover-background-color: $white-bis
+$popover-border: 1px solid rgba(34,36,38,.15)
+$popover-border-radius: 5px
+$popover-padding: 4px
+$popover-box-shadow: 0 1px 2px 0 rgba(34,36,38,.15)
+$popover-caret-horizontal-offset: 20px
+$popover-caret-vertical-offset: 18px
+
+$scale-enter-animation: scaleEnter .18s ease-in-out
+$scale-leave-animation: scaleLeave .2s ease-in-out
+$slide-right-enter-animation: slideRightEnter .18s ease-in-out
+$slide-left-enter-animation: slideLeftEnter .18s ease-in-out
+$fade-transition: opacity .2s ease-in-out
 
 // ANIMATION KEY FRAMES
 

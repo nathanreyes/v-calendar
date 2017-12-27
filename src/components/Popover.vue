@@ -223,11 +223,11 @@ export default {
       transform: translateY(-50%)
     .popover-content
       position: relative
-      background-color: $popoverBackgroundColor
-      border: $popoverBorder
-      border-radius: $popoverBorderRadius
-      box-shadow: $popoverBoxShadow
-      padding: $popoverPadding
+      background-color: $popover-background-color
+      border: $popover-border
+      border-radius: $popover-border-radius
+      box-shadow: $popover-box-shadow
+      padding: $popover-padding
       &:after
         display: block
         position: absolute
@@ -255,11 +255,11 @@ export default {
           border-width: 1px 0 0 1px
       &.align-left
         &:after
-          left: $popoverCaretHorizontalOffset
+          left: $popover-caret-horizontal-offset
           transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-right
         &:after
-          right: $popoverCaretHorizontalOffset
+          right: $popover-caret-horizontal-offset
           transform: translateY(-50%) translateX(50%) rotate(-45deg)
       &.align-center
         &:after
@@ -267,7 +267,7 @@ export default {
           transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-top
         &:after
-          top: $popoverCaretVerticalOffset
+          top: $popover-caret-vertical-offset
           transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-middle
         &:after
@@ -275,14 +275,14 @@ export default {
           transform: translateY(-50%) translateX(-50%) rotate(-45deg)
       &.align-bottom
         &:after
-          bottom: $popoverCaretVerticalOffset
+          bottom: $popover-caret-vertical-offset
           transform: translateY(50%) translateX(-50%) rotate(-45deg)
 
 .fade-enter-active,
 .fade-leave-active,
 .slide-fade-enter-active,
 .slide-fade-leave-active
-  transition: all $popoverTransitionTime
+  transition: all $popover-transition-time
 
 .fade-enter,
 .fade-leave-to
@@ -292,12 +292,12 @@ export default {
 .slide-fade-leave-to
   opacity: 0
   &.direction-bottom
-    transform: translateY(-$popoverSlideTranslation)
+    transform: translateY(-$popover-slide-translation)
   &.direction-top
-    transform: translateY($popoverSlideTranslation)
+    transform: translateY($popover-slide-translation)
   &.direction-left
-    transform: translateX($popoverSlideTranslation)
+    transform: translateX($popover-slide-translation)
   &.direction-right
-    transform: translateX(-$popoverSlideTranslation)
+    transform: translateX(-$popover-slide-translation)
 
 </style>

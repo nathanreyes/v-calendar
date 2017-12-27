@@ -456,15 +456,15 @@ export default {
   display: flex
   align-items: stretch
   user-select: none
-  padding: $headerPadding
+  padding: $header-padding
   .c-arrow-layout
     +box()
     .c-arrow
       +box()
-      font-size: $arrowFontSize
-      width: $arrowWidth
-      height: $arrowHeight
-      transition: $arrowTransition
+      font-size: $arrow-font-size
+      width: $arrow-width
+      height: $arrow-height
+      transition: $arrow-transition
       cursor: pointer
       user-select: none
       &:hover
@@ -481,9 +481,9 @@ export default {
         display: flex
         justify-content: inherit
         .c-title
-          font-weight: $titleFontWeight
-          font-size: $titleFontSize
-          transition: $titleTransition
+          font-weight: $title-font-weight
+          font-size: $title-font-size
+          transition: $title-transition
           cursor: pointer
           user-select: none
           white-space: nowrap
@@ -508,10 +508,10 @@ export default {
 .c-weekdays
   flex-grow: 1
   display: flex
-  padding: $weekdayPadding
-  color: $weekdayColor
-  font-size: $weekdayFontSize
-  font-weight: $weekdayFontWeight
+  padding: $weekday-padding
+  color: $weekday-color
+  font-size: $weekday-font-size
+  font-weight: $weekday-font-weight
 
 .c-weekday
   +box()
@@ -523,7 +523,7 @@ export default {
 
 .c-weeks
   flex-grow: 1
-  padding: $weeksPadding
+  padding: $weeks-padding
 
 .c-weeks-rows-wrapper
   position: relative
@@ -553,22 +553,22 @@ export default {
 .title-slide-left-enter,
 .title-slide-right-leave-to
   opacity: 0
-  transform: translateX($titleTranslateX)
+  transform: translateX($title-translate-x)
 
 .title-slide-left-leave-to,
 .title-slide-right-enter
   opacity: 0
-  transform: translateX(-$titleTranslateX)
+  transform: translateX(-$title-translate-x)
 
 .title-slide-up-enter,
 .title-slide-down-leave-to
   opacity: 0
-  transform: translateY($weeksTranslateX)
+  transform: translateY($weeks-translate-x)
 
 .title-slide-down-enter,
 .title-slide-up-leave-to
   opacity: 0
-  transform: translateY(-$weeksTranslateX)
+  transform: translateY(-$weeks-translate-x)
 
 .weeks-slide-left-enter-active,
 .weeks-slide-left-leave-active,
@@ -580,7 +580,7 @@ export default {
 .weeks-slide-down-leave-active,
 .weeks-fade-enter-active,
 .weeks-fade-leave-active
-  transition: $weeksTransition
+  transition: $weeks-transition
 
 .weeks-slide-left-leave-active,
 .weeks-slide-right-leave-active,
@@ -596,22 +596,22 @@ export default {
 .weeks-slide-left-enter,
 .weeks-slide-right-leave-to
   opacity: 0
-  transform: translateX($weeksTranslateX)
+  transform: translateX($weeks-translate-x)
 
 .weeks-slide-left-leave-to,
 .weeks-slide-right-enter
   opacity: 0
-  transform: translateX(-$weeksTranslateX)
+  transform: translateX(-$weeks-translate-x)
 
 .weeks-slide-up-enter,
 .weeks-slide-down-leave-to
   opacity: 0
-  transform: translateY($weeksTranslateX)
+  transform: translateY($weeks-translate-x)
 
 .weeks-slide-down-enter,
 .weeks-slide-up-leave-to
   opacity: 0
-  transform: translateY(-$weeksTranslateX)
+  transform: translateY(-$weeks-translate-x)
 
 .weeks-fade-enter,
 .weeks-fade-leave-to,

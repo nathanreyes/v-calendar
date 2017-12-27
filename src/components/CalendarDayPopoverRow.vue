@@ -77,7 +77,7 @@ export default {
   display: flex
   align-items: center
   padding: 2px 5px
-  transition: all $dayContentTransitionTime
+  transition: all $day-content-transition-time
   &.selectable
     cursor: pointer
     &:hover
@@ -92,11 +92,11 @@ export default {
     width: 15px
     margin-right: 3px
     span
-      transition: all $dayContentTransitionTime
+      transition: all $day-content-transition-time
   .c-day-popover-content
     display: flex
     align-items: center
     flex-wrap: none
     flex-grow: 1
-    transition: all $dayContentTransitionTime
+    transition: all $day-content-transition-time
 </style>

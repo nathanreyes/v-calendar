@@ -175,17 +175,19 @@ export default {
 .c-pane-container
   flex-shrink: 1
   display: inline-flex
-  min-width: $paneWidth
-  width: $paneWidth
+  font-family: $font-family
+  font-weight: $font-weight
+  min-width: $pane-width
+  width: $pane-width
   &.is-double-paned
-    min-width: $paneWidth * 2
-    width: $paneWidth * 2
+    min-width: $pane-width * 2
+    width: $pane-width * 2
   &.is-expanded
     width: 100%
 
 .c-pane-divider
   width: 1px
   border: 1px inset
-  border-color: #e3e3e3
+  border-color: $pane-border-color
 
 </style>

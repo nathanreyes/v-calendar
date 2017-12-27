@@ -36,11 +36,7 @@
             :class='{ "c-active": item.isActive, "c-disabled": item.isDisabled }'
             @click='monthClick(item.month)'>
             <!--Month label-->
-            <div
-              class='c-label'
-              :class='{ "has-indicators": item.attributes }'>
-              {{ item.label.substring(0, 3) }}
-            </div>
+            {{ item.label.substring(0, 3) }}
             <!--Attribute indicators-->
             <transition name='indicators'>
               <div
@@ -92,7 +88,8 @@
             class='c-table-cell'
             :class='{ "c-active": item.year === year, "c-disabled": item.isDisabled }'
             @click='yearClick(item.year)'>
-            <span class='c-label'>{{ item.year }}</span>
+            <!--Year label-->
+            {{ item.year }}
           </div>
         </td>
       </tr>
@@ -299,7 +296,7 @@ export default {
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
-$cellTransition: all 0.1s ease-in-out
+$cell-transition: all 0.1s ease-in-out
 
 .c-nav
   transition: height 5s ease-in-out
@@ -314,32 +311,37 @@ $cellTransition: all 0.1s ease-in-out
 
 .c-arrow
   +box()
-  font-size: $arrowFontSize
-  width: $arrowWidth
-  height: $arrowHeight
-  transition: $arrowTransition
+  font-size: $arrow-font-size
+  width: $arrow-width
+  height: $arrow-height
+  transition: $arrow-transition
   cursor: pointer
   user-select: none
   &:hover
     opacity: 0.5
 
 .c-title
-  font-size: 0.9rem
-  font-weight: 600
-  transition: $titleTransition
+  font-size: $nav-title-font-size
+  font-weight: $nav-title-font-weight
+  transition: $title-transition
   cursor: pointer
   user-select: none
   &:hover
     opacity: 0.5
 
 .c-table-cell
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  height: 100%
   position: relative
   user-select: none
   cursor: pointer
-  width: 100%
-  height: 100%
+  font-size: $nav-table-font-size
+  font-weight: $nav-table-font-weight
   background-color: white
-  transition: $cellTransition
+  transition: $cell-transition
   &:hover
     background-color: #f0f0f0
 
@@ -352,17 +354,7 @@ $cellTransition: all 0.1s ease-in-out
 
 .c-active
   background-color: #f0f0f0
-  font-weight: 600
-
-.c-label
-  position: absolute
-  font-size: 0.9rem
-  top: 6px
-  width: 100%
-  text-align: center
-  transition: top 0.1s ease-in-out
-  &.has-indicators
-    top: 2px
+  font-weight: $weight-semibold
 
 .c-indicators
   position: absolute
@@ -371,7 +363,7 @@ $cellTransition: all 0.1s ease-in-out
   align-items: center
   bottom: 5px
   width: 100%
-  transition: $cellTransition
+  transition: $cell-transition
   .c-indicator
     width: 5px
     height: 5px
@@ -400,7 +392,7 @@ $cellTransition: all 0.1s ease-in-out
         border-bottom: 0
 
 .indicators-enter-active, .indicators-leave-active
-  transition: $cellTransition
+  transition: $cell-transition
 
 .indicators-enter, .indicators-leave-to
   opacity: 0
