@@ -1,3 +1,10 @@
+# v0.5.1
+## Bug Fixes
+* Fix layout bugs in navigation popover
+
+## Improvements
+* Reorganize css variables. Improve default styling.
+
 # v0.5.0
 ## Bug Fixes
 * Day content more vertically centered with `line-height: 1`
