@@ -85,7 +85,6 @@ export default {
     patterns() {
       let patterns = {};
       try {
-        //patterns = JSON.parse(JSON.stringify(this.patternFormattedText));
         patterns = JSON.parse(this.patternFormattedText.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": '));
         this.patternMessage = '';
         this.patternStatus = '';

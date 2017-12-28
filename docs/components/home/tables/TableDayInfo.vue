@@ -80,7 +80,7 @@ export default {
       {
         propertyName: '<code>el: DOM Object</code>',
         description: 'DOM element for the day content.',
-      }
+      },
     ];
     return {
       props,

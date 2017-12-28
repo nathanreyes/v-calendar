@@ -41,7 +41,7 @@ const meetings = [
     },
     color: '#f65555', // Red
   },
-]
+];
 
 const todos = [
   {
@@ -82,7 +82,7 @@ export default {
           dates: new Date(),
         },
         // Attributes for meetings
-        ...this.meetings.map(({ description, dates, color: backgroundColor, start, span }, i) => ({
+        ...this.meetings.map(({ description, dates, color: backgroundColor }) => ({
           dates,
           highlight: {
             backgroundColor,
@@ -95,7 +95,7 @@ export default {
           },
         })),
         // Attributes for todos
-        ...this.todos.map((todo, i) => ({
+        ...this.todos.map(todo => ({
           dates: todo.dates,
           dot: {
             backgroundColor: todo.color,

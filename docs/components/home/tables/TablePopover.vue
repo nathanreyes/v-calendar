@@ -48,7 +48,7 @@ export default {
         propertyName: '<code>isInteractive: Boolean</code>',
         description: 'Determines if the user can interact with the popover content. If two or more popovers conflict, <code>true</code> overrides.',
         default: '<code>false</code>',
-      }
+      },
     ];
     return {
       props,

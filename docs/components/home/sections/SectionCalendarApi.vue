@@ -48,7 +48,7 @@ export default {
     };
   },
   watch: {
-    selectedTab(val) {
+    selectedTab() {
       this.index_level_0 = this.getTabIndex(0);
     },
   },
@@ -57,7 +57,7 @@ export default {
       const indices = this.selectedTab.toString().split('.');
       if (level > indices.length) return 0;
       return parseInt(indices[level], 10);
-    }
-  }
+    },
+  },
 };
 </script>

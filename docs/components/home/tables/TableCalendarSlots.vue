@@ -43,7 +43,7 @@ export default {
         name: '<code>day-popover-header</code>',
         description: 'If popover content is visible, this slot displays as the header.',
         props: '<code>attributes: Array</code>, <code>day-info: Object</code>',
-      }
+      },
     ];
     return {
       props,

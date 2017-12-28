@@ -93,8 +93,6 @@ import { getExampleMonthComps } from '@/utils/helpers';
 const {
   thisMonth,
   thisMonthYear,
-  nextMonth,
-  nextMonthYear,
 } = getExampleMonthComps();
 
 const color = '#ff8080';
@@ -128,7 +126,7 @@ const todos = [
     description: 'Lunch with Leo.',
     isComplete: false,
     dates: new Date(thisMonthYear, thisMonth, 28),
-  }
+  },
 ];
 
 export default {
@@ -163,7 +161,7 @@ export default {
           order: 100, // High order gives attribute high priority
         },
         // Todo attributes
-        ...this.todos.map((todo, i) => ({
+        ...this.todos.map(todo => ({
           key: todo.id,
           dates: todo.dates,
           customData: todo,
@@ -205,7 +203,7 @@ export default {
         description: 'New todo',
         isComplete: false,
         dates: dayInfo.date,
-      })
+      });
     },
     toggleTodoComplete(todo) {
       todo.isComplete = !todo.isComplete;
@@ -219,7 +217,7 @@ export default {
   },
   directives: {
     focusSelect: {
-      inserted: function(el) {
+      inserted(el) {
         el.focus();
         el.select();
       },
