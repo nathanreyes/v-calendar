@@ -177,8 +177,12 @@ export default {
   display: inline-flex
   font-family: $font-family
   font-weight: $font-weight
+  line-height: 1.5
+  color: $font-color
   min-width: $pane-width
   width: $pane-width
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
   &.is-double-paned
     min-width: $pane-width * 2
     width: $pane-width * 2
