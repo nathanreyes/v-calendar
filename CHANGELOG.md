@@ -1,3 +1,11 @@
+# v0.5.2
+## Bug Fixes
+* Fix bug for wrong/missing parameters passed on day events. Closes #33.
+
+## Improvements
+* Allow for custom cap styling for highlight and content style attributes.
+* Add `show-caps` prop for date pickers
+
 # v0.5.1
 ## Bug Fixes
 * Fix layout bugs in navigation popover

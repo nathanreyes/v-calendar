@@ -3,7 +3,7 @@
     mode='range'
     v-model='selectedDate'
     :drag-color='dragColor'
-    :select-attribute='selectAttribute'
+    :select-color='selectColor'
     :attributes='attributes'
     :theme-styles='themeStyles'
     is-inline>
@@ -62,13 +62,8 @@ export default {
           width: '60%',
         },
       },
-      dragColor: 'rgba(0, 0, 0, 0.1)',
-      selectAttribute: {
-        highlight: {
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          height: '30px',
-        },
-      },
+      dragColor: '#E25478',
+      selectColor: '#ca4d71',
       attributes: [
         {
           bar: {

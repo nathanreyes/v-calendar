@@ -22,6 +22,7 @@ export default {
     value: { type: Object, default: () => {} },
     selectColor: { type: String, default: () => defaults.datePickerSelectColor },
     dragColor: { type: String, default: () => defaults.datePickerDragColor },
+    showCaps: { type: Boolean, default: () => defaults.datePickerShowCaps },
     dragAttribute: Object,
     selectAttribute: Object,
     disabledAttribute: Object,
@@ -38,7 +39,7 @@ export default {
       const normValue = this.normalizeRange(this.dragValue);
       if (!normValue) return null;
       return {
-        ...defaults.datePickerDragAttribute(this.dragColor),
+        ...defaults.datePickerDragAttribute(this.dragColor, this.showCaps),
         ...this.dragAttribute,
         dates: [this.dragValue],
       };
@@ -47,7 +48,7 @@ export default {
       const normValue = this.normalizeRange(this.value);
       if (!normValue) return null;
       return {
-        ...defaults.datePickerSelectAttribute(this.selectColor),
+        ...defaults.datePickerSelectAttribute(this.selectColor, this.showCaps),
         ...this.selectAttribute,
         dates: [normValue],
       };
