@@ -176,7 +176,7 @@ Here is a complete reference of date component specifiers available.
 
 ## Quick Start
 
-[Vue.js](https://vuejs.org) version 2.4+ is required.
+[Vue.js](https://vuejs.org) version 2.5.0+ is required.
 
 ### 1 Install via npm
 

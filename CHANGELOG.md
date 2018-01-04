@@ -5,6 +5,7 @@
 ## Improvements
 * Allow for custom cap styling for highlight and content style attributes.
 * Add `show-caps` prop for date pickers
+* Add Swedish translation.
 
 # v0.5.1
 ## Bug Fixes
