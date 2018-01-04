@@ -69,4 +69,11 @@ export default {
     weekdaysShort: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
     weekdaysMin: ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'],
   },
+  sv: { // Swedish
+    months: ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'],
+    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
+    weekdays: ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'],
+    weekdaysShort: ['Sun', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'],
+    weekdaysMin: ['S', 'M', 'T', 'O', 'T', 'F', 'L'],
+  },
 };

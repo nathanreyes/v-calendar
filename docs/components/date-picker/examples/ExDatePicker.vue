@@ -6,6 +6,7 @@
     :mode='mode'
     :select-color='selectColor'
     :drag-color='dragColor'
+    :show-caps='showCaps'
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[]'
     :is-inline='isInline'
@@ -25,6 +26,7 @@ export default {
     mode: { type: String, default: 'single' },
     selectColor: { type: String, default: '#66b3cc' },
     dragColor: { type: String, default: '#9fcfdf' },
+    showCaps: { type: Boolean, default: true },
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,

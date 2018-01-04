@@ -316,7 +316,7 @@ export default {
       const deltaX = t.screenX - this.touchState.startX;
       const deltaY = t.screenY - this.touchState.startY;
       const deltaTime = new Date().getTime() - this.touchState.startTime;
-      if (deltaTime < defaults.maxSwipeTimeMs) {
+      if (deltaTime < defaults.maxSwipeTime) {
         if (Math.abs(deltaX) >= defaults.minHorizontalSwipeDistance && Math.abs(deltaY) <= defaults.maxVerticalSwipeDistance) {
           // Swipe left
           if (deltaX < 0) {

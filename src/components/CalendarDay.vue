@@ -8,67 +8,67 @@
   :content-style='popoverContentStyle'
   :is-interactive='popoverIsInteractive'
   toggle-visible-on-click>
-  <!-- Background layers -->
-  <transition-group
-    name='background'
-    tag='div'
-    class='c-day-backgrounds'>
-    <div
-      v-for='background in backgrounds'
-      :key='background.key'
-      :class='background.wrapperClass'
-      :style='dayOpacityStyle'>
+  <div
+    class='c-day'
+    :style='dayCellStyle'>
+    <!-- Background layers -->
+    <transition-group
+      name='background'
+      tag='div'
+      class='c-day-backgrounds'>
       <div
-        class='c-day-background'
-        :style='background.style'>
+        v-for='background in backgrounds'
+        :key='background.key'
+        :class='background.wrapperClass'>
+        <div
+          class='c-day-background'
+          :style='background.style'>
+        </div>
+      </div>
+    </transition-group>
+    <!-- Content layer -->
+    <div
+      class='c-day-layer c-day-box-center-center'>
+      <div
+        ref='dayContent'
+        class='c-day-content'
+        :style='contentStyle_'
+        @click='click'
+        @mouseenter='mouseenter'
+        @mouseover='mouseover'
+        @mouseleave='mouseleave'>
+        {{ label }}
       </div>
     </div>
-  </transition-group>
-  <!-- Content layer -->
-  <div
-    class='c-day-layer c-day-box-center-center'
-    :style='dayOpacityStyle'>
+    <!-- Dots layer -->
     <div
-      ref='dayContent'
-      class='c-day-content'
-      :style='contentStyle_'
-      @click='click'
-      @mouseenter='mouseenter'
-      @mouseover='mouseover'
-      @mouseleave='mouseleave'>
-      {{ label }}
+      class='c-day-layer c-day-box-center-bottom'
+      v-if='hasDots'>
+      <div
+        class='c-day-dots'
+        :style='dotsStyle'>
+        <span
+          v-for='dot in dots'
+          :key='dot.key'
+          class='c-day-dot'
+          :style='dot.style'>
+        </span>
+      </div>
     </div>
-  </div>
-  <!-- Dots layer -->
-  <div
-    class='c-day-layer c-day-box-center-bottom'
-    :style='dayOpacityStyle'
-    v-if='hasDots'>
+    <!-- Bars layer -->
     <div
-      class='c-day-dots'
-      :style='dotsStyle'>
-      <span
-        v-for='dot in dots'
-        :key='dot.key'
-        class='c-day-dot'
-        :style='dot.style'>
-      </span>
-    </div>
-  </div>
-  <!-- Bars layer -->
-  <div
-    class='c-day-layer c-day-box-center-bottom'
-    :style='dayOpacityStyle'
-    v-if='hasBars'>
-    <div
-      class='c-day-bars'
-      :style='barsStyle'>
-      <span
-        v-for='bar in bars'
-        :key='bar.key'
-        class='c-day-bar'
-        :style='bar.style'>
-      </span>
+      class='c-day-layer c-day-box-center-bottom'
+      v-if='hasBars'>
+      <div
+        class='c-day-bars'
+        :style='barsStyle'>
+        <span
+          v-for='bar in bars'
+          :key='bar.key'
+          class='c-day-bar'
+          :style='bar.style'>
+        </span>
+      </div>
     </div>
   </div>
   <!-- Popover content -->
@@ -144,26 +144,12 @@ export default {
     inMonth() {
       return this.dayInfo.inMonth;
     },
-    dayOpacityStyle() {
-      const dayCell = this.styles.dayCell;
-      const dayCellNotInMonth = this.styles.dayCellNotInMonth;
-      // Assign default opacity
-      let opacity = (dayCell && dayCell.opacity) || 1;
-      // Reassign to 'not in month' opacity if it was specified
-      if (!this.inMonth && Object.prototype.hasOwnProperty.call(dayCellNotInMonth, 'opacity')) opacity = dayCellNotInMonth.opacity;
-      return {
-        opacity,
-      };
-    },
     dayCellStyle() {
       // Merge 'not in month' style if needed
-      const style = this.inMonth ? this.styles.dayCell : {
+      return this.inMonth ? this.styles.dayCell : {
         ...this.styles.dayCell,
         ...this.styles.dayCellNotInMonth,
       };
-      // Due to some rendering glitches in Chrome, we need to remove opacity from top level style
-      delete style.opacity;
-      return style;
     },
     contentStyle_() {
       let style = this.contentStyle;
@@ -190,11 +176,6 @@ export default {
     },
     barsStyle() {
       return this.styles.bars;
-    },
-    highlights() {
-      return this.hasBackgrounds ?
-        this.backgrounds.map(b => b.highlight) :
-        [];
     },
     hasPopovers() {
       return !!arrayHasItems(this.popovers);
@@ -234,18 +215,18 @@ export default {
   },
   methods: {
     click() {
-      this.$emit('dayselect', this.dayInfo, this.attributesMap);
+      this.$emit('dayselect', this.eventDayInfo, this.attributesMap);
     },
     mouseenter() {
-      this.$emit('daymouseenter', this.dayInfo, this.attributesMap);
+      this.$emit('daymouseenter', this.eventDayInfo, this.attributesMap);
     },
     mouseover() {
       this.isHovered = true;
-      this.$emit('daymouseover', this.dayInfo, this.attributesMap);
+      this.$emit('daymouseover', this.eventDayInfo, this.attributesMap);
     },
     mouseleave() {
       this.isHovered = false;
-      this.$emit('daymouseleave', this.dayInfo, this.attributesMap);
+      this.$emit('daymouseleave', this.eventDayInfo, this.attributesMap);
     },
     processAttributes() {
       const backgrounds = [];
@@ -258,18 +239,24 @@ export default {
       this
         .attributesList
         .forEach((attribute) => {
-          // Add background for highlight if needed
-          if (attribute.highlight) backgrounds.push(this.getBackground(attribute));
+          const { highlight, highlightCaps, dot, bar, popover, contentStyle, contentStyleCaps, contentHoverStyle } = attribute;
+          const { startTime, endTime } = attribute.targetDate;
+          const onStart = startTime === this.dateTime;
+          const onEnd = endTime === this.dateTime;
+          // Add backgrounds for highlight if needed
+          if (highlight && !(onStart && onEnd && highlightCaps)) backgrounds.push(this.getBackground(attribute));
+          if (highlightCaps && (onStart || onEnd)) backgrounds.push(this.getBackgroundCap(attribute));
           // Add dot if needed
-          if (attribute.dot) dots.push(this.getDot(attribute));
+          if (dot) dots.push(this.getDot(attribute));
           // Add bar if needed
-          if (attribute.bar) bars.push(this.getBar(attribute));
+          if (bar) bars.push(this.getBar(attribute));
           // Add popover if needed
-          if (attribute.popover) popovers.unshift(this.getPopover(attribute));
+          if (popover) popovers.unshift(this.getPopover(attribute));
           // Add content style if needed
-          if (attribute.contentStyle) contentStyles.push(attribute.contentStyle);
+          if (contentStyle && !(onStart && onEnd && contentStyleCaps)) contentStyles.push(contentStyle);
+          if (contentStyleCaps && (onStart || onEnd)) contentStyles.push(contentStyleCaps);
           // Add content hover style if needed
-          if (attribute.contentHoverStyle) contentHoverStyles.push(attribute.contentHoverStyle);
+          if (contentHoverStyle) contentHoverStyles.push(contentHoverStyle);
         });
       // Assign day attributes
       this.backgrounds = backgrounds;
@@ -281,51 +268,64 @@ export default {
     },
     getBackground(attribute) {
       // Initialize the background object
-      const highlight = attribute.highlight;
-      const dateInfo = attribute.targetDate;
+      const { key, highlight, targetDate } = attribute;
+      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, borderRadius, opacity } = highlight;
       const background = {
-        key: attribute.key,
-        highlight,
+        key,
         style: {
-          width: highlight.height,
-          height: highlight.height,
-          backgroundColor: highlight.backgroundColor,
-          borderColor: highlight.borderColor,
-          borderWidth: highlight.borderWidth,
-          borderStyle: highlight.borderStyle,
-          borderRadius: highlight.borderRadius,
-          opacity: highlight.opacity,
+          width: width || height,
+          height,
+          backgroundColor,
+          borderColor,
+          borderWidth,
+          borderStyle,
+          borderRadius,
+          opacity,
         },
       };
-      if (dateInfo.isDate) {
-        background.wrapperClass = `c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
+      if (targetDate.isDate) {
+        background.wrapperClass = `c-day-layer c-day-box-center-center ${animated ? 'c-day-scale-enter c-day-scale-leave' : ''}`;
       } else {
-        const onStart = dateInfo.startTime === this.dateTime;
-        const onEnd = dateInfo.endTime === this.dateTime;
-        const borderWidth = background.style.borderWidth;
-        const borderRadius = background.style.borderRadius;
-        const endWidth = '95%';
+        const onStart = targetDate.startTime === this.dateTime;
+        const onEnd = targetDate.endTime === this.dateTime;
+        const endLongWidth = '95%';
+        const endShortWidth = '50%';
         // Is the day date on the highlight start and end date
         if (onStart && onEnd) {
-          background.wrapperClass = `c-day-box-center-center${highlight.animated ? ' c-day-scale-enter c-day-scale-leave' : ''}`;
-          background.style.width = endWidth;
+          const animation = animated ? 'c-day-scale-enter c-day-scale-leave' : '';
+          background.wrapperClass = `c-day-layer c-day-box-center-center ${animation}`;
+          background.style.width = endLongWidth;
           background.style.borderWidth = borderWidth;
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
         // Is the day date on the highlight start date
         } else if (onStart) {
-          background.wrapperClass = `c-day-box-right-center shift-right${highlight.animated ? ' c-day-slide-left-enter' : ''}`;
-          background.style.width = endWidth;
-          background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
-          background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
+          const animation = animated ? 'c-day-slide-left-scale-enter' : '';
+          background.wrapperClass = `c-day-layer c-day-box-right-center shift-right ${animation}`;
+          if (attribute.highlightCaps) {
+            background.style.width = endShortWidth;
+            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
+            background.style.borderRadius = 0;
+          } else {
+            background.style.width = endLongWidth;
+            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
+            background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
+          }
         // Is the day date on the highlight end date
         } else if (onEnd) {
-          background.wrapperClass = `c-day-box-left-center shift-left${highlight.animated ? ' c-day-slide-right-enter' : ''}`;
-          background.style.width = endWidth;
-          background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
-          background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
+          const animation = animated ? 'c-day-slide-right-scale-enter' : '';
+          background.wrapperClass = `c-day-layer c-day-box-left-center shift-left ${animation}`;
+          if (attribute.highlightCaps) {
+            background.style.width = endShortWidth;
+            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
+            background.style.borderRadius = 0;
+          } else {
+            background.style.width = endLongWidth;
+            background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
+            background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
+          }
         // Is the day date between the highlight start/end dates
         } else {
-          background.wrapperClass = 'c-day-box-center-center shift-left-right';
+          background.wrapperClass = 'c-day-layer c-day-box-center-center shift-left-right';
           background.style.width = '100%';
           background.style.borderWidth = `${borderWidth} 0`;
           background.style.borderRadius = '0';
@@ -333,33 +333,60 @@ export default {
       }
       return background;
     },
-    getDot(attribute) {
+    getBackgroundCap(attribute) {
+      const backgroundExists = !!this.backgrounds.find(b => b.key === attribute.key);
+      const { startTime, endTime } = attribute.targetDate;
+      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, borderRadius, opacity } = attribute.highlightCaps;
+      let animation = '';
+      if (animated) {
+        if (startTime === endTime) {
+          animation = 'c-day-scale-enter c-day-scale-leave';
+        } else if (startTime === this.dateTime) {
+          animation = backgroundExists ? 'c-day-slide-right-translate-enter' : 'c-day-slide-left-translate-enter';
+        } else {
+          animation = backgroundExists ? 'c-day-slide-left-translate-enter' : 'c-day-slide-right-translate-enter';
+        }
+      }
       return {
-        key: attribute.key,
-        dot: attribute.dot,
+        key: `${attribute.key}-cap`,
+        wrapperClass: `c-day-layer c-day-box-center-center ${animated ? animation : ''}`,
         style: {
-          width: attribute.dot.diameter,
-          height: attribute.dot.diameter,
-          backgroundColor: attribute.dot.backgroundColor,
-          borderColor: attribute.dot.borderColor,
-          borderWidth: attribute.dot.borderWidth,
-          borderStyle: attribute.dot.borderStyle,
-          borderRadius: attribute.dot.borderRadius,
-          opacity: attribute.dot.opacity,
+          width: width || height,
+          height,
+          backgroundColor,
+          borderColor,
+          borderWidth,
+          borderStyle,
+          borderRadius,
+          opacity,
         },
       };
     },
-    getBar(attribute) {
+    getDot({ key, dot }) {
       return {
-        key: attribute.key,
-        bar: attribute.bar,
+        key,
         style: {
-          height: attribute.bar.height,
-          backgroundColor: attribute.bar.backgroundColor,
-          borderColor: attribute.bar.borderColor,
-          borderWidth: attribute.bar.borderWidth,
-          borderStyle: attribute.bar.borderStyle,
-          opacity: attribute.bar.opacity,
+          width: dot.diameter,
+          height: dot.diameter,
+          backgroundColor: dot.backgroundColor,
+          borderColor: dot.borderColor,
+          borderWidth: dot.borderWidth,
+          borderStyle: dot.borderStyle,
+          borderRadius: dot.borderRadius,
+          opacity: dot.opacity,
+        },
+      };
+    },
+    getBar({ key, bar }) {
+      return {
+        key,
+        style: {
+          height: bar.height,
+          backgroundColor: bar.backgroundColor,
+          borderColor: bar.borderColor,
+          borderWidth: bar.borderWidth,
+          borderStyle: bar.borderStyle,
+          opacity: bar.opacity,
         },
       };
     },
@@ -394,9 +421,11 @@ export default {
 @import '../styles/mixins.sass'
 
 .c-day-popover
-  position: relative
   flex: 1
+
+.c-day
   height: $day-height
+  position: relative
 
 .c-day-layer
   position: absolute
@@ -425,8 +454,11 @@ export default {
   +box(center, flex-end)
 
 .c-day-backgrounds
+  position: relative
+  width: 100%
   height: 100%
   overflow: hidden
+  backface-visibility: hidden // Prevents glitches in Chrome by forcing hardware acceleration
 
 .c-day-background
   transition: height $background-transition-time, background-color $background-transition-time
@@ -486,11 +518,17 @@ export default {
   &.c-day-fade-enter
     transition: $fade-transition
 
-  &.c-day-slide-right-enter
-    animation: $slide-right-enter-animation
+  &.c-day-slide-right-scale-enter
+    animation: $slide-right-scale-enter-animation
 
-  &.c-day-slide-left-enter
-    animation: $slide-left-enter-animation
+  &.c-day-slide-right-translate-enter
+    animation: $slide-right-translate-enter-animation
+
+  &.c-day-slide-left-scale-enter
+    animation: $slide-left-scale-enter-animation
+
+  &.c-day-slide-left-translate-enter
+    animation: $slide-left-translate-enter-animation
 
   &.c-day-scale-enter
     animation: $scale-enter-animation

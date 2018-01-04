@@ -1,6 +1,5 @@
 import locales from './locales';
 import { POPOVER_VISIBILITIES } from './constants';
-import { blendColors } from './helpers';
 
 const popoverLabel = (attr) => {
   if (!attr.targetDate.isRange) return '';
@@ -9,6 +8,124 @@ const popoverLabel = (attr) => {
 };
 
 const defaults = {
+  firstDayOfWeek: 1,
+  navVisibility: 'focus',
+  titlePosition: 'center',
+  titleTransition: 'slide-h',
+  weeksTransition: 'slide-h',
+  dateFormatter: d => d.toLocaleDateString(),
+  dateParser: s => new Date(Date.parse(s)),
+  datePickerInputClass: '',
+  datePickerInputStyle: null,
+  datePickerInputPlaceholder: '',
+  datePickerSelectColor: '#66B3CC',
+  datePickerDragColor: '#9FCFDF',
+  datePickerShowCaps: false,
+  datePickerDragAttribute: (color, showCaps) => ({
+    key: 'drag-select',
+    highlight: {
+      backgroundColor: color,
+      height: '25px',
+    },
+    contentHoverStyle: {
+      backgroundColor: 'transparent',
+      border: '0',
+    },
+    popover: {
+      label: popoverLabel,
+      hideIndicator: true,
+    },
+    ...(showCaps && {
+      highlightCaps: {
+        backgroundColor: '#fafafa',
+        borderColor: color,
+        borderWidth: '2px',
+      },
+      contentStyleCaps: {
+        color: '#333333',
+      },
+    }),
+  }),
+  datePickerSelectAttribute: (color, showCaps) => ({
+    key: 'drag-select',
+    highlight: {
+      backgroundColor: color,
+    },
+    contentStyle: {
+      color: '#fafafa',
+    },
+    contentHoverStyle: {
+      backgroundColor: 'transparent',
+      border: '0',
+    },
+    popover: {
+      label: popoverLabel,
+      hideIndicator: true,
+    },
+    ...(showCaps && {
+      highlightCaps: {
+        backgroundColor: '#fafafa',
+        borderColor: color,
+        borderWidth: '2px',
+      },
+      contentStyleCaps: {
+        color: '#333333',
+      },
+    }),
+  }),
+  datePickerDisabledAttribute: {
+    key: 'disabled',
+    order: 100,
+    contentStyle: {
+      color: '#bcbcbc',
+      textDecoration: 'line-through',
+    },
+    contentHoverStyle: {
+      cursor: 'not-allowed',
+      backgroundColor: 'transparent',
+    },
+  },
+  popoverExpanded: false,
+  popoverDirection: 'bottom',
+  popoverAlign: 'left',
+  popoverVisibility: POPOVER_VISIBILITIES.HOVER,
+  popoverContentOffset: '10px',
+  maxSwipeTime: 300, // ms
+  minHorizontalSwipeDistance: 60, // px
+  maxVerticalSwipeDistance: 80, // px
+  maxTapTolerance: 0, // ms
+  maxTapDuration: 200, // ms
+  highlight: {
+    animated: true,
+    height: '1.8rem',
+    borderWidth: '0',
+    borderStyle: 'solid',
+    borderRadius: '290486px',
+    opacity: 1,
+  },
+  highlightCaps: {
+    animated: true,
+    height: '1.9rem',
+    borderWidth: '0',
+    borderStyle: 'solid',
+    borderRadius: '290486px',
+    opacity: 1,
+  },
+  dot: {
+    diameter: '5px',
+    backgroundColor: '#66b3cc',
+    borderWidth: '0',
+    borderStyle: 'solid',
+    borderRadius: '50%',
+    opacity: 1,
+  },
+  bar: {
+    height: '3px',
+    backgroundColor: '#66b3cc',
+    borderWidth: '0',
+    borderStyle: 'solid',
+    opacity: 1,
+  },
   themeStyles: {
     wrapper: { backgroundColor: '#fafafa', border: '1px solid #dadada' },
     verticalDivider: { borderLeft: '1px solid #dadada' },
@@ -33,99 +150,6 @@ const defaults = {
       fontSize: '.8rem',
       whiteSpace: 'nowrap',
     },
-  },
-  firstDayOfWeek: 1,
-  navVisibility: 'focus',
-  titlePosition: 'center',
-  titleTransition: 'slide-h',
-  weeksTransition: 'slide-h',
-  dateFormatter: d => d.toLocaleDateString(),
-  dateParser: s => new Date(Date.parse(s)),
-  datePickerInputClass: '',
-  datePickerInputStyle: null,
-  datePickerInputPlaceholder: '',
-  datePickerSelectColor: '#66b3cc',
-  datePickerDragColor: '#9fcfdf',
-  datePickerDragAttribute: color => ({
-    key: 'drag-select',
-    highlight: {
-      backgroundColor: color,
-      height: '25px',
-    },
-    contentHoverStyle: {
-      backgroundColor: 'transparent',
-      border: '0',
-    },
-    popover: {
-      label: popoverLabel,
-      hideIndicator: true,
-    },
-  }),
-  datePickerSelectAttribute: color => ({
-    key: 'drag-select',
-    highlight: {
-      backgroundColor: color,
-      borderWidth: '1px',
-      borderColor: blendColors(color, '#000000', 0.1),
-    },
-    contentStyle: {
-      color: '#fafafa',
-    },
-    contentHoverStyle: {
-      backgroundColor: 'transparent',
-      border: '0',
-    },
-    popover: {
-      label: popoverLabel,
-      hideIndicator: true,
-    },
-  }),
-  datePickerDisabledAttribute: {
-    key: 'disabled',
-    order: 100,
-    contentStyle: {
-      color: '#bcbcbc',
-      textDecoration: 'line-through',
-    },
-    contentHoverStyle: {
-      cursor: 'not-allowed',
-      backgroundColor: 'transparent',
-    },
-  },
-  popoverExpanded: false,
-  popoverDirection: 'bottom',
-  popoverAlign: 'left',
-  popoverVisibility: POPOVER_VISIBILITIES.HOVER,
-  popoverVisibleDelay: 200,
-  popoverHiddenDelay: 300,
-  popoverContentOffset: '10px',
-  maxSwipeTimeMs: 300,
-  minHorizontalSwipeDistance: 60,
-  maxVerticalSwipeDistance: 80,
-  maxTapTolerance: 0, // ms
-  maxTapDuration: 200, // ms
-  highlight: {
-    animated: true,
-    height: '1.8rem',
-    borderWidth: '0',
-    borderStyle: 'solid',
-    borderRadius: '1.8rem',
-    opacity: 1,
-  },
-  dot: {
-    diameter: '5px',
-    backgroundColor: '#66b3cc',
-    borderWidth: '0',
-    borderStyle: 'solid',
-    borderRadius: '50%',
-    opacity: 1,
-  },
-  bar: {
-    height: '3px',
-    backgroundColor: '#66b3cc',
-    borderWidth: '0',
-    borderStyle: 'solid',
-    opacity: 1,
   },
 };
 

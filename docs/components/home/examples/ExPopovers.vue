@@ -101,13 +101,13 @@ const todos = [
     id: 1,
     description: 'Take Noah to basketball practice.',
     isComplete: false,
-    dates: new Date(thisMonthYear, thisMonth, 6),
+    dates: new Date(thisMonthYear, thisMonth, 1),
   },
   {
     id: 2,
     description: 'Get some milks.',
     isComplete: false,
-    dates: new Date(thisMonthYear, thisMonth, 19),
+    dates: new Date(thisMonthYear, thisMonth, 5),
   },
   {
     id: 3,
@@ -119,13 +119,13 @@ const todos = [
     id: 4,
     description: 'Pick up clothes from the cleaners.',
     isComplete: false,
-    dates: new Date(thisMonthYear, thisMonth, 22),
+    dates: new Date(thisMonthYear, thisMonth, 19),
   },
   {
     id: 5,
     description: 'Lunch with Leo.',
     isComplete: false,
-    dates: new Date(thisMonthYear, thisMonth, 28),
+    dates: new Date(thisMonthYear, thisMonth, 22),
   },
 ];
 

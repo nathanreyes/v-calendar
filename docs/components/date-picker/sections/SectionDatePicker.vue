@@ -40,8 +40,13 @@
           <br />
           <b-field grouped>
             <b-field>
+              <b-switch v-model='showCaps'>Show Caps</b-switch>
+            </b-field>
+            <b-field>
               <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
             </b-field>
+          </b-field>
+          <b-field grouped>
             <b-field>
               <b-switch v-model='isInline'>Inline</b-switch>
             </b-field>
@@ -102,7 +107,8 @@
           :popover-direction='popoverDirection'
           :popover-align='popoverAlignment'
           :select-color='selectColor'
-          :drag-color='dragColor'>
+          :drag-color='dragColor'
+          :show-caps='showCaps'>
         </ex-date-picker>
       </div>
     </div>
@@ -123,6 +129,7 @@ export default {
       exDatePickerCode: ExDatePickerCode,
       mode: 'single',
       selectedValue: null,
+      showCaps: true,
       showDisabledDates: false,
       isInline: false,
       isExpanded: false,

@@ -96,11 +96,15 @@ $popover-box-shadow: 0 1px 2px 0 rgba(34,36,38,.15)
 $popover-caret-horizontal-offset: 20px
 $popover-caret-vertical-offset: 18px
 
-$scale-enter-animation: scaleEnter .18s ease-in-out
-$scale-leave-animation: scaleLeave .2s ease-in-out
-$slide-right-enter-animation: slideRightEnter .18s ease-in-out
-$slide-left-enter-animation: slideLeftEnter .18s ease-in-out
-$fade-transition: opacity .2s ease-in-out
+$enter-animation-time: .16s ease-in-out
+$leave-animation-time: .2s ease-in-out
+$scale-enter-animation: scaleEnter $enter-animation-time
+$scale-leave-animation: scaleLeave $leave-animation-time
+$slide-right-scale-enter-animation: slideRightScaleEnter $enter-animation-time
+$slide-right-translate-enter-animation: slideRightTranslateEnter $enter-animation-time
+$slide-left-scale-enter-animation: slideLeftScaleEnter $enter-animation-time
+$slide-left-translate-enter-animation: slideLeftTranslateEnter $enter-animation-time
+$fade-transition: opacity $leave-animation-time
 
 // ANIMATION KEY FRAMES
 
@@ -126,18 +130,26 @@ $fade-transition: opacity .2s ease-in-out
     transform: scaleX(1.15) scaleY(1.18)
     opacity: 0
 
-@keyframes slideRightEnter
+@keyframes slideRightScaleEnter
   0%
     transform: scaleX(0)
   60%
     transform: scaleX(1.08)
-  100%
-    transform: scaleX(1)
 
-@keyframes slideLeftEnter
+@keyframes slideRightTranslateEnter
+  0%
+    transform: translateX(-6px)
+  60%
+    transform: translateX(2px)
+
+@keyframes slideLeftScaleEnter
   0%
     transform: scaleX(0)
   60%
     transform: scaleX(1.08)
-  100%
-    transform: scaleX(1)
+
+@keyframes slideLeftTranslateEnter
+  0%
+    transform: translateX(6px)
+  60%
+    transform: translateX(-2px)

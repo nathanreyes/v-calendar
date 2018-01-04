@@ -15,6 +15,11 @@ export default [
     default: '<code>false</code>',
   },
   {
+    name: '<code>popover-expanded</code>',
+    description: 'Popover wrapper for input or slot is expanded to the full width of it\'s container.',
+    default: '<code>false</code>',
+  },
+  {
     name: '<code>popover-direction: String</code>',
     description: 'Direction that popover displays relative to input or slot element: <code>"bottom"</code>, <code>"top"</code>, <code>"left"</code>, <code>"right"</code>',
     default: '<code>"bottom"<code>',
@@ -70,40 +75,28 @@ export default [
     default: '<code>undefined</code>',
   },
   {
+    name: '<code>select-color</code>',
+    description: 'Background color of the select highlighted region. This setting is overridden by `select-attribute` if specified.',
+    default: '<code>"#66B3CC"</code>',
+  },
+  {
+    name: '<code>drag-color</code>',
+    description: 'Background color of the dragged highlighted region when <code>mode === "range"</code>. This setting is overridden by `drag-attribute` if specified.',
+    default: '<code>"#9FCFDF"</code>',
+  },
+  {
+    name: '<code>show-caps</code>',
+    description: 'Show caps and the end of the highlighted and dragged regions when <code>mode === "range"</code>.',
+    default: '<code>false</code>',
+  },
+  {
     name: '<code>select-attribute: Object</code>',
     description: 'Attribute to use for the date selection in all modes.',
-    default: `<code>
-    {
-      highlight: {
-        backgroundColor: '#74a4a4',
-        borderWidth: '1px',
-        borderColor: '#65999a'
-      },
-      contentStyle: {
-        color: '#fafafa'
-      },
-      contentHoverStyle: {
-        backgroundColor: 'transparent'
-      }
-    }
-    </code>`,
+    default: '<a href="https://github.com/nathanreyes/v-calendar/blob/master/src/utils/defaults.js" target="_blank">Reference code</a>',
   },
   {
     name: '<code>drag-attribute: Object</code>',
     description: 'Attribute to use for the dragged selection in <code>"range"</code> mode.',
-    default: `<code>
-    {
-      highlight: {
-        backgroundColor: '#c1d6d7',
-        height: '25px'
-      },
-      contentStyle: {
-        color: '#103456'
-      },
-      contentHoverStyle: {
-        backgroundColor: 'transparent'
-      }
-    }
-    </code>`,
+    default: '<a href="https://github.com/nathanreyes/v-calendar/blob/master/src/utils/defaults.js" target="_blank">Reference code</a>',
   },
 ];

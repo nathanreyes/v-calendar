@@ -41,22 +41,26 @@ const Attribute = (config) => {
     },
     // Accepts: DayInfo object
     // Returns: First attribute date or date range that occurs on given day.
-    includesDay: (dayInfo) => {
-      const matchDate = dates
-        .map(d => d.includesDay(dayInfo))
-        .find(d => d);
-      if (!matchDate || !hasExcludeDates) return matchDate;
-      const matchExDate = excludeDates
-        .map(ed => ed.includesDay(dayInfo))
-        .find(ed => ed);
-      return matchExDate ? false : matchDate;
-    },
+    includesDay: dayInfo => dates
+      .map(d => d.includesDay(dayInfo))
+      .find((d) => {
+        // Date doesn't match
+        if (!d) return null;
+        // No exclude dates to check - just return first match
+        if (!hasExcludeDates) return d;
+        // Return date if it isn't part of the excluded dates
+        return excludeDates.find(ed => ed.includesDay(dayInfo)) ? false : d;
+      }),
   };
   mixinOptionalProps(config, attr, [
     { name: 'highlight', mixin: defaults.highlight },
+    { name: 'highlightCaps', mixin: defaults.highlightCaps },
     { name: 'dot', mixin: defaults.dot },
+    { name: 'dotCaps' },
     { name: 'bar', mixin: defaults.bar },
+    { name: 'barCaps' },
     { name: 'contentStyle' },
+    { name: 'contentStyleCaps' },
     { name: 'contentHoverStyle' },
     { name: 'popover' },
     { name: 'customData' },
