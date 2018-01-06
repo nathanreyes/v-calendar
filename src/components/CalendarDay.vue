@@ -320,7 +320,7 @@ export default {
       };
     },
     getRate(attribute) {
-      return attribute.rate.value + attribute.rate.currency;
+      return attribute.rate;
     },
   },
 };
