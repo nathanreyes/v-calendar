@@ -368,7 +368,7 @@ Vue.use(VCalendar, {
 ```
 
 | Property Name | Type | Description | Default |
-|---------------|-------------|---------|
+| ------------- | ---- | ----------- | ------- |
 | `componentPrefix` | String | Custom prefix to use for plugin components | `"v"` |
 | `firstDayOfWeek` | Number | Day number for the first day of the week (1: Sun - 7: Sat) | `1` |
 | `monthLabels` | Array | Month labels displayed in header (localized) | `["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]` |

@@ -74,6 +74,7 @@ export default {
         // Access v-calendar, v-date-packer and v-popover components
         Vue.use(VCalendar, {
           // OPTIONAL: Pass default settings here (default values shown below)
+          componentPrefix: 'v',
           firstDayOfWeek: 1, // Sunday is the default
           navVisibility: 'focus',
           titlePosition: 'center',
