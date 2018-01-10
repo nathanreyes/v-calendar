@@ -87,6 +87,7 @@ export default {
           datePickerSelectColor: '#66B3CC',
           datePickerDragColor: '#9FCFDF', // Only used for drag mode
           datePickerShowCaps: false, // Only used for drag mode
+          datePickerShowPopover: true,
           popoverExpanded: false,
           popoverDirection: 'bottom',
           popoverAlign: 'left',

@@ -1,11 +1,10 @@
-
 @font-face {
   font-family: 'VCalendar';
-  src:  url('./VCalendar.eot?t8vjuz');
-  src:  url('./VCalendar.eot?t8vjuz#iefix') format('embedded-opentype'),
-    url('./VCalendar.ttf?t8vjuz') format('truetype'),
-    url('./VCalendar.woff?t8vjuz') format('woff'),
-    url('./VCalendar.svg?t8vjuz#VCalendar') format('svg');
+  src:  url('./VCalendar.eot?bejepk');
+  src:  url('./VCalendar.eot?bejepk#iefix') format('embedded-opentype'),
+    url('./VCalendar.ttf?bejepk') format('truetype'),
+    url('./VCalendar.woff?bejepk') format('woff'),
+    url('./VCalendar.svg?bejepk#VCalendar') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -25,9 +24,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.vc-angle-left:before {
+  content: "\e901";
+}
 .vc-angle-right:before {
   content: "\e900";
 }
-.vc-angle-left:before {
-  content: "\e901";
+.vc-moon-o:before {
+  content: "\e903";
+}
+.vc-sun-o:before {
+  content: "\e902";
 }

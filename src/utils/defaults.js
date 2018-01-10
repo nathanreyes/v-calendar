@@ -1,13 +1,9 @@
 import locales from './locales';
 import { POPOVER_VISIBILITIES } from './constants';
-
-const popoverLabel = (attr) => {
-  if (!attr.targetDate.isRange) return '';
-  const diff = attr.targetDate.daySpan;
-  return `${diff + 1} Day${diff === 0 ? '' : 's'}, ${diff} Night${diff === 1 ? '' : 's'}`;
-};
+import DatePickerDayPopover from '../components/DatePickerDayPopover';
 
 const defaults = {
+  componentPrefix: 'v',
   firstDayOfWeek: 1,
   navVisibility: 'focus',
   titlePosition: 'center',
@@ -21,7 +17,8 @@ const defaults = {
   datePickerSelectColor: '#66B3CC',
   datePickerDragColor: '#9FCFDF',
   datePickerShowCaps: false,
-  datePickerDragAttribute: (color, showCaps) => ({
+  datePickerShowPopover: true,
+  datePickerDragAttribute: (color, showCaps, showPopover) => ({
     key: 'drag-select',
     highlight: {
       backgroundColor: color,
@@ -30,10 +27,6 @@ const defaults = {
     contentHoverStyle: {
       backgroundColor: 'transparent',
       border: '0',
-    },
-    popover: {
-      label: popoverLabel,
-      hideIndicator: true,
     },
     ...(showCaps && {
       highlightCaps: {
@@ -45,8 +38,14 @@ const defaults = {
         color: '#333333',
       },
     }),
+    ...(showPopover && {
+      popover: {
+        component: DatePickerDayPopover,
+        hideIndicator: true,
+      },
+    }),
   }),
-  datePickerSelectAttribute: (color, showCaps) => ({
+  datePickerSelectAttribute: (color, showCaps, showPopover) => ({
     key: 'drag-select',
     highlight: {
       backgroundColor: color,
@@ -58,10 +57,6 @@ const defaults = {
       backgroundColor: 'transparent',
       border: '0',
     },
-    popover: {
-      label: popoverLabel,
-      hideIndicator: true,
-    },
     ...(showCaps && {
       highlightCaps: {
         backgroundColor: '#fafafa',
@@ -72,13 +67,21 @@ const defaults = {
         color: '#333333',
       },
     }),
+    ...(showPopover && {
+      popover: {
+        component: DatePickerDayPopover,
+        hideIndicator: true,
+      },
+    }),
   }),
   datePickerDisabledAttribute: {
     key: 'disabled',
     order: 100,
     contentStyle: {
-      color: '#bcbcbc',
-      textDecoration: 'line-through',
+      color: '#d98c8c',
+      fontWeight: 600,
+      opacity: 0.6,
+      borderRadius: '0',
     },
     contentHoverStyle: {
       cursor: 'not-allowed',
@@ -90,6 +93,7 @@ const defaults = {
   popoverAlign: 'left',
   popoverVisibility: POPOVER_VISIBILITIES.HOVER,
   popoverContentOffset: '10px',
+  popoverKeepVisibleOnInput: false,
   maxSwipeTime: 300, // ms
   minHorizontalSwipeDistance: 60, // px
   maxVerticalSwipeDistance: 80, // px
@@ -100,7 +104,6 @@ const defaults = {
     height: '1.8rem',
     borderWidth: '0',
     borderStyle: 'solid',
-    borderRadius: '290486px',
     opacity: 1,
   },
   highlightCaps: {
@@ -108,7 +111,6 @@ const defaults = {
     height: '1.9rem',
     borderWidth: '0',
     borderStyle: 'solid',
-    borderRadius: '290486px',
     opacity: 1,
   },
   dot: {

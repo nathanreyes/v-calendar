@@ -5,8 +5,7 @@
   :nav-visibility='navVisibility'
   :title-position='titlePosition'
   :title-transition='titleTransition'
-  :weeks-transition='weeksTransition'
-  >
+  :weeks-transition='weeksTransition'>
 </v-calendar>
 </template>
 

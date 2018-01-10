@@ -32,25 +32,34 @@ const Attribute = (config) => {
     excludeDates,
     isComplex,
     // Any date partly intersects with given date
-    intersectsDate: (date) => {
-      const dateInfo = DateInfo(date);
-      const matchDate = dates.find(d => d.intersectsDate(dateInfo));
-      if (!matchDate || !hasExcludeDates) return matchDate;
-      const matchExDate = excludeDates.find(ed => ed.includesDate(dateInfo));
-      return matchExDate ? false : matchDate;
-    },
+    intersectsDate: date => dates.find((d) => {
+      // Date doesn't match
+      if (!d.intersectsDate(date)) return null;
+      // No exclude dates to check - just return first match
+      if (!hasExcludeDates) return d;
+      // Return match date if test date doesn't intersect any excluded dates
+      return excludeDates.find(ed => ed.intersectsDate(date)) ? false : d;
+    }) || false,
+    // Accepts: Date or date range object
+    // Returns: First attribute date info that occurs on given date
+    includesDate: date => dates.find((d) => {
+      // Date doesn't match
+      if (!d.includesDate(date)) return null;
+      // No exclude dates to check - just return first match
+      if (!hasExcludeDates) return d;
+      // Return match date if test date doesn't intersect any excluded dates
+      return excludeDates.find(ed => ed.intersectsDate(date)) ? false : d;
+    }) || false,
     // Accepts: DayInfo object
-    // Returns: First attribute date or date range that occurs on given day.
-    includesDay: dayInfo => dates
-      .map(d => d.includesDay(dayInfo))
-      .find((d) => {
-        // Date doesn't match
-        if (!d) return null;
-        // No exclude dates to check - just return first match
-        if (!hasExcludeDates) return d;
-        // Return date if it isn't part of the excluded dates
-        return excludeDates.find(ed => ed.includesDay(dayInfo)) ? false : d;
-      }),
+    // Returns: First attribute date info that occurs on given day.
+    includesDay: dayInfo => dates.find((d) => {
+      // Date doesn't match
+      if (!d.includesDay(dayInfo)) return null;
+      // No exclude dates to check - just return first match
+      if (!hasExcludeDates) return d;
+      // Return match date if test day doesn't intersect any excluded dates
+      return excludeDates.find(ed => ed.includesDay(dayInfo)) ? false : d;
+    }) || false,
   };
   mixinOptionalProps(config, attr, [
     { name: 'highlight', mixin: defaults.highlight },
@@ -65,8 +74,6 @@ const Attribute = (config) => {
     { name: 'popover' },
     { name: 'customData' },
   ]);
-  // Do some cleanup configuration for highlights
-  if (attr.highlight && !attr.highlight.borderRadius) attr.highlight.borderRadius = attr.highlight.height;
   // Return the attribute
   return attr;
 };

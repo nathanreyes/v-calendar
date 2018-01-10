@@ -27,7 +27,7 @@ export default [
   {
     name: '<code>popover-align: String</code>',
     description: 'How the popover is aligned relative to input or slot element: <code>"left"</code>, <code>"right"</code>, <code>"top"</code>, <code>"bottom"</code>',
-    default: '<code>"left"<code>',
+    default: '<code>"left"</code>',
   },
   {
     name: '<code>popover-visibility: Number</code>',
@@ -35,8 +35,13 @@ export default [
     default: '<code>"hover"</code>',
   },
   {
+    name: '<code>popover-content-offset: String</code>',
+    description: 'Distance that the popover content is offset from the input or slot element',
+    default: '<code>"10px"</code>',
+  },
+  {
     name: '<code>popover-keep-visible-on-input</code>',
-    description: 'Keep the popover visible after a valid input has been selected.',
+    description: 'Keep the popover visible after a valid input has been selected',
     default: '<code>false</code>',
   },
   {
@@ -55,6 +60,11 @@ export default [
     default: 'Single: <code>"Enter Date"</code>, Double: <code>"Date 1, Date 2, ..."</code>, Range: <code>"Start Date - End Date"</code>',
   },
   {
+    name: '<code>input-read-only: Boolean</code>',
+    description: 'Input element is readonly. Not applicable for inline date-pickers',
+    default: '<code>false</code>',
+  },
+  {
     name: '<code>date-formatter: Function</code>',
     description: 'Function used to convert a date into text.',
     default: '<code>date => date.toLocaleDateString()</code>',
@@ -66,17 +76,17 @@ export default [
   },
   {
     name: '<code>disabled-dates: Array, Date, Object</code>',
-    description: 'Disabled dates or date range objects. Is date patterns are used input controls become read-only.',
+    description: 'Disabled dates or date range objects.',
     default: '<code>undefined</code>',
   },
   {
     name: '<code>available-dates: Array, Date, Object</code>',
-    description: 'Available dates or date range objects. All other dates are disabled. Is date patterns are used input controls become read-only.',
+    description: 'Available dates or date range objects. All other dates are disabled.',
     default: '<code>undefined</code>',
   },
   {
     name: '<code>select-color</code>',
-    description: 'Background color of the select highlighted region. This setting is overridden by `select-attribute` if specified.',
+    description: 'Background color of the selected highlighted region. This setting is overridden by `select-attribute` if specified.',
     default: '<code>"#66B3CC"</code>',
   },
   {
@@ -86,8 +96,13 @@ export default [
   },
   {
     name: '<code>show-caps</code>',
-    description: 'Show caps and the end of the highlighted and dragged regions when <code>mode === "range"</code>.',
+    description: 'Show caps and the end of the highlighted and dragged regions when <code>mode === "range"</code>',
     default: '<code>false</code>',
+  },
+  {
+    name: '<code>show-popover</code>',
+    description: 'Show popover when selected or dragged date regions are hovered.',
+    default: '<code>true</code>',
   },
   {
     name: '<code>select-attribute: Object</code>',

@@ -28,7 +28,7 @@ const meetings = [
   {
     description: 'Meeting to discuss the new project.',
     dates: {
-      start: new Date(thisMonthYear, thisMonth, 4),
+      start: new Date(thisMonthYear, thisMonth, 8),
       span: 3,
     },
     color: '#f7906e', // Orange
@@ -55,7 +55,7 @@ const todos = [
     isComplete: false,
     dates: [
       new Date(thisMonthYear, thisMonth, 19),
-      new Date(thisMonthYear, thisMonth, 29),
+      new Date(thisMonthYear, thisMonth, 23),
       new Date(nextMonthYear, nextMonth, 9),
     ],
     color: '#9f80ff', // Purple

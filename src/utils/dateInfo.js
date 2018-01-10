@@ -7,13 +7,123 @@ import {
   isFunction,
 } from './typeCheckers';
 import defaults from './defaults';
-import { mixinOptionalProps } from './helpers';
+import { mixinOptionalProps, getMonthComps } from './helpers';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
-function addDays(date, days) {
+// Returns a date range that intersects two date info objects
+// NOTE: This is a shallow calculation (does not take patterns into account),
+//   so this method should only really be called for special conditions
+//   where absolute accuracy is not necessarily needed
+function findShallowIntersectingRange(date1, date2) {
+  const thisRange = date1.toRange();
+  const otherRange = date2.toRange();
+  // Start with infinite start and end dates
+  let start = null;
+  let end = null;
+  // This start date exists
+  if (thisRange.start) {
+    // Use this definite start date if other start date is infinite
+    if (!otherRange.start) start = thisRange.start;
+    // Otherwise, use the earliest start date
+    else start = thisRange.start < otherRange.start ? thisRange.start : otherRange.start;
+  // Other start date exists
+  } else if (otherRange.start) {
+    // Use other definite start date as this one is infinite
+    start = otherRange.start;
+  }
+  // Assign end date to this one if it is valid
+  if (thisRange.end && (!start || thisRange.end >= start)) {
+    end = thisRange.end;
+  }
+  // Assign end date to other one if it is valid and before this one
+  if (otherRange.end && (!start || otherRange.end >= start)) {
+    if (!end || otherRange.end < end) end = otherRange.end;
+  }
+  // Return calculated range
+  return { start, end };
+}
+
+// ========================================================
+// Determines if first date completely includes second date
+// NOTE: This is a shallow test (no patterns tested)
+function dateShallowIncludesDate(date1, date2) {
+  // First date is simple date
+  if (date1.isDate) {
+    if (date2.isDate) return date1.dateTime === date2.dateTime;
+    if (!date2.startTime || !date2.endTime) return false;
+    return date1.dateTime === date2.startTime && date1.dateTime === date2.endTime;
+  }
+  // Second date is simple date and first is date range
+  if (date2.isDate) {
+    if (date1.start && date2.date < date1.start) return false;
+    if (date1.end && date2.date > date1.end) return false;
+    return true;
+  }
+  // Both dates are date ranges
+  if (date1.start && (!date2.start || date2.start < date1.start)) return false;
+  if (date1.end && (!date2.end || date2.end > date1.end)) return false;
+  return true;
+}
+// ========================================================
+// Determines if first date partially intersects second date
+// NOTE: This is a shallow test (no patterns tested)
+function dateShallowIntersectsDate(date1, date2) {
+  if (date1.isDate) return date2.isDate ? date1.dateTime === date2.dateTime : dateShallowIncludesDate(date2, date1);
+  if (date2.isDate) return dateShallowIncludesDate(date1, date2);
+  // Both ranges
+  if (date1.start && date2.end && date1.start > date2.end) return false;
+  if (date1.end && date2.start && date1.end < date2.start) return false;
+  return true;
+}
+
+export function getDayInfoFromDate(date) {
+  if (!date) return null;
+  const month = date.getMonth() + 1;
+  const year = date.getUTCFullYear();
+  const comps = getMonthComps(month, year);
+  const day = date.getDate();
+  const dayFromEnd = (comps.days - day) + 1;
+  const weekday = date.getDay() + 1;
+  const weekdayOrdinal = Math.floor(((day - 1) / 7) + 1);
+  const weekdayOrdinalFromEnd = Math.floor(((comps.days - day) / 7) + 1);
+  const week = Math.ceil((day + Math.abs(comps.firstWeekday - comps.firstDayOfWeek)) / 7);
+  const weekFromEnd = (comps.weeks - week) + 1;
+  return {
+    day,
+    dayFromEnd,
+    weekday,
+    weekdayOrdinal,
+    weekdayOrdinalFromEnd,
+    week,
+    weekFromEnd,
+    month,
+    year,
+    date,
+    dateTime: date.getTime(),
+  };
+}
+
+export function addDays(date, days) {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
+  return result;
+}
+
+function iterateDatesInRange({ start, end }, func) {
+  if (!start || !end || !isFunction(func)) return null;
+  const state = {
+    i: 0,
+    date: start,
+    day: getDayInfoFromDate(start),
+    finished: false,
+  };
+  let result = null;
+  for (; !state.finished && state.date <= end; state.i++) {
+    result = func(state);
+    state.date = addDays(state.date, 1);
+    state.day = getDayInfoFromDate(state.date);
+  }
   return result;
 }
 
@@ -189,64 +299,74 @@ const DateInfo = (config, order) => {
     // Assign flag if date info is complex
     info.isComplex = !!info.on;
   }
-  // Determines if any part of this date intersects any part of the other date
+  // ========================================================
+  // Determines if this date partially intersects another date
+  // This is a shallow test (no patterns tested)
+  info.shallowIntersectsDate = other => dateShallowIntersectsDate(info, other.isDate ? other : DateInfo(other));
+  // ========================================================
   info.intersectsDate = (other) => {
-    if (!other.isDateInfo) other = new DateInfo(other);
-    if (info.isDate) return other.isDate ? info.dateTime === other.dateTime : other.includesDate(info.date);
-    if (other.isDate) return info.includesDate(other.date);
-    // Both ranges
-    if (info.start && other.end && info.start > other.end) return false;
-    if (info.end && other.start && info.end < other.start) return false;
-    return true;
-  };
-  // Determines if this date completely includes all of the other date
-  info.includesDate = (other) => {
-    if (!other.isDateInfo) other = new DateInfo(other);
-    // I am date
-    if (info.isDate) {
-      if (other.isDate) return info.dateTime === other.dateTime;
-      if (!other.startTime || !other.endTime) return false;
-      return info.dateTime === other.startTime && info.dateTime === other.endTime;
-    }
-    // Other is date and I am range
-    if (other.isDate) {
-      if (info.start && other.date < info.start) return false;
-      if (info.end && other.date > info.end) return false;
-      return true;
-    }
-    // Both ranges
-    if (info.start && (!other.start || other.start < info.start)) return false;
-    if (info.end && (!other.end || other.end > info.end)) return false;
-    return true;
-  };
-  // Finds the first match for the given day
-  info.includesDay = (dayInfo) => {
-    const date = dayInfo.date;
-    // Date is outside general range - return null
-    if (!info.includesDate(date)) return null;
+    const date = other.isDateInfo ? other : DateInfo(other);
+    if (!info.shallowIntersectsDate(date)) return null;
     if (!info.on) return info;
+    const range = findShallowIntersectingRange(info, date);
+    let result = false;
+    iterateDatesInRange(range, (state) => {
+      if (info.matchesDay(state.day)) {
+        result = result || date.matchesDay(state.day);
+        state.finished = result;
+      }
+    });
+    return result;
+  };
+  // ========================================================
+  // Determines if this date completely includes another date
+  // This is a shallow test (no patterns tested)
+  info.shallowIncludesDate = other => dateShallowIncludesDate(info, other.isDate ? other : DateInfo(other));
+  // ========================================================
+  info.includesDate = (other) => {
+    const date = other.isDateInfo ? other : DateInfo(other);
+    if (!info.shallowIncludesDate(date)) return false;
+    if (!info.on) return true;
+    const range = findShallowIntersectingRange(info, date);
+    let result = true;
+    iterateDatesInRange(range, (state) => {
+      if (info.matchesDay(state.day)) {
+        result = result && date.matchesDay(state.day);
+        state.finished = !result;
+      }
+    });
+    return result;
+  };
+  // ========================================================
+  info.includesDay = (dayInfo) => {
+    const date = DateInfo(dayInfo.date);
+    // Date is outside general range - return null
+    if (!info.shallowIncludesDate(date)) return null;
+    // Return this date if patterns match
+    return info.matchesDay(dayInfo) ? info : null;
+  };
+  // ========================================================
+  info.matchesDay = (dayInfo) => {
+    // No patterns to test
+    if (!info.on) return true;
     // Fail if 'and' condition fails
-    if (info.on.and && !testConfig(info.on.and, dayInfo, info)) return null;
+    if (info.on.and && !testConfig(info.on.and, dayInfo, info)) return false;
     // Fail if every 'or' condition fails
-    if (info.on.or && !info.on.or.find(or => testConfig(or, dayInfo, info))) return null;
-    // Return date info for day date
-    return DateInfo(dayInfo.date);
+    if (info.on.or && !info.on.or.find(or => testConfig(or, dayInfo, info))) return false;
+    // Patterns match
+    return true;
   };
   info.toRange = () => {
     if (info.isDate) {
-      return {
-        start: new Date(info.dateTime),
-        startTime: info.dateTime,
-        end: new Date(info.dateTime),
-        endTime: info.dateTime,
-      };
+      return DateInfo({
+        start: info.date,
+        end: info.date,
+      });
     }
-    return {
-      start: new Date(info.startTime),
-      startTime: info.startTime,
-      end: new Date(info.endTime),
-      endTime: info.endTime,
-    };
+    return DateInfo({
+      start: info.start,
+      end: info.end,
+    });
   };
   // Build the 'compare to other' function
   info.compare = (other) => {

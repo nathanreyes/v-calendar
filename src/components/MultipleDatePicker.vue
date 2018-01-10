@@ -9,7 +9,6 @@
 
 <script>
 import Calendar from './Calendar';
-import defaults from '../utils/defaults';
 import { multipleHasValue } from '../utils/pickerProfiles';
 
 export default {
@@ -18,7 +17,6 @@ export default {
   },
   props: {
     value: { type: Array, default: () => [] },
-    selectColor: { type: String, default: () => defaults.datePickerSelectColor },
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
@@ -27,7 +25,6 @@ export default {
     selectAttribute_() {
       if (!multipleHasValue(this.value)) return null;
       return {
-        ...defaults.datePickerSelectAttribute(this.selectColor),
         ...this.selectAttribute,
         dates: this.value,
       };

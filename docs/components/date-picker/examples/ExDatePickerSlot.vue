@@ -3,27 +3,25 @@
   mode='single'
   v-model='selectedValue'
   is-expanded>
-  <template slot-scope='props'>
-    <b-field :type='inputState.type'>
-      <b-input
-        type='text'
-        icon='calendar'
-        :value='props.inputValue'
-        :placeholder='inputState.message'
-        @change.native='props.updateValue($event.target.value)'
-        expanded>
-      </b-input>
-      <p
-        class='control'
-        v-if='selectedValue'>
-        <a
-          :class='["button", inputState.type]'
-          @click='selectedValue = null'>
-          Clear
-        </a>
-      </p>
-    </b-field>
-  </template>
+  <b-field :type='inputState.type' slot-scope='props'>
+    <b-input
+      type='text'
+      icon='calendar'
+      :value='props.inputValue'
+      :placeholder='inputState.message'
+      @change.native='props.updateValue($event.target.value)'
+      expanded>
+    </b-input>
+    <p
+      class='control'
+      v-if='selectedValue'>
+      <a
+        :class='["button", inputState.type]'
+        @click='selectedValue = null'>
+        Clear
+      </a>
+    </p>
+  </b-field>
 </v-date-picker>
 </template>
 

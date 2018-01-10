@@ -1,6 +1,8 @@
 import defaults from './defaults';
 import { isArray } from './typeCheckers';
 
+const monthComps = {};
+
 // Calendar data
 export const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 export const today = new Date();
@@ -12,20 +14,26 @@ export const todayComps = {
 
 // Days/month/year components for a given month and year
 export const getMonthComps = (month, year) => {
-  const firstDayOfWeek = defaults.firstDayOfWeek;
-  const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
-  const days = (month === 2 && inLeapYear) ? 29 : daysInMonths[month - 1];
-  const weeks = Math.ceil((days + Math.abs(firstWeekday - firstDayOfWeek)) / 7);
-  return {
-    firstDayOfWeek,
-    inLeapYear,
-    firstWeekday,
-    days,
-    weeks,
-    month,
-    year,
-  };
+  const key = `${month}.${year}`;
+  let comps = monthComps[key];
+  if (!comps) {
+    const firstDayOfWeek = defaults.firstDayOfWeek;
+    const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
+    const days = (month === 2 && inLeapYear) ? 29 : daysInMonths[month - 1];
+    const weeks = Math.ceil((days + Math.abs(firstWeekday - firstDayOfWeek)) / 7);
+    comps = {
+      firstDayOfWeek,
+      inLeapYear,
+      firstWeekday,
+      days,
+      weeks,
+      month,
+      year,
+    };
+    monthComps[key] = comps;
+  }
+  return comps;
 };
 
 // Days/month/year components for a given date

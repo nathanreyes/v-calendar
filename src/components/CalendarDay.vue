@@ -93,11 +93,18 @@
         :custom-data='popover.attribute.customData'
         :day-info='dayInfo'>
         <span
+          v-if='popover.label'
           class='popover-label'
           :style='popover.labelStyle'
           :key='popover.key'>
           {{ popover.label }}
         </span>
+        <component
+          v-if='popover.component'
+          :is='popover.component'
+          :attribute='popover.attribute'
+          :day-info='dayInfo'>
+        </component>
       </slot>
     </calendar-day-popover-row>
   </div>
@@ -204,7 +211,7 @@ export default {
       val.forEach((popover) => {
         if (!visibility && popover.visibility) visibility = popover.visibility;
         isInteractive = isInteractive || popover.isInteractive;
-        content = content || popover.label || popover.slot;
+        content = content || popover.label || popover.component || popover.slot;
       });
       this.popoverVisibility = visibility || (content && 'hover') || 'hidden';
       this.popoverIsInteractive = isInteractive;
@@ -269,7 +276,8 @@ export default {
     getBackground(attribute) {
       // Initialize the background object
       const { key, highlight, targetDate } = attribute;
-      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, borderRadius, opacity } = highlight;
+      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, opacity } = highlight;
+      const borderRadius = highlight.borderRadius || ((targetDate.isDate || targetDate.isComplex) ? '50%' : '290486px');
       const background = {
         key,
         style: {
@@ -283,7 +291,7 @@ export default {
           opacity,
         },
       };
-      if (targetDate.isDate) {
+      if (targetDate.isDate || targetDate.isComplex) {
         background.wrapperClass = `c-day-layer c-day-box-center-center ${animated ? 'c-day-scale-enter c-day-scale-leave' : ''}`;
       } else {
         const onStart = targetDate.startTime === this.dateTime;
@@ -334,10 +342,12 @@ export default {
       return background;
     },
     getBackgroundCap(attribute) {
-      const backgroundExists = !!this.backgrounds.find(b => b.key === attribute.key);
-      const { startTime, endTime } = attribute.targetDate;
-      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, borderRadius, opacity } = attribute.highlightCaps;
+      const { key, highlightCaps, targetDate } = attribute;
+      const { startTime, endTime } = targetDate;
+      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, opacity } = highlightCaps;
+      const borderRadius = highlightCaps.borderRadius || '50%';
       let animation = '';
+      const backgroundExists = !!this.backgrounds.find(b => b.key === key);
       if (animated) {
         if (startTime === endTime) {
           animation = 'c-day-scale-enter c-day-scale-leave';
@@ -348,7 +358,7 @@ export default {
         }
       }
       return {
-        key: `${attribute.key}-cap`,
+        key: `${key}-cap`,
         wrapperClass: `c-day-layer c-day-box-center-center ${animated ? animation : ''}`,
         style: {
           width: width || height,
@@ -394,8 +404,9 @@ export default {
       const {
         label,
         labelStyle,
-        hideIndicator,
+        component,
         slot,
+        hideIndicator,
         visibility,
         isInteractive,
       } = attribute.popover;
@@ -405,8 +416,9 @@ export default {
         attribute,
         label: isFunction(label) ? label(attribute, this.dayInfo) : label,
         labelStyle: isFunction(labelStyle) ? labelStyle(attribute, this.dayInfo) : labelStyle,
-        hideIndicator,
+        component,
         slot,
+        hideIndicator,
         visibility,
         isInteractive: isInteractive !== undefined ? isInteractive : !!slot,
       };

@@ -2,6 +2,8 @@
 <component
   :is='componentName'
   :value='value'
+  :drag-attribute='dragAttribute_'
+  :select-attribute='selectAttribute_'
   :from-page.sync='fromPage_'
   :to-page.sync='toPage_'
   :theme-styles='themeStyles_'
@@ -13,11 +15,12 @@
   v-if='isInline'>
 </component>
 <popover
+  :is-expanded='popoverExpanded'
   :direction='popoverDirection'
   :align='popoverAlign'
   :visibility='popoverVisibility'
-  :is-expanded='popoverExpanded'
   :content-style='popoverContentStyle'
+  :content-offset='popoverContentOffset'
   :force-hidden.sync='popoverForceHidden'
   @didDisappear='popoverDidDisappear'
   is-interactive
@@ -32,13 +35,15 @@
       :style='inputStyle'
       :placeholder='inputPlaceholder_'
       :value='inputValue'
-      :readonly='inputIsReadOnly'
+      :readonly='inputReadOnly'
       @change='updateValue($event.target.value)' />
   </slot>
   <component
     slot='popover-content'
     :is='componentName'
     :value='value'
+    :drag-attribute='dragAttribute_'
+    :select-attribute='selectAttribute_'
     :from-page.sync='fromPage_'
     :to-page.sync='toPage_'
     :theme-styles='themeStyles_'
@@ -74,14 +79,22 @@ export default {
     isInline: Boolean,
     fromPage: Object,
     toPage: Object,
+    dragColor: { type: String, default: () => defaults.datePickerDragColor },
+    dragAttribute: Object,
+    selectColor: { type: String, default: () => defaults.datePickerSelectColor },
+    selectAttribute: Object,
+    showCaps: { type: Boolean, default: () => defaults.datePickerShowCaps },
+    showPopover: { type: Boolean, default: () => defaults.datePickerShowPopover },
     popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
     popoverDirection: { type: String, default: () => defaults.popoverDirection },
     popoverAlign: { type: String, default: () => defaults.popoverAlign },
     popoverVisibility: { type: String, default: () => defaults.popoverVisibility },
-    popoverKeepVisibleOnInput: Boolean,
+    popoverContentOffset: { type: String, default: () => defaults.popoverContentOffset },
+    popoverKeepVisibleOnInput: { type: Boolean, default: () => defaults.popoverKeepVisibleOnInput },
     inputClass: { type: String, default: () => defaults.datePickerInputClass },
     inputStyle: { type: Object, default: () => defaults.datePickerInputStyle },
     inputPlaceholder: String,
+    inputReadOnly: Boolean,
     dateFormatter: { type: Function, default: defaults.dateFormatter },
     dateParser: { type: Function, default: defaults.dateParser },
     themeStyles: { type: Object, default: () => ({}) },
@@ -108,11 +121,20 @@ export default {
     inputPlaceholder_() {
       return this.inputPlaceholder || this.profile.inputPlaceholder;
     },
-    inputIsReadOnly() {
-      return this.disabledAttribute && this.disabledAttribute.isComplex;
-    },
     formattedValue() {
       return this.profile.formatValue(this.value, this.dragValue);
+    },
+    dragAttribute_() {
+      return {
+        ...defaults.datePickerDragAttribute(this.dragColor, this.showCaps, this.showPopover),
+        ...this.dragAttribute,
+      };
+    },
+    selectAttribute_() {
+      return {
+        ...defaults.datePickerSelectAttribute(this.selectColor, this.showCaps, this.showPopover),
+        ...this.selectAttribute,
+      };
     },
     themeStyles_() {
       const styles = {
@@ -176,8 +198,8 @@ export default {
         setTimeout(() => {
           this.popoverForceHidden = true;
         }, 300);
+        if (this.$refs.input) this.$refs.input.blur();
       }
-      if (this.$refs.input) this.$refs.input.blur();
       this.disablePopoverForceHidden = false;
     },
     dragValue() {
@@ -215,8 +237,8 @@ export default {
       const parsedValue = isString(value) ? this.profile.parseValue(value) : value;
       // Filter out any disabled dates
       const filteredValue = this.profile.filterDisabled(parsedValue, this.disabledAttribute);
+      // Everything user entered was accepted so hide popover
       if (this.profile.valuesAreEqual(parsedValue, filteredValue)) {
-        // Everything user entered was accepted so hide popover
         this.popoverForceHidden = true;
         if (this.$refs.input) this.$refs.input.blur();
       } else {

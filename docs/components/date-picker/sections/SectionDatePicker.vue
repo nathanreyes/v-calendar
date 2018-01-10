@@ -36,26 +36,23 @@
               <b-input v-model='dragColor'></b-input>
             </b-field>
           </b-field>
-          <p class='tip'><strong>Note:</strong> Accepts color names, hex and rgb values</p>
-          <br />
-          <b-field grouped>
-            <b-field>
-              <b-switch v-model='showCaps'>Show Caps</b-switch>
-            </b-field>
-            <b-field>
-              <b-switch v-model='showDisabledDates'>Show disabled dates</b-switch>
-            </b-field>
+          <b-field>
+            <b-switch v-model='showCaps'>Show Caps</b-switch>
           </b-field>
-          <b-field grouped>
-            <b-field>
-              <b-switch v-model='isInline'>Inline</b-switch>
-            </b-field>
-            <b-field v-if='isInline'>
-              <b-switch v-model='isExpanded'>Expanded</b-switch>
-            </b-field>
-            <b-field v-else>
-              <b-switch v-model='popoverExpanded'>Popover Expanded</b-switch>
-            </b-field>
+          <b-field>
+            <b-switch v-model='showPopover'>Show Popover</b-switch>
+          </b-field>
+          <b-field>
+            <b-switch v-model='showDisabledDates'>Show Disabled</b-switch>
+          </b-field>
+          <b-field>
+            <b-switch v-model='isInline'>Inline</b-switch>
+          </b-field>
+          <b-field v-if='isInline'>
+            <b-switch v-model='isExpanded'>Expanded</b-switch>
+          </b-field>
+          <b-field v-else>
+            <b-switch v-model='popoverExpanded'>Popover Expanded</b-switch>
           </b-field>
           <div v-if='!isInline'>
             <b-field label='Popover Visibility'>
@@ -108,7 +105,8 @@
           :popover-align='popoverAlignment'
           :select-color='selectColor'
           :drag-color='dragColor'
-          :show-caps='showCaps'>
+          :show-caps='showCaps'
+          :show-popover='showPopover'>
         </ex-date-picker>
       </div>
     </div>
@@ -130,6 +128,7 @@ export default {
       mode: 'single',
       selectedValue: null,
       showCaps: true,
+      showPopover: true,
       showDisabledDates: false,
       isInline: false,
       isExpanded: false,

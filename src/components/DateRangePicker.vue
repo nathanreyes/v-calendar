@@ -1,6 +1,7 @@
 <template>
 <calendar
   :attributes='attributes_'
+  :theme-styles='themeStyles_'
   @dayselect='selectDay'
   @daymouseenter='enterDay'
   v-bind='$attrs'
@@ -11,7 +12,6 @@
 <script>
 import Calendar from './Calendar';
 import DateInfo from '../utils/dateInfo';
-import defaults from '../utils/defaults';
 import { rangeHasValue } from '../utils/pickerProfiles';
 
 export default {
@@ -20,18 +20,16 @@ export default {
   },
   props: {
     value: { type: Object, default: () => {} },
-    selectColor: { type: String, default: () => defaults.datePickerSelectColor },
-    dragColor: { type: String, default: () => defaults.datePickerDragColor },
-    showCaps: { type: Boolean, default: () => defaults.datePickerShowCaps },
     dragAttribute: Object,
     selectAttribute: Object,
     disabledAttribute: Object,
-    dayContentHoverStyle: Object,
+    themeStyles: Object,
     attributes: Array,
   },
   data() {
     return {
       dragValue: null,
+      showDisabledContent: false,
     };
   },
   computed: {
@@ -39,7 +37,6 @@ export default {
       const normValue = this.normalizeRange(this.dragValue);
       if (!normValue) return null;
       return {
-        ...defaults.datePickerDragAttribute(this.dragColor, this.showCaps),
         ...this.dragAttribute,
         dates: [this.dragValue],
       };
@@ -48,7 +45,6 @@ export default {
       const normValue = this.normalizeRange(this.value);
       if (!normValue) return null;
       return {
-        ...defaults.datePickerSelectAttribute(this.selectColor, this.showCaps),
         ...this.selectAttribute,
         dates: [normValue],
       };
@@ -59,6 +55,14 @@ export default {
       else if (this.selectAttribute_) attributes.push(this.selectAttribute_);
       if (this.disabledAttribute) attributes.push(this.disabledAttribute);
       return attributes;
+    },
+    themeStyles_() {
+      return {
+        ...this.themeStyles,
+        ...(this.showDisabledContent && this.disabledAttribute && {
+          dayContentHover: this.disabledAttribute.contentHoverStyle,
+        }),
+      };
     },
   },
   watch: {
@@ -80,43 +84,49 @@ export default {
       this.$emit('daytouchstart', day);
     },
     selectDay(day) {
-      // Done if date selection is invalid
-      if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) return;
       // Start new drag selection if not dragging
       if (!this.dragValue) {
-        // Make sure date selection is valid
-        const date = new Date(day.dateTime);
-        // Start new drag selection
-        this.dragValue = { start: date, end: date };
+        // Update drag value if it is valid
+        const newDragValue = { start: new Date(day.dateTime), end: new Date(day.dateTime) };
+        if (this.dateIsValid(newDragValue)) {
+          this.dragValue = newDragValue;
+        }
       } else {
-        // Construct new value
+        // Update selected value if it is valid
         const newValue = new DateInfo({
           start: new Date(this.dragValue.start.getTime()),
           end: new Date(day.dateTime),
         });
-        // Clear drag selection
-        this.dragValue = null;
-        // Signal new value selected
-        this.$emit('input', newValue.toRange());
+        if (this.dateIsValid(newValue)) {
+          // Clear drag selection
+          this.dragValue = null;
+          // Signal new value selected
+          this.$emit('input', newValue.toRange());
+        }
       }
     },
     enterDay(day) {
       // Make sure drag has been initialized
       if (this.dragValue) {
-        // Make sure dragged value is valid
-        if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) {
-          // Assign disabled content hover style
-          this.dayContentHoverStyle_ = this.disabledAttribute.contentHoverStyle;
-        } else {
+        // Calculate the new dragged value
+        const newDragValue = {
+          start: new Date(this.dragValue.start.getTime()),
+          end: new Date(day.dateTime),
+        };
+        // Check if dragged value is valid
+        if (this.dateIsValid(newDragValue)) {
           // Update drag selection
-          this.dragValue = {
-            start: new Date(this.dragValue.start.getTime()),
-            end: new Date(day.dateTime),
-          };
-          // Assign default content hover style
-          this.dayContentHoverStyle_ = this.dayContentHoverStyle;
+          this.dragValue = newDragValue;
+          // Show enabled content hover style
+          this.showDisabledContent = false;
+        } else {
+          // Show disabled content hover style
+          this.showDisabledContent = true;
         }
       }
+    },
+    dateIsValid(date) {
+      return !(this.disabledAttribute && this.disabledAttribute.intersectsDate(date));
     },
     // Ranges can privately have end date earlier than start date
     // This function will correct the order before exposing it to to other components

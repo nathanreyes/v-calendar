@@ -1,0 +1,74 @@
+[
+  {
+    "date": "1/1/2018",
+    "day": 1,
+    "dayFromEnd": 31,
+    "weekday": 2,
+    "weekdayOrdinal": 1,
+    "weekdayOrdinalFromEnd": 5,
+    "week": 1,
+    "weekFromEnd": 5,
+    "month": 1,
+    "year": 2018
+  },
+  {
+    "date": "1/2/2018",
+    "day": 2,
+    "dayFromEnd": 30,
+    "weekday": 3,
+    "weekdayOrdinal": 1,
+    "weekdayOrdinalFromEnd": 5,
+    "week": 1,
+    "weekFromEnd": 5,
+    "month": 1,
+    "year": 2018
+  },
+  {
+    "date": "1/3/2018",
+    "day": 3,
+    "dayFromEnd": 29,
+    "weekday": 4,
+    "weekdayOrdinal": 1,
+    "weekdayOrdinalFromEnd": 5,
+    "week": 1,
+    "weekFromEnd": 5,
+    "month": 1,
+    "year": 2018
+  },
+  {
+    "date": "1/4/2018",
+    "day": 4,
+    "dayFromEnd": 28,
+    "weekday": 5,
+    "weekdayOrdinal": 1,
+    "weekdayOrdinalFromEnd": 4,
+    "week": 1,
+    "weekFromEnd": 5,
+    "month": 1,
+    "year": 2018
+  },
+  {
+    "date": "1/5/2018",
+    "day": 5,
+    "dayFromEnd": 27,
+    "weekday": 6,
+    "weekdayOrdinal": 1,
+    "weekdayOrdinalFromEnd": 4,
+    "week": 1,
+    "weekFromEnd": 5,
+    "month": 1,
+    "year": 2018
+  },
+  {
+    "date": "1/6/2018",
+    "day": 6,
+    "dayFromEnd": 26,
+    "weekday": 7,
+    "weekdayOrdinal": 1,
+    "weekdayOrdinalFromEnd": 4,
+    "week": 1,
+    "weekFromEnd": 5,
+    "month": 1,
+    "year": 2018
+  }
+]

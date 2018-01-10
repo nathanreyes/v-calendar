@@ -1,9 +1,7 @@
 import Calendar from './components/Calendar';
 import DatePicker from './components/DatePicker';
 import Popover from './components/Popover';
-import { mergeDefaults } from './utils/defaults';
-
-const componentPrefix = 'v';
+import defaults, { mergeDefaults } from './utils/defaults';
 
 const components = {
   Calendar,
@@ -17,7 +15,7 @@ const VCalendar = {
     mergeDefaults(options);
     Object
       .keys(components)
-      .forEach(k => Vue.component(`${componentPrefix}${k}`, components[k]));
+      .forEach(k => Vue.component(`${defaults.componentPrefix}${k}`, components[k]));
   },
 };
 

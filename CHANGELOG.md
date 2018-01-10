@@ -1,3 +1,16 @@
+# v0.5.3
+## Bug Fixes
+* Detect date range intersections with `disabled-dates`. Closes #12.
+
+## Improvements
+* Added `componentPrefix` constructor option when using plugin. Closes #37.
+* Redesigned popover for selected and dragged regions in `v-date-picker`.
+* Input elements in `v-date-packer` no longer require `readonly` attribute when using date patterns with `disabled-dates` or `available-dates`.
+* Popovers for selected and dragged regions can be hidden via `show-popover` prop in `v-date-picker`.
+* Use custom component for popover attributes via the `component` property.
+* Testing framework moved to Jest. Added tests for detecting date collisions.
+* Update README for more clear introduction guide.
+
 # v0.5.2
 ## Bug Fixes
 * Fix bug for wrong/missing parameters passed on day events. Closes #33.

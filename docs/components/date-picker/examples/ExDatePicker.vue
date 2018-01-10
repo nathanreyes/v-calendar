@@ -7,6 +7,7 @@
     :select-color='selectColor'
     :drag-color='dragColor'
     :show-caps='showCaps'
+    :show-popover='showPopover'
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[]'
     :is-inline='isInline'
@@ -27,6 +28,7 @@ export default {
     selectColor: { type: String, default: '#66b3cc' },
     dragColor: { type: String, default: '#9fcfdf' },
     showCaps: { type: Boolean, default: true },
+    showPopover: { type: Boolean, default: true },
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,
