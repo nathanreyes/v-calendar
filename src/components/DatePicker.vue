@@ -31,7 +31,7 @@
     <input
       ref='input'
       type='text'
-      :class='[inputClass, { "c-input-drag": !value && dragValue }]'
+      :class='[inputClass, { "c-input-drag": dragValue }]'
       :style='inputStyle'
       :placeholder='inputPlaceholder_'
       :value='inputValue'

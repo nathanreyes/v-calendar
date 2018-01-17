@@ -47,6 +47,11 @@ export default [
     themable: true,
   },
   {
+    name: '<code>pane-width: Number</code>',
+    description: 'Width of a single pane, in pixels.',
+    default: '<code>256</code>',
+  },
+  {
     name: '<code>is-expanded: Boolean</code>',
     description: 'Expands calendar or calendars to fill the full width of its container.',
     default: '<code>false</code>',

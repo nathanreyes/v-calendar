@@ -153,15 +153,18 @@ export default {
     },
     dayCellStyle() {
       // Merge 'not in month' style if needed
-      return this.inMonth ? this.styles.dayCell : {
+      return {
         ...this.styles.dayCell,
-        ...this.styles.dayCellNotInMonth,
+        ...(!this.inMonth && this.styles.dayCellNotInMonth),
       };
     },
     contentStyle_() {
-      let style = this.contentStyle;
-      if (this.isHovered) style = { ...style, ...this.contentHoverStyle };
-      return style;
+      const disableEvents = this.dayCellStyle && (parseFloat(this.dayCellStyle.opacity) === 0 || this.dayCellStyle.pointerEvents === 'none');
+      return {
+        ...this.contentStyle,
+        ...(this.isHovered && this.contentHoverStyle),
+        ...(disableEvents && { pointerEvents: 'none' }),
+      };
     },
     attributesList() {
       return this.attributes.find(this.dayInfo);

@@ -12,7 +12,6 @@
 <script>
 import Calendar from './Calendar';
 import DateInfo from '../utils/dateInfo';
-import { rangeHasValue } from '../utils/pickerProfiles';
 
 export default {
   components: {
@@ -34,19 +33,15 @@ export default {
   },
   computed: {
     dragAttribute_() {
-      const normValue = this.normalizeRange(this.dragValue);
-      if (!normValue) return null;
-      return {
+      return this.dragValue && {
         ...this.dragAttribute,
         dates: [this.dragValue],
       };
     },
     selectAttribute_() {
-      const normValue = this.normalizeRange(this.value);
-      if (!normValue) return null;
-      return {
+      return this.value && {
         ...this.selectAttribute,
-        dates: [normValue],
+        dates: [this.value],
       };
     },
     attributes_() {
@@ -67,7 +62,7 @@ export default {
   },
   watch: {
     dragValue(val) {
-      this.$emit('drag', this.normalizeRange(val));
+      this.$emit('drag', this.simplifyDate(DateInfo(val)));
     },
   },
   created() {
@@ -79,10 +74,6 @@ export default {
     });
   },
   methods: {
-    touchStartDay(day) {
-      this.selectDay(day);
-      this.$emit('daytouchstart', day);
-    },
     selectDay(day) {
       // Start new drag selection if not dragging
       if (!this.dragValue) {
@@ -101,7 +92,7 @@ export default {
           // Clear drag selection
           this.dragValue = null;
           // Signal new value selected
-          this.$emit('input', newValue.toRange());
+          this.$emit('input', this.simplifyDate(newValue));
         }
       }
     },
@@ -128,20 +119,8 @@ export default {
     dateIsValid(date) {
       return !(this.disabledAttribute && this.disabledAttribute.intersectsDate(date));
     },
-    // Ranges can privately have end date earlier than start date
-    // This function will correct the order before exposing it to to other components
-    normalizeRange(range) {
-      if (!rangeHasValue(range)) return null;
-      const { start, end } = range;
-      const startTime = start.getTime();
-      const endTime = end.getTime();
-      const isNormal = start < end;
-      return {
-        start: isNormal ? start : end,
-        startTime: isNormal ? startTime : endTime,
-        end: isNormal ? end : start,
-        endTime: isNormal ? endTime : startTime,
-      };
+    simplifyDate(date) {
+      return date && { start: date.start, end: date.end };
     },
   },
 };

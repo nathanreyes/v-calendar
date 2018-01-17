@@ -6,7 +6,9 @@
     :select-color='selectColor'
     :attributes='attributes'
     :theme-styles='themeStyles'
-    is-inline>
+    is-inline
+    is-expanded
+    :pane-width='290'>
   </v-date-picker>
 </template>
 
@@ -22,6 +24,7 @@ export default {
     const startDate = new Date(thisMonthYear, thisMonth, barDate.getDate() - barDate.getDay());
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 6);
+    const hSpacing = '15px';
     return {
       selectedDate: {
         start: startDate,
@@ -30,15 +33,13 @@ export default {
       themeStyles: {
         wrapper: {
           border: '0',
-          padding: '10px',
           background: 'linear-gradient(to bottom right, #ff5050, #ff66b3)',
-          width: '300px',
           boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.14), 0 6px 20px 0 rgba(0, 0, 0, 0.13)',
           borderRadius: '5px',
         },
         header: {
           color: '#fafafa',
-          padding: '10px 5px 20px 5px',
+          padding: `20px ${hSpacing}`,
         },
         headerHorizontalDivider: {
           borderTop: 'solid rgba(255, 255, 255, 0.2) 1px',
@@ -47,7 +48,10 @@ export default {
         weekdays: {
           color: '#6eded1',
           fontWeight: '600',
-          padding: '20px 5px 5px 5px',
+          padding: `20px ${hSpacing} 5px ${hSpacing}`,
+        },
+        weeks: {
+          padding: `0 ${hSpacing} 10px ${hSpacing}`,
         },
         dayContent: {
           color: '#fafafa',

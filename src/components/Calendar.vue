@@ -2,7 +2,7 @@
 <div
   class='c-pane-container'
   :class='{ "is-double-paned": isDoublePaned_, "is-expanded": isExpanded }'
-  :style='themeStyles_.wrapper'>
+  :style='wrapperStyle'>
   <calendar-pane
     :position='isDoublePaned_ ? 1 : 0'
     :page.sync='fromPage_'
@@ -65,6 +65,7 @@ export default {
     toPage: Object,
     isDoublePaned: Boolean,
     isExpanded: Boolean,
+    paneWidth: { type: Number, default: defaults.paneWidth },
     themeStyles: Object,
     attributes: Array,
   },
@@ -77,7 +78,7 @@ export default {
   },
   computed: {
     isDoublePaned_() {
-      return this.isDoublePaned && this.windowWidth >= 480;
+      return this.isDoublePaned && this.windowWidth >= ((2 * this.paneWidth) + 30);
     },
     paneCentered() {
       return this.isDoublePaned && !this.isDoublePaned_;
@@ -91,8 +92,24 @@ export default {
       return null;
     },
     themeStyles_() {
+      if (!this.themeStyles) return defaults.themeStyles;
       // Mix user supplied styles with default styles
-      return { ...defaults.themeStyles, ...this.themeStyles };
+      return Object.keys(defaults.themeStyles).reduce((obj, key) => {
+        if (Object.prototype.hasOwnProperty.call(this.themeStyles, key)) {
+          obj[key] = {
+            ...defaults.themeStyles[key],
+            ...this.themeStyles[key],
+          };
+        }
+        return obj;
+      }, { ...defaults.themeStyles });
+    },
+    wrapperStyle() {
+      const minWidth = `${this.isDoublePaned_ ? this.paneWidth * 2 : this.paneWidth}px`;
+      return {
+        ...this.themeStyles_.wrapper,
+        minWidth,
+      };
     },
     attributes_() {
       return AttributeStore(this.attributes);
@@ -180,12 +197,10 @@ export default {
   line-height: 1.5
   color: $font-color
   min-width: $pane-width
-  width: $pane-width
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   &.is-double-paned
     min-width: $pane-width * 2
-    width: $pane-width * 2
   &.is-expanded
     width: 100%
 

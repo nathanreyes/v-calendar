@@ -1,3 +1,14 @@
+# v0.5.4
+## Bug Fixes
+* Pass missing `page` attribute to `header-title` slot
+* Fade input text when dragging date ranges in `v-date-picker`
+
+## Improvements
+* Add `pane-width` prop to `v-calendar` for setting pane width manually
+* Add `pane-width` as a configurable default setting
+* Add `shortMonthLabel` and `shortYearLabel` properties to `page` objects
+* Disable pointer events for day cells not in month if `opacity: 0` in `theme-styles.dayCellNotInMonth` style
+
 # v0.5.3
 ## Bug Fixes
 * Detect date range intersections with `disabled-dates`. Closes #12.

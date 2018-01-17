@@ -3,9 +3,10 @@
   ref='pane'
   :class='["c-pane", { "is-single": position === 0 }]'>
   <!--Header-->
-  <div class='c-header-wrapper'>
+  <div class='c-section-wrapper'>
     <!--Header vertical divider-->
     <div
+      class='c-vertical-divider'
       :style='verticalDividers.header'
       v-if='verticalDividers.header'>
     </div>
@@ -48,7 +49,8 @@
                 :key='p.key'
                 v-if='p === page_'>
                 <slot
-                  name='header-title'>
+                  name='header-title'
+                  :page='p'>
                   {{ `${p.monthLabel} ${p.yearLabel}` }}
                 </slot>
               </div>
@@ -76,24 +78,25 @@
         </div>
       </div>
     </slot>
-  </div>
-  <!--Header horizontal divider-->
-  <div
-    class='c-horizontal-divider'
-    :style='headerHorizontalDividerStyle_'
-    v-if='headerHorizontalDividerStyle_'>
+    <!--Header horizontal divider-->
+    <div
+      class='c-horizontal-divider'
+      :style='headerHorizontalDividerStyle_'
+      v-if='headerHorizontalDividerStyle_'>
+    </div>
   </div>
   <!--Weekdays-->
-  <div class='c-weekdays-wrapper'>
+  <div class='c-section-wrapper'>
     <!--Weekday vertical divider-->
     <div
+      class='c-vertical-divider'
       :style='verticalDividers.weekdays'
       v-if='verticalDividers.weekdays'>
     </div>
+    <!--Weekday labels-->
     <div
       class='c-weekdays'
       :style='weekdayStyle_'>
-      <!--Weekday labels-->
       <div
         v-for='(weekday, i) in weekdayLabels_'
         :key='i + 1'
@@ -101,17 +104,18 @@
         {{ weekday }}
       </div>
     </div>
-  </div>
-  <!--Weekday horizontal divider-->
-  <div
-    class='c-horizontal-divider'
-    :style='weekdaysHorizontalDividerStyle_'
-    v-if='weekdaysHorizontalDividerStyle_'>
+    <!--Weekday horizontal divider-->
+    <div
+      class='c-horizontal-divider'
+      :style='weekdaysHorizontalDividerStyle_'
+      v-if='weekdaysHorizontalDividerStyle_'>
+    </div>
   </div>
   <!--Weeks-->
-  <div class='c-weeks-wrapper'>
+  <div class='c-section-wrapper'>
     <!--Weeks vertical divider-->
     <div
+      class='c-vertical-divider'
       :style='verticalDividers.weeks'
       v-if='verticalDividers.weeks'>
     </div>
@@ -382,7 +386,9 @@ export default {
           key,
           month,
           year,
+          shortMonthLabel: defaults.shortMonthLabels[month - 1],
           monthLabel: this.monthLabels[month - 1],
+          shortYearLabel: year.toString().substring(2),
           yearLabel: year.toString(),
           monthComps,
           prevMonthComps,
@@ -447,9 +453,10 @@ export default {
   &.is-single
     width: 100%
 
-.c-header-wrapper
+.c-section-wrapper
+  position: relative
   display: flex
-  z-index: 1
+  flex-direction: column
 
 .c-header
   flex: 1
@@ -502,8 +509,12 @@ export default {
 .c-horizontal-divider
   align-self: center
 
-.c-weekdays-wrapper
+.c-vertical-divider
   display: flex
+  align-items: center
+  position: absolute
+  left: 0
+  height: 100%
 
 .c-weekdays
   flex-grow: 1
@@ -517,9 +528,6 @@ export default {
   +box()
   flex: 1
   cursor: default
-
-.c-weeks-wrapper
-  display: flex
 
 .c-weeks
   flex-grow: 1

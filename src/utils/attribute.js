@@ -16,13 +16,15 @@ const Attribute = (config) => {
       (hasExcludeDates && [{}]) ||  // Use infinite range if exclude dates were provided
       []                            // Use just an empty array
     )
-    .map(d => (d.isDateInfo ? d : DateInfo(d, config.order)));
+    .map(d => d && (d.isDateInfo ? d : DateInfo(d, config.order)))
+    .filter(d => d);
   const excludeDates =
     (
       (hasExcludeDates && config.excludeDates) ||
       []
     )
-    .map(d => (d.isDateInfo ? d : DateInfo(d, config.order)));
+    .map(d => d && (d.isDateInfo ? d : DateInfo(d, config.order)))
+    .filter(d => d);
   const isComplex = dates.some(d => d.isComplex);
   const attr = {
     isAttribute: true,

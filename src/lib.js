@@ -21,6 +21,7 @@ const VCalendar = {
 
 export default VCalendar;
 
+// Use automatically when global Vue instance detected
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(VCalendar);
 }
