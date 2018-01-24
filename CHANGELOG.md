@@ -1,3 +1,7 @@
+# v0.5.5
+## Bug Fixes
+* Fix miscalculation of day numbers for previous months when `firstDayOfWeek !== 1`. Closes #44.
+
 # v0.5.4
 ## Bug Fixes
 * Pass missing `page` attribute to `header-title` slot

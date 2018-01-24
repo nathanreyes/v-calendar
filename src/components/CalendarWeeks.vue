@@ -39,11 +39,12 @@ export default {
     weeks() {
       const weeks = [];
       const { firstDayOfWeek, firstWeekday } = this.monthComps;
+      const prevMonthDaysToShow = (firstWeekday + (firstWeekday < firstDayOfWeek ? 7 : 0)) - firstDayOfWeek;
       let prevMonth = true;
       let thisMonth = false;
       let nextMonth = false;
       // Init counters with previous month's data
-      let day = (this.prevMonthComps.days - Math.abs(firstWeekday - firstDayOfWeek)) + 1;
+      let day = (this.prevMonthComps.days - prevMonthDaysToShow) + 1;
       let dayFromEnd = (this.prevMonthComps.days - day) + 1;
       let weekdayOrdinal = Math.floor(((day - 1) / 7) + 1);
       let weekdayOrdinalFromEnd = 1;
