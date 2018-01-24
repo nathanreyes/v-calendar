@@ -75,10 +75,10 @@
   <div
     class='c-day-popover-content'
     slot='popover-content'>
-    <!-- Header slot -->
+    <!-- Day popover header slot -->
     <slot
-      name='popover-header'
-      :day-info='dayInfo'
+      name='day-popover-header'
+      :day='day'
       :attributes='attributesList'>
     </slot>
     <!-- Content row slots -->
@@ -91,7 +91,7 @@
         :name='popover.slot'
         :attribute='popover.attribute'
         :custom-data='popover.attribute.customData'
-        :day-info='dayInfo'>
+        :day='day'>
         <span
           v-if='popover.label'
           class='popover-label'
@@ -103,10 +103,16 @@
           v-if='popover.component'
           :is='popover.component'
           :attribute='popover.attribute'
-          :day-info='dayInfo'>
+          :day='day'>
         </component>
       </slot>
     </calendar-day-popover-row>
+    <!-- Day popover footer slot -->
+    <slot
+      name='day-popover-footer'
+      :day='day'
+      :attributes='attributesList'>
+    </slot>
   </div>
 </popover>
 </template>
@@ -123,7 +129,7 @@ export default {
     CalendarDayPopoverRow,
   },
   props: {
-    dayInfo: { type: Object, required: true },
+    day: { type: Object, required: true },
     attributes: Object,
     popoverContentOffset: { type: String, default: '7px' },
     styles: Object,
@@ -143,13 +149,13 @@ export default {
   },
   computed: {
     label() {
-      return this.dayInfo.label;
+      return this.day.label;
     },
     dateTime() {
-      return this.dayInfo.dateTime;
+      return this.day.dateTime;
     },
     inMonth() {
-      return this.dayInfo.inMonth;
+      return this.day.inMonth;
     },
     dayCellStyle() {
       // Merge 'not in month' style if needed
@@ -167,7 +173,7 @@ export default {
       };
     },
     attributesList() {
-      return this.attributes.find(this.dayInfo);
+      return this.attributes.find(this.day);
     },
     attributesMap() {
       return objectFromArray(this.attributesList);
@@ -192,12 +198,6 @@ export default {
     },
     popoverContentStyle() {
       return this.styles.dayPopoverContent;
-    },
-    eventDayInfo() {
-      return {
-        ...this.dayInfo,
-        el: this.$refs.dayContent,
-      };
     },
   },
   watch: {
@@ -224,19 +224,27 @@ export default {
     this.processAttributes();
   },
   methods: {
-    click() {
-      this.$emit('dayselect', this.eventDayInfo, this.attributesMap);
+    getDayEvent(origEvent) {
+      return {
+        ...this.day,
+        attributes: this.attributesList,
+        attributesMap: this.attributesMap,
+        event: origEvent,
+      };
     },
-    mouseenter() {
-      this.$emit('daymouseenter', this.eventDayInfo, this.attributesMap);
+    click(e) {
+      this.$emit('dayclick', this.getDayEvent(e));
     },
-    mouseover() {
+    mouseenter(e) {
+      this.$emit('daymouseenter', this.getDayEvent(e));
+    },
+    mouseover(e) {
       this.isHovered = true;
-      this.$emit('daymouseover', this.eventDayInfo, this.attributesMap);
+      this.$emit('daymouseover', this.getDayEvent(e));
     },
-    mouseleave() {
+    mouseleave(e) {
       this.isHovered = false;
-      this.$emit('daymouseleave', this.eventDayInfo, this.attributesMap);
+      this.$emit('daymouseleave', this.getDayEvent(e));
     },
     processAttributes() {
       const backgrounds = [];
@@ -417,8 +425,8 @@ export default {
         key: attribute.key,
         customData: attribute.customData,
         attribute,
-        label: isFunction(label) ? label(attribute, this.dayInfo) : label,
-        labelStyle: isFunction(labelStyle) ? labelStyle(attribute, this.dayInfo) : labelStyle,
+        label: isFunction(label) ? label(attribute, this.day) : label,
+        labelStyle: isFunction(labelStyle) ? labelStyle(attribute, this.day) : labelStyle,
         component,
         slot,
         hideIndicator,

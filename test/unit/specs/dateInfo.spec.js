@@ -1,4 +1,4 @@
-import DateInfo, { addDays, getDayInfoFromDate } from '@/utils/dateInfo';
+import DateInfo, { addDays, getDayFromDate } from '@/utils/dateInfo';
 import dayData from '../util/dayData.json';
 
 describe('addDays', () => {
@@ -10,10 +10,10 @@ describe('addDays', () => {
   });
 });
 
-describe('getDayInfoFromDate', () => {
+describe('getDayFromDate', () => {
   it('should calculate day components correctly', () => {
     const testComponent = (c) => {
-      const day = getDayInfoFromDate(new Date(c.date));
+      const day = getDayFromDate(new Date(c.date));
       if (c.day !== day.day) return false;
       if (c.dayFromEnd !== day.dayFromEnd) return false;
       if (c.weekday !== day.weekday) return false;

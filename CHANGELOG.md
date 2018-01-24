@@ -1,3 +1,33 @@
+# v0.6.0
+## Improvements
+* Rename `popover-header` slot name to `day-popover-header` to more clearly identify slot target.
+* `day-popover-header` slot and custom popover slots accept `day` prop instead of `day-info` prop
+* Add `day-popover-footer` slot for day popover footers
+* Rename `dayselect` calendar event to `dayclick` to more clearly indicate DOM event source
+* Modify parameters for day events (`dayclick`, `daymouseenter`, `daymouseover`, `daymouseleave`)
+  
+  Instead of passing multiple parameters in order (and having to remember the right order), there is now a single object parameter with the following properties.
+
+  | Property | Type | Description |
+  | -------- | ---- | ----------- |
+  | `day` | Number | Day number (1 - 31). |
+  | `dayFromEnd` | Number | Day number from the end of the month (1 - 31). |
+  | `weekday` | Number | Day weekday number (1:Sun - 7:Sat). |
+  | `weekdayOrdinal` | Number | Weekday ordinal position from the start of the month (1 - 6). |
+  | `weekdayOrdinalFromEnd` | Number | Weekday ordinal position from the end of the month (1 - 6). |
+  | `week` | Number | Week number form the start of the month (1 - 6). |
+  | `weekFromEnd` | Number | Week number from the end of the month (1 - 6). |
+  | `month` | Number | Month number (1 - 12). |
+  | `year` | Number | Year number. |
+  | `date` | Date | Date for this day. |
+  | `dateTime` | Number | Result of calling `date.getTime()` for this day. |
+  | `inMonth` | Boolean | Day lies in the currently active month. |
+  | `inPrevMonth` | Boolean | Day lies in the month before the currently active month. |
+  | `inNextMonth` | Boolean | Day lies in the month after the currently active month. |
+  | `attributes` | Array | List of attributes for the day involved with the event. |
+  | `attributesMap` | Object | Object map of the attributes using their designated key. |
+  | `event` | Object | Original event that triggered the event. |
+
 # v0.5.4
 ## Bug Fixes
 * Pass missing `page` attribute to `header-title` slot

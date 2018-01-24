@@ -34,7 +34,6 @@
 export default {
   props: {
     attribute: Object,
-    dayInfo: Object,
   },
   computed: {
     date() {

@@ -52,15 +52,15 @@ const Attribute = (config) => {
       // Return match date if test date doesn't intersect any excluded dates
       return excludeDates.find(ed => ed.intersectsDate(date)) ? false : d;
     }) || false,
-    // Accepts: DayInfo object
+    // Accepts: Day object
     // Returns: First attribute date info that occurs on given day.
-    includesDay: dayInfo => dates.find((d) => {
+    includesDay: day => dates.find((d) => {
       // Date doesn't match
-      if (!d.includesDay(dayInfo)) return null;
+      if (!d.includesDay(day)) return null;
       // No exclude dates to check - just return first match
       if (!hasExcludeDates) return d;
       // Return match date if test day doesn't intersect any excluded dates
-      return excludeDates.find(ed => ed.includesDay(dayInfo)) ? false : d;
+      return excludeDates.find(ed => ed.includesDay(day)) ? false : d;
     }) || false,
   };
   mixinOptionalProps(config, attr, [

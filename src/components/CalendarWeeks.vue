@@ -10,7 +10,7 @@
     <calendar-day
       v-for='day in week'
       :key='day.id'
-      :dayInfo='day'
+      :day='day'
       v-bind='$attrs'
       v-on='$listeners'>
       <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
@@ -39,11 +39,12 @@ export default {
     weeks() {
       const weeks = [];
       const { firstDayOfWeek, firstWeekday } = this.monthComps;
+      const prevMonthDaysToShow = (firstWeekday + (firstWeekday < firstDayOfWeek ? 7 : 0)) - firstDayOfWeek;
       let prevMonth = true;
       let thisMonth = false;
       let nextMonth = false;
       // Init counters with previous month's data
-      let day = (this.prevMonthComps.days - Math.abs(firstWeekday - firstDayOfWeek)) + 1;
+      let day = (this.prevMonthComps.days - prevMonthDaysToShow) + 1;
       let dayFromEnd = (this.prevMonthComps.days - day) + 1;
       let weekdayOrdinal = Math.floor(((day - 1) / 7) + 1);
       let weekdayOrdinalFromEnd = 1;
@@ -78,7 +79,9 @@ export default {
           //  so we'll supply all the data we can
           const date = new Date(year, month - 1, day);
           const isToday = day === todayComps.day && month === todayComps.month && year === todayComps.year;
-          const dayInfo = {
+          const isFirstDay = thisMonth && day === 1;
+          const isLastDay = thisMonth && day === this.monthComps.days;
+          days.push({
             id: `${month}.${day}`,
             label: day.toString(),
             day,
@@ -93,15 +96,14 @@ export default {
             date,
             dateTime: date.getTime(),
             isToday,
-            isFirstDay: thisMonth && day === 1,
-            isLastDay: thisMonth && day === this.monthComps.days,
+            isFirstDay,
+            isLastDay,
             inMonth: thisMonth,
             inPrevMonth: prevMonth,
             inNextMonth: nextMonth,
-          };
-          days.push(dayInfo);
+          });
           // See if we've hit the last day of the month
-          if (thisMonth && dayInfo.isLastDay) {
+          if (thisMonth && isLastDay) {
             thisMonth = false;
             nextMonth = true;
             // Reset counters to next month's data

@@ -2,7 +2,7 @@
 <calendar
   :attributes='attributes_'
   :theme-styles='themeStyles_'
-  @dayselect='selectDay'
+  @dayclick='clickDay'
   @daymouseenter='enterDay'
   v-bind='$attrs'
   v-on='$listeners'>
@@ -74,11 +74,11 @@ export default {
     });
   },
   methods: {
-    selectDay(day) {
+    clickDay({ dateTime }) {
       // Start new drag selection if not dragging
       if (!this.dragValue) {
         // Update drag value if it is valid
-        const newDragValue = { start: new Date(day.dateTime), end: new Date(day.dateTime) };
+        const newDragValue = { start: new Date(dateTime), end: new Date(dateTime) };
         if (this.dateIsValid(newDragValue)) {
           this.dragValue = newDragValue;
         }
@@ -86,7 +86,7 @@ export default {
         // Update selected value if it is valid
         const newValue = new DateInfo({
           start: new Date(this.dragValue.start.getTime()),
-          end: new Date(day.dateTime),
+          end: new Date(dateTime),
         });
         if (this.dateIsValid(newValue)) {
           // Clear drag selection
@@ -96,13 +96,13 @@ export default {
         }
       }
     },
-    enterDay(day) {
+    enterDay({ dateTime }) {
       // Make sure drag has been initialized
       if (this.dragValue) {
         // Calculate the new dragged value
         const newDragValue = {
           start: new Date(this.dragValue.start.getTime()),
-          end: new Date(day.dateTime),
+          end: new Date(dateTime),
         };
         // Check if dragged value is valid
         if (this.dateIsValid(newDragValue)) {

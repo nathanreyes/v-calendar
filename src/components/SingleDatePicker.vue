@@ -1,7 +1,7 @@
 <template>
   <calendar
     :attributes='attributes_'
-    @dayselect='selectDay'
+    @dayclick='clickDay'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar>
@@ -37,7 +37,7 @@ export default {
     },
   },
   methods: {
-    selectDay(day) {
+    clickDay(day) {
       // Done if day selection is invalid
       if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) return;
       this.$emit('input', singleValuesAreEqual(day.date, this.value) ? null : day.date);

@@ -4,12 +4,11 @@
     is-double-paned>
     <!--=========POPOVER HEADER SLOT=========-->
     <div
-      slot='popover-header'
-      slot-scope='{ dayInfo }'
-      class='popover-header'>
-      {{ getPopoverHeaderLabel(dayInfo) }}
+      slot='day-popover-header'
+      slot-scope='{ day }'
+      class='day-popover-header'>
+      {{ getPopoverHeaderLabel(day) }}
     </div>
-
     <!--============HOW TO USE ROW SLOTS===========-->
     <!--
       STEP 1: Insert element with a unique slot name ('todo-row' in this example). Make sure slot-scope is assigned, even if not used.      
@@ -18,9 +17,8 @@
     <!--===============TODO ROW SLOT==============-->
     <div
       slot='todo-row'
-      slot-scope='{ customData, attribute, dayInfo }'
-      class='todo-row'
-      :attribute='attribute'>
+      slot-scope='{ customData }'
+      class='todo-row'>
       <!--Todo content-->
       <div class='todo-content'>
         <!--Show textbox when editing todo-->
@@ -78,9 +76,9 @@
     <!--================ADD TODO ROW SLOT===============-->
     <div
       slot='add-todo'
-      slot-scope='{ dayInfo }'
+      slot-scope='{ day }'
       class='add-todo'>
-      <a @click='addTodo(dayInfo)'>
+      <a @click='addTodo(day)'>
         + Add Todo
       </a>
     </div>
@@ -192,17 +190,17 @@ export default {
     },
   },
   methods: {
-    getPopoverHeaderLabel(dayInfo) {
+    getPopoverHeaderLabel(day) {
       const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-      return dayInfo.date.toLocaleDateString(window.navigator.userLanguage || window.navigator.language, options);
+      return day.date.toLocaleDateString(window.navigator.userLanguage || window.navigator.language, options);
     },
-    addTodo(dayInfo) {
+    addTodo(day) {
       this.editId = ++this.incId;
       this.todos.push({
         id: this.editId,
         description: 'New todo',
         isComplete: false,
-        dates: dayInfo.date,
+        dates: day.date,
       });
     },
     toggleTodoComplete(todo) {
@@ -228,7 +226,7 @@ export default {
 
 <style lang='sass' scoped>
 
-.popover-header
+.day-popover-header
   text-align: center
   padding-bottom: 3px
   border-bottom: 1px solid #dadada
