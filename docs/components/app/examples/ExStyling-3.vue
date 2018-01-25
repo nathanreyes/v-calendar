@@ -7,7 +7,6 @@
     :attributes='attributes'
     :theme-styles='themeStyles'
     is-inline
-    is-expanded
     :pane-width='290'>
   </v-date-picker>
 </template>
