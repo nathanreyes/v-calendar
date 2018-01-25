@@ -27,6 +27,10 @@
   | `attributes` | Array | List of attributes for the day involved with the event. |
   | `attributesMap` | Object | Object map of the attributes using their designated key. |
   | `event` | Object | Original event that triggered the event. |
+  
+# v0.5.5
+## Bug Fixes
+* Fix miscalculation of day numbers for previous months when `firstDayOfWeek !== 1`. Closes #44.
 
 # v0.5.4
 ## Bug Fixes
