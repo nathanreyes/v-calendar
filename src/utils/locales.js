@@ -82,5 +82,5 @@ export default {
     weekdays: ['Sunnuntai', 'Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai', 'Lauantai'],
     weekdaysShort: ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'],
     weekdaysMin: ['S', 'M', 'T', 'K', 'T', 'P', 'L'],
-  }
+  },
 };
