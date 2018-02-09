@@ -1,6 +1,6 @@
 import locales from './locales';
 import { POPOVER_VISIBILITIES } from './constants';
-import DatePickerDayPopover from '../components/DatePickerDayPopover';
+import { isObject, isFunction } from './typeCheckers';
 
 const defaults = {
   componentPrefix: 'v',
@@ -12,72 +12,33 @@ const defaults = {
   paneWidth: 256, // px
   dateFormatter: d => d.toLocaleDateString(),
   dateParser: s => new Date(Date.parse(s)),
-  datePickerInputClass: '',
-  datePickerInputStyle: null,
-  datePickerInputPlaceholder: '',
-  datePickerSelectColor: '#66B3CC',
-  datePickerDragColor: '#9FCFDF',
+  datePickerInputProps: ({ dragValue, mode }) => ({
+    ...(mode === 'single' && {
+      style: {
+        minWidth: '100px',
+      },
+      placeholder: 'Enter Date',
+    }),
+    ...(mode === 'multiple' && {
+      style: {
+        minWidth: '200px',
+      },
+      placeholder: 'Date 1, Date 2, ...',
+    }),
+    ...(mode === 'range' && {
+      style: {
+        minWidth: '150px',
+        ...(dragValue && {
+          color: 'rgba(0, 0, 0, 0.3)',
+        }),
+      },
+      placeholder: 'Start Date - End Date',
+    }),
+  }),
+  datePickerTintColor: '#66B3CC',
   datePickerShowCaps: false,
   datePickerShowPopover: true,
-  datePickerDragAttribute: (color, showCaps, showPopover) => ({
-    key: 'drag-select',
-    highlight: {
-      backgroundColor: color,
-      height: '25px',
-    },
-    contentHoverStyle: {
-      backgroundColor: 'transparent',
-      border: '0',
-    },
-    ...(showCaps && {
-      highlightCaps: {
-        backgroundColor: '#fafafa',
-        borderColor: color,
-        borderWidth: '2px',
-      },
-      contentStyleCaps: {
-        color: '#333333',
-      },
-    }),
-    ...(showPopover && {
-      popover: {
-        component: DatePickerDayPopover,
-        hideIndicator: true,
-      },
-    }),
-  }),
-  datePickerSelectAttribute: (color, showCaps, showPopover) => ({
-    key: 'drag-select',
-    highlight: {
-      backgroundColor: color,
-    },
-    contentStyle: {
-      color: '#fafafa',
-    },
-    contentHoverStyle: {
-      backgroundColor: 'transparent',
-      border: '0',
-    },
-    ...(showCaps && {
-      highlightCaps: {
-        backgroundColor: '#fafafa',
-        borderColor: color,
-        borderWidth: '2px',
-      },
-      contentStyleCaps: {
-        color: '#333333',
-      },
-    }),
-    ...(showPopover && {
-      popover: {
-        component: DatePickerDayPopover,
-        hideIndicator: true,
-      },
-    }),
-  }),
   datePickerDisabledAttribute: {
-    key: 'disabled',
-    order: 100,
     contentStyle: {
       color: '#d98c8c',
       fontWeight: 600,
@@ -158,6 +119,8 @@ const defaults = {
 };
 
 export default defaults;
+
+export const resolveDefault = (def, args) => (isObject(def) && def) || (isFunction(def) && def(args)) || def;
 
 export const mergeDefaults = (otherDefaults) => {
   // Get the locale supplied by the user

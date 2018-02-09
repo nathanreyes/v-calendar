@@ -92,17 +92,10 @@ export default {
       return null;
     },
     themeStyles_() {
-      if (!this.themeStyles) return defaults.themeStyles;
-      // Mix user supplied styles with default styles
-      return Object.keys(defaults.themeStyles).reduce((obj, key) => {
-        if (Object.prototype.hasOwnProperty.call(this.themeStyles, key)) {
-          obj[key] = {
-            ...defaults.themeStyles[key],
-            ...this.themeStyles[key],
-          };
-        }
-        return obj;
-      }, { ...defaults.themeStyles });
+      return {
+        ...defaults.themeStyles,
+        ...this.themeStyles,
+      };
     },
     wrapperStyle() {
       const minWidth = `${this.isDoublePaned_ ? this.paneWidth * 2 : this.paneWidth}px`;

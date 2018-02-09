@@ -12,7 +12,7 @@
             <ol>
               <li>Nest the <code>&lt;template scope='props'&gt;...&lt;/template&gt;</code> element within the <code>v-date-picker</code> component.</li>
               <li>Bind <code>props.inputValue</code> to your input value, if needed.</li>
-              <li>Use <code>props.parseValue(<span style='font-style:italic'>[input value here]</span>)</code> to help parse your input value whenever needed (input blur, enter key, button action, etc).</li>
+              <li>Use <code>props.updateValue(<span style='font-style:italic'>[input value here]</span>)</code> to help parse your input value whenever needed (input blur, enter key, button action, etc).</li>
             </ol>
           </div>
           <b-message type='is-info'>

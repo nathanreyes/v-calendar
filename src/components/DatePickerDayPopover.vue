@@ -34,7 +34,6 @@
 export default {
   props: {
     attribute: Object,
-    dayInfo: Object,
   },
   computed: {
     date() {
@@ -75,9 +74,6 @@ export default {
 </script>
 
 <style lang='sass' scoped>
-=icon
-  margin-right: 5px
-  font-size: 1rem
 
 .date-label
   text-align: center
@@ -94,9 +90,11 @@ export default {
     &:not(:first-child)
       margin-left: 13px
   .vc-sun-o, .vc-moon-o
-    +icon
+    margin-right: 5px
+    font-size: 1rem
   .vc-sun-o
     color: #ffb366
   .vc-moon-o
     color: #4d4d64
+    
 </style>

@@ -28,13 +28,8 @@
               <b-radio v-model='mode' native-value='range'>Range</b-radio>
             </p>
           </b-field>
-          <b-field grouped>
-            <b-field label='Select Color'>
-              <b-input v-model='selectColor'></b-input>
-            </b-field>
-            <b-field label='Drag Color'>
-              <b-input v-model='dragColor'></b-input>
-            </b-field>
+          <b-field label='Tint Color'>
+            <b-input v-model='tintColor'></b-input>
           </b-field>
           <b-field>
             <b-switch v-model='showCaps'>Show Caps</b-switch>
@@ -103,8 +98,7 @@
           :popover-visibility='popoverVisibility'
           :popover-direction='popoverDirection'
           :popover-align='popoverAlignment'
-          :select-color='selectColor'
-          :drag-color='dragColor'
+          :tint-color='tintColor'
           :show-caps='showCaps'
           :show-popover='showPopover'>
         </ex-date-picker>
@@ -138,8 +132,7 @@ export default {
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
       popoverAlignment: 'left',
-      selectColor: '#66b3cc',
-      dragColor: '#9fcfdf',
+      tintColor: '#66b3cc',
     };
   },
   computed: {

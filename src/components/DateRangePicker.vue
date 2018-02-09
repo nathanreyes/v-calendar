@@ -2,7 +2,7 @@
 <calendar
   :attributes='attributes_'
   :theme-styles='themeStyles_'
-  @dayselect='selectDay'
+  @dayclick='clickDay'
   @daymouseenter='enterDay'
   v-bind='$attrs'
   v-on='$listeners'>
@@ -11,7 +11,7 @@
 
 <script>
 import Calendar from './Calendar';
-import DateInfo from '../utils/dateInfo';
+import { rangeNormalizer } from '../utils/pickerProfiles';
 
 export default {
   components: {
@@ -19,6 +19,7 @@ export default {
   },
   props: {
     value: { type: Object, default: () => {} },
+    isRequired: Boolean,
     dragAttribute: Object,
     selectAttribute: Object,
     disabledAttribute: Object,
@@ -62,7 +63,7 @@ export default {
   },
   watch: {
     dragValue(val) {
-      this.$emit('drag', this.simplifyDate(DateInfo(val)));
+      this.$emit('drag', rangeNormalizer(val));
     },
   },
   created() {
@@ -74,35 +75,35 @@ export default {
     });
   },
   methods: {
-    selectDay(day) {
+    clickDay({ dateTime }) {
       // Start new drag selection if not dragging
       if (!this.dragValue) {
         // Update drag value if it is valid
-        const newDragValue = { start: new Date(day.dateTime), end: new Date(day.dateTime) };
+        const newDragValue = { start: new Date(dateTime), end: new Date(dateTime) };
         if (this.dateIsValid(newDragValue)) {
           this.dragValue = newDragValue;
         }
       } else {
         // Update selected value if it is valid
-        const newValue = new DateInfo({
+        const newValue = rangeNormalizer({
           start: new Date(this.dragValue.start.getTime()),
-          end: new Date(day.dateTime),
+          end: new Date(dateTime),
         });
         if (this.dateIsValid(newValue)) {
           // Clear drag selection
           this.dragValue = null;
           // Signal new value selected
-          this.$emit('input', this.simplifyDate(newValue));
+          this.$emit('input', newValue);
         }
       }
     },
-    enterDay(day) {
+    enterDay({ dateTime }) {
       // Make sure drag has been initialized
       if (this.dragValue) {
         // Calculate the new dragged value
         const newDragValue = {
           start: new Date(this.dragValue.start.getTime()),
-          end: new Date(day.dateTime),
+          end: new Date(dateTime),
         };
         // Check if dragged value is valid
         if (this.dateIsValid(newDragValue)) {
@@ -118,9 +119,6 @@ export default {
     },
     dateIsValid(date) {
       return !(this.disabledAttribute && this.disabledAttribute.intersectsDate(date));
-    },
-    simplifyDate(date) {
-      return date && { start: date.start, end: date.end };
     },
   },
 };

@@ -77,7 +77,7 @@ function dateShallowIntersectsDate(date1, date2) {
   return true;
 }
 
-export function getDayInfoFromDate(date) {
+export function getDayFromDate(date) {
   if (!date) return null;
   const month = date.getMonth() + 1;
   const year = date.getUTCFullYear();
@@ -115,14 +115,14 @@ function iterateDatesInRange({ start, end }, func) {
   const state = {
     i: 0,
     date: start,
-    day: getDayInfoFromDate(start),
+    day: getDayFromDate(start),
     finished: false,
   };
   let result = null;
   for (; !state.finished && state.date <= end; state.i++) {
     result = func(state);
     state.date = addDays(state.date, 1);
-    state.day = getDayInfoFromDate(state.date);
+    state.day = getDayFromDate(state.date);
   }
   return result;
 }
@@ -152,24 +152,24 @@ function diffInMonths(d1, d2) {
 
 const _patterns = {
   dailyInterval: {
-    test: (dayInfo, interval, { start }) => diffInDays(start || new Date(), dayInfo.date) % interval === 0,
+    test: (day, interval, { start }) => diffInDays(start || new Date(), day.date) % interval === 0,
   },
   weeklyInterval: {
-    test: (dayInfo, interval, { start }) => diffInWeeks(start || new Date(), dayInfo.date) % interval === 0,
+    test: (day, interval, { start }) => diffInWeeks(start || new Date(), day.date) % interval === 0,
   },
   monthlyInterval: {
-    test: (dayInfo, interval, { start }) => diffInMonths(start || new Date(), dayInfo.date) % interval === 0,
+    test: (day, interval, { start }) => diffInMonths(start || new Date(), day.date) % interval === 0,
   },
   yearlyInterval: {
-    test: () => (dayInfo, interval, { start }) => diffInYears(start || new Date(), dayInfo.date) % interval === 0,
+    test: () => (day, interval, { start }) => diffInYears(start || new Date(), day.date) % interval === 0,
   },
   days: {
     validate: days => (isArray(days) ? days : [parseInt(days, 10)]),
-    test: (dayInfo, days) => days.includes(dayInfo.day) || days.includes(-dayInfo.dayFromEnd),
+    test: (day, days) => days.includes(day.day) || days.includes(-day.dayFromEnd),
   },
   weekdays: {
     validate: weekdays => (isArray(weekdays) ? weekdays : [parseInt(weekdays, 10)]),
-    test: (dayInfo, weekdays) => weekdays.includes(dayInfo.weekday),
+    test: (day, weekdays) => weekdays.includes(day.weekday),
   },
   ordinalWeekdays: {
     validate: ordinalWeekdays =>
@@ -180,39 +180,39 @@ const _patterns = {
           obj[ck] = isArray(weekdays) ? weekdays : [parseInt(weekdays, 10)];
           return obj;
         }, {}),
-    test: (dayInfo, ordinalWeekdays) =>
+    test: (day, ordinalWeekdays) =>
       Object.keys(ordinalWeekdays)
         .map(k => parseInt(k, 10))
         .find(k =>
-          ordinalWeekdays[k].includes(dayInfo.weekday) &&
-          (k === dayInfo.weekdayOrdinal || k === -dayInfo.weekdayOrdinalFromEnd)),
+          ordinalWeekdays[k].includes(day.weekday) &&
+          (k === day.weekdayOrdinal || k === -day.weekdayOrdinalFromEnd)),
   },
   weekends: {
     validate: config => config,
-    test: dayInfo => dayInfo.weekday === 1 || dayInfo.weekday === 7,
+    test: day => day.weekday === 1 || day.weekday === 7,
   },
   workweek: {
     validate: config => config,
-    test: dayInfo => dayInfo.weekday >= 2 && dayInfo.weekday <= 6,
+    test: day => day.weekday >= 2 && day.weekday <= 6,
   },
   weeks: {
     validate: weeks => (isArray(weeks) ? weeks : [parseInt(weeks, 10)]),
-    test: (dayInfo, weeks) => weeks.includes(dayInfo.week) || weeks.includes(-dayInfo.weekFromEnd),
+    test: (day, weeks) => weeks.includes(day.week) || weeks.includes(-day.weekFromEnd),
   },
   months: {
     validate: months => (isArray(months) ? months : [parseInt(months, 10)]),
-    test: (dayInfo, months) => months.includes(dayInfo.month),
+    test: (day, months) => months.includes(day.month),
   },
   years: {
     validate: years => (isArray(years) ? years : [parseInt(years, 10)]),
-    test: (dayInfo, years) => years.includes(dayInfo.year),
+    test: (day, years) => years.includes(day.year),
   },
 };
 const _patternProps = Object.keys(_patterns).map(k => ({ name: k, validate: _patterns[k].validate }));
-const testConfig = (config, dayInfo, info) => {
-  if (isFunction(config)) return config(dayInfo);
+const testConfig = (config, day, info) => {
+  if (isFunction(config)) return config(day);
   if (isObject(config)) {
-    return Object.keys(config).every(k => _patterns[k].test(dayInfo, config[k], info));
+    return Object.keys(config).every(k => _patterns[k].test(day, config[k], info));
   }
   return null;
 };
@@ -338,21 +338,21 @@ const DateInfo = (config, order) => {
     return result;
   };
   // ========================================================
-  info.includesDay = (dayInfo) => {
-    const date = DateInfo(dayInfo.date);
+  info.includesDay = (day) => {
+    const date = DateInfo(day.date);
     // Date is outside general range - return null
     if (!info.shallowIncludesDate(date)) return null;
     // Return this date if patterns match
-    return info.matchesDay(dayInfo) ? info : null;
+    return info.matchesDay(day) ? info : null;
   };
   // ========================================================
-  info.matchesDay = (dayInfo) => {
+  info.matchesDay = (day) => {
     // No patterns to test
     if (!info.on) return true;
     // Fail if 'and' condition fails
-    if (info.on.and && !testConfig(info.on.and, dayInfo, info)) return false;
+    if (info.on.and && !testConfig(info.on.and, day, info)) return false;
     // Fail if every 'or' condition fails
-    if (info.on.or && !info.on.or.find(or => testConfig(or, dayInfo, info))) return false;
+    if (info.on.or && !info.on.or.find(or => testConfig(or, day, info))) return false;
     // Patterns match
     return true;
   };

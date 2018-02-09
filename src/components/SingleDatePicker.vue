@@ -1,7 +1,7 @@
 <template>
   <calendar
     :attributes='attributes_'
-    @dayselect='selectDay'
+    @dayclick='clickDay'
     v-bind='$attrs'
     v-on='$listeners'>
   </calendar>
@@ -17,6 +17,7 @@ export default {
   },
   props: {
     value: { type: Date, default: null },
+    isRequired: Boolean,
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
@@ -37,10 +38,23 @@ export default {
     },
   },
   methods: {
-    selectDay(day) {
+    clickDay(day) {
       // Done if day selection is invalid
-      if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) return;
-      this.$emit('input', singleValuesAreEqual(day.date, this.value) ? null : day.date);
+      if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) {
+        this.$emit('invalid-input', {
+          reason: 'disabled',
+          value: day.date,
+        });
+        return;
+      }
+      // Check if selected date was reselected
+      if (singleValuesAreEqual(day.date, this.value)) {
+        // Reset value to null if allowed
+        if (!this.isRequired) this.$emit('input', null);
+      } else {
+        // Set value to selected date
+        this.$emit('input', day.date);
+      }
     },
   },
 };

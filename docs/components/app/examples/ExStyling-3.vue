@@ -2,8 +2,7 @@
   <v-date-picker
     mode='range'
     v-model='selectedDate'
-    :drag-color='dragColor'
-    :select-color='selectColor'
+    tint-color='#CA4D71'
     :attributes='attributes'
     :theme-styles='themeStyles'
     is-inline
@@ -65,8 +64,6 @@ export default {
           width: '60%',
         },
       },
-      dragColor: '#E25478',
-      selectColor: '#ca4d71',
       attributes: [
         {
           bar: {
