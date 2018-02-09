@@ -76,4 +76,11 @@ export default {
     weekdaysShort: ['Sun', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'],
     weekdaysMin: ['S', 'M', 'T', 'O', 'T', 'F', 'L'],
   },
+  fi: { // Finnish
+    months: ['Tammikuu', 'Helmikuu', 'Maaliskuu', 'Huhtikuu', 'Toukokuu', 'Kesäkuu', 'Heinäkuu', 'Elokuu', 'Syyskuu', 'Lokakuu', 'Marraskuu', 'Joulukuu'],
+    monthsShort: ['Tammi', 'Helmi', 'Maalis', 'Huhti', 'Touko', 'Kesä', 'Heinä', 'Elo', 'Syys', 'Loka', 'Marras', 'Joulu'],
+    weekdays: ['Sunnuntai', 'Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai', 'Lauantai'],
+    weekdaysShort: ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'],
+    weekdaysMin: ['S', 'M', 'T', 'K', 'T', 'P', 'L'],
+  }
 };
