@@ -9,6 +9,8 @@
 
 ## Improvements
 
+* Add Finnish translation to locales
+
 `v-calendar`
 ### Props
 * Rename `popover-header` slot name to `day-popover-header` to more clearly identify slot target
