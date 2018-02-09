@@ -11,7 +11,7 @@
 
 <script>
 import Calendar from './Calendar';
-import DateInfo from '../utils/dateInfo';
+import { rangeNormalizer } from '../utils/pickerProfiles';
 
 export default {
   components: {
@@ -19,6 +19,7 @@ export default {
   },
   props: {
     value: { type: Object, default: () => {} },
+    isRequired: Boolean,
     dragAttribute: Object,
     selectAttribute: Object,
     disabledAttribute: Object,
@@ -62,7 +63,7 @@ export default {
   },
   watch: {
     dragValue(val) {
-      this.$emit('drag', this.simplifyDate(DateInfo(val)));
+      this.$emit('drag', rangeNormalizer(val));
     },
   },
   created() {
@@ -84,7 +85,7 @@ export default {
         }
       } else {
         // Update selected value if it is valid
-        const newValue = new DateInfo({
+        const newValue = rangeNormalizer({
           start: new Date(this.dragValue.start.getTime()),
           end: new Date(dateTime),
         });
@@ -92,7 +93,7 @@ export default {
           // Clear drag selection
           this.dragValue = null;
           // Signal new value selected
-          this.$emit('input', this.simplifyDate(newValue));
+          this.$emit('input', newValue);
         }
       }
     },
@@ -118,9 +119,6 @@ export default {
     },
     dateIsValid(date) {
       return !(this.disabledAttribute && this.disabledAttribute.intersectsDate(date));
-    },
-    simplifyDate(date) {
-      return date && { start: date.start, end: date.end };
     },
   },
 };

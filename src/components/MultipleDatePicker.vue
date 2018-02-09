@@ -9,7 +9,7 @@
 
 <script>
 import Calendar from './Calendar';
-import { multipleHasValue } from '../utils/pickerProfiles';
+import { multipleHasValue, singleValuesAreEqual, multipleNormalizer } from '../utils/pickerProfiles';
 
 export default {
   components: {
@@ -17,6 +17,7 @@ export default {
   },
   props: {
     value: { type: Array, default: () => [] },
+    isRequired: Boolean,
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
@@ -45,10 +46,13 @@ export default {
         this.$emit('input', [day.date]);
       // Check if value contains the selected date
       } else if (this.value.find(d => d.getTime() === day.dateTime)) {
-        this.$emit('input', this.value.filter(v => v.getTime() !== day.dateTime));
+        // Calculate the new dates array
+        const value = this.value.filter(v => !singleValuesAreEqual(v, day.date));
+        if (value.length) this.$emit('input', value);
+        else if (!this.isRequired) this.$emit('input', null);
       // Append selected date
       } else {
-        this.$emit('input', [...this.value, day.date].sort((a, b) => a.getTime() - b.getTime()));
+        this.$emit('input', multipleNormalizer([...this.value, day.date]));
       }
     },
   },

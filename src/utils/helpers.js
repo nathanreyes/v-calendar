@@ -84,6 +84,8 @@ export const pageIsBeforePage = (page, beforePage) => comparePages(page, beforeP
 
 export const pageIsAfterPage = (page, afterPage) => comparePages(page, afterPage) === 1;
 
+export const pageIsBetweenPages = (page, fromPage, toPage) => (page || false) && !pageIsBeforePage(page, fromPage) && !pageIsAfterPage(page, toPage);
+
 export const getMinPage = (...args) => args.reduce((prev, curr) => {
   if (!prev) return curr;
   if (!curr) return prev;
@@ -177,25 +179,4 @@ export const mixinOptionalProps = (source, target, props) => {
     target,
     assigned: assigned.length ? assigned : null,
   };
-};
-
-export const isMobile = {
-  andriod() {
-    return navigator.userAgent.match(/Android/i);
-  },
-  blackberry() {
-    return navigator.userAgent.match(/BlackBerry/i);
-  },
-  iOS() {
-    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-  },
-  opera() {
-    return navigator.userAgent.match(/Opera Mini/i);
-  },
-  windows() {
-    return navigator.userAgent.match(/IEMobile/i);
-  },
-  any() {
-    return (isMobile.andriod() || isMobile.blackberry() || isMobile.iOS() || isMobile.opera() || isMobile.windows());
-  },
 };

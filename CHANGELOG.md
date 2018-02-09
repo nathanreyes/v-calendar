@@ -1,12 +1,23 @@
 # v0.6.0
+## Bug Fixes
+
+`v-date-picker`
+* Bug: `fromPage` and `toPage` not updating when new date was assigned or selected.
+  Fix: `fromPage` and `toPage` are updated when new value is assigned, if needed. Closes #51.
+* Bug: When clearing out input element, infinite start and end dates selected.
+  Fix: When clearing out input element, date is cleared or reverts to previous value, depending on `is-required` prop or if dragging in `"range"` mode. Closes #54.
+
 ## Improvements
-* Rename `popover-header` slot name to `day-popover-header` to more clearly identify slot target.
-* `day-popover-header` slot and custom popover slots accept `day` prop instead of `day-info` prop
+
+`v-calendar`
+### Props
+* Rename `popover-header` slot name to `day-popover-header` to more clearly identify slot target
+### Slots
 * Add `day-popover-footer` slot for day popover footers
+* `day-popover-header`, `day-popover-footer` and custom popover slots accept `day` prop instead of `day-info` prop
+### Events
 * Rename `dayselect` calendar event to `dayclick` to more clearly indicate DOM event source
-* Modify parameters for day events (`dayclick`, `daymouseenter`, `daymouseover`, `daymouseleave`)
-  
-  Instead of passing multiple parameters in order (and having to remember the right order), there is now a single object parameter with the following properties.
+* Modify parameter structure for day events (`dayclick`, `daymouseenter`, `daymouseover`, `daymouseleave`). Instead of passing multiple parameters in order (and having to remember the right order), there is now a single object parameter with the following properties.
 
   | Property | Type | Description |
   | -------- | ---- | ----------- |
@@ -26,7 +37,16 @@
   | `inNextMonth` | Boolean | Day lies in the month after the currently active month. |
   | `attributes` | Array | List of attributes for the day involved with the event. |
   | `attributesMap` | Object | Object map of the attributes using their designated key. |
-  | `event` | Object | Original event that triggered the event. |
+  | `event` | Object | Original trigger event. |
+
+`v-date-picker`
+### Props
+* Add `is-required` prop to `v-date-picker` to prevent null date selections. Closes #45.
+* Replace input related props (`input...`) with `input-props` object as a catch all for all props to apply to input element.
+* Replace `select-color` and `drag-color` props with `tint-color`. Opacity is set to `0.5` when `tint-color` is applied to `drag-attribute`.
+* Add `disabled-attribute` prop.
+### Defaults
+* Replace input related defaults (`datePickerInput...`) with `input-props` as a configurable default function or object.
   
 # v0.5.5
 ## Bug Fixes

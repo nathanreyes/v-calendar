@@ -1,5 +1,6 @@
 import { isDate } from './typeCheckers';
 import { getDateComps, getNextPage, getMaxPage, getLastArrayItem, arrayHasItems } from './helpers';
+import DateInfo from './dateInfo';
 
 // #region Single Date Picker
 
@@ -9,9 +10,11 @@ export const singleParser = (text, parser) => {
   const value = parser(text.trim());
   return singleHasValue(value) ? value : null;
 };
-export const singleFilterDisabled = (value, attr) => {
-  if (!singleHasValue(value) || !attr) return value;
-  return attr.intersectsDate(value) ? null : value;
+export const singleNormalizer = value => value && new Date(value);
+export const singleFilterDisabled = ({ value, isRequired, disabled, fallbackValue }) => {
+  if (!singleHasValue(value) && isRequired) return fallbackValue;
+  if (singleHasValue(value) && disabled && disabled.intersectsDate(value)) return null;
+  return value;
 };
 export const singleValuesAreEqual = (a, b) => {
   if (!singleHasValue(a) && !singleHasValue(b)) return true;
@@ -24,13 +27,12 @@ export const singleGetPageRange = (value) => {
   const to = getNextPage(from);
   return { from, to };
 };
-
 export const SinglePickerProfile = (formatter, parser) => ({
   componentName: 'single-date-picker',
-  inputPlaceholder: 'Enter Date',
   hasValue: singleHasValue,
   formatValue: value => singleFormatter(value, formatter),
   parseValue: text => singleParser(text, parser),
+  normalizeValue: value => singleNormalizer(value),
   filterDisabled: singleFilterDisabled,
   valuesAreEqual: singleValuesAreEqual,
   getPageRange: singleGetPageRange,
@@ -42,10 +44,27 @@ export const SinglePickerProfile = (formatter, parser) => ({
 
 export const multipleHasValue = value => arrayHasItems(value);
 export const multipleFormatter = (value, formatter) => (multipleHasValue(value) ? value.map(d => formatter(d)).join(', ') : '');
-export const multipleParser = (text, parser) => text.split(',').map(s => singleParser(s, parser)).filter(d => singleHasValue(d));
-export const multipleFilterDisabled = (value, attr) => {
-  if (!multipleHasValue(value) || !attr) return value;
-  return value.filter(d => !attr.intersectsDate(d));
+export const multipleParser = (text, parser) => {
+  const value = text && text.split(',').map(s => singleParser(s, parser)).filter(d => singleHasValue(d));
+  return (!value || !value.length) ? null : value;
+};
+export const multipleNormalizer = (value) => {
+  if (!value || !value.length) return null;
+  const times = {};
+  return value
+    // Filter out duplicate dates
+    .filter((d) => {
+      const t = d.getTime();
+      if (Object.prototype.hasOwnProperty.call(times, t)) return false;
+      return (times[t] = true);
+    })
+    // Sort the dates
+    .sort((a, b) => a.getTime() - b.getTime());
+};
+export const multipleFilterDisabled = ({ value, isRequired, disabled, fallbackValue }) => {
+  const newValue = value && value.filter(d => !disabled || !disabled.intersectsDate(d));
+  if (!multipleHasValue(newValue) && isRequired) return fallbackValue;
+  return newValue;
 };
 export const multipleValuesAreEqual = (a, b) => {
   const aHasItems = arrayHasItems(a);
@@ -57,15 +76,15 @@ export const multipleValuesAreEqual = (a, b) => {
 export const multipleGetPageRange = (value) => {
   if (!multipleHasValue(value)) return null;
   const from = getDateComps(value[0]);
-  const to = getMaxPage(getDateComps(getLastArrayItem(this.value)), getNextPage(this.fromPage_));
+  const to = getMaxPage(getDateComps(getLastArrayItem(value)), getNextPage(from));
   return { from, to };
 };
 export const MultiplePickerProfile = (formatter, parser) => ({
   componentName: 'multiple-date-picker',
-  inputPlaceholder: 'Date 1, Date 2, ...',
   hasValue: multipleHasValue,
   formatValue: value => multipleFormatter(value, formatter),
   parseValue: value => multipleParser(value, parser),
+  normalizeValue: value => multipleNormalizer(value),
   filterDisabled: multipleFilterDisabled,
   valuesAreEqual: multipleValuesAreEqual,
   getPageRange: multipleGetPageRange,
@@ -92,13 +111,27 @@ export const rangeFormatter = (value, dragValue, formatter) => {
 };
 export const rangeParser = (text, parser) => {
   const dateTexts = text.split('-').map(s => s.trim());
-  const start = dateTexts[0] ? singleParser(dateTexts[0], parser) : null;
-  const end = dateTexts[1] ? singleParser(dateTexts[1], parser) : null;
+  if (dateTexts.length >= 2) {
+    const { start, end } = DateInfo({
+      start: singleParser(dateTexts[0], parser),
+      end: singleParser(dateTexts[1], parser),
+    });
+    return start && end && { start, end };
+  }
+  return null;
+};
+export const rangeNormalizer = (value) => {
+  if (!value || !value.start || !value.end) return null;
+  const { start, end } = new DateInfo({
+    start: new Date(value.start),
+    end: new Date(value.end),
+  });
   return { start, end };
 };
-export const rangeFilterDisabled = (value, attr) => {
-  if (!rangeHasValue(value) || !attr) return value;
-  return attr.intersectsDate(value) ? null : value;
+export const rangeFilterDisabled = ({ value, isRequired, disabled, fallbackValue }) => {
+  if (!rangeHasValue(value) && isRequired) return fallbackValue;
+  if (rangeHasValue(value) && disabled && disabled.intersectsDate(value)) return null;
+  return value;
 };
 export const rangeValuesAreEqual = (a, b) => {
   if (!rangeHasValue(a) && !rangeHasValue(b)) return true;
@@ -113,9 +146,9 @@ export const rangeGetPageRange = (value) => {
 };
 export const RangePickerProfile = (formatter, parser) => ({
   componentName: 'date-range-picker',
-  inputPlaceholder: 'Start Date - End Date',
   hasValue: rangeHasValue,
   formatValue: (value, dragValue) => rangeFormatter(value, dragValue, formatter),
+  normalizeValue: value => rangeNormalizer(value),
   parseValue: text => rangeParser(text, parser),
   filterDisabled: rangeFilterDisabled,
   valuesAreEqual: rangeValuesAreEqual,
