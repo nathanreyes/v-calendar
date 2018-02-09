@@ -356,6 +356,16 @@ export default {
 </html>
 ```
 
+### Polyfill
+
+`v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` if you wish to target older browsers (IE11). Two options for accomplishing this are:
+1. **Easy way:**
+  Insert the following script into your html before loading `v-calendar`. The polyfill will get loaded automatically *only if* the browser needs it.
+
+  `<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find" />`
+
+2. In Node/Browserify/Webpack environments, use [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) to insert the polyfill for you.
+
 ## Custom Defaults
 
 Custom defaults can be provided on initialization. Note that almost all of these defaults can be overridden by props on `v-calendar` or `v-date-picker` components.
@@ -369,7 +379,7 @@ Vue.use(VCalendar, {
 
 | Property Name | Type | Description | Default |
 | ------------- | ---- | ----------- | ------- |
-| `componentPrefix` | String | Custom prefix to use for plugin components | `"v"` |
+| `componentPrefix` | String | Custom prefix to use for plugin components. Replace if `v-calendar` and `v-date-picker` interfere with other component libraries. | `"v"` |
 | `firstDayOfWeek` | Number | Day number for the first day of the week (1: Sun - 7: Sat) | `1` |
 | `monthLabels` | Array | Month labels displayed in header (localized) | `["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]` |
 | `weekdayLabels` | Array | Weekday labels displayed in header. Start with Sunday, even if Sunday isn\'t set as the first day of the week. (localized) | `["S", "M", "T", "W", "T", "F", "S"]` |
@@ -379,11 +389,7 @@ Vue.use(VCalendar, {
 | `weeksTransition` | String | Transition type for weeks when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`) | `"slide-h"` |
 | `dateFormatter` | Function | Converts date object to preferred text format | `d => d.toLocaleDateString()` |
 | `dateParser` | Function | Converts string to date object | `s => new Date(Date.parse(s))` |
-| `datePickerInputClass` | String | Class to apply to input element. Not applicable for inline date-pickers. | `undefined` |
-| `datePickerInputStyle` | Object | Style to apply to input element. Not applicable for inline date-pickers. | `undefined` |
-| `datePickerInputPlaceholder` | String | Placeholder for input element. Not applicable for inline date pickers. | `undefined` |
-| `datePickerSelectColor` | String | Background color of the highlighted select region. | `"#66B3CC"` |
-| `datePickerDragColor` | String | Background color of the highlighted drag region. Only valid when `mode === "range"` | `""#9FCFDF""` |
+| `datePickerTintColor` | String | Background color of the selected and dragged highlighted regions (`opacity: 0.5` for dragged). This setting is overridden by `select-attribute` and `drag-attribute` if specified. | `"#66B3CC"` |
 | `datePickerShowCaps` | Boolean | Show caps and the end of the highlighted and dragged regions when `mode === "range"` | `false` |
 | `datePickerShowPopover` | Boolean | Show popover for dragged and selected regions | `true` |
 | `popoverExpanded` | Boolean | Popover wrapper for input or slot is expanded to the full width of its container. | `false` |
