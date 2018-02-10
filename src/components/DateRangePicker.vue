@@ -118,7 +118,7 @@ export default {
       }
     },
     dateIsValid(date) {
-      return !(this.disabledAttribute && this.disabledAttribute.intersectsDate(date));
+      return !this.disabledAttribute || !this.disabledAttribute.intersectsDate(date);
     },
   },
 };

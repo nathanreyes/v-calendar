@@ -155,6 +155,7 @@ export default {
         ...(this.disabledAttribute || resolveDefault(defaults.datePickerDisabledAttribute, this.attributeParams)),
         dates: this.disabledDates_,
         excludeDates: this.availableDates,
+        excludeMode: 'includes',
       });
     },
     inputProps_() {
@@ -333,7 +334,8 @@ export default {
         // Keep the popover open because something they entered was modified
         this.disablePopoverForceHidden = true;
       }
-      this.$emit('input', filteredValue);
+      // Emit event to update value if it has changed
+      if (!this.profile.valuesAreEqual(filteredValue, this.value)) this.$emit('input', filteredValue);
       // Blur the input if it is visible
       if (this.$refs.input) this.$refs.input.blur();
       // Update input text for good measure

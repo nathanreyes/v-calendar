@@ -10,6 +10,7 @@ const Attribute = (config) => {
   if (config.excludeDates && !isArray(config.excludeDates)) config.excludeDates = [config.excludeDates];
   const hasDates = arrayHasItems(config.dates);
   const hasExcludeDates = arrayHasItems(config.excludeDates);
+  const excludeMode = config.excludeMode || 'intersects';
   const dates =
     (
       (hasDates && config.dates) || // Use provided dates if they have items
@@ -33,35 +34,19 @@ const Attribute = (config) => {
     dates,
     excludeDates,
     isComplex,
-    // Any date partly intersects with given date
-    intersectsDate: date => dates.find((d) => {
-      // Date doesn't match
-      if (!d.intersectsDate(date)) return null;
-      // No exclude dates to check - just return first match
-      if (!hasExcludeDates) return d;
-      // Return match date if test date doesn't intersect any excluded dates
-      return excludeDates.find(ed => ed.intersectsDate(date)) ? false : d;
-    }) || false,
     // Accepts: Date or date range object
-    // Returns: First attribute date info that occurs on given date
-    includesDate: date => dates.find((d) => {
-      // Date doesn't match
-      if (!d.includesDate(date)) return null;
-      // No exclude dates to check - just return first match
-      if (!hasExcludeDates) return d;
-      // Return match date if test date doesn't intersect any excluded dates
-      return excludeDates.find(ed => ed.intersectsDate(date)) ? false : d;
-    }) || false,
+    // Returns: First attribute date info that partially intersects the given date
+    intersectsDate: date => !attr.excludesDate(date) && (dates.find(d => d.intersectsDate(date)) || false),
+    // Accepts: Date or date range object
+    // Returns: First attribute date info that completely includes the given date
+    includesDate: date => !attr.excludesDate(date) && (dates.find(d => d.includesDate(date)) || false),
+    excludesDate: date => hasExcludeDates && excludeDates.find(ed =>
+      (excludeMode === 'intersects' && ed.intersectsDate(date)) ||
+      (excludeMode === 'includes' && ed.includesDate(date))),
     // Accepts: Day object
     // Returns: First attribute date info that occurs on given day.
-    includesDay: day => dates.find((d) => {
-      // Date doesn't match
-      if (!d.includesDay(day)) return null;
-      // No exclude dates to check - just return first match
-      if (!hasExcludeDates) return d;
-      // Return match date if test day doesn't intersect any excluded dates
-      return excludeDates.find(ed => ed.includesDay(day)) ? false : d;
-    }) || false,
+    includesDay: day => !attr.excludesDay(day) && (dates.find(d => d.includesDay(day)) || false),
+    excludesDay: day => hasExcludeDates && excludeDates.find(ed => ed.includesDay(day)),
   };
   mixinOptionalProps(config, attr, [
     { name: 'highlight', mixin: defaults.highlight },

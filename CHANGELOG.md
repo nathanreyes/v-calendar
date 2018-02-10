@@ -1,6 +1,14 @@
+# v0.6.1
+## Bug Fixes
+`v-date-picker`
+* Prevent bug causing infinite update cycle loop and locking the browser when using `disabled-dates`. Closes #61.
+
+## Improvements
+`v-calendar`
+* Improve efficiency of date intersection detection logic.
+
 # v0.6.0
 ## Bug Fixes
-
 `v-date-picker`
 * Bug: `fromPage` and `toPage` not updating when new date was assigned or selected.
   Fix: `fromPage` and `toPage` are updated when new value is assigned, if needed. Closes #51.
@@ -8,13 +16,10 @@
   Fix: When clearing out input element, date is cleared or reverts to previous value, depending on `is-required` prop or if dragging in `"range"` mode. Closes #54.
 
 ## Improvements
-
 * Add Finnish translation to locales
-
 `v-calendar`
-### Props
-* Rename `popover-header` slot name to `day-popover-header` to more clearly identify slot target
 ### Slots
+* Rename `popover-header` slot name to `day-popover-header` to more clearly identify slot target
 * Add `day-popover-footer` slot for day popover footers
 * `day-popover-header`, `day-popover-footer` and custom popover slots accept `day` prop instead of `day-info` prop
 ### Events
