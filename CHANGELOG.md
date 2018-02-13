@@ -1,7 +1,7 @@
 #v0.6.2
 ## Bug Fixes
 `v-calendar`
-Fix bug when using `max-page` with single-paned calendars.
+Fix bug when using `max-page` with single-paned calendars. Closes #64.
 
 `v-date-picker`
 Force delay when navigating pages to prevent display of empty calendars. Closes #52.
