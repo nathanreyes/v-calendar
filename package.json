@@ -1,6 +1,6 @@
 {
   "name": "v-calendar",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "keywords": [
     "vue",
@@ -85,6 +85,7 @@
     "sass-loader": "^6.0.5",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
+    "svg-sprite-loader": "3.6.2",
     "uglifyjs-webpack-plugin": "1.1.1",
     "url-loader": "^0.5.8",
     "vue-clipboard2": "0.0.7",

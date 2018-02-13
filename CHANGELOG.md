@@ -1,3 +1,16 @@
+#v0.6.2
+## Bug Fixes
+`v-calendar`
+Fix bug when using `max-page` with single-paned calendars.
+
+`v-date-picker`
+Force delay when navigating pages to prevent display of empty calendars. Closes #52.
+Fix bug when using supplying default `dateFormatter` and `dateParser`. Closes #62.
+Fix bug resulting in date selections getting ignored. Closes #66.
+
+## Improvements
+Replace icon fonts with svg icons. Closes #59.
+
 # v0.6.1
 ## Bug Fixes
 `v-date-picker`

@@ -50,7 +50,6 @@ import {
   getPageBetweenPages,
   getFirstValidPage,
 } from '../utils/helpers';
-import '../assets/fonts/vcalendar/vcalendar.scss';
 import '../styles/lib.sass';
 
 export default {
@@ -125,7 +124,7 @@ export default {
     toPage_(val) {
       this.$emit('update:topage', val);
       this.$emit('update:toPage', val);
-      if (!pageIsAfterPage(val, this.fromPage_)) {
+      if (this.isDoublePaned_ && !pageIsAfterPage(val, this.fromPage_)) {
         this.fromPage_ = getPrevPage(val);
       }
     },

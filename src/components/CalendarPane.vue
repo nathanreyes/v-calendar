@@ -16,12 +16,13 @@
         <!--Header prev button-->
         <div class='c-arrow-layout'>
           <slot name='header-left-button' :page='page_'>
-            <span
-              class='c-arrow vc-angle-left'
+            <svg-icon
+              :glyph='angleLeft'
+              class='c-arrow'
               :class='{ "c-disabled": !canMovePrevMonth }'
               :style='arrowStyle'
               @click='movePrevMonth'>
-            </span>
+            </svg-icon>
           </slot>
         </div>
         <!--Header title-->
@@ -68,12 +69,13 @@
         <!--Header next button-->
         <div class='c-arrow-layout'>
           <slot name='header-right-button' :page='page_'>
-            <span
-              class='c-arrow vc-angle-right'
+            <svg-icon
+              :glyph='angleRight'
+              class='c-arrow'
               :class='{ "c-disabled": !canMoveNextMonth }'
               :style='arrowStyle'
               @click='moveNextMonth'>
-            </span>
+            </svg-icon>
           </slot>
         </div>
       </div>
@@ -157,6 +159,9 @@
 import Popover from './Popover';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
+import SvgIcon from './SvgIcon';
+import angleLeft from '../assets/icons/angle-left.svg';
+import angleRight from '../assets/icons/angle-right.svg';
 import defaults from '../utils/defaults';
 
 import {
@@ -173,6 +178,7 @@ export default {
     CalendarWeeks,
     CalendarNav,
     Popover,
+    SvgIcon,
   },
   props: {
     position: { type: Number, default: 1 },
@@ -196,6 +202,9 @@ export default {
       touchState: {},
       navForceHidden: false,
       weeksTransitioning: false,
+      moveTimeout: null,
+      angleLeft,
+      angleRight,
     };
   },
   computed: {
@@ -363,6 +372,11 @@ export default {
       }
     },
     forceMove(pageInfo) {
+      // Check that timeout requirement is met
+      const date = new Date();
+      if (this.moveTimeout && date < this.moveTimeout) return;
+      // Reset move timeout
+      this.moveTimeout = new Date(date.getTime() + 250);
       // Exit if there is no page info or page info matches the current page
       if (!pageInfo || (pageInfo.month === this.page_.month && pageInfo.year === this.page_.year)) return;
       // Extract just the month and year info
@@ -469,13 +483,10 @@ export default {
     .c-arrow
       +box()
       font-size: $arrow-font-size
-      width: $arrow-width
-      height: $arrow-height
       transition: $arrow-transition
       cursor: pointer
       user-select: none
-      &:hover
-        opacity: 0.5
+      margin-top: -.1em
   .c-title-layout
     display: inline-flex
     justify-content: center

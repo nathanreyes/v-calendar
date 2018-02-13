@@ -7,11 +7,12 @@
     <!--Months header-->
     <div class='c-header'>
       <!--Previous year button-->
-      <span
-        class='c-arrow vc-angle-left'
+      <svg-icon
+        :glyph='angleLeft'
+        class='c-arrow'
         :class='{ "c-disabled": !canMovePrevYear }'
         @click='yearIndex--'>
-      </span>
+      </svg-icon>
       <!--Mode switch button-->
       <span
         class='c-title'
@@ -19,11 +20,12 @@
         {{ yearIndex }}
       </span>
       <!--Next year button-->
-      <span
-        class='c-arrow vc-angle-right'
+      <svg-icon
+        :glyph='angleRight'
+        class='c-arrow'
         :class='{ "c-disabled": !canMoveNextYear }'
         @click='yearIndex++'>
-      </span>
+      </svg-icon>
     </div>
     <!--Months table-->
     <table class='c-table'>
@@ -99,6 +101,9 @@
 </template>
 
 <script>
+import SvgIcon from './SvgIcon';
+import angleLeft from '../assets/icons/angle-left.svg';
+import angleRight from '../assets/icons/angle-right.svg';
 import DateInfo from '../utils/dateInfo';
 import {
   getMonthComps,
@@ -108,6 +113,9 @@ import {
 const _yearGroupCount = 12;
 
 export default {
+  components: {
+    SvgIcon,
+  },
   props: {
     monthLabels: { type: Array, required: true },
     mode: { type: String, default: 'month' },
@@ -121,6 +129,8 @@ export default {
       yearIndex: 0,
       yearGroupIndex: 0,
       attributesMap: {},
+      angleLeft,
+      angleRight,
     };
   },
   computed: {
@@ -312,13 +322,9 @@ $cell-transition: all 0.1s ease-in-out
 .c-arrow
   +box()
   font-size: $arrow-font-size
-  width: $arrow-width
-  height: $arrow-height
   transition: $arrow-transition
   cursor: pointer
   user-select: none
-  &:hover
-    opacity: 0.5
 
 .c-title
   font-size: $nav-title-font-size
@@ -326,8 +332,6 @@ $cell-transition: all 0.1s ease-in-out
   transition: $title-transition
   cursor: pointer
   user-select: none
-  &:hover
-    opacity: 0.5
 
 .c-table-cell
   display: flex

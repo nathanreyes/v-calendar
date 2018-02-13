@@ -33,8 +33,7 @@
       type='text'
       v-bind='inputProps_'
       v-model='inputValue'
-      @blur='updateValue()'
-      @keyup.enter='updateValue()' />
+      @change='updateValue()' />
   </slot>
   <component
     slot='popover-content'
@@ -85,8 +84,8 @@ export default {
     disabledDates: null,
     availableDates: null,
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
-    dateFormatter: { type: Function, default: defaults.dateFormatter },
-    dateParser: { type: Function, default: defaults.dateParser },
+    dateFormatter: Function, // Resolved by computed property
+    dateParser: Function, // Resolved by computed property
     tintColor: { type: String, default: () => defaults.datePickerTintColor },
     dragAttribute: Object, // Resolved by computed property
     selectAttribute: Object, // Resolved by computed property
@@ -114,8 +113,14 @@ export default {
     };
   },
   computed: {
+    dateFormatter_() {
+      return this.dateFormatter || defaults.dateFormatter;
+    },
+    dateParser_() {
+      return this.dateParser || defaults.dateParser;
+    },
     profile() {
-      return PickerProfile(this.mode, this.dateFormatter, this.dateParser);
+      return PickerProfile(this.mode, this.dateFormatter_, this.dateParser_);
     },
     componentName() {
       return this.profile.componentName;

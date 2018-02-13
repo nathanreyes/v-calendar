@@ -15,15 +15,17 @@
     v-if='isRange'
     class='days-nights'>
     <span>
-      <span
+      <svg-icon
+        :glyph='sun'
         class='vc-sun-o'>
-      </span>
+      </svg-icon>
       {{ days }}
     </span>
     <span>
-      <span
+      <svg-icon
+        :glyph='moon'
         class='vc-moon-o'>
-      </span>
+      </svg-icon>
       {{ nights }}
     </span>
   </div>
@@ -31,9 +33,22 @@
 </template>
 
 <script>
+import SvgIcon from './SvgIcon';
+import sun from '../assets/icons/sun-o.svg';
+import moon from '../assets/icons/moon-o.svg';
+
 export default {
+  components: {
+    SvgIcon,
+  },
   props: {
     attribute: Object,
+  },
+  data() {
+    return {
+      sun,
+      moon,
+    };
   },
   computed: {
     date() {

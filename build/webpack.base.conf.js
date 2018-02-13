@@ -52,11 +52,20 @@ module.exports = {
         include: [resolve('src'), resolve('test'), resolve('docs')]
       },
       {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        test: /\.(png|jpe?g|gif)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
+        }
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-sprite-loader',
+        options: {
+          extract: false,
+          runtimeCompat: true,
+          esModule: false
         }
       },
       {
