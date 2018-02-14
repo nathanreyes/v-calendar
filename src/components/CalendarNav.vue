@@ -62,11 +62,12 @@
     v-if='mode_ === "year"'>
     <div class='c-header'>
       <!--Previous year group button-->
-      <span
-        class='c-arrow vc-angle-left'
+      <svg-icon
+        :glyph='angleLeft'
+        class='c-arrow'
         :class='{ "c-disabled": !canMovePrevYearGroup }'
         @click='yearGroupIndex--'>
-      </span>
+      </svg-icon>
       <!--Mode switch button-->
       <span
         class='c-title'
@@ -74,11 +75,12 @@
         {{ firstYear }} - {{ lastYear }}
       </span>
       <!--Next year group button-->
-      <span
-        class='c-arrow vc-angle-right'
+      <svg-icon
+        :glyph='angleRight'
+        class='c-arrow'
         :class='{ "c-disabled": !canMoveNextYearGroup }'
         @click='yearGroupIndex++'>
-      </span>
+      </svg-icon>
     </div>
     <!--Years table-->
     <table class='c-table'>

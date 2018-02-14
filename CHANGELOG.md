@@ -1,3 +1,7 @@
+#0.6.3
+## Bug Fixes
+Use svg icons for left and right year group arrows in navigation pane. Closes #69.
+
 #v0.6.2
 ## Bug Fixes
 `v-calendar`
