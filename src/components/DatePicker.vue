@@ -241,7 +241,7 @@ export default {
       this.updateInputValue();
     },
     disabledAttribute_() {
-      this.updateValue(this.value);
+      if (!this.dragValue) this.updateValue(this.value);
     },
   },
   created() {
@@ -340,7 +340,9 @@ export default {
         this.disablePopoverForceHidden = true;
       }
       // Emit event to update value if it has changed
-      if (!this.profile.valuesAreEqual(filteredValue, this.value)) this.$emit('input', filteredValue);
+      if (!this.profile.valuesAreEqual(filteredValue, this.value)) {
+        this.$emit('input', filteredValue);
+      }
       // Blur the input if it is visible
       if (this.$refs.input) this.$refs.input.blur();
       // Update input text for good measure

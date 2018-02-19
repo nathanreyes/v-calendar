@@ -1,4 +1,8 @@
-#0.6.3
+#v0.6.4
+# Bug Fixes
+Disabling dates on drag can invalidate current selected range. Closes #67.
+
+#v0.6.3
 ## Bug Fixes
 Use svg icons for left and right year group arrows in navigation pane. Closes #69.
 
