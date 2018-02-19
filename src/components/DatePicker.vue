@@ -1,59 +1,3 @@
-<template>
-<component
-  :is='componentName'
-  :value='value'
-  :is-required='isRequired'
-  :select-attribute='selectAttribute_'
-  :drag-attribute='dragAttribute_'
-  :disabled-attribute='disabledAttribute_'
-  :from-page.sync='fromPage_'
-  :to-page.sync='toPage_'
-  :theme-styles='themeStyles_'
-  :date-formatter='dateFormatter'
-  @drag='dragValue = $event'
-  v-bind='$attrs'
-  v-on='filteredListeners()'
-  v-if='isInline'>
-</component>
-<popover
-  :is-expanded='popoverExpanded'
-  :direction='popoverDirection'
-  :align='popoverAlign'
-  :visibility='popoverVisibility'
-  :content-style='popoverContentStyle'
-  :content-offset='popoverContentOffset'
-  :force-hidden.sync='popoverForceHidden'
-  is-interactive
-  v-else>
-  <slot
-    :input-value='inputValue'
-    :update-value='updateValue'>
-    <input
-      ref='input'
-      type='text'
-      v-bind='inputProps_'
-      v-model='inputValue'
-      @change='updateValue()' />
-  </slot>
-  <component
-    slot='popover-content'
-    :is='componentName'
-    :value='value'
-    :is-required='isRequired'
-    :select-attribute='selectAttribute_'
-    :drag-attribute='dragAttribute_'
-    :disabled-attribute='disabledAttribute_'
-    :from-page.sync='fromPage_'
-    :to-page.sync='toPage_'
-    :theme-styles='themeStyles_'
-    :date-formatter='dateFormatter'
-    @drag='dragValue = $event'
-    v-bind='$attrs'
-    v-on='filteredListeners()'>
-  </component>
-</popover>
-</template>
-
 <script>
 import Popover from './Popover';
 import SingleDatePicker from './SingleDatePicker';
@@ -68,6 +12,76 @@ import { pageIsBetweenPages } from '../utils/helpers';
 import { isString, isFunction, isObject, isArray } from '../utils/typeCheckers';
 
 export default {
+  render(h) {
+    const getPickerComponent = asSlot => h(
+      this.componentName,
+      {
+        props: {
+          value: this.value,
+          isRequired: this.isRequired,
+          selectAttribute: this.selectAttribute_,
+          dragAttribute: this.dragAttribute_,
+          disabledAttribute: this.disabledAttribute_,
+          fromPage: this.fromPage_,
+          toPage: this.toPage_,
+          themeStyles: this.themeStyles_,
+          dateFormatter: this.dateFormatter,
+        },
+        attrs: {
+          ...this.$attrs,
+        },
+        on: {
+          'update:from-page': val => this.fromPage_ = val,
+          'update:to-page': val => this.toPage_ = val,
+          drag: val => this.dragValue = val,
+          ...this.filteredListeners(),
+        },
+        ...(asSlot && {
+          slot: asSlot,
+        }),
+      },
+    );
+    if (this.isInline) return getPickerComponent();
+    return h('popover', {
+      props: {
+        isExpanded: this.popoverExpanded,
+        direction: this.popoverDirection,
+        align: this.popoverAlign,
+        visibility: this.popoverVisibility,
+        contentStyle: this.popoverContentStyle,
+        contentOffset: this.popoverContentOffset,
+        forceHidden: this.popoverForceHidden,
+        isInteractive: true,
+      },
+      on: {
+        'update:force-hidden': val => this.popoverForceHidden = val,
+      },
+    }, [
+      h('slot', {
+        props: {
+          inputValue: this.inputValue,
+          updateValue: this.updateValue,
+        },
+      }, [
+        h('input', {
+          domProps: {
+            value: this.value,
+            type: 'text',
+            ...this.inputProps_,
+          },
+          attrs: {
+            ...this.inputProps_,
+          },
+          on: {
+            input: event => this.value = event.target.value,
+            change: () => this.updateValue(),
+          },
+          ref: 'input',
+        }),
+      ]),
+      getPickerComponent('popover-content'),
+    ]);
+  },
   components: {
     Popover,
     SingleDatePicker,
