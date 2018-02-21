@@ -233,7 +233,7 @@ const DateInfo = (config, order) => {
     // Can't accept invalid dates
     if (isNaN(date)) return null;
     // Strip date time
-    date.setHours(0, 0, 0, 0);
+    date.setUTCHours(0, 0, 0, 0);
     // Assign date
     info.date = date;
     info.dateTime = date.getTime();
