@@ -11,11 +11,11 @@
       v-if='verticalDividers.header'>
     </div>
     <!--Header slot-->
-    <slot name='header' :page='page_'>
+    <slot name='header' v-bind='page_'>
       <div class='c-header' :style='headerStyle'>
         <!--Header prev button-->
         <div class='c-arrow-layout'>
-          <slot name='header-left-button' :page='page_'>
+          <slot name='header-left-button' v-bind='page_'>
             <svg-icon
               :glyph='angleLeft'
               class='c-arrow'
@@ -51,7 +51,7 @@
                 v-if='p === page_'>
                 <slot
                   name='header-title'
-                  :page='p'>
+                  v-bind='p'>
                   {{ `${p.monthLabel} ${p.yearLabel}` }}
                 </slot>
               </div>
@@ -68,7 +68,7 @@
         </div>
         <!--Header next button-->
         <div class='c-arrow-layout'>
-          <slot name='header-right-button' :page='page_'>
+          <slot name='header-right-button' v-bind='page_'>
             <svg-icon
               :glyph='angleRight'
               class='c-arrow'

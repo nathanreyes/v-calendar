@@ -1,10 +1,11 @@
 <template>
-  <svg
+  <div
     :class='["icon", { "baseline": baseline }]'
     v-bind='$attrs'
-    v-on='$listeners'>
-    <use :xlink:href='glyph' />
-  </svg>
+    v-on='$listeners'
+    v-html='glyph'
+    v-once>
+  </div>
 </template>
 
 <script>

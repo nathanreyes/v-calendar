@@ -11,7 +11,9 @@
   "plugins": ["syntax-dynamic-import", "transform-vue-jsx", "transform-runtime"],
   "env": {
     "test": {
-      "presets": ["env", "stage-2"],
+      "presets": [
+        ["env", { "targets": { "node": "current" }}],
+        "stage-2"],
       "plugins": ["transform-vue-jsx", "transform-es2015-modules-commonjs", "dynamic-import-node"]
     }
   }

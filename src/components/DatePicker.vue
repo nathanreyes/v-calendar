@@ -16,7 +16,7 @@ export default {
     const getPickerComponent = asSlot => h(
       this.componentName,
       {
-        props: {
+        attrs: {
           value: this.value,
           isRequired: this.isRequired,
           selectAttribute: this.selectAttribute_,
@@ -25,9 +25,7 @@ export default {
           fromPage: this.fromPage_,
           toPage: this.toPage_,
           themeStyles: this.themeStyles_,
-          dateFormatter: this.dateFormatter,
-        },
-        attrs: {
+          dateFormatter: this.dateFormatter_,
           ...this.$attrs,
         },
         on: {
@@ -36,6 +34,8 @@ export default {
           drag: val => this.dragValue = val,
           ...this.filteredListeners(),
         },
+        slots: this.$slots,
+        scopedSlots: this.$scopedSlots,
         ...(asSlot && {
           slot: asSlot,
         }),
@@ -43,7 +43,7 @@ export default {
     );
     if (this.isInline) return getPickerComponent();
     return h('popover', {
-      props: {
+      attrs: {
         isExpanded: this.popoverExpanded,
         direction: this.popoverDirection,
         align: this.popoverAlign,
@@ -54,7 +54,7 @@ export default {
         isInteractive: true,
       },
       on: {
-        'update:force-hidden': val => this.popoverForceHidden = val,
+        'update:forcehidden': val => this.popoverForceHidden = val,
       },
     }, [
       h('slot', {
@@ -64,19 +64,20 @@ export default {
         },
       }, [
         h('input', {
+          ref: 'input',
+          class: this.inputProps_.class,
+          style: this.inputProps_.style,
           domProps: {
-            value: this.value,
-            type: 'text',
-            ...this.inputProps_,
+            value: this.inputValue,
           },
           attrs: {
-            ...this.inputProps_,
+            type: 'text',
+            ...this.inputAttrs,
           },
           on: {
-            input: event => this.value = event.target.value,
+            input: event => this.inputValue = event.target.value,
             change: () => this.updateValue(),
           },
-          ref: 'input',
         }),
       ]),
       getPickerComponent('popover-content'),
@@ -195,6 +196,16 @@ export default {
         };
       }
       return this.inputProps;
+    },
+    inputAttrs() {
+      const props = {
+        ...this.inputProps_,
+      };
+      if (props) {
+        delete props.style;
+        delete props.class;
+      }
+      return props;
     },
     themeStyles_() {
       // Strip the wrapper style when used in a popover

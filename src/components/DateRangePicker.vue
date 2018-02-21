@@ -1,19 +1,24 @@
-<template>
-<calendar
-  :attributes='attributes_'
-  :theme-styles='themeStyles_'
-  @dayclick='clickDay'
-  @daymouseenter='enterDay'
-  v-bind='$attrs'
-  v-on='$listeners'>
-</calendar> 
-</template>
-
 <script>
 import Calendar from './Calendar';
 import { rangeNormalizer } from '../utils/pickerProfiles';
 
 export default {
+  render(h) {
+    return h(Calendar, {
+      attrs: {
+        attributes: this.attributes_,
+        themeStyles: this.themeStyles_,
+        ...this.$attrs,
+      },
+      on: {
+        dayclick: this.clickDay,
+        daymouseenter: this.enterDay,
+        ...this.$listeners,
+      },
+      slots: this.$slots,
+      scopedSlots: this.$scopedSlots,
+    });
+  },
   components: {
     Calendar,
   },

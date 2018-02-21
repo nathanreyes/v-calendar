@@ -104,13 +104,13 @@
 
 <script>
 import SvgIcon from './SvgIcon';
-import angleLeft from '../assets/icons/angle-left.svg';
-import angleRight from '../assets/icons/angle-right.svg';
-import DateInfo from '../utils/dateInfo';
+import angleLeft from '@/assets/icons/angle-left.svg';
+import angleRight from '@/assets/icons/angle-right.svg';
+import DateInfo from '@/utils/dateInfo';
 import {
   getMonthComps,
   getFirstArrayItem,
-  getLastArrayItem } from '../utils/helpers';
+  getLastArrayItem } from '@/utils/helpers';
 
 const _yearGroupCount = 12;
 

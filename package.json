@@ -40,6 +40,7 @@
     "vue": "^2.5.0"
   },
   "devDependencies": {
+    "@vue/test-utils": "1.0.0-beta.11",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",
@@ -85,7 +86,7 @@
     "sass-loader": "^6.0.5",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
-    "svg-sprite-loader": "3.6.2",
+    "svg-inline-loader": "0.8.0",
     "uglifyjs-webpack-plugin": "1.1.1",
     "url-loader": "^0.5.8",
     "vue-clipboard2": "0.0.7",
