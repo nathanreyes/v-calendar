@@ -61,12 +61,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: 'svg-sprite-loader',
-        options: {
-          extract: false,
-          runtimeCompat: true,
-          esModule: false
-        }
+        loader: 'svg-inline-loader'
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,

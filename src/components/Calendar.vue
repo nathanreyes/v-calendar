@@ -1,40 +1,3 @@
-<template>
-<div
-  class='c-pane-container'
-  :class='{ "is-double-paned": isDoublePaned_, "is-expanded": isExpanded }'
-  :style='wrapperStyle'>
-  <calendar-pane
-    :position='isDoublePaned_ ? 1 : 0'
-    :page.sync='fromPage_'
-    :min-page='minPage'
-    :max-page='maxFromPage'
-    :styles='themeStyles_'
-    :attributes='attributes_'
-    @titleclick='titleClick'
-    v-bind='$attrs'
-    v-on='$listeners'>
-    <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
-      <slot :name='slot' v-bind='props'></slot>
-    </template>
-  </calendar-pane>
-  <calendar-pane
-    v-if='isDoublePaned_'
-    :position='2'
-    :page.sync='toPage_'
-    :min-page='minToPage'
-    :max-page='maxPage'
-    :styles='themeStyles_'
-    :attributes='attributes_'
-    @titleclick='titleClick'
-    v-bind='$attrs'
-    v-on='$listeners'>
-    <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
-      <slot :name='slot' v-bind='props'></slot>
-    </template>
-  </calendar-pane>
-</div>
-</template>
-
 <script>
 import CalendarPane from './CalendarPane';
 import Tag from './Tag';
@@ -53,6 +16,41 @@ import {
 import '../styles/lib.sass';
 
 export default {
+  render(h) {
+    const getPaneComponent = position => h(CalendarPane, {
+      attrs: {
+        position,
+        page: position < 2 ? this.fromPage_ : this.toPage_,
+        minPage: position < 2 ? this.minPage : this.minToPage,
+        maxPage: position < 2 ? this.maxFromPage : this.maxPage,
+        styles: this.themeStyles_,
+        attributes: this.attributes_,
+        ...this.$attrs,
+      },
+      on: {
+        titleclick: this.titleClick,
+        'update:page': (val) => {
+          if (position < 2) this.fromPage_ = val;
+          else this.toPage_ = val;
+        },
+        ...this.$listeners,
+      },
+      slots: this.$slots,
+      scopedSlots: this.$scopedSlots,
+    });
+    return h('div', {
+      class: {
+        'c-pane-container': true,
+        'is-double-paned': this.isDoublePaned_,
+        'is-expanded': this.isExpanded,
+      },
+      style: this.wrapperStyle,
+    }, [
+      getPaneComponent(this.isDoublePaned_ ? 1 : 0),
+      this.isDoublePaned_ && getPaneComponent(2),
+    ]);
+  },
+  name: 'VCalendar',
   components: {
     CalendarPane,
     Tag,

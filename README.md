@@ -15,8 +15,8 @@ It has date picker support out of the box with single date, multiple date and da
 `v-calendar` is the core component. By default, it has a neutral design that should blend nicely within any web application, with various options for configuring the basic layout: 
   * Single or double paned
   * Can be expanded to fill the width of its container
-  * Header can be left, right or center-aligned
-  * Slot support for custom headers and arrows
+  * Header title can be left, right or center-aligned
+  * Slot support for custom header and header subcomponents
   * Navigation transitions (horizontal slide, vertical slide, fade)
 
 Along with the calendar panes, `v-calendar` employs a semantic-inspired navigation pane when the header title is hovered or focused by the user.
@@ -258,11 +258,18 @@ export default {
 </p>
 
 You can disable dates, date ranges and date patterns using the following props:
-  * Explicitly via `disabled-dates`.
+  * Explicitly via `min-date` or `max-date`
+    ```html
+    <!--Set minimum date-->
+    <v-date-picker
+      :min-date='new Date()'
+      v-model='selectedDate'>
+    </v-date-picker>
+    ```
+  * Explicitly via `disabled-dates` (still works with `min-date` or `max-date`).
     ```html
     <!--Disable weekend selection-->
     <v-date-picker
-      :mode='single'
       :disabled-dates='{ weekdays: [1, 7] }'
       v-model='selectedDate'>
     </v-date-picker>
@@ -271,11 +278,96 @@ You can disable dates, date ranges and date patterns using the following props:
     ```html
     <!--Today is the minimum date (null denotes infinite date)-->
     <v-date-picker
-      :mode='single'
       :available-dates='{ start: new Date(), end: null }'
       v-model='selectedDate'>
     </v-date-picker>
     ```
+
+## Formatting & Parsing
+
+Dates are formatted and/or parsed for the following component sections:
+
+| Component(s) | Target Area | Default Format |
+| ------------ | ----------- | -------------- |
+| `v-calendar` `v-date-picker` | Calendar header title | *MMMM YYYY* |
+| `v-calendar` `v-date-picker` | Weekday headers | *W* |
+| `v-calendar` `v-date-picker` | Month labels in navigation dropdown | *MMM* |
+| `v-date-picker` | Input element when `is-inline === false` | *L* |
+| `v-date-picker` | Day popover when user hovers selected date | *WWW, MMM D, YYYY* |
+
+By default, `v-calendar` uses Javascript's Internalization API ([which is increasingly well supported](https://caniuse.com/#search=Intl)) to derive the month and weekday names for the user's locale. This helps keep the package size to a minimum while utilizing an API that should only improve with time. It also uses the most appropriate long date format (`L`) for that locale (derived from [moment.js](https://github.com/moment/moment/tree/develop/src/locale)).
+
+To use your own custom formats, configure and pass the `formats` object
+  * As a prop to `v-calendar` or  `v-date-picker`
+
+```html
+<v-date-picker
+  :formats='formats'
+  v-model='myDate'>
+</v-date-picker>
+```
+```javascript
+export default {
+  data() {
+    return {
+      myDate: null,
+      formats: {
+        title: 'MMMM YYYY',
+        weekdays: 'dd',
+        navMonths: 'MMM',
+        input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'], // Only for `v-date-picker`
+        dayPopover: 'L', // Only for `v-date-picker`
+      }
+    }
+  }
+}
+```
+  * As a default when using VCalendar
+
+```javascript
+import Vue from 'vue'
+import VCalendar from 'v-calendar'
+
+Vue.use(VCalendar, {
+  formats: {
+    title: 'MMMM YYYY',
+    weekdays: 'dd',
+    navMonths: 'MMM',
+    input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
+    dayPopover: 'L',
+  }
+})
+```
+
+### Parsing dates for input element
+
+You'll notice an array was used to specify the formats for `v-date-picker`'s input element. This is because it uses the supplied format(s) to parse, as well as display, the selected date. The first supplied format is used to display the date selection, while all formats can be used to parse the date string. The first successfully parsed date is used as the selected date. This provides more flexibility for the user when manually typing in dates.
+
+By default, `v-date-picker` will first try and use the localized long date format to parse the date, but will also try to parse formats that are globally unambiguous (*YYYY-MM-DD* and *YYYY/MM/DD*). Furthermore, because `v-date-picker` uses its own parsing logic ([rather than relying on the browser's inconsistent `Date.parse` function]()), it can properly parse ISO-8601 dates to the user's local time zone instead of converting to UTC. If you plan on targeting browsers from multiple locales, it is probably best to defer to the default format settings.
+
+### Format Tokens
+
+Use the following tokens to configure your custom formats:
+
+| Category | Token | Output |
+| -------- | ----- | ------ |
+| **Month** | `M` | 1, 2, ..., 12 |
+| | `MM` | 01, 02, ..., 12 |
+| | `MMM` | Jan, Feb, ..., Dec |
+| | `MMMM` | January, February, ..., December |
+| **Day of Month** | `D` | 1, 2, ..., 31 |
+| | `DD` | 01, 02, ..., 31 |
+| | `Do` | 1st, 2nd, ..., 31st |
+| **Day of Week** | `d` | 1, 2, ..., 7 |
+| | `dd` | 01, 02, ..., 07 |
+| | `W` | S, M, ..., S |
+| | `WW` | Su, Mo, ..., Sa |
+| | `WWW` | Sun, Mon, ..., Sat |
+| | `WWWW` | Sunday, Monday, ..., Saturday |
+| **Year** | `YY` | 70, 71, ... 69 |
+| | `YYYY` | 1970, 1971, ..., 2069 |
+| **Long Date** | `L` | 01/21/1983 (en-US), 21/01/1983 (en-GB), ..., 1983/01/21 (*civilized*) |
+
 ---
 
 # Installation
@@ -299,6 +391,7 @@ Vue.use(VCalendar);
 ```
 
 ### 3 Reference in your component templates
+
 ```html
 <template>
   <v-calendar
@@ -310,6 +403,7 @@ Vue.use(VCalendar);
   </v-date-picker>
 </template>
 ```
+
 ```javascript
 <script>
 export default {
@@ -358,11 +452,11 @@ export default {
 
 ### Polyfill
 
-`v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` if you wish to target older browsers (IE11). Two options for accomplishing this are:
+`v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` (<= IE11) or even `Intl` (Javascript's internationalization object, <= IE10) if you wish to target older browsers. Two options for accomplishing this are:
 1. **Easy way:**
   Insert the following script into your html before loading `v-calendar`. The polyfill will get loaded automatically *only if* the browser needs it.
 
-  `<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find" />`
+  `<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl" />`
 
 2. In Node/Browserify/Webpack environments, use [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) to insert the polyfill for you.
 
@@ -372,7 +466,7 @@ Custom defaults can be provided on initialization. Note that almost all of these
 
 ```javascript
 Vue.use(VCalendar, {
-  firstDayOfWeek: 1, // Set first day of week to Sunday
+  firstDayOfWeek: 2, // Set first day of week to Monday
   ...
 })
 ```
@@ -381,14 +475,11 @@ Vue.use(VCalendar, {
 | ------------- | ---- | ----------- | ------- |
 | `componentPrefix` | String | Custom prefix to use for plugin components. Replace if `v-calendar` and `v-date-picker` interfere with other component libraries. | `"v"` |
 | `firstDayOfWeek` | Number | Day number for the first day of the week (1: Sun - 7: Sat) | `1` |
-| `monthLabels` | Array | Month labels displayed in header (localized) | `["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]` |
-| `weekdayLabels` | Array | Weekday labels displayed in header. Start with Sunday, even if Sunday isn\'t set as the first day of the week. (localized) | `["S", "M", "T", "W", "T", "F", "S"]` |
+| `formats` | Object | Formats to use when display and parsing dates for various calendar sections | Reference code |
 | `navVisibility` | String | Visibility state for calendar navigation panel (`"focus"`, `"hover"`, `"visible"`, `"hidden"`) | `"focus"` |
 | `titlePosition` | String | Position of the title in the header (`"left"`, `"center"`, `"right"`) | `"center"` |
 | `titleTransition` | String | Transition type for title when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`) | `"slide-h"` |
 | `weeksTransition` | String | Transition type for weeks when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`) | `"slide-h"` |
-| `dateFormatter` | Function | Converts date object to preferred text format | `d => d.toLocaleDateString()` |
-| `dateParser` | Function | Converts string to date object | `s => new Date(Date.parse(s))` |
 | `datePickerTintColor` | String | Background color of the selected and dragged highlighted regions (`opacity: 0.5` for dragged). This setting is overridden by `select-attribute` and `drag-attribute` if specified. | `"#66B3CC"` |
 | `datePickerShowCaps` | Boolean | Show caps and the end of the highlighted and dragged regions when `mode === "range"` | `false` |
 | `datePickerShowPopover` | Boolean | Show popover for dragged and selected regions | `true` |

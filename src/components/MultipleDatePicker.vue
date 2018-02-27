@@ -1,17 +1,22 @@
-<template>
-<calendar
-  :attributes='attributes_'
-  @dayclick='clickDay'
-  v-bind='$attrs'
-  v-on='$listeners'>
-</calendar>
-</template>
-
 <script>
 import Calendar from './Calendar';
 import { multipleHasValue, singleValuesAreEqual, multipleNormalizer } from '../utils/pickerProfiles';
 
 export default {
+  render(h) {
+    return h(Calendar, {
+      attrs: {
+        attributes: this.attributes_,
+        ...this.$attrs,
+      },
+      on: {
+        dayclick: this.clickDay,
+        ...this.$listeners,
+      },
+      slots: this.$slots,
+      scopedSlots: this.$scopedSlots,
+    });
+  },
   components: {
     Calendar,
   },

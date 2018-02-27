@@ -14,14 +14,14 @@
   <div
     v-if='isRange'
     class='days-nights'>
-    <span>
+    <span class='days'>
       <svg-icon
         :glyph='sun'
         class='vc-sun-o'>
       </svg-icon>
       {{ days }}
     </span>
-    <span>
+    <span class='nights'>
       <svg-icon
         :glyph='moon'
         class='vc-moon-o'>
@@ -34,8 +34,10 @@
 
 <script>
 import SvgIcon from './SvgIcon';
-import sun from '../assets/icons/sun-o.svg';
-import moon from '../assets/icons/moon-o.svg';
+import sun from '@/assets/icons/sun-o.svg';
+import moon from '@/assets/icons/moon-o.svg';
+import defaults from '@/utils/defaults';
+import { formatDate } from '@/utils/dateInfo';
 
 export default {
   components: {
@@ -81,8 +83,7 @@ export default {
   },
   methods: {
     getDateString(date) {
-      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-      return date.toLocaleDateString(window.navigator.userLanguage || window.navigator.language, options);
+      return formatDate(date, defaults.formats.dayPopover || 'L');
     },
   },
 };
@@ -98,7 +99,7 @@ export default {
   justify-content: center
   align-items: center
   margin-top: 3px
-  & > span
+  .days, .nights
     font-weight: 700
     display: flex
     align-items: center

@@ -5,8 +5,8 @@
     tint-color='#CA4D71'
     :attributes='attributes'
     :theme-styles='themeStyles'
-    is-inline
-    :pane-width='290'>
+    :pane-width='290'
+    is-inline>
   </v-date-picker>
 </template>
 

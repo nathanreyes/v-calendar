@@ -38,7 +38,7 @@
             :class='{ "c-active": item.isActive, "c-disabled": item.isDisabled }'
             @click='monthClick(item.month)'>
             <!--Month label-->
-            {{ item.label.substring(0, 3) }}
+            {{ item.label }}
             <!--Attribute indicators-->
             <transition name='indicators'>
               <div
@@ -104,13 +104,13 @@
 
 <script>
 import SvgIcon from './SvgIcon';
-import angleLeft from '../assets/icons/angle-left.svg';
-import angleRight from '../assets/icons/angle-right.svg';
-import DateInfo from '../utils/dateInfo';
+import angleLeft from '@/assets/icons/angle-left.svg';
+import angleRight from '@/assets/icons/angle-right.svg';
+import DateInfo, { getFormattedMonths } from '@/utils/dateInfo';
 import {
   getMonthComps,
   getFirstArrayItem,
-  getLastArrayItem } from '../utils/helpers';
+  getLastArrayItem } from '@/utils/helpers';
 
 const _yearGroupCount = 12;
 
@@ -119,10 +119,10 @@ export default {
     SvgIcon,
   },
   props: {
-    monthLabels: { type: Array, required: true },
     mode: { type: String, default: 'month' },
     value: { type: Object, default: () => ({ month: 0, year: 0 }) },
     validator: { type: Function, default: () => () => true },
+    formats: Object,
     attributes: Array,
   },
   data() {
@@ -155,7 +155,7 @@ export default {
       return this.validator({ month: 1, year: this.lastYear + 1 });
     },
     monthItems() {
-      return this.monthLabels.map((ml, i) => {
+      return getFormattedMonths(this.formats.navMonths || 'MMM').map((ml, i) => {
         const month = i + 1;
         return {
           month,

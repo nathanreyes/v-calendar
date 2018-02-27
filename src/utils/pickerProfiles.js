@@ -24,7 +24,7 @@ export const singleValuesAreEqual = (a, b) => {
 export const singleGetPageRange = (value) => {
   if (!singleHasValue(value)) return null;
   const from = getDateComps(value);
-  const to = getNextPage(from);
+  const to = from;
   return { from, to };
 };
 export const SinglePickerProfile = (formatter, parser) => ({

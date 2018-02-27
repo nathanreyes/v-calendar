@@ -1,10 +1,11 @@
 <template>
-  <svg
-    :class='["icon", { "baseline": baseline }]'
+  <div
+    :class='["svg-icon", { "baseline": baseline }]'
     v-bind='$attrs'
-    v-on='$listeners'>
-    <use :xlink:href='glyph' />
-  </svg>
+    v-on='$listeners'
+    v-html='glyph'
+    v-once>
+  </div>
 </template>
 
 <script>
@@ -19,8 +20,8 @@ export default {
 };
 </script>
 
-<style scoped>
-.icon {
+<style lang='scss' scoped>
+.svg-icon {
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -30,19 +31,14 @@ export default {
   stroke: currentColor;
   fill: currentColor;
   line-height: 1;
+  font-size: 1rem;
+  &:hover {
+    fill-opacity: 0.5;
+  }
+  & /deep/ svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
-.icon:hover {
-  fill-opacity: 0.5;
-}
-
-.icon svg {
-  width: 1em;
-  height: 1em;
-}
-
-.icon.baseline svg {
-  bottom: -0.125em;
-  position: absolute;
-}
 </style>

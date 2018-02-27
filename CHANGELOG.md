@@ -1,12 +1,29 @@
-#v0.6.4
-# Bug Fixes
-Disabling dates on drag can invalidate current selected range. Closes #67.
+# v0.7.0
+## Bug Fixes
+`v-calendar`
+* Fix animation bug when `weeks-transition` or `title-transition` is `"none"`. Closes #70.
 
-#v0.6.3
+`v-date-picker`
+* Disabling dates on drag can invalidate current selected range. Closes #67.
+
+## Improvements
+`v-calendar`
+* Uses Javascript's `Intl.DateTimeFormat` API to supply month and day names for to 35 languages with minimal bundle size.
+* Transitioned top level calendar component to render function for improved slot support.
+* Supports a new `formats` prop object where you can specify custom formats for title, weekdays and navigation months.
+* Deprecate `month-labels` and `weekday-labels` props in favor of using `formats` prop.
+* Improved handling of svg icons for smaller bundle size.
+
+`v-date-picker`
+* Transitioned all date picker components to render functions. This allows using all slots that `v-calendar` supports. Closes #49.
+* Supports a new `formats` prop object where you can specify custom formats for input element and date selection popovers.
+* Deprecate `dateFormatter` and `dateParser` props in favor of using `formats` prop.
+
+# v0.6.3
 ## Bug Fixes
 Use svg icons for left and right year group arrows in navigation pane. Closes #69.
 
-#v0.6.2
+# v0.6.2
 ## Bug Fixes
 `v-calendar`
 Fix bug when using `max-page` with single-paned calendars. Closes #64.
