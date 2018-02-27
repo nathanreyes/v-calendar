@@ -1,86 +1,109 @@
-export default {
-  en: { // English
-    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    weekdaysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    weekdaysMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-  },
-  zh: { // Chinese
-    months: ['一 月', '二 月', '三 月', '四 月', '五 月', '六 月', '七 月', '八 月', '九 月', '十 月', '十 一 月', '十 二 月'],
-    monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-    weekdays: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    weekdaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-    weekdaysMin: ['日', '一', '二', '三', '四', '五', '六'],
-  },
-  ru: { // Russian
-    months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
-    monthsShort: ['янв', 'февр', 'мар', 'апр', 'мая', 'июня', 'июля', 'авг', 'сент', 'окт', 'нояб', 'дек'],
-    weekdays: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-    weekdaysShort: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-    weekdaysMin: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
-  },
-  fr: { // French
-    months: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-    monthsShort: ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'août', 'Sept', 'Oct', 'Nov', 'Déc'],
-    weekdays: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'vendredi', 'Samedi'],
-    weekdaysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
-    weekdaysMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  },
-  es: { // Spanish
-    months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-    monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-    weekdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-    weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
-    weekdaysMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
-  },
-  de: { // German
-    months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-    monthsShort: ['Jan', 'Feb', 'März', 'Apr', 'Mai', 'Juni', 'Juli', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-    weekdays: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-    weekdaysShort: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa.'],
-    weekdaysMin: ['S', 'M', 'D', 'M', 'D', 'F', 'S'],
-  },
-  pt: { // Portuguese
-    months: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
-    monthsShort: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
-    weekdays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
-    weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-    weekdaysMin: ['Do', '2ª', '3ª', '4ª', '5ª', '6ª', 'Sá'],
-  },
-  it: { // Italian
-    months: ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'],
-    monthsShort: ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'],
-    weekdays: ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'],
-    weekdaysShort: ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'],
-    weekdaysMin: ['do', 'lu', 'ma', 'me', 'gi', 've', 'sa'],
-  },
-  ja: { // Japanese
-    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-    monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-    weekdays: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
-    weekdaysShort: ['日', '月', '火', '水', '木', '金', '土'],
-    weekdaysMin: ['日', '月', '火', '水', '木', '金', '土'],
-  },
-  tr: { // Turkish
-    months: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
-    monthsShort: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
-    weekdays: ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'],
-    weekdaysShort: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
-    weekdaysMin: ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'],
-  },
-  sv: { // Swedish
-    months: ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'],
-    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
-    weekdays: ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'],
-    weekdaysShort: ['Sun', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'],
-    weekdaysMin: ['S', 'M', 'T', 'O', 'T', 'F', 'L'],
-  },
-  fi: { // Finnish
-    months: ['Tammikuu', 'Helmikuu', 'Maaliskuu', 'Huhtikuu', 'Toukokuu', 'Kesäkuu', 'Heinäkuu', 'Elokuu', 'Syyskuu', 'Lokakuu', 'Marraskuu', 'Joulukuu'],
-    monthsShort: ['Tammi', 'Helmi', 'Maalis', 'Huhti', 'Touko', 'Kesä', 'Heinä', 'Elo', 'Syys', 'Loka', 'Marras', 'Joulu'],
-    weekdays: ['Sunnuntai', 'Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai', 'Lauantai'],
-    weekdaysShort: ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'],
-    weekdaysMin: ['S', 'M', 'T', 'K', 'T', 'P', 'L'],
-  },
+import fecha from './fecha';
+import { getMonthDates, getWeekdayDates } from './dateInfo';
+
+// Month and day names are derived from Intl.DateTimeFormat
+const getMonthNames = (locale, length) => {
+  const dtf = new Intl.DateTimeFormat(locale, { month: length });
+  return getMonthDates().map(d => dtf.format(d));
 };
+const getDayNames = (locale, length) => {
+  const dtf = new Intl.DateTimeFormat(locale, { weekday: length });
+  return getWeekdayDates().map(d => dtf.format(d));
+};
+
+// Infer first day of week === 1 if not listed (dow)
+const locales = {
+  // Arabic
+  ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
+  // Bulgarian
+  bg: { dow: 2, L: 'D.MM.YYYY' },
+  // Catalan
+  ca: { dow: 2, L: 'DD/MM/YYYY' },
+  // Chinese (China)
+  'zh-cn': { dow: 2, L: 'YYYY/MM/DD' },
+  // Chinese (Taiwan)
+  'zh-tw': { L: 'YYYY/MM/DD' },
+  // Croatian
+  hr: { dow: 2, L: 'DD.MM.YYYY' },
+  // Czech
+  cs: { dow: 2, L: 'DD.MM.YYYY' },
+  // Danish
+  da: { dow: 2, L: 'DD.MM.YYYY' },
+  // Dutch
+  nl: { dow: 2, L: 'DD.MM.YYYY' },
+  // English (US)
+  'en-us': { L: 'MM/DD/YYYY' },
+  // English (Australia)
+  'en-au': { dow: 2, L: 'DD/MM/YYYY' },
+  // English (Canada)
+  'en-ca': { L: 'YYYY-MM-DD' },
+  // English (Great Britain)
+  'en-gb': { dow: 2, L: 'DD/MM/YYYY' },
+  // English (Ireland)
+  'en-ie': { dow: 2, L: 'DD-MM-YYYY' },
+  // English (New Zealand)
+  'en-nz': { dow: 2, L: 'DD/MM/YYYY' },
+  // Esperanto
+  eo: { dow: 2, L: 'YYYY-MM-DD' },
+  // Finnish
+  fi: { dow: 2, L: 'Do MMMM[ta] YYYY' },
+  // French
+  fr: { dow: 2, L: 'DD/MM/YYYY' },
+  // French (Canada)
+  'fr-ca': { L: 'YYYY-MM-DD' },
+  // French (Switzerland)
+  'fr-ch': { dow: 2, L: 'DD.MM.YYYY' },
+  // German
+  de: { dow: 2, L: 'DD.MM.YYYY' },
+  // Indonesian
+  id: { dow: 2, L: 'DD/MM/YYYY' },
+  // Italian
+  it: { dow: 2, L: 'DD/MM/YYYY' },
+  // Japanese
+  ja: { L: 'YYYY年M月D日' },
+  // Korean
+  ko: { L: 'YYYY.MM.DD' },
+  // Macedonian
+  mk: { dow: 2, L: 'D.MM.YYYY' },
+  // Polish
+  pl: { dow: 2, L: 'DD.MM.YYYY' },
+  // Portuguese
+  pt: { dow: 2, L: 'DD/MM/YYYY' },
+  // Romanian
+  ro: { dow: 2, L: 'DD.MM.YYYY' },
+  // Russian
+  ru: { dow: 2, L: 'DD.MM.YYYY' },
+  // Slovak
+  sk: { dow: 2, L: 'DD.MM.YYYY' },
+  // Spanish
+  es: { dow: 1, L: 'DD/MM/YYYY' },
+  // Swedish
+  sv: { dow: 2, L: 'YYYY-MM-DD' },
+  // Thai
+  th: { L: 'DD/MM/YYYY' },
+  // Turkish
+  tk: { dow: 2, L: 'DD.MM.YYYY' },
+};
+locales.en = locales['en-us'];
+locales.zh = locales['zh-cn'];
+
+const setupLocale = (locale, defaults) => {
+  const l = locale || new Intl.DateTimeFormat().resolvedOptions().locale;
+  const lMatch = l && (locales[l.toLowerCase()] || locales[l.toLowerCase().substring(0, 1)]);
+  fecha.i18n = {
+    ...fecha.i18n,
+    dayNames: getDayNames(locale, 'long'),
+    dayNamesShort: getDayNames(locale, 'short'),
+    dayNamesNarrow: getDayNames(locale, 'narrow'),
+    monthNames: getMonthNames(locale, 'long'),
+    monthNamesShort: getMonthNames(locale, 'short'),
+  };
+  if (lMatch) {
+    fecha.masks = {
+      L: lMatch.L,
+    };
+    defaults.firstDayOfWeek = lMatch.dow || 1;
+  }
+};
+
+export default setupLocale;

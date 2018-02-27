@@ -52,14 +52,14 @@
                 <slot
                   name='header-title'
                   v-bind='p'>
-                  {{ `${p.monthLabel} ${p.yearLabel}` }}
+                  {{ p.title }}
                 </slot>
               </div>
             </transition-group>
             <!--Navigation pane-->
             <calendar-nav
               slot='popover-content'
-              :month-labels='monthLabels'
+              :formats='formats'
               :value='page_'
               :validator='canMove'
               @input='navPageSelected($event)'>
@@ -100,7 +100,7 @@
       class='c-weekdays'
       :style='weekdayStyle_'>
       <div
-        v-for='(weekday, i) in weekdayLabels_'
+        v-for='(weekday, i) in weekdayLabels'
         :key='i + 1'
         class='c-weekday'>
         {{ weekday }}
@@ -160,9 +160,10 @@ import Popover from './Popover';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
 import SvgIcon from './SvgIcon';
-import angleLeft from '../assets/icons/angle-left.svg';
-import angleRight from '../assets/icons/angle-right.svg';
-import defaults from '../utils/defaults';
+import angleLeft from '@/assets/icons/angle-left.svg';
+import angleRight from '@/assets/icons/angle-right.svg';
+import defaults from '@/utils/defaults';
+import { formatDate, getFormattedWeekdays } from '@/utils/dateInfo';
 
 import {
   todayComps,
@@ -186,8 +187,7 @@ export default {
     navVisibility: { type: String, default: () => defaults.navVisibility },
     minPage: Object,
     maxPage: Object,
-    monthLabels: { type: Array, default: () => defaults.monthLabels },
-    weekdayLabels: { type: Array, default: () => defaults.weekdayLabels },
+    formats: { type: Object, default: () => defaults.formats },
     styles: Object,
     titlePosition: { type: String, default: () => defaults.titlePosition },
     titleTransition: { type: String, default: () => defaults.titleTransition },
@@ -208,12 +208,8 @@ export default {
     };
   },
   computed: {
-    weekdayLabels_() {
-      const labels = [];
-      for (let i = 1, d = defaults.firstDayOfWeek; i <= 7; i++, d += (d === 7) ? -6 : 1) {
-        labels.push(this.weekdayLabels[d - 1]);
-      }
-      return labels;
+    weekdayLabels() {
+      return getFormattedWeekdays(this.formats.weekdays || 'dd', defaults.firstDayOfWeek);
     },
     titleClass() {
       return this.titlePosition ? `align-${this.titlePosition}` : '';
@@ -393,6 +389,7 @@ export default {
       const key = `${year.toString()}.${month.toString()}`;
       let page = this.pages.find(p => (p.key === key));
       if (!page) {
+        const date = new Date(year, month - 1, 1);
         const monthComps = getMonthComps(month, year);
         const prevMonthComps = getPrevMonthComps(month, year);
         const nextMonthComps = getNextMonthComps(month, year);
@@ -400,8 +397,9 @@ export default {
           key,
           month,
           year,
-          shortMonthLabel: defaults.shortMonthLabels[month - 1],
-          monthLabel: this.monthLabels[month - 1],
+          title: formatDate(date, this.formats.title || 'MMMM YYYY'),
+          shortMonthLabel: formatDate(date, 'MMM'),
+          monthLabel: formatDate(date, 'MMMM'),
           shortYearLabel: year.toString().substring(2),
           yearLabel: year.toString(),
           monthComps,
@@ -501,7 +499,6 @@ export default {
         .c-title
           font-weight: $title-font-weight
           font-size: $title-font-size
-          transition: $title-transition
           cursor: pointer
           user-select: none
           white-space: nowrap
@@ -552,18 +549,25 @@ export default {
   flex-direction: column
   width: 100%
 
+.title-slide-left-enter-active,
+.title-slide-left-leave-active,
+.title-slide-right-enter-active,
+.title-slide-right-leave-active,
+.title-slide-up-enter-active,
+.title-slide-up-leave-active,
+.title-slide-down-enter-active,
+.title-slide-down-leave-active,
+.title-fade-enter-active,
+.title-fade-leave-active
+  transition: $title-transition
+
 .title-slide-left-leave-active,
 .title-slide-right-leave-active,
 .title-slide-up-leave-active,
 .title-slide-down-leave-active,
-.title-fade-leave-active
+.title-fade-leave-active,
+.title-none-leave-active
   position: absolute
-
-.title-slide-left-leave,
-.title-slide-right-leave,
-.title-slide-up-leave,
-.title-slide-down-leave
-  opacity: 1
 
 .title-none-enter-active,
 .title-none-leave-active
@@ -605,7 +609,8 @@ export default {
 .weeks-slide-right-leave-active,
 .weeks-slide-up-leave-active,
 .weeks-slide-down-leave-active,
-.weeks-fade-leave-active
+.weeks-fade-leave-active,
+.weeks-none-leave-active
   position: absolute
 
 .weeks-none-enter-active,

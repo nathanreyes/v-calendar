@@ -37,6 +37,7 @@
     "build:docs": "node build/build.js"
   },
   "dependencies": {
+    "date-fns": "2.0.0-alpha.7",
     "vue": "^2.5.0"
   },
   "devDependencies": {

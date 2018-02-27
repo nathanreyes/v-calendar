@@ -4,12 +4,13 @@ import SingleDatePicker from './SingleDatePicker';
 import MultipleDatePicker from './MultipleDatePicker';
 import DateRangePicker from './DateRangePicker';
 import DatePickerDayPopover from './DatePickerDayPopover';
-import PickerProfile from '../utils/pickerProfiles';
-import Attribute from '../utils/attribute';
-import defaults, { resolveDefault } from '../utils/defaults';
-import { addDays } from '../utils/dateInfo';
-import { pageIsBetweenPages } from '../utils/helpers';
-import { isString, isFunction, isObject, isArray } from '../utils/typeCheckers';
+import PickerProfile from '@/utils/pickerProfiles';
+import Attribute from '@/utils/attribute';
+import defaults, { resolveDefault } from '@/utils/defaults';
+import { addDays, formatDate, parseDate } from '@/utils/dateInfo';
+import { pageIsBetweenPages } from '@/utils/helpers';
+import { isString, isFunction, isObject, isArray } from '@/utils/typeCheckers';
+import fecha from '@/utils/fecha';
 
 export default {
   render(h) {
@@ -25,12 +26,11 @@ export default {
           fromPage: this.fromPage_,
           toPage: this.toPage_,
           themeStyles: this.themeStyles_,
-          dateFormatter: this.dateFormatter_,
           ...this.$attrs,
         },
         on: {
-          'update:from-page': val => this.fromPage_ = val,
-          'update:to-page': val => this.toPage_ = val,
+          'update:fromPage': val => this.fromPage_ = val,
+          'update:toPage': val => this.toPage_ = val,
           drag: val => this.dragValue = val,
           ...this.filteredListeners(),
         },
@@ -54,7 +54,7 @@ export default {
         isInteractive: true,
       },
       on: {
-        'update:forcehidden': val => this.popoverForceHidden = val,
+        'update:forceHidden': val => this.popoverForceHidden = val,
       },
     }, [
       h('slot', {
@@ -98,9 +98,8 @@ export default {
     maxDate: Date,
     disabledDates: null,
     availableDates: null,
+    formats: { type: Object, default: () => defaults.formats },
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
-    dateFormatter: Function, // Resolved by computed property
-    dateParser: Function, // Resolved by computed property
     tintColor: { type: String, default: () => defaults.datePickerTintColor },
     dragAttribute: Object, // Resolved by computed property
     selectAttribute: Object, // Resolved by computed property
@@ -128,20 +127,19 @@ export default {
     };
   },
   computed: {
-    dateFormatter_() {
-      return this.dateFormatter || defaults.dateFormatter;
-    },
-    dateParser_() {
-      return this.dateParser || defaults.dateParser;
+    inputFormats() {
+      const formats = this.formats && this.formats.input;
+      if (!formats) return ['M/DD/YYYY'];
+      return (isArray(formats) && formats) || [formats];
     },
     profile() {
-      return PickerProfile(this.mode, this.dateFormatter_, this.dateParser_);
+      return PickerProfile(
+        this.mode,
+        d => formatDate(d, this.inputFormats[0]),
+        s => this.inputFormats.map(f => parseDate(s, f)).find(d => d) || new Date(s));
     },
     componentName() {
       return this.profile.componentName;
-    },
-    formattedValue() {
-      return this.profile.formatValue(this.value, this.dragValue);
     },
     attributeParams() {
       return {
@@ -186,6 +184,7 @@ export default {
             mode: this.mode,
             value: this.value,
             dragValue: this.dragValue,
+            format: fecha.masks[this.inputFormats[0]] || this.inputFormats[0],
           }),
           ...this.inputProps,
         };
@@ -336,9 +335,10 @@ export default {
         const fromInRange = pageIsBetweenPages(this.fromPage_, range.from, range.to);
         const toInRange = pageIsBetweenPages(this.toPage_, range.from, range.to);
         if (this.mode === 'single') {
-          if (!fromInRange && !toInRange) {
+          if (!fromInRange && !Object.prototype.hasOwnProperty.call(this.$attrs, 'is-double-paned')) {
             this.fromPage_ = range.from;
-            this.toPage_ = range.to;
+          } else if (!toInRange) {
+            this.fromPage_ = range.to;
           }
         } else {
           if (!fromInRange) this.fromPage_ = range.from;

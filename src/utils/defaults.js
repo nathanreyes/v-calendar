@@ -1,6 +1,6 @@
-import locales from './locales';
 import { POPOVER_VISIBILITIES } from './constants';
 import { isObject, isFunction } from './typeCheckers';
+import setupLocale from './locales';
 
 const defaults = {
   componentPrefix: 'v',
@@ -9,21 +9,26 @@ const defaults = {
   titlePosition: 'center',
   titleTransition: 'slide-h',
   weeksTransition: 'slide-h',
-  paneWidth: 256, // px
-  dateFormatter: d => d.toLocaleDateString(),
-  dateParser: s => new Date(Date.parse(s)),
-  datePickerInputProps: ({ dragValue, mode }) => ({
+  paneWidth: 256, // px,
+  formats: {
+    title: 'MMMM YYYY',
+    weekdays: 'W',
+    navMonths: 'MMM',
+    input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
+    dayPopover: 'WWW, MMM D, YYYY',
+  },
+  datePickerInputProps: ({ dragValue, mode, format }) => ({
     ...(mode === 'single' && {
       style: {
         minWidth: '100px',
       },
-      placeholder: 'Enter Date',
+      placeholder: format,
     }),
     ...(mode === 'multiple' && {
       style: {
         minWidth: '200px',
       },
-      placeholder: 'Date 1, Date 2, ...',
+      placeholder: `${format}, ...`,
     }),
     ...(mode === 'range' && {
       style: {
@@ -32,7 +37,7 @@ const defaults = {
           color: 'rgba(0, 0, 0, 0.3)',
         }),
       },
-      placeholder: 'Start Date - End Date',
+      placeholder: `${format} - ${format}`,
     }),
   }),
   datePickerTintColor: '#66B3CC',
@@ -123,21 +128,8 @@ export default defaults;
 export const resolveDefault = (def, args) => (isObject(def) && def) || (isFunction(def) && def(args)) || def;
 
 export const mergeDefaults = (otherDefaults) => {
-  // Get the locale supplied by the user
-  let locale;
-  // Get the user supplied locale
-  if (otherDefaults && otherDefaults.locale) locale = locales[otherDefaults.locale.substring(0, 2)];
-  // Get the detected browser locale if needed
-  if (!locale) locale = locales[(window.navigator.userLanguage || window.navigator.language).substring(0, 2)];
-  // Fall back to english locale if needed
-  if (!locale) locale = locales.en;
-  // Assign the language defaults
-  const languageDefaults = {
-    monthLabels: locale.months,
-    shortMonthLabels: locale.monthsShort,
-    monthNavLabels: locale.monthsShort,
-    weekdayLabels: locale.weekdaysMin,
-  };
+  // Setup locale defaults
+  setupLocale(otherDefaults.locale, defaults);
   // Assign the defaults
-  Object.assign(defaults, languageDefaults, otherDefaults);
+  Object.assign(defaults, otherDefaults);
 };

@@ -8,8 +8,35 @@ import {
 } from './typeCheckers';
 import defaults from './defaults';
 import { mixinOptionalProps, getMonthComps } from './helpers';
+import { format, parse } from './fecha';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+export const formatDate = (d, f) => format(d, f);
+export const parseDate = (d, f) => parse(d, f, new Date());
+
+export const getMonthDates = (year = 2000) => {
+  const dates = [];
+  for (let i = 0; i < 12; i++) {
+    dates.push(new Date(year, i, 1));
+  }
+  return dates;
+};
+
+export const getWeekdayDates = (firstDayOfWeek = 1, year = 2000) => {
+  const dates = [];
+  for (let i = 1, j = 0; j < 7; i++) {
+    const d = new Date(year, 0, i);
+    if (d.getDay() === firstDayOfWeek - 1 || j > 0) {
+      dates.push(d);
+      j++;
+    }
+  }
+  return dates;
+};
+
+export const getFormattedMonths = (f, year) => getMonthDates(year).map(d => format(d, f));
+export const getFormattedWeekdays = (f, firstDayOfWeek) => getWeekdayDates(firstDayOfWeek).map(d => format(d, f));
 
 // Returns a date range that intersects two date info objects
 // NOTE: This is a shallow calculation (does not take patterns into account),
@@ -234,6 +261,7 @@ const DateInfo = (config, order) => {
     if (isNaN(date)) return null;
     // Strip date time
     date.setHours(0, 0, 0, 0);
+    // date.setUTCHours(0, 0, 0, 0);
     // Assign date
     info.date = date;
     info.dateTime = date.getTime();
@@ -260,11 +288,11 @@ const DateInfo = (config, order) => {
       // Reset invalid dates to null and strip times for valid dates
       if (start) {
         if (isNaN(start.getTime())) start = null;
-        else start.setHours(0, 0, 0, 0);
+        else start.setHours(0, 0, 0, 0); // .setUTCHours(0, 0, 0, 0);
       }
       if (end) {
         if (isNaN(end.getTime())) end = null;
-        else end.setHours(0, 0, 0, 0);
+        else end.setHours(0, 0, 0, 0); // setUTCHours(0, 0, 0, 0);
       }
       // Assign start and end dates
       info.start = start;

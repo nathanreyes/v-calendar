@@ -17,9 +17,6 @@
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
     v-model='selectedValue'>
-    <span slot='header-left-button' slot-scope='{ movePrevMonth }'>
-      <a href='#' @click.prevent='movePrevMonth'>left</a>
-    </span>
   </v-date-picker>
 </template>
 

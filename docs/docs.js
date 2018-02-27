@@ -13,7 +13,9 @@ Vue.use(VueClipboard);
 Vue.use(Buefy, {
   defaultIconPack: 'fa',
 });
-Vue.use(VCalendar);
+Vue.use(VCalendar, {
+  locale: 'ru',
+});
 Vue.component('CodeBlock', CodeBlock);
 Vue.directive('highlight', {
   deep: true,
