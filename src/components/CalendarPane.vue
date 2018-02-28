@@ -390,7 +390,7 @@ export default {
       const key = `${year.toString()}.${month.toString()}`;
       let page = this.pages.find(p => (p.key === key));
       if (!page) {
-        const date = new Date(year, month - 1, 1);
+        const date = new Date(year, month - 1, 15);
         const monthComps = getMonthComps(month, year);
         const prevMonthComps = getPrevMonthComps(month, year);
         const nextMonthComps = getNextMonthComps(month, year);

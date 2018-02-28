@@ -15,7 +15,7 @@ export const todayComps = {
 export const getMonthDates = (year = 2000) => {
   const dates = [];
   for (let i = 0; i < 12; i++) {
-    dates.push(new Date(year, i, 1));
+    dates.push(new Date(year, i, 15));
   }
   return dates;
 };

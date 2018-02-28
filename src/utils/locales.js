@@ -9,9 +9,9 @@ const locales = {
   // Catalan
   ca: { dow: 2, L: 'DD/MM/YYYY' },
   // Chinese (China)
-  'zh-cn': { dow: 2, L: 'YYYY/MM/DD' },
+  'zh-CN': { dow: 2, L: 'YYYY/MM/DD' },
   // Chinese (Taiwan)
-  'zh-tw': { L: 'YYYY/MM/DD' },
+  'zh-TW': { L: 'YYYY/MM/DD' },
   // Croatian
   hr: { dow: 2, L: 'DD.MM.YYYY' },
   // Czech
@@ -21,17 +21,17 @@ const locales = {
   // Dutch
   nl: { dow: 2, L: 'DD.MM.YYYY' },
   // English (US)
-  'en-us': { L: 'MM/DD/YYYY' },
+  'en-US': { L: 'MM/DD/YYYY' },
   // English (Australia)
-  'en-au': { dow: 2, L: 'DD/MM/YYYY' },
+  'en-AU': { dow: 2, L: 'DD/MM/YYYY' },
   // English (Canada)
-  'en-ca': { L: 'YYYY-MM-DD' },
+  'en-CA': { L: 'YYYY-MM-DD' },
   // English (Great Britain)
-  'en-gb': { dow: 2, L: 'DD/MM/YYYY' },
+  'en-GB': { dow: 2, L: 'DD/MM/YYYY' },
   // English (Ireland)
-  'en-ie': { dow: 2, L: 'DD-MM-YYYY' },
+  'en-IE': { dow: 2, L: 'DD-MM-YYYY' },
   // English (New Zealand)
-  'en-nz': { dow: 2, L: 'DD/MM/YYYY' },
+  'en-NZ': { dow: 2, L: 'DD/MM/YYYY' },
   // Esperanto
   eo: { dow: 2, L: 'YYYY-MM-DD' },
   // Finnish
@@ -39,9 +39,9 @@ const locales = {
   // French
   fr: { dow: 2, L: 'DD/MM/YYYY' },
   // French (Canada)
-  'fr-ca': { L: 'YYYY-MM-DD' },
+  'fr-CA': { L: 'YYYY-MM-DD' },
   // French (Switzerland)
-  'fr-ch': { dow: 2, L: 'DD.MM.YYYY' },
+  'fr-CH': { dow: 2, L: 'DD.MM.YYYY' },
   // German
   de: { dow: 2, L: 'DD.MM.YYYY' },
   // Indonesian
@@ -73,8 +73,8 @@ const locales = {
   // Turkish
   tk: { dow: 2, L: 'DD.MM.YYYY' },
 };
-locales.en = locales['en-us'];
-locales.zh = locales['zh-cn'];
+locales.en = locales['en-US'];
+locales.zh = locales['zh-CN'];
 
 // Month and day names are derived from Intl.DateTimeFormat
 const getMonthNames = (locale, length) => {
@@ -88,7 +88,7 @@ const getDayNames = (locale, length) => {
 
 export default (locale, defaults) => {
   locale = locale || new Intl.DateTimeFormat().resolvedOptions().locale;
-  const searchLocales = [locale.toLowerCase(), locale.toLowerCase().substring(0, 2), 'en-us'];
+  const searchLocales = [locale, locale.substring(0, 2), 'en-US'];
   const matchKey = searchLocales.find(l => locales[l]);
   const matchValue = locales[matchKey];
   defaults.locale = matchKey;
