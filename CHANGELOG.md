@@ -1,3 +1,7 @@
+# v0.7.1
+## Bug Fixes
+* Fix setup crash when not manually specifying a locale
+
 # v0.7.0
 ## Bug Fixes
 `v-calendar`

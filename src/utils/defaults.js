@@ -131,8 +131,7 @@ export const resolveDefault = (def, args) => (isObject(def) && def) || (isFuncti
 
 export const mergeDefaults = (otherDefaults) => {
   // Setup locale defaults if needed
-  const newLocale = otherDefaults && otherDefaults.locale;
-  if (newLocale && newLocale !== defaults.locale) setupLocale(newLocale, defaults);
+  setupLocale(otherDefaults && otherDefaults.locale, defaults);
   // Assign the defaults
   return Object.assign(defaults, otherDefaults);
 };
