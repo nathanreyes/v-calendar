@@ -163,7 +163,8 @@ import SvgIcon from './SvgIcon';
 import angleLeft from '@/assets/icons/angle-left.svg';
 import angleRight from '@/assets/icons/angle-right.svg';
 import defaults from '@/utils/defaults';
-import { formatDate, getFormattedWeekdays } from '@/utils/dateInfo';
+import { getWeekdayDates } from '@/utils/helpers';
+import { format } from '@/utils/fecha';
 
 import {
   todayComps,
@@ -209,7 +210,7 @@ export default {
   },
   computed: {
     weekdayLabels() {
-      return getFormattedWeekdays(this.formats.weekdays || 'dd', defaults.firstDayOfWeek);
+      return getWeekdayDates(defaults.firstDayOfWeek).map(d => format(d, this.formats.weekdays || 'WW'));
     },
     titleClass() {
       return this.titlePosition ? `align-${this.titlePosition}` : '';
@@ -397,9 +398,9 @@ export default {
           key,
           month,
           year,
-          title: formatDate(date, this.formats.title || 'MMMM YYYY'),
-          shortMonthLabel: formatDate(date, 'MMM'),
-          monthLabel: formatDate(date, 'MMMM'),
+          title: format(date, this.formats.title || 'MMMM YYYY'),
+          shortMonthLabel: format(date, 'MMM'),
+          monthLabel: format(date, 'MMMM'),
           shortYearLabel: year.toString().substring(2),
           yearLabel: year.toString(),
           monthComps,

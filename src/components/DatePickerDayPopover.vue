@@ -37,7 +37,7 @@ import SvgIcon from './SvgIcon';
 import sun from '@/assets/icons/sun-o.svg';
 import moon from '@/assets/icons/moon-o.svg';
 import defaults from '@/utils/defaults';
-import { formatDate } from '@/utils/dateInfo';
+import { format } from '@/utils/fecha';
 
 export default {
   components: {
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     getDateString(date) {
-      return formatDate(date, defaults.formats.dayPopover || 'L');
+      return format(date, defaults.formats.dayPopover || 'L');
     },
   },
 };

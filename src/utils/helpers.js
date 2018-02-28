@@ -12,6 +12,26 @@ export const todayComps = {
   day: today.getDate(),
 };
 
+export const getMonthDates = (year = 2000) => {
+  const dates = [];
+  for (let i = 0; i < 12; i++) {
+    dates.push(new Date(year, i, 1));
+  }
+  return dates;
+};
+
+export const getWeekdayDates = (firstDayOfWeek = 1, year = 2000) => {
+  const dates = [];
+  for (let i = 1, j = 0; j < 7; i++) {
+    const d = new Date(year, 0, i);
+    if (d.getDay() === firstDayOfWeek - 1 || j > 0) {
+      dates.push(d);
+      j++;
+    }
+  }
+  return dates;
+};
+
 // Days/month/year components for a given month and year
 export const getMonthComps = (month, year) => {
   const key = `${month}.${year}`;

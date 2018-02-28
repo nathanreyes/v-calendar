@@ -7,10 +7,10 @@ import DatePickerDayPopover from './DatePickerDayPopover';
 import PickerProfile from '@/utils/pickerProfiles';
 import Attribute from '@/utils/attribute';
 import defaults, { resolveDefault } from '@/utils/defaults';
-import { addDays, formatDate, parseDate } from '@/utils/dateInfo';
+import { addDays } from '@/utils/dateInfo';
 import { pageIsBetweenPages } from '@/utils/helpers';
 import { isString, isFunction, isObject, isArray } from '@/utils/typeCheckers';
-import fecha from '@/utils/fecha';
+import { format, parse } from '@/utils/fecha';
 
 export default {
   render(h) {
@@ -135,8 +135,8 @@ export default {
     profile() {
       return PickerProfile(
         this.mode,
-        d => formatDate(d, this.inputFormats[0]),
-        s => this.inputFormats.map(f => parseDate(s, f)).find(d => d) || new Date(s));
+        d => format(d, this.inputFormats[0]),
+        s => this.inputFormats.map(f => parse(s, f)).find(d => d) || new Date(s));
     },
     componentName() {
       return this.profile.componentName;
@@ -184,7 +184,7 @@ export default {
             mode: this.mode,
             value: this.value,
             dragValue: this.dragValue,
-            format: fecha.masks[this.inputFormats[0]] || this.inputFormats[0],
+            format: defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
           }),
           ...this.inputProps,
         };

@@ -1,28 +1,15 @@
 /* eslint-disable no-bitwise, no-mixed-operators, no-useless-escape, no-multi-assign */
 /* DATE FORMATTING & PARSING USING A SLIGHTLY MODIFIED VERSION OF FECHA (https://github.com/taylorhakes/fecha) */
 /* ADDS A NARROW WEEKDAY FORMAT 'dd' */
+import defaults from './defaults';
 
-/**
- * Parse or format dates
- * @class fecha
- */
-const fecha = {};
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
 const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
 const word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
 const literal = /\[([^]*?)\]/gm;
-const noop = () => {
-};
-
-function shorten(arr, sLen) {
-  const newArr = [];
-  for (let i = 0, len = arr.length; i < len; i++) {
-    newArr.push(arr[i].substr(0, sLen));
-  }
-  return newArr;
-}
+const noop = () => {};
 
 function monthUpdate(arrName) {
   return (d, v, i18n) => {
@@ -41,23 +28,6 @@ function pad(val, len) {
   }
   return val;
 }
-
-const dayNamesNarrow = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const monthNamesShort = shorten(monthNames, 3);
-const dayNamesShort = shorten(dayNames, 3);
-fecha.i18n = {
-  dayNamesNarrow,
-  dayNamesShort,
-  dayNames,
-  monthNamesShort,
-  monthNames,
-  amPm: ['am', 'pm'],
-  DoFn: function DoFn(D) {
-    return D + ['th', 'st', 'nd', 'rd'][D % 10 > 3 ? 0 : (D - D % 10 !== 10) * D % 10];
-  },
-};
 
 const formatFlags = {
   D(dateObj) {
@@ -79,7 +49,7 @@ const formatFlags = {
     return i18n.dayNamesNarrow[dateObj.getDay()];
   },
   WW(dateObj, i18n) {
-    return i18n.dayNamesShort[dateObj.getDay()].substring(0, 2);
+    return i18n.dayNamesShorter[dateObj.getDay()];
   },
   WWW(dateObj, i18n) {
     return i18n.dayNamesShort[dateObj.getDay()];
@@ -216,21 +186,14 @@ parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
 parseFlags.ss = parseFlags.s;
 parseFlags.A = parseFlags.a;
 
-/**
- * Format a date
- * @method format
- * @param {Date|number} dateObj
- * @param {string} mask Format of the date, i.e. 'mm-dd-yy' or 'shortDate'
- */
-fecha.format = (dateObj, mask, i18nSettings) => {
-  const i18n = i18nSettings || fecha.i18n;
+export const format = (dateObj, mask) => {
   if (typeof dateObj === 'number') {
     dateObj = new Date(dateObj);
   }
   if (Object.prototype.toString.call(dateObj) !== '[object Date]' || isNaN(dateObj.getTime())) {
     throw new Error('Invalid Date in fecha.format');
   }
-  mask = fecha.masks[mask] || mask || fecha.masks.default;
+  mask = defaults.masks[mask] || mask;
   const literals = [];
   // Make literals inactive by replacing them with ??
   mask = mask.replace(literal, ($0, $1) => {
@@ -238,27 +201,16 @@ fecha.format = (dateObj, mask, i18nSettings) => {
     return '??';
   });
   // Apply formatting rules
-  mask = mask.replace(token, $0 => ($0 in formatFlags ? formatFlags[$0](dateObj, i18n) : $0.slice(1, $0.length - 1)));
+  mask = mask.replace(token, $0 => ($0 in formatFlags ? formatFlags[$0](dateObj, defaults) : $0.slice(1, $0.length - 1)));
   // Inline literal values back into the formatted value
   return mask.replace(/\?\?/g, () => literals.shift());
 };
 
-/**
- * Parse a date string into an object, changes - into /
- * @method parse
- * @param {string} dateStr Date string
- * @param {string} format Date parse format
- * @returns {Date|boolean}
- */
-fecha.parse = (dateStr, format, i18nSettings) => {
-  const i18n = i18nSettings || fecha.i18n;
-
-  if (typeof format !== 'string') {
-    throw new Error('Invalid format in fecha.parse');
+export const parse = (dateStr, mask) => {
+  if (typeof mask !== 'string') {
+    throw new Error('Invalid mask in fecha.parse');
   }
-
-  format = fecha.masks[format] || format;
-
+  mask = defaults.masks[mask] || mask;
   // Avoid regular expression denial of service, fail early for really long strings
   // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
   if (dateStr.length > 1000) {
@@ -267,7 +219,7 @@ fecha.parse = (dateStr, format, i18nSettings) => {
 
   let isValid = true;
   const dateInfo = {};
-  format.replace(token, ($0) => {
+  mask.replace(token, ($0) => {
     if (parseFlags[$0]) {
       const info = parseFlags[$0];
       const index = dateStr.search(info[0]);
@@ -275,7 +227,7 @@ fecha.parse = (dateStr, format, i18nSettings) => {
         isValid = false;
       } else {
         dateStr.replace(info[0], (result) => {
-          info[1](dateInfo, result, i18n);
+          info[1](dateInfo, result, defaults);
           dateStr = dateStr.substr(index + result.length);
           return result;
         });
@@ -307,5 +259,3 @@ fecha.parse = (dateStr, format, i18nSettings) => {
   }
   return date;
 };
-
-module.exports = fecha;

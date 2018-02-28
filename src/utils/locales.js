@@ -1,15 +1,4 @@
-import fecha from './fecha';
-import { getMonthDates, getWeekdayDates } from './dateInfo';
-
-// Month and day names are derived from Intl.DateTimeFormat
-const getMonthNames = (locale, length) => {
-  const dtf = new Intl.DateTimeFormat(locale, { month: length });
-  return getMonthDates().map(d => dtf.format(d));
-};
-const getDayNames = (locale, length) => {
-  const dtf = new Intl.DateTimeFormat(locale, { weekday: length });
-  return getWeekdayDates().map(d => dtf.format(d));
-};
+import { getMonthDates, getWeekdayDates } from './helpers';
 
 // Infer first day of week === 1 if not listed (dow)
 const locales = {
@@ -87,23 +76,28 @@ const locales = {
 locales.en = locales['en-us'];
 locales.zh = locales['zh-cn'];
 
-const setupLocale = (locale, defaults) => {
-  const l = locale || new Intl.DateTimeFormat().resolvedOptions().locale;
-  const lMatch = l && (locales[l.toLowerCase()] || locales[l.toLowerCase().substring(0, 1)]);
-  fecha.i18n = {
-    ...fecha.i18n,
-    dayNames: getDayNames(locale, 'long'),
-    dayNamesShort: getDayNames(locale, 'short'),
-    dayNamesNarrow: getDayNames(locale, 'narrow'),
-    monthNames: getMonthNames(locale, 'long'),
-    monthNamesShort: getMonthNames(locale, 'short'),
-  };
-  if (lMatch) {
-    fecha.masks = {
-      L: lMatch.L,
-    };
-    defaults.firstDayOfWeek = lMatch.dow || 1;
-  }
+// Month and day names are derived from Intl.DateTimeFormat
+const getMonthNames = (locale, length) => {
+  const dtf = new Intl.DateTimeFormat(locale, { month: length });
+  return getMonthDates().map(d => dtf.format(d));
+};
+const getDayNames = (locale, length) => {
+  const dtf = new Intl.DateTimeFormat(locale, { weekday: length });
+  return getWeekdayDates().map(d => dtf.format(d));
 };
 
-export default setupLocale;
+export default (locale, defaults) => {
+  locale = locale || new Intl.DateTimeFormat().resolvedOptions().locale;
+  const searchLocales = [locale.toLowerCase(), locale.toLowerCase().substring(0, 2), 'en-us'];
+  const matchKey = searchLocales.find(l => locales[l]);
+  const matchValue = locales[matchKey];
+  defaults.locale = matchKey;
+  defaults.firstDayOfWeek = matchValue.dow || 1;
+  defaults.dayNames = getDayNames(matchKey, 'long');
+  defaults.dayNamesShort = getDayNames(matchKey, 'short');
+  defaults.dayNamesShorter = defaults.dayNamesShort.map(s => s.substring(0, 2));
+  defaults.dayNamesNarrow = getDayNames(matchKey, 'narrow');
+  defaults.monthNames = getMonthNames(matchKey, 'long');
+  defaults.monthNamesShort = getMonthNames(matchKey, 'short');
+  defaults.masks = { L: matchValue.L };
+};

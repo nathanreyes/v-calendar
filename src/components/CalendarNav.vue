@@ -106,11 +106,14 @@
 import SvgIcon from './SvgIcon';
 import angleLeft from '@/assets/icons/angle-left.svg';
 import angleRight from '@/assets/icons/angle-right.svg';
-import DateInfo, { getFormattedMonths } from '@/utils/dateInfo';
+import DateInfo from '@/utils/dateInfo';
+import { format } from '@/utils/fecha';
 import {
   getMonthComps,
   getFirstArrayItem,
-  getLastArrayItem } from '@/utils/helpers';
+  getLastArrayItem,
+  getMonthDates,
+} from '@/utils/helpers';
 
 const _yearGroupCount = 12;
 
@@ -155,7 +158,7 @@ export default {
       return this.validator({ month: 1, year: this.lastYear + 1 });
     },
     monthItems() {
-      return getFormattedMonths(this.formats.navMonths || 'MMM').map((ml, i) => {
+      return getMonthDates().map(d => format(d, this.formats.navMonths || 'MMM')).map((ml, i) => {
         const month = i + 1;
         return {
           month,

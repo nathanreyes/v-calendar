@@ -122,14 +122,17 @@ const defaults = {
     },
   },
 };
+// Uncomment this line when running unit tests
+// setupLocale(null, defaults);
 
 export default defaults;
 
 export const resolveDefault = (def, args) => (isObject(def) && def) || (isFunction(def) && def(args)) || def;
 
 export const mergeDefaults = (otherDefaults) => {
-  // Setup locale defaults
-  setupLocale(otherDefaults.locale, defaults);
+  // Setup locale defaults if needed
+  const newLocale = otherDefaults && otherDefaults.locale;
+  if (newLocale && newLocale !== defaults.locale) setupLocale(newLocale, defaults);
   // Assign the defaults
-  Object.assign(defaults, otherDefaults);
+  return Object.assign(defaults, otherDefaults);
 };
