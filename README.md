@@ -313,7 +313,7 @@ export default {
       myDate: null,
       formats: {
         title: 'MMMM YYYY',
-        weekdays: 'dd',
+        weekdays: 'W',
         navMonths: 'MMM',
         input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'], // Only for `v-date-picker`
         dayPopover: 'L', // Only for `v-date-picker`
@@ -331,7 +331,7 @@ import VCalendar from 'v-calendar'
 Vue.use(VCalendar, {
   formats: {
     title: 'MMMM YYYY',
-    weekdays: 'dd',
+    weekdays: 'W',
     navMonths: 'MMM',
     input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
     dayPopover: 'L',
@@ -359,6 +359,7 @@ Use the following tokens to configure your custom formats:
 | | `DD` | 01, 02, ..., 31 |
 | | `Do` | 1st, 2nd, ..., 31st |
 | **Day of Week** | `d` | 1, 2, ..., 7 |
+| | `d` | 1, 2, ..., 7 |
 | | `dd` | 01, 02, ..., 07 |
 | | `W` | S, M, ..., S |
 | | `WW` | Su, Mo, ..., Sa |
