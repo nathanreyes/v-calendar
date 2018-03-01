@@ -11,13 +11,16 @@ import { addDays } from '@/utils/dateInfo';
 import { pageIsBetweenPages } from '@/utils/helpers';
 import { isString, isFunction, isObject, isArray } from '@/utils/typeCheckers';
 import { format, parse } from '@/utils/fecha';
+import { mergeListeners } from '@/mixins';
 
 export default {
+  mixins: [mergeListeners],
   render(h) {
     const getPickerComponent = asSlot => h(
       this.componentName,
       {
         attrs: {
+          ...this.$attrs,
           value: this.value,
           isRequired: this.isRequired,
           selectAttribute: this.selectAttribute_,
@@ -26,14 +29,12 @@ export default {
           fromPage: this.fromPage_,
           toPage: this.toPage_,
           themeStyles: this.themeStyles_,
-          ...this.$attrs,
         },
-        on: {
+        on: this.mergeListeners({
           'update:fromPage': val => this.fromPage_ = val,
           'update:toPage': val => this.toPage_ = val,
           drag: val => this.dragValue = val,
-          ...this.filteredListeners(),
-        },
+        }, this.filteredListeners()),
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
         ...(asSlot && {

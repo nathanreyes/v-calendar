@@ -1,18 +1,19 @@
 <script>
 import Calendar from './Calendar';
 import { singleHasValue, singleValuesAreEqual } from '../utils/pickerProfiles';
+import { mergeListeners } from '@/mixins';
 
 export default {
+  mixins: [mergeListeners],
   render(h) {
     return h(Calendar, {
       attrs: {
-        attributes: this.attributes_,
         ...this.$attrs,
+        attributes: this.attributes_,
       },
-      on: {
+      on: this.mergeListeners({
         dayclick: this.clickDay,
-        ...this.$listeners,
-      },
+      }),
       slots: this.$slots,
       scopedSlots: this.$scopedSlots,
     });

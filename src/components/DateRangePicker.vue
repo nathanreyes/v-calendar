@@ -1,20 +1,21 @@
 <script>
 import Calendar from './Calendar';
 import { rangeNormalizer } from '../utils/pickerProfiles';
+import { mergeListeners } from '@/mixins';
 
 export default {
+  mixins: [mergeListeners],
   render(h) {
     return h(Calendar, {
       attrs: {
+        ...this.$attrs,
         attributes: this.attributes_,
         themeStyles: this.themeStyles_,
-        ...this.$attrs,
       },
-      on: {
+      on: this.mergeListeners({
         dayclick: this.clickDay,
         daymouseenter: this.enterDay,
-        ...this.$listeners,
-      },
+      }),
       slots: this.$slots,
       scopedSlots: this.$scopedSlots,
     });

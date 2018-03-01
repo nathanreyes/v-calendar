@@ -1,3 +1,8 @@
+# v0.7.2
+## Bug Fixes
+* Fix event collision when using render functions. Closes #82.
+* Fix date formatting bug in Safari.
+
 # v0.7.1
 ## Bug Fixes
 * Fix setup crash when not manually specifying a locale

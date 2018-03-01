@@ -3,6 +3,7 @@ import CalendarPane from './CalendarPane';
 import Tag from './Tag';
 import AttributeStore from '../utils/attributeStore';
 import defaults from '../utils/defaults';
+import { mergeListeners } from '@/mixins';
 import {
   todayComps,
   pageIsEqualToPage,
@@ -16,25 +17,25 @@ import {
 import '../styles/lib.sass';
 
 export default {
+  mixins: [mergeListeners],
   render(h) {
     const getPaneComponent = position => h(CalendarPane, {
       attrs: {
+        ...this.$attrs,
         position,
         page: position < 2 ? this.fromPage_ : this.toPage_,
         minPage: position < 2 ? this.minPage : this.minToPage,
         maxPage: position < 2 ? this.maxFromPage : this.maxPage,
         styles: this.themeStyles_,
         attributes: this.attributes_,
-        ...this.$attrs,
       },
-      on: {
+      on: this.mergeListeners({
         titleclick: this.titleClick,
         'update:page': (val) => {
           if (position < 2) this.fromPage_ = val;
           else this.toPage_ = val;
         },
-        ...this.$listeners,
-      },
+      }),
       slots: this.$slots,
       scopedSlots: this.$scopedSlots,
     });

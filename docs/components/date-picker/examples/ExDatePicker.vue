@@ -16,7 +16,11 @@
     :popover-visibility='popoverVisibility'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
-    v-model='selectedValue'>
+    v-model='selectedValue'
+    @drag='dragValue = $event'
+    :available-dates='availableDates'
+    @input='input'
+    >
   </v-date-picker>
 </template>
 
@@ -37,6 +41,8 @@ export default {
   },
   data() {
     return {
+      dragValue: null,
+      availableDates: null,
       fromPage: null,
       toPage: null,
       selectedValue: new Date(),
@@ -46,6 +52,28 @@ export default {
       },
     };
   },
+  watch: {
+  	dragValue(val, oldVal) {
+    	if (!val) {
+      	this.availableDates = null;
+      } else if (val && !oldVal) {
+      	this.availableDates = {
+        	start: this.addDays(val.start, -2),
+          end: this.addDays(val.start, 2)
+        }
+      }
+    }
+  },
+  methods: {
+    addDays(date, days) {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    },
+    input() {
+      alert('input');
+    }
+  }
 };
 </script>
 
