@@ -1,6 +1,10 @@
+# v0.7.5
+## Bug Fixes
+* Remove console.log statement. Closes #85.
+
 # v0.7.4
 ## Bug Fixes
-* Redress issue introduced by v0.7.3."
+* Redress issue introduced by v0.7.3.
 
 # v0.7.3
 ## Bug Fixes
