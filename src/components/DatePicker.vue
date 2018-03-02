@@ -43,6 +43,7 @@ export default {
       },
     );
     if (this.isInline) return getPickerComponent();
+    console.log(this.$scopedSlots);
     return h('popover', {
       attrs: {
         isExpanded: this.popoverExpanded,
@@ -58,10 +59,10 @@ export default {
         'update:forceHidden': val => this.popoverForceHidden = val,
       },
     }, [
-      this.$scopedSlots.default({
+      (isFunction(this.$scopedSlots.default) && this.$scopedSlots.default({
         inputValue: this.inputValue,
         updateValue: this.updateValue,
-      }) || [
+      })) || [
         h('input', {
           ref: 'input',
           class: this.inputProps_.class,
