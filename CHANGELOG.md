@@ -1,3 +1,7 @@
+# v0.7.3
+## Bug Fixes
+* Fix scoped slot usage in `v-date-picker` render function. Closes #83.
+
 # v0.7.2
 ## Bug Fixes
 * Fix event collision when using render functions. Closes #82.
