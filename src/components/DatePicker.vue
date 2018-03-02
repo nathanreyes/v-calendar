@@ -43,7 +43,6 @@ export default {
       },
     );
     if (this.isInline) return getPickerComponent();
-    console.log(this.$scopedSlots);
     return h('popover', {
       attrs: {
         isExpanded: this.popoverExpanded,
