@@ -58,12 +58,10 @@ export default {
         'update:forceHidden': val => this.popoverForceHidden = val,
       },
     }, [
-      h('slot', {
-        props: {
-          inputValue: this.inputValue,
-          updateValue: this.updateValue,
-        },
-      }, [
+      this.$scopedSlots.default({
+        inputValue: this.inputValue,
+        updateValue: this.updateValue,
+      }) || [
         h('input', {
           ref: 'input',
           class: this.inputProps_.class,
@@ -80,7 +78,7 @@ export default {
             change: () => this.updateValue(),
           },
         }),
-      ]),
+      ],
       getPickerComponent('popover-content'),
     ]);
   },
