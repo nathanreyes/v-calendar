@@ -131,7 +131,7 @@ export default {
   props: {
     day: { type: Object, required: true },
     attributes: Object,
-    popoverContentOffset: { type: String, default: '7px' },
+    popoverContentOffset: { type: Number, default: 7 },
     styles: Object,
   },
   data() {

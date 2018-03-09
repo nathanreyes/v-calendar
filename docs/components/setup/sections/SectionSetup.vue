@@ -88,12 +88,12 @@ export default {
           datePickerSelectColor: '#66B3CC',
           datePickerDragColor: '#9FCFDF', // Only used for drag mode
           datePickerShowCaps: false, // Only used for drag mode
-          datePickerShowPopover: true,
+          datePickerShowDayPopover: true,
           popoverExpanded: false,
           popoverDirection: 'bottom',
           popoverAlign: 'left',
           popoverVisibility: 'hover',
-          popoverContentOffset: '10px',
+          popoverContentOffset: '10', // px
           maxSwipeTime: 300, // ms
           minHorizontalSwipeDistance: 60, // px
           maxVerticalSwipeDistance: 80, // px

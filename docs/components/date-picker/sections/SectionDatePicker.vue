@@ -35,7 +35,7 @@
             <b-switch v-model='showCaps'>Show Caps</b-switch>
           </b-field>
           <b-field>
-            <b-switch v-model='showPopover'>Show Popover</b-switch>
+            <b-switch v-model='showDayPopover'>Show Day Popover</b-switch>
           </b-field>
           <b-field>
             <b-switch v-model='showDisabledDates'>Show Disabled</b-switch>
@@ -88,7 +88,7 @@
       </b-tabs>
     </div>
     <div class='column'>
-      <div :class='{ "example-container": isInline, "popover": !isInline }'>
+      <div :class='{ "example-container": isInline }'>
         <ex-date-picker
           :mode='mode'
           :show-disabled-dates='showDisabledDates'
@@ -100,7 +100,7 @@
           :popover-align='popoverAlignment'
           :tint-color='tintColor'
           :show-caps='showCaps'
-          :show-popover='showPopover'>
+          :show-popover='showDayPopover'>
         </ex-date-picker>
       </div>
     </div>
@@ -122,7 +122,7 @@ export default {
       mode: 'single',
       selectedValue: null,
       showCaps: true,
-      showPopover: true,
+      showDayPopover: true,
       showDisabledDates: false,
       isInline: false,
       isExpanded: false,
@@ -167,6 +167,4 @@ export default {
   .tip
     font-size: 0.8rem
     margin: -14px 0 10px 10px
-  .popover
-    margin-bottom: 220px
 </style>

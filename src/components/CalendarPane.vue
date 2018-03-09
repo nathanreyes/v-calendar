@@ -149,7 +149,7 @@
             <slot :name='slot' v-bind='props'></slot>
           </template>
         </calendar-weeks>
-      </transition-group> 
+      </transition-group>
     </div>
   </div>
 </div>

@@ -42,7 +42,7 @@ const defaults = {
   }),
   datePickerTintColor: '#66B3CC',
   datePickerShowCaps: false,
-  datePickerShowPopover: true,
+  datePickerShowDayPopover: true,
   datePickerDisabledAttribute: {
     contentStyle: {
       color: '#d98c8c',
@@ -59,7 +59,7 @@ const defaults = {
   popoverDirection: 'bottom',
   popoverAlign: 'left',
   popoverVisibility: POPOVER_VISIBILITIES.HOVER,
-  popoverContentOffset: '10px',
+  popoverContentOffset: 10, // px
   popoverKeepVisibleOnInput: false,
   maxSwipeTime: 300, // ms
   minHorizontalSwipeDistance: 60, // px
@@ -68,7 +68,7 @@ const defaults = {
   maxTapDuration: 200, // ms
   highlight: {
     animated: true,
-    height: '1.8rem',
+    height: '1.9rem',
     borderWidth: '0',
     borderStyle: 'solid',
     opacity: 1,
@@ -123,7 +123,7 @@ const defaults = {
   },
 };
 // Uncomment this line when running unit tests
-// setupLocale(null, defaults);
+if (process.env.NODE_ENV === 'test') setupLocale(null, defaults);
 
 export default defaults;
 

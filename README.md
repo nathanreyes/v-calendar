@@ -483,7 +483,7 @@ Vue.use(VCalendar, {
 | `weeksTransition` | String | Transition type for weeks when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`) | `"slide-h"` |
 | `datePickerTintColor` | String | Background color of the selected and dragged highlighted regions (`opacity: 0.5` for dragged). This setting is overridden by `select-attribute` and `drag-attribute` if specified. | `"#66B3CC"` |
 | `datePickerShowCaps` | Boolean | Show caps and the end of the highlighted and dragged regions when `mode === "range"` | `false` |
-| `datePickerShowPopover` | Boolean | Show popover for dragged and selected regions | `true` |
+| `datePickerShowDayPopover` | Boolean | Show popover for dragged and selected regions | `true` |
 | `popoverExpanded` | Boolean | Popover wrapper for input or slot is expanded to the full width of its container. | `false` |
 | `popoverDirection` | String | Direction that popover displays relative to input or slot element (`"bottom"`, `"top"`, `"left"`, `"right"`) | `"bottom"` |
 | `popoverAlign` | String | How the popover is aligned relative to input or slot element (`"left"`, `"right"`, `"top"`, `"bottom"'`) | `"left"` |

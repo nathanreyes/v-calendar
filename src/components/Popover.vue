@@ -3,6 +3,7 @@
   ref='popover'
   :class='["popover-container", { expanded: isExpanded }]'
   :tabindex='visibilityIsManaged ? 0 : undefined'
+  :style='containerStyle'
   @focusin='focusin'
   @focusout='focusout'
   @mouseleave='mouseleave'
@@ -11,8 +12,10 @@
   <transition
     tag='div'
     :name='transition'
+    @enter='contentEnter'
     @before-enter='beforeContentEnter'
     @after-enter='afterContentEnter'
+    @leave='contentLeave'
     @before-leave='beforeContentLeave'
     @after-leave='afterContentLeave'>
     <div
@@ -56,22 +59,30 @@ export default {
     forceHidden: Boolean,
     toggleVisibleOnClick: Boolean, // Only valid when visibility === "focus"
     contentStyle: Object,
-    contentOffset: { type: String, default: () => defaults.popoverContentOffset },
+    contentOffset: { type: Number, default: () => defaults.popoverContentOffset },
     transition: { type: String, default: 'slide-fade' },
+    showClearMargin: Boolean,
   },
   data() {
     return {
       hoverVisible: false,
       focusVisible: false,
+      clearMargin: 0,
       contentTransitioning: false,
+      contentTransitioningCancelled: false,
       disableNextClick: false,
       windowTapClickRegistration: null,
     };
   },
   computed: {
+    containerStyle() {
+      return this.visible && {
+        [`margin-${this.direction}`]: `${this.clearMargin}px`,
+      };
+    },
     contentWrapperStyle() {
       const style = {};
-      style[`padding${this.contentOffsetDirection}`] = this.contentOffset;
+      style[`padding${this.contentOffsetDirection}`] = `${this.contentOffset}px`;
       return style;
     },
     contentOffsetDirection() {
@@ -105,6 +116,9 @@ export default {
   },
   created() {
     this.windowTapClickRegistration = registerTapOrClick(window, this.windowTapOrClick);
+  },
+  mounted() {
+    this.refreshClearMargin();
   },
   beforeDestroy() {
     this.windowTapClickRegistration.cleanup();
@@ -149,21 +163,38 @@ export default {
         this.focusVisible = false;
       }
     },
+    refreshClearMargin() {
+      if (this.showClearMargin && this.visible && this.$refs.popoverContent) {
+        const { width, height } = this.$refs.popoverContent.getBoundingClientRect();
+        const span = ((this.direction === 'left' || this.direction === 'right') && width) || height;
+        this.clearMargin = span + this.contentOffset;
+      } else {
+        this.clearMargin = 0;
+      }
+    },
     beforeContentEnter() {
       this.contentTransitioning = true;
-      this.$emit('willappear');
+      this.$emit('will-appear');
+    },
+    contentEnter() {
+      this.refreshClearMargin();
     },
     afterContentEnter() {
       this.contentTransitioning = false;
-      this.$emit('didappear');
+      this.$emit('did-appear');
+    },
+    contentLeave() {
+      this.refreshClearMargin();
     },
     beforeContentLeave() {
+      this.contentTransitioningCancelled = this.contentTransitioning;
       this.contentTransitioning = true;
-      this.$emit('willdisappear');
+      this.$emit('will-disappear', this.contentTransitioningCancelled);
     },
     afterContentLeave() {
       this.contentTransitioning = false;
-      this.$emit('diddisappear');
+      this.$emit('did-disappear', this.contentTransitioningCancelled);
+      this.contentTransitioningCancelled = false;
       // Reset forceHidden state if needed
       if (this.forceHidden) {
         this.$emit('update:forcehidden', false);

@@ -6,7 +6,7 @@
     :mode='mode'
     :tint-color='tintColor'
     :show-caps='showCaps'
-    :show-popover='showPopover'
+    :show-day-popover='showDayPopover'
     :disabled-dates='showDisabledDates ? disabledDates : null'
     :attributes='[]'
     :is-inline='isInline'
@@ -16,6 +16,7 @@
     :popover-visibility='popoverVisibility'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
+    popover-show-clear-margin
     v-model='selectedValue'>
   </v-date-picker>
 </template>
@@ -26,7 +27,7 @@ export default {
     mode: { type: String, default: 'single' },
     tintColor: { type: String, default: '#66b3cc' },
     showCaps: { type: Boolean, default: true },
-    showPopover: { type: Boolean, default: true },
+    showDayPopover: { type: Boolean, default: true },
     showDisabledDates: Boolean,
     isInline: Boolean,
     isExpanded: Boolean,

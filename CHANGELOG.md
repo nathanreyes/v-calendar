@@ -1,3 +1,19 @@
+# v0.8.0
+## Bug Fixes
+`v-date-picker`
+* Fixes `select-attribute` and `drag-attribute` props getting written over. Closes #75.
+
+## Improvements
+`v-date-picker`
+* Add `popoverShowClearMargin` prop to apply clear margin when popover appears. Closes #47.
+* Add events for `popover-will-appear`, `popover-did-appear`, `popover-will-disappear` and `popover-did-disappear`
+* `show-popover` prop renamed to `show-day-popover` to avoid confusion with input popover
+* `popoverContentOffset` prop converted to number instead of a string
+
+`defaults`
+* `date-picker-show-popover` renamed to `date-picker-show-day-popover`
+* `popover-content-offset` is converted to number instead of a string
+
 # v0.7.5
 ## Bug Fixes
 * Remove console.log statement. Closes #85.

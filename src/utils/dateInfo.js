@@ -261,11 +261,13 @@ const DateInfo = (config, order) => {
       // Reset invalid dates to null and strip times for valid dates
       if (start) {
         if (isNaN(start.getTime())) start = null;
-        else start.setHours(0, 0, 0, 0); // .setUTCHours(0, 0, 0, 0);
+        else start.setHours(0, 0, 0, 0);
+        // else start.setUTCHours(0, 0, 0, 0);
       }
       if (end) {
         if (isNaN(end.getTime())) end = null;
-        else end.setHours(0, 0, 0, 0); // setUTCHours(0, 0, 0, 0);
+        else end.setHours(0, 0, 0, 0);
+        // else end.setUTCHours(0, 0, 0, 0);
       }
       // Assign start and end dates
       info.start = start;

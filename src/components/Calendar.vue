@@ -1,6 +1,5 @@
 <script>
 import CalendarPane from './CalendarPane';
-import Tag from './Tag';
 import AttributeStore from '../utils/attributeStore';
 import defaults from '../utils/defaults';
 import { mergeListeners } from '@/mixins';
@@ -54,7 +53,6 @@ export default {
   name: 'VCalendar',
   components: {
     CalendarPane,
-    Tag,
   },
   props: {
     minPage: Object,

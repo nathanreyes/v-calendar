@@ -52,9 +52,14 @@ export default {
         contentStyle: this.popoverContentStyle,
         contentOffset: this.popoverContentOffset,
         forceHidden: this.popoverForceHidden,
+        showClearMargin: this.popoverShowClearMargin,
         isInteractive: true,
       },
       on: {
+        'will-appear': e => this.$emit('popover-will-appear', e),
+        'did-appear': e => this.$emit('popover-did-appear', e),
+        'will-disappear': e => this.$emit('popover-will-disappear', e),
+        'did-disappear': e => this.$emit('popover-did-disappear', e),
         'update:forceHidden': val => this.popoverForceHidden = val,
       },
     }, [
@@ -104,12 +109,13 @@ export default {
     selectAttribute: Object, // Resolved by computed property
     disabledAttribute: Object, // Resolved by computed property
     showCaps: { type: Boolean, default: () => defaults.datePickerShowCaps },
-    showPopover: { type: Boolean, default: () => defaults.datePickerShowPopover },
+    showDayPopover: { type: Boolean, default: () => defaults.datePickerShowDayPopover },
     popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
     popoverDirection: { type: String, default: () => defaults.popoverDirection },
     popoverAlign: { type: String, default: () => defaults.popoverAlign },
     popoverVisibility: { type: String, default: () => defaults.popoverVisibility },
-    popoverContentOffset: { type: String, default: () => defaults.popoverContentOffset },
+    popoverContentOffset: { type: Number, default: () => defaults.popoverContentOffset },
+    popoverShowClearMargin: Boolean,
     popoverKeepVisibleOnInput: { type: Boolean, default: () => defaults.popoverKeepVisibleOnInput },
     fromPage: Object,
     toPage: Object,
@@ -145,7 +151,7 @@ export default {
         mode: this.mode,
         color: this.tintColor,
         showCaps: this.showCaps,
-        showPopover: this.showPopover,
+        showDayPopover: this.showDayPopover,
       };
     },
     selectAttribute_() {
@@ -279,25 +285,28 @@ export default {
         key: 'drag-select',
         ...propAttr,
       };
-      const { highlight, contentStyle, dot, bar } = attr;
-      if (!highlight && !contentStyle && !dot && !bar) {
+      const { highlight, contentStyle, contentHoverStyle, dot, bar } = attr;
+      if (!dot && !bar) {
         attr = {
           ...attr,
           highlight: {
             backgroundColor: this.tintColor,
             ...(isDrag && {
-              height: '25px',
+              height: '1.7rem',
               opacity: 0.5,
             }),
+            ...highlight,
           },
           ...(!isDrag && {
             contentStyle: {
               color: '#fafafa',
+              ...contentStyle,
             },
           }),
           contentHoverStyle: {
             backgroundColor: 'transparent',
             border: '0',
+            ...contentHoverStyle,
           },
         };
       }
@@ -306,15 +315,18 @@ export default {
           backgroundColor: '#fafafa',
           borderColor: this.tintColor,
           borderWidth: '2px',
+          ...attr.highlightCaps,
         };
         attr.contentStyleCaps = {
           color: '#333333',
+          ...attr.contentStyleCaps,
         };
       }
-      if (!attr.popover && this.showPopover) {
+      if (attr.popover || this.showDayPopover) {
         attr.popover = {
           component: DatePickerDayPopover,
           hideIndicator: true,
+          ...attr.popover,
         };
       }
       return attr;

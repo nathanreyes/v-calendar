@@ -78,8 +78,6 @@ export default {
           //  We don't know how the UI wants to display various days,
           //  so we'll supply all the data we can
           const date = new Date(year, month - 1, day);
-          // date.setHours(0, 0, 0, 0);
-          // date.setUTCHours(0, 0, 0, 0);
           const isToday = day === todayComps.day && month === todayComps.month && year === todayComps.year;
           const isFirstDay = thisMonth && day === 1;
           const isLastDay = thisMonth && day === this.monthComps.days;
