@@ -1,9 +1,10 @@
 {
   "name": "v-calendar",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "keywords": [
     "vue",
+    "vuejs",
     "plugin",
     "calendar",
     "datepicker",
@@ -37,7 +38,6 @@
     "build:docs": "node build/build.js"
   },
   "dependencies": {
-    "date-fns": "2.0.0-alpha.7",
     "vue": "^2.5.0"
   },
   "devDependencies": {
