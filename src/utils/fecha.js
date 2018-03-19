@@ -2,6 +2,7 @@
 /* DATE FORMATTING & PARSING USING A SLIGHTLY MODIFIED VERSION OF FECHA (https://github.com/taylorhakes/fecha) */
 /* ADDS A NARROW WEEKDAY FORMAT 'dd' */
 import defaults from './defaults';
+import { isString, isArray } from './typeCheckers';
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
@@ -13,7 +14,9 @@ const noop = () => {};
 
 function monthUpdate(arrName) {
   return (d, v, i18n) => {
-    const index = i18n[arrName].indexOf(v.charAt(0).toUpperCase() + v.substr(1).toLowerCase());
+    const index = i18n[arrName].indexOf(
+      v.charAt(0).toUpperCase() + v.substr(1).toLowerCase(),
+    );
     if (~index) {
       d.month = index;
     }
@@ -112,70 +115,117 @@ const formatFlags = {
     return dateObj.getHours() < 12 ? i18n.amPm[0] : i18n.amPm[1];
   },
   A(dateObj, i18n) {
-    return dateObj.getHours() < 12 ? i18n.amPm[0].toUpperCase() : i18n.amPm[1].toUpperCase();
+    return dateObj.getHours() < 12
+      ? i18n.amPm[0].toUpperCase()
+      : i18n.amPm[1].toUpperCase();
   },
   ZZ(dateObj) {
     const o = dateObj.getTimezoneOffset();
-    return (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4);
+    return (
+      (o > 0 ? '-' : '+') +
+      pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4)
+    );
   },
 };
 
 const parseFlags = {
-  D: [twoDigits, (d, v) => {
-    d.day = v;
-  }],
-  Do: [new RegExp(twoDigits.source + word.source), (d, v) => {
-    d.day = parseInt(v, 10);
-  }],
+  D: [
+    twoDigits,
+    (d, v) => {
+      d.day = v;
+    },
+  ],
+  Do: [
+    new RegExp(twoDigits.source + word.source),
+    (d, v) => {
+      d.day = parseInt(v, 10);
+    },
+  ],
   d: [twoDigits, noop],
   W: [word, noop],
-  M: [twoDigits, (d, v) => {
-    d.month = v - 1;
-  }],
+  M: [
+    twoDigits,
+    (d, v) => {
+      d.month = v - 1;
+    },
+  ],
   MMM: [word, monthUpdate('monthNamesShort')],
   MMMM: [word, monthUpdate('monthNames')],
-  YY: [twoDigits, (d, v) => {
-    const da = new Date();
-    const cent = +(da.getFullYear().toString()).substr(0, 2);
-    d.year = `${(v > 68 ? cent - 1 : cent)}${v}`;
-  }],
-  YYYY: [fourDigits, (d, v) => {
-    d.year = v;
-  }],
-  S: [/\d/, (d, v) => {
-    d.millisecond = v * 100;
-  }],
-  SS: [/\d{2}/, (d, v) => {
-    d.millisecond = v * 10;
-  }],
-  SSS: [threeDigits, (d, v) => {
-    d.millisecond = v;
-  }],
-  h: [twoDigits, (d, v) => {
-    d.hour = v;
-  }],
-  m: [twoDigits, (d, v) => {
-    d.minute = v;
-  }],
-  s: [twoDigits, (d, v) => {
-    d.second = v;
-  }],
-  a: [word, (d, v, i18n) => {
-    const val = v.toLowerCase();
-    if (val === i18n.amPm[0]) {
-      d.isPm = false;
-    } else if (val === i18n.amPm[1]) {
-      d.isPm = true;
-    }
-  }],
-  ZZ: [/([\+\-]\d\d:?\d\d|Z)/, (d, v) => {
-    if (v === 'Z') v = '+00:00';
-    const parts = (`${v}`).match(/([+-]|\d\d)/gi);
-    if (parts) {
-      const minutes = +(parts[1] * 60) + parseInt(parts[2], 10);
-      d.timezoneOffset = parts[0] === '+' ? minutes : -minutes;
-    }
-  }],
+  YY: [
+    twoDigits,
+    (d, v) => {
+      const da = new Date();
+      const cent = +da
+        .getFullYear()
+        .toString()
+        .substr(0, 2);
+      d.year = `${v > 68 ? cent - 1 : cent}${v}`;
+    },
+  ],
+  YYYY: [
+    fourDigits,
+    (d, v) => {
+      d.year = v;
+    },
+  ],
+  S: [
+    /\d/,
+    (d, v) => {
+      d.millisecond = v * 100;
+    },
+  ],
+  SS: [
+    /\d{2}/,
+    (d, v) => {
+      d.millisecond = v * 10;
+    },
+  ],
+  SSS: [
+    threeDigits,
+    (d, v) => {
+      d.millisecond = v;
+    },
+  ],
+  h: [
+    twoDigits,
+    (d, v) => {
+      d.hour = v;
+    },
+  ],
+  m: [
+    twoDigits,
+    (d, v) => {
+      d.minute = v;
+    },
+  ],
+  s: [
+    twoDigits,
+    (d, v) => {
+      d.second = v;
+    },
+  ],
+  a: [
+    word,
+    (d, v, i18n) => {
+      const val = v.toLowerCase();
+      if (val === i18n.amPm[0]) {
+        d.isPm = false;
+      } else if (val === i18n.amPm[1]) {
+        d.isPm = true;
+      }
+    },
+  ],
+  ZZ: [
+    /([\+\-]\d\d:?\d\d|Z)/,
+    (d, v) => {
+      if (v === 'Z') v = '+00:00';
+      const parts = `${v}`.match(/([+-]|\d\d)/gi);
+      if (parts) {
+        const minutes = +(parts[1] * 60) + parseInt(parts[2], 10);
+        d.timezoneOffset = parts[0] === '+' ? minutes : -minutes;
+      }
+    },
+  ],
 };
 parseFlags.DD = parseFlags.D;
 parseFlags.dd = parseFlags.d;
@@ -190,7 +240,10 @@ export const format = (dateObj, mask) => {
   if (typeof dateObj === 'number') {
     dateObj = new Date(dateObj);
   }
-  if (Object.prototype.toString.call(dateObj) !== '[object Date]' || isNaN(dateObj.getTime())) {
+  if (
+    Object.prototype.toString.call(dateObj) !== '[object Date]' ||
+    isNaN(dateObj.getTime())
+  ) {
     throw new Error('Invalid Date in fecha.format');
   }
   mask = defaults.masks[mask] || mask;
@@ -201,12 +254,18 @@ export const format = (dateObj, mask) => {
     return '??';
   });
   // Apply formatting rules
-  mask = mask.replace(token, $0 => ($0 in formatFlags ? formatFlags[$0](dateObj, defaults) : $0.slice(1, $0.length - 1)));
+  mask = mask.replace(
+    token,
+    $0 =>
+      $0 in formatFlags
+        ? formatFlags[$0](dateObj, defaults)
+        : $0.slice(1, $0.length - 1),
+  );
   // Inline literal values back into the formatted value
   return mask.replace(/\?\?/g, () => literals.shift());
 };
 
-export const parse = (dateStr, mask) => {
+const parseString = (dateStr, mask) => {
   if (typeof mask !== 'string') {
     throw new Error('Invalid mask in fecha.parse');
   }
@@ -219,14 +278,14 @@ export const parse = (dateStr, mask) => {
 
   let isValid = true;
   const dateInfo = {};
-  mask.replace(token, ($0) => {
+  mask.replace(token, $0 => {
     if (parseFlags[$0]) {
       const info = parseFlags[$0];
       const index = dateStr.search(info[0]);
       if (!~index) {
         isValid = false;
       } else {
-        dateStr.replace(info[0], (result) => {
+        dateStr.replace(info[0], result => {
           info[1](dateInfo, result, defaults);
           dateStr = dateStr.substr(index + result.length);
           return result;
@@ -242,7 +301,11 @@ export const parse = (dateStr, mask) => {
   }
 
   const today = new Date();
-  if (dateInfo.isPm === true && dateInfo.hour != null && +dateInfo.hour !== 12) {
+  if (
+    dateInfo.isPm === true &&
+    dateInfo.hour != null &&
+    +dateInfo.hour !== 12
+  ) {
     dateInfo.hour = +dateInfo.hour + 12;
   } else if (dateInfo.isPm === false && +dateInfo.hour === 12) {
     dateInfo.hour = 0;
@@ -251,11 +314,36 @@ export const parse = (dateStr, mask) => {
   let date;
   if (dateInfo.timezoneOffset != null) {
     dateInfo.minute = +(dateInfo.minute || 0) - +dateInfo.timezoneOffset;
-    date = new Date(Date.UTC(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1,
-      dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0));
+    date = new Date(
+      Date.UTC(
+        dateInfo.year || today.getFullYear(),
+        dateInfo.month || 0,
+        dateInfo.day || 1,
+        dateInfo.hour || 0,
+        dateInfo.minute || 0,
+        dateInfo.second || 0,
+        dateInfo.millisecond || 0,
+      ),
+    );
   } else {
-    date = new Date(dateInfo.year || today.getFullYear(), dateInfo.month || 0, dateInfo.day || 1,
-      dateInfo.hour || 0, dateInfo.minute || 0, dateInfo.second || 0, dateInfo.millisecond || 0);
+    date = new Date(
+      dateInfo.year || today.getFullYear(),
+      dateInfo.month || 0,
+      dateInfo.day || 1,
+      dateInfo.hour || 0,
+      dateInfo.minute || 0,
+      dateInfo.second || 0,
+      dateInfo.millisecond || 0,
+    );
   }
   return date;
+};
+
+export const parse = (dateStr, mask) => {
+  const masks = (isArray(mask) && mask) || [
+    (isString(mask) && mask) || 'YYYY-MM-DD',
+  ];
+  return (
+    masks.map(m => parseString(dateStr, m)).find(d => d) || new Date(dateStr)
+  );
 };

@@ -48,7 +48,7 @@ const todos = [
     description: 'Take Noah to basketball practice.',
     isComplete: false,
     dates: { weekdays: 6 }, // Every Friday
-    color: '#ff8080',       // Red
+    color: '#ff8080', // Red
   },
   {
     description: 'Get some milks.',
@@ -82,18 +82,20 @@ export default {
           dates: new Date(),
         },
         // Attributes for meetings
-        ...this.meetings.map(({ description, dates, color: backgroundColor }) => ({
-          dates,
-          highlight: {
-            backgroundColor,
-          },
-          contentStyle: {
-            color: '#fafafa',
-          },
-          popover: {
-            label: description,
-          },
-        })),
+        ...this.meetings.map(
+          ({ description, dates, color: backgroundColor }) => ({
+            dates,
+            highlight: {
+              backgroundColor,
+            },
+            contentStyle: {
+              color: '#fafafa',
+            },
+            popover: {
+              label: description,
+            },
+          }),
+        ),
         // Attributes for todos
         ...this.todos.map(todo => ({
           dates: todo.dates,

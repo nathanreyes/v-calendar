@@ -18,6 +18,7 @@
 
 * The `attribute.contentHoverStyle` property has been deprecated in favor of using a function for `attribute.contentStyle`.
 * The `dayContentHover` theme style has been deprecated in favor of using a function to define the `contentStyle`.
+* Support use of a `formats.data` parser to parse attribute dates
 
 `v-date-picker`
 * Add `popoverShowClearMargin` prop to apply clear margin when popover appears. Closes #47.
@@ -26,6 +27,7 @@
 * `popoverContentOffset` prop converted to number instead of a string
 
 `defaults`
+* `formats.data` supported for parsing attribute dates
 * `date-picker-show-popover` renamed to `date-picker-show-day-popover`
 * `popover-content-offset` is converted to number instead of a string
 

@@ -54,5 +54,6 @@ module.exports = {
     curly: 'off',
     'no-mixed-operators': 'off',
     indent: 'off',
+    'no-confusing-arrow': 'off',
   },
 };

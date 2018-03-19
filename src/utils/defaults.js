@@ -16,6 +16,7 @@ const defaults = {
     navMonths: 'MMM',
     input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
     dayPopover: 'WWW, MMM D, YYYY',
+    data: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
   },
   datePickerInputProps: ({ dragValue, mode, format }) => ({
     ...(mode === 'single' && {

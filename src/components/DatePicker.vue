@@ -155,15 +155,14 @@ export default {
   computed: {
     inputFormats() {
       const formats = this.formats && this.formats.input;
-      if (!formats) return ['M/DD/YYYY'];
+      if (!formats) return ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
       return (isArray(formats) && formats) || [formats];
     },
     profile() {
       return PickerProfile(
         this.mode,
         d => format(d, this.inputFormats[0]),
-        s =>
-          this.inputFormats.map(f => parse(s, f)).find(d => d) || new Date(s),
+        s => parse(s, this.inputFormats),
       );
     },
     componentName() {
