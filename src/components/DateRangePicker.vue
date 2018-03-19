@@ -1,7 +1,7 @@
 <script>
 import Calendar from './Calendar';
-import { rangeNormalizer } from '../utils/pickerProfiles';
 import { mergeListeners } from '@/mixins';
+import { rangeNormalizer } from '@/utils/pickerProfiles';
 
 export default {
   mixins: [mergeListeners],
@@ -40,16 +40,20 @@ export default {
   },
   computed: {
     dragAttribute_() {
-      return this.dragValue && {
-        ...this.dragAttribute,
-        dates: [this.dragValue],
-      };
+      return (
+        this.dragValue && {
+          ...this.dragAttribute,
+          dates: [this.dragValue],
+        }
+      );
     },
     selectAttribute_() {
-      return this.value && {
-        ...this.selectAttribute,
-        dates: [this.value],
-      };
+      return (
+        this.value && {
+          ...this.selectAttribute,
+          dates: [this.value],
+        }
+      );
     },
     attributes_() {
       const attributes = [...(this.attributes || [])];
@@ -61,9 +65,10 @@ export default {
     themeStyles_() {
       return {
         ...this.themeStyles,
-        ...(this.showDisabledContent && this.disabledAttribute && {
-          dayContentHover: this.disabledAttribute.contentHoverStyle,
-        }),
+        ...(this.showDisabledContent &&
+          this.disabledAttribute && {
+            dayContentHover: this.disabledAttribute.contentHoverStyle,
+          }),
       };
     },
   },
@@ -74,7 +79,7 @@ export default {
   },
   created() {
     // Clear drag on escape keydown
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (this.dragValue && e.keyCode === 27) {
         this.dragValue = null;
       }
@@ -85,7 +90,10 @@ export default {
       // Start new drag selection if not dragging
       if (!this.dragValue) {
         // Update drag value if it is valid
-        const newDragValue = { start: new Date(dateTime), end: new Date(dateTime) };
+        const newDragValue = {
+          start: new Date(dateTime),
+          end: new Date(dateTime),
+        };
         if (this.dateIsValid(newDragValue)) {
           this.dragValue = newDragValue;
         }
@@ -124,7 +132,9 @@ export default {
       }
     },
     dateIsValid(date) {
-      return !this.disabledAttribute || !this.disabledAttribute.intersectsDate(date);
+      return (
+        !this.disabledAttribute || !this.disabledAttribute.intersectsDate(date)
+      );
     },
   },
 };

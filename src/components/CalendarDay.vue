@@ -7,6 +7,8 @@
   :visibility='popoverVisibility'
   :content-style='popoverContentStyle'
   :is-interactive='popoverIsInteractive'
+  @got-focus='isFocused = true'
+  @lost-focus='isFocused = false'
   toggle-visible-on-click>
   <div
     class='c-day'
@@ -32,7 +34,7 @@
       <div
         ref='dayContent'
         class='c-day-content'
-        :style='contentStyle_'
+        :style='contentStyle'
         @click='click'
         @mouseenter='mouseenter'
         @mouseover='mouseover'
@@ -120,8 +122,13 @@
 <script>
 import Popover from './Popover';
 import CalendarDayPopoverRow from './CalendarDayPopoverRow';
-import { arrayHasItems, objectFromArray } from '../utils/helpers';
-import { isFunction } from '../utils/typeCheckers';
+import {
+  arrayHasItems,
+  objectFromArray,
+  mixinOptionalProps,
+} from '@/utils/helpers';
+import { isFunction, isObject } from '@/utils/typeCheckers';
+import defaults from '@/utils/defaults';
 
 export default {
   components: {
@@ -136,15 +143,9 @@ export default {
   },
   data() {
     return {
-      backgrounds: [],
-      dots: [],
-      bars: [],
-      popovers: [],
-      contentStyle: null,
-      contentHoverStyle: null,
-      popoverVisibility: 'hidden',
-      popoverIsInteractive: false,
       isHovered: false,
+      isFocused: false,
+      glyphs: {},
     };
   },
   computed: {
@@ -164,13 +165,8 @@ export default {
         ...(!this.inMonth && this.styles.dayCellNotInMonth),
       };
     },
-    contentStyle_() {
-      const disableEvents = this.dayCellStyle && (parseFloat(this.dayCellStyle.opacity) === 0 || this.dayCellStyle.pointerEvents === 'none');
-      return {
-        ...this.contentStyle,
-        ...(this.isHovered && this.contentHoverStyle),
-        ...(disableEvents && { pointerEvents: 'none' }),
-      };
+    attributesLength() {
+      return this.attributes.length;
     },
     attributesList() {
       return this.attributes.find(this.day);
@@ -178,8 +174,34 @@ export default {
     attributesMap() {
       return objectFromArray(this.attributesList);
     },
+    shouldCheckDirty() {
+      return (
+        this.attributesLength &&
+        !!this.attributesList.find(
+          a =>
+            isFunction(a.highlight) ||
+            isFunction(a.highlightCaps) ||
+            isFunction(a.dot) ||
+            isFunction(a.bar) ||
+            isFunction(a.popover) ||
+            isFunction(a.contentStyle),
+        )
+      );
+    },
+    isHoveredDirty() {
+      return this.shouldCheckDirty && this.isHovered;
+    },
+    isFocusedDirty() {
+      return this.shouldCheckDirty && this.isFocused;
+    },
+    backgrounds() {
+      return this.glyphs.backgrounds;
+    },
     hasBackgrounds() {
       return arrayHasItems(this.backgrounds);
+    },
+    dots() {
+      return this.glyphs.dots;
     },
     hasDots() {
       return arrayHasItems(this.dots);
@@ -187,11 +209,17 @@ export default {
     dotsStyle() {
       return this.styles.dots;
     },
+    bars() {
+      return this.glyphs.bars;
+    },
     hasBars() {
       return arrayHasItems(this.bars);
     },
     barsStyle() {
       return this.styles.bars;
+    },
+    popovers() {
+      return this.glyphs.popovers;
     },
     hasPopovers() {
       return !!arrayHasItems(this.popovers);
@@ -199,29 +227,58 @@ export default {
     popoverContentStyle() {
       return this.styles.dayPopoverContent;
     },
-  },
-  watch: {
-    attributes() {
-      this.processAttributes();
-    },
-    styles() {
-      this.processAttributes();
-    },
-    popovers(val) {
+    popoverState() {
       let visibility = '';
       let isInteractive = false;
       let content;
-      val.forEach((popover) => {
+      this.popovers.forEach(popover => {
         if (!visibility && popover.visibility) visibility = popover.visibility;
         isInteractive = isInteractive || popover.isInteractive;
         content = content || popover.label || popover.component || popover.slot;
       });
-      this.popoverVisibility = visibility || (content && 'hover') || 'hidden';
-      this.popoverIsInteractive = isInteractive;
+      return {
+        visibility: visibility || (content && 'hover') || 'hidden',
+        isInteractive,
+      };
+    },
+    popoverVisibility() {
+      return this.popoverState.visibility;
+    },
+    popoverIsInteractive() {
+      return this.popoverState.isInteractive;
+    },
+    contentStyle() {
+      const userStyle = this.styles.dayContent;
+      const disableEvents =
+        this.dayCellStyle &&
+        (parseFloat(this.dayCellStyle.opacity) === 0 ||
+          this.dayCellStyle.pointerEvents === 'none');
+      return {
+        ...((isFunction(userStyle) &&
+          userStyle({
+            day: this.day,
+            isHovered: this.isHovered,
+            isFocused: this.isFocused,
+          })) ||
+          userStyle),
+        ...this.glyphs.contentStyle,
+        ...(disableEvents && { pointerEvents: 'none' }),
+      };
+    },
+  },
+  watch: {
+    isHoveredDirty() {
+      this.refreshGlyphs();
+    },
+    isFocusedDirty() {
+      this.refreshGlyphs();
+    },
+    attributesList() {
+      this.refreshGlyphs();
     },
   },
   created() {
-    this.processAttributes();
+    this.refreshGlyphs();
   },
   methods: {
     getDayEvent(origEvent) {
@@ -246,49 +303,90 @@ export default {
       this.isHovered = false;
       this.$emit('daymouseleave', this.getDayEvent(e));
     },
-    processAttributes() {
-      const backgrounds = [];
-      const dots = [];
-      const bars = [];
-      const popovers = [];
-      const contentStyles = [];
-      const contentHoverStyles = [];
+    refreshGlyphs() {
       // Get the day attributes
-      this
-        .attributesList
-        .forEach((attribute) => {
-          const { highlight, highlightCaps, dot, bar, popover, contentStyle, contentStyleCaps, contentHoverStyle } = attribute;
-          const { startTime, endTime } = attribute.targetDate;
-          const onStart = startTime === this.dateTime;
-          const onEnd = endTime === this.dateTime;
-          // Add backgrounds for highlight if needed
-          if (highlight && !(onStart && onEnd && highlightCaps)) backgrounds.push(this.getBackground(attribute));
-          if (highlightCaps && (onStart || onEnd)) backgrounds.push(this.getBackgroundCap(attribute));
-          // Add dot if needed
-          if (dot) dots.push(this.getDot(attribute));
-          // Add bar if needed
-          if (bar) bars.push(this.getBar(attribute));
-          // Add popover if needed
-          if (popover) popovers.unshift(this.getPopover(attribute));
-          // Add content style if needed
-          if (contentStyle && !(onStart && onEnd && contentStyleCaps)) contentStyles.push(contentStyle);
-          if (contentStyleCaps && (onStart || onEnd)) contentStyles.push(contentStyleCaps);
-          // Add content hover style if needed
-          if (contentHoverStyle) contentHoverStyles.push(contentHoverStyle);
-        });
-      // Assign day attributes
-      this.backgrounds = backgrounds;
-      this.dots = dots;
-      this.bars = bars;
-      this.popovers = popovers;
-      this.contentStyle = Object.assign({}, this.styles.dayContent, ...contentStyles);
-      this.contentHoverStyle = Object.assign({}, this.styles.dayContentHover, ...contentHoverStyles);
+      this.glyphs = (this.attributesList || [])
+        // Evaluate attribute functions if needed
+        .map(attr =>
+          this.evalAttribute(attr, this.isHoveredDirty, this.isFocusedDirty),
+        )
+        .reduce(
+          // Add glyphs for each attribute (prioritize from first to last)
+          (glyphs, attr) => {
+            const { backgrounds, dots, bars, popovers, contentStyle } = glyphs;
+            // Add backgrounds for highlight if needed
+            if (attr.highlight) backgrounds.push(this.getBackground(attr));
+            if (attr.highlightCaps)
+              backgrounds.push(this.getBackgroundCap(attr));
+            // Add dot if needed
+            if (attr.dot) dots.push(this.getDot(attr));
+            // Add bar if needed
+            if (attr.bar) bars.push(this.getBar(attr));
+            // Add popover if needed
+            if (attr.popover) popovers.unshift(this.getPopover(attr));
+            // Add content style if needed
+            Object.assign(contentStyle, attr.contentStyle);
+            // Continue configuring glyphs
+            return glyphs;
+          },
+          // Initialize glyphs object
+          {
+            backgrounds: [],
+            dots: [],
+            bars: [],
+            popovers: [],
+            contentStyle: {},
+          },
+        );
     },
-    getBackground(attribute) {
+    evalAttribute(attribute, isHovered, isFocused) {
+      const { targetDate } = attribute;
+      const onStart = targetDate.startTime === this.dateTime;
+      const onEnd = targetDate.endTime === this.dateTime;
+      const inBetween = !onStart && !onEnd;
+      const validate = prop =>
+        (isFunction(prop) &&
+          prop({
+            day: this.day,
+            targetDate,
+            onStart,
+            onEnd,
+            inBetween,
+            isHovered,
+            isFocused,
+          })) ||
+        (isObject(prop) && prop);
+      return mixinOptionalProps(
+        attribute,
+        {
+          ...attribute,
+        },
+        [
+          { name: 'highlight', mixin: defaults.highlight, validate },
+          { name: 'highlightCaps', mixin: defaults.highlightCaps, validate },
+          { name: 'dot', mixin: defaults.dot, validate },
+          { name: 'bar', mixin: defaults.bar, validate },
+          { name: 'contentStyle', validate },
+          { name: 'popover', validate },
+          { name: 'customData' },
+        ],
+      ).target;
+    },
+    getBackground({ key, highlight, highlightCaps, targetDate }) {
       // Initialize the background object
-      const { key, highlight, targetDate } = attribute;
-      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, opacity } = highlight;
-      const borderRadius = highlight.borderRadius || ((targetDate.isDate || targetDate.isComplex) ? '50%' : '290486px');
+      const {
+        animated,
+        width,
+        height,
+        backgroundColor,
+        borderColor,
+        borderWidth,
+        borderStyle,
+        opacity,
+      } = highlight;
+      const borderRadius =
+        highlight.borderRadius ||
+        (targetDate.isDate || targetDate.isComplex ? '50%' : '290486px');
       const background = {
         key,
         style: {
@@ -303,7 +401,9 @@ export default {
         },
       };
       if (targetDate.isDate || targetDate.isComplex) {
-        background.wrapperClass = `c-day-layer c-day-box-center-center ${animated ? 'c-day-scale-enter c-day-scale-leave' : ''}`;
+        background.wrapperClass = `c-day-layer c-day-box-center-center ${
+          animated ? 'c-day-scale-enter c-day-scale-leave' : ''
+        }`;
       } else {
         const onStart = targetDate.startTime === this.dateTime;
         const onEnd = targetDate.endTime === this.dateTime;
@@ -311,16 +411,18 @@ export default {
         const endShortWidth = '50%';
         // Is the day date on the highlight start and end date
         if (onStart && onEnd) {
-          const animation = animated ? 'c-day-scale-enter c-day-scale-leave' : '';
+          const animation = animated
+            ? 'c-day-scale-enter c-day-scale-leave'
+            : '';
           background.wrapperClass = `c-day-layer c-day-box-center-center ${animation}`;
           background.style.width = endLongWidth;
           background.style.borderWidth = borderWidth;
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
-        // Is the day date on the highlight start date
+          // Is the day date on the highlight start date
         } else if (onStart) {
           const animation = animated ? 'c-day-slide-left-scale-enter' : '';
           background.wrapperClass = `c-day-layer c-day-box-right-center shift-right ${animation}`;
-          if (attribute.highlightCaps) {
+          if (highlightCaps) {
             background.style.width = endShortWidth;
             background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
             background.style.borderRadius = 0;
@@ -329,11 +431,11 @@ export default {
             background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
             background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
           }
-        // Is the day date on the highlight end date
+          // Is the day date on the highlight end date
         } else if (onEnd) {
           const animation = animated ? 'c-day-slide-right-scale-enter' : '';
           background.wrapperClass = `c-day-layer c-day-box-left-center shift-left ${animation}`;
-          if (attribute.highlightCaps) {
+          if (highlightCaps) {
             background.style.width = endShortWidth;
             background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
             background.style.borderRadius = 0;
@@ -342,9 +444,10 @@ export default {
             background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
             background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
           }
-        // Is the day date between the highlight start/end dates
+          // Is the day date between the highlight start/end dates
         } else {
-          background.wrapperClass = 'c-day-layer c-day-box-center-center shift-left-right';
+          background.wrapperClass =
+            'c-day-layer c-day-box-center-center shift-left-right';
           background.style.width = '100%';
           background.style.borderWidth = `${borderWidth} 0`;
           background.style.borderRadius = '0';
@@ -355,22 +458,38 @@ export default {
     getBackgroundCap(attribute) {
       const { key, highlightCaps, targetDate } = attribute;
       const { startTime, endTime } = targetDate;
-      const { animated, width, height, backgroundColor, borderColor, borderWidth, borderStyle, opacity } = highlightCaps;
+      const {
+        animated,
+        width,
+        height,
+        backgroundColor,
+        borderColor,
+        borderWidth,
+        borderStyle,
+        opacity,
+      } = highlightCaps;
       const borderRadius = highlightCaps.borderRadius || '50%';
       let animation = '';
-      const backgroundExists = !!this.backgrounds.find(b => b.key === key);
+      const backgroundExists =
+        this.backgrounds && !!this.backgrounds.find(b => b.key === key);
       if (animated) {
         if (startTime === endTime) {
           animation = 'c-day-scale-enter c-day-scale-leave';
         } else if (startTime === this.dateTime) {
-          animation = backgroundExists ? 'c-day-slide-right-translate-enter' : 'c-day-slide-left-translate-enter';
+          animation = backgroundExists
+            ? 'c-day-slide-right-translate-enter'
+            : 'c-day-slide-left-translate-enter';
         } else {
-          animation = backgroundExists ? 'c-day-slide-left-translate-enter' : 'c-day-slide-right-translate-enter';
+          animation = backgroundExists
+            ? 'c-day-slide-left-translate-enter'
+            : 'c-day-slide-right-translate-enter';
         }
       }
       return {
         key: `${key}-cap`,
-        wrapperClass: `c-day-layer c-day-box-center-center ${animated ? animation : ''}`,
+        wrapperClass: `c-day-layer c-day-box-center-center ${
+          animated ? animation : ''
+        }`,
         style: {
           width: width || height,
           height,
@@ -426,7 +545,9 @@ export default {
         customData: attribute.customData,
         attribute,
         label: isFunction(label) ? label(attribute, this.day) : label,
-        labelStyle: isFunction(labelStyle) ? labelStyle(attribute, this.day) : labelStyle,
+        labelStyle: isFunction(labelStyle)
+          ? labelStyle(attribute, this.day)
+          : labelStyle,
         component,
         slot,
         hideIndicator,

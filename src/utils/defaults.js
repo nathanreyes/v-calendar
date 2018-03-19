@@ -44,16 +44,16 @@ const defaults = {
   datePickerShowCaps: false,
   datePickerShowDayPopover: true,
   datePickerDisabledAttribute: {
-    contentStyle: {
+    contentStyle: ({ isHovered }) => ({
       color: '#d98c8c',
       fontWeight: 600,
       opacity: 0.6,
       borderRadius: '0',
-    },
-    contentHoverStyle: {
-      cursor: 'not-allowed',
-      backgroundColor: 'transparent',
-    },
+      ...(isHovered && {
+        cursor: 'not-allowed',
+        backgroundColor: 'transparent',
+      }),
+    }),
   },
   popoverExpanded: false,
   popoverDirection: 'bottom',
@@ -127,9 +127,10 @@ if (process.env.NODE_ENV === 'test') setupLocale(null, defaults);
 
 export default defaults;
 
-export const resolveDefault = (def, args) => (isObject(def) && def) || (isFunction(def) && def(args)) || def;
+export const resolveDefault = (def, args) =>
+  (isObject(def) && def) || (isFunction(def) && def(args)) || def;
 
-export const mergeDefaults = (otherDefaults) => {
+export const mergeDefaults = otherDefaults => {
   // Setup locale defaults if needed
   setupLocale(otherDefaults && otherDefaults.locale, defaults);
   // Assign the defaults

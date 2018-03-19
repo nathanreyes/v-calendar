@@ -4,6 +4,21 @@
 * Fixes `select-attribute` and `drag-attribute` props getting written over. Closes #75.
 
 ## Improvements
+`v-calendar`
+* Attribute types (highlight, bar, dot, contentStyle, popover) can now be defined as functions that accept an object parameter with the following properties and return an object. Closes #81.
+
+| Property Name | Type    | Description |
+| ------------- | ------- | ----------- |
+| `day` | Object | Object with specific information about the day displaying the attribute. |
+| `targetDate` | Object | Date info object. |
+| `isHovered` | Boolean | Day element is currently hovered over. |
+| `isFocused` | Boolean | Day element is currently focused. Only applies when a popover is configured. |
+| `onStart` | Boolean | Day lies on the first day of the attribute's `targetDate`. |
+| `onEnd` | Boolean | Day lies on the last day of the attributes's `targetDate`. |
+
+* The `attribute.contentHoverStyle` property has been deprecated in favor of using a function for `attribute.contentStyle`.
+* The `dayContentHover` theme style has been deprecated in favor of using a function to define the `contentStyle`.
+
 `v-date-picker`
 * Add `popoverShowClearMargin` prop to apply clear margin when popover appears. Closes #47.
 * Add events for `popover-will-appear`, `popover-did-appear`, `popover-will-disappear` and `popover-did-disappear`

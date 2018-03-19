@@ -88,10 +88,7 @@
 <script>
 import { getExampleMonthComps } from '@/utils/helpers';
 
-const {
-  thisMonth,
-  thisMonthYear,
-} = getExampleMonthComps();
+const { thisMonth, thisMonthYear } = getExampleMonthComps();
 
 const color = '#ff8080';
 const todos = [
@@ -172,13 +169,15 @@ export default {
             slot: 'todo-row', // Matches slot from above
             visibility: 'focus',
           },
+          contentStyle: ({ day }) => day.day === 5 && { color: 'red' },
         })),
         // 'Add todo' attribute
         {
-          contentHoverStyle: {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            cursor: 'pointer',
-          },
+          contentStyle: ({ day, isHovered, isFocused }) =>
+            (isHovered || isFocused) && {
+              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              cursor: 'pointer',
+            },
           dates: {},
           popover: {
             slot: 'add-todo',
@@ -191,8 +190,16 @@ export default {
   },
   methods: {
     getPopoverHeaderLabel(day) {
-      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-      return day.date.toLocaleDateString(window.navigator.userLanguage || window.navigator.language, options);
+      const options = {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      };
+      return day.date.toLocaleDateString(
+        window.navigator.userLanguage || window.navigator.language,
+        options,
+      );
     },
     addTodo(day) {
       this.editId = ++this.incId;
@@ -207,7 +214,7 @@ export default {
       todo.isComplete = !todo.isComplete;
     },
     toggleTodoEdit(todo) {
-      this.editId = (this.editId === todo.id) ? 0 : todo.id;
+      this.editId = this.editId === todo.id ? 0 : todo.id;
     },
     deleteTodo(todo) {
       this.todos = this.todos.filter(t => t !== todo);

@@ -2,7 +2,7 @@
 <div
   ref='popover'
   :class='["popover-container", { expanded: isExpanded }]'
-  :tabindex='visibilityIsManaged ? 0 : undefined'
+  :tabindex='0'
   :style='containerStyle'
   @focusin='focusin'
   @focusout='focusout'
@@ -76,9 +76,11 @@ export default {
   },
   computed: {
     containerStyle() {
-      return this.visible && {
-        [`margin-${this.direction}`]: `${this.clearMargin}px`,
-      };
+      return (
+        this.visible && {
+          [`margin-${this.direction}`]: `${this.clearMargin}px`,
+        }
+      );
     },
     contentWrapperStyle() {
       const style = {};
@@ -87,11 +89,16 @@ export default {
     },
     contentOffsetDirection() {
       switch (this.direction) {
-        case 'bottom': return 'Top';
-        case 'top': return 'Bottom';
-        case 'left': return 'Right';
-        case 'right': return 'Left';
-        default: return '';
+        case 'bottom':
+          return 'Top';
+        case 'top':
+          return 'Bottom';
+        case 'left':
+          return 'Right';
+        case 'right':
+          return 'Left';
+        default:
+          return '';
       }
     },
     visibilityIsManaged() {
@@ -124,27 +131,33 @@ export default {
     this.windowTapClickRegistration.cleanup();
   },
   methods: {
-    focusin() {
+    focusin(e) {
       if (!this.contentTransitioning) {
+        if (!this.focusVisible) this.$emit('got-focus', e);
         this.focusVisible = true;
         this.disableNextClick = true;
       }
     },
     focusout(e) {
+      // Hide when outside element (e.relatedTarget) receives focus
       if (!elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+        this.$emit('lost-focus', e);
         this.focusVisible = false;
       }
     },
     click(e) {
+      // Toggle focus visible state on click if enabled
+      // Be sure to ignore clicks on the popover content though
       if (
-        this.toggleVisibleOnClick
-        && !this.contentTransitioning
-        && elementHasAncestor(e.target, this.$refs.popover)
-        && !elementHasAncestor(e.target, this.$refs.popoverOrigin)) {
-        if (!this.disableNextClick) {
-          this.focusVisible = !this.focusVisible;
-        }
+        this.toggleVisibleOnClick &&
+        !this.contentTransitioning &&
+        elementHasAncestor(e.target, this.$refs.popover) &&
+        !elementHasAncestor(e.target, this.$refs.popoverOrigin) &&
+        !this.disableNextClick
+      ) {
+        this.focusVisible = !this.focusVisible;
       }
+      // Reset click ignore flag
       this.disableNextClick = false;
     },
     mousemove() {

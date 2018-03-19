@@ -18,37 +18,39 @@ import '../styles/lib.sass';
 export default {
   mixins: [mergeListeners],
   render(h) {
-    const getPaneComponent = position => h(CalendarPane, {
-      attrs: {
-        ...this.$attrs,
-        position,
-        page: position < 2 ? this.fromPage_ : this.toPage_,
-        minPage: position < 2 ? this.minPage : this.minToPage,
-        maxPage: position < 2 ? this.maxFromPage : this.maxPage,
-        styles: this.themeStyles_,
-        attributes: this.attributes_,
-      },
-      on: this.mergeListeners({
-        titleclick: this.titleClick,
-        'update:page': (val) => {
-          if (position < 2) this.fromPage_ = val;
-          else this.toPage_ = val;
+    const getPaneComponent = position =>
+      h(CalendarPane, {
+        attrs: {
+          ...this.$attrs,
+          position,
+          page: position < 2 ? this.fromPage_ : this.toPage_,
+          minPage: position < 2 ? this.minPage : this.minToPage,
+          maxPage: position < 2 ? this.maxFromPage : this.maxPage,
+          styles: this.themeStyles_,
+          attributes: this.attributes_,
         },
-      }),
-      slots: this.$slots,
-      scopedSlots: this.$scopedSlots,
-    });
-    return h('div', {
-      class: {
-        'c-pane-container': true,
-        'is-double-paned': this.isDoublePaned_,
-        'is-expanded': this.isExpanded,
+        on: this.mergeListeners({
+          titleclick: this.titleClick,
+          'update:page': val => {
+            if (position < 2) this.fromPage_ = val;
+            else this.toPage_ = val;
+          },
+        }),
+        slots: this.$slots,
+        scopedSlots: this.$scopedSlots,
+      });
+    return h(
+      'div',
+      {
+        class: {
+          'c-pane-container': true,
+          'is-double-paned': this.isDoublePaned_,
+          'is-expanded': this.isExpanded,
+        },
+        style: this.wrapperStyle,
       },
-      style: this.wrapperStyle,
-    }, [
-      getPaneComponent(this.isDoublePaned_ ? 1 : 0),
-      this.isDoublePaned_ && getPaneComponent(2),
-    ]);
+      [getPaneComponent(this.isDoublePaned_ ? 1 : 0), this.isDoublePaned_ && getPaneComponent(2)],
+    );
   },
   name: 'VCalendar',
   components: {
@@ -74,7 +76,7 @@ export default {
   },
   computed: {
     isDoublePaned_() {
-      return this.isDoublePaned && this.windowWidth >= ((2 * this.paneWidth) + 30);
+      return this.isDoublePaned && this.windowWidth >= 2 * this.paneWidth + 30;
     },
     paneCentered() {
       return this.isDoublePaned && !this.isDoublePaned_;
@@ -141,20 +143,18 @@ export default {
   methods: {
     refreshFromPage() {
       this.fromPage_ = getFirstValidPage(
-        ...[
-          this.fromPage,
-          { month: todayComps.month, year: todayComps.year },
-        ].map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
+        ...[this.fromPage, { month: todayComps.month, year: todayComps.year }].map(p =>
+          getPageBetweenPages(p, this.minPage, this.maxPage),
+        ),
         this.minPage,
         getPrevPage(this.maxPage),
       );
     },
     refreshToPage() {
       this.toPage_ = getFirstValidPage(
-        ...[
-          this.toPage,
-          getNextPage(this.fromPage_),
-        ].map(p => getPageBetweenPages(p, this.minPage, this.maxPage)),
+        ...[this.toPage, getNextPage(this.fromPage_)].map(p =>
+          getPageBetweenPages(p, this.minPage, this.maxPage),
+        ),
         this.maxPage,
         getNextPage(this.minPage),
       );
@@ -162,9 +162,15 @@ export default {
     titleClick(page) {
       if (pageIsEqualToPage(page, todayComps)) return;
       if (page.position < 2) {
-        this.fromPage_ = getFirstValidPage(todayComps, pageIsBeforePage(page, todayComps) ? this.maxFromPage : this.minPage);
+        this.fromPage_ = getFirstValidPage(
+          todayComps,
+          pageIsBeforePage(page, todayComps) ? this.maxFromPage : this.minPage,
+        );
       } else {
-        this.toPage_ = getFirstValidPage(todayComps, pageIsBeforePage(page, todayComps) ? this.maxPage : this.minToPage);
+        this.toPage_ = getFirstValidPage(
+          todayComps,
+          pageIsBeforePage(page, todayComps) ? this.maxPage : this.minToPage,
+        );
       }
     },
     handleResize() {

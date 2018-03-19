@@ -19,7 +19,11 @@ export default {
     // Show a bar for today's date
     const barDate = new Date();
     // Get start and end dates for the current week
-    const startDate = new Date(thisMonthYear, thisMonth, barDate.getDate() - barDate.getDay());
+    const startDate = new Date(
+      thisMonthYear,
+      thisMonth,
+      barDate.getDate() - barDate.getDay(),
+    );
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 6);
     const hSpacing = '15px';
@@ -32,7 +36,8 @@ export default {
         wrapper: {
           border: '0',
           background: 'linear-gradient(to bottom right, #ff5050, #ff66b3)',
-          boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.14), 0 6px 20px 0 rgba(0, 0, 0, 0.13)',
+          boxShadow:
+            '0 4px 8px 0 rgba(0, 0, 0, 0.14), 0 6px 20px 0 rgba(0, 0, 0, 0.13)',
           borderRadius: '5px',
         },
         header: {
@@ -51,14 +56,14 @@ export default {
         weeks: {
           padding: `0 ${hSpacing} 10px ${hSpacing}`,
         },
-        dayContent: {
+        dayContent: ({ isHovered }) => ({
           color: '#fafafa',
           fontSize: '0.9em',
-        },
-        dayContentHover: {
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
-          cursor: 'pointer',
-        },
+          ...(isHovered && {
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            cursor: 'pointer',
+          }),
+        }),
         bars: {
           marginBottom: '1px',
           width: '60%',
@@ -66,8 +71,11 @@ export default {
       },
       attributes: [
         {
-          bar: {
-            backgroundColor: '#fafafa',
+          bar({ isHovered }) {
+            return {
+              backgroundColor: '#fafafa',
+              opacity: (isHovered && 0.5) || 1,
+            };
           },
           dates: barDate,
         },

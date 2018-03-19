@@ -89,19 +89,45 @@
     </div>
     <div class='column'>
       <div :class='{ "example-container": isInline }'>
-        <ex-date-picker
-          :mode='mode'
-          :show-disabled-dates='showDisabledDates'
-          :is-inline='isInline'
-          :is-expanded='isExpanded'
-          :popover-expanded='popoverExpanded'
-          :popover-visibility='popoverVisibility'
-          :popover-direction='popoverDirection'
-          :popover-align='popoverAlignment'
-          :tint-color='tintColor'
-          :show-caps='showCaps'
-          :show-popover='showDayPopover'>
-        </ex-date-picker>
+        <div class='field'>
+          <label class='label'>
+            Name
+          </label>
+          <div class='control'>
+            <input class='input'>
+          </div>
+        </div>
+        <div class='field'>
+          <label class='label'>
+            Birthday
+          </label>
+          <div class='control'>
+            <ex-date-picker
+              :mode='mode'
+              :show-disabled-dates='showDisabledDates'
+              :is-inline='isInline'
+              :is-expanded='isExpanded'
+              :popover-expanded='popoverExpanded'
+              :popover-visibility='popoverVisibility'
+              :popover-direction='popoverDirection'
+              :popover-align='popoverAlignment'
+              :tint-color='tintColor'
+              :show-caps='showCaps'
+              :show-popover='showDayPopover'>
+            </ex-date-picker>          
+          </div>
+        </div>
+        <div class='field'>
+          <label class='label'>
+            Email
+          </label>
+          <div class='control'>
+            <input class='input' type='email'>
+          </div>
+        </div>
+        <br />
+        <br />
+        <br />
       </div>
     </div>
   </div>

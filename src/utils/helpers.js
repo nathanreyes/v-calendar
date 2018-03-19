@@ -1,5 +1,5 @@
 import defaults from './defaults';
-import { isArray } from './typeCheckers';
+import { isArray, isObject } from './typeCheckers';
 
 const monthComps = {};
 
@@ -40,8 +40,10 @@ export const getMonthComps = (month, year) => {
     const firstDayOfWeek = defaults.firstDayOfWeek;
     const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
     const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
-    const days = (month === 2 && inLeapYear) ? 29 : daysInMonths[month - 1];
-    const weeks = Math.ceil((days + Math.abs(firstWeekday - firstDayOfWeek)) / 7);
+    const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+    const weeks = Math.ceil(
+      (days + Math.abs(firstWeekday - firstDayOfWeek)) / 7,
+    );
     comps = {
       firstDayOfWeek,
       inLeapYear,
@@ -57,13 +59,14 @@ export const getMonthComps = (month, year) => {
 };
 
 // Days/month/year components for a given date
-export const getDateComps = (date) => {
+export const getDateComps = date => {
   if (!date || !date.getTime) return undefined;
   return getMonthComps(date.getMonth() + 1, date.getFullYear());
 };
 
 // Days/month/year components for today's month
-export const getThisMonthComps = () => getMonthComps(todayComps.month, todayComps.year);
+export const getThisMonthComps = () =>
+  getMonthComps(todayComps.month, todayComps.year);
 
 // Day/month/year components for previous month
 export const getPrevMonthComps = (month, year) => {
@@ -79,7 +82,10 @@ export const getNextMonthComps = (month, year) => {
 
 export const getExampleMonthComps = () => {
   const thisMonthComps = getThisMonthComps();
-  const nextMonthComps = getNextMonthComps(thisMonthComps.month, thisMonthComps.year);
+  const nextMonthComps = getNextMonthComps(
+    thisMonthComps.month,
+    thisMonthComps.year,
+  );
 
   return {
     thisMonth: thisMonthComps.month - 1,
@@ -98,27 +104,35 @@ function comparePages(firstPage, secondPage) {
   return firstPage.year < secondPage.year ? -1 : 1;
 }
 
-export const pageIsEqualToPage = (page, otherPage) => comparePages(page, otherPage) === 0;
+export const pageIsEqualToPage = (page, otherPage) =>
+  comparePages(page, otherPage) === 0;
 
-export const pageIsBeforePage = (page, beforePage) => comparePages(page, beforePage) === -1;
+export const pageIsBeforePage = (page, beforePage) =>
+  comparePages(page, beforePage) === -1;
 
-export const pageIsAfterPage = (page, afterPage) => comparePages(page, afterPage) === 1;
+export const pageIsAfterPage = (page, afterPage) =>
+  comparePages(page, afterPage) === 1;
 
-export const pageIsBetweenPages = (page, fromPage, toPage) => (page || false) && !pageIsBeforePage(page, fromPage) && !pageIsAfterPage(page, toPage);
+export const pageIsBetweenPages = (page, fromPage, toPage) =>
+  (page || false) &&
+  !pageIsBeforePage(page, fromPage) &&
+  !pageIsAfterPage(page, toPage);
 
-export const getMinPage = (...args) => args.reduce((prev, curr) => {
-  if (!prev) return curr;
-  if (!curr) return prev;
-  return (comparePages(prev, curr) === -1) ? prev : curr;
-});
+export const getMinPage = (...args) =>
+  args.reduce((prev, curr) => {
+    if (!prev) return curr;
+    if (!curr) return prev;
+    return comparePages(prev, curr) === -1 ? prev : curr;
+  });
 
-export const getMaxPage = (...args) => args.reduce((prev, curr) => {
-  if (!prev) return curr;
-  if (!curr) return prev;
-  return (comparePages(prev, curr) === 1) ? prev : curr;
-});
+export const getMaxPage = (...args) =>
+  args.reduce((prev, curr) => {
+    if (!prev) return curr;
+    if (!curr) return prev;
+    return comparePages(prev, curr) === 1 ? prev : curr;
+  });
 
-export const getPrevPage = (page) => {
+export const getPrevPage = page => {
   if (!page) return undefined;
   const prevComps = getPrevMonthComps(page.month, page.year);
   return {
@@ -127,7 +141,7 @@ export const getPrevPage = (page) => {
   };
 };
 
-export const getNextPage = (page) => {
+export const getNextPage = page => {
   if (!page) return undefined;
   const nextComps = getNextMonthComps(page.month, page.year);
   return {
@@ -180,18 +194,21 @@ export const elementPositionInAncestor = (el, ancestor) => {
 
 export const objectFromArray = (array, keyProp = 'key') => {
   if (!array || !array.length) return {};
-  return array.reduce((obj, curr) => { obj[curr[keyProp]] = curr; return obj; }, {});
+  return array.reduce((obj, curr) => {
+    obj[curr[keyProp]] = curr;
+    return obj;
+  }, {});
 };
 
 export const mixinOptionalProps = (source, target, props) => {
   const assigned = [];
-  props.forEach((p) => {
+  props.forEach(p => {
     const name = p.name || p.toString();
     const mixin = p.mixin;
     const validate = p.validate;
     if (Object.prototype.hasOwnProperty.call(source, name)) {
       const value = validate ? validate(source[name]) : source[name];
-      target[name] = mixin ? { ...mixin, ...value } : value;
+      target[name] = mixin && isObject(value) ? { ...mixin, ...value } : value;
       assigned.push(name);
     }
   });

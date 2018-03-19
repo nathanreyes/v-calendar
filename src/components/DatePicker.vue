@@ -16,9 +16,8 @@ import { mergeListeners } from '@/mixins';
 export default {
   mixins: [mergeListeners],
   render(h) {
-    const getPickerComponent = asSlot => h(
-      this.componentName,
-      {
+    const getPickerComponent = asSlot =>
+      h(this.componentName, {
         attrs: {
           ...this.$attrs,
           value: this.value,
@@ -30,62 +29,69 @@ export default {
           toPage: this.toPage_,
           themeStyles: this.themeStyles_,
         },
-        on: this.mergeListeners({
-          'update:fromPage': val => this.fromPage_ = val,
-          'update:toPage': val => this.toPage_ = val,
-          drag: val => this.dragValue = val,
-        }, this.filteredListeners()),
+        on: this.mergeListeners(
+          {
+            'update:fromPage': val => (this.fromPage_ = val),
+            'update:toPage': val => (this.toPage_ = val),
+            drag: val => (this.dragValue = val),
+          },
+          this.filteredListeners(),
+        ),
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
         ...(asSlot && {
           slot: asSlot,
         }),
-      },
-    );
+      });
     if (this.isInline) return getPickerComponent();
-    return h('popover', {
-      attrs: {
-        isExpanded: this.popoverExpanded,
-        direction: this.popoverDirection,
-        align: this.popoverAlign,
-        visibility: this.popoverVisibility,
-        contentStyle: this.popoverContentStyle,
-        contentOffset: this.popoverContentOffset,
-        forceHidden: this.popoverForceHidden,
-        showClearMargin: this.popoverShowClearMargin,
-        isInteractive: true,
+    return h(
+      'popover',
+      {
+        attrs: {
+          isExpanded: this.popoverExpanded,
+          direction: this.popoverDirection,
+          align: this.popoverAlign,
+          visibility: this.popoverVisibility,
+          contentStyle: this.popoverContentStyle,
+          contentOffset: this.popoverContentOffset,
+          forceHidden: this.popoverForceHidden,
+          showClearMargin: this.popoverShowClearMargin,
+          isInteractive: true,
+        },
+        on: {
+          'will-appear': e => this.$emit('popover-will-appear', e),
+          'did-appear': e => this.$emit('popover-did-appear', e),
+          'will-disappear': e => this.$emit('popover-will-disappear', e),
+          'did-disappear': e => this.$emit('popover-did-disappear', e),
+          'update:forceHidden': val => (this.popoverForceHidden = val),
+        },
       },
-      on: {
-        'will-appear': e => this.$emit('popover-will-appear', e),
-        'did-appear': e => this.$emit('popover-did-appear', e),
-        'will-disappear': e => this.$emit('popover-will-disappear', e),
-        'did-disappear': e => this.$emit('popover-did-disappear', e),
-        'update:forceHidden': val => this.popoverForceHidden = val,
-      },
-    }, [
-      (isFunction(this.$scopedSlots.default) && this.$scopedSlots.default({
-        inputValue: this.inputValue,
-        updateValue: this.updateValue,
-      })) || [
-        h('input', {
-          ref: 'input',
-          class: this.inputProps_.class,
-          style: this.inputProps_.style,
-          domProps: {
-            value: this.inputValue,
-          },
-          attrs: {
-            type: 'text',
-            ...this.inputAttrs,
-          },
-          on: {
-            input: event => this.inputValue = event.target.value,
-            change: () => this.updateValue(),
-          },
-        }),
+      [
+        (isFunction(this.$scopedSlots.default) &&
+          this.$scopedSlots.default({
+            inputValue: this.inputValue,
+            updateValue: this.updateValue,
+          })) || [
+          h('input', {
+            ref: 'input',
+            class: this.inputProps_.class,
+            style: this.inputProps_.style,
+            domProps: {
+              value: this.inputValue,
+            },
+            attrs: {
+              type: 'text',
+              ...this.inputAttrs,
+            },
+            on: {
+              input: event => (this.inputValue = event.target.value),
+              change: () => this.updateValue(),
+            },
+          }),
+        ],
+        getPickerComponent('popover-content'),
       ],
-      getPickerComponent('popover-content'),
-    ]);
+    );
   },
   components: {
     Popover,
@@ -109,14 +115,29 @@ export default {
     selectAttribute: Object, // Resolved by computed property
     disabledAttribute: Object, // Resolved by computed property
     showCaps: { type: Boolean, default: () => defaults.datePickerShowCaps },
-    showDayPopover: { type: Boolean, default: () => defaults.datePickerShowDayPopover },
+    showDayPopover: {
+      type: Boolean,
+      default: () => defaults.datePickerShowDayPopover,
+    },
     popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
-    popoverDirection: { type: String, default: () => defaults.popoverDirection },
+    popoverDirection: {
+      type: String,
+      default: () => defaults.popoverDirection,
+    },
     popoverAlign: { type: String, default: () => defaults.popoverAlign },
-    popoverVisibility: { type: String, default: () => defaults.popoverVisibility },
-    popoverContentOffset: { type: Number, default: () => defaults.popoverContentOffset },
+    popoverVisibility: {
+      type: String,
+      default: () => defaults.popoverVisibility,
+    },
+    popoverContentOffset: {
+      type: Number,
+      default: () => defaults.popoverContentOffset,
+    },
     popoverShowClearMargin: Boolean,
-    popoverKeepVisibleOnInput: { type: Boolean, default: () => defaults.popoverKeepVisibleOnInput },
+    popoverKeepVisibleOnInput: {
+      type: Boolean,
+      default: () => defaults.popoverKeepVisibleOnInput,
+    },
     fromPage: Object,
     toPage: Object,
     themeStyles: { type: Object, default: () => ({}) }, // Resolved by computed property
@@ -141,18 +162,12 @@ export default {
       return PickerProfile(
         this.mode,
         d => format(d, this.inputFormats[0]),
-        s => this.inputFormats.map(f => parse(s, f)).find(d => d) || new Date(s));
+        s =>
+          this.inputFormats.map(f => parse(s, f)).find(d => d) || new Date(s),
+      );
     },
     componentName() {
       return this.profile.componentName;
-    },
-    attributeParams() {
-      return {
-        mode: this.mode,
-        color: this.tintColor,
-        showCaps: this.showCaps,
-        showDayPopover: this.showDayPopover,
-      };
     },
     selectAttribute_() {
       return this.buildSelectDragAttribute(this.selectAttribute);
@@ -166,8 +181,10 @@ export default {
         if (isArray(this.disabledDates)) dates.push(...this.disabledDates);
         else dates.push(this.disabledDates);
       }
-      if (this.minDate) dates.push({ start: null, end: addDays(this.minDate, -1) });
-      if (this.maxDate) dates.push({ start: addDays(this.maxDate, 1), end: null });
+      if (this.minDate)
+        dates.push({ start: null, end: addDays(this.minDate, -1) });
+      if (this.maxDate)
+        dates.push({ start: addDays(this.maxDate, 1), end: null });
       return dates;
     },
     disabledAttribute_() {
@@ -175,7 +192,12 @@ export default {
       return Attribute({
         key: 'disabled',
         order: 100,
-        ...(this.disabledAttribute || resolveDefault(defaults.datePickerDisabledAttribute, this.attributeParams)),
+        ...(this.disabledAttribute ||
+          resolveDefault(defaults.datePickerDisabledAttribute, {
+            mode: this.mode,
+            color: this.tintColor,
+            showDayPopover: this.showDayPopover,
+          })),
         dates: this.disabledDates_,
         excludeDates: this.availableDates,
         excludeMode: 'includes',
@@ -189,7 +211,8 @@ export default {
             mode: this.mode,
             value: this.value,
             dragValue: this.dragValue,
-            format: defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
+            format:
+              defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
           }),
           ...this.inputProps,
         };
@@ -212,15 +235,20 @@ export default {
       return props;
     },
     themeStyles_() {
+      const userDayContent = this.themeStyles.dayContent;
       // Strip the wrapper style when used in a popover
       // It will get passed in as the content style
       const styles = {
-        dayContentHover: {
-          backgroundColor: '#dadada',
-          border: '0',
-          cursor: 'pointer',
-        },
         ...this.themeStyles,
+        dayContent: params => ({
+          ...(params.isHovered && {
+            backgroundColor: '#dadada',
+            border: '0',
+            cursor: 'pointer',
+          }),
+          ...((isFunction(userDayContent) && userDayContent(params)) ||
+            userDayContent),
+        }),
         ...(!this.isInline && {
           wrapper: null,
         }),
@@ -247,8 +275,8 @@ export default {
       this.$emit('update:fromPage', val); // Allow using :from-page.sync
     },
     toPage_(val) {
-      this.$emit('update:topage', val);   // Support in-DOM templates (:topage.sync)
-      this.$emit('update:toPage', val);   // Allow using :to-page.sync
+      this.$emit('update:topage', val); // Support in-DOM templates (:topage.sync)
+      this.$emit('update:toPage', val); // Allow using :to-page.sync
     },
     mode() {
       // Clear value on select mode change
@@ -285,41 +313,48 @@ export default {
         key: 'drag-select',
         ...propAttr,
       };
-      const { highlight, contentStyle, contentHoverStyle, dot, bar } = attr;
+      const { highlight, highlightCaps, contentStyle, dot, bar } = attr;
+      // Don't need highlight or content style if using dot or bar
       if (!dot && !bar) {
         attr = {
           ...attr,
-          highlight: {
+          highlight: params => ({
             backgroundColor: this.tintColor,
             ...(isDrag && {
               height: '1.7rem',
               opacity: 0.5,
             }),
-            ...highlight,
-          },
-          ...(!isDrag && {
-            contentStyle: {
-              color: '#fafafa',
-              ...contentStyle,
-            },
+            ...((isFunction(highlight) && highlight(params)) || highlight),
           }),
-          contentHoverStyle: {
-            backgroundColor: 'transparent',
-            border: '0',
-            ...contentHoverStyle,
-          },
-        };
-      }
-      if (attr.highlight && this.showCaps) {
-        attr.highlightCaps = {
-          backgroundColor: '#fafafa',
-          borderColor: this.tintColor,
-          borderWidth: '2px',
-          ...attr.highlightCaps,
-        };
-        attr.contentStyleCaps = {
-          color: '#333333',
-          ...attr.contentStyleCaps,
+          highlightCaps:
+            highlightCaps ||
+            (this.showCaps &&
+              (params =>
+                !params.inBetween && {
+                  backgroundColor: '#fafafa',
+                  borderColor: this.tintColor,
+                  borderWidth: '2px',
+                })),
+          // Use function wrapper for content style
+          contentStyle: params => ({
+            // Light color for select attributes
+            ...(!isDrag && {
+              color: '#fafafa',
+            }),
+            // Don't show hover style for drag and select attributes
+            ...(params.isHovered && {
+              backgroundColor: 'transparent',
+              border: '0',
+            }),
+            // Mix in cap style
+            ...(this.showCaps &&
+              !params.inBetween && {
+                color: '#333333',
+              }),
+            // Mix in user style
+            ...((isFunction(contentStyle) && contentStyle(params)) ||
+              contentStyle),
+          }),
         };
       }
       if (attr.popover || this.showDayPopover) {
@@ -343,10 +378,24 @@ export default {
     assignPageRange() {
       const range = this.profile.getPageRange(this.value);
       if (range) {
-        const fromInRange = pageIsBetweenPages(this.fromPage_, range.from, range.to);
-        const toInRange = pageIsBetweenPages(this.toPage_, range.from, range.to);
+        const fromInRange = pageIsBetweenPages(
+          this.fromPage_,
+          range.from,
+          range.to,
+        );
+        const toInRange = pageIsBetweenPages(
+          this.toPage_,
+          range.from,
+          range.to,
+        );
         if (this.mode === 'single') {
-          if (!fromInRange && !Object.prototype.hasOwnProperty.call(this.$attrs, 'is-double-paned')) {
+          if (
+            !fromInRange &&
+            !Object.prototype.hasOwnProperty.call(
+              this.$attrs,
+              'is-double-paned',
+            )
+          ) {
             this.fromPage_ = range.from;
           } else if (!toInRange) {
             this.fromPage_ = range.to;
@@ -359,7 +408,9 @@ export default {
     },
     updateValue(value = this.inputValue) {
       // Parse value if needed
-      const parsedValue = isString(value) ? this.profile.parseValue(value) : value;
+      const parsedValue = isString(value)
+        ? this.profile.parseValue(value)
+        : value;
       // Filter out any disabled dates
       const filteredValue = this.profile.filterDisabled({
         value: this.profile.normalizeValue(parsedValue),

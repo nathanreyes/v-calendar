@@ -5,7 +5,8 @@
   :nav-visibility='navVisibility'
   :title-position='titlePosition'
   :title-transition='titleTransition'
-  :weeks-transition='weeksTransition'>
+  :weeks-transition='weeksTransition'
+  :attributes='attributes'>
 </v-calendar>
 </template>
 
@@ -18,6 +19,21 @@ export default {
     titlePosition: { type: String, default: 'center' },
     titleTransition: { type: String, default: 'slide-h' },
     weeksTransition: { type: String, default: 'slide-h' },
+  },
+  data() {
+    return {
+      attributes: [
+        {
+          bar({ isHovered }) {
+            return {
+              backgroundColor: 'black',
+              opacity: (isHovered && 0.5) || 1,
+            };
+          },
+          dates: new Date(),
+        },
+      ],
+    };
   },
 };
 </script>

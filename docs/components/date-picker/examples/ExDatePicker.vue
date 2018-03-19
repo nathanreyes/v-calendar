@@ -16,7 +16,6 @@
     :popover-visibility='popoverVisibility'
     :popover-direction='popoverDirection'
     :popover-align='popoverAlign'
-    popover-show-clear-margin
     v-model='selectedValue'>
   </v-date-picker>
 </template>
