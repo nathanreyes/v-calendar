@@ -71,7 +71,7 @@ const locales = {
   // Thai
   th: { L: 'DD/MM/YYYY' },
   // Turkish
-  tk: { dow: 2, L: 'DD.MM.YYYY' },
+  tr: { dow: 2, L: 'DD.MM.YYYY' },
 };
 locales.en = locales['en-US'];
 locales.zh = locales['zh-CN'];
