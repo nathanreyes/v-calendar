@@ -40,6 +40,11 @@ export default {
         props: '<code>page: Object</code>',
       },
       {
+        name: '<code>day-content</code>',
+        description: 'Calendar day content. Use this slot display custom day content.',
+        props: '<code>attributes: Array</code>, <code>day: Object</code>',
+      },
+      {
         name: '<code>day-popover-header</code>',
         description: 'If popover content is visible, this slot displays as the header.',
         props: '<code>attributes: Array</code>, <code>day-info: Object</code>',
