@@ -23,8 +23,8 @@ export const getMonthDates = (year = 2000) => {
 export const getWeekdayDates = (firstDayOfWeek = 1, year = 2000) => {
   const dates = [];
   for (let i = 1, j = 0; j < 7; i++) {
-    const d = new Date(year, 0, i);
-    if (d.getDay() === firstDayOfWeek - 1 || j > 0) {
+    const d = new Date(Date.UTC(year, 0, i));
+    if (d.getUTCDay() === firstDayOfWeek - 1 || j > 0) {
       dates.push(d);
       j++;
     }
