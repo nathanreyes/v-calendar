@@ -34,6 +34,12 @@
         </article>
         <code-block lang='javascript' :code='importCode | pre' offset></code-block>
         <article class='media'>
+          <div class='media-content'>
+            <p class='title is-5'>Local Registration</p>
+          </div>
+        </article>
+        <code-block lang='javascript' :code='localCode | pre' offset></code-block>
+        <article class='media'>
           <div class='media-left'>
             <p class='title is-5'>4</p>
           </div>
@@ -68,7 +74,7 @@ export default {
       setupOption: 'npm',
       importCode: `
         import Vue from 'vue';
-        import VCalendar from 'v-calendar';
+        import VCalendar, { Calendar, DatePicker, Popover} from 'v-calendar';
         import 'v-calendar/lib/v-calendar.min.css';
 
         // Access v-calendar, v-date-packer and v-popover components
@@ -155,6 +161,20 @@ export default {
               whiteSpace: 'nowrap',
             },
           },
+        });
+      `,
+      localCode: `
+        import Vue from 'vue';
+        import VCalendar, { Calendar, DatePicker, Popover} from 'v-calendar';
+        import 'v-calendar/lib/v-calendar.min.css';
+
+        new Vue({
+          el: '#app'
+          components: {
+            'v-calendar': Calendar,
+            'v-date-picker': DatePicker,
+            'v-popover': Popover
+          }
         });
       `,
       componentCode: `
