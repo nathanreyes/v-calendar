@@ -71,19 +71,25 @@ const locales = {
   // Thai
   th: { L: 'DD/MM/YYYY' },
   // Turkish
-  tk: { dow: 2, L: 'DD.MM.YYYY' },
+  tr: { dow: 2, L: 'DD.MM.YYYY' },
 };
 locales.en = locales['en-US'];
 locales.zh = locales['zh-CN'];
 
 // Month and day names are derived from Intl.DateTimeFormat
 const getMonthNames = (locale, length) => {
-  const dtf = new Intl.DateTimeFormat(locale, { month: length });
+  const dtf = new Intl.DateTimeFormat(locale, {
+    month: length,
+    timezome: 'UTC',
+  });
   return getMonthDates().map(d => dtf.format(d));
 };
 const getDayNames = (locale, length) => {
-  const dtf = new Intl.DateTimeFormat(locale, { weekday: length });
-  return getWeekdayDates().map(d => dtf.format(d));
+  const dtf = new Intl.DateTimeFormat(locale, {
+    weekday: length,
+    timeZone: 'UTC',
+  });
+  return getWeekdayDates({ utc: true }).map(d => dtf.format(d));
 };
 
 export default (locale, defaults) => {

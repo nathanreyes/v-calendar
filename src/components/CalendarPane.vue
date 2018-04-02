@@ -209,8 +209,8 @@ export default {
       );
     },
     weekdayLabels() {
-      return getWeekdayDates(defaults.firstDayOfWeek).map(d =>
-        format(d, this.formats.weekdays || 'WW'),
+      return getWeekdayDates({ firstDayOfWeek: defaults.firstDayOfWeek }).map(
+        d => format(d, this.formats.weekdays || 'WW'),
       );
     },
     titleClass() {

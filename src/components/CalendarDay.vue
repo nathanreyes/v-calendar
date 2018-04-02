@@ -248,7 +248,6 @@ export default {
       return this.popoverState.isInteractive;
     },
     contentStyle() {
-      // if (this.styles.dayContent) console.log(this.styles.dayContent);
       const userStyle = this.styles.dayContent;
       const disableEvents =
         this.dayCellStyle &&

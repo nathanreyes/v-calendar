@@ -1,36 +1,45 @@
+# v0.9.0
 ## Bug Fixes
+### `v-calendar`
+* Fixes Turkish locale identifier
+* Fixes weekday formatting by using UNC dates with `Intl.DateTimeFormat`. Closes #104.
+* Other small bug fixes
+
 ### `v-date-picker`
-* Fixed glitch with highlight cap animation when `mode === "range"`
-* Fixed bug with `themeStyles.dayContent` style getting ignored. Closes #115.
+* Fixes glitch with highlight cap animation when `mode === "range"`
+* Fixes bug with `themeStyles.dayContent` style getting ignored. Closes #115.
 
 ## Improvements
 ### `v-calendar`
-* Added `min-date` prop as a convenient alternative to `min-page`
-* Added `max-date` prop as a convenient alternative to `max-page`
-* Added `is-linked` prop to link panes to consecutive months when `is-double-paned` is set. Closes #80.
-* Added `is-vertical` prop for vertical calendar orientation when `is-double-paned` is set. Closes #89.
+* Adds `min-date` prop as a convenient alternative to `min-page`
+* Adds `max-date` prop as a convenient alternative to `max-page`
+* Adds `is-linked` prop to link panes to consecutive months when `is-double-paned` is set. Closes #80.
+* Adds `is-vertical` prop for vertical calendar orientation when `is-double-paned` is set. Closes #89.
+
+### `v-date-picker`
+* `min-date` and `max-date` props are now forwarded to `v-calendar`. Closes #78.
 
 ### Defaults
 Theme styles modifications. Closes #93.
 
 | Style | Modification | Description |
 | ----- | ------------ | ----- |
-| `horizontalDivider` | Added | Horizontal divider when calendars are in vertical orientation (`is-vertical`) |
-| `navHeader` | Added | Navigation pane header. |
-| `navHeaderTitle` | Added | Navigation pane header title. |
-| `navHeaderArrows` | Added | Navigation pane header arrows. |
-| `navMonthCell` | Added | Navigation pane month cells. |
-| `navYearCell` | Added | Navigation pane year cells. |
+| `horizontalDivider` | Add | Horizontal divider when calendars are in vertical orientation (`is-vertical`) |
+| `navHeader` | Add | Navigation pane header. |
+| `navHeaderTitle` | Add | Navigation pane header title. |
+| `navHeaderArrows` | Add | Navigation pane header arrows. |
+| `navMonthCell` | Add | Navigation pane month cells. |
+| `navYearCell` | Add | Navigation pane year cells. |
 | `header` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `headerTitle` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `headerArrows` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `headerHorizontalDivider` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `weekdays` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `weekdaysHorizontalDivider` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `weeks` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| ~~`headerVerticalDivider`~~ | Removed | *Reference note below* |
-| ~~`weekdaysVerticalDivider`~~ | Removed | *Reference note below* |
-| ~~`weeksVerticalDivider`~~ | Removed | *Reference note below* |
+| `headerTitle` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `headerArrows` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `headerHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `weekdays` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `weekdaysHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `weeks` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| ~~`headerVerticalDivider`~~ | Remove | *Reference note below* |
+| ~~`weekdaysVerticalDivider`~~ | Remove | *Reference note below* |
+| ~~`weeksVerticalDivider`~~ | Remove | *Reference note below* |
 
 * Styles removed in favor of defining functions for the `header`, `weekdays` and `weeks` styles like so...
 
@@ -58,9 +67,6 @@ export default {
   }
 }
 ```
-
-### `v-date-picker`
-* `min-date` and `max-date` props are now forwarded to `v-calendar`. Closes #78.
 
 # v0.8.0
 ## Bug Fixes

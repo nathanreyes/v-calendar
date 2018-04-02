@@ -174,11 +174,14 @@ export default {
         this.fromPage_ = getPrevPage(val);
     },
     isDoublePaned_() {
-      this.refreshContainerWidth();
+      this.refreshIsConstrained();
       this.refreshToPage();
     },
+    isLinked(val) {
+      if (val) this.toPage_ = getNextPage(this.fromPage_);
+    },
     isExpanded() {
-      this.refreshContainerWidth();
+      this.refreshIsConstrained();
     },
   },
   created() {
@@ -186,11 +189,13 @@ export default {
     this.refreshToPage();
   },
   mounted() {
-    this.refreshContainerWidth();
-    window.addEventListener('resize', this.refreshContainerWidth);
+    this.$nextTick(() => {
+      this.refreshIsConstrained();
+      window.addEventListener('resize', this.refreshIsConstrained);
+    });
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.refreshContainerWidth);
+    window.removeEventListener('resize', this.refreshIsConstrained);
   },
   methods: {
     refreshFromPage() {
@@ -212,7 +217,7 @@ export default {
         getNextPage(this.minPage_),
       );
     },
-    refreshContainerWidth() {
+    refreshIsConstrained() {
       // Only test for constrained environment if needed
       if (!window || !this.isDoublePaned || this.isVertical) {
         this.isConstrained = false;
