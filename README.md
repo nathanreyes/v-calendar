@@ -481,6 +481,8 @@ Vue.use(VCalendar, {
 | `titlePosition` | String | Position of the title in the header (`"left"`, `"center"`, `"right"`) | `"center"` |
 | `titleTransition` | String | Transition type for title when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`) | `"slide-h"` |
 | `weeksTransition` | String | Transition type for weeks when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`) | `"slide-h"` |
+| `paneWidth` | Number | Width of a single pane, in pixels. | `256` |
+| `showLinkedButtons` | Boolean | When calendar `is-linked` and `!is-vertical`, show the inner header navigation buttons that are usually hidden. |
 | `datePickerTintColor` | String | Background color of the selected and dragged highlighted regions (`opacity: 0.5` for dragged). This setting is overridden by `select-attribute` and `drag-attribute` if specified. | `"#66B3CC"` |
 | `datePickerShowCaps` | Boolean | Show caps and the end of the highlighted and dragged regions when `mode === "range"` | `false` |
 | `datePickerShowDayPopover` | Boolean | Show popover for dragged and selected regions | `true` |
