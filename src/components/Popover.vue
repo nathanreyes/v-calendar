@@ -59,7 +59,10 @@ export default {
     forceHidden: Boolean,
     toggleVisibleOnClick: Boolean, // Only valid when visibility === "focus"
     contentStyle: Object,
-    contentOffset: { type: Number, default: () => defaults.popoverContentOffset },
+    contentOffset: {
+      type: Number,
+      default: () => defaults.popoverContentOffset,
+    },
     transition: { type: String, default: 'slide-fade' },
     showClearMargin: Boolean,
   },
@@ -84,7 +87,9 @@ export default {
     },
     contentWrapperStyle() {
       const style = {};
-      style[`padding${this.contentOffsetDirection}`] = `${this.contentOffset}px`;
+      style[`padding${this.contentOffsetDirection}`] = `${
+        this.contentOffset
+      }px`;
       return style;
     },
     contentOffsetDirection() {
@@ -122,7 +127,10 @@ export default {
     },
   },
   created() {
-    this.windowTapClickRegistration = registerTapOrClick(window, this.windowTapOrClick);
+    this.windowTapClickRegistration = registerTapOrClick(
+      window,
+      this.windowTapOrClick,
+    );
   },
   mounted() {
     this.refreshClearMargin();
@@ -166,7 +174,10 @@ export default {
       }
     },
     mouseleave(e) {
-      if (!this.forceHidden && !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+      if (
+        !this.forceHidden &&
+        !elementHasAncestor(e.relatedTarget, this.$refs.popover)
+      ) {
         this.hoverVisible = false;
       }
     },
@@ -178,8 +189,14 @@ export default {
     },
     refreshClearMargin() {
       if (this.showClearMargin && this.visible && this.$refs.popoverContent) {
-        const { width, height } = this.$refs.popoverContent.getBoundingClientRect();
-        const span = ((this.direction === 'left' || this.direction === 'right') && width) || height;
+        const {
+          width,
+          height,
+        } = this.$refs.popoverContent.getBoundingClientRect();
+        const span =
+          ((this.direction === 'left' || this.direction === 'right') &&
+            width) ||
+          height;
         this.clearMargin = span + this.contentOffset;
       } else {
         this.clearMargin = 0;

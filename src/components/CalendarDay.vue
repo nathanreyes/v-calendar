@@ -198,13 +198,13 @@ export default {
       return this.glyphs.backgrounds;
     },
     hasBackgrounds() {
-      return arrayHasItems(this.backgrounds);
+      return !!arrayHasItems(this.backgrounds);
     },
     dots() {
       return this.glyphs.dots;
     },
     hasDots() {
-      return arrayHasItems(this.dots);
+      return !!arrayHasItems(this.dots);
     },
     dotsStyle() {
       return this.styles.dots;
@@ -213,7 +213,7 @@ export default {
       return this.glyphs.bars;
     },
     hasBars() {
-      return arrayHasItems(this.bars);
+      return !!arrayHasItems(this.bars);
     },
     barsStyle() {
       return this.styles.bars;
@@ -248,6 +248,7 @@ export default {
       return this.popoverState.isInteractive;
     },
     contentStyle() {
+      // if (this.styles.dayContent) console.log(this.styles.dayContent);
       const userStyle = this.styles.dayContent;
       const disableEvents =
         this.dayCellStyle &&
@@ -273,7 +274,10 @@ export default {
     isFocusedDirty() {
       this.refreshGlyphs();
     },
-    attributesList() {
+    attributesList(newList, oldList) {
+      newList.forEach(n => {
+        n.isNew = !oldList.find(o => o.key === n.key);
+      });
       this.refreshGlyphs();
     },
   },
@@ -313,17 +317,27 @@ export default {
         .reduce(
           // Add glyphs for each attribute (prioritize from first to last)
           (glyphs, attr) => {
+            const {
+              highlight,
+              highlightCaps,
+              onStart,
+              onEnd,
+              dot,
+              bar,
+              popover,
+            } = attr;
             const { backgrounds, dots, bars, popovers, contentStyle } = glyphs;
             // Add backgrounds for highlight if needed
-            if (attr.highlight) backgrounds.push(this.getBackground(attr));
-            if (attr.highlightCaps)
+            if (highlight && !(onStart && onEnd && highlightCaps))
+              backgrounds.push(this.getBackground(attr));
+            if (highlightCaps && (onStart || onEnd))
               backgrounds.push(this.getBackgroundCap(attr));
             // Add dot if needed
-            if (attr.dot) dots.push(this.getDot(attr));
+            if (dot) dots.push(this.getDot(attr));
             // Add bar if needed
-            if (attr.bar) bars.push(this.getBar(attr));
+            if (bar) bars.push(this.getBar(attr));
             // Add popover if needed
-            if (attr.popover) popovers.unshift(this.getPopover(attr));
+            if (popover) popovers.unshift(this.getPopover(attr));
             // Add content style if needed
             Object.assign(contentStyle, attr.contentStyle);
             // Continue configuring glyphs
@@ -360,6 +374,9 @@ export default {
         attribute,
         {
           ...attribute,
+          onStart,
+          onEnd,
+          inBetween,
         },
         [
           { name: 'highlight', mixin: defaults.highlight, validate },
@@ -420,7 +437,8 @@ export default {
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
           // Is the day date on the highlight start date
         } else if (onStart) {
-          const animation = animated ? 'c-day-slide-left-scale-enter' : '';
+          const animation =
+            animated && !highlightCaps ? 'c-day-slide-left-scale-enter' : '';
           background.wrapperClass = `c-day-layer c-day-box-right-center shift-right ${animation}`;
           if (highlightCaps) {
             background.style.width = endShortWidth;
@@ -433,7 +451,8 @@ export default {
           }
           // Is the day date on the highlight end date
         } else if (onEnd) {
-          const animation = animated ? 'c-day-slide-right-scale-enter' : '';
+          const animation =
+            animated && !highlightCaps ? 'c-day-slide-right-scale-enter' : '';
           background.wrapperClass = `c-day-layer c-day-box-left-center shift-left ${animation}`;
           if (highlightCaps) {
             background.style.width = endShortWidth;
@@ -456,7 +475,7 @@ export default {
       return background;
     },
     getBackgroundCap(attribute) {
-      const { key, highlightCaps, targetDate } = attribute;
+      const { key, highlightCaps, targetDate, isNew } = attribute;
       const { startTime, endTime } = targetDate;
       const {
         animated,
@@ -470,19 +489,17 @@ export default {
       } = highlightCaps;
       const borderRadius = highlightCaps.borderRadius || '50%';
       let animation = '';
-      const backgroundExists =
-        this.backgrounds && !!this.backgrounds.find(b => b.key === key);
       if (animated) {
         if (startTime === endTime) {
           animation = 'c-day-scale-enter c-day-scale-leave';
         } else if (startTime === this.dateTime) {
-          animation = backgroundExists
-            ? 'c-day-slide-right-translate-enter'
-            : 'c-day-slide-left-translate-enter';
-        } else {
-          animation = backgroundExists
+          animation = isNew
             ? 'c-day-slide-left-translate-enter'
             : 'c-day-slide-right-translate-enter';
+        } else if (endTime === this.dateTime) {
+          animation = isNew
+            ? 'c-day-slide-right-translate-enter'
+            : 'c-day-slide-left-translate-enter';
         }
       }
       return {

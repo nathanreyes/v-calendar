@@ -10,6 +10,7 @@ const defaults = {
   titleTransition: 'slide-h',
   weeksTransition: 'slide-h',
   paneWidth: 256, // px,
+  showLinkedButtons: false,
   formats: {
     title: 'MMMM YYYY',
     weekdays: 'W',
@@ -99,17 +100,15 @@ const defaults = {
   themeStyles: {
     wrapper: { backgroundColor: '#fafafa', border: '1px solid #dadada' },
     verticalDivider: { borderLeft: '1px solid #dadada' },
+    horizontalDivider: { borderTop: '1px solid #dadada' },
     pane: null,
     header: null,
     headerTitle: null,
     headerArrows: null,
-    headerVerticalDivider: null,
     headerHorizontalDivider: null,
     weekdays: null,
-    weekdaysVerticalDivider: null,
     weekdaysHorizontalDivider: null,
     weeks: null,
-    weeksVerticalDivider: null,
     dayCell: null,
     dayCellNotInMonth: { opacity: 0.4 },
     dayContent: null,
@@ -121,6 +120,11 @@ const defaults = {
       fontSize: '.8rem',
       whiteSpace: 'nowrap',
     },
+    navHeader: null,
+    navHeaderTitle: null,
+    navHeaderArrows: null,
+    navMonthCell: null,
+    navYearCell: null,
   },
 };
 // Uncomment this line when running unit tests

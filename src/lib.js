@@ -13,13 +13,15 @@ const VCalendar = {
   ...components,
   install: (Vue, options) => {
     const defaults = mergeDefaults(options);
-    Object
-      .keys(components)
-      .forEach(k => Vue.component(`${defaults.componentPrefix}${k}`, components[k]));
+    Object.keys(components).forEach(k =>
+      Vue.component(`${defaults.componentPrefix}${k}`, components[k]),
+    );
   },
 };
 
 export default VCalendar;
+
+export { Calendar, DatePicker, Popover };
 
 // Use automatically when global Vue instance detected
 if (typeof window !== 'undefined' && window.Vue) {

@@ -1,156 +1,147 @@
 <template>
 <div
   ref='pane'
-  :class='["c-pane", { "is-single": position === 0 }]'>
-  <!--Header-->
-  <div class='c-section-wrapper'>
-    <!--Header vertical divider-->
-    <div
-      class='c-vertical-divider'
-      :style='verticalDividers.header'
-      v-if='verticalDividers.header'>
-    </div>
-    <!--Header slot-->
-    <slot name='header' v-bind='page_'>
-      <div class='c-header' :style='headerStyle'>
-        <!--Header prev button-->
-        <div class='c-arrow-layout'>
-          <slot name='header-left-button' v-bind='page_'>
-            <svg-icon
-              :glyph='angleLeft'
-              class='c-arrow'
-              :class='{ "c-disabled": !canMovePrevMonth }'
-              :style='arrowStyle'
-              @click='movePrevMonth'>
-            </svg-icon>
-          </slot>
-        </div>
-        <!--Header title-->
-        <div
-          :class='["c-title-layout", titleClass]'>   
-          <!--Navigation popover--> 
-          <popover
-            class='c-title-popover'
-            direction='bottom'
-            :align='titlePosition'
-            :visibility='navVisibility'
-            :content-style='{ padding: "0" }'
-            :force-hidden.sync='navForceHidden'
-            toggle-visible-on-click
-            is-interactive>
-            <!--Title content-->
-            <transition-group
-              tag='div'
-              class='c-title-anchor'
-              :name='titleTransition_'>
-              <div
-                class='c-title'
-                :style='titleStyle'
-                v-for='p in pages'
-                :key='p.key'
-                v-if='p === page_'>
-                <slot
-                  name='header-title'
-                  v-bind='p'>
-                  {{ p.title }}
-                </slot>
-              </div>
-            </transition-group>
-            <!--Navigation pane-->
-            <calendar-nav
-              slot='popover-content'
-              :formats='formats'
-              :value='page_'
-              :validator='canMove'
-              @input='navPageSelected($event)'>
-            </calendar-nav>
-          </popover>
-        </div>
-        <!--Header next button-->
-        <div class='c-arrow-layout'>
-          <slot name='header-right-button' v-bind='page_'>
-            <svg-icon
-              :glyph='angleRight'
-              class='c-arrow'
-              :class='{ "c-disabled": !canMoveNextMonth }'
-              :style='arrowStyle'
-              @click='moveNextMonth'>
-            </svg-icon>
-          </slot>
-        </div>
+  class='c-pane'
+  :style='paneStyle'>
+  <!--Header slot-->
+  <slot name='header' v-bind='page_'>
+    <div class='c-header' :style='headerStyle'>
+      <!--Header prev button-->
+      <div class='c-arrow-layout'>
+        <slot
+          name='header-left-button'
+          v-bind='page_'
+          v-if='!hideLeftButton'>
+          <svg-icon
+            :glyph='angleLeft'
+            class='c-arrow'
+            :class='{ "c-disabled": !canMovePrevMonth || hideLeftButton }'
+            :style='arrowStyle'
+            @click='movePrevMonth'>
+          </svg-icon>
+        </slot>
       </div>
-    </slot>
-    <!--Header horizontal divider-->
+      <!--Header title-->
+      <div
+        :class='["c-title-layout", titleClass]'>   
+        <!--Navigation popover--> 
+        <popover
+          class='c-title-popover'
+          direction='bottom'
+          :align='titlePosition'
+          :visibility='navVisibility'
+          :content-style='navWrapperStyle'
+          :force-hidden.sync='navForceHidden'
+          toggle-visible-on-click
+          is-interactive>
+          <!--Title content-->
+          <transition-group
+            tag='div'
+            class='c-title-anchor'
+            :name='titleTransition_'>
+            <div
+              class='c-title'
+              :style='titleStyle'
+              v-for='p in pages'
+              :key='p.key'
+              v-if='p === page_'>
+              <slot
+                name='header-title'
+                v-bind='p'>
+                {{ p.title }}
+              </slot>
+            </div>
+          </transition-group>
+          <!--Navigation pane-->
+          <calendar-nav
+            slot='popover-content'
+            :formats='formats'
+            :value='page_'
+            :validator='canMove'
+            :styles='styles'
+            @input='navPageSelected($event)'>
+            <!-- Pass through nav slots -->
+            <template
+              v-for='slot in navSlots'
+              :slot='slot'
+              slot-scope='props'>
+              <slot :name='slot' v-bind='props'></slot>
+            </template>
+          </calendar-nav>
+        </popover>
+      </div>
+      <!--Header next button-->
+      <div class='c-arrow-layout'>
+        <slot
+          name='header-right-button'
+          v-bind='page_'
+          v-if='!hideRightButton'>
+          <svg-icon
+            :glyph='angleRight'
+            class='c-arrow'
+            :class='{ "c-disabled": !canMoveNextMonth }'
+            :style='arrowStyle'
+            @click='moveNextMonth'>
+          </svg-icon>
+        </slot>
+      </div>
+    </div>
+  </slot>
+  <!--Header horizontal divider-->
+  <div
+    class='c-horizontal-divider'
+    :style='headerHorizontalDividerStyle_'
+    v-if='headerHorizontalDividerStyle_'>
+  </div>
+  <!--Weekday labels-->
+  <div
+    class='c-weekdays'
+    :style='weekdaysStyle_'>
     <div
-      class='c-horizontal-divider'
-      :style='headerHorizontalDividerStyle_'
-      v-if='headerHorizontalDividerStyle_'>
+      v-for='(weekday, i) in weekdayLabels'
+      :key='i + 1'
+      class='c-weekday'>
+      {{ weekday }}
     </div>
   </div>
-  <!--Weekdays-->
-  <div class='c-section-wrapper'>
-    <!--Weekday vertical divider-->
-    <div
-      class='c-vertical-divider'
-      :style='verticalDividers.weekdays'
-      v-if='verticalDividers.weekdays'>
-    </div>
-    <!--Weekday labels-->
-    <div
-      class='c-weekdays'
-      :style='weekdayStyle_'>
-      <div
-        v-for='(weekday, i) in weekdayLabels'
-        :key='i + 1'
-        class='c-weekday'>
-        {{ weekday }}
-      </div>
-    </div>
-    <!--Weekday horizontal divider-->
-    <div
-      class='c-horizontal-divider'
-      :style='weekdaysHorizontalDividerStyle_'
-      v-if='weekdaysHorizontalDividerStyle_'>
-    </div>
+  <!--Weekdays horizontal divider-->
+  <div
+    class='c-horizontal-divider'
+    :style='weekdaysHorizontalDividerStyle_'
+    v-if='weekdaysHorizontalDividerStyle_'>
   </div>
   <!--Weeks-->
-  <div class='c-section-wrapper'>
-    <!--Weeks vertical divider-->
-    <div
-      class='c-vertical-divider'
-      :style='verticalDividers.weeks'
-      v-if='verticalDividers.weeks'>
-    </div>
-    <!--Week rows-->
-    <div
-      class='c-weeks'
-      :style='weeksStyle_'>
-      <transition-group
-        tag='div'
-        class='c-weeks-rows-wrapper'
-        :name='weeksTransition_'
-        @before-enter='weeksTransitioning = true'
-        @after-enter='weeksTransitioning = false'>
-        <calendar-weeks
-          class='c-weeks-rows'
-          v-for='p in pages'
-          :key='p.key'
-          :month-comps='p.monthComps'
-          :prev-month-comps='p.prevMonthComps'
-          :next-month-comps='p.nextMonthComps'
-          :styles='styles'
-          v-bind='$attrs'
-          @touchstart.passive='touchStart($event)'
-          @touchmove.passive='touchMove($event)'
-          @touchend.passive='touchEnd($event)'
-          v-on='$listeners'
-          v-if='p === page_'>
-          <template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'>
-            <slot :name='slot' v-bind='props'></slot>
-          </template>
-        </calendar-weeks>
-      </transition-group>
-    </div>
+  <div
+    class='c-weeks'
+    :style='weeksStyle_'>
+    <transition-group
+      tag='div'
+      class='c-weeks-rows-wrapper'
+      :name='weeksTransition_'
+      @before-enter='weeksTransitioning = true'
+      @after-enter='weeksTransitioning = false'>
+      <calendar-weeks
+        class='c-weeks-rows'
+        v-for='p in pages'
+        :key='p.key'
+        :month-comps='p.monthComps'
+        :prev-month-comps='p.prevMonthComps'
+        :next-month-comps='p.nextMonthComps'
+        :styles='styles'
+        v-bind='$attrs'
+        @touchstart.passive='touchStart($event)'
+        @touchmove.passive='touchMove($event)'
+        @touchend.passive='touchEnd($event)'
+        v-on='$listeners'
+        v-if='p === page_'>
+        <template
+          v-for='slot in Object.keys($scopedSlots)'
+          :slot='slot'
+          slot-scope='props'>
+          <slot :name='slot' v-bind='props'></slot>
+        </template>
+      </calendar-weeks>
+    </transition-group>
   </div>
 </div>
 </template>
@@ -163,7 +154,7 @@ import SvgIcon from './SvgIcon';
 import angleLeft from '@/assets/icons/angle-left.svg';
 import angleRight from '@/assets/icons/angle-right.svg';
 import defaults from '@/utils/defaults';
-import { getWeekdayDates } from '@/utils/helpers';
+import { getWeekdayDates, evalFn } from '@/utils/helpers';
 import { format } from '@/utils/fecha';
 
 import {
@@ -193,6 +184,9 @@ export default {
     titlePosition: { type: String, default: () => defaults.titlePosition },
     titleTransition: { type: String, default: () => defaults.titleTransition },
     weeksTransition: { type: String, default: () => defaults.weeksTransition },
+    paneWidth: Number,
+    hideLeftButton: Boolean,
+    hideRightButton: Boolean,
   },
   data() {
     return {
@@ -209,47 +203,66 @@ export default {
     };
   },
   computed: {
+    navSlots() {
+      return ['nav-left-button', 'nav-right-button'].filter(
+        slot => this.$scopedSlots[slot],
+      );
+    },
     weekdayLabels() {
-      return getWeekdayDates(defaults.firstDayOfWeek).map(d => format(d, this.formats.weekdays || 'WW'));
+      return getWeekdayDates(defaults.firstDayOfWeek).map(d =>
+        format(d, this.formats.weekdays || 'WW'),
+      );
     },
     titleClass() {
       return this.titlePosition ? `align-${this.titlePosition}` : '';
     },
     titleTransition_() {
-      return this.getTransitionName('title', this.titleTransition, this.transitionDirection);
+      return this.getTransitionName(
+        'title',
+        this.titleTransition,
+        this.transitionDirection,
+      );
     },
     weeksTransition_() {
-      return this.getTransitionName('weeks', this.weeksTransition, this.transitionDirection);
+      return this.getTransitionName(
+        'weeks',
+        this.weeksTransition,
+        this.transitionDirection,
+      );
+    },
+    paneStyle() {
+      return {
+        minWidth: `${this.paneWidth}px`,
+      };
     },
     headerStyle() {
-      return this.getDividerStyle(this.styles.header);
+      return evalFn(this.styles.header, this.page_);
     },
     titleStyle() {
-      return this.styles.headerTitle;
+      return evalFn(this.styles.headerTitle, this.page_);
     },
     arrowStyle() {
-      return this.styles.headerArrows;
-    },
-    verticalDividers() {
-      return this.position === 2 ? {
-        header: this.styles.headerVerticalDivider || this.styles.verticalDivider,
-        weekdays: this.styles.weekdaysVerticalDivider || this.styles.verticalDivider,
-        weeks: this.styles.weeksVerticalDivider || this.styles.verticalDivider,
-      } : {};
+      return evalFn(this.styles.headerArrows, this.page_);
     },
     headerHorizontalDividerStyle_() {
-      return this.styles.headerHorizontalDivider;
+      return evalFn(this.styles.headerHorizontalDivider, this.page_);
     },
-    weekdayStyle_() {
-      return this.getDividerStyle(this.styles.weekdays);
+    weekdaysStyle_() {
+      return evalFn(this.styles.weekdays, this.page_);
     },
     weekdaysHorizontalDividerStyle_() {
-      return this.styles.weekdaysHorizontalDivider;
+      return evalFn(this.styles.weekdaysHorizontalDivider, this.page_);
     },
     weeksStyle_() {
       return {
-        ...this.getDividerStyle(this.styles.weeks),
+        ...evalFn(this.styles.weeks, this.page_),
         ...(this.weeksTransitioning ? { overflow: 'hidden' } : null),
+      };
+    },
+    navWrapperStyle() {
+      return {
+        padding: '1px',
+        ...evalFn(this.styles.navWrapper, this.page_),
       };
     },
     canMovePrevMonth() {
@@ -282,8 +295,10 @@ export default {
       this.move(page);
     },
     monthIsDisabled(month) {
-      if (this.minPage && this.yearNumber === this.minPage.year) return month < this.minPage.month;
-      if (this.maxPage && this.yearNumber === this.maxPage.year) return month > this.maxPage.month;
+      if (this.minPage && this.yearNumber === this.minPage.year)
+        return month < this.minPage.month;
+      if (this.maxPage && this.yearNumber === this.maxPage.year)
+        return month > this.maxPage.month;
       return false;
     },
     yearIsDisabled(year) {
@@ -327,7 +342,10 @@ export default {
       const deltaY = t.screenY - this.touchState.startY;
       const deltaTime = new Date().getTime() - this.touchState.startTime;
       if (deltaTime < defaults.maxSwipeTime) {
-        if (Math.abs(deltaX) >= defaults.minHorizontalSwipeDistance && Math.abs(deltaY) <= defaults.maxVerticalSwipeDistance) {
+        if (
+          Math.abs(deltaX) >= defaults.minHorizontalSwipeDistance &&
+          Math.abs(deltaY) <= defaults.maxVerticalSwipeDistance
+        ) {
           // Swipe left
           if (deltaX < 0) {
             // Move to previous month
@@ -340,7 +358,8 @@ export default {
       }
     },
     canMove(pageInfo) {
-      if (this.minPage && pageIsBeforePage(pageInfo, this.minPage)) return false;
+      if (this.minPage && pageIsBeforePage(pageInfo, this.minPage))
+        return false;
       if (this.maxPage && pageIsAfterPage(pageInfo, this.maxPage)) return false;
       return true;
     },
@@ -375,7 +394,12 @@ export default {
       // Reset move timeout
       this.moveTimeout = new Date(date.getTime() + 250);
       // Exit if there is no page info or page info matches the current page
-      if (!pageInfo || (pageInfo.month === this.page_.month && pageInfo.year === this.page_.year)) return;
+      if (
+        !pageInfo ||
+        (pageInfo.month === this.page_.month &&
+          pageInfo.year === this.page_.year)
+      )
+        return;
       // Extract just the month and year info
       const monthYear = { month: pageInfo.month, year: pageInfo.year };
       // Set the active page
@@ -388,7 +412,7 @@ export default {
     },
     loadPage({ month, year }) {
       const key = `${year.toString()}.${month.toString()}`;
-      let page = this.pages.find(p => (p.key === key));
+      let page = this.pages.find(p => p.key === key);
       if (!page) {
         const date = new Date(year, month - 1, 15);
         const monthComps = getMonthComps(month, year);
@@ -424,29 +448,28 @@ export default {
         this.loadPage(this.page_.prevMonthComps);
         this.loadPage(this.page_.nextMonthComps);
         this.pages = this.pages.filter(p => p.loaded);
-        this.pages.forEach((p) => {
+        this.pages.forEach(p => {
           p.loaded = false;
         });
       });
     },
     getTransitionDirection(fromPage, toPage) {
       if (!fromPage || !toPage) return '';
-      if (fromPage.year !== toPage.year) return fromPage.year < toPage.year ? 'next' : 'prev';
-      if (fromPage.month !== toPage.month) return fromPage.month < toPage.month ? 'next' : 'prev';
+      if (fromPage.year !== toPage.year)
+        return fromPage.year < toPage.year ? 'next' : 'prev';
+      if (fromPage.month !== toPage.month)
+        return fromPage.month < toPage.month ? 'next' : 'prev';
       return '';
     },
     getTransitionName(prefix, type, direction) {
       if (type === 'slide-h') {
-        return `${prefix}-${direction === 'next' ? 'slide-left' : 'slide-right'}`;
+        return `${prefix}-${
+          direction === 'next' ? 'slide-left' : 'slide-right'
+        }`;
       } else if (type === 'slide-v') {
         return `${prefix}-${direction === 'next' ? 'slide-up' : 'slide-down'}`;
       }
       return `${prefix}-${type}`;
-    },
-    getDividerStyle(defaultStyle) {
-      if (this.position === 1) return { ...defaultStyle, borderRight: '0' };
-      if (this.position === 2) return { ...defaultStyle, borderLeft: '0' };
-      return defaultStyle;
     },
   },
 };
@@ -458,27 +481,24 @@ export default {
 @import '../styles/mixins.sass'
 
 .c-pane
-  width: 50%
+  flex-grow: 1
+  flex-shrink: 1
   display: flex
   flex-direction: column
+  justify-content: center
   align-items: stretch
-  position: relative
-  &.is-single
-    width: 100%
 
-.c-section-wrapper
-  position: relative
-  display: flex
-  flex-direction: column
+.c-horizontal-divider
+  align-self: center
 
 .c-header
-  flex: 1
   display: flex
   align-items: stretch
   user-select: none
   padding: $header-padding
   .c-arrow-layout
     +box()
+    min-width: 26px
     .c-arrow
       +box()
       font-size: $arrow-font-size
@@ -509,24 +529,12 @@ export default {
     &.align-right
       order: 1
       justify-content: flex-end
-    
   .c-arrow.c-disabled
     cursor: not-allowed
     pointer-events: none
     opacity: 0.2
 
-.c-horizontal-divider
-  align-self: center
-
-.c-vertical-divider
-  display: flex
-  align-items: center
-  position: absolute
-  left: 0
-  height: 100%
-
 .c-weekdays
-  flex-grow: 1
   display: flex
   padding: $weekday-padding
   color: $weekday-color

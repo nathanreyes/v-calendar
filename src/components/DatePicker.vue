@@ -25,6 +25,8 @@ export default {
           selectAttribute: this.selectAttribute_,
           dragAttribute: this.dragAttribute_,
           disabledAttribute: this.disabledAttribute_,
+          minDate: this.minDate,
+          maxDate: this.maxDate,
           fromPage: this.fromPage_,
           toPage: this.toPage_,
           themeStyles: this.themeStyles_,
@@ -101,7 +103,7 @@ export default {
   },
   props: {
     mode: { type: String, default: 'single' },
-    value: null,
+    value: { type: null, required: true },
     isRequired: Boolean,
     isInline: Boolean,
     minDate: Date,
@@ -234,7 +236,8 @@ export default {
       return props;
     },
     themeStyles_() {
-      const userDayContent = this.themeStyles.dayContent;
+      const userDayContent =
+        this.themeStyles.dayContent || defaults.themeStyles.dayContent;
       // Strip the wrapper style when used in a popover
       // It will get passed in as the content style
       const styles = {

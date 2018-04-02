@@ -3,6 +3,7 @@ import Buefy from 'buefy';
 import hljs from 'highlight.js';
 import VueClipboard from 'vue-clipboard2';
 import VCalendar from '../src/lib';
+// import { Calendar, DatePicker, Popover } from '../src/lib';
 import App from './App';
 import router from './router';
 import CodeBlock from './components/blocks/CodeBlock';
@@ -14,13 +15,17 @@ Vue.use(Buefy, {
   defaultIconPack: 'fa',
 });
 Vue.use(VCalendar);
+// Vue.component('v-popover', Popover);
+// Vue.component('v-calendar', Calendar);
+// Vue.component('v-date-picker', DatePicker);
 Vue.component('CodeBlock', CodeBlock);
+
 Vue.directive('highlight', {
   deep: true,
   bind(el, binding) {
     // On first bind, highlight all targets
     const targets = el.querySelectorAll('code');
-    targets.forEach((target) => {
+    targets.forEach(target => {
       // if a value is directly assigned to the directive, use this
       // instead of the element content.
       if (binding.value) {
@@ -32,7 +37,7 @@ Vue.directive('highlight', {
   componentUpdated(el, binding) {
     // After an update, re-fill the content and then highlight
     const targets = el.querySelectorAll('code');
-    targets.forEach((target) => {
+    targets.forEach(target => {
       if (binding.value) {
         target.innerHTML = binding.value;
         hljs.highlightBlock(target);
@@ -41,15 +46,18 @@ Vue.directive('highlight', {
   },
 });
 
-Vue.filter('pre', (text) => {
+Vue.filter('pre', text => {
   if (!text) return undefined;
   // Remove first blank line
   text = text.replace(/^\s*[\r\n]/g, '');
   // Find how many whitespaces before the first character of the first line
-  const whitespaces = /^[ \t]*./.exec(text).toString().slice(0, -1);
+  const whitespaces = /^[ \t]*./
+    .exec(text)
+    .toString()
+    .slice(0, -1);
   // Replace first occurrance of whitespace on each line
   let newText = [];
-  text.split(/\r\n|\r|\n/).forEach((line) => {
+  text.split(/\r\n|\r|\n/).forEach(line => {
     newText.push(line.replace(whitespaces, ''));
   });
   newText = newText.join('\r\n');

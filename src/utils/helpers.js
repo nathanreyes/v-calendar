@@ -1,5 +1,13 @@
 import defaults from './defaults';
-import { isArray, isObject } from './typeCheckers';
+import {
+  isNumber,
+  isString,
+  isDate,
+  isArray,
+  isObject,
+  isFunction,
+} from './typeCheckers';
+import { parse } from './fecha';
 
 const monthComps = {};
 
@@ -11,6 +19,31 @@ export const todayComps = {
   month: today.getMonth() + 1,
   day: today.getDate(),
 };
+
+export const toDate = d => {
+  if (isDate(d)) return new Date(d.getTime());
+  if (isNumber(d)) return new Date(d);
+  if (isString(d)) return parse(d, ['L', 'YYYY-MM-DD', 'YYYY/MM/DD']);
+  if (isObject(d))
+    return new Date(
+      d.year || today.getFullYear(),
+      d.month || today.getMonth(),
+      d.day || today.getDate(),
+    );
+  return new Date(d);
+};
+
+export const getPageForDate = date => {
+  const d = toDate(date);
+  return (
+    d && {
+      month: d.getMonth() + 1,
+      year: d.getFullYear(),
+    }
+  );
+};
+
+export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
 
 export const getMonthDates = (year = 2000) => {
   const dates = [];
@@ -172,11 +205,14 @@ export const getLastArrayItem = (array, fallbackValue) => {
 
 export const arrayHasItems = array => isArray(array) && array.length;
 
-export const elementHasAncestor = (el, ancestor) => {
-  if (!el) return false;
-  if (el === ancestor) return true;
-  return elementHasAncestor(el.parentElement, ancestor);
+export const findAncestor = (el, fn) => {
+  if (!el) return null;
+  if (fn(el)) return el;
+  return findAncestor(el.parentElement, fn);
 };
+
+export const elementHasAncestor = (el, ancestor) =>
+  !!findAncestor(el, e => e === ancestor);
 
 export const elementPositionInAncestor = (el, ancestor) => {
   let top = 0;

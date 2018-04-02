@@ -15,10 +15,6 @@
             </ul>
           </div>
         </b-tab-item>
-        <!--DatePicker Example Code-->
-        <b-tab-item label='Example Code'>
-          <code-block :code='exDatePickerCode'></code-block>
-        </b-tab-item>
         <!--DatePicker Example Options-->
         <b-tab-item label='Options' icon='gear'>
           <b-field label='Mode'>
@@ -78,7 +74,7 @@
                   v-for='a in popoverAlignments'
                   :key='a'
                   :native-value='a'
-                  v-model='popoverAlignment'>
+                  v-model='popoverAlign'>
                   {{ a }}
                 </b-radio>
               </p>
@@ -102,19 +98,28 @@
             Birthday
           </label>
           <div class='control'>
-            <ex-date-picker
+            <v-date-picker
+              ref='picker'
+              class='picker'
+              :from-page.sync='fromPage'
+              :to-page.sync='toPage'
               :mode='mode'
-              :show-disabled-dates='showDisabledDates'
+              :tint-color='tintColor'
+              :show-caps='showCaps'
+              :show-day-popover='showDayPopover'
+              :disabled-dates='showDisabledDates ? disabledDates : null'
+              :attributes='[]'
               :is-inline='isInline'
               :is-expanded='isExpanded'
+              :input-props='inputProps'
               :popover-expanded='popoverExpanded'
               :popover-visibility='popoverVisibility'
               :popover-direction='popoverDirection'
-              :popover-align='popoverAlignment'
-              :tint-color='tintColor'
-              :show-caps='showCaps'
-              :show-popover='showDayPopover'>
-            </ex-date-picker>          
+              :popover-align='popoverAlign'
+              v-model='selectedValue'
+              is-double-paned
+              is-linked>
+            </v-date-picker>      
           </div>
         </div>
         <div class='field'>
@@ -135,30 +140,32 @@
 </template>
 
 <script>
-import ExDatePicker from '../examples/ExDatePicker';
-import ExDatePickerCode from '!!raw-loader!../examples/ExDatePicker';
-
 export default {
-  components: {
-    ExDatePicker,
-  },
   data() {
     return {
-      exDatePickerCode: ExDatePickerCode,
       mode: 'single',
-      selectedValue: null,
+      selectedValue: new Date(2018, 3, 15),
       showCaps: true,
       showDayPopover: true,
       showDisabledDates: false,
       isInline: false,
       isExpanded: false,
       popoverExpanded: true,
-      popoverVisibility: 'visible',
+      popoverVisibility: 'focus',
       popoverVisibilities: ['hover', 'focus', 'visible', 'hidden'],
       popoverDirection: 'bottom',
       popoverDirections: ['bottom', 'top', 'left', 'right'],
-      popoverAlignment: 'left',
+      popoverAlign: 'left',
       tintColor: '#66b3cc',
+      dragValue: null,
+      fromPage: null,
+      toPage: null,
+      disabledDates: { weekdays: [1, 7] },
+      inputProps: {
+        class: 'input',
+      },
+      // minDate: new Date(2018, 3, 1),
+      // maxDate: new Date(2019, 5, 20),
     };
   },
   computed: {
@@ -178,8 +185,8 @@ export default {
   watch: {
     popoverAlignments(val) {
       if (val && val.length) {
-        if (!this.popoverAlignment || !val.includes(this.popoverAlignment)) {
-          this.popoverAlignment = val[0];
+        if (!this.popoverAlign || !val.includes(this.popoverAlign)) {
+          this.popoverAlign = val[0];
         }
       }
     },

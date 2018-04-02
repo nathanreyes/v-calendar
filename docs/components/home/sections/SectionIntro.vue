@@ -19,15 +19,17 @@
             </p>
           </div>
         </b-tab-item>
-        <!--Intro Example Code-->
-        <b-tab-item label='Example Code'>
-          <code-block :code='exIntroCode'></code-block>
-        </b-tab-item>
         <!--Intro Options-->
         <b-tab-item label='Options' icon='gear'>
           <b-field grouped>
             <b-field>
               <b-switch v-model='isDoublePaned'>Double Paned</b-switch>
+            </b-field>
+            <b-field>
+              <b-switch v-model='isLinked'>Linked</b-switch>
+            </b-field>
+            <b-field>
+              <b-switch v-model='isVertical'>Vertical</b-switch>
             </b-field>
             <b-field>
               <b-switch v-model='isExpanded'>Expanded</b-switch>
@@ -76,14 +78,18 @@
     </div>
     <div class='column'>
       <div class='example-container'>
-        <ex-intro
+        <v-calendar
           :is-double-paned='isDoublePaned'
+          :is-linked='isLinked'
+          :is-vertical='isVertical'
           :is-expanded='isExpanded'
           :nav-visibility='navVisibility'
           :title-position='titlePosition'
           :title-transition='titleTransition'
-          :weeks-transition='weeksTransition'>
-        </ex-intro>
+          :weeks-transition='weeksTransition'
+          :theme-styles='themeStyles'
+          :min-date='new Date()'>
+        </v-calendar>
       </div>
     </div>
   </div>
@@ -91,23 +97,34 @@
 </template>
 
 <script>
-import ExIntro from '../examples/ExIntro';
-import ExIntroCode from '!!raw-loader!../examples/ExIntro';
-
 export default {
-  components: {
-    ExIntro,
-  },
   data() {
     return {
-      exIntroCode: ExIntroCode,
       isDoublePaned: true,
+      isLinked: false,
+      isVertical: false,
       isExpanded: false,
       navVisibility: 'focus',
       navVisibilities: ['focus', 'hover', 'visible', 'hidden'],
       titlePosition: 'center',
       titleTransition: 'slide-h',
       weeksTransition: 'slide-h',
+      themeStyles: {
+        // navHeaderTitle: {
+        //   color: 'red',
+        // },
+        // navHeaderArrows: {
+        //   color: 'blue',
+        // },
+        // weekdaysHorizontalDivider({ position }) {
+        //   return (
+        //     position === 2 && {
+        //       borderBottom: '1px solid red',
+        //       margin: '0 20px',
+        //     }
+        //   );
+        // },
+      },
     };
   },
 };
