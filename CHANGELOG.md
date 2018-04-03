@@ -1,3 +1,9 @@
+# v0.9.1
+## Bug Fixes
+### `v-calendar`
+* Removes global css
+* Removes 'clever' container size detection
+
 # v0.9.0
 ## Bug Fixes
 ### `v-calendar`

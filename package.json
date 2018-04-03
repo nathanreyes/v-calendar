@@ -1,6 +1,6 @@
 {
   "name": "v-calendar",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "keywords": [
     "vue",
@@ -28,14 +28,12 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "npm run build:lib",
+    "prepublishOnly": "npm run build",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "build": "npm run build:lib && npm run build:docs",
-    "build:lib": "node build/build-lib.js",
-    "build:docs": "node build/build.js"
+    "build": "node build/build-lib.js"
   },
   "dependencies": {
     "vue": "^2.5.0"

@@ -13,9 +13,7 @@ import {
   getPageBetweenPages,
   getFirstValidPage,
   getPageForDate,
-  findAncestor,
 } from '../utils/helpers';
-import '../styles/lib.sass';
 
 export default {
   mixins: [mergeListeners],
@@ -218,29 +216,19 @@ export default {
       );
     },
     refreshIsConstrained() {
+      // Get the root calendar element
+      const root = this.$refs.root;
       // Only test for constrained environment if needed
-      if (!window || !this.isDoublePaned || this.isVertical) {
+      if (!window || !root || !this.isDoublePaned || this.isVertical) {
         this.isConstrained = false;
         // Test for constrained window
       } else if (window && window.innerWidth < 2 * this.paneWidth + 30) {
         this.isConstrained = true;
+      } else if (this.isExpanded) {
+        this.isConstrained =
+          root.parentElement.offsetWidth < 2 * this.paneWidth + 2;
       } else {
-        // Get the root calendar element
-        const root = this.$refs.root;
-        // Don't constrain if nested within absolute or fixed elements
-        if (
-          findAncestor(root, e => {
-            const pos = window.getComputedStyle(e).position;
-            return pos === 'absolute' || pos === 'fixed';
-          })
-        ) {
-          this.isConstrained = false;
-        } else {
-          const containerWidth = this.isExpanded
-            ? root.offsetWidth
-            : root.parentElement.offsetWidth;
-          this.isConstrained = containerWidth < 2 * this.paneWidth + 2;
-        }
+        this.isConstrained = false;
       }
     },
   },
@@ -260,10 +248,14 @@ export default {
   color: $font-color
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
+  box-sizing: border-box
   &.is-expanded
     width: 100%
   &.is-vertical
     flex-direction: column
+  /deep/ *
+    box-sizing: inherit
+
 
 .c-pane-divider
   width: 1px
