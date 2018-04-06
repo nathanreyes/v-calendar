@@ -1,3 +1,13 @@
+# v0.9.2
+## Bug Fixes
+### `v-calendar`
+* Fixes bug where detected locale getting overwritten by 'en-US' in some cases. Closes #101.
+
+## Improvements
+### `v-calendar`
+* Adds support for importing individual components along with a method to `setupCalendar`. Closes #60. Closes #105.
+* Includes full `page` object with `update:frompage` and `update:topage` events. Closes #120.
+
 # v0.9.1
 ## Bug Fixes
 ### `v-calendar`

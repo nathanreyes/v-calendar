@@ -38,7 +38,6 @@ The first thing to understand about attributes is what they are capable of displ
 * Bar Indicators
 * Popovers
 * Content Styles
-* Content Hover Styles (applied on hover state)
 
 For now, let's just start by displaying a simple highlight on today's date.
 
@@ -371,6 +370,16 @@ Use the following tokens to configure your custom formats:
 
 ---
 
+## I19n
+
+VCalendar utilizes the [well supported](https://caniuse.com/#feat=internationalization) Internationalization API to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
+
+At the moment, this API still cannot provide all recommended default settings per locale (such as 'first day of the week'), so those settings are provided out of the box for a reasonable number of locales, with a decent fallback for those locales that aren't included.
+
+With all of this in mind, it is probably best that you rely on the the plugin's built-in methods for detecting the user's locale. However, if you would like to force a specific locale for all users, you may supply your own [default locale](#custom-defaults) using the [*language-region*](https://lingohub.com/documentation/developers/supported-locales/language-designators-with-regions/) format.
+
+---
+
 # Installation
 
 [Vue.js](https://vuejs.org) version 2.5+ is required.
@@ -382,13 +391,41 @@ npm install v-calendar
 ```
 
 ### 2 Import and use VCalendar
+
+#### 2A. Plugin Method (**Recommended**)
+
+This is the most common use case.
+
 ```javascript
 import Vue from 'vue';
 import VCalendar from 'v-calendar';
 import 'v-calendar/lib/v-calendar.min.css';
 
 // Use v-calendar, v-date-picker & v-popover components
-Vue.use(VCalendar);
+Vue.use(VCalendar, {
+  firstDayOfWeek: 2,  // Monday
+  ...,                // ...other defaults
+});
+
+```
+
+#### 2B. Components Method
+
+Or, you can just import and use the calendar if you don't need the `v-date-picker` or `v-popover` components. Keep in mind that `setupCalendar` still needs to be called (passing optional defaults) using this method.
+
+```javascript
+import Vue from 'vue';
+import { setupCalendar, Calendar} from 'v-calendar'
+import 'v-calendar/lib/v-calendar.min.css';
+
+// Remember to setup calendar (passing in defaults if needed)
+setupCalendar({
+  firstDayOfWeek: 2,  // Monday,
+  ...,                // ...other defaults
+});
+
+// Register component(s)
+Vue.component('v-calendar', Calendar);
 ```
 
 ### 3 Reference in your component templates
@@ -474,6 +511,7 @@ Vue.use(VCalendar, {
 
 | Property Name | Type | Description | Default |
 | ------------- | ---- | ----------- | ------- |
+| `locale` | String | Locale identification in [*language-region*](https://lingohub.com/documentation/developers/supported-locales/language-designators-with-regions/) format. Not all regions supported. | `undefined` |
 | `componentPrefix` | String | Custom prefix to use for plugin components. Replace if `v-calendar` and `v-date-picker` interfere with other component libraries. | `"v"` |
 | `firstDayOfWeek` | Number | Day number for the first day of the week (1: Sun - 7: Sat) | `1` |
 | `formats` | Object | Formats to use when display and parsing dates for various calendar sections | Reference code |
