@@ -72,6 +72,8 @@ const locales = {
   th: { L: 'DD/MM/YYYY' },
   // Turkish
   tr: { dow: 2, L: 'DD.MM.YYYY' },
+  // Ukrainian
+  uk: { dow: 2, L: 'DD.MM.YYYY' },
 };
 locales.en = locales['en-US'];
 locales.zh = locales['zh-CN'];
@@ -92,18 +94,35 @@ const getDayNames = (locale, length) => {
   return getWeekdayDates({ utc: true }).map(d => dtf.format(d));
 };
 
-export default (locale, defaults) => {
-  locale = locale || new Intl.DateTimeFormat().resolvedOptions().locale;
-  const searchLocales = [locale, locale.substring(0, 2), 'en-US'];
-  const matchKey = searchLocales.find(l => locales[l]);
-  const matchValue = locales[matchKey];
-  defaults.locale = matchKey;
-  defaults.firstDayOfWeek = matchValue.dow || 1;
-  defaults.dayNames = getDayNames(matchKey, 'long');
-  defaults.dayNamesShort = getDayNames(matchKey, 'short');
-  defaults.dayNamesShorter = defaults.dayNamesShort.map(s => s.substring(0, 2));
-  defaults.dayNamesNarrow = getDayNames(matchKey, 'narrow');
-  defaults.monthNames = getMonthNames(matchKey, 'long');
-  defaults.monthNamesShort = getMonthNames(matchKey, 'short');
-  defaults.masks = { L: matchValue.L };
+export default locale => {
+  const detectedLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
+  const searchLocales = [
+    locale,
+    locale && locale.substring(0, 2),
+    detectedLocale,
+  ];
+  const resolvedLocale =
+    searchLocales.find(l => locales[l]) || locale || detectedLocale;
+  const localeExtra = {
+    dow: 1,
+    L: 'DD/MM/YYYY',
+    ...locales[resolvedLocale],
+  };
+  const dayNames = getDayNames(resolvedLocale, 'long');
+  const dayNamesShort = getDayNames(resolvedLocale, 'short');
+  const dayNamesShorter = dayNamesShort.map(s => s.substring(0, 2));
+  const dayNamesNarrow = getDayNames(resolvedLocale, 'narrow');
+  const monthNames = getMonthNames(resolvedLocale, 'long');
+  const monthNamesShort = getMonthNames(resolvedLocale, 'short');
+  return {
+    locale: resolvedLocale,
+    firstDayOfWeek: localeExtra.dow,
+    masks: { L: localeExtra.L },
+    dayNames,
+    dayNamesShort,
+    dayNamesShorter,
+    dayNamesNarrow,
+    monthNames,
+    monthNamesShort,
+  };
 };

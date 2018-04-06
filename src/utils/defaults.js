@@ -1,6 +1,5 @@
 import { POPOVER_VISIBILITIES } from './constants';
 import { isObject, isFunction } from './typeCheckers';
-import setupLocale from './locales';
 
 const defaults = {
   componentPrefix: 'v',
@@ -127,17 +126,11 @@ const defaults = {
     navYearCell: null,
   },
 };
-// Uncomment this line when running unit tests
-if (process.env.NODE_ENV === 'test') setupLocale(null, defaults);
 
 export default defaults;
 
 export const resolveDefault = (def, args) =>
   (isObject(def) && def) || (isFunction(def) && def(args)) || def;
 
-export const mergeDefaults = otherDefaults => {
-  // Setup locale defaults if needed
-  setupLocale(otherDefaults && otherDefaults.locale, defaults);
-  // Assign the defaults
-  return Object.assign(defaults, otherDefaults);
-};
+export const mergeDefaults = (...defaultArgs) =>
+  Object.assign(defaults, ...defaultArgs);
