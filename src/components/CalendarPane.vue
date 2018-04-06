@@ -400,13 +400,10 @@ export default {
           pageInfo.year === this.page_.year)
       )
         return;
-      // Extract just the month and year info
-      const monthYear = { month: pageInfo.month, year: pageInfo.year };
       // Set the active page
-      this.page_ = this.loadPage(monthYear);
-      // Flag that page was moved to/updated
-      this.$emit('move', monthYear);
-      this.$emit('update:page', monthYear);
+      this.page_ = this.loadPage(pageInfo);
+      // Flag that page was updated
+      this.$emit('update:page', this.page_);
       // Preload other pages
       this.preloadPages();
     },
