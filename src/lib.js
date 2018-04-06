@@ -1,7 +1,8 @@
 import Calendar from './components/Calendar';
 import DatePicker from './components/DatePicker';
 import Popover from './components/Popover';
-import { mergeDefaults } from './utils/defaults';
+import getLocaleDefaults from './utils/locales';
+import defaults, { mergeDefaults } from './utils/defaults';
 
 const components = {
   Calendar,
@@ -9,19 +10,28 @@ const components = {
   Popover,
 };
 
+const setupCalendar = userDefaults => {
+  // Merge user and locale defaults with built-in defaults
+  const locale = userDefaults
+    ? userDefaults.locale
+    : new Intl.DateTimeFormat().resolvedOptions().locale;
+  return mergeDefaults(defaults, getLocaleDefaults(locale), userDefaults);
+};
+
 const VCalendar = {
   ...components,
   install: (Vue, options) => {
-    const defaults = mergeDefaults(options);
+    // Setup plugin with options
+    const resolvedDefaults = setupCalendar(options);
     Object.keys(components).forEach(k =>
-      Vue.component(`${defaults.componentPrefix}${k}`, components[k]),
+      Vue.component(`${resolvedDefaults.componentPrefix}${k}`, components[k]),
     );
   },
 };
 
 export default VCalendar;
 
-export { Calendar, DatePicker, Popover };
+export { setupCalendar, Calendar, DatePicker, Popover };
 
 // Use automatically when global Vue instance detected
 if (typeof window !== 'undefined' && window.Vue) {
