@@ -39,6 +39,7 @@ export default {
           paneWidth: this.paneWidth,
           styles: this.themeStyles_,
           attributes: this.attributes_,
+          formats: this.formats_,
         },
         on: this.mergeListeners({
           'update:page': val => {
@@ -94,6 +95,7 @@ export default {
     paneWidth: { type: Number, default: () => defaults.paneWidth },
     themeStyles: Object,
     attributes: Array,
+    formats: Object,
   },
   data() {
     return {
@@ -146,6 +148,12 @@ export default {
     },
     attributes_() {
       return AttributeStore(this.attributes);
+    },
+    formats_() {
+      return {
+        ...defaults.formats,
+        ...this.formats,
+      };
     },
   },
   watch: {

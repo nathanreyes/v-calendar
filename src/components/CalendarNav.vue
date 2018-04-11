@@ -194,7 +194,7 @@ export default {
     },
     monthItems() {
       return getMonthDates()
-        .map(d => format(d, this.formats.navMonths || 'MMM'))
+        .map(d => format(d, this.formats.navMonths))
         .map((ml, i) => {
           const month = i + 1;
           return {

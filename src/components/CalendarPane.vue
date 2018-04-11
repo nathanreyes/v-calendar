@@ -55,10 +55,10 @@
           <!--Navigation pane-->
           <calendar-nav
             slot='popover-content'
-            :formats='formats'
             :value='page_'
             :validator='canMove'
             :styles='styles'
+            :formats='formats'
             @input='navPageSelected($event)'>
             <!-- Pass through nav slots -->
             <template
@@ -128,6 +128,7 @@
         :prev-month-comps='p.prevMonthComps'
         :next-month-comps='p.nextMonthComps'
         :styles='styles'
+        :formats='formats'
         v-bind='$attrs'
         @touchstart.passive='touchStart($event)'
         @touchmove.passive='touchMove($event)'
@@ -179,8 +180,8 @@ export default {
     navVisibility: { type: String, default: () => defaults.navVisibility },
     minPage: Object,
     maxPage: Object,
-    formats: { type: Object, default: () => defaults.formats },
     styles: Object,
+    formats: Object,
     titlePosition: { type: String, default: () => defaults.titlePosition },
     titleTransition: { type: String, default: () => defaults.titleTransition },
     weeksTransition: { type: String, default: () => defaults.weeksTransition },
@@ -210,7 +211,7 @@ export default {
     },
     weekdayLabels() {
       return getWeekdayDates({ firstDayOfWeek: defaults.firstDayOfWeek }).map(
-        d => format(d, this.formats.weekdays || 'WW'),
+        d => format(d, this.formats.weekdays),
       );
     },
     titleClass() {
@@ -419,7 +420,7 @@ export default {
           key,
           month,
           year,
-          title: format(date, this.formats.title || 'MMMM YYYY'),
+          title: format(date, this.formats.title),
           shortMonthLabel: format(date, 'MMM'),
           monthLabel: format(date, 'MMMM'),
           shortYearLabel: year.toString().substring(2),

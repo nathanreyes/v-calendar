@@ -105,6 +105,7 @@
           v-if='popover.component'
           :is='popover.component'
           :attribute='popover.attribute'
+          :format='formats.dayPopover'
           :day='day'>
         </component>
       </slot>
@@ -140,6 +141,7 @@ export default {
     attributes: Object,
     popoverContentOffset: { type: Number, default: 7 },
     styles: Object,
+    formats: Object,
   },
   data() {
     return {

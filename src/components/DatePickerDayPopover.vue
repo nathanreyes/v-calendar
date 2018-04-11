@@ -36,7 +36,6 @@
 import SvgIcon from './SvgIcon';
 import sun from '@/assets/icons/sun-o.svg';
 import moon from '@/assets/icons/moon-o.svg';
-import defaults from '@/utils/defaults';
 import { format } from '@/utils/fecha';
 
 export default {
@@ -45,6 +44,7 @@ export default {
   },
   props: {
     attribute: Object,
+    format: String,
   },
   data() {
     return {
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     getDateString(date) {
-      return format(date, defaults.formats.dayPopover || 'L');
+      return format(date, this.format);
     },
   },
 };

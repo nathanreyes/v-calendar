@@ -22,6 +22,7 @@ export default {
           ...this.$attrs,
           value: this.value,
           isRequired: this.isRequired,
+          formats: this.formats_,
           selectAttribute: this.selectAttribute_,
           dragAttribute: this.dragAttribute_,
           disabledAttribute: this.disabledAttribute_,
@@ -110,7 +111,7 @@ export default {
     maxDate: Date,
     disabledDates: null,
     availableDates: null,
-    formats: { type: Object, default: () => defaults.formats },
+    formats: Object, // Resolved by computed property
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
     updateOnKeyup: {
       type: Boolean,
@@ -160,10 +161,15 @@ export default {
     };
   },
   computed: {
+    formats_() {
+      return {
+        ...defaults.formats,
+        ...this.formats,
+      };
+    },
     inputFormats() {
-      const formats = this.formats && this.formats.input;
-      if (!formats) return ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'];
-      return (isArray(formats) && formats) || [formats];
+      const inputFormat = this.formats_.input;
+      return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
     profile() {
       return PickerProfile(

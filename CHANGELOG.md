@@ -1,5 +1,8 @@
 # v0.9.3
 ## Bug Fixes
+### `v-date-picker`
+* Fix bug where `formats` prop not getting forwarded to `v-calendar`. Closes #123.
+
 ### `popover`
 * Modify `tabindex` to improve tab navigation. Closes #119.
 * Fix bug where content container element was overflowing window on mobile.
