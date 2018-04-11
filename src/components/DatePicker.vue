@@ -75,7 +75,6 @@ export default {
             updateValue: this.updateValue,
           })) || [
           h('input', {
-            ref: 'input',
             class: this.inputProps_.class,
             style: this.inputProps_.style,
             domProps: {
@@ -87,7 +86,8 @@ export default {
             },
             on: {
               input: event => (this.inputValue = event.target.value),
-              change: () => this.updateValue(),
+              change: this.inputChange,
+              keyup: this.inputKeyup,
             },
           }),
         ],
@@ -112,6 +112,10 @@ export default {
     availableDates: null,
     formats: { type: Object, default: () => defaults.formats },
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
+    updateOnKeyup: {
+      type: Boolean,
+      default: () => defaults.datePickerUpdateOnKeyup,
+    },
     tintColor: { type: String, default: () => defaults.datePickerTintColor },
     dragAttribute: Object, // Resolved by computed property
     selectAttribute: Object, // Resolved by computed property
@@ -151,6 +155,7 @@ export default {
       dragValue: null,
       inputValue: '',
       popoverForceHidden: false,
+      disableFormatInput: false,
       disablePopoverForceHidden: false,
     };
   },
@@ -286,18 +291,14 @@ export default {
     },
     value() {
       this.assignPageRange();
-      this.updateInputValue();
-      if (this.popoverKeepVisibleOnInput) return;
-      if (this.mode !== 'multiple' && !this.disablePopoverForceHidden) {
-        setTimeout(() => {
-          this.popoverForceHidden = true;
-        }, 300);
-        if (this.$refs.input) this.$refs.input.blur();
-      }
+      if (!this.disableFormatInput) this.formatInput();
+      if (this.mode !== 'multiple' && !this.disablePopoverForceHidden)
+        this.hidePopover();
+      this.disableFormatInput = false;
       this.disablePopoverForceHidden = false;
     },
     dragValue() {
-      this.updateInputValue();
+      this.formatInput();
     },
     disabledAttribute_() {
       if (!this.dragValue) this.updateValue(this.value);
@@ -307,7 +308,7 @@ export default {
     this.fromPage_ = this.fromPage;
     this.toPage_ = this.toPage;
     this.assignPageRange();
-    this.updateInputValue();
+    this.formatInput();
   },
   methods: {
     buildSelectDragAttribute(propAttr, isDrag) {
@@ -408,7 +409,27 @@ export default {
         }
       }
     },
-    updateValue(value = this.inputValue) {
+    inputChange() {
+      this.updateValue(this.inputValue, {
+        formatInput: true,
+        hidePopover: false,
+      });
+    },
+    inputKeyup(e) {
+      if (e.keyCode !== 13 && this.updateOnKeyup) {
+        this.updateValue(this.inputValue, {
+          formatInput: false,
+          hidePopover: false,
+        });
+      }
+    },
+    updateValue(
+      value = this.inputValue,
+      {
+        formatInput = true,
+        hidePopover = !this.popoverKeepVisibleOnInput,
+      } = {},
+    ) {
       // Parse value if needed
       const parsedValue = isString(value)
         ? this.profile.parseValue(value)
@@ -420,27 +441,31 @@ export default {
         disabled: this.disabledAttribute_,
         fallbackValue: this.value,
       });
-      // If everything the user entered was accepted...
-      if (this.profile.valuesAreEqual(parsedValue, filteredValue)) {
-        // Hide the popover
-        this.popoverForceHidden = true;
-      } else {
-        // Keep the popover open because something they entered was modified
-        this.disablePopoverForceHidden = true;
-      }
-      // Emit event to update value if it has changed
-      if (!this.profile.valuesAreEqual(filteredValue, this.value)) {
+      // Don't do anything if user input value is invalid - Just return
+      if (!this.profile.valuesAreEqual(parsedValue, filteredValue)) return;
+      // Check if new value is different from the current value
+      const valueHasChanged = !this.profile.valuesAreEqual(
+        this.value,
+        filteredValue,
+      );
+      if (valueHasChanged) {
+        this.disableFormatInput = !formatInput;
+        this.disablePopoverForceHidden = !hidePopover;
         this.$emit('input', filteredValue);
+      } else {
+        if (formatInput) this.formatInput();
+        if (hidePopover) this.popoverForceHidden = true;
       }
-      // Blur the input if it is visible
-      if (this.$refs.input) this.$refs.input.blur();
-      // Update input text for good measure
-      this.updateInputValue();
     },
-    updateInputValue() {
+    formatInput() {
       this.$nextTick(() => {
         this.inputValue = this.profile.formatValue(this.value, this.dragValue);
       });
+    },
+    hidePopover() {
+      setTimeout(() => {
+        this.popoverForceHidden = true;
+      }, 300);
     },
   },
 };

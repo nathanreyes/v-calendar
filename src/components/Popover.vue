@@ -2,7 +2,7 @@
 <div
   ref='popover'
   :class='["popover-container", { expanded: isExpanded }]'
-  :tabindex='0'
+  :tabindex='visibility === "focus" && -1 || undefined'
   :style='containerStyle'
   @focusin='focusin'
   @focusout='focusout'
@@ -154,7 +154,7 @@ export default {
       }
     },
     click(e) {
-      // Toggle focus visible state on click if enabled
+      // Toggle focusVisible state on click if enabled
       // Be sure to ignore clicks on the popover content though
       if (
         this.toggleVisibleOnClick &&
@@ -241,7 +241,6 @@ export default {
 
 .popover-container
   position: relative
-  display: inline-block
   outline: none
   &.expanded
     display: block
@@ -264,12 +263,14 @@ export default {
     left: 0
   &.direction-bottom.align-center, &.direction-top.align-center
     left: 50%
+    transform: translateX(-50%)
   &.direction-bottom.align-right, &.direction-top.align-right
     right: 0
   &.direction-left.align-top, &.direction-right.align-top
     top: 0
   &.direction-left.align-middle, &.direction-right.align-middle
     top: 50%
+    transform: translateY(-50%)
   &.direction-left.align-bottom, &.direction-right.align-bottom
     top: initial
     bottom: 0
@@ -278,10 +279,6 @@ export default {
     outline: none
     &.interactive
       pointer-events: all
-    &.align-center
-      transform: translateX(-50%)
-    &.align-middle
-      transform: translateY(-50%)
     .popover-content
       position: relative
       background-color: $popover-background-color

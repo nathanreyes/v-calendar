@@ -1,3 +1,33 @@
+# v0.9.3
+## Bug Fixes
+### `popover`
+* Modify `tabindex` to improve tab navigation. Closes #119.
+* Fix bug where content container element was overflowing window on mobile.
+
+## Improvements
+### `v-date-picker`
+* Added `update-on-keyup` prop to update picker selection on every `keyup` event.
+* Custom slot method `updateValue` can now accept options as the second parameter. Closes #118.
+
+| Property | Description | Default Value |
+| -------- | ----------- | ------------- |
+| `formatInput` | If new value is valid, date picker should reformat the `inputValue`. | `true` |
+| `hidePopover` | If new valud is valid, date picker should hide popover. | `!popoverKeepVisibleOnInput` |
+
+```html
+<v-date-picker
+  v-model='date'>
+  <input
+    slot-scope='{ inputValue, updateValue }'
+    :value='inputValue'
+    @change='updateValue(inputValue, { formatInput: true, hidePopover: false })'
+    @keyup='updateValue(inputValue, { formatInput: false, hidePopover: false })' />
+</v-date-picker>
+```
+
+### `defaults`
+* Added `datePickerUpdateOnKeyup` as default value for `v-date-picker.update-on-keyup` prop.
+
 # v0.9.2
 ## Bug Fixes
 ### `v-calendar`

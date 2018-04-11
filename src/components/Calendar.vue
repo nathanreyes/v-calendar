@@ -255,6 +255,8 @@ export default {
     flex-direction: column
   /deep/ *
     box-sizing: inherit
+    &:focus
+      outline: none
 
 
 .c-pane-divider
