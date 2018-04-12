@@ -416,13 +416,21 @@ export default {
       }
     },
     inputChange() {
+      // Enter key, blur or other change events
       this.updateValue(this.inputValue, {
         formatInput: true,
         hidePopover: false,
       });
     },
     inputKeyup(e) {
-      if (e.keyCode !== 13 && this.updateOnInputKeyup) {
+      // Escape key
+      if (e.keyCode === 27) {
+        this.updateValue(this.value, {
+          formatInput: true,
+          hidePopover: true,
+        });
+        // All other keys
+      } else if (e.keyCode !== 13 && this.updateOnInputKeyup) {
         this.updateValue(this.inputValue, {
           formatInput: false,
           hidePopover: false,
@@ -460,7 +468,7 @@ export default {
         this.$emit('input', filteredValue);
       } else {
         if (formatInput) this.formatInput();
-        if (hidePopover) this.popoverForceHidden = true;
+        if (hidePopover) this.hidePopover();
       }
     },
     formatInput() {
@@ -471,7 +479,7 @@ export default {
     hidePopover() {
       setTimeout(() => {
         this.popoverForceHidden = true;
-      }, 300);
+      }, 200);
     },
   },
 };

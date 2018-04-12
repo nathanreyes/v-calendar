@@ -12,12 +12,13 @@
 
 ## Improvements
 ### `v-date-picker`
+* Improve input key handing, specifically for `enter` and `esc` keys
 * Added `update-on-input-keyup` prop to update picker selection on every `keyup` event.
 * Custom slot method `updateValue` can now accept options as the second parameter. Closes #118.
 
 | Property | Description | Default Value |
 | -------- | ----------- | ------------- |
-| `formatInput` | If new value is valid, date picker should reformat the `inputValue`. | `true` |
+| `formatInput` | If new value is valid, date picker should reformat the `inputValue` (based on `formats.input`). | `true` |
 | `hidePopover` | If new valud is valid, date picker should hide popover. | `!popoverKeepVisibleOnInput` |
 
 ```html

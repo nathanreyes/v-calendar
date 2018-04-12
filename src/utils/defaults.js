@@ -41,7 +41,7 @@ const defaults = {
       placeholder: `${format} - ${format}`,
     }),
   }),
-  datePickerUpdateOnInputKeyup: true,
+  datePickerUpdateOnInputKeyup: false,
   datePickerTintColor: '#66B3CC',
   datePickerShowCaps: false,
   datePickerShowDayPopover: true,
