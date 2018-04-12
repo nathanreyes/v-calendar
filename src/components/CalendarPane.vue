@@ -286,7 +286,7 @@ export default {
       this.page_ = this.loadPage(this.page);
     } else {
       this.page_ = this.loadPage(todayComps);
-      this.$emit('update:page');
+      this.$emit('update:page', this.page_);
     }
     this.preloadPages();
   },

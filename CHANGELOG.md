@@ -1,5 +1,8 @@
 # v0.9.3
 ## Bug Fixes
+### `v-calendar`
+* Fix bug where initial `update:frompage` and `update:topage` events missing page argument. Closes #125.
+
 ### `v-date-picker`
 * Fix bug where `formats` prop not getting forwarded to `v-calendar`. Closes #123.
 
@@ -9,7 +12,7 @@
 
 ## Improvements
 ### `v-date-picker`
-* Added `update-on-keyup` prop to update picker selection on every `keyup` event.
+* Added `update-on-input-keyup` prop to update picker selection on every `keyup` event.
 * Custom slot method `updateValue` can now accept options as the second parameter. Closes #118.
 
 | Property | Description | Default Value |

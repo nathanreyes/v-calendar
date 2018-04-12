@@ -113,9 +113,9 @@ export default {
     availableDates: null,
     formats: Object, // Resolved by computed property
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
-    updateOnKeyup: {
+    updateOnInputKeyup: {
       type: Boolean,
-      default: () => defaults.datePickerUpdateOnKeyup,
+      default: () => defaults.datePickerUpdateOnInputKeyup,
     },
     tintColor: { type: String, default: () => defaults.datePickerTintColor },
     dragAttribute: Object, // Resolved by computed property
@@ -422,7 +422,7 @@ export default {
       });
     },
     inputKeyup(e) {
-      if (e.keyCode !== 13 && this.updateOnKeyup) {
+      if (e.keyCode !== 13 && this.updateOnInputKeyup) {
         this.updateValue(this.inputValue, {
           formatInput: false,
           hidePopover: false,
