@@ -39,7 +39,11 @@
         @mouseenter='mouseenter'
         @mouseover='mouseover'
         @mouseleave='mouseleave'>
-        {{ label }}
+        <slot name='day-content' 
+          :day='day' 
+          :attributes='attributesList'>
+          {{ day.label }}
+        </slot>
       </div>
     </div>
     <!-- Dots layer -->
