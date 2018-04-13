@@ -1,3 +1,8 @@
+# v0.9.4
+## Bug Fixes
+### `v-date-picker`
+* Fix bug where 'Do' format token was not supported. Closes #127.
+
 # v0.9.3
 ## Bug Fixes
 ### `v-calendar`
