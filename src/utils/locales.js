@@ -94,6 +94,10 @@ const getDayNames = (locale, length) => {
   return getWeekdayDates({ utc: true }).map(d => dtf.format(d));
 };
 
+/* eslint-disable no-bitwise */
+const DoFn = d =>
+  `${d}${[null, 'st', 'nd', 'rd'][((d % 100) >> 3) ^ 1 && d % 10] || 'th'}`;
+
 export default locale => {
   const detectedLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
   const searchLocales = [
@@ -124,5 +128,6 @@ export default locale => {
     dayNamesNarrow,
     monthNames,
     monthNamesShort,
+    DoFn,
   };
 };
