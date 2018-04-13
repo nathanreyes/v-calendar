@@ -14,7 +14,7 @@
     class='c-day'
     :style='dayCellStyle'>
     <!-- Background layers -->
-    <transition-group
+    <!-- <transition-group
       name='background'
       tag='div'
       class='c-day-backgrounds'>
@@ -27,9 +27,9 @@
           :style='background.style'>
         </div>
       </div>
-    </transition-group>
+    </transition-group> -->
     <!-- Content layer -->
-    <div
+    <!-- <div
       class='c-day-layer c-day-box-center-center'>
       <div
         ref='dayContent'
@@ -45,6 +45,23 @@
           {{ day.label }}
         </slot>
       </div>
+    </div> -->
+    <div
+      class='day-content c-day-box-center-center'
+      :style='contentStyle'
+      @click='click'
+      @mouseenter='mouseenter'
+      @mouseover='mouseover'
+      @mouseleave='mouseleave'>
+      <slot name='day-content' 
+        :day='day' 
+        :attributes='attributesList'>
+        <div
+          class='c-day-box-center-center'
+          >
+          {{ day.label }}
+        </div>
+      </slot>
     </div>
     <!-- Dots layer -->
     <div
@@ -590,7 +607,7 @@ export default {
   flex: 1
 
 .c-day
-  height: $day-height
+  min-height: $day-height
   position: relative
 
 .c-day-layer
@@ -661,9 +678,9 @@ export default {
   transition: all $day-content-transition-time
 
 .c-day-content
-  +box()
-  width: $day-content-width
-  height: $day-content-height
+  // +box()
+  // width: $day-content-width
+  // height: $day-content-height
   font-size: $day-content-font-size
   font-weight: $day-content-font-weight
   line-height: 1
