@@ -1,4 +1,4 @@
-# v0.9.4
+# v0.9.5
 ## Improvements
 ### `v-calendar`
 * Adds support for 'day-content' slots. :tada: :tada: :tada: This adds a lot of flexibility by allowing you to provide your own day cells. The layout has also been improved to grow with your cells, so you can now build larger calendars to fill with your own content.
@@ -33,6 +33,11 @@ You can get access to the following slot props:
 | [`day`](https://docs.vcalendar.io/api#day-object) | Object | Object with various day info. Use the `day.day` number prop to display the day of month in your slot content. |
 | `attibutes` | Array | List of attributes for this day. |
 | `contentStyle` | Object | Content style to apply if you wish, derived from `themeStyles.dayContent` and other attributes. |
+
+# v0.9.4
+## Bug Fixes
+### `v-date-picker`
+* Fix bug where 'Do' format token was not supported. Closes #127.
 
 # v0.9.3
 ## Bug Fixes
