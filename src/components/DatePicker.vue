@@ -330,7 +330,7 @@ export default {
           highlight: params => ({
             backgroundColor: this.tintColor,
             ...(isDrag && {
-              height: '1.7rem',
+              height: '1.64rem',
               opacity: 0.5,
             }),
             ...((isFunction(highlight) && highlight(params)) || highlight),

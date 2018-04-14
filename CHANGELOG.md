@@ -1,3 +1,39 @@
+# v0.9.4
+## Improvements
+### `v-calendar`
+* Adds support for 'day-content' slots. :tada: :tada: :tada: This adds a lot of flexibility by allowing you to provide your own day cells. The layout has also been improved to grow with your cells, so you can now build larger calendars to fill with your own content.
+
+```html
+<v-calendar>
+  <div
+    slot='day-content'
+    slot-scope='{ day, attributes, contentStyle }'
+    class='my-day'>
+    <!-- Be sure to display the day of the month somewhere in your content -->
+    {{ day.day }}
+  </div>
+</v-calendar>
+```
+```css
+/* Set width and height and `v-calendar` will resize appropriately */
+.my-day {
+  width: 40px;
+  height: 40px;
+}
+/* You can also apply your own hover styles */
+.my-day:hover {
+  background-color: #dadada;
+}
+```
+
+You can get access to the following slot props:
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| [`day`](https://docs.vcalendar.io/api#day-object) | Object | Object with various day info. Use the `day.day` number prop to display the day of month in your slot content. |
+| `attibutes` | Array | List of attributes for this day. |
+| `contentStyle` | Object | Content style to apply if you wish, derived from `themeStyles.dayContent` and other attributes. |
+
 # v0.9.3
 ## Bug Fixes
 ### `v-calendar`

@@ -266,7 +266,6 @@ export default {
     &:focus
       outline: none
 
-
 .c-pane-divider
   width: 1px
   border: 1px inset

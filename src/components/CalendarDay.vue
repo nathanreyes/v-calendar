@@ -14,10 +14,10 @@
     class='c-day'
     :style='dayCellStyle'>
     <!-- Background layers -->
-    <!-- <transition-group
+    <transition-group
       name='background'
       tag='div'
-      class='c-day-backgrounds'>
+      class='c-day-backgrounds c-day-layer'>
       <div
         v-for='background in backgrounds'
         :key='background.key'
@@ -27,39 +27,25 @@
           :style='background.style'>
         </div>
       </div>
-    </transition-group> -->
+    </transition-group>
     <!-- Content layer -->
-    <!-- <div
-      class='c-day-layer c-day-box-center-center'>
-      <div
-        ref='dayContent'
-        class='c-day-content'
-        :style='contentStyle'
-        @click='click'
-        @mouseenter='mouseenter'
-        @mouseover='mouseover'
-        @mouseleave='mouseleave'>
-        <slot name='day-content' 
-          :day='day' 
-          :attributes='attributesList'>
-          {{ day.label }}
-        </slot>
-      </div>
-    </div> -->
     <div
-      class='day-content c-day-box-center-center'
-      :style='contentStyle'
+      class='c-day-content-wrapper'
       @click='click'
       @mouseenter='mouseenter'
       @mouseover='mouseover'
       @mouseleave='mouseleave'>
-      <slot name='day-content' 
-        :day='day' 
+      <slot
+        name='day-content' 
+        :day='day'
+        :content-style='contentStyle'
         :attributes='attributesList'>
         <div
-          class='c-day-box-center-center'
-          >
-          {{ day.label }}
+          class='c-day-content'
+          :style='contentStyle'>
+          <div>
+            {{ day.label }}
+          </div>
         </div>
       </slot>
     </div>
@@ -607,8 +593,9 @@ export default {
   flex: 1
 
 .c-day
-  min-height: $day-height
   position: relative
+  min-height: $day-min-height
+  z-index: 1
 
 .c-day-layer
   position: absolute
@@ -636,11 +623,31 @@ export default {
 .c-day-box-center-bottom
   +box(center, flex-end)
 
+.c-day-content-wrapper
+  display: flex
+  justify-content: center
+  align-items: center
+  pointer-events: all
+  user-select: none
+  cursor: default
+
+.c-day-content
+  display: flex
+  justify-content: center
+  align-items: center
+  width: $day-content-width
+  height: $day-content-height
+  font-size: $day-content-font-size
+  font-weight: $day-content-font-weight
+  line-height: 1
+  border-radius: $day-content-border-radius
+  transition: all $day-content-transition-time
+  margin: .1rem .08rem
+
 .c-day-backgrounds
-  position: relative
-  width: 100%
-  height: 100%
   overflow: hidden
+  pointer-events: none
+  z-index: -1
   backface-visibility: hidden // Prevents glitches in Chrome by forcing hardware acceleration
 
 .c-day-background
@@ -676,19 +683,6 @@ export default {
   height: $bar-height
   background-color: $bar-background-color
   transition: all $day-content-transition-time
-
-.c-day-content
-  // +box()
-  // width: $day-content-width
-  // height: $day-content-height
-  font-size: $day-content-font-size
-  font-weight: $day-content-font-weight
-  line-height: 1
-  border-radius: $day-content-border-radius
-  transition: all $day-content-transition-time
-  user-select: none
-  cursor: default
-  pointer-events: all
 
 .c-day-popover-content
   font-size: $day-popover-font-size
