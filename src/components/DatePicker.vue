@@ -86,7 +86,7 @@ export default {
               ...this.inputAttrs,
             },
             on: {
-              input: event => (this.inputValue = event.target.value),
+              input: this.inputInput,
               change: this.inputChange,
               keyup: this.inputKeyup,
             },
@@ -113,9 +113,9 @@ export default {
     availableDates: null,
     formats: Object, // Resolved by computed property
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
-    updateOnInputKeyup: {
+    updateOnInput: {
       type: Boolean,
-      default: () => defaults.datePickerUpdateOnInputKeyup,
+      default: () => defaults.datePickerUpdateOnInput,
     },
     tintColor: { type: String, default: () => defaults.datePickerTintColor },
     dragAttribute: Object, // Resolved by computed property
@@ -415,6 +415,15 @@ export default {
         }
       }
     },
+    inputInput(e) {
+      this.inputValue = e.target.value;
+      if (this.updateOnInput) {
+        this.updateValue(this.inputValue, {
+          formatInput: false,
+          hidePopover: false,
+        });
+      }
+    },
     inputChange() {
       // Enter key, blur or other change events
       this.updateValue(this.inputValue, {
@@ -429,21 +438,17 @@ export default {
           formatInput: true,
           hidePopover: true,
         });
-        // All other keys
-      } else if (e.keyCode !== 13 && this.updateOnInputKeyup) {
-        this.updateValue(this.inputValue, {
-          formatInput: false,
-          hidePopover: false,
-        });
       }
     },
     updateValue(
       value = this.inputValue,
       {
-        formatInput = true,
+        formatInput = false,
         hidePopover = !this.popoverKeepVisibleOnInput,
       } = {},
     ) {
+      // Reassign input value for good measure
+      this.inputValue = isString(value) ? value : this.inputValue;
       // Parse value if needed
       const parsedValue = isString(value)
         ? this.profile.parseValue(value)

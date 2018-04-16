@@ -1,3 +1,11 @@
+## Bug Fixes
+### `v-date-picker`
+* Fixes bug where calling slot method `updateValue` with `formatInput: false` was not working.
+* Rename `update-on-input-keyup` prop to simply `update-on-input`.
+
+### `defaults`
+* Rename `datePickerUpdateOnInputKeyup` to simply `datePickerUpdateOnInput`.
+
 # v0.9.5
 ## Improvements
 ### `v-calendar`
