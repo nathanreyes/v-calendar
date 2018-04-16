@@ -1,3 +1,4 @@
+# v0.9.6
 ## Bug Fixes
 ### `v-date-picker`
 * Fixes bug where calling slot method `updateValue` with `formatInput: false` was not working.
