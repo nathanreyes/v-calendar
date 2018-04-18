@@ -13,9 +13,8 @@
           v-bind='page_'
           v-if='!hideLeftButton'>
           <svg-icon
-            :glyph='angleLeft'
-            class='c-arrow'
-            :class='{ "c-disabled": !canMovePrevMonth || hideLeftButton }'
+            name='leftArrow'
+            :class='["c-arrow", { "c-disabled": !canMovePrevMonth }]'
             :style='arrowStyle'
             @click='movePrevMonth'>
           </svg-icon>
@@ -77,9 +76,8 @@
           v-bind='page_'
           v-if='!hideRightButton'>
           <svg-icon
-            :glyph='angleRight'
-            class='c-arrow'
-            :class='{ "c-disabled": !canMoveNextMonth }'
+            name='rightArrow'
+            :class='["c-arrow", { "c-disabled": !canMoveNextMonth }]'
             :style='arrowStyle'
             @click='moveNextMonth'>
           </svg-icon>
@@ -152,8 +150,6 @@ import Popover from './Popover';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
 import SvgIcon from './SvgIcon';
-import angleLeft from '@/assets/icons/angle-left.svg';
-import angleRight from '@/assets/icons/angle-right.svg';
 import defaults from '@/utils/defaults';
 import { getWeekdayDates, evalFn } from '@/utils/helpers';
 import { format } from '@/utils/fecha';
@@ -199,8 +195,6 @@ export default {
       navForceHidden: false,
       weeksTransitioning: false,
       moveTimeout: null,
-      angleLeft,
-      angleRight,
     };
   },
   computed: {
@@ -503,7 +497,8 @@ export default {
       transition: $arrow-transition
       cursor: pointer
       user-select: none
-      margin-top: -.1em
+      &:hover
+        fill-opacity: 0.5
   .c-title-layout
     display: inline-flex
     justify-content: center

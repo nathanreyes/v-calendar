@@ -16,14 +16,14 @@
     class='days-nights'>
     <span class='days'>
       <svg-icon
-        :glyph='sun'
+        name='sun'
         class='vc-sun-o'>
       </svg-icon>
       {{ days }}
     </span>
     <span class='nights'>
       <svg-icon
-        :glyph='moon'
+        name='moon'
         class='vc-moon-o'>
       </svg-icon>
       {{ nights }}
@@ -34,8 +34,6 @@
 
 <script>
 import SvgIcon from './SvgIcon';
-import sun from '@/assets/icons/sun-o.svg';
-import moon from '@/assets/icons/moon-o.svg';
 import { format } from '@/utils/fecha';
 
 export default {
@@ -45,12 +43,6 @@ export default {
   props: {
     attribute: Object,
     format: String,
-  },
-  data() {
-    return {
-      sun,
-      moon,
-    };
   },
   computed: {
     date() {
@@ -107,7 +99,8 @@ export default {
       margin-left: 13px
   .vc-sun-o, .vc-moon-o
     margin-right: 5px
-    font-size: 1rem
+    width: 16px
+    height: 16px
   .vc-sun-o
     color: #ffb366
   .vc-moon-o

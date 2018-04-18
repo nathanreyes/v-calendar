@@ -13,7 +13,7 @@
           :month-items='[...monthItems]'
           :move='movePrevYear'>
           <svg-icon
-            :glyph='angleLeft'
+            name='leftArrow'
             class='c-arrow'
             :style='headerArrowsStyle'
             @click='movePrevYear'>
@@ -34,7 +34,7 @@
           :month-items='[...monthItems]'
           :move='moveNextYear'>
           <svg-icon
-            :glyph='angleRight'
+            name='rightArrow'
             class='c-arrow'
             :style='headerArrowsStyle'
             @click='moveNextYear'>
@@ -86,7 +86,7 @@
           :year-items='[...yearItems]'
           :move='movePrevYearGroup'>
           <svg-icon
-            :glyph='angleLeft'
+            name='leftArrow'
             class='c-arrow'
             :style='headerArrowsStyle'
             @click='movePrevYearGroup'>
@@ -109,7 +109,7 @@
           :year-items='[...yearItems]'
           :move='moveNextYearGroup'>
           <svg-icon
-            :glyph='angleRight'
+            name='rightArrow'
             class='c-arrow'
             :style='headerArrowsStyle'
             @click='moveNextYearGroup'>
@@ -140,8 +140,6 @@
 
 <script>
 import SvgIcon from './SvgIcon';
-import angleLeft from '@/assets/icons/angle-left.svg';
-import angleRight from '@/assets/icons/angle-right.svg';
 import DateInfo from '@/utils/dateInfo';
 import { format } from '@/utils/fecha';
 import {
@@ -172,8 +170,6 @@ export default {
       yearIndex: 0,
       yearGroupIndex: 0,
       attributesMap: {},
-      angleLeft,
-      angleRight,
     };
   },
   computed: {
@@ -395,6 +391,8 @@ $cell-transition: all 0.1s ease-in-out
   transition: $arrow-transition
   cursor: pointer
   user-select: none
+  &:hover
+    fill-opacity: 0.5
 
 .c-title
   font-size: $nav-title-font-size

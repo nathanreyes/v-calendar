@@ -1,3 +1,7 @@
+## Bug Fixes
+### `v-calendar`
+* Declares svg icons inline. Closes #126.
+
 # v0.9.6
 ## Bug Fixes
 ### `v-date-picker`
