@@ -1,3 +1,4 @@
+# v0.9.7
 ## Bug Fixes
 ### `v-calendar`
 * Declares svg icons inline. Closes #126.
