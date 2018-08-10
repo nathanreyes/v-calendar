@@ -66,6 +66,8 @@ const locales = {
   sk: { dow: 2, L: 'DD.MM.YYYY' },
   // Spanish
   es: { dow: 1, L: 'DD/MM/YYYY' },
+  // Spanish (MX)
+  'es-MX': { L: 'DD/MM/YYYY' },
   // Swedish
   sv: { dow: 2, L: 'YYYY-MM-DD' },
   // Thai
