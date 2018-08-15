@@ -77,7 +77,8 @@ export const getMonthComps = (month, year) => {
   if (!comps) {
     const firstDayOfWeek = defaults.firstDayOfWeek;
     const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
+    const firstDay = new Date(Date.UTC(year, month - 1, 1));
+    const firstWeekday = new Date(firstDay.getTime() + firstDay.getTimezoneOffset() * 60000).getDay() + 1;
     const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
     const weeks = Math.ceil(
       (days + Math.abs(firstWeekday - firstDayOfWeek)) / 7,

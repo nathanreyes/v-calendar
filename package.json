@@ -1,6 +1,6 @@
 {
-  "name": "v-calendar",
-  "version": "0.9.7",
+  "name": "hostelworld-v-calendar",
+  "version": "0.9.8",
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "keywords": [
     "vue",
