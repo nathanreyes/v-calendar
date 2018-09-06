@@ -54,6 +54,8 @@ const locales = {
   ko: { L: 'YYYY.MM.DD' },
   // Macedonian
   mk: { dow: 2, L: 'D.MM.YYYY' },
+  // Norwegian
+  no: { dow: 2, L: 'D. MMMM YYYY' },
   // Polish
   pl: { dow: 2, L: 'DD.MM.YYYY' },
   // Portuguese
