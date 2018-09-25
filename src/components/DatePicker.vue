@@ -298,8 +298,13 @@ export default {
     value() {
       this.assignPageRange();
       if (!this.disableFormatInput) this.formatInput();
-      if (this.mode !== 'multiple' && !this.disablePopoverForceHidden)
+      if (
+        this.mode !== 'multiple'
+        && !this.disablePopoverForceHidden
+        && !this.popoverKeepVisibleOnInput
+      ) {
         this.hidePopover();
+      }
       this.disableFormatInput = false;
       this.disablePopoverForceHidden = false;
     },
