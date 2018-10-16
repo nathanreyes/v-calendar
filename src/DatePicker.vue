@@ -31,7 +31,6 @@ export default {
           fromPage: this.fromPage_,
           toPage: this.toPage_,
           themeStyles: this.themeStyles_,
-          capsStyle: this.capsStyle_,
         },
         on: this.mergeListeners(
           {
@@ -149,7 +148,6 @@ export default {
     fromPage: Object,
     toPage: Object,
     themeStyles: { type: Object, default: () => ({}) }, // Resolved by computed property
-    capsStyle: { type: Object, default: () => defaults.highlightCaps },
   },
   data() {
     return {
@@ -167,12 +165,6 @@ export default {
       return {
         ...defaults.formats,
         ...this.formats,
-      };
-    },
-    capsStyle_() {
-      return {
-        ...defaults.highlightCaps,
-        ...this.highlightCaps,
       };
     },
     inputFormats() {
@@ -348,8 +340,8 @@ export default {
             (this.showCaps &&
               (params =>
                 !params.inBetween && {
-                  backgroundColor: this.tintColor,
-                  borderColor: 'red',
+                  backgroundColor: '#fafafa',
+                  borderColor: this.tintColor,
                   borderWidth: '2px',
                 })),
           // Use function wrapper for content style
