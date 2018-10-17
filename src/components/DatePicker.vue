@@ -344,12 +344,12 @@ export default {
             ...((isFunction(highlight) && highlight(params)) || highlight),
           }),
           highlightCaps:
-            highlightCaps ||
+            highlightCaps || this.capsStyle ||
             (this.showCaps &&
               (params =>
                 !params.inBetween && {
-                  backgroundColor: this.tintColor,
-                  borderColor: 'red',
+                  backgroundColor: '#fafafa',
+                  borderColor: this.tintColor,
                   borderWidth: '2px',
                 })),
           // Use function wrapper for content style
