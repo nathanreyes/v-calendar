@@ -64,8 +64,10 @@ const locales = {
   ru: { dow: 2, L: 'DD.MM.YYYY' },
   // Slovak
   sk: { dow: 2, L: 'DD.MM.YYYY' },
-  // Spanish
-  es: { dow: 1, L: 'DD/MM/YYYY' },
+  // Spanish (Spain)
+  'es-ES': { dow: 2, L: 'DD/MM/YYYY' },
+  // Spanish (Mexico)
+  'es-MX': { L: 'DD/MM/YYYY' },
   // Swedish
   sv: { dow: 2, L: 'YYYY-MM-DD' },
   // Thai
@@ -76,6 +78,7 @@ const locales = {
   uk: { dow: 2, L: 'DD.MM.YYYY' },
 };
 locales.en = locales['en-US'];
+locales.es = locales['es-ES'];
 locales.zh = locales['zh-CN'];
 
 // Month and day names are derived from Intl.DateTimeFormat
