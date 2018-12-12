@@ -219,10 +219,10 @@ Also, a custom slot element can be used to display your own input element. This 
     </b-input>
     <p
       class='control'
-      v-if='selectedValue'>
+      v-if='selectedDate'>
       <a
         :class='["button", inputState.type]'
-        @click='selectedValue = null'>
+        @click='selectedDate = null'>
         Clear
       </a>
     </p>
@@ -238,7 +238,7 @@ export default {
   },
   computed: {
     inputState() {
-      if (!this.selectedValue) {
+      if (!this.selectedDate) {
         return {
           type: 'is-danger',
           message: 'Date required.',
