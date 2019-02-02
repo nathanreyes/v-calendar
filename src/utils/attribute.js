@@ -1,5 +1,4 @@
 import DateInfo from './dateInfo';
-// import defaults from './defaults';
 import { arrayHasItems } from './helpers';
 import { isArray } from './typeCheckers';
 

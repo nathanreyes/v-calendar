@@ -1,10 +1,8 @@
 <script>
 import Calendar from './Calendar';
-import { mergeListeners } from '@/mixins';
 import { rangeNormalizer } from '@/utils/pickerProfiles';
 
 export default {
-  mixins: [mergeListeners],
   render(h) {
     return h(Calendar, {
       attrs: {
@@ -12,16 +10,14 @@ export default {
         attributes: this.attributes_,
         themeStyles: this.themeStyles_,
       },
-      on: this.mergeListeners({
-        dayclick: this.clickDay,
-        daymouseenter: this.enterDay,
-      }),
+      on: {
+        ...this.$listeners,
+        dayclick: this.onDayClick,
+        daymouseenter: this.onDayMouseEnter,
+      },
       slots: this.$slots,
       scopedSlots: this.$scopedSlots,
     });
-  },
-  components: {
-    Calendar,
   },
   props: {
     value: { type: Object, default: () => {} },
@@ -86,7 +82,8 @@ export default {
     });
   },
   methods: {
-    clickDay({ dateTime }) {
+    onDayClick(e) {
+      const { dateTime } = e;
       // Start new drag selection if not dragging
       if (!this.dragValue) {
         // Update drag value if it is valid
@@ -110,8 +107,11 @@ export default {
           this.$emit('input', newValue);
         }
       }
+      // Re-emit event
+      this.$emit('dayclick', e);
     },
-    enterDay({ dateTime }) {
+    onDayMouseEnter(e) {
+      const { dateTime } = e;
       // Make sure drag has been initialized
       if (this.dragValue) {
         // Calculate the new dragged value
@@ -130,10 +130,12 @@ export default {
           this.showDisabledContent = true;
         }
       }
+      // Re-emit event
+      this.$emit('daymouseenter', e);
     },
     dateIsValid(date) {
-      return (
-        !this.disabledAttribute || !this.disabledAttribute.intersectsDate(date)
+      return !(
+        this.disabledAttribute && this.disabledAttribute.intersectsDate(date)
       );
     },
   },

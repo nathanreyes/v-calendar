@@ -1,25 +1,21 @@
 <script>
 import Calendar from './Calendar';
 import { singleHasValue, singleValuesAreEqual } from '../utils/pickerProfiles';
-import { mergeListeners } from '@/mixins';
 
 export default {
-  mixins: [mergeListeners],
   render(h) {
     return h(Calendar, {
       attrs: {
         ...this.$attrs,
         attributes: this.attributes_,
       },
-      on: this.mergeListeners({
-        dayclick: this.clickDay,
-      }),
+      on: {
+        ...this.$listeners,
+        dayclick: this.onDayClick,
+      },
       slots: this.$slots,
       scopedSlots: this.$scopedSlots,
     });
-  },
-  components: {
-    Calendar,
   },
   props: {
     value: { type: Date, default: null },
@@ -44,7 +40,7 @@ export default {
     },
   },
   methods: {
-    clickDay(day) {
+    onDayClick(day) {
       // Done if day selection is invalid
       if (this.disabledAttribute && this.disabledAttribute.includesDay(day)) {
         this.$emit('invalid-input', {
@@ -61,6 +57,8 @@ export default {
         // Set value to selected date
         this.$emit('input', day.date);
       }
+      // Re-emit event
+      this.$emit('dayclick', day);
     },
   },
 };

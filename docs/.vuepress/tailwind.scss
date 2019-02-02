@@ -1,0 +1,94 @@
+/**
+ * This injects Tailwind's base styles, which is a combination of
+ * Normalize.css and some additional base styles.
+ *
+ * You can see the styles here:
+ * https://github.com/tailwindcss/tailwindcss/blob/master/css/preflight.css
+ *
+ * If using `postcss-import`, use this import instead:
+ *
+ * @import "tailwindcss/preflight";
+ */
+@tailwind preflight;
+
+/**
+ * This injects any component classes registered by plugins.
+ *
+ * If using `postcss-import`, use this import instead:
+ *
+ * @import "tailwindcss/components";
+ */
+@tailwind components;
+
+.center {
+  @apply my-8 flex justify-center;
+}
+
+.distributed {
+  @apply my-8 flex justify-around items-start;
+}
+
+.example {
+  @apply my-8 p-8 flex flex-col items-center justify-center bg-grey-lighter border-t border-b;
+}
+
+input[type='text'] {
+  @apply w-full shadow appearance-none border rounded py-2 px-3 text-grey-darker;
+}
+
+.homepage .content {
+  @apply max-w-md mx-auto flex flex-col justify-center;
+  p {
+    @apply max-w-sm mx-auto;
+  }
+}
+
+.homepage .hero img {
+  max-height: 240px;
+}
+
+.docs-page {
+  h2 {
+    margin-top: -3.1rem;
+    padding-top: 4.6rem;
+    margin-bottom: 0px !important;
+    font-size: 1.35rem;
+    border: none;
+  }
+  p {
+    margin: 1rem 0 !important;
+  }
+}
+
+.section {
+  margin-top: 40px;
+  &:last-child {
+    margin-bottom: 40px;
+  }
+}
+
+/**
+ * This injects all of Tailwind's utility classes, generated based on your
+ * config file.
+ *
+ * If using `postcss-import`, use this import instead:
+ *
+ * @import "tailwindcss/utilities";
+ */
+@tailwind utilities;
+
+p {
+  margin: 1rem 0;
+  line-height: 1.7rem;
+}
+
+/* h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 2rem 0 0.6rem 0 !important;
+  padding: 0 !important;
+  padding-bottom: 0.6rem !important;
+} */

@@ -1,0 +1,9 @@
+DONE - Fix min and max date range in navigation pane
+DONE - Fix min/max dates not disabling
+DONE - Fix popover hiding when using navigation pane
+DONE - Fix min and max date range navigation
+DONE - Add format as an argument for popover slot-scopes and components
+DONE - Fix bug when displaying popover when changing range selection
+DONE - Fix bug when pressing 'Enter' in `v-date-picker`
+
+Move popover caret to child element

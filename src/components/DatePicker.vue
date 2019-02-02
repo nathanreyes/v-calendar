@@ -1,114 +1,107 @@
 <script>
+import Fragment from './Fragment';
 import Popover from './Popover';
-import SingleDatePicker from './SingleDatePicker';
-import MultipleDatePicker from './MultipleDatePicker';
-import DateRangePicker from './DateRangePicker';
+import PopoverRef from './PopoverRef';
 import DatePickerDayPopover from './DatePickerDayPopover';
 import PickerProfile from '@/utils/pickerProfiles';
 import Attribute from '@/utils/attribute';
 import defaults, { resolveDefault } from '@/utils/defaults';
 import { addDays } from '@/utils/dateInfo';
-import { pageIsBetweenPages } from '@/utils/helpers';
-import { isString, isFunction, isObject, isArray } from '@/utils/typeCheckers';
+import { arrayHasItems, evalFn, createGuid } from '@/utils/helpers';
+import { isString, isFunction, isArray } from '@/utils/typeCheckers';
 import { format, parse } from '@/utils/fecha';
-import { mergeListeners } from '@/mixins';
 
 export default {
-  mixins: [mergeListeners],
   render(h) {
-    const getPickerComponent = asSlot =>
-      h(this.componentName, {
+    const getPickerComponent = () =>
+      h(this.component, {
+        class: { 'is-popover': !this.isInline },
         attrs: {
           ...this.$attrs,
+          formats: this.formats_,
+          themeStyles: this.themeStyles_,
+        },
+        props: {
           value: this.value,
           isRequired: this.isRequired,
-          formats: this.formats_,
           selectAttribute: this.selectAttribute_,
           dragAttribute: this.dragAttribute_,
           disabledAttribute: this.disabledAttribute_,
-          minDate: this.minDate,
-          maxDate: this.maxDate,
-          fromPage: this.fromPage_,
-          toPage: this.toPage_,
-          themeStyles: this.themeStyles_,
-        },
-        on: this.mergeListeners(
-          {
-            'update:fromPage': val => (this.fromPage_ = val),
-            'update:toPage': val => (this.toPage_ = val),
-            drag: val => (this.dragValue = val),
-          },
-          this.filteredListeners(),
-        ),
-        slots: this.$slots,
-        scopedSlots: this.$scopedSlots,
-        ...(asSlot && {
-          slot: asSlot,
-        }),
-      });
-    if (this.isInline) return getPickerComponent();
-    return h(
-      'popover',
-      {
-        attrs: {
-          isExpanded: this.popoverExpanded,
-          direction: this.popoverDirection,
-          align: this.popoverAlign,
-          visibility: this.popoverVisibility,
-          contentStyle: this.popoverContentStyle,
-          contentOffset: this.popoverContentOffset,
-          forceHidden: this.popoverForceHidden,
-          showClearMargin: this.popoverShowClearMargin,
-          isInteractive: true,
         },
         on: {
-          'will-appear': e => this.$emit('popover-will-appear', e),
-          'did-appear': e => this.$emit('popover-did-appear', e),
-          'will-disappear': e => this.$emit('popover-will-disappear', e),
-          'did-disappear': e => this.$emit('popover-did-disappear', e),
-          'update:forceHidden': val => (this.popoverForceHidden = val),
+          ...this.$listeners,
+          drag: this.onDrag,
         },
-      },
-      [
-        (isFunction(this.$scopedSlots.default) &&
-          this.$scopedSlots.default({
-            inputValue: this.inputValue,
-            updateValue: this.updateValue,
-          })) || [
-          h('input', {
-            class: this.inputProps_.class,
-            style: this.inputProps_.style,
-            domProps: {
-              value: this.inputValue,
-            },
-            attrs: {
-              type: 'text',
-              ...this.inputAttrs,
-            },
-            on: {
-              input: event => (this.inputValue = event.target.value),
-              change: this.inputChange,
-              keyup: this.inputKeyup,
-            },
-          }),
+        slots: this.$slots,
+        scopedSlots: this.$scopedSlots,
+      });
+    // If inline just return the picker component
+    if (this.isInline) return getPickerComponent();
+    // Return fragment with slot/input and popover
+    return h(Fragment, [
+      h(
+        PopoverRef,
+        {
+          props: {
+            id: this.datePickerPopoverId,
+            visibility: this.popoverVisibility,
+            isInteractive: true,
+          },
+        },
+        [
+          (isFunction(this.$scopedSlots.default) &&
+            this.$scopedSlots.default({
+              inputValue: this.inputValue,
+              inputProps: this.inputProps_,
+              inputEvents: this.inputEvents,
+              updateValue: this.updateValue,
+            })) ||
+            h('input', {
+              class: this.inputProps_.class,
+              style: this.inputProps_.style,
+              domProps: {
+                value: this.inputProps_.value,
+              },
+              attrs: {
+                type: 'text',
+                ...this.inputAttrs,
+              },
+              on: this.inputEvents,
+              ref: 'input',
+            }),
         ],
-        getPickerComponent('popover-content'),
-      ],
-    );
-  },
-  components: {
-    Popover,
-    SingleDatePicker,
-    MultipleDatePicker,
-    DateRangePicker,
+      ),
+      h(
+        Popover,
+        {
+          attrs: {
+            isExpanded: this.popoverExpanded,
+            direction: this.popoverDirection,
+            align: this.popoverAlign,
+            contentOffset: this.popoverContentOffset,
+            isInteractive: true,
+          },
+          props: {
+            id: this.datePickerPopoverId,
+            placement: 'bottom-start',
+          },
+          on: {
+            'will-appear': e => this.$emit('popover-will-appear', e),
+            'did-appear': e => this.$emit('popover-did-appear', e),
+            'will-disappear': e => this.$emit('popover-will-disappear', e),
+            'did-disappear': e => this.$emit('popover-did-disappear', e),
+          },
+          ref: 'popover',
+        },
+        [getPickerComponent()],
+      ),
+    ]);
   },
   props: {
     mode: { type: String, default: 'single' },
     value: { type: null, required: true },
     isRequired: Boolean,
     isInline: Boolean,
-    minDate: Date,
-    maxDate: Date,
     disabledDates: null,
     availableDates: null,
     formats: Object, // Resolved by computed property
@@ -116,6 +109,10 @@ export default {
     updateOnInputKeyup: {
       type: Boolean,
       default: () => defaults.datePickerUpdateOnInputKeyup,
+    },
+    inputDebounce: {
+      type: Number,
+      default: () => defaults.datePickerInputDebounce,
     },
     tintColor: { type: String, default: () => defaults.datePickerTintColor },
     dragAttribute: Object, // Resolved by computed property
@@ -140,24 +137,20 @@ export default {
       type: Number,
       default: () => defaults.popoverContentOffset,
     },
-    popoverShowClearMargin: Boolean,
     popoverKeepVisibleOnInput: {
       type: Boolean,
       default: () => defaults.popoverKeepVisibleOnInput,
     },
-    fromPage: Object,
-    toPage: Object,
     themeStyles: { type: Object, default: () => ({}) }, // Resolved by computed property
   },
   data() {
     return {
-      fromPage_: null,
-      toPage_: null,
       dragValue: null,
       inputValue: '',
-      popoverForceHidden: false,
       disableFormatInput: false,
-      disablePopoverForceHidden: false,
+      disablePopoverHide: false,
+      updateTimeout: null,
+      datePickerPopoverId: createGuid(),
     };
   },
   computed: {
@@ -178,8 +171,8 @@ export default {
         s => parse(s, this.inputFormats),
       );
     },
-    componentName() {
-      return this.profile.componentName;
+    component() {
+      return this.profile.component;
     },
     selectAttribute_() {
       return this.buildSelectDragAttribute(this.selectAttribute);
@@ -189,18 +182,27 @@ export default {
     },
     disabledDates_() {
       const dates = [];
+      // Add the manually applied disabled dates
       if (this.disabledDates) {
         if (isArray(this.disabledDates)) dates.push(...this.disabledDates);
         else dates.push(this.disabledDates);
       }
-      if (this.minDate)
-        dates.push({ start: null, end: addDays(this.minDate, -1) });
-      if (this.maxDate)
-        dates.push({ start: addDays(this.maxDate, 1), end: null });
+      // Add disabled dates for minDate and maxDate props
+      const { 'min-date': minDate, 'max-date': maxDate } = this.$attrs;
+      if (minDate) {
+        dates.push({ start: null, end: addDays(minDate, -1) });
+      }
+      if (maxDate) {
+        dates.push({ start: addDays(maxDate, 1), end: null });
+      }
       return dates;
     },
     disabledAttribute_() {
-      if (!this.disabledDates_ && !this.availableDates) return null;
+      if (
+        !arrayHasItems(this.disabledDates_) &&
+        !arrayHasItems(this.availableDates)
+      )
+        return null;
       return Attribute({
         key: 'disabled',
         order: 100,
@@ -217,103 +219,77 @@ export default {
     },
     inputProps_() {
       const defaultProps = defaults.datePickerInputProps;
-      if (isFunction(defaultProps)) {
-        return {
-          ...defaultProps({
-            mode: this.mode,
-            value: this.value,
-            dragValue: this.dragValue,
-            format:
-              defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
-          }),
-          ...this.inputProps,
-        };
-      } else if (isObject(defaultProps)) {
-        return {
-          ...defaultProps,
-          ...this.inputProps,
-        };
-      }
-      return this.inputProps;
+      return {
+        ...evalFn(defaultProps, {
+          mode: this.mode,
+          value: this.value,
+          dragValue: this.dragValue,
+          format: defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
+        }),
+        ...this.inputProps,
+        value: this.inputValue,
+      };
     },
     inputAttrs() {
-      const props = {
+      const attrs = {
         ...this.inputProps_,
       };
-      if (props) {
-        delete props.style;
-        delete props.class;
+      if (attrs) {
+        delete attrs.style;
+        delete attrs.class;
       }
-      return props;
+      return attrs;
+    },
+    inputEvents() {
+      return {
+        input: this.inputInput,
+        change: this.inputChange,
+        // keydown: this.inputKeydown,
+        keyup: this.inputKeyup,
+      };
     },
     themeStyles_() {
-      const userDayContent =
-        this.themeStyles.dayContent || defaults.themeStyles.dayContent;
       // Strip the wrapper style when used in a popover
       // It will get passed in as the content style
       const styles = {
         ...this.themeStyles,
-        dayContent: params => ({
-          ...(params.isHovered && {
-            backgroundColor: '#dadada',
-            border: '0',
-            cursor: 'pointer',
-          }),
-          ...((isFunction(userDayContent) && userDayContent(params)) ||
-            userDayContent),
-        }),
         ...(!this.isInline && {
           wrapper: null,
         }),
       };
       return styles;
     },
-    popoverContentStyle() {
-      return {
-        ...this.themeStyles.wrapper,
-        padding: '0',
-        margin: '0',
-      };
-    },
   },
   watch: {
-    fromPage(val) {
-      this.fromPage_ = val;
-    },
-    toPage(val) {
-      this.toPage_ = val;
-    },
-    fromPage_(val) {
-      this.$emit('update:frompage', val); // Support in-DOM templates (:frompage.sync)
-      this.$emit('update:fromPage', val); // Allow using :from-page.sync
-    },
-    toPage_(val) {
-      this.$emit('update:topage', val); // Support in-DOM templates (:topage.sync)
-      this.$emit('update:toPage', val); // Allow using :to-page.sync
-    },
     mode() {
       // Clear value on select mode change
       this.$emit('input', null);
     },
     value() {
-      this.assignPageRange();
       if (!this.disableFormatInput) this.formatInput();
-      if (this.mode !== 'multiple' && !this.disablePopoverForceHidden)
+      if (
+        this.mode !== 'multiple' &&
+        !this.isInline &&
+        !this.disablePopoverHide
+      ) {
         this.hidePopover();
+      }
       this.disableFormatInput = false;
-      this.disablePopoverForceHidden = false;
+      this.disablePopoverHide = false;
     },
     dragValue() {
       this.formatInput();
     },
-    disabledAttribute_() {
-      if (!this.dragValue) this.updateValue(this.value);
+    disabledAttribute_(val) {
+      if (!this.dragValue && val) {
+        this.updateValue(this.value, {
+          formatInput: true,
+          hidePopover: false,
+        });
+      }
     },
   },
   created() {
-    this.fromPage_ = this.fromPage;
-    this.toPage_ = this.toPage;
-    this.assignPageRange();
     this.formatInput();
   },
   methods: {
@@ -321,8 +297,16 @@ export default {
       let attr = {
         key: 'drag-select',
         ...propAttr,
+        pinPage: true,
       };
-      const { highlight, highlightCaps, contentStyle, dot, bar } = attr;
+      const {
+        highlight,
+        highlightCaps,
+        contentStyle,
+        dot,
+        bar,
+        popover,
+      } = attr;
       // Don't need highlight or content style if using dot or bar
       if (!dot && !bar) {
         attr = {
@@ -333,7 +317,7 @@ export default {
               height: '1.7rem',
               opacity: 0.5,
             }),
-            ...((isFunction(highlight) && highlight(params)) || highlight),
+            ...evalFn(highlight, params),
           }),
           highlightCaps:
             highlightCaps ||
@@ -361,67 +345,52 @@ export default {
                 color: '#333333',
               }),
             // Mix in user style
-            ...((isFunction(contentStyle) && contentStyle(params)) ||
-              contentStyle),
+            ...evalFn(contentStyle, params),
           }),
         };
       }
-      if (attr.popover || this.showDayPopover) {
-        attr.popover = {
-          component: DatePickerDayPopover,
-          hideIndicator: true,
-          ...attr.popover,
+      if (popover || this.showDayPopover) {
+        attr.popover = params => {
+          const popoverObj = {
+            component: DatePickerDayPopover,
+            hideIndicator: true,
+            visibility: 'hover',
+            isInteractive: false,
+            ...evalFn(popover, params),
+          };
+          return popoverObj;
         };
       }
       return attr;
     },
-    filteredListeners() {
-      // Remove parent listeners that we want to intercept and re-broadcast
-      const listeners = { ...this.$listeners };
-      delete listeners['update:frompage'];
-      delete listeners['update:fromPage'];
-      delete listeners['update:topage'];
-      delete listeners['update:toPage'];
-      return listeners;
+    onDrag(e) {
+      this.dragValue = e;
+      this.$emit('drag', e);
     },
-    assignPageRange() {
-      const range = this.profile.getPageRange(this.value);
-      if (range) {
-        const fromInRange = pageIsBetweenPages(
-          this.fromPage_,
-          range.from,
-          range.to,
-        );
-        const toInRange = pageIsBetweenPages(
-          this.toPage_,
-          range.from,
-          range.to,
-        );
-        if (this.mode === 'single') {
-          if (
-            !fromInRange &&
-            !Object.prototype.hasOwnProperty.call(
-              this.$attrs,
-              'is-double-paned',
-            )
-          ) {
-            this.fromPage_ = range.from;
-          } else if (!toInRange) {
-            this.fromPage_ = range.to;
-          }
-        } else {
-          if (!fromInRange) this.fromPage_ = range.from;
-          if (!toInRange) this.toPage_ = range.to;
-        }
+    inputInput(e) {
+      this.inputValue = e.target.value;
+      if (this.updateOnInput) {
+        this.updateValue(this.inputValue, {
+          formatInput: false,
+          hidePopover: false,
+          debounce: this.inputDebounce,
+        });
       }
     },
     inputChange() {
-      // Enter key, blur or other change events
       this.updateValue(this.inputValue, {
         formatInput: true,
         hidePopover: false,
       });
     },
+    // inputKeydown(e) {
+    //   if (e.keyCode === 13) {
+    //     this.updateValue(this.value, {
+    //       formatInput: true,
+    //       hidePopover: false,
+    //     });
+    //   }
+    // },
     inputKeyup(e) {
       // Escape key
       if (e.keyCode === 27) {
@@ -442,33 +411,43 @@ export default {
       {
         formatInput = true,
         hidePopover = !this.popoverKeepVisibleOnInput,
+        debounce,
       } = {},
     ) {
+      clearTimeout(this.updateTimeout);
+      if (debounce === undefined || debounce < 0) {
+        this.forceUpdateValue(value, { formatInput, hidePopover });
+      } else {
+        this.updateTimeout = setTimeout(() => {
+          this.updateTimeout = null;
+          this.forceUpdateValue(value, { formatInput, hidePopover });
+        }, debounce);
+      }
+    },
+    forceUpdateValue(value, { formatInput, hidePopover }) {
+      // Reassign input value for good measure
+      this.inputValue = isString(value) ? value : this.inputValue;
       // Parse value if needed
-      const parsedValue = isString(value)
+      const userValue = isString(value)
         ? this.profile.parseValue(value)
         : value;
       // Filter out any disabled dates
-      const filteredValue = this.profile.filterDisabled({
-        value: this.profile.normalizeValue(parsedValue),
+      const validatedValue = this.profile.filterDisabled({
+        value: this.profile.normalizeValue(userValue),
         isRequired: this.isRequired,
         disabled: this.disabledAttribute_,
         fallbackValue: this.value,
       });
-      // Don't do anything if user input value is invalid - Just return
-      if (!this.profile.valuesAreEqual(parsedValue, filteredValue)) return;
-      // Check if new value is different from the current value
-      const valueHasChanged = !this.profile.valuesAreEqual(
-        this.value,
-        filteredValue,
-      );
-      if (valueHasChanged) {
-        this.disableFormatInput = !formatInput;
-        this.disablePopoverForceHidden = !hidePopover;
-        this.$emit('input', filteredValue);
-      } else {
+      // If final value is equal to the current value
+      if (this.profile.valuesAreEqual(this.value, validatedValue)) {
+        // Just format input and hide popover if needed
         if (formatInput) this.formatInput();
-        if (hidePopover) this.hidePopover();
+        if (hidePopover && !this.isInline) this.hidePopover();
+      } else {
+        // Value has changed, so handle formatting and hiding on value change
+        this.disableFormatInput = !formatInput;
+        this.disablePopoverHide = !hidePopover;
+        this.$emit('input', validatedValue);
       }
     },
     formatInput() {
@@ -477,10 +456,28 @@ export default {
       });
     },
     hidePopover() {
-      setTimeout(() => {
-        this.popoverForceHidden = true;
-      }, 200);
+      const popover = this.$refs.popover;
+      if (popover) {
+        popover.onHide({
+          ref: popover.ref,
+          delay: 400,
+        });
+      }
     },
   },
 };
 </script>
+
+<style lang='sass' scoped>
+
+@import '../styles/vars.sass'
+
+.c-pane-container
+  &.is-popover
+    border: none
+  & /deep/ .c-day-content
+    &:hover
+      cursor: $day-content-hover-cursor
+      background-color: $day-content-hover-background-color
+
+</style>

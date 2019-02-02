@@ -1,42 +1,25 @@
 <template>
-<div>
-  <div class='date-label'>
-    <div v-if='dateLabel'>
-      {{ this.dateLabel }}
+  <div :class="{ 'is-range': isRange }">
+    <div class="date-label">
+      <div v-if="dateLabel">{{ this.dateLabel }}</div>
+      <div v-if="startDateLabel">{{ this.startDateLabel }}</div>
+      <div v-if="endDateLabel">{{ this.endDateLabel }}</div>
     </div>
-    <div v-if='startDateLabel'>
-      {{ this.startDateLabel }}
-    </div>
-    <div v-if='endDateLabel'>
-      {{ this.endDateLabel }}
+    <div v-if="isRange" class="days-nights">
+      <span class="days">
+        <svg-icon name="sun" class="c-sun"></svg-icon>
+        {{ days }}
+      </span>
+      <span class="nights">
+        <svg-icon name="moon" class="c-moon"></svg-icon>
+        {{ nights }}
+      </span>
     </div>
   </div>
-  <div
-    v-if='isRange'
-    class='days-nights'>
-    <span class='days'>
-      <svg-icon
-        :glyph='sun'
-        class='vc-sun-o'>
-      </svg-icon>
-      {{ days }}
-    </span>
-    <span class='nights'>
-      <svg-icon
-        :glyph='moon'
-        class='vc-moon-o'>
-      </svg-icon>
-      {{ nights }}
-    </span>
-  </div>
-</div>
 </template>
 
 <script>
 import SvgIcon from './SvgIcon';
-import sun from '@/assets/icons/sun-o.svg';
-import moon from '@/assets/icons/moon-o.svg';
-import { format } from '@/utils/fecha';
 
 export default {
   components: {
@@ -44,7 +27,8 @@ export default {
   },
   props: {
     attribute: Object,
-    format: String,
+    dayFormat: String,
+    format: Function,
   },
   data() {
     return {
@@ -83,13 +67,15 @@ export default {
   },
   methods: {
     getDateString(date) {
-      return format(date, this.format);
+      return this.format(date, this.dayFormat);
     },
   },
 };
 </script>
 
 <style lang='sass' scoped>
+
+@import '../styles/vars.sass'
 
 .date-label
   text-align: center
@@ -105,12 +91,13 @@ export default {
     align-items: center
     &:not(:first-child)
       margin-left: 13px
-  .vc-sun-o, .vc-moon-o
+  .c-sun, .c-moon
     margin-right: 5px
-    font-size: 1rem
-  .vc-sun-o
-    color: #ffb366
-  .vc-moon-o
-    color: #4d4d64
-    
+    width: 16px
+    height: 16px
+  .c-sun
+    color: $day-popover-sun-color
+  .c-moon
+    color: $day-popover-moon-color
+
 </style>

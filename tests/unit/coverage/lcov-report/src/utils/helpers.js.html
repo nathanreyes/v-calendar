@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/utils/helpers.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> helpers.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/139</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/100</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/35</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/96</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194</td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import defaul<span class="cstat-no" title="statement not covered" >ts from './defaults';<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span></span></span></span>
+import { isArray } f<span class="cstat-no" title="statement not covered" >rom './typeCheckers';<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
+&nbsp;
+// Calendar data
+export const daysIn<span class="cstat-no" title="statement not covered" >Months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];</span>
+export const<span class="cstat-no" title="statement not covered" > today = new Date();</span>
+export const toda<span class="cstat-no" title="statement not covered" >yComps = {</span>
+  year: today.getFullYear(),
+  month: today.getMonth() + 1,
+  day: today.getDate(),
+};
+&nbsp;
+// Days/month/year components for a given month and year
+export const getMont<span class="cstat-no" title="statement not covered" >hComps = (month, year) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+  const firstDayOfWeek <span class="cstat-no" title="statement not covered" >= defaults.firstDayOfWeek;</span>
+  const inLeapYear <span class="cstat-no" title="statement not covered" >= (year % 4 === 0 &amp;&amp; year % 100 !== 0) || year % 400 ==</span>= 0;
+  const firstWeekday <span class="cstat-no" title="statement not covered" >= new Date(year, month - 1, 1).getDay() + </span>1;
+  const days <span class="cstat-no" title="statement not covered" >= (month === 2 &amp;&amp; inLeapYear) ? 29 : daysInMonths[month -</span> 1];
+  const weeks <span class="cstat-no" title="statement not covered" >= Math.ceil((days + Math.abs(firstWeekday - firstDayOfWeek)) / 7</span>);
+<span class="cstat-no" title="statement not covered" >  return {</span>
+    firstDayOfWeek,
+    inLeapYear,
+    firstWeekday,
+    days,
+    weeks,
+    month,
+    year,
+  };
+};
+&nbsp;
+// Days/month/year components for a given date
+export const getDat<span class="cstat-no" title="statement not covered" >eComps = (date) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!date || !date.getTime) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
+<span class="cstat-no" title="statement not covered" >  return getMonthComps(date.getMonth() + 1, date.getFullYear());</span>
+};
+&nbsp;
+// Days/month/year components for today's month
+export const getThisMont<span class="cstat-no" title="statement not covered" >hComps = () =&gt; getMonthComps(todayCom<span class="fstat-no" title="function not covered" >ps.month, todayCom</span>ps.<span class="cstat-no" title="statement not covered" >year);</span></span>
+&nbsp;
+// Day/month/year components for previous month
+export const getPrevMont<span class="cstat-no" title="statement not covered" >hComps = (month, year) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (month === 1) <span class="cstat-no" title="statement not covered" >return getMonthComps(12, year - 1);</span></span>
+<span class="cstat-no" title="statement not covered" >  return getMonthComps(month - 1, year);</span>
+};
+&nbsp;
+// Day/month/year components for next month
+export const getNextMont<span class="cstat-no" title="statement not covered" >hComps = (month, year) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (month === 12) <span class="cstat-no" title="statement not covered" >return getMonthComps(1, year + 1);</span></span>
+<span class="cstat-no" title="statement not covered" >  return getMonthComps(month + 1, year);</span>
+};
+&nbsp;
+export const getExampleMont<span class="cstat-no" title="statement not covered" >hComps = () =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+  const thisMonthComps <span class="cstat-no" title="statement not covered" >= getThisMonthComps(</span>);
+  const nextMonthComps <span class="cstat-no" title="statement not covered" >= getNextMonthComps(thisMonthComps.month, thisMonthComps.year</span>);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return {</span>
+    thisMonth: thisMonthComps.month - 1,
+    thisMonthYear: thisMonthComps.year,
+    nextMonth: nextMonthComps.month - 1,
+    nextMonthYear: nextMonthComps.year,
+  };
+};
+&nbsp;
+function <span class="fstat-no" title="function not covered" >comparePages(</span>firstPage, secondPage) {
+<span class="cstat-no" title="statement not covered" >  if (!firstPage || !secondPage) <span class="cstat-no" title="statement not covered" >return 0;</span></span>
+<span class="cstat-no" title="statement not covered" >  if (firstPage.year === secondPage.year) {</span>
+<span class="cstat-no" title="statement not covered" >    if (firstPage.month === secondPage.month) <span class="cstat-no" title="statement not covered" >return 0;</span></span>
+<span class="cstat-no" title="statement not covered" >    return firstPage.month &lt; secondPage.month ? -1 : 1;</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return firstPage.year &lt; secondPage.year ? -1 : 1;</span>
+}
+&nbsp;
+export const pageIsEqual<span class="cstat-no" title="statement not covered" >ToPage = (page, otherPage) =&gt; compare<span class="fstat-no" title="function not covered" >Pages(page, otherP</span>age) === 0;<span class="cstat-no" title="statement not covered" ></span></span>
+&nbsp;
+export const pageIsBefo<span class="cstat-no" title="statement not covered" >rePage = (page, beforePage) =&gt; compa<span class="fstat-no" title="function not covered" >rePages(page, bef</span>orePage) === -1;<span class="cstat-no" title="statement not covered" ></span></span>
+&nbsp;
+export const pageIsAft<span class="cstat-no" title="statement not covered" >erPage = (page, afterPage) =&gt; compa<span class="fstat-no" title="function not covered" >rePages(page, af</span>terPage) === 1;<span class="cstat-no" title="statement not covered" ></span></span>
+&nbsp;
+export const getM<span class="cstat-no" title="statement not covered" >inPage = (...args) =&gt; args.red<span class="fstat-no" title="function not covered" >uce((prev, </span>cur<span class="cstat-no" title="statement not covered" >r) =&gt; {<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span>
+  if<span class="cstat-no" title="statement not covered" > (!prev) re<span class="cstat-no" title="statement not covered" >turn curr;</span></span>
+  if<span class="cstat-no" title="statement not covered" > (!curr) re<span class="cstat-no" title="statement not covered" >turn prev;</span></span>
+  re<span class="cstat-no" title="statement not covered" >turn (comparePages(prev, curr) === -1) ? prev : curr;</span>
+});
+&nbsp;
+export const getM<span class="cstat-no" title="statement not covered" >axPage = (...args) =&gt; args.red<span class="fstat-no" title="function not covered" >uce((prev, </span>cur<span class="cstat-no" title="statement not covered" >r) =&gt; {<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span>
+  if<span class="cstat-no" title="statement not covered" > (!prev) re<span class="cstat-no" title="statement not covered" >turn curr;</span></span>
+  if<span class="cstat-no" title="statement not covered" > (!curr) re<span class="cstat-no" title="statement not covered" >turn prev;</span></span>
+  re<span class="cstat-no" title="statement not covered" >turn (comparePages(prev, curr) === 1) ? prev : curr;</span>
+});
+&nbsp;
+export const getPr<span class="cstat-no" title="statement not covered" >evPage = (page) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!page) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
+  const prevComps <span class="cstat-no" title="statement not covered" >= getPrevMonthComps(page.month, page.year</span>);
+<span class="cstat-no" title="statement not covered" >  return {</span>
+    month: prevComps.month,
+    year: prevComps.year,
+  };
+};
+&nbsp;
+export const getNe<span class="cstat-no" title="statement not covered" >xtPage = (page) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!page) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
+  const nextComps <span class="cstat-no" title="statement not covered" >= getNextMonthComps(page.month, page.year</span>);
+<span class="cstat-no" title="statement not covered" >  return {</span>
+    month: nextComps.month,
+    year: nextComps.year,
+  };
+};
+&nbsp;
+// Return page if it lies between the from and to pages
+export const getPageBetwee<span class="cstat-no" title="statement not covered" >nPages = (page, fromPage, toPage) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!page) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
+<span class="cstat-no" title="statement not covered" >  if (fromPage &amp;&amp; comparePages(page, fromPage) === -1) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
+<span class="cstat-no" title="statement not covered" >  if (toPage &amp;&amp; comparePages(page, toPage) === 1) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
+<span class="cstat-no" title="statement not covered" >  return page;</span>
+};
+&nbsp;
+export const getFirstVal<span class="cstat-no" title="statement not covered" >idPage = (...args) =&gt; args.find(p =&gt; <span class="fstat-no" title="function not covered" >!!p);<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span></span></span>
+&nbsp;
+export const getFirstArr<span class="cstat-no" title="statement not covered" >ayItem = (array, fallbackValue) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!array) <span class="cstat-no" title="statement not covered" >return fallbackValue;</span></span>
+<span class="cstat-no" title="statement not covered" >  return array.length ? array[0] : fallbackValue;</span>
+};
+&nbsp;
+export const getLastArr<span class="cstat-no" title="statement not covered" >ayItem = (array, fallbackValue) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!array) <span class="cstat-no" title="statement not covered" >return fallbackValue;</span></span>
+<span class="cstat-no" title="statement not covered" >  return array.length ? array[array.length - 1] : fallbackValue;</span>
+};
+&nbsp;
+export const arrayHa<span class="cstat-no" title="statement not covered" >sItems = array =&gt; isArray(array) <span class="fstat-no" title="function not covered" >&amp;&amp; array.lengt</span>h;<span class="cstat-no" title="statement not covered" ></span></span>
+&nbsp;
+export const elementHasAn<span class="cstat-no" title="statement not covered" >cestor = (el, ancestor) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!el) <span class="cstat-no" title="statement not covered" >return false;</span></span>
+<span class="cstat-no" title="statement not covered" >  if (el === ancestor) <span class="cstat-no" title="statement not covered" >return true;</span></span>
+<span class="cstat-no" title="statement not covered" >  return elementHasAncestor(el.parentElement, ancestor);</span>
+};
+&nbsp;
+export const elementPositionInAn<span class="cstat-no" title="statement not covered" >cestor = (el, ancestor) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+  let top = <span class="cstat-no" title="statement not covered" >0;</span>
+  let left = <span class="cstat-no" title="statement not covered" >0;</span>
+<span class="cstat-no" title="statement not covered" >  do {</span>
+<span class="cstat-no" title="statement not covered" >    top += el.offsetTop || 0;</span>
+<span class="cstat-no" title="statement not covered" >    left += el.offsetLeft || 0;</span>
+<span class="cstat-no" title="statement not covered" >    el = el.offsetParent;</span>
+  } while (el &amp;&amp; el !== ancestor);
+<span class="cstat-no" title="statement not covered" >  return {</span>
+    top,
+    left,
+  };
+};
+&nbsp;
+export const objectFro<span class="cstat-no" title="statement not covered" >mArray = (array, keyProp = 'key') =<span class="fstat-no" title="function not covered" >&gt; {<span class="cstat-no" title="statement not covered" ></span></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!array || !array.length) <span class="cstat-no" title="statement not covered" >return {};</span></span>
+<span class="cstat-no" title="statement not covered" >  return array.reduce(<span class="fstat-no" title="function not covered" >(o</span>bj, curr) =&gt; { obj[c<span class="cstat-no" title="statement not covered" >urr[keyProp]] = curr; retu<span class="cstat-no" title="statement not covered" >r</span>n obj; }, {</span>});</span>
+};
+&nbsp;
+export const mixinOptiona<span class="cstat-no" title="statement not covered" >lProps = (source, target, props) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+  const assigned <span class="cstat-no" title="statement not covered" >= [</span>];
+<span class="cstat-no" title="statement not covered" >  props.forEach(<span class="fstat-no" title="function not covered" >(p</span>) =&gt; {</span>
+    const name <span class="cstat-no" title="statement not covered" >= p.name || p.toString(</span>);
+    const mixin <span class="cstat-no" title="statement not covered" >= p.mixi</span>n;
+    const validate <span class="cstat-no" title="statement not covered" >= p.validat</span>e;
+<span class="cstat-no" title="statement not covered" >    if (Object.prototype.hasOwnProperty.call(source, name)) {</span>
+      const value <span class="cstat-no" title="statement not covered" >= validate ? validate(source[name]) : source[name</span>];
+<span class="cstat-no" title="statement not covered" >      target[name] = mixin ? { ...mixin, ...value } : value;</span>
+<span class="cstat-no" title="statement not covered" >      assigned.push(name);</span>
+    }
+  });
+<span class="cstat-no" title="statement not covered" >  return {</span>
+    target,
+    assigned: assigned.length ? assigned : null,
+  };
+};
+&nbsp;
+export const is<span class="cstat-no" title="statement not covered" >Mobile = {</span>
+  andriod() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return navigator.userAgent.match(/Android/i);</span>
+  },
+  blackberry() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return navigator.userAgent.match(/BlackBerry/i);</span>
+  },
+  iOS() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return navigator.userAgent.match(/iPhone|iPad|iPod/i);</span>
+  },
+  opera() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return navigator.userAgent.match(/Opera Mini/i);</span>
+  },
+  windows() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return navigator.userAgent.match(/IEMobile/i);</span>
+  },
+  any() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return (isMobile.andriod() || isMobile.blackberry() || isMobile.iOS() || isMobile.opera() || isMobile.windows())</span>;
+  },
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Jan 05 2018 09:47:39 GMT-0600 (CST)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

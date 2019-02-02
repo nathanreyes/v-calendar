@@ -1,141 +1,129 @@
 <template>
-<!--Nav panel-->
-<div class='c-nav'>
-  <!--Nav months-->
-  <div
-    v-if='mode_ === "month"'>
-    <!--Months header-->
-    <div class='c-header' :style='headerStyle'>
-      <!--Previous year button-->
-      <div class='c-arrow-layout'>
-        <slot
-          name='nav-left-button'
-          :month-items='[...monthItems]'
-          :move='movePrevYear'>
-          <svg-icon
-            :glyph='angleLeft'
-            class='c-arrow'
-            :style='headerArrowsStyle'
-            @click='movePrevYear'>
-          </svg-icon>
-        </slot>
+  <!--Nav panel-->
+  <div class="c-nav-pane">
+    <!--Nav months-->
+    <template v-if="mode_ === 'month'">
+      <!--Months header-->
+      <div class="c-nav-header" :style="headerStyle">
+        <!--Previous year button-->
+        <div class="c-nav-arrow-layout">
+          <slot name="nav-left-button" :month-items="[...monthItems]" :move="movePrevYear">
+            <svg-icon
+              name="left-arrow"
+              class="c-nav-arrow"
+              :style="headerArrowsStyle"
+              @click="movePrevYear"
+            ></svg-icon>
+          </slot>
+        </div>
+        <!--Mode switch button-->
+        <span
+          class="c-nav-title"
+          :style="headerTitleStyle"
+          @click="selectMode('year')"
+        >{{ yearIndex }}</span>
+        <!--Next year button-->
+        <div class="c-nav-arrow-layout">
+          <slot name="nav-right-button" :month-items="[...monthItems]" :move="moveNextYear">
+            <svg-icon
+              name="right-arrow"
+              class="c-nav-arrow"
+              :style="headerArrowsStyle"
+              @click="moveNextYear"
+            ></svg-icon>
+          </slot>
+        </div>
       </div>
-      <!--Mode switch button-->
-      <span
-        class='c-title'
-        :style='headerTitleStyle'
-        @click='selectMode("year")'>
-        {{ yearIndex }}
-      </span>
-      <!--Next year button-->
-      <div class='c-arrow-layout'>
-        <slot
-          name='nav-right-button'
-          :month-items='[...monthItems]'
-          :move='moveNextYear'>
-          <svg-icon
-            :glyph='angleRight'
-            class='c-arrow'
-            :style='headerArrowsStyle'
-            @click='moveNextYear'>
-          </svg-icon>
-        </slot>
+      <!--Months table-->
+      <table class="c-nav-table">
+        <tr v-for="(row, i) in monthRows" :key="i">
+          <td v-for="item in row" :key="item.month">
+            <div
+              class="c-nav-table-cell"
+              :class="{ 'c-active': item.isActive, 'c-disabled': item.isDisabled }"
+              :style="getMonthCellStyle(item)"
+              @click="monthClick(item.month)"
+            >
+              <!--Month label-->
+              {{ item.label }}
+              <!--Attribute indicators-->
+              <transition name="indicators">
+                <div v-if="item.attributes" class="c-indicators">
+                  <span
+                    class="c-indicator"
+                    v-for="attribute in item.attributes"
+                    :key="attribute.key"
+                    :style="attribute.style"
+                  ></span>
+                </div>
+              </transition>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </template>
+    <!--Nav years-->
+    <template v-if="mode_ === 'year'">
+      <div class="c-nav-header" :style="headerStyle">
+        <!--Previous year group button-->
+        <div class="c-nav-arrow-layout">
+          <slot
+            name="nav-left-button"
+            :first-year="firstYear"
+            :last-year="lastYear"
+            :year-items="[...yearItems]"
+            :move="movePrevYearGroup"
+          >
+            <svg-icon
+              name="left-arrow"
+              class="c-nav-arrow"
+              :style="headerArrowsStyle"
+              @click="movePrevYearGroup"
+            ></svg-icon>
+          </slot>
+        </div>
+        <!--Mode switch button-->
+        <span
+          class="c-nav-title"
+          :style="headerTitleStyle"
+          @click="selectMode('month')"
+        >{{ firstYear }} - {{ lastYear }}</span>
+        <!--Next year group button-->
+        <div class="c-nav-arrow-layout">
+          <slot
+            name="nav-right-button"
+            :first-year="firstYear"
+            :last-year="lastYear"
+            :year-items="[...yearItems]"
+            :move="moveNextYearGroup"
+          >
+            <svg-icon
+              name="right-arrow"
+              class="c-nav-arrow"
+              :style="headerArrowsStyle"
+              @click="moveNextYearGroup"
+            ></svg-icon>
+          </slot>
+        </div>
       </div>
-    </div>
-    <!--Months table-->
-    <table class='c-table'>
-      <tr v-for='(row, i) in monthRows' :key='i'>
-        <td
-          v-for='item in row'
-          :key='item.month'>
-          <div
-            class='c-table-cell'
-            :class='{ "c-active": item.isActive, "c-disabled": item.isDisabled }'
-            :style='getMonthCellStyle(item)'
-            @click='monthClick(item.month)'>
-            <!--Month label-->
-            {{ item.label }}
-            <!--Attribute indicators-->
-            <transition name='indicators'>
-              <div
-                v-if='item.attributes'
-                class='c-indicators'>
-                <span
-                  class='c-indicator'
-                  v-for='attribute in item.attributes'
-                  :key='attribute.key'
-                  :style='attribute.style'>
-                </span>
-              </div>
-            </transition>
-          </div>
-        </td>
-      </tr>
-    </table>
+      <!--Years table-->
+      <table class="c-nav-table">
+        <tr v-for="(row, i) in yearRows" :key="i">
+          <td v-for="item in row" :key="item.year">
+            <div
+              class="c-nav-table-cell"
+              :class="{ 'c-active': item.isActive, 'c-disabled': item.isDisabled }"
+              :style="getYearCellStyle(item)"
+              @click="yearClick(item.year)"
+            >
+              <!--Year label-->
+              {{ item.year }}
+            </div>
+          </td>
+        </tr>
+      </table>
+    </template>
   </div>
-  <!--Nav years-->
-  <div
-    v-if='mode_ === "year"'>
-    <div class='c-header' :style='headerStyle'>
-      <!--Previous year group button-->
-      <div class='c-arrow-layout'>
-        <slot
-          name='nav-left-button'
-          :first-year='firstYear'
-          :last-year='lastYear'
-          :year-items='[...yearItems]'
-          :move='movePrevYearGroup'>
-          <svg-icon
-            :glyph='angleLeft'
-            class='c-arrow'
-            :style='headerArrowsStyle'
-            @click='movePrevYearGroup'>
-          </svg-icon>
-        </slot>
-      </div>
-      <!--Mode switch button-->
-      <span
-        class='c-title'
-        :style='headerTitleStyle'
-        @click='selectMode("month")'>
-        {{ firstYear }} - {{ lastYear }}
-      </span>
-      <!--Next year group button-->
-      <div class='c-arrow-layout'>
-        <slot
-          name='nav-right-button'
-          :first-year='firstYear'
-          :last-year='lastYear'
-          :year-items='[...yearItems]'
-          :move='moveNextYearGroup'>
-          <svg-icon
-            :glyph='angleRight'
-            class='c-arrow'
-            :style='headerArrowsStyle'
-            @click='moveNextYearGroup'>
-          </svg-icon>
-        </slot>
-      </div>
-    </div>
-    <!--Years table-->
-    <table class='c-table'>
-      <tr v-for='(row, i) in yearRows' :key='i'>
-        <td
-          v-for='item in row'
-          :key='item.year'>
-          <div
-            class='c-table-cell'
-            :class='{ "c-active": item.isActive, "c-disabled": item.isDisabled }'
-            :style='getYearCellStyle(item)'
-            @click='yearClick(item.year)'>
-            <!--Year label-->
-            {{ item.year }}
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
 </template>
 
 <script>
@@ -374,36 +362,66 @@ export default {
 
 $cell-transition: all 0.1s ease-in-out
 
-.c-nav
+.c-nav-pane
   transition: height 5s ease-in-out
-  color: #333333
+  // background-color: $nav-background-color
+  // color: $nav-color
+  // border: $nav-border
+  // border-radius: $nav-border-radius
+  width: $nav-table-cell-width*3
+  overflow: hidden
 
-.c-header
+.c-nav-header
   display: flex
   justify-content: space-between
   align-items: center
-  border-bottom: 1px solid #dadada
+  background-color: $nav-header-background-color
   padding: 3px 0
 
-.c-arrow-layout
+.c-nav-arrow-layout
   +box()
   min-width: 26px
 
-.c-arrow
+.c-nav-arrow
   +box()
   font-size: $arrow-font-size
   transition: $arrow-transition
   cursor: pointer
   user-select: none
 
-.c-title
+.c-nav-title
   font-size: $nav-title-font-size
   font-weight: $nav-title-font-weight
   transition: $title-transition
   cursor: pointer
   user-select: none
 
-.c-table-cell
+.c-nav-table
+  &, tr, td, th
+    margin: 0
+    padding: 0
+    background: none
+    border: none
+    border-collapse: collapse
+    border-spacing: 0
+
+.c-nav-table
+  table-layout: fixed
+  width: 100%
+  tr
+    td
+      border: $nav-table-cell-border
+      width: $nav-table-cell-width
+      height: 34px
+      &:first-child
+        border-left: 0
+      &:last-child
+        border-right: 0
+    &:last-child
+      td
+        border-bottom: 0
+
+.c-nav-table-cell
   display: flex
   flex-direction: column
   justify-content: center
@@ -414,10 +432,10 @@ $cell-transition: all 0.1s ease-in-out
   cursor: pointer
   font-size: $nav-table-font-size
   font-weight: $nav-table-font-weight
-  background-color: white
+  background-color: $nav-table-cell-background-color
   transition: $cell-transition
   &:hover
-    background-color: #f0f0f0
+    background-color: $nav-table-cell-hover-background-color
 
 .c-disabled
   opacity: 0.2
@@ -427,7 +445,7 @@ $cell-transition: all 0.1s ease-in-out
     background-color: transparent
 
 .c-active
-  background-color: #f0f0f0
+  background-color: $nav-table-cell-active-background-color
   font-weight: $weight-semibold
 
 .c-indicators
@@ -444,26 +462,6 @@ $cell-transition: all 0.1s ease-in-out
     border-radius: 50%
     &:not(:first-child)
       margin-left: 3px
-
-.c-table
-  table-layout: fixed
-  width: 100%
-  border-collapse: collapse
-  tr
-    td
-      border: 1px solid #dadada
-      width: 60px
-      height: 34px
-      &:first-child
-        border-left: 0
-      &:last-child
-        border-right: 0
-    &:first-child
-      td
-        border-top: 0
-    &:last-child
-      td
-        border-bottom: 0
 
 .indicators-enter-active, .indicators-leave-active
   transition: $cell-transition

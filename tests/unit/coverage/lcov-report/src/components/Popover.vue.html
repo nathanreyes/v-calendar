@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/components/Popover.vue</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/components</a> Popover.vue
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/75</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/51</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/27</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/66</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304</td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;<span class="cstat-no" title="statement not covered" >t<span class="fstat-no" title="function not covered" >em</span>plate&gt;</span>
+&lt;div
+  ref='popover'
+<span class="cstat-no" title="statement not covered" >  :class='["popover-container", { expanded: isExpanded }]'</span>
+  :tabindex='visibilityIsManaged ? 0 : undefined'
+  @focusin='focusin'
+  @focusout='focusout'
+  @mouseleave='m<span class="cstat-no" title="statement not covered" >ouseleave'</span>
+  @mousemove='mousemove'
+  @click.stop='cl<span class="cstat-no" title="statement not covered" >ick'&gt;</span>
+  &lt;transition
+    tag='div'<span class="cstat-no" title="statement not covered" ></span>
+    :name='transition'
+    @before-ent<span class="cstat-no" title="statement not covered" >er='beforeContentEnter'</span>
+    @after-enter='afterContentEnter'
+    @before-leave<span class="cstat-no" title="statement not covered" >='beforeContentLeave'</span>
+    @after-leave='afterContentLeave'&gt;
+    &lt;div<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+      ref='popoverOrigin'
+      :class='["popover-origin", "direction-" + direction, "align-" + align]'
+      v-if='visible'&gt;
+      &lt;div
+        ref='popoverContentWrapper'
+        :class='["popover-content-wrapper", "direction-" + direction, "align-" + align, { "interactive": isInteractive }]'
+        :style='contentWrapperStyle'&gt;
+        &lt;div
+          ref='popoverContent'
+          :class='["popover-content", "direction-" + direction, "align-" + align]'
+          :style='contentStyle'&gt;
+          &lt;slot name='popover-content'&gt;
+            &lt;div&gt;Popover content goes here&lt;/div&gt;
+          &lt;/slot&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/transition&gt;
+  &lt;slot&gt;
+    &lt;span&gt;Popover trigger goes here&lt;/span&gt;
+  &lt;/slot&gt;
+&lt;/div&gt;
+&lt;/template&gt;
+&nbsp;
+&lt;script&gt;
+import defaults from '../utils/defaults';
+import { registerTapOrClick } from '../utils/touchHandlers';
+import { elementHasAncestor } from '../utils/helpers';
+import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
+&nbsp;
+export default {
+  props: {
+    isExpanded: { type: Boolean, default: () =&gt; defaults.popoverExpanded },
+    direction: { type: String, default: () =&gt; defaults.popoverDirection },
+    align: { type: String, default: () =&gt; defaults.popoverAlign },
+    visibility: { type: String, default: () =&gt; defaults.popoverVisibility },
+    isInteractive: Boolean,
+    forceHidden: Boolean,
+    toggleVisibleOnClick: Boolean, // Only valid when visibility === "focus"
+    contentStyle: Object,
+    contentOffset: { type: String, default: () =&gt; defaults.popoverContentOffset },
+    transition: { type: String, default: 'slide-fade' },
+  },
+  data() {
+<span class="cstat-no" title="statement not covered" >    return {</span>
+      hoverVisible: false,
+      focusVisible: false,<span class="fstat-no" title="function not covered" ></span>
+      co<span class="cstat-no" title="statement not covered" >ntentTransitioning: false,</span>
+      disableNextClick: false,
+      windowTapClickRegistration: null,<span class="fstat-no" title="function not covered" ></span>
+    };<span class="cstat-no" title="statement not covered" ></span>
+  },
+  computed: {<span class="fstat-no" title="function not covered" ></span>
+    cont<span class="cstat-no" title="statement not covered" >entWrapperStyle() {</span>
+      const style = {};
+      style[`padding${this.contentOffsetDirection}<span class="fstat-no" title="function not covered" >`] = this</span>.contentOffset;
+      re<span class="cstat-no" title="statement not covered" >turn style;</span>
+    },
+    contentOffsetDirection() {
+      switch (this.direction) {
+        case 'bottom': return 'Top';
+        case 'top': return 'Bottom';
+        case 'left': return 'Right';<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >        case 'right': return 'Left';</span>
+        default: return '';
+      }
+    },
+    visibilityIsM<span class="fstat-no" title="function not covered" >anage</span>d() {
+<span class="cstat-no" title="statement not covered" >      return VISIBILITIES.isManaged(this.visibility);</span>
+    },
+    visible() {
+      if (this.visibility === VISIBILITIES.HOVER) return this.hoverVisible;
+      if (this.visibility === VISIBILITIES.FOCUS) return this.focusVisible;
+      return this.visibility === VISIBILITIES.VISIBLE;
+    },
+  },
+  watch: {
+    forceHidden() {
+      if (this.hoverVisible || thi<span class="fstat-no" title="function not covered" >s.focusVisible) {</span>
+        this.hover<span class="cstat-no" title="statement not covered" >Vis</span>ible = false;
+<span class="cstat-no" title="statement not covered" >        this.focusVisible = false;</span>
+<span class="cstat-no" title="statement not covered" >      } else {</span>
+        this.$emit('update:forcehidden', false);
+        this.$emit('update:forceHidde<span class="fstat-no" title="function not covered" >n', false);</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+    },
+  },<span class="cstat-no" title="statement not covered" ></span>
+  created() {
+    this.w<span class="cstat-no" title="statement not covered" >indowTapClickRegi</span>stration = registerTapOrClick(window, this.windowTapOrClick);
+  },
+  beforeDe<span class="cstat-no" title="statement not covered" >stroy() {</span>
+    this.windowTapClickRegistration.cleanup();
+  },<span class="cstat-no" title="statement not covered" ></span>
+  methods: {
+    focusi<span class="cstat-no" title="statement not covered" >n() {</span>
+      if (!this.contentTransitioning) {
+        this.focusVisible = true;
+        this.disableNextClick = tr<span class="fstat-no" title="function not covered" >ue;</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+    },
+    focusout(e) {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      if (!elementHasAncestor(e.relatedTarget, this.$refs.popover)) {<span class="cstat-no" title="statement not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >        this.focusVisible = false;<span class="cstat-no" title="statement not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+    },
+    click(e) {
+      if (
+        this.toggleVisible<span class="fstat-no" title="function not covered" >OnClick</span>
+<span class="cstat-no" title="statement not covered" >        &amp;&amp; !this.contentTransitioning</span>
+<span class="cstat-no" title="statement not covered" >        &amp;&amp; elementHasAncestor(e.tar</span>get, this.$refs.popover)
+<span class="cstat-no" title="statement not covered" >        &amp;&amp; !elementHasAncestor(e.ta</span>rget, this.$refs.popoverOrigin)) {
+        if (!this.disableNextClick) {
+<span class="cstat-no" title="statement not covered" >          this.focusVisible = !this.focusVisible;</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
+      }
+      this.disableNextClick = false;
+    },
+    mousemove() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      if (!this.forceHidden &amp;&amp; !this.contentTransitioning) {</span>
+        this.hoverVisible = true;
+      }<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+    mouseleave(e) {
+      if (!this.forceHidden &amp;&amp; !elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+        this.hoverVisible = false;
+      }<span class="fstat-no" title="function not covered" ></span>
+    },<span class="cstat-no" title="statement not covered" ></span>
+    wind<span class="cstat-no" title="statement not covered" >owTapOrClick(e) {</span>
+      if<span class="cstat-no" title="statement not covered" > (!elementHasAncestor(e.target</span>, this.$refs.popover)) {
+        this.hoverVisible = false;
+        this.focusVisible = false;
+      }<span class="fstat-no" title="function not covered" ></span>
+    },<span class="cstat-no" title="statement not covered" ></span>
+    befo<span class="cstat-no" title="statement not covered" >reContentEnter() {</span>
+      this.contentTransitioning = true;
+      this.$emit('willappear');
+    },<span class="fstat-no" title="function not covered" ></span>
+    af<span class="cstat-no" title="statement not covered" >terContentEnter() {</span>
+      th<span class="cstat-no" title="statement not covered" >is.contentTransitioning = false;</span>
+      this<span class="cstat-no" title="statement not covered" >.$emit('didappear');</span>
+    },
+    beforeContentLeave() {
+<span class="cstat-no" title="statement not covered" >      this.contentTransitioning = tru</span>e;
+      this.$emit('willdisappear');
+    },<span class="fstat-no" title="function not covered" ></span>
+    af<span class="cstat-no" title="statement not covered" >terContentLeave() {</span>
+      th<span class="cstat-no" title="statement not covered" >is.contentTransitioning = </span>false;
+      this.$emit('diddisappear');
+      // Reset forceHidden state if needed
+      if (this.forceHidde<span class="fstat-no" title="function not covered" >n) {</span>
+<span class="cstat-no" title="statement not covered" >        this.$emit('update:forcehidden', false);</span>
+<span class="cstat-no" title="statement not covered" >        this.$emit('update:forceHid</span>den', false);
+      }
+    },
+  },<span class="fstat-no" title="function not covered" ></span>
+};<span class="cstat-no" title="statement not covered" ></span>
+&lt;/script<span class="cstat-no" title="statement not covered" >&gt;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+&lt;style lang='sass' scoped&gt;
+&nbsp;
+@import '../styles/vars.sass'<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" ></span>
+.popov<span class="cstat-no" title="statement not covered" >er-container</span>
+  position: relative
+  display: inline-block<span class="fstat-no" title="function not covered" ></span>
+  outl<span class="cstat-no" title="statement not covered" >ine: none</span>
+  &amp;.ex<span class="cstat-no" title="statement not covered" >panded</span>
+    display: block
+.popover-origin<span class="fstat-no" title="function not covered" ></span>
+  posi<span class="cstat-no" title="statement not covered" >tion: absolute</span>
+  tran<span class="cstat-no" title="statement not covered" >sform-origin: top center</span>
+  z-index: 10
+  pointer-events: none<span class="fstat-no" title="function not covered" ></span>
+  &amp;.di<span class="cstat-no" title="statement not covered" >rection-top</span>
+    bo<span class="cstat-no" title="statement not covered" >ttom: 100%</span>
+  &amp;.direction-bottom
+    to<span class="cstat-no" title="statement not covered" >p: 100%</span>
+  &amp;.dire<span class="cstat-no" title="statement not covered" >ction-left</span>
+    top:<span class="cstat-no" title="statement not covered" > 0</span>
+    right: 100%
+  &amp;.direction-right
+    top: 0
+    left: 100%
+  &amp;.direction-bottom.align-left, &amp;.direction-top.align-left
+<span class="cstat-no" title="statement not covered" >    left: 0<span class="cstat-no" title="statement not covered" ></span></span>
+  &amp;.direction-bottom.ali<span class="cstat-no" title="statement not covered" >gn-center, &amp;.direction-top.align-center</span>
+<span class="cstat-no" title="statement not covered" >    left: 50%<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span></span></span></span></span>
+<span class="cstat-no" title="statement not covered" >  &amp;.direction-bottom.align-right, &amp;.di</span>rection-top.align-right
+    right: 0
+  &amp;.direction-left.align-top, &amp;.direction-right.align-top
+    top: 0
+  &amp;.direction-left.align-middle, &amp;.direction-right.align-middle
+    top: 50%
+  &amp;.direction-left.align-bottom, &amp;.direction-right.align-bottom
+    top: initial
+    bottom: 0
+  .popover-content-wrapper
+    position: relative
+    outline: none
+    &amp;.interactive
+      pointer-events: all
+    &amp;.align-center
+      transform: translateX(-50%)
+    &amp;.align-middle
+      transform: translateY(-50%)
+    .popover-content
+      position: relative
+      background-color: $popover-background-color
+      border: $popover-border
+      border-radius: $popover-border-radius
+      box-shadow: $popover-box-shadow
+      padding: $popover-padding
+      &amp;:after
+        display: block
+        position: absolute
+        background: inherit
+        border: inherit
+        border-width: 1px 1px 0 0
+        width: 12px
+        height: 12px
+        content: ''
+      &amp;.direction-bottom
+        &amp;:after
+          top: 0
+          border-width: 1px 1px 0 0
+      &amp;.direction-top
+        &amp;:after
+          top: 100%
+          border-width: 0 0 1px 1px
+      &amp;.direction-left
+        &amp;:after
+          left: 100%
+          border-width: 0 1px 1px 0
+      &amp;.direction-right
+        &amp;:after
+          left: 0
+          border-width: 1px 0 0 1px
+      &amp;.align-left
+        &amp;:after
+          left: $popover-caret-horizontal-offset
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+      &amp;.align-right
+        &amp;:after
+          right: $popover-caret-horizontal-offset
+          transform: translateY(-50%) translateX(50%) rotate(-45deg)
+      &amp;.align-center
+        &amp;:after
+          left: 50%
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+      &amp;.align-top
+        &amp;:after
+          top: $popover-caret-vertical-offset
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+      &amp;.align-middle
+        &amp;:after
+          top: 50%
+          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+      &amp;.align-bottom
+        &amp;:after
+          bottom: $popover-caret-vertical-offset
+          transform: translateY(50%) translateX(-50%) rotate(-45deg)
+&nbsp;
+.fade-enter-active,
+.fade-leave-active,
+.slide-fade-enter-active,
+.slide-fade-leave-active
+  transition: all $popover-transition-time
+&nbsp;
+.fade-enter,
+.fade-leave-to
+  opacity: 0
+&nbsp;
+.slide-fade-enter,
+.slide-fade-leave-to
+  opacity: 0
+  &amp;.direction-bottom
+    transform: translateY(-$popover-slide-translation)
+  &amp;.direction-top
+    transform: translateY($popover-slide-translation)
+  &amp;.direction-left
+    transform: translateX($popover-slide-translation)
+  &amp;.direction-right
+    transform: translateX(-$popover-slide-translation)
+&nbsp;
+&lt;/style&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Jan 05 2018 09:47:39 GMT-0600 (CST)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

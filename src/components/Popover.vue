@@ -1,235 +1,266 @@
-<template>
-<div
-  ref='popover'
-  :class='["popover-container", { expanded: isExpanded }]'
-  :tabindex='visibility === "focus" && -1 || undefined'
-  :style='containerStyle'
-  @focusin='focusin'
-  @focusout='focusout'
-  @mouseleave='mouseleave'
-  @mousemove='mousemove'
-  @click.stop='click'>
-  <transition
-    tag='div'
-    :name='transition'
-    @enter='contentEnter'
-    @before-enter='beforeContentEnter'
-    @after-enter='afterContentEnter'
-    @leave='contentLeave'
-    @before-leave='beforeContentLeave'
-    @after-leave='afterContentLeave'>
-    <div
-      ref='popoverOrigin'
-      :class='["popover-origin", "direction-" + direction, "align-" + align]'
-      v-if='visible'>
-      <div
-        ref='popoverContentWrapper'
-        :class='["popover-content-wrapper", "direction-" + direction, "align-" + align, { "interactive": isInteractive }]'
-        :style='contentWrapperStyle'>
-        <div
-          ref='popoverContent'
-          :class='["popover-content", "direction-" + direction, "align-" + align]'
-          :style='contentStyle'>
-          <slot name='popover-content'>
-            <div>Popover content goes here</div>
-          </slot>
-        </div>
-      </div>
-    </div>
-  </transition>
-  <slot>
-    <span>Popover trigger goes here</span>
-  </slot>
-</div>
-</template>
-
 <script>
-import defaults from '../utils/defaults';
-import { registerTapOrClick } from '../utils/touchHandlers';
-import { elementHasAncestor } from '../utils/helpers';
-import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
+import Popper from 'popper.js';
+import OnClickOutside from './OnClickOutside';
+import { isFunction } from '@/utils/typeCheckers';
+import { on, off } from '@/utils/helpers';
 
 export default {
+  render(h) {
+    return h(
+      'div',
+      {
+        class: [
+          'c-popover-content-wrapper',
+          `direction-${this.direction}`,
+          `align-${this.align}`,
+          { interactive: this.isInteractive },
+        ],
+        attrs: {
+          tabindex: this.isInteractive ? 0 : -1,
+        },
+        ref: 'popover',
+      },
+      [
+        h(
+          'transition',
+          {
+            props: {
+              name: this.transition,
+              appear: true,
+            },
+            on: {
+              afterLeave: this.afterLeave,
+            },
+          },
+          [
+            this.isVisible &&
+              h(
+                OnClickOutside,
+                {
+                  props: {
+                    run: this.onClickOutside,
+                    whitelist: [this.ref],
+                  },
+                },
+                [
+                  h(
+                    'div',
+                    {
+                      class: [
+                        'c-popover-content',
+                        `direction-${this.direction}`,
+                        `align-${this.align}`,
+                        this.contentClass,
+                      ],
+                      ref: 'popoverContent',
+                    },
+                    [
+                      h('span', {
+                        class: 'c-popover-caret',
+                      }),
+                      (isFunction(this.$scopedSlots.default) &&
+                        this.$scopedSlots.default({
+                          direction: this.direction,
+                          align: this.align,
+                          args: this.args,
+                          hide: this.onHide,
+                        })) ||
+                        this.$slots.default,
+                    ],
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ],
+    );
+  },
   props: {
-    isExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
-    direction: { type: String, default: () => defaults.popoverDirection },
-    align: { type: String, default: () => defaults.popoverAlign },
-    visibility: { type: String, default: () => defaults.popoverVisibility },
-    isInteractive: Boolean,
-    forceHidden: Boolean,
-    toggleVisibleOnClick: Boolean, // Only valid when visibility === "focus"
-    contentStyle: Object,
-    contentOffset: {
-      type: Number,
-      default: () => defaults.popoverContentOffset,
-    },
+    id: { type: String, required: true },
+    placement: { type: String, default: 'bottom' },
+    contentClass: String,
     transition: { type: String, default: 'slide-fade' },
-    showClearMargin: Boolean,
   },
   data() {
     return {
-      hoverVisible: false,
-      focusVisible: false,
-      clearMargin: 0,
-      contentTransitioning: false,
-      contentTransitioningCancelled: false,
-      disableNextClick: false,
-      windowTapClickRegistration: null,
+      ref: null,
+      args: null,
+      visibility: '',
+      isInteractive: false,
+      delay: 10,
+      direction: 'bottom',
+      align: 'center',
     };
   },
   computed: {
-    containerStyle() {
-      return (
-        this.visible && {
-          [`margin-${this.direction}`]: `${this.clearMargin}px`,
-        }
+    popperOptions() {
+      return {
+        placement: this.placement,
+        onUpdate: this.onPopperUpdate,
+      };
+    },
+    isVisible() {
+      return !!(
+        this.ref &&
+        (this.$scopedSlots.default || this.$slots.default) &&
+        this.visibility !== 'hidden'
       );
-    },
-    contentWrapperStyle() {
-      const style = {};
-      style[`padding${this.contentOffsetDirection}`] = `${
-        this.contentOffset
-      }px`;
-      return style;
-    },
-    contentOffsetDirection() {
-      switch (this.direction) {
-        case 'bottom':
-          return 'Top';
-        case 'top':
-          return 'Bottom';
-        case 'left':
-          return 'Right';
-        case 'right':
-          return 'Left';
-        default:
-          return '';
-      }
-    },
-    visibilityIsManaged() {
-      return VISIBILITIES.isManaged(this.visibility);
-    },
-    visible() {
-      if (this.visibility === VISIBILITIES.HOVER) return this.hoverVisible;
-      if (this.visibility === VISIBILITIES.FOCUS) return this.focusVisible;
-      return this.visibility === VISIBILITIES.VISIBLE;
     },
   },
   watch: {
-    forceHidden() {
-      if (this.hoverVisible || this.focusVisible) {
-        this.hoverVisible = false;
-        this.focusVisible = false;
-      } else {
-        this.$emit('update:forcehidden', false);
-        this.$emit('update:forceHidden', false);
-      }
+    ref(val) {
+      this.setupPopper();
+      this.$vcBus.activeRefs = {
+        ...this.$vcBus.activeRefs,
+        [this.id]: val,
+      };
     },
   },
   created() {
-    this.windowTapClickRegistration = registerTapOrClick(
-      window,
-      this.windowTapOrClick,
-    );
+    this.$vcBus.$on(`toggle:${this.id}`, this.onToggle);
+    this.$vcBus.$on(`show:${this.id}`, this.onShow);
+    this.$vcBus.$on(`hide:${this.id}`, this.onHide);
+    this.$vcBus.$on(`update:${this.id}`, this.onUpdate);
+    this.$once('beforeDestroy', () => {
+      this.$vcBus.$off(`toggle:${this.id}`, this.onToggle);
+      this.$vcBus.$off(`show:${this.id}`, this.onShow);
+      this.$vcBus.$off(`hide:${this.id}`, this.onHide);
+      this.$vcBus.$off(`update:${this.id}`, this.onUpdate);
+    });
+    this.refreshPlacements(this.placement);
   },
   mounted() {
-    this.refreshClearMargin();
+    this.addEvents();
   },
   beforeDestroy() {
-    this.windowTapClickRegistration.cleanup();
+    this.removeEvents();
   },
   methods: {
-    focusin(e) {
-      if (!this.contentTransitioning) {
-        if (!this.focusVisible) this.$emit('got-focus', e);
-        this.focusVisible = true;
-        this.disableNextClick = true;
+    addEvents() {
+      on(this.$refs.popover, 'mouseover', this.onMouseOver);
+      on(this.$refs.popover, 'mouseleave', this.onMouseLeave);
+      on(this.$refs.popover, 'focusin', this.onFocusIn);
+      on(this.$refs.popover, 'blur', this.onBlur);
+    },
+    removeEvents() {
+      off(this.$refs.popover, 'mouseover', this.onMouseOver);
+      off(this.$refs.popover, 'mouseleave', this.onMouseLeave);
+      off(this.$refs.popover, 'focusin', this.onFocusIn);
+      off(this.$refs.popover, 'blur', this.onBlur);
+    },
+    onMouseOver(e) {
+      if (this.isInteractive && this.visibility === 'hover') {
+        clearTimeout(this._timer);
       }
     },
-    focusout(e) {
-      // Hide when outside element (e.relatedTarget) receives focus
-      if (!elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
-        this.$emit('lost-focus', e);
-        this.focusVisible = false;
+    onMouseLeave(e) {
+      if (this.isInteractive && this.visibility === 'hover') {
+        this.onHide({
+          ref: this.ref,
+        });
       }
     },
-    click(e) {
-      // Toggle focusVisible state on click if enabled
-      // Be sure to ignore clicks on the popover content though
-      if (
-        this.toggleVisibleOnClick &&
-        !this.contentTransitioning &&
-        elementHasAncestor(e.target, this.$refs.popover) &&
-        !elementHasAncestor(e.target, this.$refs.popoverOrigin) &&
-        !this.disableNextClick
-      ) {
-        this.focusVisible = !this.focusVisible;
-      }
-      // Reset click ignore flag
-      this.disableNextClick = false;
-    },
-    mousemove() {
-      if (!this.forceHidden && !this.contentTransitioning) {
-        this.hoverVisible = true;
+    onFocusIn(e) {
+      if (this.isInteractive && this.visibility === 'focus') {
+        clearTimeout(this._timer);
       }
     },
-    mouseleave(e) {
-      if (
-        !this.forceHidden &&
-        !elementHasAncestor(e.relatedTarget, this.$refs.popover)
-      ) {
-        this.hoverVisible = false;
+    onBlur(e) {
+      if (this.isInteractive && this.visibility === 'focus') {
+        this.onHide({
+          ref: this.ref,
+        });
       }
     },
-    windowTapOrClick(e) {
-      if (!elementHasAncestor(e.target, this.$refs.popover)) {
-        this.hoverVisible = false;
-        this.focusVisible = false;
-      }
-    },
-    refreshClearMargin() {
-      if (this.showClearMargin && this.visible && this.$refs.popoverContent) {
-        const {
-          width,
-          height,
-        } = this.$refs.popoverContent.getBoundingClientRect();
-        const span =
-          ((this.direction === 'left' || this.direction === 'right') &&
-            width) ||
-          height;
-        this.clearMargin = span + this.contentOffset;
+    onToggle({ ref, args }) {
+      if (this.ref == ref) {
+        this.ref = null;
+        this.args = null;
+        this.visibility = '';
       } else {
-        this.clearMargin = 0;
+        this.ref = ref;
+        this.args = args;
+        this.visibility = 'click';
       }
     },
-    beforeContentEnter() {
-      this.contentTransitioning = true;
-      this.$emit('will-appear');
+    onShow({ ref, args, visibility, isInteractive }) {
+      clearTimeout(this._timer);
+      this.args = args;
+      this.visibility = visibility;
+      this.isInteractive = isInteractive;
+      this.ref = ref;
     },
-    contentEnter() {
-      this.refreshClearMargin();
+    onHide({ ref, delay }) {
+      clearTimeout(this._timer);
+      this._timer = setTimeout(() => {
+        if (ref === this.ref) {
+          this.ref = null;
+          this.args = null;
+          this.visibility = '';
+        }
+      }, delay);
     },
-    afterContentEnter() {
-      this.contentTransitioning = false;
-      this.$emit('did-appear');
+    onUpdate({ args }) {
+      this.args = args;
+      this.setupPopper();
     },
-    contentLeave() {
-      this.refreshClearMargin();
+    setupPopper() {
+      this.$nextTick(() => {
+        if (!this.ref || !this.$refs.popover) return;
+        if (this.popper && this.popper.reference != this.ref) {
+          this.popper.destroy();
+          this.popper = null;
+        }
+        if (!this.popper) {
+          this.popper = new Popper(
+            this.ref,
+            this.$refs.popover,
+            this.popperOptions,
+          );
+        } else {
+          this.popper.scheduleUpdate();
+        }
+      });
     },
-    beforeContentLeave() {
-      this.contentTransitioningCancelled = this.contentTransitioning;
-      this.contentTransitioning = true;
-      this.$emit('will-disappear', this.contentTransitioningCancelled);
+    onPopperUpdate(data) {
+      this.refreshPlacements(data.placement);
     },
-    afterContentLeave() {
-      this.contentTransitioning = false;
-      this.$emit('did-disappear', this.contentTransitioningCancelled);
-      this.contentTransitioningCancelled = false;
-      // Reset forceHidden state if needed
-      if (this.forceHidden) {
-        this.$emit('update:forcehidden', false);
-        this.$emit('update:forceHidden', false);
+    refreshPlacements(placement) {
+      if (!placement) {
+        this.direction = 'bottom';
+        this.align = 'center';
+      } else {
+        const placements = placement.split('-');
+        const direction = placements[0];
+        let align = '';
+        if (['bottom', 'top'].includes(direction)) {
+          if (placements.length > 1) {
+            align = placements[1] === 'start' ? 'left' : 'right';
+          } else {
+            align = 'center';
+          }
+        } else if (['left', 'right'].includes(direction)) {
+          if (placements.length > 1) {
+            align = placements[1] === 'top' ? 'middle' : 'bottom';
+          } else {
+            align = 'middle';
+          }
+        }
+        this.direction = direction;
+        this.align = align;
       }
+    },
+    afterLeave() {
+      this.destroyPopper();
+    },
+    destroyPopper() {
+      if (this.popper) {
+        this.popper.destroy();
+        this.popper = null;
+      }
+    },
+    onClickOutside() {
+      this.ref = null;
     },
   },
 };
@@ -239,108 +270,80 @@ export default {
 
 @import '../styles/vars.sass'
 
-.popover-container
-  position: relative
-  outline: none
-  &.expanded
-    display: block
-.popover-origin
+.c-popover-content-wrapper
   position: absolute
-  transform-origin: top center
+  display: block
+  outline: none
   z-index: 10
-  pointer-events: none
-  &.direction-top
-    bottom: 100%
+  &.interactive
+    pointer-events: all
+
+.c-popover-content
+  position: relative
+  background-color: $pane-background-color
+  border: $pane-border
+  z-index: 10
+  .c-popover-caret
+    display: block
+    position: absolute
+    border-width: 1px 1px 0 0
+    background-color: inherit
+    border-color: inherit
+    width: 12px
+    height: 12px
+    content: ''
+    z-index: 11
   &.direction-bottom
-    top: 100%
+    margin-top: $popover-content-offset
+    .c-popover-caret
+      top: 0
+      border-width: 1px 1px 0 0
+  &.direction-top
+    margin-bottom: $popover-content-offset
+    .c-popover-caret
+      top: 100%
+      border-width: 0 0 1px 1px
   &.direction-left
-    top: 0
-    right: 100%
+    margin-right: $popover-content-offset
+    .c-popover-caret
+      left: 100%
+      border-width: 0 1px 1px 0
   &.direction-right
-    top: 0
-    left: 100%
-  &.direction-bottom.align-left, &.direction-top.align-left
-    left: 0
-  &.direction-bottom.align-center, &.direction-top.align-center
-    left: 50%
-    transform: translateX(-50%)
-  &.direction-bottom.align-right, &.direction-top.align-right
-    right: 0
-  &.direction-left.align-top, &.direction-right.align-top
-    top: 0
-  &.direction-left.align-middle, &.direction-right.align-middle
-    top: 50%
-    transform: translateY(-50%)
-  &.direction-left.align-bottom, &.direction-right.align-bottom
-    top: initial
-    bottom: 0
-  .popover-content-wrapper
-    position: relative
-    outline: none
-    &.interactive
-      pointer-events: all
-    .popover-content
-      position: relative
-      background-color: $popover-background-color
-      border: $popover-border
-      border-radius: $popover-border-radius
-      box-shadow: $popover-box-shadow
-      padding: $popover-padding
-      &:after
-        display: block
-        position: absolute
-        background: inherit
-        border: inherit
-        border-width: 1px 1px 0 0
-        width: 12px
-        height: 12px
-        content: ''
-      &.direction-bottom
-        &:after
-          top: 0
-          border-width: 1px 1px 0 0
-      &.direction-top
-        &:after
-          top: 100%
-          border-width: 0 0 1px 1px
-      &.direction-left
-        &:after
-          left: 100%
-          border-width: 0 1px 1px 0
-      &.direction-right
-        &:after
-          left: 0
-          border-width: 1px 0 0 1px
-      &.align-left
-        &:after
-          left: $popover-caret-horizontal-offset
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-right
-        &:after
-          right: $popover-caret-horizontal-offset
-          transform: translateY(-50%) translateX(50%) rotate(-45deg)
-      &.align-center
-        &:after
-          left: 50%
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-top
-        &:after
-          top: $popover-caret-vertical-offset
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-middle
-        &:after
-          top: 50%
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-bottom
-        &:after
-          bottom: $popover-caret-vertical-offset
-          transform: translateY(50%) translateX(-50%) rotate(-45deg)
+    margin-left: $popover-content-offset
+    .c-popover-caret
+      left: 0
+      border-width: 1px 0 0 1px
+  &.align-left
+    .c-popover-caret
+      left: $popover-caret-horizontal-offset
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+  &.align-right
+    .c-popover-caret
+      right: $popover-caret-horizontal-offset
+      transform: translateY(-50%) translateX(50%) rotate(-45deg)
+  &.align-center
+    .c-popover-caret
+      left: 50%
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+  &.align-top
+    .c-popover-caret
+      top: $popover-caret-vertical-offset
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+  &.align-middle
+    .c-popover-caret
+      top: 50%
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+  &.align-bottom
+    .c-popover-caret
+      bottom: $popover-caret-vertical-offset
+      transform: translateY(50%) translateX(-50%) rotate(-45deg)
 
 .fade-enter-active,
 .fade-leave-active,
 .slide-fade-enter-active,
 .slide-fade-leave-active
   transition: all $popover-transition-time
+  pointer-events: none
 
 .fade-enter,
 .fade-leave-to

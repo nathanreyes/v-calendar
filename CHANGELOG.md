@@ -1,3 +1,106 @@
+# v0.10.0
+
+## Improvements
+### Docs
+* :tada: :tada: :tada: New [docs site](https://vcalendar.io) for guide, API and examples. Powered by [Vuepress](https://vuepress.vuejs.org).
+
+### `v-calendar`
+* The following props have been modified
+
+| Prop | Type | Modification | Note |
+| ---- | ---- | ------------ | ---- |
+| `is-double-paned` | Boolean | Deprecated | Use `rows` and `columns` instead |
+| `is-vertical` | Boolean | Deprecated | Use `rows` and `columns` instead |
+| `is-linked` | Boolean | Deprecated | Calendar panes are always linked |
+| `pane-width` | Number | Deprecated | |
+| `title-transition` | String | Deprecated | Use `transition` instead |
+| `weeks-transition` | String | Deprecated | Use `transition` instead |
+| `rows` | Number | Added | Number of calendar rows to display |
+| `columns` | Number | Added | Number of calendar columns to display |
+| `step` | Number | Added | Number of months to step when navigating forwards and backwards |
+| `transition` | String | Added | Replaces `title-transition` and `weeks-transition` |
+| `from-date` | Date | Added | Convenient alternative to `from-page` |
+| `to-date` | Date | Added | Convenient alternative to `to-page` |
+
+* Deprecates the `dayCellNotInMonth` theme style in favor of
+  * using the `.c-day:not(.in-month)` class selector
+  ```css
+  /deep/ .c-day:not(.in-month) {
+    opacity: 0;
+  }
+  ```
+  * or using a function for the `dayCell` theme style
+* CSS is inlined, so no longer need to import file from local package
+
+### `v-date-picker`
+* Adds `input-debounce` prop for customizing debounce duration, in milliseconds.
+* Deprecates `popover-content-style` prop in favor of using the `\deep\ .c-popover-content` class selector
+* Deprecates `popover-show-clear-margin` prop
+
+## Bug Fixes
+### `v-calendar`
+* Resets styling for tables in navigation pane.
+* Raises `update:frompage` event on load with `page` parameter. Closes #125.
+
+### `v-date-picker`
+* Fixes bug where using using popover function for `select-attribute` or `drag-attribute` is ignored.
+* Fixes bug where change to `disabled-dates` was not revalidating current value.
+
+# v0.9.7
+## Bug Fixes
+### `v-calendar`
+* Declares svg icons inline. Closes #126.
+
+# v0.9.6
+## Bug Fixes
+### `v-date-picker`
+* Fixes bug where calling slot method `updateValue` with `formatInput: false` was not working.
+* Rename `update-on-input-keyup` prop to simply `update-on-input`.
+
+### `defaults`
+* Rename `datePickerUpdateOnInputKeyup` to simply `datePickerUpdateOnInput`.
+
+# v0.9.5
+## Improvements
+### `v-calendar`
+* Adds support for 'day-content' slots. :tada: :tada: :tada: This adds a lot of flexibility by allowing you to provide your own day cells. The layout has also been improved to grow with your cells, so you can now build larger calendars to fill with your own content.
+
+```html
+<v-calendar>
+  <div
+    slot='day-content'
+    slot-scope='{ day, attributes, contentStyle }'
+    class='my-day'>
+    <!-- Be sure to display the day of the month somewhere in your content -->
+    {{ day.day }}
+  </div>
+</v-calendar>
+```
+```css
+/* Set width and height and `v-calendar` will resize appropriately */
+.my-day {
+  width: 40px;
+  height: 40px;
+}
+/* You can also apply your own hover styles */
+.my-day:hover {
+  background-color: #dadada;
+}
+```
+
+You can get access to the following slot props:
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| [`day`](https://docs.vcalendar.io/api/day-object.html) | Object | Object with various day info. Use the `day.day` number prop to display the day of month in your slot content. |
+| `attibutes` | Array | List of attributes for this day. |
+| `contentStyle` | Object | Content style to apply if you wish, derived from `themeStyles.dayContent` and other attributes. |
+
+# v0.9.4
+## Bug Fixes
+### `v-date-picker`
+* Fix bug where 'Do' format token was not supported. Closes #127.
+
 # v0.9.3
 ## Bug Fixes
 ### `v-calendar`
@@ -83,13 +186,13 @@ Theme styles modifications. Closes #93.
 | `navHeaderArrows` | Add | Navigation pane header arrows. |
 | `navMonthCell` | Add | Navigation pane month cells. |
 | `navYearCell` | Add | Navigation pane year cells. |
-| `header` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `headerTitle` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `headerArrows` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `headerHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `weekdays` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `weekdaysHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
-| `weeks` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `header` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api/page-object.html) object and return a style |
+| `headerTitle` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api/page-object.html) object and return a style |
+| `headerArrows` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api/page-object.html) object and return a style |
+| `headerHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api/page-object.html) object and return a style |
+| `weekdays` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api/page-object.html) object and return a style |
+| `weekdaysHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api/page-object.html) object and return a style |
+| `weeks` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api/page-object.html) object and return a style |
 | ~~`headerVerticalDivider`~~ | Remove | *Reference note below* |
 | ~~`weekdaysVerticalDivider`~~ | Remove | *Reference note below* |
 | ~~`weeksVerticalDivider`~~ | Remove | *Reference note below* |

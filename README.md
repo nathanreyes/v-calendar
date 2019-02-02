@@ -370,7 +370,7 @@ Use the following tokens to configure your custom formats:
 
 ---
 
-## I19n
+## I18n
 
 VCalendar utilizes the [well supported](https://caniuse.com/#feat=internationalization) Internationalization API to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
 
@@ -432,8 +432,7 @@ Vue.component('v-calendar', Calendar);
 
 ```html
 <template>
-  <v-calendar
-    is-double-paned>
+  <v-calendar>
   </v-calendar>
   <v-date-picker
     mode='single'

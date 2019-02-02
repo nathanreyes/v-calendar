@@ -25,11 +25,13 @@ function findShallowIntersectingRange(date1, date2) {
   // This start date exists
   if (thisRange.start) {
     // Use this definite start date if other start date is infinite
-    if (!otherRange.start) start = thisRange.start;
-    else
+    if (!otherRange.start) {
+      start = thisRange.start;
+    } else {
       // Otherwise, use the earliest start date
       start =
         thisRange.start < otherRange.start ? thisRange.start : otherRange.start;
+    }
     // Other start date exists
   } else if (otherRange.start) {
     // Use other definite start date as this one is infinite
@@ -257,7 +259,7 @@ const DateInfo = (config, order) => {
     // Initialize date from config
     const date =
       (!isString(config) && new Date(config)) ||
-      parse(config, defaults.formats.data || ['L', 'YYYY-MM-DD', 'YYYY/MM/DD']);
+      parse(config, defaults.formats.data);
     // Can't accept invalid dates
     if (isNaN(date)) return null;
     // Strip date time

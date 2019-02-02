@@ -1,153 +1,249 @@
 <script>
+import Popover from './Popover';
+import Grid from './Grid';
 import CalendarPane from './CalendarPane';
+import CustomTransition from './CustomTransition';
+import CalendarDayPopovers from './CalendarDayPopovers';
+import SvgIcon from './SvgIcon';
 import AttributeStore from '../utils/attributeStore';
 import defaults from '../utils/defaults';
-import { mergeListeners } from '@/mixins';
 import {
-  todayComps,
-  pageIsEqualToPage,
+  getPageForDate,
+  getPageForToday,
+  addPages,
+  getMonthComps,
+  getPrevMonthComps,
+  getNextMonthComps,
+  pageIsValid,
   pageIsBeforePage,
   pageIsAfterPage,
-  getPrevPage,
-  getNextPage,
-  getPageBetweenPages,
-  getFirstValidPage,
-  getPageForDate,
+  pageIsBetweenPages,
+  arrayHasItems,
+  createGuid,
 } from '../utils/helpers';
+import { format } from '@/utils/fecha';
+import { isNumber } from '../utils/typeCheckers';
 
 export default {
-  mixins: [mergeListeners],
+  name: 'Calendar',
   render(h) {
-    const getPaneComponent = position =>
+    // Renderer for calendar panes
+    const getPaneComponent = ({ position }) =>
       h(CalendarPane, {
         attrs: {
           ...this.$attrs,
-          position,
-          page: position < 2 ? this.fromPage_ : this.toPage_,
-          minPage: position < 2 ? this.minPage_ : this.minToPage,
-          maxPage: position < 2 ? this.maxFromPage : this.maxPage_,
-          hideRightButton:
-            !this.showLinkedButtons &&
-            position === 1 &&
-            this.isLinked &&
-            !this.isVertical,
-          hideLeftButton:
-            !this.showLinkedButtons &&
-            position === 2 &&
-            this.isLinked &&
-            !this.isVertical,
-          paneWidth: this.paneWidth,
-          styles: this.themeStyles_,
           attributes: this.attributes_,
+        },
+        props: {
+          position,
+          page: this.pages[position - 1],
+          minPage: this.minPage_,
+          maxPage: this.maxPage_,
+          canMove: this.canMove,
+          styles: this.styles_,
           formats: this.formats_,
         },
-        on: this.mergeListeners({
-          'update:page': val => {
-            if (position < 2) this.fromPage_ = val;
-            else this.toPage_ = val;
-          },
-        }),
+        on: {
+          ...this.$listeners,
+          'update:page': e =>
+            this.refreshPages({ page: e, position: position }),
+          keydown: e => console.log('keydown calendar'),
+        },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
       });
-    return h(
-      'div',
-      {
-        class: {
-          'c-pane-container': true,
-          'is-vertical': this.isVertical,
-          'is-expanded': this.isExpanded,
+
+    // Renderer for calendar arrows
+    const getArrowButton = isPrev => {
+      const slot =
+        (isPrev && this.$slots.headerLeftButton) ||
+        (!isPrev && this.$slots.headerRightButton);
+      const svgName = isPrev ? 'left-arrow' : 'right-arrow';
+      const directionClass = isPrev ? 'is-left' : 'is-right';
+      const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
+      const onClick = isPrev ? this.movePrev : this.moveNext;
+      return h(
+        'button',
+        {
+          class: ['c-arrow-layout', { [directionClass]: true }],
+          attrs: {
+            tabindex: '0',
+          },
         },
-        style: this.wrapperStyle,
-        ref: 'root',
-      },
-      [
-        getPaneComponent(this.isDoublePaned_ ? 1 : 0),
-        ...(this.isDoublePaned_ && [
-          h('div', {
-            class: 'c-pane-div',
-            style: this.dividerStyle,
+        [
+          slot ||
+            h(SvgIcon, {
+              class: [
+                'c-arrow',
+                { [directionClass]: true, 'c-disabled': isDisabled },
+              ],
+              style: this.styles_.arrowStyle,
+              props: {
+                name: svgName,
+              },
+              on: {
+                click: onClick,
+              },
+            }),
+        ],
+      );
+    };
+    // Renderer for calendar container
+    const getContainerGrid = () =>
+      h(
+        'div',
+        {
+          class: [
+            'c-pane-container',
+            {
+              'is-expanded': this.isExpanded,
+            },
+          ],
+        },
+        [
+          h(
+            'div',
+            {
+              class: [
+                'c-pane-transition',
+                { 'in-transition': this.inTransition },
+              ],
+            },
+            [
+              h(
+                CustomTransition,
+                {
+                  props: {
+                    name: this.transitionName,
+                  },
+                  on: {
+                    beforeEnter: () => {
+                      this.inTransition = true;
+                    },
+                    afterEnter: () => {
+                      this.inTransition = false;
+                    },
+                  },
+                },
+                [
+                  h(Grid, {
+                    key: this.pages[0].key,
+                    class: 'grid',
+                    props: {
+                      rows: this.rows,
+                      columns: this.columns,
+                      gap: this.gap,
+                      columnWidth: 'minmax(256px, 1fr)',
+                      innerBorderClass: 'c-pane-inner-border',
+                    },
+                    attrs: {
+                      ...this.$attrs,
+                    },
+                    scopedSlots: {
+                      default: getPaneComponent,
+                    },
+                  }),
+                ],
+              ),
+              getArrowButton(true),
+              getArrowButton(false),
+            ],
+          ),
+          h(Popover, {
+            props: {
+              id: this.dayPopoverId,
+              align: 'center',
+              contentClass: 'c-day',
+            },
+            scopedSlots: {
+              default: ({ args: day }) => {
+                return h(CalendarDayPopovers, {
+                  props: {
+                    day,
+                    formats: this.formats_,
+                  },
+                  scopedSlots: this.$scopedSlots,
+                });
+              },
+            },
           }),
-          getPaneComponent(2),
-        ]),
-      ],
-    );
+        ],
+      );
+
+    return getContainerGrid();
   },
-  name: 'VCalendar',
-  components: {
-    CalendarPane,
+  provide() {
+    return {
+      dayPopoverId: this.dayPopoverId,
+    };
   },
   props: {
+    rows: {
+      type: Number,
+      default: 1,
+    },
+    columns: {
+      type: Number,
+      default: 1,
+    },
+    step: Number,
+    gap: {
+      type: String,
+      default: '1px',
+    },
+    isExpanded: Boolean,
+    fromDate: Date,
+    toDate: Date,
+    fromPage: Object,
+    toPage: Object,
     minDate: Date,
     maxDate: Date,
     minPage: Object,
     maxPage: Object,
-    fromPage: Object,
-    toPage: Object,
-    showLinkedButtons: {
-      type: Boolean,
-      default: () => defaults.showLinkedButtons,
-    },
-    isDoublePaned: Boolean,
-    isLinked: Boolean,
-    isVertical: Boolean,
-    isExpanded: Boolean,
-    paneWidth: { type: Number, default: () => defaults.paneWidth },
-    themeStyles: Object,
+    transition: String,
     attributes: Array,
     formats: Object,
   },
   data() {
     return {
-      isConstrained: true,
-      fromPage_: null,
-      toPage_: null,
+      pages: [],
+      touchState: {},
+      transitionName: '',
+      inTransition: false,
+      isRefreshing: false,
+      dayPopoverId: createGuid(),
     };
   },
   computed: {
-    isDoublePaned_() {
-      return this.isDoublePaned && (this.isVertical || !this.isConstrained);
-    },
     minPage_() {
-      return (
-        this.minPage || (this.minDate && getPageForDate(this.minDate)) || null
-      );
-    },
-    rightButtonHidden() {
-      return this.position === 1 && this.isLinked && !this.isVertical;
-    },
-    leftButtonHidden() {
-      return this.position === 2 && this.isLinked && !this.isVertical;
+      return this.minPage || getPageForDate(this.minDate);
     },
     maxPage_() {
+      return this.maxPage || getPageForDate(this.maxDate);
+    },
+    count() {
+      return this.rows * this.columns;
+    },
+    step_() {
+      return this.step || this.count;
+    },
+    canMovePrev() {
       return (
-        this.maxPage || (this.maxDate && getPageForDate(this.maxDate)) || null
+        !pageIsValid(this.minPage_) ||
+        pageIsAfterPage(this.pages[0], this.minPage_)
       );
     },
-    maxFromPage() {
-      if (this.isDoublePaned_) return getPrevPage(this.maxPage_);
-      return this.maxPage_;
+    canMoveNext() {
+      return (
+        !pageIsValid(this.maxPage_) ||
+        pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
+      );
     },
-    minToPage() {
-      if (this.isDoublePaned_) return getNextPage(this.minPage_);
-      return null;
-    },
-    themeStyles_() {
+    styles_() {
       return {
         ...defaults.themeStyles,
         ...this.themeStyles,
       };
-    },
-    wrapperStyle() {
-      return this.themeStyles_.wrapper;
-    },
-    dividerStyle() {
-      return this.isVertical
-        ? this.themeStyles_.horizontalDivider
-        : this.themeStyles_.verticalDivider;
-    },
-    attributes_() {
-      return AttributeStore(this.attributes);
     },
     formats_() {
       return {
@@ -155,88 +251,197 @@ export default {
         ...this.formats,
       };
     },
+    attributes_() {
+      return AttributeStore(this.attributes);
+    },
+    popoverContentStyle() {
+      return this.styles.dayPopoverContent;
+    },
   },
   watch: {
     fromPage() {
-      this.refreshFromPage();
+      this.refreshPages();
     },
     toPage() {
-      this.refreshToPage();
-    },
-    fromPage_(val, oldVal) {
-      if (pageIsEqualToPage(val, oldVal)) return;
-      this.$emit('update:frompage', val);
-      this.$emit('update:fromPage', val);
-      if (!this.isDoublePaned) return;
-      if (this.isLinked || !pageIsBeforePage(val, this.toPage_))
-        this.toPage_ = getNextPage(val);
-    },
-    toPage_(val, oldVal) {
-      if (pageIsEqualToPage(val, oldVal)) return;
-      this.$emit('update:topage', val);
-      this.$emit('update:toPage', val);
-      if (!this.isDoublePaned) return;
-      if (this.isLinked || !pageIsAfterPage(val, this.fromPage_))
-        this.fromPage_ = getPrevPage(val);
-    },
-    isDoublePaned_() {
-      this.refreshIsConstrained();
-      this.refreshToPage();
-    },
-    isLinked(val) {
-      if (val) this.toPage_ = getNextPage(this.fromPage_);
-    },
-    isExpanded() {
-      this.refreshIsConstrained();
+      this.refreshPages();
     },
   },
   created() {
-    this.refreshFromPage();
-    this.refreshToPage();
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.refreshIsConstrained();
-      window.addEventListener('resize', this.refreshIsConstrained);
-    });
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.refreshIsConstrained);
+    this.refreshPages();
   },
   methods: {
-    refreshFromPage() {
-      this.fromPage_ = getFirstValidPage(
-        ...[
-          this.fromPage,
-          { month: todayComps.month, year: todayComps.year },
-        ].map(p => getPageBetweenPages(p, this.minPage_, this.maxPage_)),
-        this.minPage_,
-        getPrevPage(this.maxPage_),
-      );
+    canMove(page) {
+      return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
     },
-    refreshToPage() {
-      this.toPage_ = getFirstValidPage(
-        ...[this.toPage, getNextPage(this.fromPage_)].map(p =>
-          getPageBetweenPages(p, this.minPage_, this.maxPage_),
-        ),
-        this.maxPage_,
-        getNextPage(this.minPage_),
-      );
+    movePrev() {
+      this.move(-this.step_);
     },
-    refreshIsConstrained() {
-      // Get the root calendar element
-      const root = this.$refs.root;
-      // Only test for constrained environment if needed
-      if (!window || !root || !this.isDoublePaned || this.isVertical) {
-        this.isConstrained = false;
-        // Test for constrained window
-      } else if (window && window.innerWidth < 2 * this.paneWidth + 30) {
-        this.isConstrained = true;
-      } else if (this.isExpanded) {
-        this.isConstrained =
-          root.parentElement.offsetWidth < 2 * this.paneWidth + 2;
+    moveNext() {
+      this.move(this.step_);
+    },
+    move(monthsOrPage) {
+      if (isNumber(monthsOrPage)) {
+        this.refreshPages({
+          page: addPages(this.pages[0], monthsOrPage),
+          position: 1,
+        });
+      }
+    },
+    refreshPages({ page, position = 1 } = {}) {
+      // Exit if we just finished refreshing
+      if (this.isRefreshing) return;
+      // Calculate the page to start displaying from
+      let fromPage = null;
+      // 1. Try the page parameter
+      if (pageIsValid(page)) {
+        fromPage = addPages(page, -(position - 1));
       } else {
-        this.isConstrained = false;
+        // 2. Try the fromPage prop
+        fromPage = this.fromPage || getPageForDate(this.fromDate);
+        if (!pageIsValid(fromPage)) {
+          // 3. Try the toPage prop
+          const toPage = this.toPage || getPageForDate(this.toDate);
+          if (pageIsValid(toPage)) {
+            fromPage = addPages(toPage, -(this.count - 1));
+          } else {
+            // 4. Try the first attribute
+            fromPage = this.getPageForAttributes();
+          }
+        }
+      }
+      // 5. Fall back to today's page
+      fromPage = pageIsValid(fromPage) ? fromPage : getPageForToday();
+      // Adjust from page within allowed min/max pages
+      const toPage = addPages(fromPage, this.count - 1);
+      if (pageIsBeforePage(fromPage, this.minPage_)) {
+        fromPage = this.minPage_;
+      } else if (pageIsAfterPage(toPage, this.maxPage_)) {
+        fromPage = addPages(this.maxPage_, -(this.count - 1));
+      }
+      this.isRefreshing = true;
+      // Create the new pages
+      const pages = [...Array(this.count).keys()].map(i =>
+        this.buildPage(addPages(fromPage, i)),
+      );
+      // Assign the new transition
+      this.transitionName = this.getPageTransition(this.pages[0], pages[0]);
+      // Assign the new pages
+      this.pages = pages;
+      // Emit page update events
+      this.$emit('update:frompage', fromPage);
+      this.$emit('update:fromPage', fromPage);
+      this.$emit('update:topage', toPage);
+      this.$emit('update:toPage', toPage);
+      // Not refreshing anymore
+      this.$nextTick(() => (this.isRefreshing = false));
+    },
+    getPageTransition(oldPage, newPage) {
+      if (this.transition === 'none') return this.transition;
+      if (
+        this.transition === 'fade' ||
+        (!this.transition && this.count > 1) ||
+        !pageIsValid(oldPage) ||
+        !pageIsValid(newPage)
+      ) {
+        return 'fade';
+      }
+      // Moving to a previous page
+      const movePrev = pageIsBeforePage(newPage, oldPage);
+      // Vertical slide
+      if (this.transition === 'slide-v') {
+        return movePrev ? 'slide-down' : 'slide-up';
+      }
+      // Horizontal slide
+      return movePrev ? 'slide-right' : 'slide-left';
+    },
+    getPageForAttributes() {
+      const attr = this.attributes_.find(attr => attr.pinPage);
+      if (attr && arrayHasItems(attr.dates)) {
+        const [date] = attr.dates;
+        return getPageForDate(date.start || date.date);
+      }
+      return null;
+    },
+    buildPage({ month, year }, position) {
+      const key = `${year.toString()}.${month.toString()}`;
+      let page = this.pages.find(p => p.key === key);
+      if (!page) {
+        const date = new Date(year, month - 1, 15);
+        const monthComps = getMonthComps(month, year);
+        const prevMonthComps = getPrevMonthComps(month, year);
+        const nextMonthComps = getNextMonthComps(month, year);
+        page = {
+          key,
+          month,
+          year,
+          title: format(date, this.formats_.title),
+          shortMonthLabel: format(date, 'MMM'),
+          monthLabel: format(date, 'MMMM'),
+          shortYearLabel: year.toString().substring(2),
+          yearLabel: year.toString(),
+          monthComps,
+          prevMonthComps,
+          nextMonthComps,
+          canMove: pg => this.canMove(pg),
+          move: pg => this.move(pg),
+          moveThisMonth: () => this.moveThisMonth(),
+          movePrevMonth: () => this.move(prevMonthComps),
+          moveNextMonth: () => this.move(nextMonthComps),
+        };
+      }
+      // Reassign position if needed
+      page.position = position;
+      return page;
+    },
+    touchStart(e) {
+      const t = e.changedTouches[0];
+      this.touchState = {
+        active: true,
+        startX: t.screenX,
+        startY: t.screenY,
+        startTime: new Date().getTime(),
+        isSwiping: false,
+        isMonitoringSwipe: true,
+      };
+    },
+    touchMove(e) {
+      if (!this.touchState.isMonitoringSwipe) {
+        if (this.touchState.isSwiping) e.preventDefault();
+        return;
+      }
+      const deltaTime = new Date().getTime() - this.touchState.startTime;
+      if (deltaTime <= 5) {
+        e.preventDefault();
+        return;
+      }
+      const t = e.changedTouches[0];
+      const deltaX = t.screenX - this.touchState.startX;
+      const deltaY = t.screenY - this.touchState.startY;
+      if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+        this.touchState.isSwiping = true;
+        e.preventDefault();
+      }
+      this.touchState.isMonitoringSwipe = false;
+    },
+    touchEnd(e) {
+      const t = e.changedTouches[0];
+      const deltaX = t.screenX - this.touchState.startX;
+      const deltaY = t.screenY - this.touchState.startY;
+      const deltaTime = new Date().getTime() - this.touchState.startTime;
+      if (deltaTime < defaults.maxSwipeTime) {
+        if (
+          Math.abs(deltaX) >= defaults.minHorizontalSwipeDistance &&
+          Math.abs(deltaY) <= defaults.maxVerticalSwipeDistance
+        ) {
+          // Swipe left
+          if (deltaX < 0) {
+            // Move to previous month
+            this.moveNextMonth();
+          } else {
+            // Move to next month
+            this.movePrevMonth();
+          }
+        }
       }
     },
   },
@@ -246,30 +451,65 @@ export default {
 <style lang='sass' scoped>
 
 @import '../styles/vars.sass'
+@import '../styles/mixins.sass'
+
+/deep/ .c-popover-content.c-day
+  background-color: $day-popover-background-color
+  border: $day-popover-border
+  border-radius: $day-popover-border-radius
+  box-shadow: $pane-popover-box-shadow
+  color: $day-popover-color
+  font-size: $day-popover-font-size
+  font-weight: $day-popover-font-weight
+  padding: $day-popover-padding
+
+/deep/ .c-pane-inner-border
+  border: $pane-border
 
 .c-pane-container
-  flex-shrink: 1
-  display: inline-flex
+  position: relative
   font-family: $font-family
   font-weight: $font-weight
   line-height: 1.5
   color: $font-color
+  background-color: $pane-background-color
+  border: $pane-border
+  width: max-content
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   box-sizing: border-box
   &.is-expanded
+    min-width: 100%
+  .c-pane-transition
     width: 100%
-  &.is-vertical
-    flex-direction: column
+    position: relative
+    &.in-transition
+      overflow: hidden
   /deep/ *
     box-sizing: inherit
     &:focus
       outline: none
 
+.c-arrow-layout
+  +box()
+  position: absolute
+  top: $arrow-vertical-offset
+  &.is-left
+    left: $arrow-horizontal-offset
+  &.is-right
+    right: $arrow-horizontal-offset
 
-.c-pane-divider
-  width: 1px
-  border: 1px inset
-  border-color: $pane-border-color
+.c-arrow
+  +box()
+  font-size: $arrow-font-size
+  transition: $arrow-transition
+  cursor: pointer
+  user-select: none
+  &.c-disabled
+    cursor: not-allowed
+    pointer-events: none
+    opacity: 0.2
+  &:hover
+    fill-opacity: 0.5
 
 </style>

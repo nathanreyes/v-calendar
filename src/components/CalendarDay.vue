@@ -1,141 +1,72 @@
 <template>
-<popover
-  align='center'
-  transition='fade'
-  class='c-day-popover'
-  :content-offset='popoverContentOffset'
-  :visibility='popoverVisibility'
-  :content-style='popoverContentStyle'
-  :is-interactive='popoverIsInteractive'
-  @got-focus='isFocused = true'
-  @lost-focus='isFocused = false'
-  toggle-visible-on-click>
   <div
-    class='c-day'
-    :style='dayCellStyle'>
+    :class="['c-day', { 'c-day-box-center-center': !$scopedSlots['day-content'] }, dayClass]"
+    :style="dayStyle"
+  >
     <!-- Background layers -->
     <transition-group
-      name='background'
-      tag='div'
-      class='c-day-backgrounds'>
-      <div
-        v-for='background in backgrounds'
-        :key='background.key'
-        :class='background.wrapperClass'>
-        <div
-          class='c-day-background'
-          :style='background.style'>
-        </div>
+      name="background"
+      tag="div"
+      class="c-day-backgrounds c-day-layer"
+      v-if="hasBackgrounds"
+    >
+      <div v-for="background in backgrounds" :key="background.key" :class="background.wrapperClass">
+        <div class="c-day-background" :class="background.class" :style="background.style"></div>
       </div>
     </transition-group>
-    <!-- Content layer -->
-    <div
-      class='c-day-layer c-day-box-center-center'>
-      <div
-        ref='dayContent'
-        class='c-day-content'
-        :style='contentStyle'
-        @click='click'
-        @mouseenter='mouseenter'
-        @mouseover='mouseover'
-        @mouseleave='mouseleave'>
-        {{ label }}
-      </div>
-    </div>
-    <!-- Dots layer -->
-    <div
-      class='c-day-layer c-day-box-center-bottom'
-      v-if='hasDots'>
-      <div
-        class='c-day-dots'
-        :style='dotsStyle'>
-        <span
-          v-for='dot in dots'
-          :key='dot.key'
-          class='c-day-dot'
-          :style='dot.style'>
+    <!-- <div :class="{ 'c-day-box-center-center': !$scopedSlots['day-content'] }"> -->
+    <popover-ref
+      :id="dayPopoverId"
+      :args="dayEvent"
+      :visibility="popoverVisibility"
+      :is-interactive="popoverIsInteractive"
+    >
+      <!-- Content layer -->
+      <slot
+        name="day-content"
+        :day="day"
+        :attributes="attributesList"
+        :day-props="dayContentProps"
+        :day-events="dayContentEvents"
+      >
+        <span class="c-day-content" v-bind="dayContentProps" v-on="dayContentEvents">
+          <span>{{ day.label }}</span>
         </span>
+      </slot>
+    </popover-ref>
+    <!-- </div> -->
+    <!-- Dots layer -->
+    <div class="c-day-layer c-day-box-center-bottom" v-if="hasDots">
+      <div class="c-day-dots" :style="dotsStyle">
+        <span v-for="dot in dots" :key="dot.key" class="c-day-dot" :style="dot.style"></span>
       </div>
     </div>
     <!-- Bars layer -->
-    <div
-      class='c-day-layer c-day-box-center-bottom'
-      v-if='hasBars'>
-      <div
-        class='c-day-bars'
-        :style='barsStyle'>
-        <span
-          v-for='bar in bars'
-          :key='bar.key'
-          class='c-day-bar'
-          :style='bar.style'>
-        </span>
+    <div class="c-day-layer c-day-box-center-bottom" v-if="hasBars">
+      <div class="c-day-bars" :style="barsStyle">
+        <span v-for="bar in bars" :key="bar.key" class="c-day-bar" :style="bar.style"></span>
       </div>
     </div>
   </div>
-  <!-- Popover content -->
-  <div
-    class='c-day-popover-content'
-    slot='popover-content'>
-    <!-- Day popover header slot -->
-    <slot
-      name='day-popover-header'
-      :day='day'
-      :attributes='attributesList'>
-    </slot>
-    <!-- Content row slots -->
-    <calendar-day-popover-row
-      v-for='popover in popovers'
-      :key='popover.key'
-      :attribute='popover.attribute'
-      :hide-indicator='popover.hideIndicator'>
-      <slot
-        :name='popover.slot'
-        :attribute='popover.attribute'
-        :custom-data='popover.attribute.customData'
-        :day='day'>
-        <span
-          v-if='popover.label'
-          class='popover-label'
-          :style='popover.labelStyle'
-          :key='popover.key'>
-          {{ popover.label }}
-        </span>
-        <component
-          v-if='popover.component'
-          :is='popover.component'
-          :attribute='popover.attribute'
-          :format='formats.dayPopover'
-          :day='day'>
-        </component>
-      </slot>
-    </calendar-day-popover-row>
-    <!-- Day popover footer slot -->
-    <slot
-      name='day-popover-footer'
-      :day='day'
-      :attributes='attributesList'>
-    </slot>
-  </div>
-</popover>
 </template>
 
 <script>
-import Popover from './Popover';
-import CalendarDayPopoverRow from './CalendarDayPopoverRow';
+import PopoverRef from './PopoverRef';
 import {
+  evalFn,
   arrayHasItems,
   objectFromArray,
   mixinOptionalProps,
 } from '@/utils/helpers';
-import { isFunction, isObject } from '@/utils/typeCheckers';
+import { isFunction } from '@/utils/typeCheckers';
 import defaults from '@/utils/defaults';
 
 export default {
+  name: 'CalendarDay',
   components: {
-    Popover,
-    CalendarDayPopoverRow,
+    PopoverRef,
   },
+  inject: ['dayPopoverId'],
   props: {
     day: { type: Object, required: true },
     attributes: Object,
@@ -160,18 +91,11 @@ export default {
     inMonth() {
       return this.day.inMonth;
     },
-    dayCellStyle() {
-      // Merge 'not in month' style if needed
-      return {
-        ...this.styles.dayCell,
-        ...(!this.inMonth && this.styles.dayCellNotInMonth),
-      };
-    },
     attributesLength() {
       return this.attributes.length;
     },
     attributesList() {
-      return this.attributes.find(this.day);
+      return this.attributes.onDay(this.day);
     },
     attributesMap() {
       return objectFromArray(this.attributesList);
@@ -226,45 +150,58 @@ export default {
     hasPopovers() {
       return !!arrayHasItems(this.popovers);
     },
-    popoverContentStyle() {
-      return this.styles.dayPopoverContent;
-    },
-    popoverState() {
-      let visibility = '';
-      let isInteractive = false;
-      let content;
-      this.popovers.forEach(popover => {
-        if (!visibility && popover.visibility) visibility = popover.visibility;
-        isInteractive = isInteractive || popover.isInteractive;
-        content = content || popover.label || popover.component || popover.slot;
-      });
-      return {
-        visibility: visibility || (content && 'hover') || 'hidden',
-        isInteractive,
-      };
-    },
     popoverVisibility() {
-      return this.popoverState.visibility;
+      return (
+        (this.hasPopovers &&
+          ['visible', 'hover', 'focus', 'click'].find(v =>
+            this.popovers.some(p => p.visibility === v),
+          )) ||
+        'hidden'
+      );
     },
     popoverIsInteractive() {
-      return this.popoverState.isInteractive;
+      return this.hasPopovers && this.popovers.some(p => p.isInteractive);
     },
-    contentStyle() {
-      const userStyle = this.styles.dayContent;
-      const disableEvents =
-        this.dayCellStyle &&
-        (parseFloat(this.dayCellStyle.opacity) === 0 ||
-          this.dayCellStyle.pointerEvents === 'none');
+    dayClass() {
+      return this.day.classes;
+    },
+    dayStyle() {
+      return evalFn(this.styles.day, {
+        day: this.day,
+        isHovered: this.isHovered,
+        isFocused: this.isFocused,
+      });
+    },
+    dayContentClass() {
+      return this.glyphs.contentClass;
+    },
+    dayContentStyle() {
+      return this.glyphs.contentStyle;
+    },
+    dayContentProps() {
       return {
-        ...((isFunction(userStyle) &&
-          userStyle({
-            day: this.day,
-            isHovered: this.isHovered,
-            isFocused: this.isFocused,
-          })) ||
-          userStyle),
-        ...this.glyphs.contentStyle,
-        ...(disableEvents && { pointerEvents: 'none' }),
+        class: this.dayContentClass,
+        style: this.dayContentStyle,
+        tabindex: '0',
+      };
+    },
+    dayContentEvents() {
+      return {
+        click: this.click,
+        mouseenter: this.mouseenter,
+        mouseover: this.mouseover,
+        mouseleave: this.mouseleave,
+        focusin: this.focusin,
+        focusout: this.focusout,
+      };
+    },
+    dayEvent() {
+      return {
+        ...this.day,
+        el: this.$el,
+        attributes: this.attributesList,
+        attributesMap: this.attributesMap,
+        popovers: this.popovers,
       };
     },
   },
@@ -288,9 +225,7 @@ export default {
   methods: {
     getDayEvent(origEvent) {
       return {
-        ...this.day,
-        attributes: this.attributesList,
-        attributesMap: this.attributesMap,
+        ...this.dayEvent,
         event: origEvent,
       };
     },
@@ -307,6 +242,14 @@ export default {
     mouseleave(e) {
       this.isHovered = false;
       this.$emit('daymouseleave', this.getDayEvent(e));
+    },
+    focusin(e) {
+      this.isFocused = true;
+      this.$emit('dayfocusin', this.getDayEvent(e));
+    },
+    focusout(e) {
+      this.isFocused = false;
+      this.$emit('dayfocusout', this.getDayEvent(e));
     },
     refreshGlyphs() {
       // Get the day attributes
@@ -326,8 +269,10 @@ export default {
               dot,
               bar,
               popover,
+              contentClass,
+              contentStyle,
             } = attr;
-            const { backgrounds, dots, bars, popovers, contentStyle } = glyphs;
+            const { backgrounds, dots, bars, popovers } = glyphs;
             // Add backgrounds for highlight if needed
             if (highlight && !(onStart && onEnd && highlightCaps))
               backgrounds.push(this.getBackground(attr));
@@ -339,8 +284,10 @@ export default {
             if (bar) bars.push(this.getBar(attr));
             // Add popover if needed
             if (popover) popovers.unshift(this.getPopover(attr));
+            // Add content class if needed
+            if (contentClass) glyphs.contentClass.push(contentClass);
             // Add content style if needed
-            Object.assign(contentStyle, attr.contentStyle);
+            Object.assign(glyphs.contentStyle, contentStyle);
             // Continue configuring glyphs
             return glyphs;
           },
@@ -350,6 +297,7 @@ export default {
             dots: [],
             bars: [],
             popovers: [],
+            contentClass: [],
             contentStyle: {},
           },
         );
@@ -360,17 +308,15 @@ export default {
       const onEnd = targetDate.endTime === this.dateTime;
       const inBetween = !onStart && !onEnd;
       const validate = prop =>
-        (isFunction(prop) &&
-          prop({
-            day: this.day,
-            targetDate,
-            onStart,
-            onEnd,
-            inBetween,
-            isHovered,
-            isFocused,
-          })) ||
-        (isObject(prop) && prop);
+        evalFn(prop, {
+          day: this.day,
+          targetDate,
+          onStart,
+          onEnd,
+          inBetween,
+          isHovered,
+          isFocused,
+        });
       return mixinOptionalProps(
         attribute,
         {
@@ -384,6 +330,7 @@ export default {
           { name: 'highlightCaps', mixin: defaults.highlightCaps, validate },
           { name: 'dot', mixin: defaults.dot, validate },
           { name: 'bar', mixin: defaults.bar, validate },
+          { name: 'contentClass', validate },
           { name: 'contentStyle', validate },
           { name: 'popover', validate },
           { name: 'customData' },
@@ -443,7 +390,7 @@ export default {
           background.wrapperClass = `c-day-layer c-day-box-right-center shift-right ${animation}`;
           if (highlightCaps) {
             background.style.width = endShortWidth;
-            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
+            background.style.borderWidth = `${borderWidth} 0`;
             background.style.borderRadius = 0;
           } else {
             background.style.width = endLongWidth;
@@ -562,15 +509,13 @@ export default {
         key: attribute.key,
         customData: attribute.customData,
         attribute,
-        label: isFunction(label) ? label(attribute, this.day) : label,
-        labelStyle: isFunction(labelStyle)
-          ? labelStyle(attribute, this.day)
-          : labelStyle,
+        label,
+        labelStyle,
         component,
         slot,
         hideIndicator,
-        visibility,
-        isInteractive: isInteractive !== undefined ? isInteractive : !!slot,
+        visibility: visibility || (label ? 'hover' : 'click'),
+        isInteractive: isInteractive !== undefined ? isInteractive : !label,
       };
     },
   },
@@ -582,12 +527,17 @@ export default {
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
-.c-day-popover
-  flex: 1
-
 .c-day
   height: $day-height
   position: relative
+  min-height: $day-min-height
+  height: 100%
+  font-size: $day-content-font-size
+  font-weight: $day-content-font-weight
+  transition: all $day-content-transition-time
+  z-index: 1
+  &:not(.in-month) /deep/ > *
+    opacity: 0.3
 
 .c-day-layer
   position: absolute
@@ -614,6 +564,20 @@ export default {
 
 .c-day-box-center-bottom
   +box(center, flex-end)
+
+.c-day-content
+  display: flex
+  justify-content: center
+  align-items: center
+  width: $day-content-width
+  height: $day-content-height
+  border-radius: $day-content-border-radius
+  transition: all $day-content-transition-time
+  user-select: none
+  margin: .1rem auto
+  cursor: pointer
+  &:focus
+    border: 1px solid #dadada
 
 .c-day-backgrounds
   position: relative
@@ -656,29 +620,9 @@ export default {
   background-color: $bar-background-color
   transition: all $day-content-transition-time
 
-.c-day-content
-  +box()
-  width: $day-content-width
-  height: $day-content-height
-  font-size: $day-content-font-size
-  font-weight: $day-content-font-weight
-  line-height: 1
-  border-radius: $day-content-border-radius
-  transition: all $day-content-transition-time
-  user-select: none
-  cursor: default
-  pointer-events: all
-
-.c-day-popover-content
-  font-size: $day-popover-font-size
-  font-weight: $day-popover-font-weight
-
 // TRANSITION ANIMATIONS
 
 .background-enter-active
-
-  &.c-day-fade-enter
-    transition: $fade-transition
 
   &.c-day-slide-right-scale-enter
     animation: $slide-right-scale-enter-animation
@@ -696,18 +640,8 @@ export default {
     animation: $scale-enter-animation
 
 .background-leave-active
-  &.c-day-fade-leave
-    transition: $fade-transition
 
   &.c-day-scale-leave
     animation: $scale-leave-animation
-
-.background-enter
-  &.c-day-fade-enter
-    opacity: 0
-
-.background-leave-to
-  &.c-day-fade-leave
-    opacity: 0
 
 </style>

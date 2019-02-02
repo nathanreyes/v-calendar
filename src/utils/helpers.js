@@ -21,6 +21,7 @@ export const todayComps = {
 };
 
 export const toDate = d => {
+  if (!d) return null;
   if (isDate(d)) return new Date(d.getTime());
   if (isNumber(d)) return new Date(d);
   if (isString(d)) return parse(d, ['L', 'YYYY-MM-DD', 'YYYY/MM/DD']);
@@ -43,6 +44,14 @@ export const getPageForDate = date => {
   );
 };
 
+export const getPageForToday = () => {
+  const today = new Date();
+  return {
+    month: today.getMonth() + 1,
+    year: today.getFullYear(),
+  };
+};
+
 export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
 
 export const getMonthDates = (year = 2000) => {
@@ -51,6 +60,13 @@ export const getMonthDates = (year = 2000) => {
     dates.push(new Date(year, i, 15));
   }
   return dates;
+};
+
+export const addMonthsToDate = (months, date) => {
+  const d = toDate(date);
+  if (!d) return date;
+  d.setMonth(d.getMonth() + months);
+  return d;
 };
 
 export const getWeekdayDates = ({
@@ -133,67 +149,55 @@ export const getExampleMonthComps = () => {
   };
 };
 
-function comparePages(firstPage, secondPage) {
-  if (!firstPage || !secondPage) return 0;
-  if (firstPage.year === secondPage.year) {
-    if (firstPage.month === secondPage.month) return 0;
-    return firstPage.month < secondPage.month ? -1 : 1;
-  }
-  return firstPage.year < secondPage.year ? -1 : 1;
-}
+export const pageIsValid = page => !!(page && page.month && page.year);
 
 export const pageIsEqualToPage = (page, otherPage) =>
-  comparePages(page, otherPage) === 0;
+  pageIsValid(page) &&
+  pageIsValid(comparePage) &&
+  page.year === otherPage.year &&
+  page.month === otherPage.month;
 
-export const pageIsBeforePage = (page, beforePage) =>
-  comparePages(page, beforePage) === -1;
+export const pageIsBeforePage = (page, comparePage) => {
+  if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
+  if (page.year === comparePage.year) return page.month < comparePage.month;
+  return page.year < comparePage.year;
+};
 
-export const pageIsAfterPage = (page, afterPage) =>
-  comparePages(page, afterPage) === 1;
+export const pageIsAfterPage = (page, comparePage) => {
+  if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
+  if (page.year === comparePage.year) return page.month > comparePage.month;
+  return page.year > comparePage.year;
+};
 
 export const pageIsBetweenPages = (page, fromPage, toPage) =>
   (page || false) &&
   !pageIsBeforePage(page, fromPage) &&
   !pageIsAfterPage(page, toPage);
 
-export const getMinPage = (...args) =>
-  args.reduce((prev, curr) => {
-    if (!prev) return curr;
-    if (!curr) return prev;
-    return comparePages(prev, curr) === -1 ? prev : curr;
-  });
-
 export const getMaxPage = (...args) =>
   args.reduce((prev, curr) => {
     if (!prev) return curr;
     if (!curr) return prev;
-    return comparePages(prev, curr) === 1 ? prev : curr;
+    return pageIsAfterPage(curr, prev) ? curr : prev;
   });
 
-export const getPrevPage = page => {
-  if (!page) return undefined;
-  const prevComps = getPrevMonthComps(page.month, page.year);
+export const addPages = (page, count) => {
+  let { month, year } = page || getPageForToday();
+  const incr = count > 0 ? 1 : -1;
+  for (let i = 0; i < Math.abs(count); i++) {
+    month += incr;
+    if (month > 12) {
+      month = 1;
+      year++;
+    } else if (month < 1) {
+      month = 12;
+      year--;
+    }
+  }
   return {
-    month: prevComps.month,
-    year: prevComps.year,
+    month,
+    year,
   };
-};
-
-export const getNextPage = page => {
-  if (!page) return undefined;
-  const nextComps = getNextMonthComps(page.month, page.year);
-  return {
-    month: nextComps.month,
-    year: nextComps.year,
-  };
-};
-
-// Return page if it lies between the from and to pages
-export const getPageBetweenPages = (page, fromPage, toPage) => {
-  if (!page) return undefined;
-  if (fromPage && comparePages(page, fromPage) === -1) return undefined;
-  if (toPage && comparePages(page, toPage) === 1) return undefined;
-  return page;
 };
 
 export const getFirstValidPage = (...args) => args.find(p => !!p);
@@ -212,7 +216,7 @@ export const arrayHasItems = array => isArray(array) && array.length;
 
 export const findAncestor = (el, fn) => {
   if (!el) return null;
-  if (fn(el)) return el;
+  if (fn && fn(el)) return el;
   return findAncestor(el.parentElement, fn);
 };
 
@@ -257,4 +261,40 @@ export const mixinOptionalProps = (source, target, props) => {
     target,
     assigned: assigned.length ? assigned : null,
   };
+};
+
+export const createGuid = () => {
+  var S4 = function() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  };
+  return (
+    S4() +
+    S4() +
+    '-' +
+    S4() +
+    '-' +
+    S4() +
+    '-' +
+    S4() +
+    '-' +
+    S4() +
+    S4() +
+    S4()
+  );
+};
+
+export const on = (element, event, handler) => {
+  if (element && event && handler) {
+    document.addEventListener
+      ? element.addEventListener(event, handler, false)
+      : element.attachEvent('on' + event, handler);
+  }
+};
+
+export const off = (element, event, handler) => {
+  if (element && event) {
+    document.removeEventListener
+      ? element.removeEventListener(event, handler, false)
+      : element.detachEvent('on' + event, handler);
+  }
 };
