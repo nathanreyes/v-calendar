@@ -7,7 +7,7 @@ import PickerProfile from '@/utils/pickerProfiles';
 import Attribute from '@/utils/attribute';
 import defaults, { resolveDefault } from '@/utils/defaults';
 import { addDays } from '@/utils/dateInfo';
-import { arrayHasItems, evalFn, createGuid } from '@/utils/helpers';
+import { arrayHasItems, evalFn, createGuid, toDate } from '@/utils/helpers';
 import { isString, isFunction, isArray } from '@/utils/typeCheckers';
 import { format, parse } from '@/utils/fecha';
 
@@ -188,7 +188,9 @@ export default {
         else dates.push(this.disabledDates);
       }
       // Add disabled dates for minDate and maxDate props
-      const { 'min-date': minDate, 'max-date': maxDate } = this.$attrs;
+      let { 'min-date': minDate, 'max-date': maxDate } = this.$attrs;
+      minDate = toDate(minDate);
+      maxDate = toDate(maxDate);
       if (minDate) {
         dates.push({ start: null, end: addDays(minDate, -1) });
       }

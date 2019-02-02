@@ -20,6 +20,7 @@ import {
   pageIsBetweenPages,
   arrayHasItems,
   createGuid,
+  toDate,
 } from '../utils/helpers';
 import { format } from '@/utils/fecha';
 import { isNumber } from '../utils/typeCheckers';
@@ -196,8 +197,8 @@ export default {
     toDate: Date,
     fromPage: Object,
     toPage: Object,
-    minDate: Date,
-    maxDate: Date,
+    minDate: null,
+    maxDate: null,
     minPage: Object,
     maxPage: Object,
     transition: String,
@@ -216,10 +217,10 @@ export default {
   },
   computed: {
     minPage_() {
-      return this.minPage || getPageForDate(this.minDate);
+      return this.minPage || getPageForDate(toDate(this.minDate));
     },
     maxPage_() {
-      return this.maxPage || getPageForDate(this.maxDate);
+      return this.maxPage || getPageForDate(toDate(this.maxDate));
     },
     count() {
       return this.rows * this.columns;
