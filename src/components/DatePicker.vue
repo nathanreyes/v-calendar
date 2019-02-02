@@ -106,9 +106,9 @@ export default {
     availableDates: null,
     formats: Object, // Resolved by computed property
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
-    updateOnInputKeyup: {
+    updateOnInput: {
       type: Boolean,
-      default: () => defaults.datePickerUpdateOnInputKeyup,
+      default: () => defaults.datePickerUpdateOnInput,
     },
     inputDebounce: {
       type: Number,
@@ -314,7 +314,7 @@ export default {
           highlight: params => ({
             backgroundColor: this.tintColor,
             ...(isDrag && {
-              height: '1.7rem',
+              height: '1.64rem',
               opacity: 0.5,
             }),
             ...evalFn(highlight, params),
@@ -398,18 +398,12 @@ export default {
           formatInput: true,
           hidePopover: true,
         });
-        // All other keys
-      } else if (e.keyCode !== 13 && this.updateOnInputKeyup) {
-        this.updateValue(this.inputValue, {
-          formatInput: false,
-          hidePopover: false,
-        });
       }
     },
     updateValue(
       value = this.inputValue,
       {
-        formatInput = true,
+        formatInput = false,
         hidePopover = !this.popoverKeepVisibleOnInput,
         debounce,
       } = {},

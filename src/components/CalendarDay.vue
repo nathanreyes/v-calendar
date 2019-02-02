@@ -528,7 +528,6 @@ export default {
 @import '../styles/mixins.sass'
 
 .c-day
-  height: $day-height
   position: relative
   min-height: $day-min-height
   height: 100%
@@ -580,10 +579,9 @@ export default {
     border: 1px solid #dadada
 
 .c-day-backgrounds
-  position: relative
-  width: 100%
-  height: 100%
   overflow: hidden
+  pointer-events: none
+  z-index: -1
   backface-visibility: hidden // Prevents glitches in Chrome by forcing hardware acceleration
 
 .c-day-background

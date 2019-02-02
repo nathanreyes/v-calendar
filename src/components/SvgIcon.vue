@@ -1,11 +1,7 @@
 <template>
-  <div
-    :class="["svg-icon", { "baseline": baseline }]"
-    v-bind="$attrs"
-    v-on="$listeners"
-    v-html="glyph"
-    v-once
-  ></div>
+  <svg class="svg-icon" :width="width" :height="height" :viewBox="viewBox" v-on="$listeners">
+    <path :d="path"></path>
+  </svg>
 </template>
 
 <script>
@@ -36,11 +32,33 @@ const icons = {
 };
 
 export default {
-  props: {
-    glyph: null,
-    baseline: {
-      type: Boolean,
-      default: false,
+  props: ['name'],
+  data() {
+    return {
+      width: _defSize,
+      height: _defSize,
+      viewBox: _defViewBox,
+      path: '',
+      isBaseline: false,
+    };
+  },
+  mounted() {
+    this.updateIcon();
+  },
+  watch: {
+    name() {
+      this.updateIcon();
+    },
+  },
+  methods: {
+    updateIcon() {
+      const icon = icons[this.name];
+      if (icon) {
+        this.width = icon.width || _defSize;
+        this.height = icon.height || _defSize;
+        this.viewBox = icon.viewBox || _defViewBox;
+        this.path = icon.path;
+      }
     },
   },
 };
@@ -49,21 +67,10 @@ export default {
 <style lang='scss' scoped>
 .svg-icon {
   display: inline-block;
-  width: 1em;
-  height: 1em;
-  align-self: center;
-  position: relative;
-  stroke-width: 0;
   stroke: currentColor;
-  fill: currentColor;
-  line-height: 1;
-  font-size: 1rem;
-  &:hover {
-    fill-opacity: 0.5;
-  }
-  & /deep/ svg {
-    width: 100%;
-    height: 100%;
+  stroke-width: 0;
+  path {
+    fill: currentColor;
   }
 }
 </style>

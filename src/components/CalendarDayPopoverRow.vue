@@ -1,21 +1,15 @@
 <template>
-<!-- Content row -->
-<div
-  :class='["c-day-popover-row", { "selectable": isSelectable }]'
-  @click='$emit("select")'>
-  <!-- Indicator -->
-  <div
-    v-if='!hideIndicator && indicatorStyle'
-    class='c-day-popover-row-indicator'>
-    <span :style='indicatorStyle'></span>
+  <!-- Content row -->
+  <div :class="['c-day-popover-row', { 'selectable': isSelectable }]" @click="$emit('select')">
+    <!-- Indicator -->
+    <div v-if="!hideIndicator && indicatorStyle" class="c-day-popover-row-indicator">
+      <span :style="indicatorStyle"></span>
+    </div>
+    <!-- Content -->
+    <div class="c-day-popover-row-content">
+      <slot>This is the default content slot.</slot>
+    </div>
   </div>
-  <!-- Content -->
-  <div class='c-day-popover-row-content'>
-    <slot>
-      This is the default content slot.
-    </slot>
-  </div>
-</div>
 </template>
 
 <script>

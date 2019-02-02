@@ -30,12 +30,6 @@ export default {
     dayFormat: String,
     format: Function,
   },
-  data() {
-    return {
-      sun,
-      moon,
-    };
-  },
   computed: {
     date() {
       return this.attribute.targetDate;
