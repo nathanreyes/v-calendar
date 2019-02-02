@@ -8,11 +8,11 @@
     <div v-if="isRange" class="days-nights">
       <span class="days">
         <svg-icon name="sun" class="c-sun"></svg-icon>
-        {{ days }}
+        <span v-html="days"/>
       </span>
       <span class="nights">
         <svg-icon name="moon" class="c-moon"></svg-icon>
-        {{ nights }}
+        <span v-html="nights"/>
       </span>
     </div>
   </div>
@@ -41,10 +41,10 @@ export default {
       return this.date.isRange;
     },
     days() {
-      return this.date.daySpan + 1;
+      return this.date.daySpan ? this.date.daySpan + 1 : ' &infin;';
     },
     nights() {
-      return this.date.daySpan;
+      return this.date.daySpan ? this.date.daySpan : ' &infin;';
     },
     dateLabel() {
       if (!this.date || !this.date.date) return '';
