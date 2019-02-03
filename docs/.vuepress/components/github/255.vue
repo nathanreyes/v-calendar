@@ -1,0 +1,35 @@
+<template>
+  <div class="example">
+    <v-date-picker
+      mode="range"
+      v-model="dates"
+      :columns="2"
+      :max-date="maxDate"
+      :from-page="fromPage"
+      :to-page="toPage"
+      is-inline
+    />
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      dates: {
+        start: new Date(2019, 0, 9),
+        end: new Date(2019, 0, 18),
+      },
+      fromPage: {
+        month: 10,
+        year: 2018,
+      },
+      toPage: {
+        month: 11,
+        year: 2018,
+      },
+      maxDate: new Date(),
+    };
+  },
+};
+</script>

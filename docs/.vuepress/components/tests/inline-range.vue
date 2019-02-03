@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       date: null,
-      popoverVisibility: 'visible',
+      popoverVisibility: 'hover',
     };
   },
   computed: {

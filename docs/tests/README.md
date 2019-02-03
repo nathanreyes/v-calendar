@@ -3,7 +3,9 @@ title: 'Tests'
 ---
 
 <div class='text-center'>
-<test-inline-range />
-<test-single />
-<test-range />
+<github-254 />
+<github-255 />
+<tests-inline-range />
+<tests-single />
+<tests-range />
 </div>
