@@ -52,7 +52,6 @@ export default {
                         `align-${this.align}`,
                         this.contentClass,
                       ],
-                      ref: 'popoverContent',
                     },
                     [
                       h('span', {
@@ -117,12 +116,10 @@ export default {
     },
   },
   created() {
-    this.$vcBus.$on(`toggle:${this.id}`, this.onToggle);
     this.$vcBus.$on(`show:${this.id}`, this.onShow);
     this.$vcBus.$on(`hide:${this.id}`, this.onHide);
     this.$vcBus.$on(`update:${this.id}`, this.onUpdate);
     this.$once('beforeDestroy', () => {
-      this.$vcBus.$off(`toggle:${this.id}`, this.onToggle);
       this.$vcBus.$off(`show:${this.id}`, this.onShow);
       this.$vcBus.$off(`hide:${this.id}`, this.onHide);
       this.$vcBus.$off(`update:${this.id}`, this.onUpdate);
@@ -170,17 +167,6 @@ export default {
         this.onHide({
           ref: this.ref,
         });
-      }
-    },
-    onToggle({ ref, args }) {
-      if (this.ref == ref) {
-        this.ref = null;
-        this.args = null;
-        this.visibility = '';
-      } else {
-        this.ref = ref;
-        this.args = args;
-        this.visibility = 'click';
       }
     },
     onShow({ ref, args, visibility, isInteractive }) {

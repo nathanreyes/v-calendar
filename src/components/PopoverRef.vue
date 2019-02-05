@@ -139,11 +139,11 @@ export default {
       }
     },
     toggle() {
-      this.$vcBus.$emit(`toggle:${this.id}`, {
-        ref: this.reference,
-        args: this.args,
-        visibility: this.visibility,
-      });
+      if (this.isActive) {
+        this.hide();
+      } else {
+        this.show();
+      }
     },
     show() {
       this.$vcBus.$emit(`show:${this.id}`, {
