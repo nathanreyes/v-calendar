@@ -142,7 +142,9 @@ export default {
       if (this.isActive) {
         this.hide();
       } else {
-        this.show();
+        this.$nextTick(() => {
+          this.show();
+        });
       }
     },
     show() {

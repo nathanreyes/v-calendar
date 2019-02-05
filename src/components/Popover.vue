@@ -1,6 +1,5 @@
 <script>
 import Popper from 'popper.js';
-import OnClickOutside from './OnClickOutside';
 import { isFunction } from '@/utils/typeCheckers';
 import { on, off } from '@/utils/helpers';
 
@@ -35,38 +34,27 @@ export default {
           [
             this.isVisible &&
               h(
-                OnClickOutside,
+                'div',
                 {
-                  props: {
-                    run: this.onClickOutside,
-                    whitelist: [this.ref],
-                  },
+                  class: [
+                    'c-popover-content',
+                    `direction-${this.direction}`,
+                    `align-${this.align}`,
+                    this.contentClass,
+                  ],
                 },
                 [
-                  h(
-                    'div',
-                    {
-                      class: [
-                        'c-popover-content',
-                        `direction-${this.direction}`,
-                        `align-${this.align}`,
-                        this.contentClass,
-                      ],
-                    },
-                    [
-                      h('span', {
-                        class: 'c-popover-caret',
-                      }),
-                      (isFunction(this.$scopedSlots.default) &&
-                        this.$scopedSlots.default({
-                          direction: this.direction,
-                          align: this.align,
-                          args: this.args,
-                          hide: this.onHide,
-                        })) ||
-                        this.$slots.default,
-                    ],
-                  ),
+                  h('span', {
+                    class: 'c-popover-caret',
+                  }),
+                  (isFunction(this.$scopedSlots.default) &&
+                    this.$scopedSlots.default({
+                      direction: this.direction,
+                      align: this.align,
+                      args: this.args,
+                      hide: this.onHide,
+                    })) ||
+                    this.$slots.default,
                 ],
               ),
           ],
@@ -138,12 +126,14 @@ export default {
       on(this.$refs.popover, 'mouseleave', this.onMouseLeave);
       on(this.$refs.popover, 'focusin', this.onFocusIn);
       on(this.$refs.popover, 'blur', this.onBlur);
+      on(document, 'click', this.onDocumentClick);
     },
     removeEvents() {
       off(this.$refs.popover, 'mouseover', this.onMouseOver);
       off(this.$refs.popover, 'mouseleave', this.onMouseLeave);
       off(this.$refs.popover, 'focusin', this.onFocusIn);
       off(this.$refs.popover, 'blur', this.onBlur);
+      off(document, 'click', this.onDocumentClick);
     },
     onMouseOver(e) {
       if (this.isInteractive && this.visibility === 'hover') {
@@ -168,6 +158,19 @@ export default {
           ref: this.ref,
         });
       }
+    },
+    onDocumentClick(e) {
+      if (this.visibility !== 'click' || !this.$refs.popover || !this.ref)
+        return;
+      if (
+        this.$refs.popover === e.target ||
+        this.ref === e.target ||
+        this.$refs.popover.contains(e.target) ||
+        this.ref.contains(e.target)
+      ) {
+        return;
+      }
+      this.ref = null;
     },
     onShow({ ref, args, visibility, isInteractive }) {
       clearTimeout(this._timer);
@@ -244,9 +247,6 @@ export default {
         this.popper.destroy();
         this.popper = null;
       }
-    },
-    onClickOutside() {
-      this.ref = null;
     },
   },
 };
