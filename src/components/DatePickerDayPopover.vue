@@ -41,10 +41,10 @@ export default {
       return this.date.isRange;
     },
     days() {
-      return this.date.daySpan ? this.date.daySpan + 1 : ' &infin;';
+      return this.date.daySpan >= 0 ? this.date.daySpan + 1 : ' &infin;';
     },
     nights() {
-      return this.date.daySpan ? this.date.daySpan : ' &infin;';
+      return this.date.daySpan >= 0 ? this.date.daySpan : ' &infin;';
     },
     dateLabel() {
       if (!this.date || !this.date.date) return '';
