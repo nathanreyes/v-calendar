@@ -19,13 +19,6 @@ Display calendars using multiple rows and columns.
 <homepage-multi-calendar>
 </homepage-multi-calendar>
 
-```html
-<v-calendar
-  :rows='2'
-  :columns='2'>
-</v-calendar>
-```
-
 <homepage-datepicker>
 </homepage-datepicker>
 

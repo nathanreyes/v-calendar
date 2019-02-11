@@ -9,7 +9,7 @@ V-Calendar is a clean and lightweight plugin for displaying simple, attributed c
 <guide-readme-cal-intro>
 </guide-readme-cal-intro>
 
-Any single attribute may contain one of each object and can be displayed for single dates, date ranges and even complex date patterns. Some examples of complex patters include:
+Any single attribute may contain one of each object and can be displayed for single dates, date ranges and even complex date patterns. Some examples of complex patterns include:
 * Every other Friday
 * 15th of every month
 * Last Friday of every other month.
@@ -18,12 +18,10 @@ A date picker is included out of the box with single date, multiple date and dat
 
 ## Calendar
 
-`v-calendar` is the core component. By default, it has a neutral design that should blend nicely within any web application, with various options for configuring the basic layout: 
-  * Calendar layouts with multiple rows and columns
-  * Can be expanded to fill the width of its container
-  * Header title can be left, right or center-aligned
+`v-calendar` is the core component. By default, it has a neutral design that should blend nicely within any web application, with various layout configuration options: 
+  * Responsive multi-row and multi-column layouts
   * Slot support for custom header and day content
-  * Semantic-inspired navigation popover pane
+  * Semantic-inspired navigation popover
   * Navigation transitions (horizontal slide, vertical slide, fade)
 
 ```html
@@ -66,7 +64,7 @@ The basic approach can be described in two steps:
 
 V-Calendar takes a mobile-first approach, where each screen represents a minimum viewport width. Any values you assign at smaller screen sizes are also applied to larger sizes, unless explicity overridden.
 
-For example, suppose we wish to display a single column on mobile. Then, when the viewport expands to the large size, we wish to expand the calendar to two columns. We could do the following:
+For example, suppose we wish to display a single column on mobile. Then, at the large size, we wish to expand the calendar to two columns.
 
 ```html
 <v-calendar :columns="$screens({ default: 1, lg: 2 })" />
@@ -74,7 +72,7 @@ For example, suppose we wish to display a single column on mobile. Then, when th
 
 <guide-readme-cal-responsive />
 
-As you can see, we use the `$screens` function to target multiple screens. Within the function parameter, the screen-to-value relationships are represented as an object, with each screen size as the key. Use the `default` key to target the default mobile layout.
+As you can see, we use the `$screens` function to target multiple screens. We pass an object to specify the screen-to-value relationships with target screen sizes as the key. Use the `default` key to target the default mobile layout.
 
 Alternatively, we can pass the default value as a second parameter to the `$screens` function.
 
@@ -399,7 +397,7 @@ Reference [TailwindCSS](https://tailwindcss.com/docs/what-is-tailwind/) for styl
 
 ### Custom Slot
 
-Use a custom scoped slot to display your own input element or popover trigger. The `inputProps` and `inputEvents` scope variables are used to properly integrate the display and behavior provided by `v-date-picker`. [Click to learn more.](datepicker.md#use-custom-slot)
+Use a custom scoped slot to display your own input element or popover trigger. The `inputProps` and `inputEvents` scope variables are used to properly integrate your own input with the behavior provided by `v-date-picker`. [Click to learn more.](datepicker.md#use-custom-slot)
 
 ```html
 <div class="w-full max-w-sm">
