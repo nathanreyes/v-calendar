@@ -1,49 +1,3 @@
-<template>
-  <div
-    :class="['c-day', { 'c-day-box-center-center': !$scopedSlots['day-content'] }, dayClass]"
-    :style="dayStyle"
-  >
-    <!-- Background layers -->
-    <div class="c-day-backgrounds c-day-layer" v-if="hasBackgrounds">
-      <div v-for="background in backgrounds" :key="background.key" :class="background.wrapperClass">
-        <div class="c-day-background" :class="background.class" :style="background.style"></div>
-      </div>
-    </div>
-    <!--Content layer-->
-    <popover-ref
-      :id="dayPopoverId"
-      :args="dayEvent"
-      :visibility="popoverVisibility"
-      :is-interactive="popoverIsInteractive"
-    >
-      <!--Content slot-->
-      <slot
-        name="day-content"
-        :day="day"
-        :attributes="attributesList"
-        :day-props="dayContentProps"
-        :day-events="dayContentEvents"
-      >
-        <span class="c-day-content" v-bind="dayContentProps" v-on="dayContentEvents">
-          <span>{{ day.label }}</span>
-        </span>
-      </slot>
-    </popover-ref>
-    <!--Dots layer-->
-    <div class="c-day-layer c-day-box-center-bottom" v-if="hasDots">
-      <div class="c-day-dots" :style="dotsStyle">
-        <span v-for="dot in dots" :key="dot.key" class="c-day-dot" :style="dot.style"></span>
-      </div>
-    </div>
-    <!--Bars layer-->
-    <div class="c-day-layer c-day-box-center-bottom" v-if="hasBars">
-      <div class="c-day-bars" :style="barsStyle">
-        <span v-for="bar in bars" :key="bar.key" class="c-day-bar" :style="bar.style"></span>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 import PopoverRef from './PopoverRef';
 import {
@@ -57,9 +11,6 @@ import { isFunction } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
-  components: {
-    PopoverRef,
-  },
   inject: ['dayPopoverId'],
   props: {
     day: { type: Object, required: true },
@@ -67,6 +18,146 @@ export default {
     popoverContentOffset: { type: Number, default: 7 },
     styles: Object,
     formats: Object,
+  },
+  render(h) {
+    // Backgrounds layer
+    const backgroundsLayer = () => {
+      return (
+        this.hasBackgrounds &&
+        h(
+          'div',
+          {
+            class: 'c-day-backgrounds c-day-layer',
+          },
+          this.backgrounds.map(
+            ({ key, wrapperClass, class: bgClass, style }) => {
+              h(
+                'div',
+                {
+                  key: key,
+                  class: wrapperClass,
+                },
+                [
+                  h('div', {
+                    class: ['c-day-background', bgClass],
+                    style,
+                  }),
+                ],
+              );
+            },
+          ),
+        )
+      );
+    };
+
+    // Content layer
+    const contentLayer = () => {
+      return h(
+        PopoverRef,
+        {
+          props: {
+            id: this.dayPopoverId,
+            args: this.dayEvent,
+            visibility: this.popoverVisibility,
+            isInteractive: this.popoverIsInteractive,
+          },
+        },
+        [
+          (isFunction(this.$scopedSlots.dayContent) &&
+            this.$scopedSlots.dayContent({
+              day: this.day,
+              attributes: this.attributesList,
+              dayProps: this.dayContentProps,
+              dayEvents: this.dayContentEvents,
+            })) ||
+            h(
+              'span',
+              {
+                class: 'c-day-content',
+                attrs: this.dayContentProps,
+                on: this.dayContentEvents,
+              },
+              [h('span', [this.day.label])],
+            ),
+        ],
+      );
+    };
+
+    // Dots layer
+    const dotsLayer = () => {
+      return (
+        this.hasDots &&
+        h(
+          'div',
+          {
+            class: 'c-day-layer c-day-box-center-bottom',
+          },
+          [
+            h(
+              'div',
+              {
+                class: 'c-day-dots',
+                style: this.dotsStyle,
+              },
+              [
+                this.dots.map(({ key, style }) => {
+                  return h('span', {
+                    class: 'c-day-dot',
+                    style,
+                    key,
+                  });
+                }),
+              ],
+            ),
+          ],
+        )
+      );
+    };
+
+    // Bars layer
+    const barsLayer = () => {
+      return (
+        this.hasBars &&
+        h(
+          'div',
+          {
+            class: 'c-day-layer c-day-box-center-bottom',
+          },
+          [
+            h(
+              'div',
+              {
+                class: 'c-day-bars',
+                style: this.barsStyle,
+              },
+              [
+                this.dots.map(({ key, style }) => {
+                  return h('span', {
+                    class: 'c-day-bar',
+                    style,
+                    key,
+                  });
+                }),
+              ],
+            ),
+          ],
+        )
+      );
+    };
+
+    // Root layer
+    return h(
+      'div',
+      {
+        class: [
+          'c-day',
+          this.dayClass,
+          { 'c-day-box-center-center': !this.$scopedSlots['day-content'] },
+        ],
+        style: this.dayStyle,
+      },
+      [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
+    );
   },
   data() {
     return {
