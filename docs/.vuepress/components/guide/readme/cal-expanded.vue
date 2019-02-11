@@ -1,5 +1,5 @@
 <template>
   <div class="example">
-    <v-calendar :columns="2" is-expanded/>
+    <v-calendar is-expanded/>
   </div>
 </template>

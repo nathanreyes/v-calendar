@@ -1,6 +1,6 @@
 import DateInfo from './dateInfo';
 import { arrayHasItems } from './helpers';
-import { isArray } from './typeCheckers';
+import { isArray } from './_';
 
 const Attribute = config => {
   if (!config) return null;

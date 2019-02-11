@@ -23,11 +23,8 @@ A date picker is included out of the box with single date, multiple date and dat
   * Can be expanded to fill the width of its container
   * Header title can be left, right or center-aligned
   * Slot support for custom header and day content
+  * Semantic-inspired navigation popover pane
   * Navigation transitions (horizontal slide, vertical slide, fade)
-
-### Basic layout
-
-Along with the calendar panes, `v-calendar` employs a semantic-inspired navigation pane with multiple display options.
 
 ```html
 <v-calendar />
@@ -35,40 +32,153 @@ Along with the calendar panes, `v-calendar` employs a semantic-inspired navigati
 
 <guide-readme-cal-basic />
 
-### Multiple Rows & Columns
-
-Simply use the `rows` and `columns` properties to modify the layout.
-
-```html
-<v-calendar
-  :rows="2"
-  :columns="2">
-</v-calendar>
-```
-
-<guide-readme-cal-rows-columns />
+## Layouts
 
 ### Full Width
 
 To expand the component to the full width of its container, set the `is-expanded` prop.
 
 ```html
+<v-calendar is-expanded />
+```
+
+<guide-readme-cal-expanded />
+
+### Multiple Rows & Columns
+
+Use the `rows` and `columns` props to create multi-row and multi-column static layouts.
+
+```html
+<v-calendar :rows="2" />
+```
+
+<guide-readme-cal-rows-columns />
+
+### Responsive Layouts
+
+V-Calendar allows you build responsive designs for multiple screen sizes.
+
+The basic approach can be described in two steps:
+
+1. Specify a few screen sizes to monitor by providing a set of breakpoints (`sm`, `md`, `lg` and `xl`). [The screen size names and dimensions are configurable](#customizing-screen-sizes).
+
+2. Call the `$screens` function to assign props or create computed properties based on the current screen size. This function automatically re-evaluates behind the scenes any time the window crosses a breakpoint border.
+
+V-Calendar takes a mobile-first approach, where each screen represents a minimum viewport width. Any values you assign at smaller screen sizes are also applied to larger sizes, unless explicity overridden.
+
+For example, suppose we wish to display a single column on mobile. Then, when the viewport expands to the large size, we wish to expand the calendar to two columns. We could do the following:
+
+```html
+<v-calendar :columns="$screens({ default: 1, lg: 2 })" />
+```
+
+<guide-readme-cal-responsive />
+
+As you can see, we use the `$screens` function to target multiple screens. Within the function parameter, the screen-to-value relationships are represented as an object, with each screen size as the key. Use the `default` key to target the default mobile layout.
+
+Alternatively, we can pass the default value as a second parameter to the `$screens` function.
+
+```html
+<!--Same as before, just passing default value as second parameter-->
+<v-calendar :columns="$screens({ lg: 2 }, 1)" />
+```
+
+Let's add to the previous example so that a new row is added for large screens. Also, we would also like to expand the pane width to fill its container on mobile when only one column and row is displayed.
+
+```html
 <v-calendar
-  :columns="2"
-  is-expanded
+  :columns="$screens({ default: 1, lg: 2 })"
+  :rows="$screens({ default: 1, lg: 2 })"
+  :is-expanded="$screens({ default: true, lg: false })"
   />
 ```
 
-<guide-readme-cal-full-width />
+<guide-readme-cal-responsive-expanded />
+
+We could rework the previous example to make it a bit more intuitive by creating a comprehensive `layout` computed property that just calls the `$screens` function once.
+
+```html
+<v-calendar
+  :columns="layout.columns"
+  :rows="layout.rows"
+  :is-expanded="layout.isExpanded"
+  />
+```
+
+```js
+export default {
+  computed: {
+    layout() {
+      return this.$screens(
+        {
+          // Default layout for mobile
+          default: {
+            columns: 1,
+            rows: 1,
+            isExpanded: true,
+          },
+          // Override for large screens
+          lg: {
+            columns: 2,
+            rows: 2,
+            isExpanded: false,
+          },
+        },
+      );
+    }
+  }
+}
+```
+
+:::tip
+The `$screens` function is included as a mixin for all components when using V-Calendar. You can use it to make any of your props or computed properties responsive in any of your own components.
+:::
+
+### Customizing Screen Sizes
+
+There are 4 screen sizes provided by default:
+```js
+screens: {
+  sm: '576px',  // (min-width: 576px)
+  md: '768px',  // (min-width: 768px)
+  lg: '992px',  // (min-width: 992px)
+  xl: '1200px'  // (min-width: 1200px)
+}
+```
+
+You may use any number of custom named screens. Just pass the your own custom `screens` object as part of the defaults when using VCalendar.
+
+```js
+import VCalendar from 'v-calendar';
+
+Vue.use(VCalendar, {
+  // ...some defaults
+  screens: {
+    tablet: '576px',
+    laptop: '992px',
+    desktop: '1200px',
+  },
+  // ...other defaults
+})
+```
+
+Then, reference your custom screens when calling the `$screens` function.
+
+```html
+<v-calendar
+  :columns="$screens({ default: 1, laptop: 2 })"
+  />
+```
 
 ## Attributes
-Attributes are the most important concept to understand when utilizing `v-calendar`. They provide a powerful way to communicate visual information to your users quickly and effectively. Fortunately, they are also easy to configure. 
+
+Attributes provide a powerful way to communicate visual information to your users quickly and effectively. Fortunately, they are also easy to configure. 
 
 ### Attribute Types
 
-Attributes are the general term for different kinds of visual adornments to the calendar. The following attribute types are currently supported.
+Attributes are the general term for different kinds of visual adornments to calendar day cells. The following attribute types are currently supported.
 
-* Highlights
+* Highlights (Highlighted Background Regions)
 * Dot Indicators
 * Bar Indicators
 * Content Classes :new:

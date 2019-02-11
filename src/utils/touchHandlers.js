@@ -1,12 +1,13 @@
 import defaults from './defaults';
-import { isFunction } from './typeCheckers';
+import { isFunction } from './_';
 
 export const registerTapOrClick = (element, handler) => {
-  if (!element || !element.addEventListener || !isFunction(handler)) return null;
+  if (!element || !element.addEventListener || !isFunction(handler))
+    return null;
   const registration = {
     touchState: null,
   };
-  const onTouchStart = (e) => {
+  const onTouchStart = e => {
     const t = e.targetTouches[0];
     registration.touchState = {
       started: true,
@@ -17,13 +18,14 @@ export const registerTapOrClick = (element, handler) => {
       y: t.screenY,
     };
   };
-  const onTouchEnd = (e) => {
+  const onTouchEnd = e => {
     const state = registration.touchState;
     if (!state || !state.started) return;
     const t = e.changedTouches[0];
     state.x = t.screenX;
     state.y = t.screenY;
-    state.tapDetected = new Date() - state.startedOn <= defaults.maxTapDuration &&
+    state.tapDetected =
+      new Date() - state.startedOn <= defaults.maxTapDuration &&
       Math.abs(state.x - state.startX) <= defaults.maxTapTolerance &&
       Math.abs(state.y - state.startY) <= defaults.maxTapTolerance;
     if (state.tapDetected) {
@@ -31,7 +33,7 @@ export const registerTapOrClick = (element, handler) => {
     }
     state.started = false;
   };
-  const onClick = (e) => {
+  const onClick = e => {
     const state = registration.touchState;
     if (state && state.tapDetected) return;
     handler(e);

@@ -7,9 +7,9 @@ import PickerProfile from '@/utils/pickerProfiles';
 import Attribute from '@/utils/attribute';
 import defaults, { resolveDefault } from '@/utils/defaults';
 import { addDays } from '@/utils/dateInfo';
-import { arrayHasItems, evalFn, createGuid, toDate } from '@/utils/helpers';
-import { isString, isFunction, isArray } from '@/utils/typeCheckers';
 import { format, parse } from '@/utils/fecha';
+import { arrayHasItems, evalFn, createGuid, toDate } from '@/utils/helpers';
+import { isString, isFunction, isArray } from '@/utils/_';
 
 export default {
   render(h) {

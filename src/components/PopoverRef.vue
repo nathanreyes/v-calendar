@@ -1,6 +1,6 @@
 <script>
 import { on, off } from '@/utils/helpers';
-import { isFunction } from '@/utils/typeCheckers';
+import { isFunction } from '@/utils/_';
 
 export default {
   props: {

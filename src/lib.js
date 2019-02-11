@@ -4,6 +4,7 @@ import Popover from '@/components/Popover';
 import PopoverRef from '@/components/PopoverRef';
 import getLocaleDefaults from '@/utils/locales';
 import defaults, { mergeDefaults } from '@/utils/defaults';
+import installScreens from '@/utils/screens';
 
 const setupCalendar = (Vue, options) => {
   // Add an event bus for component communication
@@ -17,7 +18,14 @@ const setupCalendar = (Vue, options) => {
   const locale = options
     ? options.locale
     : new Intl.DateTimeFormat().resolvedOptions().locale;
-  return mergeDefaults(defaults, getLocaleDefaults(locale), options);
+  const mergedDefaults = mergeDefaults(
+    defaults,
+    getLocaleDefaults(locale),
+    options,
+  );
+  // Install support for responsive screens
+  installScreens(Vue, mergedDefaults.screens);
+  return mergedDefaults;
 };
 
 // Export components individually

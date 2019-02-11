@@ -1,7 +1,7 @@
 <script>
 import Popper from 'popper.js';
-import { isFunction } from '@/utils/typeCheckers';
 import { on, off } from '@/utils/helpers';
+import { isFunction } from '@/utils/_';
 
 export default {
   render(h) {

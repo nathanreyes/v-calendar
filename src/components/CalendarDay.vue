@@ -58,8 +58,8 @@ import {
   objectFromArray,
   mixinOptionalProps,
 } from '@/utils/helpers';
-import { isFunction } from '@/utils/typeCheckers';
 import defaults from '@/utils/defaults';
+import { isFunction } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',

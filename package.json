@@ -57,6 +57,7 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "lodash": "^4.17.11",
     "popper.js": "^1.14.7"
   }
 }

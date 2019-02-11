@@ -1,6 +1,6 @@
 import Attribute from './attribute';
 import { arrayHasItems } from './helpers';
-import { isFunction } from './typeCheckers';
+import { isFunction } from './_';
 
 const AttributeStore = attrs => {
   const list =

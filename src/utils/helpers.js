@@ -1,13 +1,6 @@
 import defaults from './defaults';
-import {
-  isNumber,
-  isString,
-  isDate,
-  isArray,
-  isObject,
-  isFunction,
-} from './typeCheckers';
 import { parse } from './fecha';
+import { isNumber, isString, isDate, isArray, isObject, isFunction } from './_';
 
 const monthComps = {};
 

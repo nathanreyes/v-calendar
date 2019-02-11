@@ -1,14 +1,7 @@
-import {
-  isDate,
-  isString,
-  isNumber,
-  isObject,
-  isArray,
-  isFunction,
-} from './typeCheckers';
 import defaults from './defaults';
 import { mixinOptionalProps, getMonthComps } from './helpers';
 import { parse } from './fecha';
+import { isDate, isString, isNumber, isObject, isArray, isFunction } from './_';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 

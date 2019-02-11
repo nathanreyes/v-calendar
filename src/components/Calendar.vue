@@ -21,9 +21,9 @@ import {
   arrayHasItems,
   createGuid,
   toDate,
-} from '../utils/helpers';
+} from '@/utils/helpers';
 import { format } from '@/utils/fecha';
-import { isNumber } from '../utils/typeCheckers';
+import { isNumber } from '@/utils/_';
 
 export default {
   name: 'Calendar',

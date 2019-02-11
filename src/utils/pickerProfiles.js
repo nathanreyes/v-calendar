@@ -8,8 +8,8 @@ import {
   getLastArrayItem,
   arrayHasItems,
 } from './helpers';
-import { isDate } from './typeCheckers';
 import DateInfo from './dateInfo';
+import { isDate } from './_';
 
 // #region Single Date Picker
 

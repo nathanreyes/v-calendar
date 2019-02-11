@@ -2,7 +2,7 @@
 /* DATE FORMATTING & PARSING USING A SLIGHTLY MODIFIED VERSION OF FECHA (https://github.com/taylorhakes/fecha) */
 /* ADDS A NARROW WEEKDAY FORMAT 'dd' */
 import defaults from './defaults';
-import { isString, isArray } from './typeCheckers';
+import { isString, isArray } from './_';
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
@@ -123,7 +123,7 @@ const formatFlags = {
     const o = dateObj.getTimezoneOffset();
     return (
       (o > 0 ? '-' : '+') +
-      pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4)
+      pad(Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60), 4)
     );
   },
 };
@@ -254,12 +254,10 @@ export const format = (dateObj, mask) => {
     return '??';
   });
   // Apply formatting rules
-  mask = mask.replace(
-    token,
-    $0 =>
-      $0 in formatFlags
-        ? formatFlags[$0](dateObj, defaults)
-        : $0.slice(1, $0.length - 1),
+  mask = mask.replace(token, $0 =>
+    $0 in formatFlags
+      ? formatFlags[$0](dateObj, defaults)
+      : $0.slice(1, $0.length - 1),
   );
   // Inline literal values back into the formatted value
   return mask.replace(/\?\?/g, () => literals.shift());

@@ -1,5 +1,5 @@
 import { POPOVER_VISIBILITIES } from './constants';
-import { isObject, isFunction } from './typeCheckers';
+import { isObject, isFunction } from './_';
 
 const defaults = {
   componentPrefix: 'v',
@@ -17,6 +17,12 @@ const defaults = {
     input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
     dayPopover: 'WWW, MMM D, YYYY',
     data: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
+  },
+  screens: {
+    sm: '576px',
+    md: '768px',
+    lg: '992px',
+    xl: '1200px',
   },
   datePickerInputProps: ({ dragValue, mode, format }) => ({
     ...(mode === 'single' && {
