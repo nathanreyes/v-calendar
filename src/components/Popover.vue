@@ -1,6 +1,7 @@
 <script>
 import Popper from 'popper.js';
 import { on, off } from '@/utils/helpers';
+import { addTapOrClickHandler } from '@/utils/touch';
 import { isFunction } from '@/utils/_';
 
 export default {
@@ -126,14 +127,17 @@ export default {
       on(this.$refs.popover, 'mouseleave', this.onMouseLeave);
       on(this.$refs.popover, 'focusin', this.onFocusIn);
       on(this.$refs.popover, 'blur', this.onBlur);
-      on(document, 'click', this.onDocumentClick);
+      this.removeDocHandler = addTapOrClickHandler(
+        document,
+        this.onDocumentClick,
+      );
     },
     removeEvents() {
       off(this.$refs.popover, 'mouseover', this.onMouseOver);
       off(this.$refs.popover, 'mouseleave', this.onMouseLeave);
       off(this.$refs.popover, 'focusin', this.onFocusIn);
       off(this.$refs.popover, 'blur', this.onBlur);
-      off(document, 'click', this.onDocumentClick);
+      if (this.removeDocHandler) this.removeDocHandler();
     },
     onMouseOver(e) {
       if (this.isInteractive && this.visibility === 'hover') {

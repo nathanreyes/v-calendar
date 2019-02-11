@@ -100,6 +100,11 @@ export default {
               'is-expanded': this.isExpanded,
             },
           ],
+          on: {
+            touchstart: this.touchStart,
+            touchmove: this.touchMove,
+            touchend: this.touchEnd,
+          },
         },
         [
           h(
@@ -437,10 +442,10 @@ export default {
           // Swipe left
           if (deltaX < 0) {
             // Move to previous month
-            this.moveNextMonth();
+            this.moveNext();
           } else {
             // Move to next month
-            this.movePrevMonth();
+            this.movePrev();
           }
         }
       }
