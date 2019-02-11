@@ -4,24 +4,19 @@
     :style="dayStyle"
   >
     <!-- Background layers -->
-    <transition-group
-      name="background"
-      tag="div"
-      class="c-day-backgrounds c-day-layer"
-      v-if="hasBackgrounds"
-    >
+    <div class="c-day-backgrounds c-day-layer" v-if="hasBackgrounds">
       <div v-for="background in backgrounds" :key="background.key" :class="background.wrapperClass">
         <div class="c-day-background" :class="background.class" :style="background.style"></div>
       </div>
-    </transition-group>
-    <!-- <div :class="{ 'c-day-box-center-center': !$scopedSlots['day-content'] }"> -->
+    </div>
+    <!--Content layer-->
     <popover-ref
       :id="dayPopoverId"
       :args="dayEvent"
       :visibility="popoverVisibility"
       :is-interactive="popoverIsInteractive"
     >
-      <!-- Content layer -->
+      <!--Content slot-->
       <slot
         name="day-content"
         :day="day"
@@ -34,14 +29,13 @@
         </span>
       </slot>
     </popover-ref>
-    <!-- </div> -->
-    <!-- Dots layer -->
+    <!--Dots layer-->
     <div class="c-day-layer c-day-box-center-bottom" v-if="hasDots">
       <div class="c-day-dots" :style="dotsStyle">
         <span v-for="dot in dots" :key="dot.key" class="c-day-dot" :style="dot.style"></span>
       </div>
     </div>
-    <!-- Bars layer -->
+    <!--Bars layer-->
     <div class="c-day-layer c-day-box-center-bottom" v-if="hasBars">
       <div class="c-day-bars" :style="barsStyle">
         <span v-for="bar in bars" :key="bar.key" class="c-day-bar" :style="bar.style"></span>
@@ -340,7 +334,6 @@ export default {
     getBackground({ key, highlight, highlightCaps, targetDate }) {
       // Initialize the background object
       const {
-        animated,
         width,
         height,
         backgroundColor,
@@ -366,9 +359,7 @@ export default {
         },
       };
       if (targetDate.isDate || targetDate.isComplex) {
-        background.wrapperClass = `c-day-layer c-day-box-center-center ${
-          animated ? 'c-day-scale-enter c-day-scale-leave' : ''
-        }`;
+        background.wrapperClass = 'c-day-layer c-day-box-center-center';
       } else {
         const onStart = targetDate.startTime === this.dateTime;
         const onEnd = targetDate.endTime === this.dateTime;
@@ -376,18 +367,14 @@ export default {
         const endShortWidth = '50%';
         // Is the day date on the highlight start and end date
         if (onStart && onEnd) {
-          const animation = animated
-            ? 'c-day-scale-enter c-day-scale-leave'
-            : '';
-          background.wrapperClass = `c-day-layer c-day-box-center-center ${animation}`;
+          background.wrapperClass = 'c-day-layer c-day-box-center-center';
           background.style.width = endLongWidth;
           background.style.borderWidth = borderWidth;
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
           // Is the day date on the highlight start date
         } else if (onStart) {
-          const animation =
-            animated && !highlightCaps ? 'c-day-slide-left-scale-enter' : '';
-          background.wrapperClass = `c-day-layer c-day-box-right-center shift-right ${animation}`;
+          background.wrapperClass =
+            'c-day-layer c-day-box-right-center shift-right';
           if (highlightCaps) {
             background.style.width = endShortWidth;
             background.style.borderWidth = `${borderWidth} 0`;
@@ -399,9 +386,8 @@ export default {
           }
           // Is the day date on the highlight end date
         } else if (onEnd) {
-          const animation =
-            animated && !highlightCaps ? 'c-day-slide-right-scale-enter' : '';
-          background.wrapperClass = `c-day-layer c-day-box-left-center shift-left ${animation}`;
+          background.wrapperClass =
+            'c-day-layer c-day-box-left-center shift-left';
           if (highlightCaps) {
             background.style.width = endShortWidth;
             background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
@@ -426,7 +412,6 @@ export default {
       const { key, highlightCaps, targetDate, isNew } = attribute;
       const { startTime, endTime } = targetDate;
       const {
-        animated,
         width,
         height,
         backgroundColor,
@@ -436,25 +421,9 @@ export default {
         opacity,
       } = highlightCaps;
       const borderRadius = highlightCaps.borderRadius || '50%';
-      let animation = '';
-      if (animated) {
-        if (startTime === endTime) {
-          animation = 'c-day-scale-enter c-day-scale-leave';
-        } else if (startTime === this.dateTime) {
-          animation = isNew
-            ? 'c-day-slide-left-translate-enter'
-            : 'c-day-slide-right-translate-enter';
-        } else if (endTime === this.dateTime) {
-          animation = isNew
-            ? 'c-day-slide-right-translate-enter'
-            : 'c-day-slide-left-translate-enter';
-        }
-      }
       return {
         key: `${key}-cap`,
-        wrapperClass: `c-day-layer c-day-box-center-center ${
-          animated ? animation : ''
-        }`,
+        wrapperClass: 'c-day-layer c-day-box-center-center',
         style: {
           width: width || height,
           height,
@@ -617,29 +586,5 @@ export default {
   height: $bar-height
   background-color: $bar-background-color
   transition: all $day-content-transition-time
-
-// TRANSITION ANIMATIONS
-
-.background-enter-active
-
-  &.c-day-slide-right-scale-enter
-    animation: $slide-right-scale-enter-animation
-
-  &.c-day-slide-right-translate-enter
-    animation: $slide-right-translate-enter-animation
-
-  &.c-day-slide-left-scale-enter
-    animation: $slide-left-scale-enter-animation
-
-  &.c-day-slide-left-translate-enter
-    animation: $slide-left-translate-enter-animation
-
-  &.c-day-scale-enter
-    animation: $scale-enter-animation
-
-.background-leave-active
-
-  &.c-day-scale-leave
-    animation: $scale-leave-animation
 
 </style>
