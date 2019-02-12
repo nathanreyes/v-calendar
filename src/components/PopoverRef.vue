@@ -106,12 +106,6 @@ export default {
         this.refreshVisibility();
       }
     },
-    includesEl(element) {
-      return (
-        element &&
-        (this.reference === element || this.reference.contains(element))
-      );
-    },
     refreshVisibility() {
       switch (this.visibility) {
         case 'hover':

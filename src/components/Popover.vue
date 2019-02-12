@@ -167,8 +167,6 @@ export default {
       if (this.visibility !== 'click' || !this.$refs.popover || !this.ref)
         return;
       if (
-        this.$refs.popover === e.target ||
-        this.ref === e.target ||
         this.$refs.popover.contains(e.target) ||
         this.ref.contains(e.target)
       ) {

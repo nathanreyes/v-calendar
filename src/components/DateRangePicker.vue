@@ -1,6 +1,7 @@
 <script>
 import Calendar from './Calendar';
 import { rangeNormalizer } from '@/utils/pickerProfiles';
+import { addTapOrClickHandler } from '@/utils/touch';
 
 export default {
   render(h) {
@@ -73,10 +74,16 @@ export default {
       this.$emit('drag', rangeNormalizer(val));
     },
   },
-  created() {
+  mounted() {
     // Clear drag on escape keydown
     document.addEventListener('keydown', e => {
       if (this.dragValue && e.keyCode === 27) {
+        this.dragValue = null;
+      }
+    });
+    // Clear drag on background click
+    addTapOrClickHandler(document, e => {
+      if (!this.$el.contains(e.target)) {
         this.dragValue = null;
       }
     });

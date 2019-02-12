@@ -1,6 +1,8 @@
 import { on, off } from '@/utils/helpers';
 import { isFunction } from './_';
 
+// This function detects taps or clicks
+// Can't just rely on 'click' event because of oddities in mobile Safari
 export const addTapOrClickHandler = (element, handler) => {
   if (!element || !element.addEventListener || !isFunction(handler)) {
     return null;

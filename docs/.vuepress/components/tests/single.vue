@@ -1,8 +1,6 @@
 <template>
   <div class="example">
-    <v-responsive-wrapper>
-      <v-date-picker v-model="date" :select-attribute="selectAttribute" is-inline/>
-    </v-responsive-wrapper>
+    <v-date-picker v-model="date" :select-attribute="selectAttribute" is-inline/>
   </div>
 </template>
 
