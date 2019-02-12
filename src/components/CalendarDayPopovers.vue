@@ -81,18 +81,4 @@ export default {
   margin: 0px;
   line-height: 1.5;
 }
-/* .c-day-popover-list {
-  position: relative;
-}
-.c-day-popover-list-leave-active {
-  transition: all 0.3s;
-}
-.c-day-popover-list-leave-active {
-  position: absolute;
-}
-.c-day-popover-list-enter,
-.c-day-popover-list-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-} */
 </style>

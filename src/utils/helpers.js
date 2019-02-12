@@ -291,3 +291,7 @@ export const off = (element, event, handler) => {
       : element.detachEvent('on' + event, handler);
   }
 };
+
+export const elementContains = (element, child) => {
+  return element === child || element.contains(child);
+};

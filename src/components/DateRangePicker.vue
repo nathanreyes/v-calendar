@@ -2,6 +2,7 @@
 import Calendar from './Calendar';
 import { rangeNormalizer } from '@/utils/pickerProfiles';
 import { addTapOrClickHandler } from '@/utils/touch';
+import { elementContains } from '@/utils/helpers';
 
 export default {
   render(h) {
@@ -83,7 +84,7 @@ export default {
     });
     // Clear drag on background click
     addTapOrClickHandler(document, e => {
-      if (!this.$el.contains(e.target)) {
+      if (!elementContains(this.$el, e.target)) {
         this.dragValue = null;
       }
     });

@@ -7,10 +7,10 @@ DONE - Fix bug when displaying popover when changing range selection
 DONE - Fix bug when pressing 'Enter' in `v-date-picker`
 DONE - Detect taps to dismiss popovers on mobile
 DONE - Fix touch swipe navigation on mobile
+DONE - Remove animations on date selection
 
 Fix popover caret on mobile
 Fix custom calendar layout on mobile
 Revert to native datepicker on mobile
-Remove animations on date selection
 Use transparent border for day cells
 Add a scroll style navigation pane

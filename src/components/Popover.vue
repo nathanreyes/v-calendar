@@ -1,6 +1,6 @@
 <script>
 import Popper from 'popper.js';
-import { on, off } from '@/utils/helpers';
+import { on, off, elementContains } from '@/utils/helpers';
 import { addTapOrClickHandler } from '@/utils/touch';
 import { isFunction } from '@/utils/_';
 
@@ -167,8 +167,8 @@ export default {
       if (this.visibility !== 'click' || !this.$refs.popover || !this.ref)
         return;
       if (
-        this.$refs.popover.contains(e.target) ||
-        this.ref.contains(e.target)
+        elementContains(this.$refs.popover, e.target) ||
+        elementContains(this.ref, e.target)
       ) {
         return;
       }
