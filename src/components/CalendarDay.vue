@@ -29,22 +29,20 @@ export default {
           {
             class: 'c-day-backgrounds c-day-layer',
           },
-          this.backgrounds.map(
-            ({ key, wrapperClass, class: bgClass, style }) => {
-              h(
-                'div',
-                {
-                  key: key,
-                  class: wrapperClass,
-                },
-                [
-                  h('div', {
-                    class: ['c-day-background', bgClass],
-                    style,
-                  }),
-                ],
-              );
-            },
+          this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) =>
+            h(
+              'div',
+              {
+                key: key,
+                class: wrapperClass,
+              },
+              [
+                h('div', {
+                  class: ['c-day-background', bgClass],
+                  style,
+                }),
+              ],
+            ),
           ),
         )
       );
@@ -52,6 +50,30 @@ export default {
 
     // Content layer
     const contentLayer = () => {
+      return isFunction(this.$scopedSlots['day-content'])
+        ? this.$scopedSlots['day-content']({
+            day: this.day,
+            attributes: this.attributesList,
+            dayProps: this.dayContentProps,
+            dayEvents: this.dayContentEvents,
+          })
+        : h(
+            'span',
+            {
+              class: ['c-day-content', this.dayContentClass],
+              style: this.dayContentStyle,
+              attrs: { ...this.dayContentProps },
+              on: this.dayContentEvents,
+            },
+            [h('span', [this.day.label])],
+          );
+    };
+
+    // Popover content wrapper
+    const contentWrapperLayer = () => {
+      if (!this.hasPopovers) {
+        return contentLayer();
+      }
       return h(
         PopoverRef,
         {
@@ -62,24 +84,7 @@ export default {
             isInteractive: this.popoverIsInteractive,
           },
         },
-        [
-          (isFunction(this.$scopedSlots.dayContent) &&
-            this.$scopedSlots.dayContent({
-              day: this.day,
-              attributes: this.attributesList,
-              dayProps: this.dayContentProps,
-              dayEvents: this.dayContentEvents,
-            })) ||
-            h(
-              'span',
-              {
-                class: 'c-day-content',
-                attrs: this.dayContentProps,
-                on: this.dayContentEvents,
-              },
-              [h('span', [this.day.label])],
-            ),
-        ],
+        [contentLayer()],
       );
     };
 
@@ -99,15 +104,13 @@ export default {
                 class: 'c-day-dots',
                 style: this.dotsStyle,
               },
-              [
-                this.dots.map(({ key, style }) => {
-                  return h('span', {
-                    class: 'c-day-dot',
-                    style,
-                    key,
-                  });
-                }),
-              ],
+              this.dots.map(({ key, style }) => {
+                return h('span', {
+                  class: 'c-day-dot',
+                  style,
+                  key,
+                });
+              }),
             ),
           ],
         )
@@ -130,15 +133,13 @@ export default {
                 class: 'c-day-bars',
                 style: this.barsStyle,
               },
-              [
-                this.dots.map(({ key, style }) => {
-                  return h('span', {
-                    class: 'c-day-bar',
-                    style,
-                    key,
-                  });
-                }),
-              ],
+              this.bars.map(({ key, style }) => {
+                return h('span', {
+                  class: 'c-day-bar',
+                  style,
+                  key,
+                });
+              }),
             ),
           ],
         )
@@ -156,7 +157,7 @@ export default {
         ],
         style: this.dayStyle,
       },
-      [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
+      [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
     );
   },
   data() {
@@ -265,8 +266,6 @@ export default {
     },
     dayContentProps() {
       return {
-        class: this.dayContentClass,
-        style: this.dayContentStyle,
         tabindex: '0',
       };
     },
