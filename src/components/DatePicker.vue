@@ -37,6 +37,25 @@ export default {
       });
     // If inline just return the picker component
     if (this.isInline) return getPickerComponent();
+
+    const inputSlot = () =>
+      (isFunction(this.$scopedSlots.default) &&
+        this.$scopedSlots.default({
+          inputValue: this.inputValue,
+          inputProps: this.inputProps_,
+          inputEvents: this.inputEvents,
+          updateValue: this.updateValue,
+        })) ||
+      h('input', {
+        class: this.inputProps_.class,
+        style: this.inputProps_.style,
+        attrs: {
+          ...this.inputAttrs,
+        },
+        on: this.inputEvents,
+        ref: 'input',
+      });
+
     // Return fragment with slot/input and popover
     return h(Fragment, [
       h(
@@ -48,28 +67,7 @@ export default {
             isInteractive: true,
           },
         },
-        [
-          (isFunction(this.$scopedSlots.default) &&
-            this.$scopedSlots.default({
-              inputValue: this.inputValue,
-              inputProps: this.inputProps_,
-              inputEvents: this.inputEvents,
-              updateValue: this.updateValue,
-            })) ||
-            h('input', {
-              class: this.inputProps_.class,
-              style: this.inputProps_.style,
-              domProps: {
-                value: this.inputProps_.value,
-              },
-              attrs: {
-                type: 'text',
-                ...this.inputAttrs,
-              },
-              on: this.inputEvents,
-              ref: 'input',
-            }),
-        ],
+        [inputSlot()],
       ),
       h(
         Popover,
@@ -235,6 +233,8 @@ export default {
     inputAttrs() {
       const attrs = {
         ...this.inputProps_,
+        value: this.inputProps_.value,
+        type: 'input',
       };
       if (attrs) {
         delete attrs.style;
