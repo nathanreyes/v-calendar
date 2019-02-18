@@ -1,6 +1,6 @@
 import DateInfo from './dateInfo';
 import { arrayHasItems } from './helpers';
-import { isArray } from './_';
+import { isArray, some } from './_';
 
 const Attribute = config => {
   if (!config) return null;
@@ -21,7 +21,7 @@ const Attribute = config => {
   const excludeDates = ((hasExcludeDates && config.excludeDates) || [])
     .map(d => d && (d.isDateInfo ? d : DateInfo(d, config.order)))
     .filter(d => d);
-  const isComplex = dates.some(d => d.isComplex);
+  const isComplex = some(dates, d => d.isComplex);
   const attr = {
     ...config,
     isAttribute: true,

@@ -30,7 +30,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build --target lib src/lib.js",
-    "test": "vue-cli-service test",
+    "test": "vue-cli-service test:unit --watch",
     "lint": "vue-cli-service lint",
     "dev": "vuepress dev docs",
     "build:docs": "vuepress build docs",

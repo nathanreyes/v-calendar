@@ -314,6 +314,62 @@ Here is a complete reference of date component specifiers available.
 
 Highlights are simply 'highlighted' regions with custom defined height, background and border properties. For date regions (start and end date), they appear as a single continous span with specified border radius applied only to the end caps.
 
+```js
+// 1A. Uses the active theme w/ default configuration
+highlight: true   
+
+// Uses the red theme w/ default configuration
+highlight: 'red'
+
+// Uses the specified class, style and/or theme
+highlight: {
+  class: `${$theme.classes.bgRedL1} my-special-class`,
+  style: {
+    borderWidth: '1px'
+  },
+  theme: 'red'
+}
+```
+
+The settings listed above apply for the entire span of the highlight. Additionally, you may target specific different sections of the highlight using the following highlight properties:
+
+| Key | Target Area |
+| --- | ----------- |
+| `base` | Base background layer applied to entire span of the highlight |
+| `baseStart` | First day of the highlight span on the base layer |
+| `baseEnd` |  Last day of the highlight span on the base layer |
+| `baseStartEnd` | First or last day of the highlight span on the base layer |
+| `start` | First day of the highlight span on an overlaid layer |
+| `end` | Last day of the highlight span on an overlaid layer |
+| `startEnd` | First or last day of the highlight span on and overlaid layer |
+
+For highlights, when targeting the `start`, `end` and `startEnd` sections, a second background is laid on top of the base background.
+
+[Insert picture here]
+
+Any settings that apply for the `highlight` may also be applied to each subsection.
+
+
+```js
+
+// 2A. Produces same result as 1A
+highlight: {
+  base: true,
+  startEnd: true
+}
+
+// 2B. Produces same result as 1B
+highlight: {
+  base: 'red',
+  startEnd: 'red',
+}
+
+// 2C. Produces same result as 2B, but without the end caps
+highlight: {
+  base: 'red'
+}
+```
+
 ```html
 <v-calendar
   :columns='2'

@@ -7,7 +7,7 @@ import {
   mixinOptionalProps,
 } from '@/utils/helpers';
 import defaults from '@/utils/defaults';
-import { isFunction } from '@/utils/_';
+import { isFunction, some } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
@@ -39,7 +39,7 @@ export default {
               [
                 h('div', {
                   class: ['c-day-background', bgClass],
-                  style,
+                  // style,
                 }),
               ],
             ),
@@ -61,7 +61,7 @@ export default {
             'span',
             {
               class: ['c-day-content', this.dayContentClass],
-              style: this.dayContentStyle,
+              // style: this.dayContentStyle,
               attrs: { ...this.dayContentProps },
               on: this.dayContentEvents,
             },
@@ -240,13 +240,13 @@ export default {
       return (
         (this.hasPopovers &&
           ['visible', 'hover', 'focus', 'click'].find(v =>
-            this.popovers.some(p => p.visibility === v),
+            some(this.popovers, p => p.visibility === v),
           )) ||
         'hidden'
       );
     },
     popoverIsInteractive() {
-      return this.hasPopovers && this.popovers.some(p => p.isInteractive);
+      return this.hasPopovers && some(this.popovers, p => p.isInteractive);
     },
     dayClass() {
       return this.day.classes;
@@ -358,10 +358,9 @@ export default {
             } = attr;
             const { backgrounds, dots, bars, popovers } = glyphs;
             // Add backgrounds for highlight if needed
-            if (highlight && !(onStart && onEnd && highlightCaps))
-              backgrounds.push(this.getBackground(attr));
-            if (highlightCaps && (onStart || onEnd))
-              backgrounds.push(this.getBackgroundCap(attr));
+            // if (highlight) backgrounds.push(this.getBackgrounds(attr));
+            // if (highlightCaps && (onStart || onEnd))
+            //   backgrounds.push(this.getBackgroundCap(attr));
             // Add dot if needed
             if (dot) dots.push(this.getDot(attr));
             // Add bar if needed
@@ -421,7 +420,44 @@ export default {
         ],
       ).target;
     },
-    getBackground({ key, highlight, highlightCaps, targetDate }) {
+    getBackgrounds({ key, highlight, targetDate }) {
+      const backgrounds = [];
+      if (!highlight) return backgrounds;
+
+      const { isDate, isComplex, startTime, endTime } = targetDate;
+      let background = { ...highlight };
+
+      if (isDate || isComplex) {
+        background =
+          background.ends || background.start || background.end || background;
+        backgrounds.push(this.getBackgroundLayer({ key, highlight }));
+      } else {
+        const onStart = startTime === this.dateTime;
+        const onEnd = startTime === this.dateTime;
+        const onEnds = onStart && onEnd;
+        const inMiddle = !onStart && !onEnd;
+        if (onEnds) {
+        } else if (inMiddle) {
+          key = `${key}-middle`;
+          background = background.middle || background;
+          backgrounds.push(
+            this.getBackgroundLayer({ key, background, inMiddle }),
+          );
+        } else if (onStart) {
+          key = `${key}-start`;
+          background = background.start || background.ends || background;
+          backgrounds.push(this.getBackgroundLayer({ key, background }));
+        } else {
+          key = `${key}-${onStart ? 'start' : 'end'}`;
+          background =
+            (onStart ? background.start : background.end) ||
+            background.ends ||
+            background;
+          backgrounds.push(this.getBackgroundLayer({ key, background }));
+        }
+      }
+    },
+    getBackgroundLayer({ key, highlight, highlightCaps, targetDate }) {
       // Initialize the background object
       const {
         width,
@@ -457,12 +493,14 @@ export default {
         const endShortWidth = '50%';
         // Is the day date on the highlight start and end date
         if (onStart && onEnd) {
+          background.class = 'vc-highlight vc-highlight-start vc-highlight-end';
           background.wrapperClass = 'c-day-layer c-day-box-center-center';
           background.style.width = endLongWidth;
           background.style.borderWidth = borderWidth;
           background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
           // Is the day date on the highlight start date
         } else if (onStart) {
+          background.class = 'vc-highlight vc-highlight-start';
           background.wrapperClass =
             'c-day-layer c-day-box-right-center shift-right';
           if (highlightCaps) {
@@ -476,19 +514,21 @@ export default {
           }
           // Is the day date on the highlight end date
         } else if (onEnd) {
+          background.class = 'vc-highlight vc-highlight-end';
           background.wrapperClass =
             'c-day-layer c-day-box-left-center shift-left';
-          if (highlightCaps) {
-            background.style.width = endShortWidth;
-            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
-            background.style.borderRadius = 0;
-          } else {
-            background.style.width = endLongWidth;
-            background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
-            background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
-          }
+          // if (highlightCaps) {
+          //   background.style.width = endShortWidth;
+          //   background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
+          //   background.style.borderRadius = 0;
+          // } else {
+          //   background.style.width = endLongWidth;
+          //   background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
+          //   background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
+          // }
           // Is the day date between the highlight start/end dates
         } else {
+          background.class = 'vc-highlight vc-highlight-middle';
           background.wrapperClass =
             'c-day-layer c-day-box-center-center shift-left-right';
           background.style.width = '100%';
@@ -496,6 +536,7 @@ export default {
           background.style.borderRadius = '0';
         }
       }
+      background.class = `${background.class} vc-${theme || 'blue'}`;
       return background;
     },
     getBackgroundCap(attribute) {
@@ -585,6 +626,7 @@ export default {
 
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
+@import '../styles/themes.sass'
 
 .c-day
   position: relative
