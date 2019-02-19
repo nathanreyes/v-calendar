@@ -5,11 +5,10 @@ import {
   capitalize,
   kebabCase,
   get,
-  set,
+  has,
   hasAny,
-  mapValues,
-  defaults,
   toPairs,
+  set,
 } from './_';
 
 const cssProps = ['bg', 'text'];
@@ -28,15 +27,13 @@ const colorSuffixes = [
 ];
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
-const displayProps = ['class', 'style', 'theme'];
+const displayProps = ['class', 'style', 'color', 'fillMode'];
 
 export const defaultThemeConfig = {
   color: 'blue',
   highlight: {
     base: {
-      theme: {
-        fill: 'light',
-      },
+      fillMode: 'light',
     },
   },
 };
@@ -54,204 +51,68 @@ function mixinCssClasses(target) {
   return target;
 }
 
-function normArray(config) {
-  if (isString(config)) {
-    return [config];
-  }
-  if (isArray(config)) {
-    return [...config];
-  }
-  return [];
-}
-
-function normObject(config) {
-  if (isObject(config)) {
-    return {
-      ...config,
-    };
-  }
-  return {};
-}
-
-function getDefDisplay({ type, initial, themeConfig }) {
-  switch (type) {
-    case 'class':
-      return [...initial];
-    case 'style':
-      return { ...initial };
-    case 'theme':
-      return {
-        ...initial,
-        color: themeConfig.color,
-      };
-  }
-}
-
-function getDefTarget(type, themeConfig) {
-  switch (type) {
-    case 'base':
-      return {
-        theme: {
-          ...getDefDisplay('theme', themeConfig),
-          fill: 'light',
-        },
-      };
-    case 'start':
-    case 'end':
-    case 'startEnd':
-      return {
-        theme: {
-          ...getDefDisplay('theme', themeConfig),
-          fill: 'solid',
-        },
-      };
-  }
-}
-
-function getDefAttribute(type, themeConfig) {
-  switch (type) {
-    case 'highlight':
-      return {
-        base: getDefTarget('base', themeConfig),
-      };
-  }
-}
-
-function normalizeDisplay({ root, type, config, path, opts, themeConfig }) {
-  let defVal = getDefDisplay({ type, initial: config, themeConfig });
-  if (type === 'class' && isArray(config)) {
-    set(root, path, defVal);
-  } else if (type === 'style' && isObject(config)) {
-    set(root, path, defVal);
-  } else if (type === 'theme') {
-    set(root, path, { ...defVal, ...opts.theme });
-  }
-}
-
-function normalizeTarget({ root, type, config, path, opts, themeConfig }) {
-  const defTarget = getDefTarget(type, themeConfig);
-  if (config === true) {
-    set(root, path, defTarget);
-  } else if (isString(config)) {
-    set(root, path, defTarget);
-    set(opts, 'theme.color', config);
-  } else if (isObject(config)) {
-    if (hasAny(config, displayProps)) {
-      set(root, path, { ...config });
-    } else {
-      set(root, `${path}.style`, { ...config });
-    }
-  }
-
-  toPairs(get(root, path)).map(([displayType, displayConfig]) => {
-    normalizeDisplay({
-      root,
-      type: displayType,
-      config: displayConfig,
-      path: `${path}.${displayType}`,
-      opts: { ...opts },
-      themeConfig,
-    });
-  });
-}
-
-function normalizeAttribute({ type, config, themeConfig }) {
-  let root = {};
-  const opts = { theme: { color: themeConfig.color } };
-  const defAttribute = getDefAttribute(type, themeConfig);
-  if (config === true) {
-    root = defAttribute;
-  } else if (isString(config)) {
-    root = defAttribute;
-    set(opts, 'theme.color', config);
-  } else if (isObject(config)) {
-    if (hasAny(config, targetProps)) {
-      root = { ...config };
-    } else if (hasAny(config, displayProps)) {
-      set(root, 'base', { ...config });
-    } else {
-      set(root, 'base.style', { ...config });
-    }
-  }
-  toPairs(root).map(([targetType, targetConfig]) => {
-    normalizeTarget({
-      root,
-      type: targetType,
-      config: targetConfig,
-      path: targetType,
-      opts: { ...opts },
-      themeConfig,
-    });
-  });
-
-  return root;
-}
-
 // Normalizes attribute config to the structure defined by the properties
-function normalizeAttr(
+function normalizeAttr({
   config,
-  attrType,
+  type,
   targetProps,
   displayProps,
   themeConfig,
-) {
-  let target = {};
-  // Assign non-object configs to the base theme
+}) {
+  let root = {};
+  // Assign default attribute for 'true'
   if (config === true) {
-    target = themeConfig.highlight;
-  } else if (!isObject(config)) {
-    target.base = { theme: config };
-    // Check if config is NOT in normalized structure
-  } else if (!hasAny(config, targetProps)) {
-    target.base = { ...config };
+    root = themeConfig[type] || defaultThemeConfig[type];
+  // Assign strings to base color
+  } else if (isString(config)) {
+    root.base = { color: config };
+  // Mixin objects at top level
+  } else if (isObject(config)) {
+    root = { ...config };
   } else {
-    target = { ...config };
+    return null;
   }
-  // Normalize attribute target sections
-  target = mapValues(target, val => {
-    let result = {};
-    if (!isObject(val)) {
-      result.theme = val;
-    } else if (!hasAny(val, displayProps)) {
-      // Assign properties to style for backwards compatibility
-      result.style = { ...val };
-    } else {
-      result = { ...val };
+  // Move non-target properties to base target
+  if (!hasAny(root, targetProps)) {
+    root = { base: { ...root } };
+  }
+  // Normalize each target
+  toPairs(root).forEach(([targetType, targetConfig]) => {
+    if (targetConfig === true) {
+      root[targetType] = { color: themeConfig.color }
+    } else if (isString(targetConfig)) {
+      root[targetType] = { color: targetConfig };
+    } else if (isObject(targetConfig)) {
+      root[targetType] = { ...targetConfig };
     }
-    // Normalize attribute display properties
-    result.class = normArray(result.class);
-    result.style = normObject(result.style);
-    if (!isObject(result.theme)) {
-      result.theme = {
-        color: isString(result.theme) ? result.theme : themeConfig.color,
-        fill: 'solid',
-      };
-      console.log(`${attrType}.${target}.theme.fill`);
-    } else {
-      defaults(result.theme, {
-        color: themeConfig.color,
-        fill: 'solid',
-      });
+
+    if (!hasAny(root[targetType], displayProps)) {
+      root[targetType] = { style: { ...root[targetType] } }
     }
-    return result;
+
+    displayProps.forEach(displayType => {
+      const displayPath = `${targetType}.${displayType}`;
+      if (!has(root, displayPath) && has(themeConfig[type], displayPath)) {
+        set(root, displayPath, get(themeConfig[type], displayPath));
+      }
+    })
+    if (!has(root, `${targetType}.color`)) {
+      set(root, `${targetType}.color`, themeConfig.color);
+    }
   });
-  return target;
+
+  return root;
 }
 
 export const normalizeHighlight = (
   config,
   themeConfig = defaultThemeConfig,
 ) => {
-  // let highlight = normalizeAttr(
-  //   config,
-  //   'highlight',
-  //   normHighlightProps,
-  //   normAttrProps,
-  //   themeConfig,
-  // );
-  let highlight = normalizeAttribute({
+  let highlight = normalizeAttr({
     config,
     type: 'highlight',
+    targetProps,
+    displayProps,
     themeConfig,
   });
   return highlight;
