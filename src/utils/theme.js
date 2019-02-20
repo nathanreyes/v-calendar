@@ -1,7 +1,6 @@
 import {
   isObject,
   isString,
-  isArray,
   capitalize,
   kebabCase,
   get,
@@ -10,6 +9,7 @@ import {
   toPairs,
   set,
 } from './_';
+import { isArray } from 'util';
 
 const cssProps = ['bg', 'text'];
 const colors = ['blue', 'red', 'orange'];
@@ -106,17 +106,39 @@ function normalizeAttr({
   return root;
 }
 
+function normArray(existing, ...append) {
+  if (!existing) return [...append];
+  if (!isArray(existing)) return [existing, ...append];
+  return [...existing, ...append];
+}
+
 export const normalizeHighlight = (
   config,
   themeConfig = defaultThemeConfig,
 ) => {
-  return normalizeAttr({
+  const highlight = normalizeAttr({
     config,
     type: 'highlight',
     targetProps,
     displayProps,
     themeConfig,
   });
+  toPairs(highlight).map(([targetType, targetConfig]) => {
+    const isDark = themeConfig.isDark;
+    const color = targetConfig.color || themeConfig.color;
+    let bgClass, contentClass;
+    switch (targetConfig.fillMode) {
+      case 'light':
+        bgClass = `bg-${color}-${isDark ? 'd2' : 'd1'}`
+        contentClass = `text-${isDark ? 'white' : color}-${!isDark && 'd4'}`
+      case 'solid':
+        bgClass = `bg-${color}-d1`
+        contentClass = `text-white`
+    }
+    targetConfig.class = normArray(targetConfig.class, bgClass)
+    targetConfig.contentClass = normArray(targetConfig.contentClass, contentClass)
+  });
+  return highlight;
 };
 
 const createTheme = Vue => {

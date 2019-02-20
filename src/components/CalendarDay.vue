@@ -30,8 +30,7 @@ export default {
           {
             class: 'c-day-backgrounds c-day-layer',
           },
-          this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) =>
-            h(
+          this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) => h(
               'div',
               {
                 key: key,
@@ -425,20 +424,26 @@ export default {
 
       const { isDate, isComplex, startTime, endTime } = targetDate;
       const { base, start, end, startEnd } = normalizeHighlight(highlight);
+      let targetArea, wrapperClass;
 
       if (isDate || isComplex) {
-        const targetArea = startEnd || start || end || base;
-        const wrapperClass = 'c-day-layer c-day-box-center-center';
-        if (highlight)
+        targetArea = startEnd || start || end || base;
+        wrapperClass = 'c-day-layer c-day-box-center-center';
+        if (highlight) {
           backgrounds.push({
             key,
             wrapperClass,
-            class: ['vc-highlight bg-blue-d1', ...(targetArea.class || [])],
+            class: [ 'vc-highlight', ...targetArea.class ],
+            contentClass: targetArea.contentClass,
             // style: { ...targetArea.style },
           });
+        }
       } else {
+       const onStart = startTime === this.dateTime;
+       const onEnd = endTime === this.dateTime;
+       const onStartEnd = onStart || onEnd;
+        
       }
-      console.log(backgrounds);
       return backgrounds;
 
       // if (isDate || isComplex) {
