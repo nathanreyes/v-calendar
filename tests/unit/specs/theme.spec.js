@@ -10,12 +10,11 @@ const themeConfig = {
 };
 
 describe.only('Theme', () => {
-
   it('should normalize highlight w/ true', () => {
     let config = true;
     let normConfig = normalizeHighlight(config, themeConfig);
-    expect(normConfig).toEqual(themeConfig.highlight)
-  })
+    expect(normConfig).toEqual(themeConfig.highlight);
+  });
 
   it('should normalize highlight w/ false', () => {
     let config = false;
@@ -92,16 +91,17 @@ describe.only('Theme', () => {
         style: {
           borderWidth: '1px',
         },
+        fillMode: 'light',
       },
     };
     const normConfig = normalizeHighlight(config);
     expect(normConfig).toEqual({
       base: { color: 'blue', fillMode: 'light' },
-      start: { color: 'red', fillMode: 'light' },
+      start: { color: 'red' },
       end: {
         ...config.end,
-          color: 'blue',
-          fillMode: 'light',
+        color: 'blue',
+        fillMode: 'light',
       },
     });
   });

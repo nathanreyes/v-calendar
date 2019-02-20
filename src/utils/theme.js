@@ -35,6 +35,9 @@ export const defaultThemeConfig = {
     base: {
       fillMode: 'light',
     },
+    startEnd: {
+      fillMode: 'solid',
+    },
   },
 };
 
@@ -63,10 +66,10 @@ function normalizeAttr({
   // Assign default attribute for 'true'
   if (config === true) {
     root = themeConfig[type] || defaultThemeConfig[type];
-  // Assign strings to base color
+    // Assign strings to base color
   } else if (isString(config)) {
     root.base = { color: config };
-  // Mixin objects at top level
+    // Mixin objects at top level
   } else if (isObject(config)) {
     root = { ...config };
   } else {
@@ -79,7 +82,7 @@ function normalizeAttr({
   // Normalize each target
   toPairs(root).forEach(([targetType, targetConfig]) => {
     if (targetConfig === true) {
-      root[targetType] = { color: themeConfig.color }
+      root[targetType] = { color: themeConfig.color };
     } else if (isString(targetConfig)) {
       root[targetType] = { color: targetConfig };
     } else if (isObject(targetConfig)) {
@@ -87,7 +90,7 @@ function normalizeAttr({
     }
 
     if (!hasAny(root[targetType], displayProps)) {
-      root[targetType] = { style: { ...root[targetType] } }
+      root[targetType] = { style: { ...root[targetType] } };
     }
 
     displayProps.forEach(displayType => {
@@ -95,12 +98,11 @@ function normalizeAttr({
       if (!has(root, displayPath) && has(themeConfig[type], displayPath)) {
         set(root, displayPath, get(themeConfig[type], displayPath));
       }
-    })
+    });
     if (!has(root, `${targetType}.color`)) {
       set(root, `${targetType}.color`, themeConfig.color);
     }
   });
-
   return root;
 }
 
@@ -108,19 +110,18 @@ export const normalizeHighlight = (
   config,
   themeConfig = defaultThemeConfig,
 ) => {
-  let highlight = normalizeAttr({
+  return normalizeAttr({
     config,
     type: 'highlight',
     targetProps,
     displayProps,
     themeConfig,
   });
-  return highlight;
 };
 
 const getStartEndBackgroundLayer = ({ class: className, style, theme }) => {
   return {
-    wrapperClass: '',
+    wrapperClass: 'c-day-layer c-day-box-center-center',
     class: 'vc-highlight',
   };
 };
@@ -136,7 +137,13 @@ const createTheme = Vue => {
       const { isDate, isComplex, startTime, endTime } = targetDate;
 
       if (isDate || isComplex) {
-        backgrounds.push({});
+        const wrapperClass = 'c-day-layer c-day-box-center-center';
+        let className = highlight.class;
+        if (highlight)
+          backgrounds.push({
+            wrapperClass,
+            class: className,
+          });
       }
     },
   };
