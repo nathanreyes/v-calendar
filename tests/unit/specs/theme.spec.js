@@ -13,7 +13,12 @@ describe.only('Theme', () => {
   it('should normalize highlight w/ true', () => {
     let config = true;
     let normConfig = normalizeHighlight(config, themeConfig);
-    expect(normConfig).toEqual(themeConfig.highlight);
+    expect(normConfig).toEqual({
+      base: {
+        fillMode: 'light',
+        color: 'blue',
+      },
+    });
   });
 
   it('should normalize highlight w/ false', () => {

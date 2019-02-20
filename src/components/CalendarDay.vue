@@ -7,6 +7,7 @@ import {
   mixinOptionalProps,
 } from '@/utils/helpers';
 import defaults from '@/utils/defaults';
+import { normalizeHighlight } from '@/utils/theme';
 import { isFunction, some } from '@/utils/_';
 
 export default {
@@ -38,8 +39,8 @@ export default {
               },
               [
                 h('div', {
-                  class: ['c-day-background', bgClass],
-                  // style,
+                  class: ['c-day-background', ...bgClass],
+                  style,
                 }),
               ],
             ),
@@ -358,9 +359,7 @@ export default {
             } = attr;
             const { backgrounds, dots, bars, popovers } = glyphs;
             // Add backgrounds for highlight if needed
-            // if (highlight) backgrounds.push(this.getBackgrounds(attr));
-            // if (highlightCaps && (onStart || onEnd))
-            //   backgrounds.push(this.getBackgroundCap(attr));
+            if (highlight) backgrounds.push(...this.getBackgrounds(attr));
             // Add dot if needed
             if (dot) dots.push(this.getDot(attr));
             // Add bar if needed
@@ -425,148 +424,163 @@ export default {
       if (!highlight) return backgrounds;
 
       const { isDate, isComplex, startTime, endTime } = targetDate;
-      let background = { ...highlight };
+      const { base, start, end, startEnd } = normalizeHighlight(highlight);
 
       if (isDate || isComplex) {
-        background =
-          background.ends || background.start || background.end || background;
-        backgrounds.push(this.getBackgroundLayer({ key, highlight }));
+        const targetArea = startEnd || start || end || base;
+        const wrapperClass = 'c-day-layer c-day-box-center-center';
+        if (highlight)
+          backgrounds.push({
+            key,
+            wrapperClass,
+            class: ['vc-highlight bg-blue-d1', ...(targetArea.class || [])],
+            // style: { ...targetArea.style },
+          });
       } else {
-        const onStart = startTime === this.dateTime;
-        const onEnd = startTime === this.dateTime;
-        const onEnds = onStart && onEnd;
-        const inMiddle = !onStart && !onEnd;
-        if (onEnds) {
-        } else if (inMiddle) {
-          key = `${key}-middle`;
-          background = background.middle || background;
-          backgrounds.push(
-            this.getBackgroundLayer({ key, background, inMiddle }),
-          );
-        } else if (onStart) {
-          key = `${key}-start`;
-          background = background.start || background.ends || background;
-          backgrounds.push(this.getBackgroundLayer({ key, background }));
-        } else {
-          key = `${key}-${onStart ? 'start' : 'end'}`;
-          background =
-            (onStart ? background.start : background.end) ||
-            background.ends ||
-            background;
-          backgrounds.push(this.getBackgroundLayer({ key, background }));
-        }
       }
+      console.log(backgrounds);
+      return backgrounds;
+
+      // if (isDate || isComplex) {
+      //   background =
+      //     background.ends || background.start || background.end || background;
+      //   backgrounds.push(this.getBackgroundLayer({ key, highlight }));
+      // } else {
+      //   const onStart = startTime === this.dateTime;
+      //   const onEnd = startTime === this.dateTime;
+      //   const onEnds = onStart && onEnd;
+      //   const inMiddle = !onStart && !onEnd;
+      //   if (onEnds) {
+      //   } else if (inMiddle) {
+      //     key = `${key}-middle`;
+      //     background = background.middle || background;
+      //     backgrounds.push(
+      //       this.getBackgroundLayer({ key, background, inMiddle }),
+      //     );
+      //   } else if (onStart) {
+      //     key = `${key}-start`;
+      //     background = background.start || background.ends || background;
+      //     backgrounds.push(this.getBackgroundLayer({ key, background }));
+      //   } else {
+      //     key = `${key}-${onStart ? 'start' : 'end'}`;
+      //     background =
+      //       (onStart ? background.start : background.end) ||
+      //       background.ends ||
+      //       background;
+      //     backgrounds.push(this.getBackgroundLayer({ key, background }));
+      //   }
+      // }
     },
-    getBackgroundLayer({ key, highlight, highlightCaps, targetDate }) {
-      // Initialize the background object
-      const {
-        width,
-        height,
-        backgroundColor,
-        borderColor,
-        borderWidth,
-        borderStyle,
-        opacity,
-      } = highlight;
-      const borderRadius =
-        highlight.borderRadius ||
-        (targetDate.isDate || targetDate.isComplex ? '50%' : '290486px');
-      const background = {
-        key,
-        style: {
-          width: width || height,
-          height,
-          backgroundColor,
-          borderColor,
-          borderWidth,
-          borderStyle,
-          borderRadius,
-          opacity,
-        },
-      };
-      if (targetDate.isDate || targetDate.isComplex) {
-        background.wrapperClass = 'c-day-layer c-day-box-center-center';
-      } else {
-        const onStart = targetDate.startTime === this.dateTime;
-        const onEnd = targetDate.endTime === this.dateTime;
-        const endLongWidth = '95%';
-        const endShortWidth = '50%';
-        // Is the day date on the highlight start and end date
-        if (onStart && onEnd) {
-          background.class = 'vc-highlight vc-highlight-start vc-highlight-end';
-          background.wrapperClass = 'c-day-layer c-day-box-center-center';
-          background.style.width = endLongWidth;
-          background.style.borderWidth = borderWidth;
-          background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
-          // Is the day date on the highlight start date
-        } else if (onStart) {
-          background.class = 'vc-highlight vc-highlight-start';
-          background.wrapperClass =
-            'c-day-layer c-day-box-right-center shift-right';
-          if (highlightCaps) {
-            background.style.width = endShortWidth;
-            background.style.borderWidth = `${borderWidth} 0`;
-            background.style.borderRadius = 0;
-          } else {
-            background.style.width = endLongWidth;
-            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
-            background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
-          }
-          // Is the day date on the highlight end date
-        } else if (onEnd) {
-          background.class = 'vc-highlight vc-highlight-end';
-          background.wrapperClass =
-            'c-day-layer c-day-box-left-center shift-left';
-          // if (highlightCaps) {
-          //   background.style.width = endShortWidth;
-          //   background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
-          //   background.style.borderRadius = 0;
-          // } else {
-          //   background.style.width = endLongWidth;
-          //   background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
-          //   background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
-          // }
-          // Is the day date between the highlight start/end dates
-        } else {
-          background.class = 'vc-highlight vc-highlight-middle';
-          background.wrapperClass =
-            'c-day-layer c-day-box-center-center shift-left-right';
-          background.style.width = '100%';
-          background.style.borderWidth = `${borderWidth} 0`;
-          background.style.borderRadius = '0';
-        }
-      }
-      background.class = `${background.class} vc-${theme || 'blue'}`;
-      return background;
-    },
-    getBackgroundCap(attribute) {
-      const { key, highlightCaps, targetDate, isNew } = attribute;
-      const { startTime, endTime } = targetDate;
-      const {
-        width,
-        height,
-        backgroundColor,
-        borderColor,
-        borderWidth,
-        borderStyle,
-        opacity,
-      } = highlightCaps;
-      const borderRadius = highlightCaps.borderRadius || '50%';
-      return {
-        key: `${key}-cap`,
-        wrapperClass: 'c-day-layer c-day-box-center-center',
-        style: {
-          width: width || height,
-          height,
-          backgroundColor,
-          borderColor,
-          borderWidth,
-          borderStyle,
-          borderRadius,
-          opacity,
-        },
-      };
-    },
+    // getBackgroundLayer({ key, highlight, highlightCaps, targetDate }) {
+    //   // Initialize the background object
+    //   const {
+    //     width,
+    //     height,
+    //     backgroundColor,
+    //     borderColor,
+    //     borderWidth,
+    //     borderStyle,
+    //     opacity,
+    //   } = highlight;
+    //   const borderRadius =
+    //     highlight.borderRadius ||
+    //     (targetDate.isDate || targetDate.isComplex ? '50%' : '290486px');
+    //   const background = {
+    //     key,
+    //     style: {
+    //       width: width || height,
+    //       height,
+    //       backgroundColor,
+    //       borderColor,
+    //       borderWidth,
+    //       borderStyle,
+    //       borderRadius,
+    //       opacity,
+    //     },
+    //   };
+    //   if (targetDate.isDate || targetDate.isComplex) {
+    //     background.wrapperClass = 'c-day-layer c-day-box-center-center';
+    //   } else {
+    //     const onStart = targetDate.startTime === this.dateTime;
+    //     const onEnd = targetDate.endTime === this.dateTime;
+    //     const endLongWidth = '95%';
+    //     const endShortWidth = '50%';
+    //     // Is the day date on the highlight start and end date
+    //     if (onStart && onEnd) {
+    //       background.class = 'vc-highlight vc-highlight-start vc-highlight-end';
+    //       background.wrapperClass = 'c-day-layer c-day-box-center-center';
+    //       background.style.width = endLongWidth;
+    //       background.style.borderWidth = borderWidth;
+    //       background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
+    //       // Is the day date on the highlight start date
+    //     } else if (onStart) {
+    //       background.class = 'vc-highlight vc-highlight-start';
+    //       background.wrapperClass =
+    //         'c-day-layer c-day-box-right-center shift-right';
+    //       if (highlightCaps) {
+    //         background.style.width = endShortWidth;
+    //         background.style.borderWidth = `${borderWidth} 0`;
+    //         background.style.borderRadius = 0;
+    //       } else {
+    //         background.style.width = endLongWidth;
+    //         background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
+    //         background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
+    //       }
+    //       // Is the day date on the highlight end date
+    //     } else if (onEnd) {
+    //       background.class = 'vc-highlight vc-highlight-end';
+    //       background.wrapperClass =
+    //         'c-day-layer c-day-box-left-center shift-left';
+    //       // if (highlightCaps) {
+    //       //   background.style.width = endShortWidth;
+    //       //   background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
+    //       //   background.style.borderRadius = 0;
+    //       // } else {
+    //       //   background.style.width = endLongWidth;
+    //       //   background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
+    //       //   background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
+    //       // }
+    //       // Is the day date between the highlight start/end dates
+    //     } else {
+    //       background.class = 'vc-highlight vc-highlight-middle';
+    //       background.wrapperClass =
+    //         'c-day-layer c-day-box-center-center shift-left-right';
+    //       background.style.width = '100%';
+    //       background.style.borderWidth = `${borderWidth} 0`;
+    //       background.style.borderRadius = '0';
+    //     }
+    //   }
+    //   background.class = `${background.class} vc-${theme || 'blue'}`;
+    //   return background;
+    // },
+    // getBackgroundCap(attribute) {
+    //   const { key, highlightCaps, targetDate, isNew } = attribute;
+    //   const { startTime, endTime } = targetDate;
+    //   const {
+    //     width,
+    //     height,
+    //     backgroundColor,
+    //     borderColor,
+    //     borderWidth,
+    //     borderStyle,
+    //     opacity,
+    //   } = highlightCaps;
+    //   const borderRadius = highlightCaps.borderRadius || '50%';
+    //   return {
+    //     key: `${key}-cap`,
+    //     wrapperClass: 'c-day-layer c-day-box-center-center',
+    //     style: {
+    //       width: width || height,
+    //       height,
+    //       backgroundColor,
+    //       borderColor,
+    //       borderWidth,
+    //       borderStyle,
+    //       borderRadius,
+    //       opacity,
+    //     },
+    //   };
+    // },
     getDot({ key, dot }) {
       return {
         key,

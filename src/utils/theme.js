@@ -63,12 +63,11 @@ function normalizeAttr({
   themeConfig,
 }) {
   let root = {};
-  // Assign default attribute for 'true'
-  if (config === true) {
-    root = themeConfig[type] || defaultThemeConfig[type];
-    // Assign strings to base color
-  } else if (isString(config)) {
-    root.base = { color: config };
+  let rootColor = themeConfig.color || defaultThemeConfig.color;
+  // Assign default attribute for booleans or strings
+  if (config === true || isString(config)) {
+    rootColor = isString(config) ? config : rootColor;
+    root = { ...(themeConfig[type] || defaultThemeConfig[type]) };
     // Mixin objects at top level
   } else if (isObject(config)) {
     root = { ...config };
@@ -81,10 +80,10 @@ function normalizeAttr({
   }
   // Normalize each target
   toPairs(root).forEach(([targetType, targetConfig]) => {
-    if (targetConfig === true) {
-      root[targetType] = { color: themeConfig.color };
-    } else if (isString(targetConfig)) {
-      root[targetType] = { color: targetConfig };
+    let targetColor = rootColor;
+    if (targetConfig === true || isString(targetConfig)) {
+      targetColor = isString(targetConfig) ? targetConfig : targetColor;
+      root[targetType] = { color: targetColor };
     } else if (isObject(targetConfig)) {
       root[targetType] = { ...targetConfig };
     }
@@ -99,8 +98,9 @@ function normalizeAttr({
         set(root, displayPath, get(themeConfig[type], displayPath));
       }
     });
+    // Set the theme color if it is missing
     if (!has(root, `${targetType}.color`)) {
-      set(root, `${targetType}.color`, themeConfig.color);
+      set(root, `${targetType}.color`, targetColor);
     }
   });
   return root;
@@ -119,33 +119,9 @@ export const normalizeHighlight = (
   });
 };
 
-const getStartEndBackgroundLayer = ({ class: className, style, theme }) => {
-  return {
-    wrapperClass: 'c-day-layer c-day-box-center-center',
-    class: 'vc-highlight',
-  };
-};
-
 const createTheme = Vue => {
   const theme = {
     classes: mixinCssClasses({}),
-    getHighlightBackgrounds({ key, targetDate, highlight }, themeConfig) {
-      const backgrounds = [];
-      if (!highlight) return backgrounds;
-
-      highlight = normalizeHighlight(highlight);
-      const { isDate, isComplex, startTime, endTime } = targetDate;
-
-      if (isDate || isComplex) {
-        const wrapperClass = 'c-day-layer c-day-box-center-center';
-        let className = highlight.class;
-        if (highlight)
-          backgrounds.push({
-            wrapperClass,
-            class: className,
-          });
-      }
-    },
   };
   Vue.prototype.$theme = theme;
 };
