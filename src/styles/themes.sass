@@ -45,11 +45,15 @@ $blue-l5: hsl(205, 79%, 92%)
   height: 1.8rem
   border-radius: 50%
   &.vc-highlight-start
-    width: 95%
-    border-radius: 290486px 0 0 290486px
+    width: 50%
+    border-radius: 0
+    // width: 95%
+    // border-radius: 290486px 0 0 290486px
   &.vc-highlight-end
-    width: 95%
-    border-radius: 0 290486px 290486px 0
+    width: 50%
+    border-radius: 0
+    // width: 95%
+    // border-radius: 0 290486px 290486px 0
   &.vc-highlight-start.vc-highlight-end
     border-radius: 290486px
   &.vc-highlight-middle
@@ -58,11 +62,5 @@ $blue-l5: hsl(205, 79%, 92%)
   &.vc-highlight-drag
     height: 1.75rem
 
-.vc-highlight-start, .vc-highlight-end
-  &.vc-blue
-    background-color: $blue-d1
-.vc-highlight-middle
-  &.vc-blue
-    background-color: $blue-l5
 .vc-highlight-content-start, .vc-highlight-content-end
   color: $white

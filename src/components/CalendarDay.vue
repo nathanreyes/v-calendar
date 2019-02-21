@@ -423,58 +423,73 @@ export default {
       if (!highlight) return backgrounds;
 
       const { isDate, isComplex, startTime, endTime } = targetDate;
-      const { base, start, end, startEnd } = normalizeHighlight(highlight);
-      let targetArea, wrapperClass;
+      const { base, start, end, startEnd } = normalizeHighlight(true); // Don't use highlight for now
+      console.log(highlight);
+      let targetArea;
 
       if (isDate || isComplex) {
         targetArea = startEnd || start || end || base;
-        wrapperClass = 'c-day-layer c-day-box-center-center';
-        if (highlight) {
+        backgrounds.push({
+          key,
+          wrapperClass: 'c-day-layer c-day-box-center-center',
+          class: [ 'vc-highlight', ...targetArea.class ],
+          contentClass: targetArea.contentClass,
+          // style: { ...targetArea.style },
+        });
+      } else {
+        const onStart = startTime === this.dateTime;
+        const onEnd = endTime === this.dateTime;
+        const onStartAndEnd = onStart && onEnd;
+        const onStartOrEnd = onStart || onEnd;
+        if (onStartAndEnd) {
+          targetArea = startEnd || start || end || base;
           backgrounds.push({
             key,
-            wrapperClass,
-            class: [ 'vc-highlight', ...targetArea.class ],
-            contentClass: targetArea.contentClass,
-            // style: { ...targetArea.style },
+            wrapperClass: 'c-day-layer c-day-box-center-center',
+            class: ['vc-highlight', ...targetArea.class],
           });
+        } else if (onStart) {
+          if (base) {
+            backgrounds.push({
+              key,
+              wrapperClass: 'c-day-layer c-day-box-right-center',
+              class: ['vc-highlight vc-highlight-start', ...base.class],
+            })
+          }
+          targetArea = start || startEnd || base;
+          if (targetArea) {
+            backgrounds.push({
+              key: `${key}-start`,
+              wrapperClass: 'c-day-layer c-day-box-center-center',
+              class: ['vc-highlight', ...targetArea.class]
+            })
+          }
+        } else if (onEnd) {
+          if (base) {
+            backgrounds.push({
+              key,
+              wrapperClass: 'c-day-layer c-day-box-left-center',
+              class:['vc-highlight vc-highlight-end', ...base.class],
+            });
+          }
+          targetArea = end || startEnd || base;
+          if (targetArea) {
+            backgrounds.push({
+              key: `${key}-end`,
+              wrapperClass: 'c-day-layer c-day-box-center-center',
+              class: ['vc-highlight', ...targetArea.class]
+            })
+          }
+        } else {
+          targetArea = base;
+          backgrounds.push({
+            key: `${key}-middle`,
+            wrapperClass: 'c-day-layer c-day-box-center-center',
+            class: ['vc-highlight vc-highlight-middle', ...targetArea.class],
+          })
         }
-      } else {
-       const onStart = startTime === this.dateTime;
-       const onEnd = endTime === this.dateTime;
-       const onStartEnd = onStart || onEnd;
-        
       }
       return backgrounds;
-
-      // if (isDate || isComplex) {
-      //   background =
-      //     background.ends || background.start || background.end || background;
-      //   backgrounds.push(this.getBackgroundLayer({ key, highlight }));
-      // } else {
-      //   const onStart = startTime === this.dateTime;
-      //   const onEnd = startTime === this.dateTime;
-      //   const onEnds = onStart && onEnd;
-      //   const inMiddle = !onStart && !onEnd;
-      //   if (onEnds) {
-      //   } else if (inMiddle) {
-      //     key = `${key}-middle`;
-      //     background = background.middle || background;
-      //     backgrounds.push(
-      //       this.getBackgroundLayer({ key, background, inMiddle }),
-      //     );
-      //   } else if (onStart) {
-      //     key = `${key}-start`;
-      //     background = background.start || background.ends || background;
-      //     backgrounds.push(this.getBackgroundLayer({ key, background }));
-      //   } else {
-      //     key = `${key}-${onStart ? 'start' : 'end'}`;
-      //     background =
-      //       (onStart ? background.start : background.end) ||
-      //       background.ends ||
-      //       background;
-      //     backgrounds.push(this.getBackgroundLayer({ key, background }));
-      //   }
-      // }
     },
     // getBackgroundLayer({ key, highlight, highlightCaps, targetDate }) {
     //   // Initialize the background object
@@ -557,34 +572,6 @@ export default {
     //   }
     //   background.class = `${background.class} vc-${theme || 'blue'}`;
     //   return background;
-    // },
-    // getBackgroundCap(attribute) {
-    //   const { key, highlightCaps, targetDate, isNew } = attribute;
-    //   const { startTime, endTime } = targetDate;
-    //   const {
-    //     width,
-    //     height,
-    //     backgroundColor,
-    //     borderColor,
-    //     borderWidth,
-    //     borderStyle,
-    //     opacity,
-    //   } = highlightCaps;
-    //   const borderRadius = highlightCaps.borderRadius || '50%';
-    //   return {
-    //     key: `${key}-cap`,
-    //     wrapperClass: 'c-day-layer c-day-box-center-center',
-    //     style: {
-    //       width: width || height,
-    //       height,
-    //       backgroundColor,
-    //       borderColor,
-    //       borderWidth,
-    //       borderStyle,
-    //       borderRadius,
-    //       opacity,
-    //     },
-    //   };
     // },
     getDot({ key, dot }) {
       return {

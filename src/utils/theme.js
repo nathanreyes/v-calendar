@@ -129,11 +129,15 @@ export const normalizeHighlight = (
     let bgClass, contentClass;
     switch (targetConfig.fillMode) {
       case 'light':
-        bgClass = `bg-${color}-${isDark ? 'd2' : 'd1'}`
+        bgClass = `bg-${color}-${isDark ? 'd2' : 'l5'}`
         contentClass = `text-${isDark ? 'white' : color}-${!isDark && 'd4'}`
+        console.log('light', bgClass);
+        break;
       case 'solid':
         bgClass = `bg-${color}-d1`
         contentClass = `text-white`
+        console.log('solid', bgClass);
+        break;
     }
     targetConfig.class = normArray(targetConfig.class, bgClass)
     targetConfig.contentClass = normArray(targetConfig.contentClass, contentClass)
