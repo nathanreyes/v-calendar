@@ -8,8 +8,9 @@ import {
   hasAny,
   toPairs,
   set,
+  defaults,
+  mapValues,
 } from './_';
-import { isArray } from 'util';
 
 const cssProps = ['bg', 'text'];
 const colors = ['blue', 'red', 'orange'];
@@ -31,6 +32,15 @@ const displayProps = ['class', 'style', 'color', 'fillMode'];
 
 export const defaultThemeConfig = {
   color: 'blue',
+  isDark: true,
+  title: {
+    light: 'text-grey-l1',
+    dark: 'text-grey-d2',
+  },
+  weekdays: {
+    light: 'text-grey-l2',
+    dark: 'text-grey-d1',
+  },
   highlight: {
     base: {
       fillMode: 'light',
@@ -106,12 +116,6 @@ function normalizeAttr({
   return root;
 }
 
-function normArray(existing, ...append) {
-  if (!existing) return [...append];
-  if (!isArray(existing)) return [existing, ...append];
-  return [...existing, ...append];
-}
-
 export const normalizeHighlight = (
   config,
   themeConfig = defaultThemeConfig,
@@ -129,20 +133,30 @@ export const normalizeHighlight = (
     let bgClass, contentClass;
     switch (targetConfig.fillMode) {
       case 'light':
-        bgClass = `bg-${color}-${isDark ? 'd2' : 'l5'}`
-        contentClass = `text-${isDark ? 'white' : color}-${!isDark && 'd4'}`
-        console.log('light', bgClass);
+        bgClass = `bg-${color}-${isDark ? 'd2' : 'l5'}`;
+        contentClass = `text-${isDark ? 'white' : color}${isDark ? '' : '-d4'}`;
         break;
       case 'solid':
-        bgClass = `bg-${color}-d1`
-        contentClass = `text-white`
-        console.log('solid', bgClass);
+        bgClass = `bg-${color}-${isDark ? 'l1' : 'd1'}`;
+        contentClass = `text-white`;
         break;
     }
-    targetConfig.class = normArray(targetConfig.class, bgClass)
-    targetConfig.contentClass = normArray(targetConfig.contentClass, contentClass)
+    targetConfig.class = `${targetConfig.class} ${bgClass}`;
+    targetConfig.contentClass = `${targetConfig.contentClass} ${contentClass}`;
   });
   return highlight;
+};
+
+export const generateTheme = ({ color, isDark, config }) => {
+  let theme = defaults({ color, isDark }, config, defaultThemeConfig);
+  theme = mapValues(theme, val => {
+    if (isObject(val) && hasAny(val, ['light', 'dark'])) {
+      return isDark ? val.dark : val.light;
+    }
+    return val;
+  });
+  console.log(theme);
+  return theme;
 };
 
 const createTheme = Vue => {

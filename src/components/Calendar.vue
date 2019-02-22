@@ -23,6 +23,7 @@ import {
   toDate,
 } from '@/utils/helpers';
 import { format } from '@/utils/fecha';
+import { generateTheme } from '@/utils/theme';
 import { isNumber } from '@/utils/_';
 
 export default {
@@ -181,9 +182,12 @@ export default {
   provide() {
     return {
       dayPopoverId: this.dayPopoverId,
+      theme: this.theme_,
     };
   },
   props: {
+    color: { type: String, default: 'blue' },
+    isDark: Boolean,
     rows: {
       type: Number,
       default: 1,
@@ -209,6 +213,7 @@ export default {
     transition: String,
     attributes: Array,
     formats: Object,
+    theme: Object,
   },
   data() {
     return {
@@ -256,6 +261,13 @@ export default {
         ...defaults.formats,
         ...this.formats,
       };
+    },
+    theme_() {
+      return generateTheme({
+        color: this.color,
+        isDark: this.isDark,
+        config: this.theme,
+      });
     },
     attributes_() {
       return AttributeStore(this.attributes);

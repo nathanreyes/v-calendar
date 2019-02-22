@@ -1,44 +1,62 @@
+$white: hsl(0, 0, 100%)
+$black: hsl(208, 16%, 16%)
 
-$blue-d5: hsl(205, 100%, 21%)
-$blue-d4: hsl(205, 87%, 29%)
-$blue-d3: hsl(205, 82%, 33%)
-$blue-d2: hsl(205, 82%, 33%)
-$blue-d1: hsl(205, 67%, 45%)
-$blue-l1: hsl(205, 65%, 55%)
-$blue-l2: hsl(205, 74%, 65%)
-$blue-l3: hsl(205, 84%, 74%)
-$blue-l4: hsl(205, 97%, 85%)
-$blue-l5: hsl(205, 79%, 92%)
+$darkGreys: hsl(211, 12%, 43%) hsl(209, 14%, 37%) hsl(209, 18%, 30%) hsl(209, 20%, 25%) hsl(210, 24%, 16%)
+$lightGreys: hsl(211, 10%, 53%) hsl(211, 13%, 65%) hsl(210, 16%, 82%) hsl(214, 15%, 91%) hsl(216, 33%, 97%)
 
-.bg-blue-d5
-  background-color: $blue-d5
+$darkBlues: hsl(205, 67%, 45%) hsl(205, 76%, 39%) hsl(205, 82%, 33%) hsl(205, 87%, 29%) hsl(205, 100%, 21%)
+$lightBlues: hsl(205, 65%, 55%) hsl(205, 74%, 65%) hsl(205, 84%, 74%) hsl(205, 97%, 85%) hsl(205, 79%, 92%)
 
-.bg-blue-d4
-  background-color: $blue-d4
+$darkReds: hsl(356, 75%, 53%) hsl(354, 85%, 44%) hsl(352, 90%, 35%) hsl(350, 94%, 28%) hsl(348, 94%, 20%)
+$lightReds: hsl(360, 83%, 62%) hsl(360, 91%, 69%) hsl(360, 100%, 80%) hsl(360, 100%, 87%) hsl(360, 100%, 95%)
 
-.bg-blue-d3
-  background-color: $blue-d3
+@each $grey in $darkGreys
+  $i: index($darkGreys, $grey)
+  .bg-grey-d#{$i}
+    background-color: $grey
+  .text-grey-d#{$i}
+    color: $grey
 
-.bg-blue-d2
-  background-color: $blue-d2
+@each $grey in $lightGreys
+  $i: index($lightGreys, $grey)
+  .bg-grey-l#{$i}
+    background-color: $grey
+  .text-grey-l#{$i}
+    color: $grey
 
-.bg-blue-d1
-  background-color: $blue-d1
+@each $blue in $darkBlues
+  $i: index($darkBlues, $blue)
+  .bg-blue-d#{$i}
+    background-color: $blue
+  .text-blue-d#{$i}
+    color: $blue
 
-.bg-blue-l1
-  background-color: $blue-l1
+@each $blue in $lightBlues
+  $i: index($lightBlues, $blue)
+  .bg-blue-l#{$i}
+    background-color: $blue
+  .text-blue-l#{$i}
+    color: $blue
 
-.bg-blue-l2
-  background-color: $blue-l2
+@each $red in $darkReds
+  $i: index($darkReds, $red)
+  .bg-red-d#{$i}
+    background-color: $red
+  .text-red-d#{$i}
+    color: $red
 
-.bg-blue-l3
-  background-color: $blue-l3
+@each $red in $lightReds
+  $i: index($lightReds, $red)
+  .bg-red-l#{$i}
+    background-color: $red
+  .text-red-l#{$i}
+    color: $red
 
-.bg-blue-l4
-  background-color: $blue-l4
+.text-white
+  color: $white
 
-.bg-blue-l5
-  background-color: $blue-l5
+.text-black
+  color: $black
 
 .vc-highlight
   width: 1.8rem
@@ -47,20 +65,11 @@ $blue-l5: hsl(205, 79%, 92%)
   &.vc-highlight-start
     width: 50%
     border-radius: 0
-    // width: 95%
-    // border-radius: 290486px 0 0 290486px
   &.vc-highlight-end
     width: 50%
     border-radius: 0
-    // width: 95%
-    // border-radius: 0 290486px 290486px 0
-  &.vc-highlight-start.vc-highlight-end
-    border-radius: 290486px
   &.vc-highlight-middle
     width: 100%
     border-radius: 0
   &.vc-highlight-drag
     height: 1.75rem
-
-.vc-highlight-content-start, .vc-highlight-content-end
-  color: $white

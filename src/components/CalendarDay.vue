@@ -30,7 +30,8 @@ export default {
           {
             class: 'c-day-backgrounds c-day-layer',
           },
-          this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) => h(
+          this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) =>
+            h(
               'div',
               {
                 key: key,
@@ -38,7 +39,7 @@ export default {
               },
               [
                 h('div', {
-                  class: ['c-day-background', ...bgClass],
+                  class: `c-day-background ${bgClass}`,
                   style,
                 }),
               ],
@@ -65,7 +66,11 @@ export default {
               attrs: { ...this.dayContentProps },
               on: this.dayContentEvents,
             },
-            [h('span', [this.day.label])],
+            [
+              h('span', { class: this.dayHighlightContentClass }, [
+                this.day.label,
+              ]),
+            ],
           );
     };
 
@@ -261,6 +266,11 @@ export default {
     dayContentClass() {
       return this.glyphs.contentClass;
     },
+    dayHighlightContentClass() {
+      return this.hasBackgrounds
+        ? this.backgrounds[this.backgrounds.length - 1].contentClass
+        : '';
+    },
     dayContentStyle() {
       return this.glyphs.contentStyle;
     },
@@ -366,9 +376,9 @@ export default {
             // Add popover if needed
             if (popover) popovers.unshift(this.getPopover(attr));
             // Add content class if needed
-            if (contentClass) glyphs.contentClass.push(contentClass);
+            // if (contentClass) glyphs.contentClass.push(contentClass);
             // Add content style if needed
-            Object.assign(glyphs.contentStyle, contentStyle);
+            // Object.assign(glyphs.contentStyle, contentStyle);
             // Continue configuring glyphs
             return glyphs;
           },
@@ -382,6 +392,15 @@ export default {
             contentStyle: {},
           },
         );
+    },
+    refreshGlyphs2() {
+      const glyphs = {
+        backgrounds: [],
+        dots: [],
+        bars: [],
+        popovers: [],
+        content: {},
+      };
     },
     evalAttribute(attribute, isHovered, isFocused) {
       const { targetDate } = attribute;
@@ -424,7 +443,6 @@ export default {
 
       const { isDate, isComplex, startTime, endTime } = targetDate;
       const { base, start, end, startEnd } = normalizeHighlight(true); // Don't use highlight for now
-      console.log(highlight);
       let targetArea;
 
       if (isDate || isComplex) {
@@ -432,7 +450,7 @@ export default {
         backgrounds.push({
           key,
           wrapperClass: 'c-day-layer c-day-box-center-center',
-          class: [ 'vc-highlight', ...targetArea.class ],
+          class: `vc-highlight ${targetArea.class}`,
           contentClass: targetArea.contentClass,
           // style: { ...targetArea.style },
         });
@@ -446,47 +464,45 @@ export default {
           backgrounds.push({
             key,
             wrapperClass: 'c-day-layer c-day-box-center-center',
-            class: ['vc-highlight', ...targetArea.class],
+            class: `vc-highlight ${targetArea.class}`,
           });
         } else if (onStart) {
-          if (base) {
-            backgrounds.push({
-              key,
-              wrapperClass: 'c-day-layer c-day-box-right-center',
-              class: ['vc-highlight vc-highlight-start', ...base.class],
-            })
-          }
+          backgrounds.push({
+            key,
+            wrapperClass: 'c-day-layer c-day-box-right-center',
+            class: `vc-highlight vc-highlight-start ${base.class}`,
+          });
           targetArea = start || startEnd || base;
           if (targetArea) {
             backgrounds.push({
               key: `${key}-start`,
               wrapperClass: 'c-day-layer c-day-box-center-center',
-              class: ['vc-highlight', ...targetArea.class]
-            })
-          }
-        } else if (onEnd) {
-          if (base) {
-            backgrounds.push({
-              key,
-              wrapperClass: 'c-day-layer c-day-box-left-center',
-              class:['vc-highlight vc-highlight-end', ...base.class],
+              class: `vc-highlight ${targetArea.class}`,
+              contentClass: targetArea.contentClass,
             });
           }
+        } else if (onEnd) {
+          backgrounds.push({
+            key,
+            wrapperClass: 'c-day-layer c-day-box-left-center',
+            class: `vc-highlight vc-highlight-end ${base.class}`,
+          });
           targetArea = end || startEnd || base;
           if (targetArea) {
             backgrounds.push({
               key: `${key}-end`,
               wrapperClass: 'c-day-layer c-day-box-center-center',
-              class: ['vc-highlight', ...targetArea.class]
-            })
+              class: `vc-highlight ${targetArea.class}`,
+              contentClass: targetArea.contentClass,
+            });
           }
         } else {
-          targetArea = base;
           backgrounds.push({
             key: `${key}-middle`,
             wrapperClass: 'c-day-layer c-day-box-center-center',
-            class: ['vc-highlight vc-highlight-middle', ...targetArea.class],
-          })
+            class: `vc-highlight vc-highlight-middle ${base.class}`,
+            contentClass: base.contentClass,
+          });
         }
       }
       return backgrounds;

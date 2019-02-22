@@ -8,7 +8,7 @@
           <div class="c-title-wrapper">
             <!--Title content-->
             <popover-ref :id="navPopoverId" :visibility="navVisibility" is-interactive>
-              <div class="c-title" :style="titleStyle">
+              <div :class="theme.title" :style="titleStyle">
                 <slot name="header-title" v-bind="page">{{ page.title }}</slot>
               </div>
             </popover-ref>
@@ -40,7 +40,12 @@
     ></div>
     <!--Weekday labels-->
     <div class="c-weekdays" :style="weekdaysStyle_">
-      <div v-for="(weekday, i) in weekdayLabels" :key="i + 1" class="c-weekday">{{ weekday }}</div>
+      <div
+        v-for="(weekday, i) in weekdayLabels"
+        :key="i + 1"
+        class="c-weekday"
+        :class="theme.weekdays"
+      >{{ weekday }}</div>
     </div>
     <!--Weekdays horizontal divider-->
     <div
@@ -82,6 +87,7 @@ export default {
     PopoverRef,
     Popover,
   },
+  inject: ['theme'],
   props: {
     position: { type: Number, default: 1 },
     page: Object,
@@ -102,6 +108,7 @@ export default {
       navPopoverId: createGuid(),
     };
   },
+
   computed: {
     navSlots() {
       return ['nav-left-button', 'nav-right-button'].filter(
@@ -241,7 +248,7 @@ export default {
   flex-shrink: 0
   display: flex
   padding: $weekday-padding
-  color: $weekday-color
+  // color: $weekday-color
   font-size: $weekday-font-size
   font-weight: $weekday-font-weight
 
