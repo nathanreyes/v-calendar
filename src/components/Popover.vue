@@ -268,7 +268,6 @@ export default {
 
 .c-popover-content
   position: relative
-  background-color: $pane-background-color
   border: $pane-border
   z-index: 10
   .c-popover-caret

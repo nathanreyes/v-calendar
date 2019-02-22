@@ -65,7 +65,7 @@ export default {
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
       const onClick = isPrev ? this.movePrev : this.moveNext;
       return h(
-        'button',
+        'span',
         {
           class: ['c-arrow-layout', { [directionClass]: true }],
           attrs: {
@@ -79,7 +79,6 @@ export default {
                 'c-arrow',
                 { [directionClass]: true, 'c-disabled': isDisabled },
               ],
-              style: this.styles_.arrowStyle,
               props: {
                 name: svgName,
               },
@@ -100,6 +99,7 @@ export default {
             {
               'is-expanded': this.isExpanded,
             },
+            this.theme_.paneContainer,
           ],
           on: {
             touchstart: this.touchStart,
@@ -489,8 +489,6 @@ export default {
   font-family: $font-family
   font-weight: $font-weight
   line-height: 1.5
-  color: $font-color
-  background-color: $pane-background-color
   border: $pane-border
   width: max-content
   -webkit-font-smoothing: antialiased

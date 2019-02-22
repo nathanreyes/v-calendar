@@ -648,7 +648,6 @@ export default {
 
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
-@import '../styles/themes.sass'
 
 .c-day
   position: relative

@@ -2,7 +2,7 @@
   <div ref="pane" class="c-pane" :style="paneStyle">
     <!--Header slot-->
     <slot name="header" v-bind="page">
-      <div class="c-header" :style="headerStyle">
+      <div class="c-header" :class="theme.header">
         <!--Header title-->
         <div :class="['c-title-layout', titleClass]">
           <div class="c-title-wrapper">
@@ -238,8 +238,6 @@ export default {
   position: relative
 
 .c-title
-  font-weight: $title-font-weight
-  font-size: $title-font-size
   cursor: pointer
   user-select: none
   white-space: nowrap
@@ -248,9 +246,6 @@ export default {
   flex-shrink: 0
   display: flex
   padding: $weekday-padding
-  // color: $weekday-color
-  font-size: $weekday-font-size
-  font-weight: $weekday-font-weight
 
 .c-weekday
   +box()

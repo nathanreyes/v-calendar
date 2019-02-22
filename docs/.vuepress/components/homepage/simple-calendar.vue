@@ -19,6 +19,7 @@
         :from-page.sync="fromPage"
         :to-page.sync="toPage"
         popover-visibility="focus"
+        is-dark
       >
         <!--=========POPOVER HEADER SLOT=========-->
         <div

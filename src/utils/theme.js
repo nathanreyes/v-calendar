@@ -1,3 +1,4 @@
+import defaultThemeConfig from './defaultTheme.json';
 import {
   isObject,
   isString,
@@ -11,6 +12,7 @@ import {
   defaults,
   mapValues,
 } from './_';
+import { isBoolean } from 'util';
 
 const cssProps = ['bg', 'text'];
 const colors = ['blue', 'red', 'orange'];
@@ -29,27 +31,6 @@ const colorSuffixes = [
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'style', 'color', 'fillMode'];
-
-export const defaultThemeConfig = {
-  color: 'blue',
-  isDark: true,
-  title: {
-    light: 'text-grey-l1',
-    dark: 'text-grey-d2',
-  },
-  weekdays: {
-    light: 'text-grey-l2',
-    dark: 'text-grey-d1',
-  },
-  highlight: {
-    base: {
-      fillMode: 'light',
-    },
-    startEnd: {
-      fillMode: 'solid',
-    },
-  },
-};
 
 // Creates all the css classes needed for the theme
 function mixinCssClasses(target) {
@@ -133,7 +114,7 @@ export const normalizeHighlight = (
     let bgClass, contentClass;
     switch (targetConfig.fillMode) {
       case 'light':
-        bgClass = `bg-${color}-${isDark ? 'd2' : 'l5'}`;
+        bgClass = `bg-${color}-${isDark ? 'd5' : 'l5'}`;
         contentClass = `text-${isDark ? 'white' : color}${isDark ? '' : '-d4'}`;
         break;
       case 'solid':
@@ -148,12 +129,24 @@ export const normalizeHighlight = (
 };
 
 export const generateTheme = ({ color, isDark, config }) => {
-  let theme = defaults({ color, isDark }, config, defaultThemeConfig);
+  let theme = defaults(
+    {
+      color: color || defaultThemeConfig.color,
+      isDark: isBoolean(isDark) ? isDark : defaultThemeConfig.isDark,
+    },
+    config,
+    defaultThemeConfig,
+  );
   theme = mapValues(theme, val => {
     if (isObject(val) && hasAny(val, ['light', 'dark'])) {
       return isDark ? val.dark : val.light;
     }
     return val;
+  });
+  theme = mapValues(theme, val => {
+    if (isString(val)) {
+      val = val.replace('{color}', theme.color);
+    }
   });
   console.log(theme);
   return theme;

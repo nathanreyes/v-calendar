@@ -6,6 +6,7 @@ import getLocaleDefaults from '@/utils/locales';
 import defaults, { mergeDefaults } from '@/utils/defaults';
 import installScreens from '@/utils/screens';
 import installTheme from '@/utils/theme';
+import '@/styles/themes.sass';
 
 const setupCalendar = (Vue, options) => {
   // Add an event bus for component communication

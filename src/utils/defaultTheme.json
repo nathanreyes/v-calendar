@@ -1,0 +1,28 @@
+{
+  "color": "blue",
+  "isDark": "false",
+  "paneContainer": {
+    "light": "text-black bg-white",
+    "dark": "text-grey-l4 bg-grey-d5"
+  },
+  "paneHeader": {
+    "light": "text-grey-d4",
+    "dark": "text-grey-l4"
+  },
+  "title": {
+    "light": "text-lg font-bold",
+    "dark": "text-lg font-bold"
+  },
+  "weekdays": {
+    "light": "text-sm font-medium text-grey-l1",
+    "dark": "text-sm font-medium text-{color}-l2"
+  },
+  "highlight": {
+    "base": {
+      "fillMode": "light"
+    },
+    "startEnd": {
+      "fillMode": "solid"
+    }
+  }
+}
