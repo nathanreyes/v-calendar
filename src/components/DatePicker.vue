@@ -473,7 +473,7 @@ export default {
     border: none
   & /deep/ .c-day-content
     &:hover
-      cursor: $day-content-hover-cursor
-      background-color: $day-content-hover-background-color
+      // cursor: $day-content-hover-cursor
+      // background-color: $day-content-hover-background-color
 
 </style>

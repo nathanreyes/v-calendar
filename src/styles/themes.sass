@@ -18,6 +18,8 @@
     background-color: $grey
   .text-grey-d#{$i}
     color: $grey
+  .border-grey-d#{$i}
+    border-color: $grey
 
 @each $grey in $lightGreys
   $i: index($lightGreys, $grey)
@@ -25,6 +27,8 @@
     background-color: $grey
   .text-grey-l#{$i}
     color: $grey
+  .border-grey-l#{$i}
+    border-color: $grey
 
 @each $blue in $darkBlues
   $i: index($darkBlues, $blue)
@@ -32,6 +36,8 @@
     background-color: $blue
   .text-blue-d#{$i}
     color: $blue
+  .border-blue-d#{$i}
+    border-color: $blue
 
 @each $blue in $lightBlues
   $i: index($lightBlues, $blue)
@@ -39,6 +45,8 @@
     background-color: $blue
   .text-blue-l#{$i}
     color: $blue
+  .border-blue-l#{$i}
+    border-color: $blue
 
 @each $red in $darkReds
   $i: index($darkReds, $red)
@@ -46,6 +54,8 @@
     background-color: $red
   .text-red-d#{$i}
     color: $red
+  .border-red-d#{$i}
+    border-color: $red
 
 @each $red in $lightReds
   $i: index($lightReds, $red)
@@ -53,6 +63,26 @@
     background-color: $red
   .text-red-l#{$i}
     color: $red
+  .border-red-l#{$i}
+    border-color: $red
+
+@each $cyan in $darkCyans
+  $i: index($darkCyans, $cyan)
+  .bg-cyan-d#{$i}
+    background-color: $cyan
+  .text-cyan-d#{$i}
+    color: $cyan
+  .border-cyan-d#{$i}
+    border-color: $cyan
+
+@each $cyan in $lightCyans
+  $i: index($lightCyans, $cyan)
+  .bg-cyan-l#{$i}
+    background-color: $cyan
+  .text-cyan-l#{$i}
+    color: $cyan
+  .border-cyan-l#{$i}
+    border-color: $cyan
 
 .font-light
   font-weight: $weight-light
@@ -83,6 +113,45 @@
 
 .text-xl
   font-size: $text-xl
+
+.border
+  border-width: 1px
+
+.border-t
+  border-top-width: 1px
+
+.border-l
+  border-left-width: 1px
+
+.rounded-sm
+  border-radius: .125rem
+
+.rounded
+  border-radius: .25rem
+
+.rounded-lg
+  border-radius: .5rem
+
+.rounded-full
+  border-radius: 9999px
+
+.opacity-100
+  opacity: 1
+
+.opacity-75
+  opacity: .75
+
+.opacity-50
+  opacity: .5
+
+.opacity-25
+  opacity: .25
+
+.opacity-0
+  opacity: 0
+
+.shadow
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.10)
 
 .vc-highlight
   width: 1.8rem

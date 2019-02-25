@@ -5,7 +5,6 @@ import PopoverRef from '@/components/PopoverRef';
 import getLocaleDefaults from '@/utils/locales';
 import defaults, { mergeDefaults } from '@/utils/defaults';
 import installScreens from '@/utils/screens';
-import installTheme from '@/utils/theme';
 import '@/styles/themes.sass';
 
 const setupCalendar = (Vue, options) => {
@@ -27,8 +26,6 @@ const setupCalendar = (Vue, options) => {
   );
   // Install support for responsive screens
   installScreens(Vue, mergedDefaults.screens);
-  // Install theme
-  installTheme(Vue);
   return mergedDefaults;
 };
 

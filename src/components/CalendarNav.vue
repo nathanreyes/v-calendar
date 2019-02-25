@@ -1,36 +1,26 @@
 <template>
   <!--Nav panel-->
-  <div class="c-nav-pane">
+  <div class="c-nav-pane" :class="theme.navContainer">
     <!--Nav months-->
     <template v-if="mode_ === 'month'">
       <!--Months header-->
-      <div class="c-nav-header" :style="headerStyle">
+      <div class="c-nav-header" :class="theme.navHeader">
         <!--Previous year button-->
         <div class="c-nav-arrow-layout">
           <slot name="nav-left-button" :month-items="[...monthItems]" :move="movePrevYear">
-            <svg-icon
-              name="left-arrow"
-              class="c-nav-arrow"
-              :style="headerArrowsStyle"
-              @click="movePrevYear"
-            ></svg-icon>
+            <svg-icon name="left-arrow" class="c-nav-arrow" @click="movePrevYear"></svg-icon>
           </slot>
         </div>
         <!--Mode switch button-->
         <span
           class="c-nav-title"
-          :style="headerTitleStyle"
+          :class="theme.navTitle"
           @click="selectMode('year')"
         >{{ yearIndex }}</span>
         <!--Next year button-->
         <div class="c-nav-arrow-layout">
           <slot name="nav-right-button" :month-items="[...monthItems]" :move="moveNextYear">
-            <svg-icon
-              name="right-arrow"
-              class="c-nav-arrow"
-              :style="headerArrowsStyle"
-              @click="moveNextYear"
-            ></svg-icon>
+            <svg-icon name="right-arrow" class="c-nav-arrow" @click="moveNextYear"></svg-icon>
           </slot>
         </div>
       </div>
@@ -40,7 +30,7 @@
           <td v-for="item in row" :key="item.month">
             <div
               class="c-nav-table-cell"
-              :class="{ 'c-active': item.isActive, 'c-disabled': item.isDisabled }"
+              :class="{ [theme.navCell]: !item.isActive, [theme.navCellActive]: item.isActive, 'c-disabled': item.isDisabled }"
               :style="getMonthCellStyle(item)"
               @click="monthClick(item.month)"
             >
@@ -64,7 +54,7 @@
     </template>
     <!--Nav years-->
     <template v-if="mode_ === 'year'">
-      <div class="c-nav-header" :style="headerStyle">
+      <div class="c-nav-header" :class="theme.navHeader">
         <!--Previous year group button-->
         <div class="c-nav-arrow-layout">
           <slot
@@ -74,18 +64,13 @@
             :year-items="[...yearItems]"
             :move="movePrevYearGroup"
           >
-            <svg-icon
-              name="left-arrow"
-              class="c-nav-arrow"
-              :style="headerArrowsStyle"
-              @click="movePrevYearGroup"
-            ></svg-icon>
+            <svg-icon name="left-arrow" class="c-nav-arrow" @click="movePrevYearGroup"></svg-icon>
           </slot>
         </div>
         <!--Mode switch button-->
         <span
           class="c-nav-title"
-          :style="headerTitleStyle"
+          :class="theme.navTitle"
           @click="selectMode('month')"
         >{{ firstYear }} - {{ lastYear }}</span>
         <!--Next year group button-->
@@ -97,12 +82,7 @@
             :year-items="[...yearItems]"
             :move="moveNextYearGroup"
           >
-            <svg-icon
-              name="right-arrow"
-              class="c-nav-arrow"
-              :style="headerArrowsStyle"
-              @click="moveNextYearGroup"
-            ></svg-icon>
+            <svg-icon name="right-arrow" class="c-nav-arrow" @click="moveNextYearGroup"></svg-icon>
           </slot>
         </div>
       </div>
@@ -128,6 +108,7 @@
 
 <script>
 import SvgIcon from './SvgIcon';
+import injectMixin from '@/utils/injectMixin';
 import DateInfo from '@/utils/dateInfo';
 import { format } from '@/utils/fecha';
 import {
@@ -144,6 +125,7 @@ export default {
   components: {
     SvgIcon,
   },
+  mixins: [injectMixin],
   props: {
     mode: { type: String, default: 'month' },
     value: { type: Object, default: () => ({ month: 0, year: 0 }) },
@@ -166,15 +148,6 @@ export default {
     },
     year() {
       return this.value ? this.value.year || 0 : 0;
-    },
-    headerStyle() {
-      return this.styles.navHeader;
-    },
-    headerTitleStyle() {
-      return this.styles.navHeaderTitle;
-    },
-    headerArrowsStyle() {
-      return this.styles.navHeaderArrows;
     },
     monthItems() {
       return getMonthDates()
@@ -360,10 +333,6 @@ $cell-transition: all 0.1s ease-in-out
 
 .c-nav-pane
   transition: height 5s ease-in-out
-  // background-color: $nav-background-color
-  // color: $nav-color
-  // border: $nav-border
-  // border-radius: $nav-border-radius
   width: $nav-table-cell-width*3
   overflow: hidden
 
@@ -371,7 +340,6 @@ $cell-transition: all 0.1s ease-in-out
   display: flex
   justify-content: space-between
   align-items: center
-  background-color: $nav-header-background-color
   padding: 3px 0
 
 .c-nav-arrow-layout
@@ -386,8 +354,6 @@ $cell-transition: all 0.1s ease-in-out
   user-select: none
 
 .c-nav-title
-  font-size: $nav-title-font-size
-  font-weight: $nav-title-font-weight
   transition: $title-transition
   cursor: pointer
   user-select: none
@@ -406,7 +372,6 @@ $cell-transition: all 0.1s ease-in-out
   width: 100%
   tr
     td
-      border: $nav-table-cell-border
       width: $nav-table-cell-width
       height: 34px
       &:first-child
@@ -426,12 +391,9 @@ $cell-transition: all 0.1s ease-in-out
   position: relative
   user-select: none
   cursor: pointer
-  font-size: $nav-table-font-size
-  font-weight: $nav-table-font-weight
-  background-color: $nav-table-cell-background-color
   transition: $cell-transition
-  &:hover
-    background-color: $nav-table-cell-hover-background-color
+  // &:hover
+  //   background-color: $nav-table-cell-hover-background-color
 
 .c-disabled
   opacity: 0.2
@@ -439,10 +401,6 @@ $cell-transition: all 0.1s ease-in-out
   pointer-events: none
   &:hover
     background-color: transparent
-
-.c-active
-  background-color: $nav-table-cell-active-background-color
-  font-weight: $weight-semibold
 
 .c-indicators
   position: absolute

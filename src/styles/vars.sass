@@ -1,33 +1,7 @@
-$black:         #000000 !default
-$black-light:   #22252a !default
-$black-lighter: #393d46 !default
-
-$white:        hsl(0, 0%, 100%) !default
-
-$grey: hsl(216, 22%, 80%)
-$grey-light-1: hsl(216, 22%, 82%)
-$grey-light-2: hsl(216, 22%, 84%)
-$grey-light-3: hsl(216, 22%, 86%)
-$grey-light-4: hsl(216, 22%, 89%)
-$grey-light-5: hsl(216, 22%, 91%)
-$grey-light-6: hsl(216, 22%, 93%)
-$grey-light-7: hsl(216, 22%, 95%)
-$grey-light-8: hsl(216, 22%, 97%)
-$grey-light-9: hsl(216, 22%, 99%)
-$grey-dark-1: hsl(216, 22%, 44%)
-$grey-dark-2: hsl(216, 22%, 41%)
-$grey-dark-3: hsl(216, 22%, 38%)
-$grey-dark-4: hsl(216, 22%, 35%)
-$grey-dark-5: hsl(216, 22%, 32%)
-$grey-dark-6: hsl(216, 22%, 29%)
-$grey-dark-7: hsl(216, 22%, 26%)
-$grey-dark-8: hsl(216, 22%, 23%)
-$grey-dark-9: hsl(216, 22%, 20%)
-
-$theme: $grey-dark-1 !default
-
 $white: hsl(0, 0, 100%)
 $black: hsl(208, 16%, 16%)
+
+$grey-light-1: hsl(216, 22%, 82%)
 
 $darkGreys: hsl(211, 12%, 43%) hsl(209, 14%, 37%) hsl(209, 34%, 30%) hsl(211, 39%, 23%) hsl(209, 61%, 16%)
 $lightGreys: hsl(211, 10%, 53%) hsl(211, 13%, 65%) hsl(210, 16%, 82%) hsl(214, 15%, 91%) hsl(216, 33%, 97%)
@@ -37,6 +11,9 @@ $lightBlues: hsl(205, 65%, 55%) hsl(205, 74%, 65%) hsl(205, 84%, 74%) hsl(205, 9
 
 $darkReds: hsl(356, 75%, 53%) hsl(354, 85%, 44%) hsl(352, 90%, 35%) hsl(350, 94%, 28%) hsl(348, 94%, 20%)
 $lightReds: hsl(360, 83%, 62%) hsl(360, 91%, 69%) hsl(360, 100%, 80%) hsl(360, 100%, 87%) hsl(360, 100%, 95%)
+
+$darkCyans: hsl(185, 62%, 45%) hsl(184, 77%, 34%) hsl(185, 81%, 29%) hsl(185, 84%, 25%) hsl(184, 91%, 17%)
+$lightCyans: hsl(185, 57%, 50%) hsl(184, 65%, 59%) hsl(184, 80%, 74%) hsl(185, 94%, 87%) hsl(186, 100%, 94%)
 
 $weight-light: 300 !default
 $weight-normal: 400 !default
@@ -50,45 +27,23 @@ $text-base: 1rem
 $text-lg: 1.125rem
 $text-xl: 1.25rem
 
-$size-3: 1.15rem
-$size-4: 1.1rem
-$size-5: 1rem
-$size-6: 0.9rem !default
-$size-7: 0.8rem !default
-$size-8: 0.74rem !default
-
 $radius-rounded: 290486px !default
 
 $font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default
-$font-weight: $weight-normal !default
-$font-color: $black-lighter
 
 $pane-width: 256px !default
-$pane-horizontal-padding: 5px !default
-$pane-border: 1px solid $grey-light-1 !default
+$pane-horizontal-padding: 8px !default
 $pane-popover-border-radius: 5px
 $pane-popover-box-shadow: 0 1px 2px 0 rgba(34,36,38,.15)
 
 $header-padding: 10px $pane-horizontal-padding + 5
 
-$title-font-size: $size-3
-$title-font-weight: $weight-normal
 $title-transition: all .25s ease-in-out
 
-$nav-color: $black-light
-$nav-background-color: $grey-light-9 !default
 $nav-border: 1px solid $grey-light-1
 $nav-border-radius: 5px
-$nav-header-background-color: $grey-light-9 !default
-$nav-title-font-size: $size-6
-$nav-title-font-weight: $weight-medium
-$nav-table-font-size: $size-6
-$nav-table-font-weight: $weight-normal
 $nav-table-cell-width: 60px
 $nav-table-cell-border: 1px solid $grey-light-1;
-$nav-table-cell-background-color: $white;
-$nav-table-cell-hover-background-color: $grey-light-4
-$nav-table-cell-active-background-color: $grey-light-6
 
 $arrow-font-size: 1.6rem
 $arrow-transition: fill-opacity .3s ease-in-out
@@ -102,30 +57,20 @@ $weeks-padding: 5px $pane-horizontal-padding 7px $pane-horizontal-padding
 $day-min-height: 1.8rem
 $day-content-width: 1.8rem
 $day-content-height: 1.8rem
-$day-content-font-size: $size-6
-$day-content-font-weight: $weight-medium
 $day-content-border-radius: 50%
 $day-content-hover-cursor: pointer
-$day-content-hover-background-color: $grey-light-3
 $day-content-transition-time: 0.18s ease-in-out
 
-$day-popover-background-color: $grey-dark-4 !default
-$day-popover-border: 1px solid $grey-dark-5 !default
-$day-popover-color: $white !default
-$day-popover-font-size: $size-8 !default
-$day-popover-font-weight: $weight-normal !default
 $day-popover-border-radius: 2px !default
 $day-popover-padding: 3px !default
 $day-popover-sun-color: #ffbf80 !default
 $day-popover-moon-color: $grey-light-1 !default
 
 $dot-diameter: 5px
-$dot-background-color: $theme
 $dot-border-radius: 50%
 $dot-spacing: 3px
 
 $bar-height: 3px
-$bar-background-color: $theme
 $bars-width: 75%
 
 $background-transition-time: .13s ease-in-out

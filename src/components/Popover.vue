@@ -1,5 +1,6 @@
 <script>
 import Popper from 'popper.js';
+import injectMixin from '@/utils/injectMixin';
 import { on, off, elementContains } from '@/utils/helpers';
 import { addTapOrClickHandler } from '@/utils/touch';
 import { isFunction } from '@/utils/_';
@@ -41,7 +42,7 @@ export default {
                     'c-popover-content',
                     `direction-${this.direction}`,
                     `align-${this.align}`,
-                    this.contentClass,
+                    this.theme.popoverContainer,
                   ],
                 },
                 [
@@ -66,8 +67,8 @@ export default {
   props: {
     id: { type: String, required: true },
     placement: { type: String, default: 'bottom' },
-    contentClass: String,
     transition: { type: String, default: 'slide-fade' },
+    theme: { type: Object, default: () => {} },
   },
   data() {
     return {
@@ -268,7 +269,6 @@ export default {
 
 .c-popover-content
   position: relative
-  border: $pane-border
   z-index: 10
   .c-popover-caret
     display: block

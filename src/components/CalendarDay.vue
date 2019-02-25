@@ -1,5 +1,6 @@
 <script>
 import PopoverRef from './PopoverRef';
+import injectMixin from '@/utils/injectMixin';
 import {
   evalFn,
   arrayHasItems,
@@ -12,7 +13,7 @@ import { isFunction, some } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
-  inject: ['dayPopoverId'],
+  mixins: [injectMixin],
   props: {
     day: { type: Object, required: true },
     attributes: Object,
@@ -156,8 +157,8 @@ export default {
       'div',
       {
         class: [
-          'c-day',
-          this.dayClass,
+          'c-day text-sm font-medium',
+          ...this.day.classes,
           { 'c-day-box-center-center': !this.$scopedSlots['day-content'] },
         ],
         style: this.dayStyle,
@@ -165,6 +166,7 @@ export default {
       [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
     );
   },
+  inject: ['sharedState'],
   data() {
     return {
       isHovered: false,
@@ -252,9 +254,6 @@ export default {
     },
     popoverIsInteractive() {
       return this.hasPopovers && some(this.popovers, p => p.isInteractive);
-    },
-    dayClass() {
-      return this.day.classes;
     },
     dayStyle() {
       return evalFn(this.styles.day, {
@@ -442,7 +441,10 @@ export default {
       if (!highlight) return backgrounds;
 
       const { isDate, isComplex, startTime, endTime } = targetDate;
-      const { base, start, end, startEnd } = normalizeHighlight(true); // Don't use highlight for now
+      const { base, start, end, startEnd } = normalizeHighlight(
+        true,
+        this.theme,
+      ); // Don't use highlight for now
       let targetArea;
 
       if (isDate || isComplex) {
@@ -653,12 +655,10 @@ export default {
   position: relative
   min-height: $day-min-height
   height: 100%
-  font-size: $day-content-font-size
-  font-weight: $day-content-font-weight
-  transition: all $day-content-transition-time
+  // transition: all $day-content-transition-time
   z-index: 1
   &:not(.in-month) /deep/ > *
-    opacity: 0.3
+    opacity: 0
 
 .c-day-layer
   position: absolute
@@ -709,15 +709,6 @@ export default {
 .c-day-background
   transition: height $background-transition-time, background-color $background-transition-time
 
-.shift-left
-  margin-left: -1px
-
-.shift-right
-  margin-right: -1px
-
-.shift-left-right
-  margin: 0 -1px
-
 .c-day-dots
   +box()
 
@@ -725,7 +716,7 @@ export default {
   width: $dot-diameter
   height: $dot-diameter
   border-radius: $dot-border-radius
-  background-color: $dot-background-color
+  // background-color: $dot-background-color
   transition: all $day-content-transition-time
   &:not(:last-child)
     margin-right: $dot-spacing
@@ -737,7 +728,7 @@ export default {
 .c-day-bar
   flex-grow: 1
   height: $bar-height
-  background-color: $bar-background-color
+  // background-color: $bar-background-color
   transition: all $day-content-transition-time
 
 </style>

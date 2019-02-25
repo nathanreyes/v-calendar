@@ -1,5 +1,5 @@
 <template>
-  <div ref="pane" class="c-pane" :style="paneStyle">
+  <div ref="pane" class="c-pane">
     <!--Header slot-->
     <slot name="header" v-bind="page">
       <div class="c-header" :class="theme.header">
@@ -8,12 +8,12 @@
           <div class="c-title-wrapper">
             <!--Title content-->
             <popover-ref :id="navPopoverId" :visibility="navVisibility" is-interactive>
-              <div :class="theme.title" :style="titleStyle">
+              <div class="c-title" :class="theme.title">
                 <slot name="header-title" v-bind="page">{{ page.title }}</slot>
               </div>
             </popover-ref>
             <!--Navigation popover-->
-            <popover :id="navPopoverId">
+            <popover :id="navPopoverId" :theme="theme">
               <!--Navigation pane-->
               <calendar-nav
                 :value="page"
@@ -75,6 +75,7 @@ import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
+import injectMixin from '@/utils/injectMixin';
 import defaults from '@/utils/defaults';
 import { getWeekdayDates, evalFn, createGuid } from '@/utils/helpers';
 import { format } from '@/utils/fecha';
@@ -87,7 +88,7 @@ export default {
     PopoverRef,
     Popover,
   },
-  inject: ['theme'],
+  mixins: [injectMixin],
   props: {
     position: { type: Number, default: 1 },
     page: Object,
@@ -122,18 +123,6 @@ export default {
     },
     titleClass() {
       return this.titlePosition ? `align-${this.titlePosition}` : '';
-    },
-    paneStyle() {
-      return evalFn(this.styles.pane, this.page);
-    },
-    headerStyle() {
-      return evalFn(this.styles.header, this.page);
-    },
-    titleStyle() {
-      return evalFn(this.styles.headerTitle, this.page);
-    },
-    arrowStyle() {
-      return evalFn(this.styles.headerArrows, this.page);
     },
     headerHorizontalDividerStyle_() {
       return evalFn(this.styles.headerHorizontalDivider, this.page);

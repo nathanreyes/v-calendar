@@ -1,49 +1,92 @@
 import defaultThemeConfig from './defaultTheme.json';
 import {
+  isBoolean,
   isObject,
   isString,
   capitalize,
   kebabCase,
-  get,
   has,
   hasAny,
-  toPairs,
+  get,
   set,
+  toPairs,
   defaults,
-  mapValues,
 } from './_';
-import { isBoolean } from 'util';
 
-const cssProps = ['bg', 'text'];
-const colors = ['blue', 'red', 'orange'];
-const colorSuffixes = [
-  'L5',
-  'L4',
-  'L3',
-  'L2',
-  'L1',
-  'D1',
-  'D2',
-  'D3',
-  'D4',
-  'D5',
-];
+// const cssProps = ['bg', 'text'];
+// const colors = ['blue', 'red', 'orange'];
+// const colorSuffixes = [
+//   'L5',
+//   'L4',
+//   'L3',
+//   'L2',
+//   'L1',
+//   'D1',
+//   'D2',
+//   'D3',
+//   'D4',
+//   'D5',
+// ];
+
+// Creates all the css classes needed for the theme
+// function mixinCssClasses(target) {
+//   cssProps.forEach(prop => {
+//     colors.forEach(color => {
+//       colorSuffixes.forEach(colorSuffix => {
+//         const key = `${prop}${capitalize(color)}${colorSuffix}`;
+//         target[key] = kebabCase(key);
+//       });
+//     });
+//   });
+//   return target;
+// }
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'style', 'color', 'fillMode'];
 
-// Creates all the css classes needed for the theme
-function mixinCssClasses(target) {
-  cssProps.forEach(prop => {
-    colors.forEach(color => {
-      colorSuffixes.forEach(colorSuffix => {
-        const key = `${prop}${capitalize(color)}${colorSuffix}`;
-        target[key] = kebabCase(key);
-      });
+export const generateTheme = ({ color, isDark, config }) => {
+  const themeConfig = defaults(
+    {
+      color: color || defaultThemeConfig.color,
+      isDark: isBoolean(isDark) ? isDark : defaultThemeConfig.isDark,
+    },
+    config,
+    defaultThemeConfig,
+  );
+
+  const { color: themeColor, isDark: themeIsDark } = themeConfig;
+  const getConfig = (
+    prop,
+    { color: propColor = themeColor, isDark: propIsDark = themeIsDark },
+  ) => {
+    if (!has(themeConfig, prop)) return undefined;
+    let propVal = get(themeConfig, prop);
+    if (isObject(propVal) && hasAny(propVal, ['light', 'dark'])) {
+      propVal = propIsDark ? propVal.dark : propVal.light;
+    }
+    if (isString(propVal)) {
+      return propVal.replace(/{color}/g, propColor);
+    }
+  };
+
+  const theme = {
+    color: themeColor,
+    isDark: themeIsDark,
+    getConfig,
+  };
+
+  toPairs(themeConfig).forEach(([prop]) => {
+    Object.defineProperty(theme, prop, {
+      get() {
+        return getConfig(prop, {});
+      },
     });
   });
-  return target;
-}
+
+  return theme;
+};
+
+const defaultTheme = generateTheme(defaultThemeConfig);
 
 // Normalizes attribute config to the structure defined by the properties
 function normalizeAttr({
@@ -97,29 +140,28 @@ function normalizeAttr({
   return root;
 }
 
-export const normalizeHighlight = (
-  config,
-  themeConfig = defaultThemeConfig,
-) => {
+export const normalizeHighlight = (config, theme = defaultTheme) => {
   const highlight = normalizeAttr({
     config,
     type: 'highlight',
     targetProps,
     displayProps,
-    themeConfig,
+    theme,
   });
   toPairs(highlight).map(([targetType, targetConfig]) => {
-    const isDark = themeConfig.isDark;
-    const color = targetConfig.color || themeConfig.color;
+    const themeConfig = {
+      isDark: theme.isDark,
+      color: targetConfig.color || theme.color,
+    };
     let bgClass, contentClass;
     switch (targetConfig.fillMode) {
       case 'light':
-        bgClass = `bg-${color}-${isDark ? 'd5' : 'l5'}`;
-        contentClass = `text-${isDark ? 'white' : color}${isDark ? '' : '-d4'}`;
+        bgClass = theme.getConfig('highlightFillLightBg', themeConfig); // `bg-${color}-${isDark ? 'd5' : 'l5'}`;
+        contentClass = theme.getConfig('highlightFillLightText', themeConfig); // `text-${isDark ? 'white' : color}${isDark ? '' : '-d4'}`;
         break;
       case 'solid':
-        bgClass = `bg-${color}-${isDark ? 'l1' : 'd1'}`;
-        contentClass = `text-white`;
+        bgClass = theme.getConfig('highlightFillSolidBg', themeConfig); // `bg-${color}-${isDark ? 'l1' : 'd1'}`;
+        contentClass = theme.getConfig('highlightFillSolidText', themeConfig); // `text-white`;
         break;
     }
     targetConfig.class = `${targetConfig.class} ${bgClass}`;
@@ -128,35 +170,4 @@ export const normalizeHighlight = (
   return highlight;
 };
 
-export const generateTheme = ({ color, isDark, config }) => {
-  let theme = defaults(
-    {
-      color: color || defaultThemeConfig.color,
-      isDark: isBoolean(isDark) ? isDark : defaultThemeConfig.isDark,
-    },
-    config,
-    defaultThemeConfig,
-  );
-  theme = mapValues(theme, val => {
-    if (isObject(val) && hasAny(val, ['light', 'dark'])) {
-      return isDark ? val.dark : val.light;
-    }
-    return val;
-  });
-  theme = mapValues(theme, val => {
-    if (isString(val)) {
-      val = val.replace('{color}', theme.color);
-    }
-  });
-  console.log(theme);
-  return theme;
-};
-
-const createTheme = Vue => {
-  const theme = {
-    classes: mixinCssClasses({}),
-  };
-  Vue.prototype.$theme = theme;
-};
-
-export default createTheme;
+export default generateTheme;

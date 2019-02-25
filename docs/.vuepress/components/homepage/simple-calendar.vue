@@ -12,6 +12,15 @@
       <a class="has-text-primary" href="#" @click.prevent="display = 'bars'">bars</a> and even
       <a class="has-text-primary" href="#" @click.prevent="display = 'popovers'">popovers</a>.
     </p>
+    <p>
+      <label for="isDark">
+        <input id="isDark" name="isDark" type="checkbox" v-model="isDark">
+        Is Dark
+      </label>
+      <select v-model="selectedColor">
+        <option v-for="color in colors" :value="color.value">{{ color.text }}</option>
+      </select>
+    </p>
     <div class="center">
       <v-calendar
         :attributes="attributes"
@@ -19,13 +28,15 @@
         :from-page.sync="fromPage"
         :to-page.sync="toPage"
         popover-visibility="focus"
-        is-dark
+        color="blue"
+        :is-dark="isDark"
+        :color="selectedColor"
       >
         <!--=========POPOVER HEADER SLOT=========-->
         <div
           slot="day-popover-header"
           slot-scope="{ day }"
-          class="text-center pb-1 mb-1 border-b mx-1"
+          class="text-center font-bold mb-1 mx-2"
         >{{ getPopoverHeaderLabel(day) }}</div>
         <!--============HOW TO USE ROW SLOTS===========-->
         <!--
@@ -119,6 +130,14 @@ export default {
       display: '',
       fromPage: null,
       toPage: null,
+      isDark: false,
+      colors: [
+        { text: 'Blue', value: 'blue' },
+        { text: 'Red', value: 'red' },
+        { text: 'Cyan', value: 'cyan' },
+        { text: 'Grey', value: 'grey' },
+      ],
+      selectedColor: 'blue',
       highlights: [
         {
           highlight: {

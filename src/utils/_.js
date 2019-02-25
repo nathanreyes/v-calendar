@@ -1,3 +1,4 @@
+import _isBoolean from 'lodash/isBoolean';
 import _isNumber from 'lodash/isNumber';
 import _isString from 'lodash/isString';
 import _isDate from 'lodash/isDate';
@@ -22,6 +23,7 @@ import _last from 'lodash/last';
 // Type checkers
 export const getType = value =>
   Object.prototype.toString.call(value).slice(8, -1);
+export const isBoolean = _isBoolean;
 export const isNumber = _isNumber;
 export const isString = _isString;
 export const isDate = _isDate;

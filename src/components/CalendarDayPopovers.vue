@@ -35,7 +35,7 @@
     </calendar-day-popover-row>
     <!-- <p class="c-day-no-popovers" v-if="!hasPopovers">Empty</p> -->
     <!-- Day popover footer slot -->
-    <slot name="day-popover-footer" :day="day" :attributes="attributes"></slot>
+    <slot name="day-popover-footer" :day="day" :attributes="attributes" :format="format"></slot>
   </div>
 </template>
 
@@ -74,6 +74,7 @@ export default {
 <style scoped>
 .c-day-popover-content {
   line-height: 1.5;
+  padding: 5px 0;
 }
 .c-day-no-popovers {
   opacity: 0.8;

@@ -1,21 +1,69 @@
 {
   "color": "blue",
   "isDark": "false",
-  "paneContainer": {
-    "light": "text-black bg-white",
-    "dark": "text-grey-l4 bg-grey-d5"
+  "container": {
+    "light": "border border-grey-l3 rounded-lg text-black bg-white",
+    "dark": "rounded-lg text-grey-l4 bg-grey-d5 shadow"
   },
-  "paneHeader": {
+  "header": {
     "light": "text-grey-d4",
     "dark": "text-grey-l4"
   },
   "title": {
-    "light": "text-lg font-bold",
-    "dark": "text-lg font-bold"
+    "light": "text-lg font-semibold",
+    "dark": "text-lg font-semibold"
+  },
+  "arrows": {
+    "light": "text-grey-d1",
+    "dark": "text-white"
   },
   "weekdays": {
-    "light": "text-sm font-medium text-grey-l1",
-    "dark": "text-sm font-medium text-{color}-l2"
+    "light": "text-sm font-bold text-grey-l2",
+    "dark": "text-sm font-bold text-{color}-l4"
+  },
+  "popoverContainer": {
+    "light": "rounded text-xs text-white bg-grey-d4 shadow",
+    "dark": "rounded text-xs text-grey-d5 bg-white border border-grey-l4 shadow"
+  },
+  "navContainer": {
+    "light": "",
+    "dark": ""
+  },
+  "navHeader": {
+    "light": "",
+    "dark": ""
+  },
+  "navTitle": {
+    "light": "font-semibold",
+    "dark": "font-semibold"
+  },
+  "navCell": {
+    "light": "",
+    "dark": ""
+  },
+  "navCellActive": {
+    "light": "",
+    "dark": ""
+  },
+  "dayPopoverContainer": {
+    "light": "",
+    "dark": ""
+  },
+  "highlightFillLightBg": {
+    "light": "bg-{color}-l5",
+    "dark": "bg-{color}-d5"
+  },
+  "highlightFillLightText": {
+    "light": "text-{color}-d4",
+    "dark": "text-white"
+  },
+  "highlightFillSolidBg": {
+    "light": "bg-{color}-d1",
+    "dark": "bg-{color}-l1"
+  },
+  "highlightFillSolidText": {
+    "light": "text-white",
+    "dark": "text-white"
   },
   "highlight": {
     "base": {

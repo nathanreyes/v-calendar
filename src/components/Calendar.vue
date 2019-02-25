@@ -23,7 +23,7 @@ import {
   toDate,
 } from '@/utils/helpers';
 import { format } from '@/utils/fecha';
-import { generateTheme } from '@/utils/theme';
+import generateTheme from '@/utils/theme';
 import { isNumber } from '@/utils/_';
 
 export default {
@@ -77,7 +77,8 @@ export default {
             h(SvgIcon, {
               class: [
                 'c-arrow',
-                { [directionClass]: true, 'c-disabled': isDisabled },
+                { [directionClass]: true, 'vc-disabled': isDisabled },
+                this.sharedState.theme.arrows,
               ],
               props: {
                 name: svgName,
@@ -99,7 +100,7 @@ export default {
             {
               'is-expanded': this.isExpanded,
             },
-            this.theme_.paneContainer,
+            this.sharedState.theme.container,
           ],
           on: {
             touchstart: this.touchStart,
@@ -158,9 +159,10 @@ export default {
           ),
           h(Popover, {
             props: {
-              id: this.dayPopoverId,
+              id: this.sharedState.dayPopoverId,
               align: 'center',
               contentClass: 'c-day',
+              theme: this.sharedState.theme,
             },
             scopedSlots: {
               default: ({ args: day }) => {
@@ -181,8 +183,7 @@ export default {
   },
   provide() {
     return {
-      dayPopoverId: this.dayPopoverId,
-      theme: this.theme_,
+      sharedState: this.sharedState,
     };
   },
   props: {
@@ -222,7 +223,10 @@ export default {
       transitionName: '',
       inTransition: false,
       isRefreshing: false,
-      dayPopoverId: createGuid(),
+      sharedState: {
+        dayPopoverId: createGuid(),
+        theme: {},
+      },
     };
   },
   computed: {
@@ -262,13 +266,6 @@ export default {
         ...this.formats,
       };
     },
-    theme_() {
-      return generateTheme({
-        color: this.color,
-        isDark: this.isDark,
-        config: this.theme,
-      });
-    },
     attributes_() {
       return AttributeStore(this.attributes);
     },
@@ -283,11 +280,28 @@ export default {
     toPage() {
       this.refreshPages();
     },
+    color() {
+      this.refreshTheme();
+    },
+    isDark() {
+      this.refreshTheme();
+    },
+    theme(val) {
+      this.refreshTheme();
+    },
   },
   created() {
+    this.refreshTheme();
     this.refreshPages();
   },
   methods: {
+    refreshTheme() {
+      this.sharedState.theme = generateTheme({
+        color: this.color,
+        isDark: this.isDark,
+        config: this.theme,
+      });
+    },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
     },
@@ -472,24 +486,14 @@ export default {
 @import '../styles/mixins.sass'
 
 /deep/ .c-popover-content.c-day
-  background-color: $day-popover-background-color
-  border: $day-popover-border
   border-radius: $day-popover-border-radius
   box-shadow: $pane-popover-box-shadow
-  color: $day-popover-color
-  font-size: $day-popover-font-size
-  font-weight: $day-popover-font-weight
   padding: $day-popover-padding
-
-/deep/ .c-pane-inner-border
-  border: $pane-border
 
 .c-pane-container
   position: relative
   font-family: $font-family
-  font-weight: $font-weight
   line-height: 1.5
-  border: $pane-border
   width: max-content
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
@@ -517,11 +521,10 @@ export default {
 
 .c-arrow
   +box()
-  font-size: $arrow-font-size
   transition: $arrow-transition
   cursor: pointer
   user-select: none
-  &.c-disabled
+  &.vc-disabled
     cursor: not-allowed
     pointer-events: none
     opacity: 0.2
