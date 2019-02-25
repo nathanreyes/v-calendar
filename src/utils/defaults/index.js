@@ -1,29 +1,16 @@
-import { POPOVER_VISIBILITIES } from './constants';
-import { isObject, isFunction } from './_';
+import { POPOVER_VISIBILITIES } from '../constants';
+import formats from './formats.json';
+import screens from './screens.json';
+import { isObject, isFunction } from '../_';
 
 const defaults = {
   componentPrefix: 'v',
   firstDayOfWeek: 1,
   navVisibility: 'click',
   titlePosition: 'center',
-  titleTransition: 'slide-h',
-  weeksTransition: 'slide-h',
-  paneWidth: 256, // px,
-  showLinkedButtons: false,
-  formats: {
-    title: 'MMMM YYYY',
-    weekdays: 'W',
-    navMonths: 'MMM',
-    input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
-    dayPopover: 'WWW, MMM D, YYYY',
-    data: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
-  },
-  screens: {
-    sm: '576px',
-    md: '768px',
-    lg: '992px',
-    xl: '1200px',
-  },
+  transition: 'slide-h',
+  formats,
+  screens,
   datePickerInputProps: ({ dragValue, mode, format }) => ({
     ...(mode === 'single' && {
       style: {
@@ -103,34 +90,6 @@ const defaults = {
     borderWidth: '0',
     borderStyle: 'solid',
     opacity: 1,
-  },
-  themeStyles: {
-    wrapper: null,
-    verticalDivider: null,
-    horizontalDivider: null,
-    pane: null,
-    header: null,
-    headerTitle: null,
-    headerArrows: null,
-    headerHorizontalDivider: null,
-    navHeader: null,
-    navHeaderTitle: null,
-    navHeaderArrows: null,
-    navMonthCell: null,
-    navYearCell: null,
-    weekdays: null,
-    weekdaysHorizontalDivider: null,
-    weeks: null,
-    dayCell: null,
-    dayContent: null,
-    dayContentHover: null,
-    dayPopoverContent: {
-      color: '#333333',
-      fontSize: '.8rem',
-      whiteSpace: 'nowrap',
-    },
-    dots: null,
-    bars: null,
   },
 };
 

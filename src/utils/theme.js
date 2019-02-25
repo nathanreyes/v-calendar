@@ -1,4 +1,4 @@
-import defaultThemeConfig from './defaultTheme.json';
+import defaultThemeConfig from './defaults/theme.json';
 import {
   isBoolean,
   isObject,

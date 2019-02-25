@@ -62,37 +62,13 @@ pageClass: docs-page
 
 **Default:** `"center"`
 
-## `titleTransition`
+## `transition`
 
 **Type:** String
 
 **Description:** Transition type for title when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`)
 
-**Default:** `"slide-h"`
-
-## `weeksTransition`
-
-**Type:** String
-
-**Description:** Transition type for weeks when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`)
-
-**Default:** `"slide-h"`
-
-## `paneWidth`
-
-**Type:** Number
-
-**Description:** Width of a single pane, in pixels.
-
-**Default:** `256`
-
-## `showLinkedButtons`
-
-**Type:** Boolean
-
-**Description:** When calendar `is-linked` and `!is-vertical`, show the inner header navigation buttons that are usually hidden.
-
-**Default:** `false`
+**Default:** `"slide-h"` for single-paned, `"fade"` for multi-paned
 
 ## `datePickerUpdateOnInput`
 
