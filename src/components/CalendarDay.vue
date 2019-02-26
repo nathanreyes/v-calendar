@@ -311,6 +311,9 @@ export default {
       });
       this.refreshGlyphs();
     },
+    theme() {
+      this.refreshGlyphs();
+    },
   },
   created() {
     this.refreshGlyphs();
@@ -467,12 +470,14 @@ export default {
             key,
             wrapperClass: 'c-day-layer c-day-box-center-center',
             class: `vc-highlight ${targetArea.class}`,
+            contentClass: targetArea.contentClass,
           });
         } else if (onStart) {
           backgrounds.push({
             key,
             wrapperClass: 'c-day-layer c-day-box-right-center',
             class: `vc-highlight vc-highlight-start ${base.class}`,
+            contentClass: base.contentClass,
           });
           targetArea = start || startEnd || base;
           if (targetArea) {
@@ -488,6 +493,7 @@ export default {
             key,
             wrapperClass: 'c-day-layer c-day-box-left-center',
             class: `vc-highlight vc-highlight-end ${base.class}`,
+            contentClass: base.contentClass,
           });
           targetArea = end || startEnd || base;
           if (targetArea) {
@@ -509,88 +515,6 @@ export default {
       }
       return backgrounds;
     },
-    // getBackgroundLayer({ key, highlight, highlightCaps, targetDate }) {
-    //   // Initialize the background object
-    //   const {
-    //     width,
-    //     height,
-    //     backgroundColor,
-    //     borderColor,
-    //     borderWidth,
-    //     borderStyle,
-    //     opacity,
-    //   } = highlight;
-    //   const borderRadius =
-    //     highlight.borderRadius ||
-    //     (targetDate.isDate || targetDate.isComplex ? '50%' : '290486px');
-    //   const background = {
-    //     key,
-    //     style: {
-    //       width: width || height,
-    //       height,
-    //       backgroundColor,
-    //       borderColor,
-    //       borderWidth,
-    //       borderStyle,
-    //       borderRadius,
-    //       opacity,
-    //     },
-    //   };
-    //   if (targetDate.isDate || targetDate.isComplex) {
-    //     background.wrapperClass = 'c-day-layer c-day-box-center-center';
-    //   } else {
-    //     const onStart = targetDate.startTime === this.dateTime;
-    //     const onEnd = targetDate.endTime === this.dateTime;
-    //     const endLongWidth = '95%';
-    //     const endShortWidth = '50%';
-    //     // Is the day date on the highlight start and end date
-    //     if (onStart && onEnd) {
-    //       background.class = 'vc-highlight vc-highlight-start vc-highlight-end';
-    //       background.wrapperClass = 'c-day-layer c-day-box-center-center';
-    //       background.style.width = endLongWidth;
-    //       background.style.borderWidth = borderWidth;
-    //       background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
-    //       // Is the day date on the highlight start date
-    //     } else if (onStart) {
-    //       background.class = 'vc-highlight vc-highlight-start';
-    //       background.wrapperClass =
-    //         'c-day-layer c-day-box-right-center shift-right';
-    //       if (highlightCaps) {
-    //         background.style.width = endShortWidth;
-    //         background.style.borderWidth = `${borderWidth} 0`;
-    //         background.style.borderRadius = 0;
-    //       } else {
-    //         background.style.width = endLongWidth;
-    //         background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
-    //         background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
-    //       }
-    //       // Is the day date on the highlight end date
-    //     } else if (onEnd) {
-    //       background.class = 'vc-highlight vc-highlight-end';
-    //       background.wrapperClass =
-    //         'c-day-layer c-day-box-left-center shift-left';
-    //       // if (highlightCaps) {
-    //       //   background.style.width = endShortWidth;
-    //       //   background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
-    //       //   background.style.borderRadius = 0;
-    //       // } else {
-    //       //   background.style.width = endLongWidth;
-    //       //   background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
-    //       //   background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
-    //       // }
-    //       // Is the day date between the highlight start/end dates
-    //     } else {
-    //       background.class = 'vc-highlight vc-highlight-middle';
-    //       background.wrapperClass =
-    //         'c-day-layer c-day-box-center-center shift-left-right';
-    //       background.style.width = '100%';
-    //       background.style.borderWidth = `${borderWidth} 0`;
-    //       background.style.borderRadius = '0';
-    //     }
-    //   }
-    //   background.class = `${background.class} vc-${theme || 'blue'}`;
-    //   return background;
-    // },
     getDot({ key, dot }) {
       return {
         key,
@@ -707,7 +631,7 @@ export default {
   backface-visibility: hidden // Prevents glitches in Chrome by forcing hardware acceleration
 
 .c-day-background
-  transition: height $background-transition-time, background-color $background-transition-time
+  transition: height $background-transition-time
 
 .c-day-dots
   +box()

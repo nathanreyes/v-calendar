@@ -486,8 +486,6 @@ export default {
 @import '../styles/mixins.sass'
 
 /deep/ .c-popover-content.c-day
-  border-radius: $day-popover-border-radius
-  box-shadow: $pane-popover-box-shadow
   padding: $day-popover-padding
 
 .c-pane-container

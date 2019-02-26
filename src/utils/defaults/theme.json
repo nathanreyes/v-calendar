@@ -22,7 +22,7 @@
     "dark": "text-sm font-bold text-{color}-l4"
   },
   "popoverContainer": {
-    "light": "rounded text-xs text-white bg-grey-d4 shadow",
+    "light": "rounded text-xs text-white bg-grey-d4 border border-grey-l4 shadow",
     "dark": "rounded text-xs text-grey-d5 bg-white border border-grey-l4 shadow"
   },
   "navContainer": {
@@ -50,20 +50,20 @@
     "dark": ""
   },
   "highlightFillLightBg": {
-    "light": "bg-{color}-l5",
-    "dark": "bg-{color}-d5"
+    "light": "bg-{color}-l4 opacity-75",
+    "dark": "bg-{color}-d4 opacity-75"
   },
   "highlightFillLightContent": {
-    "light": "text-{color}-d4",
-    "dark": "text-white"
+    "light": "font-bold text-{color}-d4",
+    "dark": "font-bold text-white"
   },
   "highlightFillSolidBg": {
     "light": "bg-{color}-d1",
     "dark": "bg-{color}-l1"
   },
   "highlightFillSolidContent": {
-    "light": "text-white",
-    "dark": "text-white"
+    "light": "font-bold text-white",
+    "dark": "font-bold text-white"
   },
   "highlight": {
     "base": {

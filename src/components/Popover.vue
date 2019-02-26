@@ -42,7 +42,7 @@ export default {
                     'c-popover-content',
                     `direction-${this.direction}`,
                     `align-${this.align}`,
-                    this.theme.popoverContainer,
+                    this.theme && this.theme.popoverContainer,
                   ],
                 },
                 [

@@ -2,7 +2,6 @@
 import Fragment from './Fragment';
 import Popover from './Popover';
 import PopoverRef from './PopoverRef';
-import DatePickerDayPopover from './DatePickerDayPopover';
 import PickerProfile from '@/utils/pickerProfiles';
 import Attribute from '@/utils/attribute';
 import defaults, { resolveDefault } from '@/utils/defaults';
@@ -301,67 +300,10 @@ export default {
         ...propAttr,
         pinPage: true,
       };
-      const {
-        highlight,
-        highlightCaps,
-        contentStyle,
-        dot,
-        bar,
-        popover,
-      } = attr;
+      const { highlight, dot, bar } = attr;
       // Don't need highlight or content style if using dot or bar
-      if (!dot && !bar) {
-        attr = {
-          ...attr,
-          highlight: params => ({
-            backgroundColor: this.tintColor,
-            ...(isDrag && {
-              height: '1.64rem',
-              opacity: 0.5,
-            }),
-            ...evalFn(highlight, params),
-          }),
-          highlightCaps:
-            highlightCaps ||
-            (this.showCaps &&
-              (params =>
-                !params.inBetween && {
-                  backgroundColor: '#fafafa',
-                  borderColor: this.tintColor,
-                  borderWidth: '2px',
-                })),
-          // Use function wrapper for content style
-          contentStyle: params => ({
-            // Light color for select attributes
-            ...(!isDrag && {
-              color: '#fafafa',
-            }),
-            // Don't show hover style for drag and select attributes
-            ...(params.isHovered && {
-              backgroundColor: 'transparent',
-              border: '0',
-            }),
-            // Mix in cap style
-            ...(this.showCaps &&
-              !params.inBetween && {
-                color: '#333333',
-              }),
-            // Mix in user style
-            ...evalFn(contentStyle, params),
-          }),
-        };
-      }
-      if (popover || this.showDayPopover) {
-        attr.popover = params => {
-          const popoverObj = {
-            component: DatePickerDayPopover,
-            hideIndicator: true,
-            visibility: 'hover',
-            isInteractive: false,
-            ...evalFn(popover, params),
-          };
-          return popoverObj;
-        };
+      if (!dot && !bar && !highlight) {
+        attr.highlight = true;
       }
       return attr;
     },
@@ -464,16 +406,8 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
-
-@import '../styles/vars.sass'
-
-.c-pane-container
-  &.is-popover
-    border: none
-  & /deep/ .c-day-content
-    &:hover
-      // cursor: $day-content-hover-cursor
-      // background-color: $day-content-hover-background-color
-
+<style scoped>
+.c-pane-container.is-popover {
+  border: none;
+}
 </style>

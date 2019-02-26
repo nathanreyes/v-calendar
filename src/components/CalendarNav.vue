@@ -329,7 +329,9 @@ export default {
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
-$cell-transition: all 0.1s ease-in-out
+$nav-title-transition: all .25s ease-in-out
+$nav-table-cell-width: 60px
+$nav-table-cell-transition: all 0.1s ease-in-out
 
 .c-nav-pane
   transition: height 5s ease-in-out
@@ -354,7 +356,7 @@ $cell-transition: all 0.1s ease-in-out
   user-select: none
 
 .c-nav-title
-  transition: $title-transition
+  transition: $nav-title-transition
   cursor: pointer
   user-select: none
 
@@ -391,7 +393,7 @@ $cell-transition: all 0.1s ease-in-out
   position: relative
   user-select: none
   cursor: pointer
-  transition: $cell-transition
+  transition: $nav-table-cell-transition
   // &:hover
   //   background-color: $nav-table-cell-hover-background-color
 
@@ -409,7 +411,7 @@ $cell-transition: all 0.1s ease-in-out
   align-items: center
   bottom: 5px
   width: 100%
-  transition: $cell-transition
+  transition: $nav-table-cell-transition
   .c-indicator
     width: 5px
     height: 5px
@@ -418,7 +420,7 @@ $cell-transition: all 0.1s ease-in-out
       margin-left: 3px
 
 .indicators-enter-active, .indicators-leave-active
-  transition: $cell-transition
+  transition: $nav-table-cell-transition
 
 .indicators-enter, .indicators-leave-to
   opacity: 0
