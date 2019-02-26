@@ -8,7 +8,6 @@ import {
   mixinOptionalProps,
 } from '@/utils/helpers';
 import defaults from '@/utils/defaults';
-import { normalizeHighlight } from '@/utils/theme';
 import { isFunction, some } from '@/utils/_';
 
 export default {
@@ -444,12 +443,11 @@ export default {
       if (!highlight) return backgrounds;
 
       const { isDate, isComplex, startTime, endTime } = targetDate;
-      const { base, start, end, startEnd } = normalizeHighlight(
+      const { base, start, end, startEnd } = this.theme.normalizeHighlight(
         true,
         this.theme,
-      ); // Don't use highlight for now
+      );
       let targetArea;
-
       if (isDate || isComplex) {
         targetArea = startEnd || start || end || base;
         backgrounds.push({
@@ -514,6 +512,16 @@ export default {
         }
       }
       return backgrounds;
+    },
+    getDots({ key, dot, targetDate }) {
+      const dots = [];
+      if (!dot) return dots;
+
+      const { isDate, isComplex, startTime, endTime } = targetDate;
+      const { base, start, end, startEnd } = this.theme.normalizeDot(
+        true,
+        this.theme,
+      );
     },
     getDot({ key, dot }) {
       return {

@@ -14,49 +14,6 @@ import {
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'style', 'color', 'fillMode'];
 
-export const generateTheme = ({ color, isDark, config }) => {
-  const themeConfig = defaults(
-    {
-      color: color || defaultThemeConfig.color,
-      isDark: isBoolean(isDark) ? isDark : defaultThemeConfig.isDark,
-    },
-    config,
-    defaultThemeConfig,
-  );
-
-  const { color: themeColor, isDark: themeIsDark } = themeConfig;
-  const getConfig = (
-    prop,
-    { color: propColor = themeColor, isDark: propIsDark = themeIsDark } = {},
-  ) => {
-    if (!has(themeConfig, prop)) return undefined;
-    let propVal = get(themeConfig, prop);
-    if (isObject(propVal) && hasAny(propVal, ['light', 'dark'])) {
-      propVal = propIsDark ? propVal.dark : propVal.light;
-    }
-    if (isString(propVal)) {
-      return propVal.replace(/{color}/g, propColor);
-    }
-    return propVal;
-  };
-
-  const theme = {
-    color: themeColor,
-    isDark: themeIsDark,
-    getConfig,
-  };
-
-  toPairs(themeConfig).forEach(([prop]) => {
-    Object.defineProperty(theme, prop, {
-      get() {
-        return getConfig(prop, {});
-      },
-    });
-  });
-
-  return theme;
-};
-
 // Normalizes attribute config to the structure defined by the properties
 function normalizeAttr({ config, type, targetProps, displayProps, theme }) {
   let root = {};
@@ -137,6 +94,54 @@ export const normalizeHighlight = (config, theme) => {
     targetConfig.contentClass = `${targetConfig.contentClass} ${contentClass}`;
   });
   return highlight;
+};
+
+export const normalizeDot = (config, theme) => {};
+
+export const generateTheme = ({ color, isDark, config }) => {
+  const themeConfig = defaults(
+    {
+      color: color || defaultThemeConfig.color,
+      isDark: isBoolean(isDark) ? isDark : defaultThemeConfig.isDark,
+    },
+    config,
+    defaultThemeConfig,
+  );
+
+  const { color: themeColor, isDark: themeIsDark } = themeConfig;
+  const getConfig = (
+    prop,
+    { color: propColor = themeColor, isDark: propIsDark = themeIsDark } = {},
+  ) => {
+    if (!has(themeConfig, prop)) return undefined;
+    let propVal = get(themeConfig, prop);
+    if (isObject(propVal) && hasAny(propVal, ['light', 'dark'])) {
+      propVal = propIsDark ? propVal.dark : propVal.light;
+    }
+    if (isString(propVal)) {
+      return propVal.replace(/{color}/g, propColor);
+    }
+    return propVal;
+  };
+
+  const theme = {
+    color: themeColor,
+    isDark: themeIsDark,
+    getConfig,
+    normalizeHighlight: config => normalizeHighlight(config, theme),
+    normalizeDot: config => normalizeDot(config, theme),
+    normalizeDot,
+  };
+
+  toPairs(themeConfig).forEach(([prop]) => {
+    Object.defineProperty(theme, prop, {
+      get() {
+        return getConfig(prop, {});
+      },
+    });
+  });
+
+  return theme;
 };
 
 export default generateTheme;

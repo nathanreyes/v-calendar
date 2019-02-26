@@ -72,5 +72,21 @@
     "startEnd": {
       "fillMode": "solid"
     }
+  },
+  "dotFillLight": {
+    "light": "",
+    "dark": ""
+  },
+  "dotFillSolid": {
+    "light": "",
+    "dark": ""
+  },
+  "barFillLight": {
+    "light": "",
+    "dark": ""
+  },
+  "barFillSolid": {
+    "light": "",
+    "dark": ""
   }
 }
