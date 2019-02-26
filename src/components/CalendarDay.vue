@@ -716,7 +716,6 @@ export default {
   width: $dot-diameter
   height: $dot-diameter
   border-radius: $dot-border-radius
-  // background-color: $dot-background-color
   transition: all $day-content-transition-time
   &:not(:last-child)
     margin-right: $dot-spacing
@@ -728,7 +727,6 @@ export default {
 .c-day-bar
   flex-grow: 1
   height: $bar-height
-  // background-color: $bar-background-color
   transition: all $day-content-transition-time
 
 </style>

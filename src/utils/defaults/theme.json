@@ -3,7 +3,7 @@
   "isDark": "false",
   "container": {
     "light": "border border-grey-l3 rounded-lg text-black bg-white",
-    "dark": "rounded-lg text-grey-l4 bg-grey-d5 shadow"
+    "dark": "border border-grey-d4 rounded-lg text-grey-l4 bg-grey-d5 shadow"
   },
   "header": {
     "light": "text-grey-d4",
@@ -53,7 +53,7 @@
     "light": "bg-{color}-l5",
     "dark": "bg-{color}-d5"
   },
-  "highlightFillLightText": {
+  "highlightFillLightContent": {
     "light": "text-{color}-d4",
     "dark": "text-white"
   },
@@ -61,7 +61,7 @@
     "light": "bg-{color}-d1",
     "dark": "bg-{color}-l1"
   },
-  "highlightFillSolidText": {
+  "highlightFillSolidContent": {
     "light": "text-white",
     "dark": "text-white"
   },
