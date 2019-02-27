@@ -49,6 +49,14 @@
     "light": "",
     "dark": ""
   },
+  "highlightFillNoneBg": {
+    "light": "border-{color}-d1",
+    "dark": "border-{color}-l1"
+  },
+  "highlightFillNoneContent": {
+    "light": "font-bold text-{color}-d4",
+    "dark": "font-bold text-white"
+  },
   "highlightFillLightBg": {
     "light": "bg-{color}-l4 opacity-75",
     "dark": "bg-{color}-d4 opacity-75"
@@ -72,6 +80,10 @@
     "startEnd": {
       "fillMode": "solid"
     }
+  },
+  "dotFillNone": {
+    "light": "border-{color}-d1",
+    "dark": "border-{color}-l1"
   },
   "dotFillLight": {
     "light": "",

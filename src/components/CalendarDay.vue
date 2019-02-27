@@ -522,6 +522,18 @@ export default {
         true,
         this.theme,
       );
+      if (isDate) {
+        dots.push({
+          key,
+          class: 
+        })
+      } else {
+        const onStart = startTime === this.dateTime;
+        const onEnd = endTime === this.dateTime;
+        const onStartAndEnd = onStart && onEnd;
+        const onStartOrEnd = onStart || onEnd;
+      }
+      return dots;
     },
     getDot({ key, dot }) {
       return {
