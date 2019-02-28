@@ -12,25 +12,45 @@ import {
 } from './_';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
-const displayProps = ['class', 'style', 'color', 'fillMode'];
+const displayProps = ['class', 'color', 'fillMode'];
+
+function getFills(type, theme) {
+  const base = theme[`${type}BaseFill`];
+  const startEnd = theme[`${type}StartEndFill`] || base;
+  const start = theme[`${type}StartFill`] || startEnd;
+  const end = theme[`${type}EndFill`] || start;
+  return {
+    base,
+    startEnd,
+    start,
+    end,
+  };
+}
 
 // Normalizes attribute config to the structure defined by the properties
 function normalizeAttr({ config, type, theme }) {
-  let root = {};
   let rootColor = theme.color;
+  const fills = getFills(type, theme);
+  let root = {
+    base: { fillMode: fills.base },
+    start: { fillMode: fills.start },
+    end: { fillMode: fills.end },
+  };
   // Assign default attribute for booleans or strings
   if (config === true || isString(config)) {
     rootColor = isString(config) ? config : rootColor;
-    root = { ...theme[type] };
-    // Mixin objects at top level
   } else if (isObject(config)) {
-    root = { ...config };
-  } else {
-    return null;
-  }
-  // Move non-target properties to base target
-  if (!hasAny(root, targetProps)) {
-    root = { base: { ...root } };
+    // Mixin target configs
+    if (hasAny(config, targetProps)) {
+      root = { ...config };
+      // Mixin display configs
+    } else if (hasAny(config, displayProps)) {
+      root = {
+        base: { ...displayProps },
+        start: { ...displayProps },
+        end: { ...displayProps },
+      };
+    }
   }
   // Normalize each target
   toPairs(root).forEach(([targetType, targetConfig]) => {
@@ -39,25 +59,33 @@ function normalizeAttr({ config, type, theme }) {
       targetColor = isString(targetConfig) ? targetConfig : targetColor;
       root[targetType] = { color: targetColor };
     } else if (isObject(targetConfig)) {
-      root[targetType] = { ...targetConfig };
-    }
-
-    if (!hasAny(root[targetType], displayProps)) {
-      root[targetType] = { style: { ...root[targetType] } };
-    }
-
-    displayProps.forEach(displayType => {
-      const displayPath = `${targetType}.${displayType}`;
-      if (!has(root, displayPath) && has(theme[type], displayPath)) {
-        set(root, displayPath, get(theme[type], displayPath));
+      if (hasAny(targetConfig, displayProps)) {
+        root[targetType] = { ...targetConfig };
+      } else {
+        root[targetType] = {};
       }
-    });
+    }
+    // Set the fill if it is missing
+    if (!has(root, `${targetType}.fillMode`)) {
+      set(root, `${targetType}.fillMode`, fills[targetType]);
+    }
     // Set the theme color if it is missing
     if (!has(root, `${targetType}.color`)) {
       set(root, `${targetType}.color`, targetColor);
     }
   });
+  if (!root.start) {
+    root.start = root.startEnd || root.base;
+  }
+  if (!root.end) {
+    root.end = root.startEnd || root.base;
+  }
   return root;
+}
+
+function concatString(toString, appendString) {
+  if (!toString) return appendString;
+  return `${toString} ${appendString}`;
 }
 
 export const normalizeHighlight = (config, theme) => {
@@ -71,26 +99,17 @@ export const normalizeHighlight = (config, theme) => {
     let bgClass, contentClass;
     switch (targetConfig.fillMode) {
       case 'none':
-        bgClass = theme.getConfig('highlightFillNoneBg', targetConfig);
-        contentClass = theme.getConfig(
-          'highlightFillNoneContent',
-          targetConfig,
-        );
+        bgClass = theme.getConfig('fillNone', targetConfig);
+        contentClass = theme.getConfig('fillNoneContent', targetConfig);
         break;
       case 'light':
-        bgClass = theme.getConfig('highlightFillLightBg', targetConfig);
-        contentClass = theme.getConfig(
-          'highlightFillLightContent',
-          targetConfig,
-        );
+        bgClass = theme.getConfig('fillLight', targetConfig);
+        contentClass = theme.getConfig('fillLightContent', targetConfig);
         break;
       // Solid by default
       default:
-        bgClass = theme.getConfig('highlightFillSolidBg', targetConfig);
-        contentClass = theme.getConfig(
-          'highlightFillSolidContent',
-          targetConfig,
-        );
+        bgClass = theme.getConfig('fillSolid', targetConfig);
+        contentClass = theme.getConfig('fillSolidContent', targetConfig);
         break;
     }
     targetConfig.class = concatString(targetConfig.class, bgClass);
@@ -101,11 +120,6 @@ export const normalizeHighlight = (config, theme) => {
   });
   return highlight;
 };
-
-function concatString(toString, appendString) {
-  if (!toString) return appendString;
-  return `${toString} ${appendString}`;
-}
 
 export const normalizeDot = (config, theme) => {
   const dot = normalizeAttr({
@@ -118,11 +132,45 @@ export const normalizeDot = (config, theme) => {
     let bgClass;
     switch (targetConfig.fillMode) {
       case 'none':
-        bgClass = theme.getConfig('dotFillNone', targetConfig);
+        bgClass = theme.getConfig('fillNone', targetConfig);
+        break;
+      case 'light':
+        bgClass = theme.getConfig('fillLight', targetConfig);
+        break;
+      // Solid by default
+      default:
+        bgClass = theme.getConfig('fillSolid', targetConfig);
         break;
     }
     targetConfig.class = concatString(targetConfig.class, bgClass);
   });
+  return dot;
+};
+
+export const normalizeBar = (config, theme) => {
+  const bar = normalizeAttr({
+    config,
+    type: 'bar',
+    theme,
+  });
+  toPairs(bar).map(([_, targetConfig]) => {
+    defaults(targetConfig, { isDark: theme.isDark, color: theme.color });
+    let bgClass;
+    switch (targetConfig.fillMode) {
+      case 'none':
+        bgClass = theme.getConfig('fillNone', targetConfig);
+        break;
+      case 'light':
+        bgClass = theme.getConfig('fillLight', targetConfig);
+        break;
+      // Solid by default
+      default:
+        bgClass = theme.getConfig('fillSolid', targetConfig);
+        break;
+    }
+    targetConfig.class = concatString(targetConfig.class, bgClass);
+  });
+  return bar;
 };
 
 export const generateTheme = ({ color, isDark, config }) => {
@@ -157,7 +205,7 @@ export const generateTheme = ({ color, isDark, config }) => {
     getConfig,
     normalizeHighlight: config => normalizeHighlight(config, theme),
     normalizeDot: config => normalizeDot(config, theme),
-    normalizeDot,
+    normalizeBar: config => normalizeBar(config, theme),
   };
 
   toPairs(themeConfig).forEach(([prop]) => {

@@ -49,56 +49,32 @@
     "light": "",
     "dark": ""
   },
-  "highlightFillNoneBg": {
+  "highlightBaseFill": "light",
+  "highlightStartEndFill": "solid",
+  "dotBaseFill": "solid",
+  "barBaseFill": "solid",
+  "fillNone": {
     "light": "border-{color}-d1",
     "dark": "border-{color}-l1"
   },
-  "highlightFillNoneContent": {
+  "fillNoneContent": {
     "light": "font-bold text-{color}-d4",
     "dark": "font-bold text-white"
   },
-  "highlightFillLightBg": {
+  "fillLight": {
     "light": "bg-{color}-l4 opacity-75",
     "dark": "bg-{color}-d4 opacity-75"
   },
-  "highlightFillLightContent": {
+  "fillLightContent": {
     "light": "font-bold text-{color}-d4",
     "dark": "font-bold text-white"
   },
-  "highlightFillSolidBg": {
+  "fillSolid": {
     "light": "bg-{color}-d1",
     "dark": "bg-{color}-l1"
   },
-  "highlightFillSolidContent": {
+  "fillSolidContent": {
     "light": "font-bold text-white",
     "dark": "font-bold text-white"
-  },
-  "highlight": {
-    "base": {
-      "fillMode": "light"
-    },
-    "startEnd": {
-      "fillMode": "solid"
-    }
-  },
-  "dotFillNone": {
-    "light": "border-{color}-d1",
-    "dark": "border-{color}-l1"
-  },
-  "dotFillLight": {
-    "light": "",
-    "dark": ""
-  },
-  "dotFillSolid": {
-    "light": "",
-    "dark": ""
-  },
-  "barFillLight": {
-    "light": "",
-    "dark": ""
-  },
-  "barFillSolid": {
-    "light": "",
-    "dark": ""
   }
 }

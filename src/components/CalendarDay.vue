@@ -16,7 +16,6 @@ export default {
   props: {
     day: { type: Object, required: true },
     attributes: Object,
-    popoverContentOffset: { type: Number, default: 7 },
     styles: Object,
     formats: Object,
   },
@@ -28,9 +27,9 @@ export default {
         h(
           'div',
           {
-            class: 'c-day-backgrounds c-day-layer',
+            class: 'vc-highlights c-day-layer',
           },
-          this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) =>
+          this.backgrounds.map(({ key, wrapperClass, class: bgClass }) =>
             h(
               'div',
               {
@@ -39,8 +38,7 @@ export default {
               },
               [
                 h('div', {
-                  class: `c-day-background ${bgClass}`,
-                  style,
+                  class: bgClass,
                 }),
               ],
             ),
@@ -106,13 +104,11 @@ export default {
             h(
               'div',
               {
-                class: 'c-day-dots',
-                style: this.dotsStyle,
+                class: 'vc-dots',
               },
-              this.dots.map(({ key, style }) => {
+              this.dots.map(({ key, class: bgClass }) => {
                 return h('span', {
-                  class: 'c-day-dot',
-                  style,
+                  class: bgClass,
                   key,
                 });
               }),
@@ -135,13 +131,11 @@ export default {
             h(
               'div',
               {
-                class: 'c-day-bars',
-                style: this.barsStyle,
+                class: 'vc-bars',
               },
-              this.bars.map(({ key, style }) => {
+              this.bars.map(({ key, class: bgClass }) => {
                 return h('span', {
-                  class: 'c-day-bar',
-                  style,
+                  class: bgClass,
                   key,
                 });
               }),
@@ -224,17 +218,11 @@ export default {
     hasDots() {
       return !!arrayHasItems(this.dots);
     },
-    dotsStyle() {
-      return this.styles.dots;
-    },
     bars() {
       return this.glyphs.bars;
     },
     hasBars() {
       return !!arrayHasItems(this.bars);
-    },
-    barsStyle() {
-      return this.styles.bars;
     },
     popovers() {
       return this.glyphs.popovers;
@@ -370,10 +358,10 @@ export default {
             const { backgrounds, dots, bars, popovers } = glyphs;
             // Add backgrounds for highlight if needed
             if (highlight) backgrounds.push(...this.getBackgrounds(attr));
-            // Add dot if needed
-            if (dot) dots.push(this.getDot(attr));
+            // Add dots if needed
+            if (dot) dots.push(...this.getDots(attr));
             // Add bar if needed
-            if (bar) bars.push(this.getBar(attr));
+            if (bar) bars.push(...this.getBars(attr));
             // Add popover if needed
             if (popover) popovers.unshift(this.getPopover(attr));
             // Add content class if needed
@@ -443,19 +431,17 @@ export default {
       if (!highlight) return backgrounds;
 
       const { isDate, isComplex, startTime, endTime } = targetDate;
-      const { base, start, end, startEnd } = this.theme.normalizeHighlight(
-        true,
+      const { base, start, end } = this.theme.normalizeHighlight(
+        highlight,
         this.theme,
       );
       let targetArea;
       if (isDate || isComplex) {
-        targetArea = startEnd || start || end || base;
         backgrounds.push({
           key,
           wrapperClass: 'c-day-layer c-day-box-center-center',
-          class: `vc-highlight ${targetArea.class}`,
-          contentClass: targetArea.contentClass,
-          // style: { ...targetArea.style },
+          class: `vc-highlight ${start.class}`,
+          contentClass: start.contentClass,
         });
       } else {
         const onStart = startTime === this.dateTime;
@@ -463,12 +449,11 @@ export default {
         const onStartAndEnd = onStart && onEnd;
         const onStartOrEnd = onStart || onEnd;
         if (onStartAndEnd) {
-          targetArea = startEnd || start || end || base;
           backgrounds.push({
             key,
             wrapperClass: 'c-day-layer c-day-box-center-center',
-            class: `vc-highlight ${targetArea.class}`,
-            contentClass: targetArea.contentClass,
+            class: `vc-highlight ${start.class}`,
+            contentClass: start.contentClass,
           });
         } else if (onStart) {
           backgrounds.push({
@@ -477,15 +462,12 @@ export default {
             class: `vc-highlight vc-highlight-start ${base.class}`,
             contentClass: base.contentClass,
           });
-          targetArea = start || startEnd || base;
-          if (targetArea) {
-            backgrounds.push({
-              key: `${key}-start`,
-              wrapperClass: 'c-day-layer c-day-box-center-center',
-              class: `vc-highlight ${targetArea.class}`,
-              contentClass: targetArea.contentClass,
-            });
-          }
+          backgrounds.push({
+            key: `${key}-start`,
+            wrapperClass: 'c-day-layer c-day-box-center-center',
+            class: `vc-highlight ${start.class}`,
+            contentClass: start.contentClass,
+          });
         } else if (onEnd) {
           backgrounds.push({
             key,
@@ -493,15 +475,12 @@ export default {
             class: `vc-highlight vc-highlight-end ${base.class}`,
             contentClass: base.contentClass,
           });
-          targetArea = end || startEnd || base;
-          if (targetArea) {
-            backgrounds.push({
-              key: `${key}-end`,
-              wrapperClass: 'c-day-layer c-day-box-center-center',
-              class: `vc-highlight ${targetArea.class}`,
-              contentClass: targetArea.contentClass,
-            });
-          }
+          backgrounds.push({
+            key: `${key}-end`,
+            wrapperClass: 'c-day-layer c-day-box-center-center',
+            class: `vc-highlight ${end.class}`,
+            contentClass: end.contentClass,
+          });
         } else {
           backgrounds.push({
             key: `${key}-middle`,
@@ -517,51 +496,53 @@ export default {
       const dots = [];
       if (!dot) return dots;
 
-      const { isDate, isComplex, startTime, endTime } = targetDate;
-      const { base, start, end, startEnd } = this.theme.normalizeDot(
-        true,
-        this.theme,
-      );
-      if (isDate) {
+      const { isDate, startTime, endTime } = targetDate;
+      const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
+      const onStart = startTime === this.dateTime;
+      const onEnd = endTime === this.dateTime;
+      if (isDate || onStart) {
         dots.push({
           key,
-          class: 
-        })
+          class: `vc-dot ${start.class}`,
+        });
+      } else if (onEnd) {
+        dots.push({
+          key,
+          class: `vc-dot ${end.class}`,
+        });
       } else {
-        const onStart = startTime === this.dateTime;
-        const onEnd = endTime === this.dateTime;
-        const onStartAndEnd = onStart && onEnd;
-        const onStartOrEnd = onStart || onEnd;
+        dots.push({
+          key,
+          class: `vc-dot ${base.class}`,
+        });
       }
       return dots;
     },
-    getDot({ key, dot }) {
-      return {
-        key,
-        style: {
-          width: dot.diameter,
-          height: dot.diameter,
-          backgroundColor: dot.backgroundColor,
-          borderColor: dot.borderColor,
-          borderWidth: dot.borderWidth,
-          borderStyle: dot.borderStyle,
-          borderRadius: dot.borderRadius,
-          opacity: dot.opacity,
-        },
-      };
-    },
-    getBar({ key, bar }) {
-      return {
-        key,
-        style: {
-          height: bar.height,
-          backgroundColor: bar.backgroundColor,
-          borderColor: bar.borderColor,
-          borderWidth: bar.borderWidth,
-          borderStyle: bar.borderStyle,
-          opacity: bar.opacity,
-        },
-      };
+    getBars({ key, bar, targetDate }) {
+      const bars = [];
+      if (!bar) return bars;
+
+      const { isDate, startTime, endTime } = targetDate;
+      const { base, start, end } = this.theme.normalizeBar(bar, this.theme);
+      const onStart = startTime === this.dateTime;
+      const onEnd = endTime === this.dateTime;
+      if (isDate || onStart) {
+        bars.push({
+          key,
+          class: `vc-bar ${start.class}`,
+        });
+      } else if (onEnd) {
+        bars.push({
+          key,
+          class: `vc-bar ${end.class}`,
+        });
+      } else {
+        bars.push({
+          key,
+          class: `vc-bar ${base.class}`,
+        });
+      }
+      return bars;
     },
     getPopover(attribute) {
       const {
@@ -644,19 +625,33 @@ export default {
   &:focus
     border: 1px solid #dadada
 
-.c-day-backgrounds
+.vc-highlights
   overflow: hidden
   pointer-events: none
   z-index: -1
   backface-visibility: hidden // Prevents glitches in Chrome by forcing hardware acceleration
 
-.c-day-background
+.vc-highlight
+  width: 1.8rem
+  height: 1.8rem
+  border-radius: 50%
   transition: height $background-transition-time
+  &.vc-highlight-start
+    width: 50%
+    border-radius: 0
+  &.vc-highlight-end
+    width: 50%
+    border-radius: 0
+  &.vc-highlight-middle
+    width: 100%
+    border-radius: 0
+  &.vc-highlight-drag
+    height: 1.75rem
 
-.c-day-dots
+.vc-dots
   +box()
 
-.c-day-dot
+.vc-dot
   width: $dot-diameter
   height: $dot-diameter
   border-radius: $dot-border-radius
@@ -664,11 +659,11 @@ export default {
   &:not(:last-child)
     margin-right: $dot-spacing
 
-.c-day-bars
+.vc-bars
   +box(flex-start)
   width: $bars-width
 
-.c-day-bar
+.vc-bar
   flex-grow: 1
   height: $bar-height
   transition: all $day-content-transition-time
