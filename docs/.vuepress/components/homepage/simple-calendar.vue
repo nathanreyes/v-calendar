@@ -21,6 +21,17 @@
         <option v-for="color in colors" :value="color.value">{{ color.text }}</option>
       </select>
     </p>
+    <div class="flex justify-around mb-4">
+      <div>
+        <h3 class="text-base semibold text-grey-darker mb-2">Highlights</h3>
+        <v-calendar :attributes="highlights"/>
+      </div>
+      <v-calendar :attributes="dots"/>
+    </div>
+    <div class="flex justify-around">
+      <v-calendar :attributes="bars"/>
+      <v-calendar :attributes="popovers"/>
+    </div>
     <div class="center">
       <v-calendar
         :attributes="attributes"
@@ -140,12 +151,7 @@ export default {
       selectedColor: 'blue',
       highlights: [
         {
-          highlight: {
-            backgroundColor: '#ff8080', // Red
-            borderColor: '#ff6666',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-          },
+          highlight: 'red',
           contentStyle: {
             color: 'white',
           },
@@ -155,7 +161,7 @@ export default {
             new Date(nextMonthYear, nextMonth, 23),
             // ...or date ranges
             {
-              start: new Date(thisMonthYear, thisMonth, 1),
+              start: new Date(thisMonthYear, thisMonth, 2),
               end: new Date(thisMonthYear, thisMonth, 4),
             },
             // ...or complex date patterns
@@ -166,11 +172,7 @@ export default {
           ],
         },
         {
-          highlight: {
-            backgroundColor: '#9f80ff', // Purple
-            borderColor: '#8c66ff',
-            borderWidth: '2px',
-          },
+          highlight: 'blue',
           contentStyle: {
             color: 'white',
           },
@@ -185,12 +187,7 @@ export default {
           ],
         },
         {
-          highlight: {
-            backgroundColor: '#66b3cc', // Turquoise
-            borderColor: '#53a9c6',
-            borderWidth: '2px',
-            borderRadius: '5px',
-          },
+          highlight: 'cyan',
           contentStyle: {
             color: 'white',
           },
@@ -211,9 +208,7 @@ export default {
       ],
       dots: [
         {
-          dot: {
-            backgroundColor: '#ff4d4d', // Red
-          },
+          dot: 'red',
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
             new Date(thisMonthYear, thisMonth, 10),
@@ -223,9 +218,7 @@ export default {
           ],
         },
         {
-          dot: {
-            backgroundColor: '#398fac', // Turquoise
-          },
+          dot: 'cyan',
           dates: [
             new Date(thisMonthYear, thisMonth, 4),
             new Date(thisMonthYear, thisMonth, 10),
@@ -239,9 +232,7 @@ export default {
           ],
         },
         {
-          dot: {
-            backgroundColor: '#794dff', // Purple
-          },
+          dot: 'blue',
           dates: [
             new Date(thisMonthYear, thisMonth, 12),
             new Date(thisMonthYear, thisMonth, 26),
@@ -257,7 +248,7 @@ export default {
       bars: [
         {
           bar: {
-            backgroundColor: '#ff4d4d', // Red
+            backgroundColor: 'red',
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
@@ -269,7 +260,7 @@ export default {
         },
         {
           bar: {
-            backgroundColor: '#398fac', // Turquoise
+            backgroundColor: 'cyan',
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 4),
@@ -285,7 +276,7 @@ export default {
         },
         {
           bar: {
-            backgroundColor: '#794dff', // Purple
+            backgroundColor: 'purple',
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 12),
