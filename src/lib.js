@@ -5,7 +5,7 @@ import PopoverRef from '@/components/PopoverRef';
 import getLocaleDefaults from '@/utils/locales';
 import defaults, { mergeDefaults } from '@/utils/defaults';
 import installScreens from '@/utils/screens';
-import '@/styles/themes.sass';
+// import '@/styles/themes.sass';
 
 const setupCalendar = (Vue, options) => {
   // Add an event bus for component communication

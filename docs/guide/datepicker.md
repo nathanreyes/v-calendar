@@ -250,7 +250,7 @@ Here, we assign some [Tailwind](https://tailwindcss.com/docs/what-is-tailwind/) 
 <v-date-picker
   v-model='myDate'
   :input-props='{
-    class: "w-full shadow appearance-none border rounded py-2 px-3 text-grey-7 hover:border-blue",
+    class: "w-full shadow appearance-none border rounded py-2 px-3 text-grey-7 hover:border-blue-5",
     placeholder: "Please enter your birthday",
     readonly: true
   }'>
@@ -372,20 +372,20 @@ Here are the steps to utilize this approach.
             <input
               id='date'
               class='shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-7'
-              :class='{ "border-red": errorMessage }'
+              :class='{ "border-red-6": errorMessage }'
               v-bind='inputProps'
               v-on='inputEvents'>
           </div>
         </v-date-picker>
         <button
           type='button'
-          class='bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded-r '
+          class='bg-blue-5 hover:bg-blue-6 text-white font-bold py-2 px-4 rounded-r '
           @click='date = null'>
           Clear
         </button>
       </div>
       <p
-        class='text-red text-xs italic mt-1'
+        class='text-red-6 text-xs italic mt-1'
         v-if='errorMessage'>
         {{ errorMessage }}
       </p>

@@ -858,7 +858,7 @@ If you are not familiar with the convention of using scoped slots in Vue.js, you
         <!--Edit button-->
         <svg
           v-if='editId !== customData.id'
-          class='fill-current text-blue'
+          class='fill-current text-blue-5'
           viewBox='0 0 20 20'
           width='12'
           height='12'>
@@ -880,7 +880,7 @@ If you are not familiar with the convention of using scoped slots in Vue.js, you
         v-if='!editId || editId !== customData.id'
         class='ml-1 cursor-pointer'>
         <svg
-          class='fill-current text-red'
+          class='fill-current text-red-6'
           viewBox='0 0 20 20'
           width='12'
           height='12'>

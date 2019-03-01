@@ -425,13 +425,13 @@ Use a custom scoped slot to display your own input element or popover trigger. T
       </v-date-picker>
       <button
         type="button"
-        class="bg-red-light hover:bg-red text-white font-bold py-2 px-4 rounded-r"
+        class="bg-red-4 hover:bg-red-6 text-white font-bold py-2 px-4 rounded-r"
         @click="date = null">
         Clear
       </button>
     </div>
-    <p class="text-red text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
-    <p class="text-blue text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
+    <p class="text-red-6 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
+    <p class="text-blue-5 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
   </form>
 </div>
 ```

@@ -45,7 +45,10 @@
     "light": "",
     "dark": ""
   },
-  "dayContent": "hover:bg-grey-2",
+  "dayContent": {
+    "light": "cursor-pointer hover:bg-grey-2 focus:bg-grey-2 focus:border-grey-6 focus:border-1 focus:font-semibold",
+    "dark": "cursor-pointer hover:bg-grey-8 focus:bg-grey-9 focus-border-grey-8 focus:border-1"
+  },
   "dayPopoverContainer": {
     "light": "",
     "dark": ""

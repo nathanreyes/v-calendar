@@ -6,7 +6,7 @@
         slot-scope="{ day, attributes }"
         class="flex flex-col h-full z-10 overflow-hidden"
       >
-        <span class="day-label text-sm text-grey-darkest">{{ day.day }}</span>
+        <span class="day-label text-sm text-grey-9">{{ day.day }}</span>
         <div class="flex-grow overflow-y-scroll overflow-x-auto">
           <p
             v-for="attr in attributes"
@@ -33,7 +33,7 @@ export default {
           key: 1,
           customData: {
             title: 'Lunch with mom.',
-            class: 'bg-red text-white',
+            class: 'bg-red-6 text-white',
           },
           dates: new Date(year, month, 1),
         },
@@ -41,7 +41,7 @@ export default {
           key: 2,
           customData: {
             title: 'Take Noah to basketball practice',
-            class: 'bg-blue text-white',
+            class: 'bg-blue-5 text-white',
           },
           dates: new Date(year, month, 2),
         },
@@ -49,7 +49,7 @@ export default {
           key: 3,
           customData: {
             title: "Noah's basketball game.",
-            class: 'bg-blue text-white',
+            class: 'bg-blue-5 text-white',
           },
           dates: new Date(year, month, 5),
         },
@@ -97,7 +97,7 @@ export default {
           key: 8,
           customData: {
             title: 'Visit great grandma.',
-            class: 'bg-red text-white',
+            class: 'bg-red-6 text-white',
           },
           dates: new Date(year, month, 25),
         },

@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <h3 class="text-sm text-grey-dark font-medium">#254</h3>
+    <h3 class="text-sm text-grey-7 font-medium">#254</h3>
     <v-date-picker
       v-model="range"
       mode="range"

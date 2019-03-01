@@ -67,7 +67,7 @@
               <!--Edit button-->
               <svg
                 v-if="editId !== customData.id"
-                class="fill-current text-blue"
+                class="fill-current text-blue-5"
                 viewBox="0 0 20 20"
                 width="12"
                 height="12"
@@ -91,7 +91,7 @@
               v-if="!editId || editId !== customData.id"
               class="ml-1 cursor-pointer"
             >
-              <svg class="fill-current text-red" viewBox="0 0 20 20" width="12" height="12">
+              <svg class="fill-current text-red-6" viewBox="0 0 20 20" width="12" height="12">
                 <path
                   d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
                 ></path>

@@ -641,9 +641,6 @@ export default {
   transition: all $day-content-transition-time
   user-select: none
   margin: .1rem auto
-  cursor: pointer
-  &:focus
-    border: 1px solid #dadada
 
 .vc-highlights
   overflow: hidden
