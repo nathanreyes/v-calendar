@@ -1,7 +1,7 @@
 <template>
   <div class="section">
-    <h3 class="text-center">Date Picker Included</h3>
-    <p class="text-center">
+    <h2 class="h2">Date Picker</h2>
+    <p>
       Oh, and there's a date picker that can do everything VCalendar can do with extra support for
       <a
         class="has-text-primary"
@@ -11,7 +11,7 @@
       <a class="has-text-primary" href="#" @click.prevent="enableMultipleMode">multiple date</a> and
       <a class="has-text-primary" href="#" @click.prevent="enableRangeMode">date range</a> selections.
     </p>
-    <p class="text-center">
+    <p>
       You can even disable complex date patterns like
       <a
         class="has-text-primary"
@@ -25,7 +25,7 @@
         @click.prevent="disableOrdinalWeekdays"
       >last Saturday</a> of every month.
     </p>
-    <p class="text-center">So...date pickers don't have to be boring after all.</p>
+    <p>So...date pickers don't have to be boring after all.</p>
     <div class="example">
       <div class="w-full max-w-sm">
         <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>

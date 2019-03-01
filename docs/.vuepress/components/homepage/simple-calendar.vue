@@ -1,6 +1,6 @@
 <template>
-  <div class="max-w-md mx-auto px-4 my-10">
-    <h3>Simple Calendars</h3>
+  <div class="section">
+    <h2 class="h2">Simple Calendars</h2>
     <p
       class="mb-8"
     >Build simple calendars for displaying attributes like highlights, dots, bars and even custom popovers with custom theme support.</p>

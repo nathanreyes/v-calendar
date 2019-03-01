@@ -1,7 +1,8 @@
 <template>
-  <div class="bg-grey-8 my-10 shadow-inner">
-    <div class="max-w-md mx-auto px-4 py-10">
-      <h3 class="text-grey-2 mb-10">Dark Mode Supported</h3>
+  <div class="bg-grey-8 border-t border-b border-grey-9 my-10 shadow-inner">
+    <div class="section">
+      <h2 class="h2 text-grey-2 mb-4">Dark Mode</h2>
+      <p class="text-grey-5 mb-8 text-lg">Darken all the things</p>
       <div class="flex flex-col items-center md:flex-row md:justify-around">
         <div class="mb-6">
           <v-calendar color="blue" :attributes="attributes" is-dark/>

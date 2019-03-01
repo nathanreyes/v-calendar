@@ -45,24 +45,15 @@ input[type='text'] {
   }
 }
 
-.docs-page {
-  h2 {
-    margin-top: -3.1rem;
-    padding-top: 4.6rem;
-    margin-bottom: 0px !important;
-    font-size: 1.35rem;
-    border: none;
-  }
-  p {
-    margin: 1rem 0 !important;
-  }
+.section {
+  @apply max-w-md mx-auto px-4 my-10;
 }
 
-.section {
-  margin-top: 40px;
-  &:last-child {
-    margin-bottom: 40px;
-  }
+.h2 {
+  @apply text-2xl text-grey-8 border-none p-0 mb-4;
+}
+.h3 {
+  @apply text-lg text-grey-7 font-medium mb-3;
 }
 
 /**
@@ -79,14 +70,3 @@ p {
   margin: 1rem 0;
   line-height: 1.7rem;
 }
-
-/* h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 2rem 0 0.6rem 0 !important;
-  padding: 0 !important;
-  padding-bottom: 0.6rem !important;
-} */
