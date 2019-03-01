@@ -1,7 +1,7 @@
 <template>
   <div class="example">
     <div class="mb-4 w-full">
-      <h3 class="text-sm text-left text-grey-darker font-medium mb-2">Popover Visibility</h3>
+      <h3 class="text-sm text-left text-grey-7 font-medium mb-2">Popover Visibility</h3>
 
       <input type="radio" id="visible" value="visible" v-model="popoverVisibility">
       <label for="visible">Visible</label>

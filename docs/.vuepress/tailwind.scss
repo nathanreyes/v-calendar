@@ -20,10 +20,6 @@
  */
 @tailwind components;
 
-.center {
-  @apply my-8 flex justify-center;
-}
-
 .distributed {
   @apply my-8 flex justify-around items-start;
 }
@@ -33,18 +29,20 @@
 }
 
 input[type='text'] {
-  @apply w-full shadow appearance-none border rounded py-2 px-3 text-grey-darker;
+  @apply w-full shadow appearance-none border rounded py-2 px-3 text-grey-7;
 }
 
-.homepage .content {
-  @apply max-w-md mx-auto flex flex-col justify-center;
-  p {
-    @apply max-w-sm mx-auto;
+.homepage {
+  .home {
+    max-width: initial;
+    padding: 3.6rem 0 2rem 0;
   }
-}
-
-.homepage .hero img {
-  max-height: 240px;
+  .hero {
+    @apply px-4;
+    .img {
+      max-height: 240px;
+    }
+  }
 }
 
 .docs-page {

@@ -58,9 +58,9 @@ export default {
   data() {
     return {
       // Tailwind classes
-      labelClass: 'block text-grey-darker text-sm text-left font-bold mb-2',
+      labelClass: 'block text-grey-7 text-sm text-left font-bold mb-2',
       inputClass:
-        'shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker',
+        'shadow appearance-none border rounded w-full py-2 px-3 text-grey-7',
       date: new Date(),
       mode: 'single',
       fromPage: null,

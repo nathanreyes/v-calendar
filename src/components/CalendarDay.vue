@@ -16,7 +16,6 @@ export default {
   props: {
     day: { type: Object, required: true },
     attributes: Object,
-    styles: Object,
     formats: Object,
   },
   render(h) {
@@ -154,7 +153,6 @@ export default {
           ...this.day.classes,
           { 'c-day-box-center-center': !this.$scopedSlots['day-content'] },
         ],
-        style: this.dayStyle,
       },
       [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
     );
@@ -241,13 +239,6 @@ export default {
     },
     popoverIsInteractive() {
       return this.hasPopovers && some(this.popovers, p => p.isInteractive);
-    },
-    dayStyle() {
-      return evalFn(this.styles.day, {
-        day: this.day,
-        isHovered: this.isHovered,
-        isFocused: this.isFocused,
-      });
     },
     dayContentClass() {
       return this.glyphs.contentClass;
@@ -645,6 +636,7 @@ export default {
   &.vc-highlight-middle
     width: 100%
     border-radius: 0
+    margin: 0 -1px
   &.vc-highlight-drag
     height: 1.75rem
 

@@ -7,20 +7,15 @@ footer: MIT Licensed | Copyright © 2017-Present Nathan Reyes
 pageClass: 'homepage'
 ---
 
-<homepage-simple-calendar>
-</homepage-simple-calendar>
-
 <div class='text-center'>
 
-### Multi-Paned Calendars
+<homepage-simple-calendar />
 
-Display calendars using multiple rows and columns.
+<homepage-multi-calendar />
 
-<homepage-multi-calendar>
-</homepage-multi-calendar>
+<homepage-dark-mode />
 
-<homepage-datepicker>
-</homepage-datepicker>
+<homepage-datepicker />
 
 ### Custom Calendar
 

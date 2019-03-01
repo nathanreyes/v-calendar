@@ -250,7 +250,7 @@ Here, we assign some [Tailwind](https://tailwindcss.com/docs/what-is-tailwind/) 
 <v-date-picker
   v-model='myDate'
   :input-props='{
-    class: "w-full shadow appearance-none border rounded py-2 px-3 text-grey-darker hover:border-blue",
+    class: "w-full shadow appearance-none border rounded py-2 px-3 text-grey-7 hover:border-blue",
     placeholder: "Please enter your birthday",
     readonly: true
   }'>
@@ -356,7 +356,7 @@ Here are the steps to utilize this approach.
       class='bg-white shadow-md rounded px-8 pt-6 pb-8'
       @submit.prevent>
       <label
-        class='block text-grey-darker text-sm font-bold mb-2'
+        class='block text-grey-7 text-sm font-bold mb-2'
         for='date'>
         Select Date Range
       </label>
@@ -371,7 +371,7 @@ Here are the steps to utilize this approach.
             slot-scope='{ inputProps, inputEvents }'>
             <input
               id='date'
-              class='shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-darker'
+              class='shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-7'
               :class='{ "border-red": errorMessage }'
               v-bind='inputProps'
               v-on='inputEvents'>

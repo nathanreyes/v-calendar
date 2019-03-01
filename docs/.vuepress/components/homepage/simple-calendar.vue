@@ -1,123 +1,109 @@
 <template>
-  <div class="text-center section">
+  <div class="max-w-md mx-auto px-4 my-10">
     <h3>Simple Calendars</h3>
-    <p>
-      Build simple attributed calendars for displaying attributes like
-      <a
-        class="has-text-primary"
-        href="#"
-        @click.prevent="display = 'highlights'"
-      >highlighted&nbsp;regions</a>,
-      <a class="has-text-primary" href="#" @click.prevent="display = 'dots'">dots</a>,
-      <a class="has-text-primary" href="#" @click.prevent="display = 'bars'">bars</a> and even
-      <a class="has-text-primary" href="#" @click.prevent="display = 'popovers'">popovers</a>.
-    </p>
-    <p>
-      <label for="isDark">
-        <input id="isDark" name="isDark" type="checkbox" v-model="isDark">
-        Is Dark
-      </label>
-      <select v-model="selectedColor">
-        <option v-for="color in colors" :value="color.value">{{ color.text }}</option>
-      </select>
-    </p>
-    <div class="flex justify-around mb-4">
-      <div>
-        <h3 class="text-base semibold text-grey-darker mb-2">Highlights</h3>
+    <p
+      class="mb-8"
+    >Build simple calendars for displaying attributes like highlights, dots, bars and even custom popovers with custom theme support.</p>
+    <div class="flex flex-col items-center md:flex-row md:justify-around">
+      <div class="mb-6">
+        <h3 class="text-base semibold text-grey-7 mb-3">Highlights</h3>
         <v-calendar :attributes="highlights"/>
       </div>
-      <v-calendar :attributes="dots"/>
+      <div class="mb-6">
+        <h3 class="text-base semibold text-grey-7 mb-3">Dots</h3>
+        <v-calendar :attributes="dots"/>
+      </div>
     </div>
-    <div class="flex justify-around">
-      <v-calendar :attributes="bars"/>
-      <v-calendar :attributes="popovers"/>
-    </div>
-    <div class="center">
-      <v-calendar
-        :attributes="attributes"
-        :theme-styles="themeStyles"
-        :from-page.sync="fromPage"
-        :to-page.sync="toPage"
-        popover-visibility="focus"
-        color="blue"
-        :is-dark="isDark"
-        :color="selectedColor"
-      >
-        <!--=========POPOVER HEADER SLOT=========-->
-        <div
-          slot="day-popover-header"
-          slot-scope="{ day }"
-          class="text-center font-bold mb-1 mx-2"
-        >{{ getPopoverHeaderLabel(day) }}</div>
-        <!--============HOW TO USE ROW SLOTS===========-->
-        <!--
-          STEP 1: Insert element with a unique slot name ('todo-row' in this example). Make sure slot-scope is assigned, even if not used.      
-          STEP 2: In Javascript, assign that unique slot name to the 'slot' property of the attribute's popover object
-        -->
-        <!--===============TODO ROW SLOT==============-->
-        <div
-          slot="todo-row"
-          slot-scope="{ customData }"
-          class="flex flex-no-wrap items-center w-full"
-        >
-          <!--Todo content-->
-          <div class="flex-grow text-left">
-            <!--Show textbox when editing todo-->
-            <input
-              class="appearance-none bg-white border p-1"
-              :style="{ minWidth: '220px' }"
-              v-if="customData.id === editId"
-              v-model="customData.description"
-              @keyup.enter="editId = 0"
-              v-focus-select
-            >
-            <!--Show status/description when not editing-->
-            <span v-else>
-              <!--Completed checkbox-->
-              <input type="checkbox" v-model="customData.isComplete">
-              <!--Description-->
-              <span
-                class="ml-1 cursor-pointer"
-                :class="{ 'line-through': customData.isComplete }"
-                @click="toggleTodoComplete(customData)"
-              >{{ customData.description }}</span>
-            </span>
-          </div>
-          <!--Edit/Done buttons-->
-          <a @click.prevent="toggleTodoEdit(customData)" class="ml-1 cursor-pointer">
-            <!--Edit button-->
-            <svg
-              v-if="editId !== customData.id"
-              class="fill-current text-blue"
-              viewBox="0 0 20 20"
-              width="12"
-              height="12"
-            >
-              <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"></path>
-            </svg>
-            <!--Done button-->
-            <svg v-else class="fill-current text-green" viewBox="0 0 20 20" width="12" height="12">
-              <path d="M0 11l2-2 5 5L18 3l2 2L7 18z"></path>
-            </svg>
-          </a>
-          <!--Delete button-->
-          <a
-            @click.prevent="deleteTodo(customData)"
-            v-if="!editId || editId !== customData.id"
-            class="ml-1 cursor-pointer"
+    <div class="flex flex-col items-center md:flex-row md:justify-around mb-8">
+      <div class="mb-6">
+        <h3 class="text-base semibold text-grey-7 mb-3">Bars</h3>
+        <v-calendar :attributes="bars"/>
+      </div>
+      <div class="mb-6">
+        <h3 class="text-base semibold text-grey-7 mb-3">Popovers</h3>
+        <v-calendar :attributes="popovers">
+          <!--=========POPOVER HEADER SLOT=========-->
+          <div
+            slot="day-popover-header"
+            slot-scope="{ day }"
+            class="text-center font-bold mb-1 mx-2"
+          >{{ getPopoverHeaderLabel(day) }}</div>
+          <!--============HOW TO USE ROW SLOTS===========-->
+          <!--
+            STEP 1: Insert element with a unique slot name ('todo-row' in this example). Make sure slot-scope is assigned, even if not used.      
+            STEP 2: In Javascript, assign that unique slot name to the 'slot' property of the attribute's popover object
+          -->
+          <!--===============TODO ROW SLOT==============-->
+          <div
+            slot="todo-row"
+            slot-scope="{ customData }"
+            class="flex flex-no-wrap items-center w-full"
           >
-            <svg class="fill-current text-red" viewBox="0 0 20 20" width="12" height="12">
-              <path
-                d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
-              ></path>
-            </svg>
-          </a>
-        </div>
-        <!--================ADD TODO ROW SLOT===============-->
-        <div slot="add-todo" slot-scope="{ day }" class="text-center w-full cursor-pointer">
-          <a @click="addTodo(day)">+ Add Todo</a>
-        </div>
-      </v-calendar>
+            <!--Todo content-->
+            <div class="flex-grow text-left">
+              <!--Show textbox when editing todo-->
+              <input
+                class="appearance-none bg-white border p-1"
+                :style="{ minWidth: '220px' }"
+                v-if="customData.id === editId"
+                v-model="customData.description"
+                @keyup.enter="editId = 0"
+                v-focus-select
+              >
+              <!--Show status/description when not editing-->
+              <span v-else>
+                <!--Completed checkbox-->
+                <input type="checkbox" v-model="customData.isComplete">
+                <!--Description-->
+                <span
+                  class="ml-1 cursor-pointer"
+                  :class="{ 'line-through': customData.isComplete }"
+                  @click="toggleTodoComplete(customData)"
+                >{{ customData.description }}</span>
+              </span>
+            </div>
+            <!--Edit/Done buttons-->
+            <a @click.prevent="toggleTodoEdit(customData)" class="ml-1 cursor-pointer">
+              <!--Edit button-->
+              <svg
+                v-if="editId !== customData.id"
+                class="fill-current text-blue"
+                viewBox="0 0 20 20"
+                width="12"
+                height="12"
+              >
+                <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"></path>
+              </svg>
+              <!--Done button-->
+              <svg
+                v-else
+                class="fill-current text-green"
+                viewBox="0 0 20 20"
+                width="12"
+                height="12"
+              >
+                <path d="M0 11l2-2 5 5L18 3l2 2L7 18z"></path>
+              </svg>
+            </a>
+            <!--Delete button-->
+            <a
+              @click.prevent="deleteTodo(customData)"
+              v-if="!editId || editId !== customData.id"
+              class="ml-1 cursor-pointer"
+            >
+              <svg class="fill-current text-red" viewBox="0 0 20 20" width="12" height="12">
+                <path
+                  d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
+                ></path>
+              </svg>
+            </a>
+          </div>
+          <!--================ADD TODO ROW SLOT===============-->
+          <div slot="add-todo" slot-scope="{ day }" class="text-center w-full cursor-pointer">
+            <a @click="addTodo(day)">+ Add Todo</a>
+          </div>
+        </v-calendar>
+      </div>
     </div>
   </div>
 </template>
@@ -138,16 +124,6 @@ const hSpacing = '15px';
 export default {
   data() {
     return {
-      display: '',
-      fromPage: null,
-      toPage: null,
-      isDark: false,
-      colors: [
-        { text: 'Blue', value: 'blue' },
-        { text: 'Red', value: 'red' },
-        { text: 'Cyan', value: 'cyan' },
-        { text: 'Grey', value: 'grey' },
-      ],
       selectedColor: 'blue',
       highlights: [
         {
@@ -178,8 +154,10 @@ export default {
           },
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
-            new Date(thisMonthYear, thisMonth, 10),
-            new Date(thisMonthYear, thisMonth, 12),
+            {
+              start: new Date(thisMonthYear, thisMonth, 10),
+              end: new Date(thisMonthYear, thisMonth, 12),
+            },
             {
               start: new Date(nextMonthYear, nextMonth, 22),
               end: new Date(nextMonthYear, nextMonth, 26),
@@ -247,9 +225,7 @@ export default {
       ],
       bars: [
         {
-          bar: {
-            backgroundColor: 'red',
-          },
+          bar: 'red',
           dates: [
             new Date(thisMonthYear, thisMonth, 1),
             new Date(thisMonthYear, thisMonth, 10),
@@ -259,9 +235,7 @@ export default {
           ],
         },
         {
-          bar: {
-            backgroundColor: 'cyan',
-          },
+          bar: 'cyan',
           dates: [
             new Date(thisMonthYear, thisMonth, 4),
             new Date(thisMonthYear, thisMonth, 10),
@@ -275,9 +249,7 @@ export default {
           ],
         },
         {
-          bar: {
-            backgroundColor: 'purple',
-          },
+          bar: 'blue',
           dates: [
             new Date(thisMonthYear, thisMonth, 12),
             new Date(thisMonthYear, thisMonth, 26),
@@ -324,24 +296,9 @@ export default {
           dates: new Date(thisMonthYear, thisMonth, 22),
         },
       ],
-      themeStyles: null,
     };
   },
   computed: {
-    attributes() {
-      switch (this.display) {
-        case 'highlights':
-          return this.highlights;
-        case 'dots':
-          return this.dots;
-        case 'bars':
-          return this.bars;
-        case 'popovers':
-          return this.popovers;
-        default:
-          return null;
-      }
-    },
     popovers() {
       return [
         // Todo attributes
@@ -376,15 +333,7 @@ export default {
       ];
     },
   },
-  watch: {
-    display() {
-      this.resetPages();
-    },
-  },
   methods: {
-    resetPages() {
-      this.fromPage = { month: thisMonth + 1, year: thisMonthYear };
-    },
     getPopoverHeaderLabel(day) {
       const options = {
         weekday: 'short',
@@ -414,50 +363,6 @@ export default {
     },
     deleteTodo(todo) {
       this.todos = this.todos.filter(t => t !== todo);
-    },
-    applyTheme() {
-      this.themeStyles = this.themeStyles
-        ? null
-        : {
-            wrapper: {
-              border: '0',
-              background: 'linear-gradient(to bottom right, #ff5050, #ff66b3)',
-              boxShadow:
-                '0 4px 8px 0 rgba(0, 0, 0, 0.14), 0 6px 20px 0 rgba(0, 0, 0, 0.13)',
-              borderRadius: '5px',
-            },
-            verticalDivider: {
-              borderLeft: 'solid rgba(255, 255, 255, 0.2) 1px',
-            },
-            header: {
-              color: '#fafafa',
-              padding: `20px ${hSpacing}`,
-            },
-            headerHorizontalDivider: {
-              borderTop: 'solid rgba(255, 255, 255, 0.2) 1px',
-              width: '80%',
-            },
-            weekdays: {
-              color: '#6eded1',
-              fontWeight: '600',
-              padding: `20px ${hSpacing} 5px ${hSpacing}`,
-            },
-            weeks: {
-              padding: `0 ${hSpacing} 10px ${hSpacing}`,
-            },
-            dayContent: {
-              color: '#fafafa',
-              fontSize: '0.9em',
-            },
-            dayContentHover: {
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
-              cursor: 'pointer',
-            },
-            bars: {
-              marginBottom: '1px',
-              width: '60%',
-            },
-          };
     },
   },
   directives: {
