@@ -58,8 +58,11 @@ export default {
         : h(
             'span',
             {
-              class: ['c-day-content', this.dayContentClass],
-              // style: this.dayContentStyle,
+              class: [
+                'c-day-content',
+                this.dayContentClass,
+                this.theme.dayContent,
+              ],
               attrs: { ...this.dayContentProps },
               on: this.dayContentEvents,
             },
@@ -482,6 +485,32 @@ export default {
         }
       }
       return backgrounds;
+    },
+    getContents({ key, content, targetDate }) {
+      const contents = [];
+      if (!content) return contents;
+
+      const { isDate, startTime, endTime } = targetDate;
+      const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
+      const onStart = startTime === this.dateTime;
+      const onEnd = endTime === this.dateTime;
+      if (isDate || onStart) {
+        dots.push({
+          key,
+          class: `vc-dot ${start.class}`,
+        });
+      } else if (onEnd) {
+        dots.push({
+          key,
+          class: `vc-dot ${end.class}`,
+        });
+      } else {
+        dots.push({
+          key,
+          class: `vc-dot ${base.class}`,
+        });
+      }
+      return contents;
     },
     getDots({ key, dot, targetDate }) {
       const dots = [];

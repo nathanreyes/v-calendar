@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-grey-8 border-t border-b border-grey-9 my-10 shadow-inner">
+  <div class="border-t border-b border-grey-9 my-10 shadow-inner" :style="bgStyle">
     <div class="section">
       <h2 class="h2 text-grey-2 mb-4">Dark Mode</h2>
       <p class="text-grey-5 mb-8 text-lg">Darken all the things</p>
@@ -30,6 +30,9 @@ let { month, year } = getThisMonthComps();
 export default {
   data() {
     return {
+      bgStyle: {
+        backgroundImage: `linear-gradient(to bottom right,hsl(209, 34%, 30%),hsl(209, 61%, 16%))`,
+      },
       attributes: [
         {
           highlight: true,

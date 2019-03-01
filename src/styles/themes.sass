@@ -12,76 +12,40 @@
 .text-black
   color: $black
 
-@each $grey in $darkGreys
-  $i: index($darkGreys, $grey)
-  .bg-grey-d#{$i}
+@each $grey in $greys
+  $i: index($greys, $grey)
+  .bg-grey-#{$i}
     background-color: $grey
-  .text-grey-d#{$i}
+  .text-grey-#{$i}
     color: $grey
-  .border-grey-d#{$i}
+  .border-grey-#{$i}
     border-color: $grey
 
-@each $grey in $lightGreys
-  $i: index($lightGreys, $grey)
-  .bg-grey-l#{$i}
-    background-color: $grey
-  .text-grey-l#{$i}
-    color: $grey
-  .border-grey-l#{$i}
-    border-color: $grey
-
-@each $blue in $darkBlues
-  $i: index($darkBlues, $blue)
-  .bg-blue-d#{$i}
+@each $blue in $blues
+  $i: index($blues, $blue)
+  .bg-blue-#{$i}
     background-color: $blue
-  .text-blue-d#{$i}
+  .text-blue-#{$i}
     color: $blue
-  .border-blue-d#{$i}
+  .border-blue-#{$i}
     border-color: $blue
 
-@each $blue in $lightBlues
-  $i: index($lightBlues, $blue)
-  .bg-blue-l#{$i}
-    background-color: $blue
-  .text-blue-l#{$i}
-    color: $blue
-  .border-blue-l#{$i}
-    border-color: $blue
-
-@each $red in $darkReds
-  $i: index($darkReds, $red)
-  .bg-red-d#{$i}
+@each $red in $reds
+  $i: index($reds, $red)
+  .bg-red-#{$i}
     background-color: $red
-  .text-red-d#{$i}
+  .text-red-#{$i}
     color: $red
-  .border-red-d#{$i}
+  .border-red-#{$i}
     border-color: $red
 
-@each $red in $lightReds
-  $i: index($lightReds, $red)
-  .bg-red-l#{$i}
-    background-color: $red
-  .text-red-l#{$i}
-    color: $red
-  .border-red-l#{$i}
-    border-color: $red
-
-@each $cyan in $darkCyans
-  $i: index($darkCyans, $cyan)
-  .bg-cyan-d#{$i}
+@each $cyan in $cyans
+  $i: index($cyans, $cyan)
+  .bg-cyan-#{$i}
     background-color: $cyan
-  .text-cyan-d#{$i}
+  .text-cyan-#{$i}
     color: $cyan
-  .border-cyan-d#{$i}
-    border-color: $cyan
-
-@each $cyan in $lightCyans
-  $i: index($lightCyans, $cyan)
-  .bg-cyan-l#{$i}
-    background-color: $cyan
-  .text-cyan-l#{$i}
-    color: $cyan
-  .border-cyan-l#{$i}
+  .border-cyan-#{$i}
     border-color: $cyan
 
 .font-light

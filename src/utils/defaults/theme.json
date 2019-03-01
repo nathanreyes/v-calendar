@@ -2,28 +2,28 @@
   "color": "blue",
   "isDark": "false",
   "container": {
-    "light": "border border-grey-l3 rounded-lg text-black bg-white",
-    "dark": "border border-grey-d4 rounded-lg text-grey-l4 bg-grey-d5 shadow"
+    "light": "border border-grey-3 rounded-lg text-black bg-white",
+    "dark": "border border-grey-9 rounded-lg text-grey-2 bg-grey-10 shadow"
   },
   "header": {
-    "light": "text-grey-d4",
-    "dark": "text-grey-l4"
+    "light": "text-grey-9",
+    "dark": "text-grey-2"
   },
   "title": {
     "light": "text-lg font-semibold",
     "dark": "text-lg font-semibold"
   },
   "arrows": {
-    "light": "text-grey-d1",
+    "light": "text-grey-6",
     "dark": "text-white"
   },
   "weekdays": {
-    "light": "text-sm font-bold text-grey-l2",
-    "dark": "text-sm font-bold text-{color}-l4"
+    "light": "text-sm font-bold text-grey-4",
+    "dark": "text-sm font-bold text-{color}-2"
   },
   "popoverContainer": {
-    "light": "rounded text-xs text-white bg-grey-d4 border border-grey-l4 shadow",
-    "dark": "rounded text-xs text-grey-d5 bg-white border border-grey-l4 shadow"
+    "light": "rounded text-xs text-white bg-grey-9 border border-grey-2 shadow",
+    "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 shadow"
   },
   "navContainer": {
     "light": "",
@@ -45,6 +45,7 @@
     "light": "",
     "dark": ""
   },
+  "dayContent": "hover:bg-grey-2",
   "dayPopoverContainer": {
     "light": "",
     "dark": ""
@@ -54,24 +55,24 @@
   "dotBaseFill": "solid",
   "barBaseFill": "solid",
   "fillNone": {
-    "light": "border-{color}-d1",
-    "dark": "border-{color}-l1"
+    "light": "border-{color}-6",
+    "dark": "border-{color}-5"
   },
   "fillNoneContent": {
-    "light": "font-bold text-{color}-d4",
+    "light": "font-bold text-{color}-9",
     "dark": "font-bold text-white"
   },
   "fillLight": {
-    "light": "bg-{color}-l4 opacity-75",
-    "dark": "bg-{color}-d4 opacity-75"
+    "light": "bg-{color}-2 opacity-75",
+    "dark": "bg-{color}-9 opacity-75"
   },
   "fillLightContent": {
-    "light": "font-bold text-{color}-d4",
+    "light": "font-bold text-{color}-9",
     "dark": "font-bold text-white"
   },
   "fillSolid": {
-    "light": "bg-{color}-d1",
-    "dark": "bg-{color}-l1"
+    "light": "bg-{color}-6",
+    "dark": "bg-{color}-5"
   },
   "fillSolidContent": {
     "light": "font-bold text-white",
