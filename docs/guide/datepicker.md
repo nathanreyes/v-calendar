@@ -390,7 +390,7 @@ Here are the steps to utilize this approach.
         {{ errorMessage }}
       </p>
       <p
-        class='text-green text-xs font-bold mt-1'
+        class='text-green-5 text-xs font-bold mt-1'
         v-else>
         We got it. Thanks!
       </p>

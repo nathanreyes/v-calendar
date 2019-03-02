@@ -65,7 +65,7 @@ export default {
           key: 4,
           customData: {
             title: 'Meeting with new client.',
-            class: 'bg-teal text-white',
+            class: 'bg-teal-5 text-white',
           },
           dates: new Date(year, month, 7),
         },
@@ -73,7 +73,7 @@ export default {
           key: 5,
           customData: {
             title: "Mia's gymnastics practice.",
-            class: 'bg-pink text-white',
+            class: 'bg-pink-5 text-white',
           },
           dates: new Date(year, month, 11),
         },
@@ -81,7 +81,7 @@ export default {
           key: 6,
           customData: {
             title: 'Cookout with friends.',
-            class: 'bg-orange text-white',
+            class: 'bg-orange-5 text-white',
           },
           dates: { months: 5, ordinalWeekdays: { 2: 1 } },
         },
@@ -89,7 +89,7 @@ export default {
           key: 7,
           customData: {
             title: "Mia's gymnastics recital.",
-            class: 'bg-pink text-white',
+            class: 'bg-pink-5 text-white',
           },
           dates: new Date(year, month, 22),
         },

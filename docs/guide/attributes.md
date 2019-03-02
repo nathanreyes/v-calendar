@@ -867,7 +867,7 @@ If you are not familiar with the convention of using scoped slots in Vue.js, you
         <!--Done button-->
         <svg
           v-else
-          class='fill-current text-green'
+          class='fill-current text-green-5'
           viewBox='0 0 20 20'
           width='12'
           height='12'>

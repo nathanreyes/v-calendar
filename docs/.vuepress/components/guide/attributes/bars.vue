@@ -10,9 +10,7 @@ export default {
     return {
       attributes: [
         {
-          bar: {
-            backgroundColor: '#ff4d4d', // Red bar
-          },
+          bar: 'red',
           dates: [
             new Date(2018, 0, 1), // Jan 1st
             new Date(2018, 0, 10), // Jan 10th
@@ -38,9 +36,7 @@ export default {
           ],
         },
         {
-          bar: {
-            backgroundColor: '#794dff', // Purple bar
-          },
+          bar: 'purple',
           dates: [
             new Date(2018, 0, 12), // Jan 12th
             new Date(2018, 0, 26), // Jan 26th

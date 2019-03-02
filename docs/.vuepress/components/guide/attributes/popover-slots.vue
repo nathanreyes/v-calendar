@@ -50,7 +50,7 @@
             <path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"></path>
           </svg>
           <!--Done button-->
-          <svg v-else class="fill-current text-green" viewBox="0 0 20 20" width="12" height="12">
+          <svg v-else class="fill-current text-green-5" viewBox="0 0 20 20" width="12" height="12">
             <path d="M0 11l2-2 5 5L18 3l2 2L7 18z"></path>
           </svg>
         </a>

@@ -10,7 +10,7 @@
     "dark": "text-grey-2"
   },
   "title": {
-    "light": "text-lg font-semibold",
+    "light": "text-lg text-grey-8 font-semibold",
     "dark": "text-lg font-semibold"
   },
   "arrows": {
@@ -45,9 +45,10 @@
     "light": "",
     "dark": ""
   },
+  "dayNotInMonth": "opacity-0 pointer-events-none",
   "dayContent": {
-    "light": "cursor-pointer hover:bg-grey-2 focus:bg-grey-2 focus:border-grey-6 focus:border-1 focus:font-semibold",
-    "dark": "cursor-pointer hover:bg-grey-8 focus:bg-grey-9 focus-border-grey-8 focus:border-1"
+    "light": "font-medium text-sm cursor-pointer hover:bg-grey-1 focus:bg-grey-2 focus:font-bold",
+    "dark": "font-medium cursor-pointer hover:bg-grey-9 focus:bg-grey-8  focus:font-bold"
   },
   "dayPopoverContainer": {
     "light": "",
@@ -74,11 +75,11 @@
     "dark": "font-bold text-white"
   },
   "fillSolid": {
-    "light": "bg-{color}-6",
+    "light": "bg-{color}-6 hover:bg-{color}-25 ",
     "dark": "bg-{color}-5"
   },
   "fillSolidContent": {
-    "light": "font-bold text-white",
+    "light": "font-bold text-white hover:bg-transparent",
     "dark": "font-bold text-white"
   }
 }

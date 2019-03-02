@@ -77,7 +77,7 @@
               <!--Done button-->
               <svg
                 v-else
-                class="fill-current text-green"
+                class="fill-current text-green-5"
                 viewBox="0 0 20 20"
                 width="12"
                 height="12"
@@ -165,7 +165,7 @@ export default {
           ],
         },
         {
-          highlight: 'cyan',
+          highlight: 'teal',
           contentStyle: {
             color: 'white',
           },
@@ -196,7 +196,7 @@ export default {
           ],
         },
         {
-          dot: 'cyan',
+          dot: 'teal',
           dates: [
             new Date(thisMonthYear, thisMonth, 4),
             new Date(thisMonthYear, thisMonth, 10),
@@ -235,7 +235,7 @@ export default {
           ],
         },
         {
-          bar: 'cyan',
+          bar: 'teal',
           dates: [
             new Date(thisMonthYear, thisMonth, 4),
             new Date(thisMonthYear, thisMonth, 10),

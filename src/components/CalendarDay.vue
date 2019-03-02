@@ -26,7 +26,7 @@ export default {
         h(
           'div',
           {
-            class: 'vc-highlights c-day-layer',
+            class: 'vc-highlights vc-day-layer',
           },
           this.backgrounds.map(({ key, wrapperClass, class: bgClass }) =>
             h(
@@ -59,7 +59,7 @@ export default {
             'span',
             {
               class: [
-                'c-day-content',
+                'vc-day-content',
                 this.dayContentClass,
                 this.theme.dayContent,
               ],
@@ -100,7 +100,7 @@ export default {
         h(
           'div',
           {
-            class: 'c-day-layer c-day-box-center-bottom',
+            class: 'vc-day-layer vc-day-box-center-bottom',
           },
           [
             h(
@@ -127,7 +127,7 @@ export default {
         h(
           'div',
           {
-            class: 'c-day-layer c-day-box-center-bottom',
+            class: 'vc-day-layer vc-day-box-center-bottom',
           },
           [
             h(
@@ -152,9 +152,10 @@ export default {
       'div',
       {
         class: [
-          'c-day text-sm font-medium',
+          'vc-day',
           ...this.day.classes,
-          { 'c-day-box-center-center': !this.$scopedSlots['day-content'] },
+          { 'vc-day-box-center-center': !this.$scopedSlots['day-content'] },
+          { [this.theme.dayNotInMonth]: !this.inMonth },
         ],
       },
       [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
@@ -433,7 +434,7 @@ export default {
       if (isDate || isComplex) {
         backgrounds.push({
           key,
-          wrapperClass: 'c-day-layer c-day-box-center-center',
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
           class: `vc-highlight ${start.class}`,
           contentClass: start.contentClass,
         });
@@ -445,40 +446,40 @@ export default {
         if (onStartAndEnd) {
           backgrounds.push({
             key,
-            wrapperClass: 'c-day-layer c-day-box-center-center',
+            wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight ${start.class}`,
             contentClass: start.contentClass,
           });
         } else if (onStart) {
           backgrounds.push({
             key,
-            wrapperClass: 'c-day-layer c-day-box-right-center',
+            wrapperClass: 'vc-day-layer vc-day-box-right-center',
             class: `vc-highlight vc-highlight-start ${base.class}`,
             contentClass: base.contentClass,
           });
           backgrounds.push({
             key: `${key}-start`,
-            wrapperClass: 'c-day-layer c-day-box-center-center',
+            wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight ${start.class}`,
             contentClass: start.contentClass,
           });
         } else if (onEnd) {
           backgrounds.push({
             key,
-            wrapperClass: 'c-day-layer c-day-box-left-center',
+            wrapperClass: 'vc-day-layer vc-day-box-left-center',
             class: `vc-highlight vc-highlight-end ${base.class}`,
             contentClass: base.contentClass,
           });
           backgrounds.push({
             key: `${key}-end`,
-            wrapperClass: 'c-day-layer c-day-box-center-center',
+            wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight ${end.class}`,
             contentClass: end.contentClass,
           });
         } else {
           backgrounds.push({
             key: `${key}-middle`,
-            wrapperClass: 'c-day-layer c-day-box-center-center',
+            wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight vc-highlight-middle ${base.class}`,
             contentClass: base.contentClass,
           });
@@ -596,16 +597,14 @@ export default {
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
-.c-day
+.vc-day
   position: relative
   min-height: $day-min-height
   height: 100%
   // transition: all $day-content-transition-time
   z-index: 1
-  &:not(.in-month) /deep/ > *
-    opacity: 0
 
-.c-day-layer
+.vc-day-layer
   position: absolute
   left: 0
   right: 0
@@ -613,25 +612,25 @@ export default {
   bottom: 0
   pointer-events: none
 
-.c-day-box-center-center
+.vc-day-box-center-center
   +box()
   height: 100%
   transform-origin: 50% 50%
 
-.c-day-box-left-center
+.vc-day-box-left-center
   +box(flex-start)
   height: 100%
   transform-origin: 0% 50%
 
-.c-day-box-right-center
+.vc-day-box-right-center
   +box(flex-end)
   height: 100%
   transform-origin: 100% 50%
 
-.c-day-box-center-bottom
+.vc-day-box-center-bottom
   +box(center, flex-end)
 
-.c-day-content
+.vc-day-content
   display: flex
   justify-content: center
   align-items: center

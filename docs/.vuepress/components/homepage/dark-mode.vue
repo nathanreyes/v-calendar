@@ -13,10 +13,10 @@
       </div>
       <div class="flex flex-col items-center md:flex-row md:justify-around">
         <div class="mb-6">
-          <v-calendar color="cyan" :attributes="attributes" is-dark/>
+          <v-calendar color="teal" :attributes="attributes" is-dark/>
         </div>
         <div class="mb-6">
-          <v-calendar color="grey" :attributes="attributes" is-dark/>
+          <v-calendar color="purple" :attributes="attributes" is-dark/>
         </div>
       </div>
     </div>
