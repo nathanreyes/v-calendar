@@ -455,7 +455,6 @@ export default {
     },
     processContent({ key, content, targetDate }, { content: contents }) {
       if (!content) return;
-
       // const { isDate, startTime, endTime } = targetDate;
       // const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
       // const onStart = startTime === this.dateTime;

@@ -1,6 +1,6 @@
 <template>
   <!-- Popover content -->
-  <div class="c-day-popover-content" slot="popover-content">
+  <div class="vc-day-popover-content" slot="popover-content">
     <!-- Day popover header slot -->
     <slot name="day-popover-header" :day="day" :attributes="day.attributes" :format="format"/>
     <!-- Content row slots -->
@@ -33,7 +33,7 @@
         ></component>
       </slot>
     </calendar-day-popover-row>
-    <!-- <p class="c-day-no-popovers" v-if="!hasPopovers">Empty</p> -->
+    <!-- <p class="vc-day-no-popovers" v-if="!hasPopovers">Empty</p> -->
     <!-- Day popover footer slot -->
     <slot name="day-popover-footer" :day="day" :attributes="attributes" :format="format"></slot>
   </div>
@@ -72,11 +72,11 @@ export default {
 </script>
 
 <style scoped>
-.c-day-popover-content {
+.vc-day-popover-content {
   line-height: 1.5;
   padding: 5px 0;
 }
-.c-day-no-popovers {
+.vc-day-no-popovers {
   opacity: 0.8;
   padding: 2px 6px;
   margin: 0px;

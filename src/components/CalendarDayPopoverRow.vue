@@ -1,12 +1,12 @@
 <template>
   <!-- Content row -->
-  <div :class="['c-day-popover-row', { 'selectable': isSelectable }]" @click="$emit('select')">
+  <div :class="['vc-day-popover-row', { 'selectable': isSelectable }]" @click="$emit('select')">
     <!-- Indicator -->
-    <div v-if="!hideIndicator && indicatorStyle" class="c-day-popover-row-indicator">
+    <div v-if="!hideIndicator && indicatorStyle" class="vc-day-popover-row-indicator">
       <span :style="indicatorStyle"></span>
     </div>
     <!-- Content -->
-    <div class="c-day-popover-row-content">
+    <div class="vc-day-popover-row-content">
       <slot>This is the default content slot.</slot>
     </div>
   </div>
@@ -67,7 +67,7 @@ export default {
 
 @import '../styles/mixins.sass'
 
-.c-day-popover-row
+.vc-day-popover-row
   display: flex
   align-items: center
   padding: 2px 5px
@@ -79,7 +79,7 @@ export default {
       background-color: rgba(0, 0, 0, 0.1)
   &:not(:first-child)
     margin-top: 3px
-  .c-day-popover-row-indicator
+  .vc-day-popover-row-indicator
     display: flex
     justify-content: center
     align-items: center
@@ -88,7 +88,7 @@ export default {
     margin-right: 3px
     span
       transition: all $day-content-transition-time
-  .c-day-popover-row-content
+  .vc-day-popover-row-content
     display: flex
     align-items: center
     flex-wrap: none

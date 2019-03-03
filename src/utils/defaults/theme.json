@@ -9,6 +9,7 @@
     "light": "text-grey-9",
     "dark": "text-grey-2"
   },
+  "headerDivider": "",
   "title": {
     "light": "text-lg text-grey-8 font-semibold",
     "dark": "text-lg font-semibold"
@@ -21,6 +22,7 @@
     "light": "text-sm font-bold text-grey-4",
     "dark": "text-sm font-bold text-{color}-2"
   },
+  "weekdaysDivider": "",
   "popoverContainer": {
     "light": "rounded text-xs text-white bg-grey-9 border border-grey-2 shadow",
     "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 shadow"

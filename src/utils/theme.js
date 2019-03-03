@@ -121,6 +121,14 @@ export const normalizeHighlight = (config, theme) => {
   return highlight;
 };
 
+// export const normalizeContent = (config, theme) => {
+//   const content = normalizeAttr({
+//     config,
+//     type: 'content',
+//     theme,
+//   });
+// }
+
 export const normalizeDot = (config, theme) => {
   const dot = normalizeAttr({
     config,

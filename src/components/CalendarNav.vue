@@ -1,52 +1,44 @@
 <template>
   <!--Nav panel-->
-  <div class="c-nav-pane" :class="theme.navContainer">
+  <div class="vc-nav-pane" :class="theme.navContainer">
     <!--Nav months-->
     <template v-if="mode_ === 'month'">
       <!--Months header-->
-      <div class="c-nav-header" :class="theme.navHeader">
+      <div class="vc-nav-header" :class="theme.navHeader">
         <!--Previous year button-->
-        <div class="c-nav-arrow-layout">
+        <div class="vc-nav-arrow-layout">
           <slot name="nav-left-button" :month-items="[...monthItems]" :move="movePrevYear">
-            <svg-icon name="left-arrow" class="c-nav-arrow" @click="movePrevYear"></svg-icon>
+            <svg-icon name="left-arrow" class="vc-nav-arrow" @click="movePrevYear"></svg-icon>
           </slot>
         </div>
         <!--Mode switch button-->
         <span
-          class="c-nav-title"
+          class="vc-nav-title"
           :class="theme.navTitle"
           @click="selectMode('year')"
         >{{ yearIndex }}</span>
         <!--Next year button-->
-        <div class="c-nav-arrow-layout">
+        <div class="vc-nav-arrow-layout">
           <slot name="nav-right-button" :month-items="[...monthItems]" :move="moveNextYear">
-            <svg-icon name="right-arrow" class="c-nav-arrow" @click="moveNextYear"></svg-icon>
+            <svg-icon name="right-arrow" class="vc-nav-arrow" @click="moveNextYear"></svg-icon>
           </slot>
         </div>
       </div>
       <!--Months table-->
-      <table class="c-nav-table">
+      <table class="vc-nav-table">
         <tr v-for="(row, i) in monthRows" :key="i">
           <td v-for="item in row" :key="item.month">
             <div
-              class="c-nav-table-cell"
-              :class="{ [theme.navCell]: !item.isActive, [theme.navCellActive]: item.isActive, 'c-disabled': item.isDisabled }"
-              :style="getMonthCellStyle(item)"
+              class="vc-nav-table-cell"
+              :class="{
+                  [theme.navCell]: !item.isActive,
+                  [theme.navCellActive]: item.isActive,
+                  'vc-disabled': item.isDisabled
+                }"
               @click="monthClick(item.month)"
             >
               <!--Month label-->
               {{ item.label }}
-              <!--Attribute indicators-->
-              <transition name="indicators">
-                <div v-if="item.attributes" class="c-indicators">
-                  <span
-                    class="c-indicator"
-                    v-for="attribute in item.attributes"
-                    :key="attribute.key"
-                    :style="attribute.style"
-                  ></span>
-                </div>
-              </transition>
             </div>
           </td>
         </tr>
@@ -54,9 +46,9 @@
     </template>
     <!--Nav years-->
     <template v-if="mode_ === 'year'">
-      <div class="c-nav-header" :class="theme.navHeader">
+      <div class="vc-nav-header" :class="theme.navHeader">
         <!--Previous year group button-->
-        <div class="c-nav-arrow-layout">
+        <div class="vc-nav-arrow-layout">
           <slot
             name="nav-left-button"
             :first-year="firstYear"
@@ -64,17 +56,17 @@
             :year-items="[...yearItems]"
             :move="movePrevYearGroup"
           >
-            <svg-icon name="left-arrow" class="c-nav-arrow" @click="movePrevYearGroup"></svg-icon>
+            <svg-icon name="left-arrow" class="vc-nav-arrow" @click="movePrevYearGroup"></svg-icon>
           </slot>
         </div>
         <!--Mode switch button-->
         <span
-          class="c-nav-title"
+          class="vc-nav-title"
           :class="theme.navTitle"
           @click="selectMode('month')"
         >{{ firstYear }} - {{ lastYear }}</span>
         <!--Next year group button-->
-        <div class="c-nav-arrow-layout">
+        <div class="vc-nav-arrow-layout">
           <slot
             name="nav-right-button"
             :first-year="firstYear"
@@ -82,18 +74,21 @@
             :year-items="[...yearItems]"
             :move="moveNextYearGroup"
           >
-            <svg-icon name="right-arrow" class="c-nav-arrow" @click="moveNextYearGroup"></svg-icon>
+            <svg-icon name="right-arrow" class="vc-nav-arrow" @click="moveNextYearGroup"></svg-icon>
           </slot>
         </div>
       </div>
       <!--Years table-->
-      <table class="c-nav-table">
+      <table class="vc-nav-table">
         <tr v-for="(row, i) in yearRows" :key="i">
           <td v-for="item in row" :key="item.year">
             <div
-              class="c-nav-table-cell"
-              :class="{ 'c-active': item.isActive, 'c-disabled': item.isDisabled }"
-              :style="getYearCellStyle(item)"
+              class="vc-nav-table-cell"
+              :class="{
+                  [theme.navCell]: !item.isActive,
+                  [theme.navCellActive]: item.isActive,
+                  'vc-disabled': item.isDisabled
+                }"
               @click="yearClick(item.year)"
             >
               <!--Year label-->
@@ -132,7 +127,6 @@ export default {
     validator: { type: Function, default: () => () => true },
     formats: Object,
     attributes: Array,
-    styles: Object,
   },
   data() {
     return {
@@ -200,24 +194,12 @@ export default {
     yearIndex(val) {
       this.yearGroupIndex = this.getYearGroupIndex(val);
     },
-    attributes() {
-      this.mapAttributes(true);
-    },
-    yearGroupIndex() {
-      this.mapAttributes();
-    },
   },
   created() {
     this.mode_ = this.mode;
     this.yearIndex = this.year;
   },
   methods: {
-    getMonthCellStyle(item) {
-      return evalFn(this.styles.navMonthCell, item);
-    },
-    getYearCellStyle(item) {
-      return evalFn(this.styles.navYearCell, item);
-    },
     getMonthAttributes(month) {
       if (
         !this.attributesMap[this.yearIndex] ||
@@ -225,62 +207,6 @@ export default {
       )
         return undefined;
       return Object.values(this.attributesMap[this.yearIndex][month]);
-    },
-    mapAttributes(clearCache) {
-      // Clear map if there are no attributes
-      if (!this.attributes || !this.attributes.length) {
-        this.attributesMap = {};
-        return;
-      }
-      // Clear cache if needed
-      const map = clearCache ? {} : this.attributesMap;
-      // Cycle each year in the current year group
-      for (let y = this.firstYear; y <= this.lastYear; y++) {
-        // If there isn't current year data...
-        if (!map[y]) {
-          const yearData = {};
-          // Cycle each month
-          for (let m = 1; m <= 12; m++) {
-            const monthData = {};
-            // Get range for the current month
-            const comps = getMonthComps(m, y);
-            const monthRange = new DateInfo({
-              start: new Date(comps.year, comps.month - 1, 1),
-              end: new Date(comps.year, comps.month - 1, comps.days),
-            });
-            // Assign attribute data if they lie in month range
-            this.attributes.forEach(a => {
-              if (a.dates.find(d => d.intersects(monthRange))) {
-                monthData[a.key] = this.getAttributeInfo(a);
-              }
-            });
-            // Assign month data
-            if (Object.keys(monthData).length) yearData[m] = monthData;
-          }
-          // Assign year data
-          if (Object.keys(yearData).length) map[y] = yearData;
-        }
-      }
-      // Use object spread to trigger Vue reactivity
-      this.attributesMap = { ...map };
-    },
-    getAttributeInfo(attr) {
-      let color;
-      if (attr.highlight) {
-        color = attr.highlight.backgroundColor;
-      } else if (attr.dot) {
-        color = attr.dot.backgroundColor;
-      } else if (attr.bar) {
-        color = attr.bar.backgroundColor;
-      } else if (attr.contentStyle) {
-        color = attr.contentStyle.backgroundColor || attr.contentStyle.color;
-      }
-      return {
-        key: attr.key,
-        style: {
-          backgroundColor: color,
-        },
-      };
     },
     getYearGroupIndex(year) {
       return Math.floor(year / _yearGroupCount);
@@ -333,34 +259,34 @@ $nav-title-transition: all .25s ease-in-out
 $nav-table-cell-width: 60px
 $nav-table-cell-transition: all 0.1s ease-in-out
 
-.c-nav-pane
+.vc-nav-pane
   transition: height 5s ease-in-out
   width: $nav-table-cell-width*3
   overflow: hidden
 
-.c-nav-header
+.vc-nav-header
   display: flex
   justify-content: space-between
   align-items: center
   padding: 3px 0
 
-.c-nav-arrow-layout
+.vc-nav-arrow-layout
   +box()
   min-width: 26px
 
-.c-nav-arrow
+.vc-nav-arrow
   +box()
   font-size: $arrow-font-size
   transition: $arrow-transition
   cursor: pointer
   user-select: none
 
-.c-nav-title
+.vc-nav-title
   transition: $nav-title-transition
   cursor: pointer
   user-select: none
 
-.c-nav-table
+.vc-nav-table
   &, tr, td, th
     margin: 0
     padding: 0
@@ -369,7 +295,7 @@ $nav-table-cell-transition: all 0.1s ease-in-out
     border-collapse: collapse
     border-spacing: 0
 
-.c-nav-table
+.vc-nav-table
   table-layout: fixed
   width: 100%
   tr
@@ -384,7 +310,7 @@ $nav-table-cell-transition: all 0.1s ease-in-out
       td
         border-bottom: 0
 
-.c-nav-table-cell
+.vc-nav-table-cell
   display: flex
   flex-direction: column
   justify-content: center
@@ -397,14 +323,14 @@ $nav-table-cell-transition: all 0.1s ease-in-out
   // &:hover
   //   background-color: $nav-table-cell-hover-background-color
 
-.c-disabled
+.vc-disabled
   opacity: 0.2
   cursor: not-allowed
   pointer-events: none
   &:hover
     background-color: transparent
 
-.c-indicators
+.vc-indicators
   position: absolute
   display: flex
   justify-content: center
@@ -412,7 +338,7 @@ $nav-table-cell-transition: all 0.1s ease-in-out
   bottom: 5px
   width: 100%
   transition: $nav-table-cell-transition
-  .c-indicator
+  .vc-indicator
     width: 5px
     height: 5px
     border-radius: 50%

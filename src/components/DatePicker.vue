@@ -18,7 +18,6 @@ export default {
         attrs: {
           ...this.$attrs,
           formats: this.formats_,
-          themeStyles: this.themeStyles_,
         },
         props: {
           value: this.value,
@@ -138,7 +137,6 @@ export default {
       type: Boolean,
       default: () => defaults.popoverKeepVisibleOnInput,
     },
-    themeStyles: { type: Object, default: () => ({}) }, // Resolved by computed property
   },
   data() {
     return {
@@ -249,17 +247,6 @@ export default {
         keyup: this.inputKeyup,
       };
     },
-    themeStyles_() {
-      // Strip the wrapper style when used in a popover
-      // It will get passed in as the content style
-      const styles = {
-        ...this.themeStyles,
-        ...(!this.isInline && {
-          wrapper: null,
-        }),
-      };
-      return styles;
-    },
   },
   watch: {
     mode() {
@@ -301,7 +288,7 @@ export default {
         pinPage: true,
       };
       const { highlight, dot, bar } = attr;
-      // Don't need highlight or content style if using dot or bar
+      // Assign attribute type if missing
       if (!dot && !bar && !highlight) {
         attr.highlight = true;
       }
@@ -405,9 +392,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.c-pane-container.is-popover {
-  border: none;
-}
-</style>

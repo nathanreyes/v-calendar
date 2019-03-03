@@ -1,14 +1,14 @@
 <template>
-  <div ref="pane" class="c-pane">
+  <div ref="pane" class="vc-pane">
     <!--Header slot-->
     <slot name="header" v-bind="page">
-      <div class="c-header" :class="theme.header">
+      <div class="vc-header" :class="theme.header">
         <!--Header title-->
-        <div :class="['c-title-layout', titleClass]">
-          <div class="c-title-wrapper">
+        <div :class="['vc-title-layout', titleClass]">
+          <div class="vc-title-wrapper">
             <!--Title content-->
             <popover-ref :id="navPopoverId" :visibility="navVisibility" is-interactive>
-              <div class="c-title" :class="theme.title">
+              <div class="vc-title" :class="theme.title">
                 <slot name="header-title" v-bind="page">{{ page.title }}</slot>
               </div>
             </popover-ref>
@@ -18,7 +18,6 @@
               <calendar-nav
                 :value="page"
                 :validator="canMove"
-                :styles="styles"
                 :formats="formats"
                 @input="navPageSelected($event)"
               >
@@ -33,32 +32,22 @@
       </div>
     </slot>
     <!--Header horizontal divider-->
-    <div
-      class="c-horizontal-divider"
-      :style="headerHorizontalDividerStyle_"
-      v-if="headerHorizontalDividerStyle_"
-    ></div>
+    <div class="vc-horizontal-divider" :class="theme.headerDivider" v-if="theme.headerDivider"/>
     <!--Weekday labels-->
-    <div class="c-weekdays" :style="weekdaysStyle_">
+    <div class="vc-weekdays">
       <div
         v-for="(weekday, i) in weekdayLabels"
         :key="i + 1"
-        class="c-weekday"
+        class="vc-weekday"
         :class="theme.weekdays"
       >{{ weekday }}</div>
     </div>
     <!--Weekdays horizontal divider-->
-    <div
-      class="c-horizontal-divider"
-      :style="weekdaysHorizontalDividerStyle_"
-      v-if="weekdaysHorizontalDividerStyle_"
-    ></div>
+    <div class="vc-horizontal-divider" :class="theme.weekdaysDivider" v-if="theme.weekdaysDivider"/>
     <!--Weeks-->
     <calendar-weeks
-      class="c-weeks"
-      :style="weeksStyle_"
+      class="vc-weeks"
       :page="page"
-      :styles="styles"
       :formats="formats"
       v-bind="$attrs"
       v-on="$listeners"
@@ -94,7 +83,6 @@ export default {
     page: Object,
     minPage: Object,
     maxPage: Object,
-    styles: { type: Object, default: () => {} },
     formats: Object,
     titlePosition: { type: String, default: () => defaults.titlePosition },
     navVisibility: { type: String, default: () => defaults.navVisibility },
@@ -123,25 +111,6 @@ export default {
     },
     titleClass() {
       return this.titlePosition ? `align-${this.titlePosition}` : '';
-    },
-    headerHorizontalDividerStyle_() {
-      return evalFn(this.styles.headerHorizontalDivider, this.page);
-    },
-    weekdaysStyle_() {
-      return evalFn(this.styles.weekdays, this.page);
-    },
-    weekdaysHorizontalDividerStyle_() {
-      return evalFn(this.styles.weekdaysHorizontalDivider, this.page);
-    },
-    weeksStyle_() {
-      return {
-        ...evalFn(this.styles.weeks, this.page),
-      };
-    },
-    navWrapperStyle() {
-      return {
-        ...evalFn(this.styles.navWrapper, this.page),
-      };
     },
     canMovePrevMonth() {
       return this.canMove(this.page.prevMonthComps);
@@ -193,7 +162,7 @@ export default {
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
-.c-pane
+.vc-pane
   flex-grow: 1
   flex-shrink: 1
   display: flex
@@ -201,10 +170,10 @@ export default {
   justify-content: center
   align-items: stretch
 
-.c-horizontal-divider
+.vc-horizontal-divider
   align-self: center
 
-.c-header
+.vc-header
   flex-shrink: 0
   display: flex
   align-items: stretch
@@ -217,32 +186,32 @@ export default {
     order: 1
     justify-content: flex-end
 
-.c-title-layout
+.vc-title-layout
   display: flex
   justify-content: center
   align-items: center
   flex-grow: 1
 
-.c-title-wrapper
+.vc-title-wrapper
   position: relative
 
-.c-title
+.vc-title
   cursor: pointer
   user-select: none
   white-space: nowrap
 
-.c-weekdays
+.vc-weekdays
   flex-shrink: 0
   display: flex
   padding: $weekday-padding
 
-.c-weekday
+.vc-weekday
   +box()
   flex: 1
   cursor: default
   user-select: none
 
-.c-weeks
+.vc-weeks
   flex-shrink: 1
   flex-grow: 1
   padding: $weeks-padding

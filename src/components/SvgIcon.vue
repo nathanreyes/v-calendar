@@ -1,5 +1,5 @@
 <template>
-  <svg class="svg-icon" :width="width" :height="height" :viewBox="viewBox" v-on="$listeners">
+  <svg class="vc-svg-icon" :width="width" :height="height" :viewBox="viewBox" v-on="$listeners">
     <path :d="path"></path>
   </svg>
 </template>
@@ -65,7 +65,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.svg-icon {
+.vc-svg-icon {
   display: inline-block;
   stroke: currentColor;
   stroke-width: 0;

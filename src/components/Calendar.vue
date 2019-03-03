@@ -42,7 +42,6 @@ export default {
           minPage: this.minPage_,
           maxPage: this.maxPage_,
           canMove: this.canMove,
-          styles: this.styles_,
           formats: this.formats_,
         },
         on: {
@@ -254,12 +253,6 @@ export default {
         pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
       );
     },
-    styles_() {
-      return {
-        ...defaults.themeStyles,
-        ...this.themeStyles,
-      };
-    },
     formats_() {
       return {
         ...defaults.formats,
@@ -268,9 +261,6 @@ export default {
     },
     attributes_() {
       return AttributeStore(this.attributes);
-    },
-    popoverContentStyle() {
-      return this.styles.dayPopoverContent;
     },
   },
   watch: {
