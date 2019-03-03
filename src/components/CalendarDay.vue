@@ -8,16 +8,11 @@ import {
   mixinOptionalProps,
 } from '@/utils/helpers';
 import defaults from '@/utils/defaults';
-import { isFunction, some } from '@/utils/_';
+import { isFunction, some, last, get } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
   mixins: [injectMixin],
-  props: {
-    day: { type: Object, required: true },
-    attributes: Object,
-    formats: Object,
-  },
   render(h) {
     // Backgrounds layer
     const backgroundsLayer = () => {
@@ -58,19 +53,11 @@ export default {
         : h(
             'span',
             {
-              class: [
-                'vc-day-content',
-                this.dayContentClass,
-                this.theme.dayContent,
-              ],
+              class: ['vc-day-content', this.theme.dayContent],
               attrs: { ...this.dayContentProps },
               on: this.dayContentEvents,
             },
-            [
-              h('span', { class: this.dayHighlightContentClass }, [
-                this.day.label,
-              ]),
-            ],
+            [h('span', { class: this.dayContentClass }, [this.day.label])],
           );
     };
 
@@ -162,6 +149,11 @@ export default {
     );
   },
   inject: ['sharedState'],
+  props: {
+    day: { type: Object, required: true },
+    attributes: Object,
+    formats: Object,
+  },
   data() {
     return {
       isHovered: false,
@@ -198,7 +190,7 @@ export default {
             isFunction(a.dot) ||
             isFunction(a.bar) ||
             isFunction(a.popover) ||
-            isFunction(a.contentStyle),
+            isFunction(a.content),
         )
       );
     },
@@ -213,6 +205,9 @@ export default {
     },
     hasBackgrounds() {
       return !!arrayHasItems(this.backgrounds);
+    },
+    content() {
+      return this.glyphs.content;
     },
     dots() {
       return this.glyphs.dots;
@@ -245,15 +240,7 @@ export default {
       return this.hasPopovers && some(this.popovers, p => p.isInteractive);
     },
     dayContentClass() {
-      return this.glyphs.contentClass;
-    },
-    dayHighlightContentClass() {
-      return this.hasBackgrounds
-        ? this.backgrounds[this.backgrounds.length - 1].contentClass
-        : '';
-    },
-    dayContentStyle() {
-      return this.glyphs.contentStyle;
+      return get(last(this.content), 'class');
     },
     dayContentProps() {
       return {
@@ -330,61 +317,27 @@ export default {
       this.$emit('dayfocusout', this.getDayEvent(e));
     },
     refreshGlyphs() {
-      // Get the day attributes
-      this.glyphs = (this.attributesList || [])
-        // Evaluate attribute functions if needed
-        .map(attr =>
-          this.evalAttribute(attr, this.isHoveredDirty, this.isFocusedDirty),
-        )
-        .reduce(
-          // Add glyphs for each attribute (prioritize from first to last)
-          (glyphs, attr) => {
-            const {
-              highlight,
-              highlightCaps,
-              onStart,
-              onEnd,
-              dot,
-              bar,
-              popover,
-              contentClass,
-              contentStyle,
-            } = attr;
-            const { backgrounds, dots, bars, popovers } = glyphs;
-            // Add backgrounds for highlight if needed
-            if (highlight) backgrounds.push(...this.getBackgrounds(attr));
-            // Add dots if needed
-            if (dot) dots.push(...this.getDots(attr));
-            // Add bar if needed
-            if (bar) bars.push(...this.getBars(attr));
-            // Add popover if needed
-            if (popover) popovers.unshift(this.getPopover(attr));
-            // Add content class if needed
-            // if (contentClass) glyphs.contentClass.push(contentClass);
-            // Add content style if needed
-            // Object.assign(glyphs.contentStyle, contentStyle);
-            // Continue configuring glyphs
-            return glyphs;
-          },
-          // Initialize glyphs object
-          {
-            backgrounds: [],
-            dots: [],
-            bars: [],
-            popovers: [],
-            contentClass: [],
-            contentStyle: {},
-          },
-        );
-    },
-    refreshGlyphs2() {
+      if (!arrayHasItems(this.attributesList)) return;
       const glyphs = {
         backgrounds: [],
         dots: [],
         bars: [],
         popovers: [],
-        content: {},
+        content: [],
       };
+      this.attributesList
+        // Evaluate functions first
+        .map(attr =>
+          this.evalAttribute(attr, this.isHoveredDirty, this.isFocusedDirty),
+        )
+        // Add glyphs for each attribute
+        .forEach(attr => {
+          this.processHighlight(attr, glyphs);
+          this.processContent(attr, glyphs);
+          this.processDot(attr, glyphs);
+          this.processBar(attr, glyphs);
+        });
+      this.glyphs = glyphs;
     },
     evalAttribute(attribute, isHovered, isFocused) {
       const { targetDate } = attribute;
@@ -410,21 +363,17 @@ export default {
           inBetween,
         },
         [
-          { name: 'highlight', mixin: defaults.highlight, validate },
-          { name: 'highlightCaps', mixin: defaults.highlightCaps, validate },
-          { name: 'dot', mixin: defaults.dot, validate },
-          { name: 'bar', mixin: defaults.bar, validate },
-          { name: 'contentClass', validate },
-          { name: 'contentStyle', validate },
+          { name: 'highlight', validate },
+          { name: 'content', validate },
+          { name: 'dot', validate },
+          { name: 'bar', validate },
           { name: 'popover', validate },
           { name: 'customData' },
         ],
       ).target;
     },
-    getBackgrounds({ key, highlight, targetDate }) {
-      const backgrounds = [];
-      if (!highlight) return backgrounds;
-
+    processHighlight({ key, highlight, targetDate }, { backgrounds, content }) {
+      if (!highlight) return;
       const { isDate, isComplex, startTime, endTime } = targetDate;
       const { base, start, end } = this.theme.normalizeHighlight(
         highlight,
@@ -436,7 +385,10 @@ export default {
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
           class: `vc-highlight ${start.class}`,
-          contentClass: start.contentClass,
+        });
+        content.push({
+          key: `${key}-highlight`,
+          class: start.contentClass,
         });
       } else {
         const onStart = startTime === this.dateTime;
@@ -448,49 +400,80 @@ export default {
             key,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight ${start.class}`,
-            contentClass: start.contentClass,
+          });
+          content.push({
+            key: `${key}-highlight`,
+            class: start.contentClass,
           });
         } else if (onStart) {
           backgrounds.push({
             key,
             wrapperClass: 'vc-day-layer vc-day-box-right-center',
             class: `vc-highlight vc-highlight-start ${base.class}`,
-            contentClass: base.contentClass,
           });
           backgrounds.push({
             key: `${key}-start`,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight ${start.class}`,
-            contentClass: start.contentClass,
+          });
+          content.push({
+            key: `${key}-highlight-start`,
+            class: start.contentClass,
           });
         } else if (onEnd) {
           backgrounds.push({
             key,
             wrapperClass: 'vc-day-layer vc-day-box-left-center',
             class: `vc-highlight vc-highlight-end ${base.class}`,
-            contentClass: base.contentClass,
           });
           backgrounds.push({
             key: `${key}-end`,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight ${end.class}`,
-            contentClass: end.contentClass,
+          });
+          content.push({
+            key: `${key}-highlight-end`,
+            class: end.contentClass,
           });
         } else {
           backgrounds.push({
             key: `${key}-middle`,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
             class: `vc-highlight vc-highlight-middle ${base.class}`,
-            contentClass: base.contentClass,
+          });
+          content.push({
+            key: `${key}-highlight-middle`,
+            class: base.contentClass,
           });
         }
       }
-      return backgrounds;
     },
-    getContents({ key, content, targetDate }) {
-      const contents = [];
-      if (!content) return contents;
+    processContent({ key, content, targetDate }, { content: contents }) {
+      if (!content) return;
 
+      // const { isDate, startTime, endTime } = targetDate;
+      // const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
+      // const onStart = startTime === this.dateTime;
+      // const onEnd = endTime === this.dateTime;
+      // if (isDate || onStart) {
+      //   dots.push({
+      //     key,
+      //     class: `vc-dot ${start.class}`,
+      //   });
+      // } else if (onEnd) {
+      //   dots.push({
+      //     key,
+      //     class: `vc-dot ${end.class}`,
+      //   });
+      // } else {
+      //   dots.push({
+      //     key,
+      //     class: `vc-dot ${base.class}`,
+      //   });
+      // }
+    },
+    processDot({ key, dot, targetDate }, { dots }) {
+      if (!dot) return;
       const { isDate, startTime, endTime } = targetDate;
       const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
       const onStart = startTime === this.dateTime;
@@ -511,38 +494,9 @@ export default {
           class: `vc-dot ${base.class}`,
         });
       }
-      return contents;
     },
-    getDots({ key, dot, targetDate }) {
-      const dots = [];
-      if (!dot) return dots;
-
-      const { isDate, startTime, endTime } = targetDate;
-      const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
-      const onStart = startTime === this.dateTime;
-      const onEnd = endTime === this.dateTime;
-      if (isDate || onStart) {
-        dots.push({
-          key,
-          class: `vc-dot ${start.class}`,
-        });
-      } else if (onEnd) {
-        dots.push({
-          key,
-          class: `vc-dot ${end.class}`,
-        });
-      } else {
-        dots.push({
-          key,
-          class: `vc-dot ${base.class}`,
-        });
-      }
-      return dots;
-    },
-    getBars({ key, bar, targetDate }) {
-      const bars = [];
-      if (!bar) return bars;
-
+    processBar({ key, bar, targetDate }, { bars }) {
+      if (!bar) return;
       const { isDate, startTime, endTime } = targetDate;
       const { base, start, end } = this.theme.normalizeBar(bar, this.theme);
       const onStart = startTime === this.dateTime;
@@ -563,7 +517,6 @@ export default {
           class: `vc-bar ${base.class}`,
         });
       }
-      return bars;
     },
     getPopover(attribute) {
       const {
@@ -640,6 +593,10 @@ export default {
   transition: all $day-content-transition-time
   user-select: none
   margin: .1rem auto
+  &:hover
+    background-color: hsla(209, 23%, 60%, 0.25)
+  &:focus
+    background-color: hsla(209, 28%, 39%, 0.25)
 
 .vc-highlights
   overflow: hidden

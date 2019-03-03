@@ -62,35 +62,6 @@ const defaults = {
   maxVerticalSwipeDistance: 80, // px
   maxTapTolerance: 0, // ms
   maxTapDuration: 200, // ms
-  highlight: {
-    animated: true,
-    height: '1.8rem',
-    borderWidth: '0',
-    borderStyle: 'solid',
-    opacity: 1,
-  },
-  highlightCaps: {
-    animated: true,
-    height: '1.8rem',
-    borderWidth: '0',
-    borderStyle: 'solid',
-    opacity: 1,
-  },
-  dot: {
-    diameter: '5px',
-    backgroundColor: '#66b3cc',
-    borderWidth: '0',
-    borderStyle: 'solid',
-    borderRadius: '50%',
-    opacity: 1,
-  },
-  bar: {
-    height: '3px',
-    backgroundColor: '#66b3cc',
-    borderWidth: '0',
-    borderStyle: 'solid',
-    opacity: 1,
-  },
 };
 
 export default defaults;

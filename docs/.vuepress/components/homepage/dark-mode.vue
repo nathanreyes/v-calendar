@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       bgStyle: {
-        backgroundImage: `linear-gradient(to bottom right,hsl(209, 34%, 30%),hsl(209, 61%, 16%))`,
+        backgroundImage: `linear-gradient(to bottom right,hsl(209, 18%, 30%),hsl(210, 24%, 16%))`,
       },
       attributes: [
         {

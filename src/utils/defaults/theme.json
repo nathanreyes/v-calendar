@@ -47,8 +47,8 @@
   },
   "dayNotInMonth": "opacity-0 pointer-events-none",
   "dayContent": {
-    "light": "font-medium text-sm cursor-pointer hover:bg-grey-1 focus:bg-grey-2 focus:font-bold",
-    "dark": "font-medium cursor-pointer hover:bg-grey-9 focus:bg-grey-8  focus:font-bold"
+    "light": "font-medium text-sm cursor-pointer focus:font-bold",
+    "dark": "font-medium text-sm cursor-pointer focus:font-bold"
   },
   "dayPopoverContainer": {
     "light": "",
@@ -75,7 +75,7 @@
     "dark": "font-bold text-white"
   },
   "fillSolid": {
-    "light": "bg-{color}-6 hover:bg-{color}-25 ",
+    "light": "bg-{color}-6",
     "dark": "bg-{color}-5"
   },
   "fillSolidContent": {
