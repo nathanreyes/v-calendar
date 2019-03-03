@@ -11,7 +11,7 @@ export default {
       'div',
       {
         class: [
-          'c-popover-content-wrapper',
+          'vc-popover-content-wrapper',
           `direction-${this.direction}`,
           `align-${this.align}`,
           { interactive: this.isInteractive },
@@ -39,7 +39,7 @@ export default {
                 'div',
                 {
                   class: [
-                    'c-popover-content',
+                    'vc-popover-content',
                     `direction-${this.direction}`,
                     `align-${this.align}`,
                     this.theme && this.theme.popoverContainer,
@@ -47,7 +47,7 @@ export default {
                 },
                 [
                   h('span', {
-                    class: 'c-popover-caret',
+                    class: 'vc-popover-caret',
                   }),
                   (isFunction(this.$scopedSlots.default) &&
                     this.$scopedSlots.default({
@@ -259,7 +259,7 @@ export default {
 
 @import '../styles/vars.sass'
 
-.c-popover-content-wrapper
+.vc-popover-content-wrapper
   position: absolute
   display: block
   outline: none
@@ -267,10 +267,10 @@ export default {
   &.interactive
     pointer-events: all
 
-.c-popover-content
+.vc-popover-content
   position: relative
   z-index: 10
-  .c-popover-caret
+  .vc-popover-caret
     display: block
     position: absolute
     border-width: 1px 1px 0 0
@@ -282,46 +282,46 @@ export default {
     z-index: 11
   &.direction-bottom
     margin-top: $popover-content-offset
-    .c-popover-caret
+    .vc-popover-caret
       top: 0
       border-width: 1px 1px 0 0
   &.direction-top
     margin-bottom: $popover-content-offset
-    .c-popover-caret
+    .vc-popover-caret
       top: 100%
       border-width: 0 0 1px 1px
   &.direction-left
     margin-right: $popover-content-offset
-    .c-popover-caret
+    .vc-popover-caret
       left: 100%
       border-width: 0 1px 1px 0
   &.direction-right
     margin-left: $popover-content-offset
-    .c-popover-caret
+    .vc-popover-caret
       left: 0
       border-width: 1px 0 0 1px
   &.align-left
-    .c-popover-caret
+    .vc-popover-caret
       left: $popover-caret-horizontal-offset
       transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-right
-    .c-popover-caret
+    .vc-popover-caret
       right: $popover-caret-horizontal-offset
       transform: translateY(-50%) translateX(50%) rotate(-45deg)
   &.align-center
-    .c-popover-caret
+    .vc-popover-caret
       left: 50%
       transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-top
-    .c-popover-caret
+    .vc-popover-caret
       top: $popover-caret-vertical-offset
       transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-middle
-    .c-popover-caret
+    .vc-popover-caret
       top: 50%
       transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-bottom
-    .c-popover-caret
+    .vc-popover-caret
       bottom: $popover-caret-vertical-offset
       transform: translateY(50%) translateX(-50%) rotate(-45deg)
 

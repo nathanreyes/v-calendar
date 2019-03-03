@@ -67,7 +67,7 @@ export default {
       return h(
         'span',
         {
-          class: ['c-arrow-layout', { [directionClass]: true }],
+          class: ['vc-arrow-layout', { [directionClass]: true }],
           attrs: {
             tabindex: '0',
           },
@@ -76,7 +76,7 @@ export default {
           slot ||
             h(SvgIcon, {
               class: [
-                'c-arrow',
+                'vc-arrow',
                 { [directionClass]: true, 'vc-disabled': isDisabled },
                 this.sharedState.theme.arrows,
               ],
@@ -96,7 +96,7 @@ export default {
         'div',
         {
           class: [
-            'c-pane-container',
+            'vc-pane-container',
             {
               'is-expanded': this.isExpanded,
             },
@@ -485,10 +485,10 @@ export default {
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
-/deep/ .c-popover-content.c-day
+/deep/ .vc-popover-content.vc-day
   padding: $day-popover-padding
 
-.c-pane-container
+.vc-pane-container
   position: relative
   font-family: $font-family
   line-height: 1.5
@@ -508,7 +508,7 @@ export default {
     &:focus
       outline: none
 
-.c-arrow-layout
+.vc-arrow-layout
   +box()
   position: absolute
   top: $arrow-vertical-offset
@@ -517,7 +517,7 @@ export default {
   &.is-right
     right: $arrow-horizontal-offset
 
-.c-arrow
+.vc-arrow
   +box()
   transition: $arrow-transition
   cursor: pointer

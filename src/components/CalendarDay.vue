@@ -53,7 +53,11 @@ export default {
         : h(
             'span',
             {
-              class: ['vc-day-content', this.theme.dayContent],
+              class: [
+                'vc-day-content',
+                this.theme.dayContent,
+                { 'vc-is-dark': this.theme.isDark },
+              ],
               attrs: { ...this.dayContentProps },
               on: this.dayContentEvents,
             },
@@ -317,7 +321,6 @@ export default {
       this.$emit('dayfocusout', this.getDayEvent(e));
     },
     refreshGlyphs() {
-      if (!arrayHasItems(this.attributesList)) return;
       const glyphs = {
         backgrounds: [],
         dots: [],
@@ -325,18 +328,20 @@ export default {
         popovers: [],
         content: [],
       };
-      this.attributesList
-        // Evaluate functions first
-        .map(attr =>
-          this.evalAttribute(attr, this.isHoveredDirty, this.isFocusedDirty),
-        )
-        // Add glyphs for each attribute
-        .forEach(attr => {
-          this.processHighlight(attr, glyphs);
-          this.processContent(attr, glyphs);
-          this.processDot(attr, glyphs);
-          this.processBar(attr, glyphs);
-        });
+      if (arrayHasItems(this.attributesList)) {
+        this.attributesList
+          // Evaluate functions first
+          .map(attr =>
+            this.evalAttribute(attr, this.isHoveredDirty, this.isFocusedDirty),
+          )
+          // Add glyphs for each attribute
+          .forEach(attr => {
+            this.processHighlight(attr, glyphs);
+            this.processContent(attr, glyphs);
+            this.processDot(attr, glyphs);
+            this.processBar(attr, glyphs);
+          });
+      }
       this.glyphs = glyphs;
     },
     evalAttribute(attribute, isHovered, isFocused) {
@@ -594,9 +599,13 @@ export default {
   user-select: none
   margin: .1rem auto
   &:hover
-    background-color: hsla(209, 23%, 60%, 0.25)
+    background-color: hsla(211, 13%, 65%, 0.2)
+    &.vc-is-dark
+      background-color: hsla(209, 14%, 37%, 0.4)
   &:focus
-    background-color: hsla(209, 28%, 39%, 0.25)
+    background-color: hsla(211, 13%, 65%, 0.4)
+    &.vc-is-dark
+      background-color: hsla(209, 14%, 37%, 0.7)
 
 .vc-highlights
   overflow: hidden
