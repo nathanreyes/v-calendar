@@ -10,7 +10,6 @@ export default {
       attrs: {
         ...this.$attrs,
         attributes: this.attributes_,
-        themeStyles: this.themeStyles_,
       },
       on: {
         ...this.$listeners,
@@ -27,14 +26,12 @@ export default {
     dragAttribute: Object,
     selectAttribute: Object,
     disabledAttribute: Object,
-    themeStyles: Object,
     attributes: Array,
   },
   data() {
     return {
       value: this.initialValue,
       dragValue: null,
-      showDisabledContent: false,
     };
   },
   computed: {
@@ -60,15 +57,6 @@ export default {
       else if (this.selectAttribute_) attributes.push(this.selectAttribute_);
       if (this.disabledAttribute) attributes.push(this.disabledAttribute);
       return attributes;
-    },
-    themeStyles_() {
-      return {
-        ...this.themeStyles,
-        ...(this.showDisabledContent &&
-          this.disabledAttribute && {
-            dayContentHover: this.disabledAttribute.contentHoverStyle,
-          }),
-      };
     },
   },
   watch: {
@@ -135,11 +123,6 @@ export default {
         if (this.dateIsValid(newDragValue)) {
           // Update drag selection
           this.dragValue = newDragValue;
-          // Show enabled content hover style
-          this.showDisabledContent = false;
-        } else {
-          // Show disabled content hover style
-          this.showDisabledContent = true;
         }
       }
       // Re-emit event
