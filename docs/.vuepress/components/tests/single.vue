@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date" :select-attribute="selectAttribute" is-inline/>
+    <v-date-picker v-model="date" is-inline/>
   </div>
 </template>
 
@@ -9,17 +9,17 @@ export default {
   data() {
     return {
       date: new Date(),
-      popoverVisibility: 'hover',
+      popoverVisibility: 'visible',
     };
   },
-  computed: {
-    selectAttribute() {
-      return {
-        popover: {
-          visibility: this.popoverVisibility,
-        },
-      };
-    },
-  },
+  // computed: {
+  //   selectAttribute() {
+  //     return {
+  //       popover: {
+  //         visibility: this.popoverVisibility,
+  //       },
+  //     };
+  //   },
+  // },
 };
 </script>
