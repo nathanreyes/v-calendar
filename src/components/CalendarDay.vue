@@ -279,9 +279,6 @@ export default {
       this.refreshGlyphs();
     },
     attributesList(newList, oldList) {
-      newList.forEach(n => {
-        n.isNew = !oldList.find(o => o.key === n.key);
-      });
       this.refreshGlyphs();
     },
     theme() {

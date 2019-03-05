@@ -214,6 +214,7 @@ export const generateTheme = ({ color, isDark, config }) => {
     normalizeHighlight: config => normalizeHighlight(config, theme),
     normalizeDot: config => normalizeDot(config, theme),
     normalizeBar: config => normalizeBar(config, theme),
+    isGenerated: true,
   };
 
   toPairs(themeConfig).forEach(([prop]) => {

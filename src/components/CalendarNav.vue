@@ -1,6 +1,6 @@
 <template>
   <!--Nav panel-->
-  <div class="vc-nav-pane" :class="theme.navContainer">
+  <div class="vc-nav-pane">
     <!--Nav months-->
     <template v-if="mode_ === 'month'">
       <!--Months header-->

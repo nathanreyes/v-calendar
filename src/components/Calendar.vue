@@ -160,8 +160,9 @@ export default {
             props: {
               id: this.sharedState.dayPopoverId,
               align: 'center',
-              contentClass: 'c-day',
-              theme: this.sharedState.theme,
+              contentClass: `c-day ${
+                this.sharedState.theme.dayPopoverContainer
+              }`,
             },
             scopedSlots: {
               default: ({ args: day }) => {
@@ -187,7 +188,7 @@ export default {
   },
   props: {
     color: { type: String, default: 'blue' },
-    isDark: Boolean,
+    isDark: { type: Boolean, default: false },
     rows: {
       type: Number,
       default: 1,

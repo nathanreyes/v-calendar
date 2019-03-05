@@ -23,13 +23,9 @@
     "dark": "text-sm font-bold text-{color}-2"
   },
   "weekdaysDivider": "",
-  "popoverContainer": {
+  "navPopoverContainer": {
     "light": "rounded text-xs text-white bg-grey-9 border border-grey-2 shadow",
     "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 shadow"
-  },
-  "navContainer": {
-    "light": "",
-    "dark": ""
   },
   "navHeader": {
     "light": "",
@@ -53,8 +49,8 @@
     "dark": "font-medium text-sm cursor-pointer focus:font-bold"
   },
   "dayPopoverContainer": {
-    "light": "",
-    "dark": ""
+    "light": "rounded text-xs text-white bg-grey-9 border border-grey-2 shadow",
+    "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 shadow"
   },
   "highlightBaseFill": "light",
   "highlightStartEndFill": "solid",

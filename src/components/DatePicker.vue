@@ -5,6 +5,7 @@ import PopoverRef from './PopoverRef';
 import PickerProfile from '@/utils/pickerProfiles';
 import Attribute from '@/utils/attribute';
 import defaults, { resolveDefault } from '@/utils/defaults';
+import generateTheme from '@/utils/theme';
 import { addDays } from '@/utils/dateInfo';
 import { format, parse } from '@/utils/fecha';
 import { arrayHasItems, evalFn, createGuid, toDate } from '@/utils/helpers';
@@ -18,6 +19,7 @@ export default {
         attrs: {
           ...this.$attrs,
           formats: this.formats_,
+          theme: this.theme_,
         },
         props: {
           value: this.value,
@@ -80,6 +82,7 @@ export default {
           props: {
             id: this.datePickerPopoverId,
             placement: 'bottom-start',
+            contentClass: this.theme_.container,
           },
           on: {
             'will-appear': e => this.$emit('popover-will-appear', e),
@@ -111,6 +114,9 @@ export default {
       default: () => defaults.datePickerInputDebounce,
     },
     tintColor: { type: String, default: () => defaults.datePickerTintColor },
+    color: { type: String, default: 'blue' },
+    isDark: { type: Boolean, default: false },
+    theme: Object,
     dragAttribute: Object, // Resolved by computed property
     selectAttribute: Object, // Resolved by computed property
     disabledAttribute: Object, // Resolved by computed property
@@ -154,6 +160,13 @@ export default {
         ...defaults.formats,
         ...this.formats,
       };
+    },
+    theme_() {
+      return generateTheme({
+        color: this.color,
+        isDark: this.isDark,
+        config: this.theme,
+      });
     },
     inputFormats() {
       const inputFormat = this.formats_.input;
@@ -392,3 +405,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* /deep/ .vc-pane-container {
+  border: none;
+} */
+</style>

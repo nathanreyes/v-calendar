@@ -13,7 +13,7 @@
               </div>
             </popover-ref>
             <!--Navigation popover-->
-            <popover :id="navPopoverId" :theme="theme">
+            <popover :id="navPopoverId" :contentClass="theme.navPopoverContainer">
               <!--Navigation pane-->
               <calendar-nav
                 :value="page"
