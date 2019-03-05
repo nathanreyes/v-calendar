@@ -15,14 +15,13 @@ export default {
   render(h) {
     const getPickerComponent = () =>
       h(this.component, {
-        class: { 'is-popover': !this.isInline },
         attrs: {
           ...this.$attrs,
           formats: this.formats_,
           theme: this.theme_,
         },
         props: {
-          value: this.value,
+          initialValue: this.value,
           isRequired: this.isRequired,
           selectAttribute: this.selectAttribute_,
           dragAttribute: this.dragAttribute_,
@@ -57,7 +56,7 @@ export default {
       });
 
     // Return fragment with slot/input and popover
-    return h(Fragment, [
+    return h('span', [
       h(
         PopoverRef,
         {
@@ -406,8 +405,8 @@ export default {
 };
 </script>
 
-<style scoped>
-/* /deep/ .vc-pane-container {
+<style lang="scss" scoped>
+/deep/ .vc-pane-container {
   border: none;
-} */
+}
 </style>

@@ -278,7 +278,7 @@ export default {
     isFocusedDirty() {
       this.refreshGlyphs();
     },
-    attributesList(newList, oldList) {
+    attributesList() {
       this.refreshGlyphs();
     },
     theme() {

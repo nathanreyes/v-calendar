@@ -18,11 +18,16 @@ export default {
     });
   },
   props: {
-    value: { type: Date, default: null },
+    initialValue: { type: Date, default: null },
     isRequired: Boolean,
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
+  },
+  data() {
+    return {
+      value: this.initialValue,
+    };
   },
   computed: {
     selectAttribute_() {
@@ -37,6 +42,11 @@ export default {
       if (this.selectAttribute_) attributes.push(this.selectAttribute_);
       if (this.disabledAttribute) attributes.push(this.disabledAttribute);
       return attributes;
+    },
+  },
+  watch: {
+    value() {
+      this.$emit('input', this.value);
     },
   },
   methods: {
@@ -55,7 +65,7 @@ export default {
         if (!this.isRequired) this.$emit('input', null);
       } else {
         // Set value to selected date
-        this.$emit('input', day.date);
+        this.value = day.date;
       }
       // Re-emit event
       this.$emit('dayclick', day);

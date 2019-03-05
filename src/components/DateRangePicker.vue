@@ -22,7 +22,7 @@ export default {
     });
   },
   props: {
-    value: { type: Object, default: () => {} },
+    initialValue: { type: Object, default: () => {} },
     isRequired: Boolean,
     dragAttribute: Object,
     selectAttribute: Object,
@@ -32,6 +32,7 @@ export default {
   },
   data() {
     return {
+      value: this.initialValue,
       dragValue: null,
       showDisabledContent: false,
     };
@@ -71,6 +72,9 @@ export default {
     },
   },
   watch: {
+    value(val) {
+      this.$emit('input', val);
+    },
     dragValue(val) {
       this.$emit('drag', rangeNormalizer(val));
     },
@@ -111,8 +115,8 @@ export default {
         if (this.dateIsValid(newValue)) {
           // Clear drag selection
           this.dragValue = null;
-          // Signal new value selected
-          this.$emit('input', newValue);
+          // Assign new value
+          this.value = newValue;
         }
       }
       // Re-emit event

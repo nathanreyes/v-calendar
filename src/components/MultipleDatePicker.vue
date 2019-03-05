@@ -22,11 +22,16 @@ export default {
     });
   },
   props: {
-    value: { type: Array, default: () => [] },
+    initialValue: { type: Array, default: () => [] },
     isRequired: Boolean,
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
+  },
+  data() {
+    return {
+      value: this.initialValue,
+    };
   },
   computed: {
     selectAttribute_() {
@@ -43,6 +48,11 @@ export default {
       return attributes;
     },
   },
+  watch: {
+    value() {
+      this.$emit('input', this.value);
+    },
+  },
   methods: {
     onDayClick(day) {
       // Done if date selection is invalid
@@ -50,18 +60,21 @@ export default {
         return;
       // Check if no values exist
       if (!multipleHasValue(this.value)) {
-        this.$emit('input', [day.date]);
+        this.value = [day.date];
         // Check if value contains the selected date
       } else if (this.value.find(d => d.getTime() === day.dateTime)) {
         // Calculate the new dates array
         const value = this.value.filter(
           v => !singleValuesAreEqual(v, day.date),
         );
-        if (value.length) this.$emit('input', value);
-        else if (!this.isRequired) this.$emit('input', null);
-        // Append selected date
+        if (value.length) {
+          this.value = value;
+        } else if (!this.isRequired) {
+          this.value = null;
+        }
       } else {
-        this.$emit('input', multipleNormalizer([...this.value, day.date]));
+        // Append selected date
+        this.value = multipleNormalizer([...this.value, day.date]);
       }
       // Re-emit event
       this.$emit('dayclick', day);
