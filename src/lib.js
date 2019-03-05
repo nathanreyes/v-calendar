@@ -10,7 +10,7 @@ import installScreens from '@/utils/screens';
 const setupCalendar = (Vue, options) => {
   // Add an event bus for component communication
   // Sorry, can't assume we are using Vuex
-  Vue.prototype.$vcBus = new Vue({
+  Vue.prototype.$vc = new Vue({
     data: {
       activeRefs: {},
     },

@@ -30,8 +30,7 @@ export default {
   computed: {
     isActive() {
       return (
-        this.$vcBus.activeRefs &&
-        this.$vcBus.activeRefs[this.id] === this.reference
+        this.$vc.activeRefs && this.$vc.activeRefs[this.id] === this.reference
       );
     },
   },
@@ -142,7 +141,7 @@ export default {
       }
     },
     show() {
-      this.$vcBus.$emit(`show:${this.id}`, {
+      this.$vc.$emit(`show:${this.id}`, {
         ref: this.reference,
         args: this.args,
         visibility: this.visibility,
@@ -151,13 +150,13 @@ export default {
       });
     },
     hide({ delay = this.hideDelay } = {}) {
-      this.$vcBus.$emit(`hide:${this.id}`, {
+      this.$vc.$emit(`hide:${this.id}`, {
         ref: this.reference,
         delay,
       });
     },
     update() {
-      this.$vcBus.$emit(`update:${this.id}`, {
+      this.$vc.$emit(`update:${this.id}`, {
         ref: this.reference,
         args: this.args,
       });

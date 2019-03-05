@@ -42,21 +42,14 @@ export default {
                     'vc-popover-content',
                     `direction-${this.direction}`,
                     `align-${this.align}`,
-                    this.theme && this.theme.popoverContainer,
+                    this.contentClass,
                   ],
                 },
                 [
+                  this.content,
                   h('span', {
                     class: 'vc-popover-caret',
                   }),
-                  (isFunction(this.$scopedSlots.default) &&
-                    this.$scopedSlots.default({
-                      direction: this.direction,
-                      align: this.align,
-                      args: this.args,
-                      hide: this.onHide,
-                    })) ||
-                    this.$slots.default,
                 ],
               ),
           ],
@@ -68,7 +61,7 @@ export default {
     id: { type: String, required: true },
     placement: { type: String, default: 'bottom' },
     transition: { type: String, default: 'slide-fade' },
-    theme: { type: Object, default: () => {} },
+    contentClass: { type: String, default: '' },
   },
   data() {
     return {
@@ -82,6 +75,18 @@ export default {
     };
   },
   computed: {
+    content() {
+      return (
+        (isFunction(this.$scopedSlots.default) &&
+          this.$scopedSlots.default({
+            direction: this.direction,
+            align: this.align,
+            args: this.args,
+            hide: this.onHide,
+          })) ||
+        this.$slots.default
+      );
+    },
     popperOptions() {
       return {
         placement: this.placement,
@@ -99,20 +104,20 @@ export default {
   watch: {
     ref(val) {
       this.setupPopper();
-      this.$vcBus.activeRefs = {
-        ...this.$vcBus.activeRefs,
+      this.$vc.activeRefs = {
+        ...this.$vc.activeRefs,
         [this.id]: val,
       };
     },
   },
   created() {
-    this.$vcBus.$on(`show:${this.id}`, this.onShow);
-    this.$vcBus.$on(`hide:${this.id}`, this.onHide);
-    this.$vcBus.$on(`update:${this.id}`, this.onUpdate);
+    this.$vc.$on(`show:${this.id}`, this.onShow);
+    this.$vc.$on(`hide:${this.id}`, this.onHide);
+    this.$vc.$on(`update:${this.id}`, this.onUpdate);
     this.$once('beforeDestroy', () => {
-      this.$vcBus.$off(`show:${this.id}`, this.onShow);
-      this.$vcBus.$off(`hide:${this.id}`, this.onHide);
-      this.$vcBus.$off(`update:${this.id}`, this.onUpdate);
+      this.$vc.$off(`show:${this.id}`, this.onShow);
+      this.$vc.$off(`hide:${this.id}`, this.onHide);
+      this.$vc.$off(`update:${this.id}`, this.onUpdate);
     });
     this.refreshPlacements(this.placement);
   },
