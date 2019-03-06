@@ -1,6 +1,7 @@
 <template>
   <div class="example">
-    <div class="flex mb-2">
+    <h3 class="text-lg mb-2">Mode</h3>
+    <div class="flex mb-4">
       <div>
         <input type="radio" id="single" value="single" v-model="mode">
         <label for="single">Single</label>
@@ -14,11 +15,42 @@
         <label for="range">Range</label>
       </div>
     </div>
-    <div class="flex items-center mb-2">
-      <input id="isInline" type="checkbox" v-model="isInline" class="mt-1 mr-1">
-      <label for="isInline">Is Inline</label>
+    <h3 class="text-lg mb-2">Popover Visibility</h3>
+    <div class="flex mb-4">
+      <div>
+        <input type="radio" id="hover" value="hover" v-model="popoverVisibility">
+        <label for="hover">Hover</label>
+      </div>
+      <div class="ml-2">
+        <input type="radio" id="focus" value="focus" v-model="popoverVisibility">
+        <label for="focus">Focus</label>
+      </div>
+      <div class="ml-2">
+        <input type="radio" id="click" value="click" v-model="popoverVisibility">
+        <label for="click">Click</label>
+      </div>
+      <div class="ml-2">
+        <input type="radio" id="visible" value="visible" v-model="popoverVisibility">
+        <label for="visible">Visible</label>
+      </div>
     </div>
-    <v-date-picker v-model="date" :mode="mode" :is-inline="isInline"/>
+    <div class="flex items-center mb-2">
+      <div>
+        <input id="isInline" type="checkbox" v-model="isInline" class="mt-1">
+        <label for="isInline">Is Inline</label>
+      </div>
+      <div class="ml-2">
+        <input id="isDark" type="checkbox" v-model="isDark" class="mt-1">
+        <label for="isDark">Is Dark</label>
+      </div>
+    </div>
+    <v-date-picker
+      v-model="date"
+      :mode="mode"
+      :is-inline="isInline"
+      :is-dark="isDark"
+      :popoverVisibility="popoverVisibility"
+    />
   </div>
 </template>
 
@@ -27,9 +59,10 @@ export default {
   data() {
     return {
       date: null,
-      mode: 'single',
-      isInline: true,
-      popoverVisibility: 'visible',
+      mode: 'multiple',
+      isInline: false,
+      isDark: false,
+      popoverVisibility: 'focus',
     };
   },
 };
