@@ -27,13 +27,13 @@ export default {
       h(Calendar, {
         attrs: {
           ...this.$attrs,
-          formats: this.formats_,
-          theme: this.theme_,
-        },
-        props: {
-          isDark: this.isDarkM,
           attributes: this.attributes_,
+          formats: this.formats_,
+          color: this.color,
+          isDark: this.isDark,
+          theme: this.theme,
         },
+        props: {},
         on: {
           ...this.$listeners,
           dayclick: this.onDayClick,
@@ -53,6 +53,7 @@ export default {
           updateValue: this.updateValue,
         })) ||
       h('input', {
+        class: this.inputClass,
         attrs: this.inputAttrs,
         on: this.inputEvents,
       });
@@ -80,7 +81,7 @@ export default {
         props: {
           id: this.datePickerPopoverId,
           placement: 'bottom-start',
-          contentClass: this.theme_.container,
+          contentClass: this.popoverContentClass,
         },
         scopedSlots: {
           default() {
@@ -98,6 +99,9 @@ export default {
     isInline: Boolean,
     disabledDates: null,
     availableDates: null,
+    color: String,
+    isDark: Boolean,
+    theme: Object,
     formats: Object, // Resolved by computed property
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
     updateOnInput: {
@@ -108,9 +112,6 @@ export default {
       type: Number,
       default: () => defaults.datePickerInputDebounce,
     },
-    color: { type: String, default: 'blue' },
-    isDark: { type: Boolean, default: false },
-    theme: Object,
     dragAttribute: Object, // Resolved by computed property
     selectAttribute: Object, // Resolved by computed property
     disabledAttribute: Object, // Resolved by computed property
@@ -152,10 +153,11 @@ export default {
       };
     },
     theme_() {
+      const { color, isDark, theme } = this;
       return generateTheme({
-        color: this.color,
-        isDark: this.isDark,
-        config: this.theme,
+        color,
+        isDark,
+        config: theme,
       });
     },
     inputFormats() {
@@ -255,6 +257,9 @@ export default {
     //     value: this.inputValue,
     //   };
     // },
+    inputClass() {
+      return this.theme_.datePickerInput;
+    },
     inputAttrs() {
       return {
         ...this.inputProps,
@@ -270,6 +275,9 @@ export default {
         keyup: this.inputKeyup,
       };
     },
+    popoverContentClass() {
+      return this.theme_.container;
+    },
   },
   watch: {
     mode() {
@@ -284,8 +292,9 @@ export default {
     value_(val) {
       if (!this.disableFormatInput) this.formatInput();
       if (
-        this.mode !== 'multiple' &&
         !this.isInline &&
+        this.mode !== 'multiple' &&
+        this.popoverVisibility !== 'visible' &&
         !this.disablePopoverHide
       ) {
         this.hidePopover();
