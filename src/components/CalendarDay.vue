@@ -624,6 +624,7 @@ export default {
     width: 100%
     border-radius: 0
     margin: 0 -1px
+    transition: height $background-transition-time
   &.vc-highlight-drag
     height: 1.75rem
 

@@ -49,7 +49,8 @@
       :mode="mode"
       :is-inline="isInline"
       :is-dark="isDark"
-      :popoverVisibility="popoverVisibility"
+      :popover-visibility="popoverVisibility"
+      :drag-attribute="dragAttribute"
     />
   </div>
 </template>
@@ -59,10 +60,21 @@ export default {
   data() {
     return {
       date: null,
-      mode: 'multiple',
-      isInline: false,
+      mode: 'range',
+      isInline: true,
       isDark: false,
       popoverVisibility: 'focus',
+      dragAttribute: {
+        highlight: {
+          base: {
+            fillMode: 'light',
+            class: 'vc-highlight-drag',
+          },
+          startEnd: {
+            fillMode: 'none',
+          },
+        },
+      },
     };
   },
 };
