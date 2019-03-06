@@ -1,6 +1,3 @@
-import SingleDatePicker from '@/components/SingleDatePicker';
-import MultipleDatePicker from '@/components/MultipleDatePicker';
-import DateRangePicker from '@/components/DateRangePicker';
 import {
   getDateComps,
   getMaxPage,
@@ -13,7 +10,7 @@ import { isDate } from './_';
 
 // #region Single Date Picker
 
-export const singleHasValue = value => isDate(value) && !isNaN(value.getTime());
+export const singleHasValue = value => isDate(value);
 export const singleFormatter = (value, formatter) =>
   singleHasValue(value) ? formatter(value) : '';
 export const singleParser = (text, parser) => {
@@ -43,8 +40,23 @@ export const singleGetPageRange = value => {
   const to = from;
   return { from, to };
 };
+export const singleHandleDayClick = (day, picker) => {
+  // Done if day selection is invalid
+  if (!picker.dateIsValid(day.date)) {
+    return;
+  }
+  // Check if selected date was reselected
+  if (singleValuesAreEqual(day.date, picker.value_)) {
+    // Reset value to null if allowed
+    if (!picker.isRequired) picker.$emit('input', null);
+  } else {
+    // Set value to selected date
+    picker.value_ = day.date;
+  }
+};
+export const singleHandleDayMouseEnter = () => {};
+
 export const SinglePickerProfile = (formatter, parser) => ({
-  component: SingleDatePicker,
   hasValue: singleHasValue,
   formatValue: value => singleFormatter(value, formatter),
   parseValue: text => singleParser(text, parser),
@@ -52,6 +64,8 @@ export const SinglePickerProfile = (formatter, parser) => ({
   filterDisabled: singleFilterDisabled,
   valuesAreEqual: singleValuesAreEqual,
   getPageRange: singleGetPageRange,
+  handleDayClick: singleHandleDayClick,
+  handleDayMouseEnter: singleHandleDayMouseEnter,
 });
 
 // #endregion
@@ -112,8 +126,30 @@ export const multipleGetPageRange = value => {
   );
   return { from, to };
 };
+export const multipleHandleDayClick = (day, picker) => {
+  // Done if day selection is invalid
+  if (!picker.dateIsValid(day.date)) {
+    return;
+  }
+  // Check if no values exist
+  if (!multipleHasValue(picker.value_)) {
+    picker.value_ = [day.date];
+    // Check if value contains the selected date
+  } else if (picker.value_.find(d => d.getTime() === day.dateTime)) {
+    // Calculate the new dates array
+    const value = picker.value_.filter(v => !singleValuesAreEqual(v, day.date));
+    if (value.length) {
+      picker.value_ = value;
+    } else if (!picker.isRequired) {
+      picker.value_ = null;
+    }
+  } else {
+    // Append selected date
+    picker.value_ = multipleNormalizer([...picker.value_, day.date]);
+  }
+};
+export const multipleHandleDayMouseEnter = () => {};
 export const MultiplePickerProfile = (formatter, parser) => ({
-  component: MultipleDatePicker,
   hasValue: multipleHasValue,
   formatValue: value => multipleFormatter(value, formatter),
   parseValue: value => multipleParser(value, parser),
@@ -121,6 +157,8 @@ export const MultiplePickerProfile = (formatter, parser) => ({
   filterDisabled: multipleFilterDisabled,
   valuesAreEqual: multipleValuesAreEqual,
   getPageRange: multipleGetPageRange,
+  handleDayClick: multipleHandleDayClick,
+  handleDayMouseEnter: multipleHandleDayMouseEnter,
 });
 
 // #endregion
@@ -185,8 +223,49 @@ export const rangeGetPageRange = value => {
   const to = getMaxPage(getDateComps(value.end), addPages(from, 1));
   return { from, to };
 };
+export const rangeHandleDayClick = (day, picker) => {
+  const { dateTime } = day;
+  // Start new drag selection if not dragging
+  if (!picker.dragValue) {
+    // Update drag value if it is valid
+    const newDragValue = {
+      start: new Date(dateTime),
+      end: new Date(dateTime),
+    };
+    // Assign drag value if it is valid
+    if (picker.dateIsValid(newDragValue)) {
+      picker.dragValue = newDragValue;
+    }
+  } else {
+    // Update selected value if it is valid
+    const newValue = rangeNormalizer({
+      start: new Date(picker.dragValue.start.getTime()),
+      end: new Date(dateTime),
+    });
+    // Assign new value if it is valid
+    if (picker.dateIsValid(newValue)) {
+      // Clear drag selection
+      picker.dragValue = null;
+      picker.value_ = newValue;
+    }
+  }
+};
+export const rangeHandleDayMouseEnter = (day, picker) => {
+  const { dateTime } = day;
+  // Make sure drag has been initialized
+  if (picker.dragValue) {
+    // Calculate the new dragged value
+    const newDragValue = {
+      start: new Date(picker.dragValue.start.getTime()),
+      end: new Date(dateTime),
+    };
+    // Assign drag value if it is valid
+    if (picker.dateIsValid(newDragValue)) {
+      picker.dragValue = newDragValue;
+    }
+  }
+};
 export const RangePickerProfile = (formatter, parser) => ({
-  component: DateRangePicker,
   hasValue: rangeHasValue,
   formatValue: (value, dragValue) =>
     rangeFormatter(value, dragValue, formatter),
@@ -195,6 +274,8 @@ export const RangePickerProfile = (formatter, parser) => ({
   filterDisabled: rangeFilterDisabled,
   valuesAreEqual: rangeValuesAreEqual,
   getPageRange: rangeGetPageRange,
+  handleDayClick: rangeHandleDayClick,
+  handleDayMouseEnter: rangeHandleDayMouseEnter,
 });
 
 // #endregion

@@ -48,7 +48,6 @@ export default {
           ...this.$listeners,
           'update:page': e =>
             this.refreshPages({ page: e, position: position }),
-          keydown: e => console.log('keydown calendar'),
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
@@ -279,6 +278,9 @@ export default {
     },
     theme(val) {
       this.refreshTheme();
+    },
+    attributes() {
+      console.log('attributes changed');
     },
   },
   created() {

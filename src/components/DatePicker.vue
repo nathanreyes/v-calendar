@@ -1,4 +1,5 @@
 <script>
+import Calendar from './Calendar';
 import Fragment from './Fragment';
 import Popover from './Popover';
 import PopoverRef from './PopoverRef';
@@ -8,36 +9,39 @@ import defaults, { resolveDefault } from '@/utils/defaults';
 import generateTheme from '@/utils/theme';
 import { addDays } from '@/utils/dateInfo';
 import { format, parse } from '@/utils/fecha';
-import { arrayHasItems, evalFn, createGuid, toDate } from '@/utils/helpers';
+import { addTapOrClickHandler } from '@/utils/touch';
+import {
+  arrayHasItems,
+  evalFn,
+  createGuid,
+  toDate,
+  elementContains,
+  on,
+  off,
+} from '@/utils/helpers';
 import { isString, isFunction, isArray } from '@/utils/_';
 
 export default {
   render(h) {
-    const getPickerComponent = () =>
-      h(this.component, {
-        attrs: {
-          ...this.$attrs,
-          formats: this.formats_,
-          theme: this.theme_,
-        },
-        props: {
-          initialValue: this.value,
-          isRequired: this.isRequired,
-          selectAttribute: this.selectAttribute_,
-          dragAttribute: this.dragAttribute_,
-          disabledAttribute: this.disabledAttribute_,
-        },
-        on: {
-          ...this.$listeners,
-          drag: this.onDrag,
-        },
-        slots: this.$slots,
-        scopedSlots: this.$scopedSlots,
-      });
-    // If inline just return the picker component
-    if (this.isInline) return getPickerComponent();
-
-    const inputSlot = () =>
+    const calendar = h(Calendar, {
+      attrs: {
+        ...this.$attrs,
+        attributes: this.attributes_,
+        formats: this.formats_,
+        theme: this.theme_,
+      },
+      on: {
+        ...this.$listeners,
+        dayclick: this.onDayClick,
+        daymouseenter: this.onDayMouseEnter,
+      },
+      slots: this.$slots,
+      scopedSlots: this.$scopedSlots,
+    });
+    // If inline just return the calendar
+    if (this.isInline) return calendar;
+    // Render the slot or ihput
+    const inputSlot =
       (isFunction(this.$scopedSlots.default) &&
         this.$scopedSlots.default({
           inputValue: this.inputValue,
@@ -54,8 +58,7 @@ export default {
         on: this.inputEvents,
         ref: 'input',
       });
-
-    // Return fragment with slot/input and popover
+    // Return fragment with slot/input and popover w/ calendar
     return h('span', [
       h(
         PopoverRef,
@@ -66,7 +69,7 @@ export default {
             isInteractive: true,
           },
         },
-        [inputSlot()],
+        [inputSlot],
       ),
       h(
         Popover,
@@ -91,7 +94,7 @@ export default {
           },
           ref: 'popover',
         },
-        [getPickerComponent()],
+        [calendar],
       ),
     ]);
   },
@@ -112,18 +115,12 @@ export default {
       type: Number,
       default: () => defaults.datePickerInputDebounce,
     },
-    tintColor: { type: String, default: () => defaults.datePickerTintColor },
     color: { type: String, default: 'blue' },
     isDark: { type: Boolean, default: false },
     theme: Object,
     dragAttribute: Object, // Resolved by computed property
     selectAttribute: Object, // Resolved by computed property
     disabledAttribute: Object, // Resolved by computed property
-    showCaps: { type: Boolean, default: () => defaults.datePickerShowCaps },
-    showDayPopover: {
-      type: Boolean,
-      default: () => defaults.datePickerShowDayPopover,
-    },
     popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
     popoverDirection: {
       type: String,
@@ -145,6 +142,7 @@ export default {
   },
   data() {
     return {
+      value_: null,
       dragValue: null,
       inputValue: '',
       disableFormatInput: false,
@@ -178,14 +176,32 @@ export default {
         s => parse(s, this.inputFormats),
       );
     },
-    component() {
-      return this.profile.component;
-    },
     selectAttribute_() {
-      return this.buildSelectDragAttribute(this.selectAttribute);
+      if (!this.profile.hasValue(this.value_)) return null;
+      const attribute = {
+        key: 'select',
+        ...this.selectAttribute,
+        dates: this.value_,
+      };
+      const { dot, bar, highlight } = attribute;
+      if (!dot && !bar && !highlight) {
+        attribute.highlight = true;
+      }
+      return attribute;
     },
     dragAttribute_() {
-      return this.buildSelectDragAttribute(this.dragAttribute, true);
+      if (this.mode !== 'range' || !this.profile.hasValue(this.dragValue))
+        return null;
+      const attribute = {
+        key: 'drag',
+        ...this.dragAttribute,
+        dates: this.dragValue,
+      };
+      const { dot, bar, highlight } = attribute;
+      if (!dot && !bar && !highlight) {
+        attribute.highlight = true;
+      }
+      return attribute;
     },
     disabledDates_() {
       const dates = [];
@@ -218,20 +234,27 @@ export default {
         ...(this.disabledAttribute ||
           resolveDefault(defaults.datePickerDisabledAttribute, {
             mode: this.mode,
-            color: this.tintColor,
-            showDayPopover: this.showDayPopover,
           })),
         dates: this.disabledDates_,
         excludeDates: this.availableDates,
         excludeMode: 'includes',
       });
     },
+    attributes_() {
+      const attrs = [];
+      if (this.dragAttribute_) {
+        attrs.push(this.dragAttribute_);
+      } else if (this.selectAttribute_) {
+        attrs.push(this.selectAttribute_);
+      }
+      return attrs;
+    },
     inputProps_() {
       const defaultProps = defaults.datePickerInputProps;
       return {
         ...evalFn(defaultProps, {
           mode: this.mode,
-          value: this.value,
+          value: this.value_,
           dragValue: this.dragValue,
           format: defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
         }),
@@ -263,9 +286,15 @@ export default {
   watch: {
     mode() {
       // Clear value on select mode change
-      this.$emit('input', null);
+      this.value_ = null;
     },
-    value() {
+    value(val) {
+      if (!this.profile.valuesAreEqual(val, this.value_)) {
+        this.value_ = val;
+      }
+    },
+    value_(val) {
+      console.log('value changed');
       if (!this.disableFormatInput) this.formatInput();
       if (
         this.mode !== 'multiple' &&
@@ -276,39 +305,67 @@ export default {
       }
       this.disableFormatInput = false;
       this.disablePopoverHide = false;
+      this.$emit('input', val);
     },
-    dragValue() {
+    dragValue(val) {
       this.formatInput();
+      this.$emit('drag', this.profile.normalizeValue(val));
     },
-    disabledAttribute_(val) {
-      if (!this.dragValue && val) {
-        this.updateValue(this.value, {
-          formatInput: true,
-          hidePopover: false,
-        });
-      }
-    },
+    // disabledAttribute_(val) {
+    //   if (!this.dragValue && val) {
+    //     this.updateValue(this.value, {
+    //       formatInput: true,
+    //       hidePopover: false,
+    //     });
+    //   }
+    // },
   },
   created() {
     this.formatInput();
   },
-  methods: {
-    buildSelectDragAttribute(propAttr, isDrag) {
-      let attr = {
-        key: 'drag-select',
-        ...propAttr,
-        pinPage: true,
-      };
-      const { highlight, dot, bar } = attr;
-      // Assign attribute type if missing
-      if (!dot && !bar && !highlight) {
-        attr.highlight = true;
+  mounted() {
+    on(document, 'keydown', this.onDocumentKeyDown);
+    // Clear drag on background click
+    const offTapOrClickHandler = addTapOrClickHandler(document, e => {
+      if (!elementContains(this.$el, e.target)) {
+        this.dragValue = null;
       }
-      return attr;
+    });
+    // Clean up handlers
+    this.$once('beforeDestroy', () => {
+      off(document, 'keydown', this.onDocumentKeyDown);
+      offTapOrClickHandler();
+    });
+  },
+  methods: {
+    dateIsValid(date) {
+      if (
+        this.disabledAttribute &&
+        this.disabledAttribute.intersectsDate(date)
+      ) {
+        this.$emit('invalid-input', {
+          reason: 'disabled',
+          value: day.date,
+        });
+        return false;
+      }
+      return true;
     },
-    onDrag(e) {
-      this.dragValue = e;
-      this.$emit('drag', e);
+    onDocumentKeyDown(e) {
+      // Clear drag on escape keydown
+      if (this.dragValue && e.keyCode === 27) {
+        this.dragValue = null;
+      }
+    },
+    onDayClick(day) {
+      this.profile.handleDayClick(day, this);
+      // Re-emit event
+      this.$emit('dayclick', day);
+    },
+    onDayMouseEnter(day) {
+      this.profile.handleDayMouseEnter(day, this);
+      // Re-emit event
+      this.$emit('daymouseenter', day);
     },
     inputInput(e) {
       this.inputValue = e.target.value;
@@ -328,7 +385,7 @@ export default {
     },
     // inputKeydown(e) {
     //   if (e.keyCode === 13) {
-    //     this.updateValue(this.value, {
+    //     this.updateValue(this.value_, {
     //       formatInput: true,
     //       hidePopover: false,
     //     });
@@ -337,7 +394,7 @@ export default {
     inputKeyup(e) {
       // Escape key
       if (e.keyCode === 27) {
-        this.updateValue(this.value, {
+        this.updateValue(this.value_, {
           formatInput: true,
           hidePopover: true,
         });
@@ -373,10 +430,10 @@ export default {
         value: this.profile.normalizeValue(userValue),
         isRequired: this.isRequired,
         disabled: this.disabledAttribute_,
-        fallbackValue: this.value,
+        fallbackValue: this.value_,
       });
       // If final value is equal to the current value
-      if (this.profile.valuesAreEqual(this.value, validatedValue)) {
+      if (this.profile.valuesAreEqual(this.value_, validatedValue)) {
         // Just format input and hide popover if needed
         if (formatInput) this.formatInput();
         if (hidePopover && !this.isInline) this.hidePopover();
@@ -384,12 +441,12 @@ export default {
         // Value has changed, so handle formatting and hiding on value change
         this.disableFormatInput = !formatInput;
         this.disablePopoverHide = !hidePopover;
-        this.$emit('input', validatedValue);
+        this.value_ = validatedValue;
       }
     },
     formatInput() {
       this.$nextTick(() => {
-        this.inputValue = this.profile.formatValue(this.value, this.dragValue);
+        this.inputValue = this.profile.formatValue(this.value_, this.dragValue);
       });
     },
     hidePopover() {
