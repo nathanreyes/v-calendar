@@ -170,14 +170,17 @@ export default {
       }
     },
     onDocumentClick(e) {
-      if (this.visibility !== 'click' || !this.$refs.popover || !this.ref)
+      if (!this.$refs.popover || !this.ref) {
         return;
+      }
+      // Don't hide if target element is contained within popover ref or content
       if (
         elementContains(this.$refs.popover, e.target) ||
         elementContains(this.ref, e.target)
       ) {
         return;
       }
+      // Hide the popover
       this.ref = null;
     },
     onShow({ ref, args, visibility, isInteractive }) {
