@@ -23,40 +23,38 @@ import { isString, isFunction, isArray } from '@/utils/_';
 
 export default {
   render(h) {
-    const calendar = h(Calendar, {
-      attrs: {
-        ...this.$attrs,
-        attributes: this.attributes_,
-        formats: this.formats_,
-        theme: this.theme_,
-      },
-      on: {
-        ...this.$listeners,
-        dayclick: this.onDayClick,
-        daymouseenter: this.onDayMouseEnter,
-      },
-      slots: this.$slots,
-      scopedSlots: this.$scopedSlots,
-    });
+    const calendar = () =>
+      h(Calendar, {
+        attrs: {
+          ...this.$attrs,
+          formats: this.formats_,
+          theme: this.theme_,
+        },
+        props: {
+          isDark: this.isDarkM,
+          attributes: this.attributes_,
+        },
+        on: {
+          ...this.$listeners,
+          dayclick: this.onDayClick,
+          daymouseenter: this.onDayMouseEnter,
+        },
+        slots: this.$slots,
+        scopedSlots: this.$scopedSlots,
+      });
     // If inline just return the calendar
-    if (this.isInline) return calendar;
+    if (this.isInline) return calendar();
     // Render the slot or ihput
     const inputSlot =
       (isFunction(this.$scopedSlots.default) &&
         this.$scopedSlots.default({
-          inputValue: this.inputValue,
-          inputProps: this.inputProps_,
+          inputAttrs: this.inputAttrs,
           inputEvents: this.inputEvents,
           updateValue: this.updateValue,
         })) ||
       h('input', {
-        class: this.inputProps_.class,
-        style: this.inputProps_.style,
-        attrs: {
-          ...this.inputAttrs,
-        },
+        attrs: this.inputAttrs,
         on: this.inputEvents,
-        ref: 'input',
       });
     // Return fragment with slot/input and popover w/ calendar
     return h('span', [
@@ -71,31 +69,26 @@ export default {
         },
         [inputSlot],
       ),
-      h(
-        Popover,
-        {
-          attrs: {
-            isExpanded: this.popoverExpanded,
-            direction: this.popoverDirection,
-            align: this.popoverAlign,
-            contentOffset: this.popoverContentOffset,
-            isInteractive: true,
-          },
-          props: {
-            id: this.datePickerPopoverId,
-            placement: 'bottom-start',
-            contentClass: this.theme_.container,
-          },
-          on: {
-            'will-appear': e => this.$emit('popover-will-appear', e),
-            'did-appear': e => this.$emit('popover-did-appear', e),
-            'will-disappear': e => this.$emit('popover-will-disappear', e),
-            'did-disappear': e => this.$emit('popover-did-disappear', e),
-          },
-          ref: 'popover',
+      h(Popover, {
+        attrs: {
+          isExpanded: this.popoverExpanded,
+          direction: this.popoverDirection,
+          align: this.popoverAlign,
+          contentOffset: this.popoverContentOffset,
+          isInteractive: true,
         },
-        [calendar],
-      ),
+        props: {
+          id: this.datePickerPopoverId,
+          placement: 'bottom-start',
+          contentClass: this.theme_.container,
+        },
+        scopedSlots: {
+          default() {
+            return calendar();
+          },
+        },
+        ref: 'popover',
+      }),
     ]);
   },
   props: {
@@ -249,30 +242,25 @@ export default {
       }
       return attrs;
     },
-    inputProps_() {
-      const defaultProps = defaults.datePickerInputProps;
+    // inputProps_() {
+    //   const defaultProps = defaults.datePickerInputProps;
+    //   return {
+    //     ...evalFn(defaultProps, {
+    //       mode: this.mode,
+    //       value: this.value_,
+    //       dragValue: this.dragValue,
+    //       format: defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
+    //     }),
+    //     ...this.inputProps,
+    //     value: this.inputValue,
+    //   };
+    // },
+    inputAttrs() {
       return {
-        ...evalFn(defaultProps, {
-          mode: this.mode,
-          value: this.value_,
-          dragValue: this.dragValue,
-          format: defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
-        }),
         ...this.inputProps,
         value: this.inputValue,
-      };
-    },
-    inputAttrs() {
-      const attrs = {
-        ...this.inputProps_,
-        value: this.inputProps_.value,
         type: 'input',
       };
-      if (attrs) {
-        delete attrs.style;
-        delete attrs.class;
-      }
-      return attrs;
     },
     inputEvents() {
       return {
@@ -294,7 +282,6 @@ export default {
       }
     },
     value_(val) {
-      console.log('value changed');
       if (!this.disableFormatInput) this.formatInput();
       if (
         this.mode !== 'multiple' &&

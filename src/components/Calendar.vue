@@ -279,9 +279,6 @@ export default {
     theme(val) {
       this.refreshTheme();
     },
-    attributes() {
-      console.log('attributes changed');
-    },
   },
   created() {
     this.refreshTheme();

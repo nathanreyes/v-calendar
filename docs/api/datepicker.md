@@ -211,30 +211,6 @@ sidebarDepth: 2
 
 **Params:** `range: Object`
 
-### `popover-will-appear`
-
-**Description:** Just before popover appears
-
-**Params:** `undefined`
-
-### `popover-did-appear`
-
-**Description:** Just after popover appears
-
-**Params:** `undefined`
-
-### `popover-will-disappear`
-
-**Description:** Just before popover disappears. Check param to see if appear was cancelled.
-
-**Params:** `cancelled: Boolean`
-
-### `popover-did-disappear`
-
-**Description:** Just after popover disappears. Check param to see if appear was cancelled.
-
-**Params:** `cancelled: Boolean`
-
 <!-- 
 ### 
 
