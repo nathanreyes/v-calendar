@@ -36,9 +36,6 @@ const defaults = {
   }),
   datePickerUpdateOnInput: true,
   datePickerInputDebounce: 1000,
-  datePickerTintColor: '#33bfcc',
-  datePickerShowCaps: false,
-  datePickerShowDayPopover: true,
   datePickerDisabledAttribute: {
     contentStyle: ({ isHovered }) => ({
       color: '#d98c8c',

@@ -86,30 +86,6 @@ pageClass: docs-page
 
 **Default:** `1000`
 
-## `datePickerTintColor`
-
-**Type:** String
-
-**Description:** Background color of the selected and dragged highlighted regions (`opacity: 0.5` for dragged). This setting is overridden by `select-attribute` and `drag-attribute` if specified.
-
-**Default:** `"#66B3CC"`
-
-## `datePickerShowCaps`
-
-**Type:** Boolean
-
-**Description:** Show caps and the end of the highlighted and dragged regions when `mode === "range"`
-
-**Default:** `false`
-
-## `datePickerShowDayPopover`
-
-**Type:** Boolean
-
-**Description:** Show popover for dragged and selected regions
-
-**Default:** `true`
-
 ## `popoverExpanded`
 
 **Type:** Boolean
