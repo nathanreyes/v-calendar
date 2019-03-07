@@ -58,7 +58,7 @@
   "barBaseFill": "solid",
   "fillNone": {
     "light": "bg-white border-2 border-{color}-6",
-    "dark": "border-{color}-5"
+    "dark": "bg-grey-10 border-2 border-{color}-5"
   },
   "fillNoneContent": {
     "light": "font-bold text-{color}-9",
