@@ -23,7 +23,7 @@ import {
   toDate,
 } from '@/utils/helpers';
 import { format } from '@/utils/fecha';
-import generateTheme from '@/utils/theme';
+import { generateTheme } from '@/utils/theme';
 import { isNumber } from '@/utils/_';
 
 export default {

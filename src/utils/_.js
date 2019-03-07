@@ -15,6 +15,7 @@ import _mapValues from 'lodash/mapValues';
 import _toPairs from 'lodash/toPairs';
 import _has from 'lodash/has';
 import _defaults from 'lodash/defaults';
+import _defaultsDeep from 'lodash/defaultsDeep';
 
 import _map from 'lodash/map';
 import _some from 'lodash/some';
@@ -42,6 +43,7 @@ export const toPairs = _toPairs;
 export const has = _has;
 export const hasAny = (obj, props) => _some(props, p => _has(obj, p));
 export const defaults = _defaults;
+export const defaultsDeep = _defaultsDeep;
 // Lodash collection utilities
 export const map = _map;
 export const some = _some;

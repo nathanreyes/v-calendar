@@ -5,8 +5,8 @@ import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import PickerProfile from '@/utils/pickerProfiles';
 import Attribute from '@/utils/attribute';
-import defaults, { resolveDefault } from '@/utils/defaults';
-import generateTheme from '@/utils/theme';
+import defaults from '@/utils/defaults';
+import { generateTheme } from '@/utils/theme';
 import { addDays } from '@/utils/dateInfo';
 import { format, parse } from '@/utils/fecha';
 import { addTapOrClickHandler } from '@/utils/touch';
@@ -225,14 +225,11 @@ export default {
         return null;
       return Attribute({
         key: 'disabled',
-        order: 100,
-        ...(this.disabledAttribute ||
-          resolveDefault(defaults.datePickerDisabledAttribute, {
-            mode: this.mode,
-          })),
+        ...this.disabledAttribute,
         dates: this.disabledDates_,
         excludeDates: this.availableDates,
         excludeMode: 'includes',
+        order: 100,
       });
     },
     attributes_() {

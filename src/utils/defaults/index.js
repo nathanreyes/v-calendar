@@ -1,7 +1,7 @@
 import { POPOVER_VISIBILITIES } from '../constants';
 import formats from './formats.json';
 import screens from './screens.json';
-import { isObject, isFunction } from '../_';
+import theme from './theme.json';
 
 const defaults = {
   componentPrefix: 'v',
@@ -11,6 +11,7 @@ const defaults = {
   transition: 'slide-h',
   formats,
   screens,
+  theme,
   datePickerInputProps: ({ dragValue, mode, format }) => ({
     ...(mode === 'single' && {
       style: {
@@ -62,9 +63,3 @@ const defaults = {
 };
 
 export default defaults;
-
-export const resolveDefault = (def, args) =>
-  (isObject(def) && def) || (isFunction(def) && def(args)) || def;
-
-export const mergeDefaults = (...defaultArgs) =>
-  Object.assign(defaults, ...defaultArgs);

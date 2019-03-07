@@ -3,27 +3,27 @@ import DatePicker from '@/components/DatePicker';
 import Popover from '@/components/Popover';
 import PopoverRef from '@/components/PopoverRef';
 import getLocaleDefaults from '@/utils/locales';
-import defaults, { mergeDefaults } from '@/utils/defaults';
+import defaults from '@/utils/defaults';
 import installScreens from '@/utils/screens';
+import { isObject, defaultsDeep } from '@/utils/_';
 // import '@/styles/themes.sass';
 
 const setupCalendar = (Vue, options) => {
-  // Add an event bus for component communication
-  // Sorry, can't assume we are using Vuex
+  // Create a component for global state & event bus
+  // ...Sorry, can't assume we are using Vuex as a library
   Vue.prototype.$vc = new Vue({
     data: {
       activeRefs: {},
     },
   });
-  // Merge user and locale defaults with built-in defaults
-  const locale = options
-    ? options.locale
+  // Assign locale if it isn't already specified
+  const mergedDefaults = isObject(options) ? { ...options } : {};
+  const locale = mergedDefaults
+    ? mergedDefaults.locale
     : new Intl.DateTimeFormat().resolvedOptions().locale;
-  const mergedDefaults = mergeDefaults(
-    defaults,
-    getLocaleDefaults(locale),
-    options,
-  );
+  // Merge built-in and locale defaults with user defaults
+  defaultsDeep(mergedDefaults, getLocaleDefaults(locale), defaults);
+  console.log(mergedDefaults);
   // Install support for responsive screens
   installScreens(Vue, mergedDefaults.screens);
   return mergedDefaults;

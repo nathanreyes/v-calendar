@@ -227,5 +227,3 @@ export const generateTheme = ({ color, isDark, config }) => {
 
   return theme;
 };
-
-export default generateTheme;
