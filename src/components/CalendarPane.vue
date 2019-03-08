@@ -83,7 +83,6 @@ export default {
     page: Object,
     minPage: Object,
     maxPage: Object,
-    formats: Object,
     titlePosition: { type: String, default: () => defaults.titlePosition },
     navVisibility: { type: String, default: () => defaults.navVisibility },
     canMove: {
