@@ -10,7 +10,7 @@ export const addTapOrClickHandler = (element, handler) => {
   let tap = false;
   const touchstart = () => (tap = true);
   const touchmove = () => (tap = false);
-  const touchend = () => {
+  const touchend = event => {
     if (event.type === 'click') tap = true;
     if (tap) {
       handler(event);
