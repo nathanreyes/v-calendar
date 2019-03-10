@@ -1,12 +1,6 @@
-import {
-  getDateComps,
-  getMaxPage,
-  addPages,
-  getLastArrayItem,
-  arrayHasItems,
-} from './helpers';
+import { pageForDate, getMaxPage, addPages, arrayHasItems } from './helpers';
 import DateInfo from './dateInfo';
-import { isDate } from './_';
+import { isDate, last } from './_';
 
 // #region Single Date Picker
 
@@ -36,7 +30,7 @@ export const singleValuesAreEqual = (a, b) => {
 };
 export const singleGetPageRange = value => {
   if (!singleHasValue(value)) return null;
-  const from = getDateComps(value);
+  const from = pageForDate(value);
   const to = from;
   return { from, to };
 };
@@ -119,11 +113,8 @@ export const multipleValuesAreEqual = (a, b) => {
 };
 export const multipleGetPageRange = value => {
   if (!multipleHasValue(value)) return null;
-  const from = getDateComps(value[0]);
-  const to = getMaxPage(
-    getDateComps(getLastArrayItem(value)),
-    addPages(from, 1),
-  );
+  const from = pageForDate(value[0]);
+  const to = getMaxPage(pageForDate(last(value)), addPages(from, 1));
   return { from, to };
 };
 export const multipleHandleDayClick = (day, picker) => {
@@ -219,8 +210,8 @@ export const rangeValuesAreEqual = (a, b) => {
 };
 export const rangeGetPageRange = value => {
   if (!rangeHasValue(value)) return null;
-  const from = getDateComps(value.start);
-  const to = getMaxPage(getDateComps(value.end), addPages(from, 1));
+  const from = pageForDate(value.start);
+  const to = getMaxPage(pageForDate(value.end), addPages(from, 1));
   return { from, to };
 };
 export const rangeHandleDayClick = (day, picker) => {

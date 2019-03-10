@@ -1,18 +1,17 @@
 <script>
 import PopoverRef from './PopoverRef';
-import injectMixin from '@/utils/injectMixin';
+import { childMixin } from '@/utils/mixins/child';
 import {
   evalFn,
   arrayHasItems,
   objectFromArray,
   mixinOptionalProps,
 } from '@/utils/helpers';
-import defaults from '@/utils/defaults';
 import { isFunction, some, last, get } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
-  mixins: [injectMixin],
+  mixins: [childMixin],
   render(h) {
     // Backgrounds layer
     const backgroundsLayer = () => {
@@ -156,7 +155,6 @@ export default {
   props: {
     day: { type: Object, required: true },
     attributes: Object,
-    formats: Object,
   },
   data() {
     return {

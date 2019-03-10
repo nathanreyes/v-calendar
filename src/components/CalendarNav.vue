@@ -103,16 +103,10 @@
 
 <script>
 import SvgIcon from './SvgIcon';
-import injectMixin from '@/utils/injectMixin';
 import DateInfo from '@/utils/dateInfo';
-import { format } from '@/utils/fecha';
-import {
-  getMonthComps,
-  getFirstArrayItem,
-  getLastArrayItem,
-  getMonthDates,
-  evalFn,
-} from '@/utils/helpers';
+import { childMixin } from '@/utils/mixins/child';
+import { evalFn } from '@/utils/helpers';
+import { first, last } from '@/utils/_';
 
 const _yearGroupCount = 12;
 
@@ -120,12 +114,11 @@ export default {
   components: {
     SvgIcon,
   },
-  mixins: [injectMixin],
+  mixins: [childMixin],
   props: {
     mode: { type: String, default: 'month' },
     value: { type: Object, default: () => ({ month: 0, year: 0 }) },
     validator: { type: Function, default: () => () => true },
-    formats: Object,
     attributes: Array,
   },
   data() {
@@ -144,8 +137,9 @@ export default {
       return this.value ? this.value.year || 0 : 0;
     },
     monthItems() {
-      return getMonthDates()
-        .map(d => format(d, this.formats.navMonths))
+      return this.locale
+        .getMonthDates()
+        .map(d => this.locale.format(d, this.formats.navMonths))
         .map((ml, i) => {
           const month = i + 1;
           return {
@@ -178,10 +172,10 @@ export default {
       return this.createRows(this.yearItems, 3);
     },
     firstYear() {
-      return getFirstArrayItem(this.yearItems.map(i => i.year), 0);
+      return first(this.yearItems.map(i => i.year));
     },
     lastYear() {
-      return getLastArrayItem(this.yearItems.map(i => i.year), 0);
+      return last(this.yearItems.map(i => i.year));
     },
   },
   watch: {

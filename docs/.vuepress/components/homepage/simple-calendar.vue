@@ -7,7 +7,7 @@
     <div class="flex flex-col items-center md:flex-row md:justify-around">
       <div class="mb-6">
         <h3 class="text-base semibold text-grey-7 mb-3">Highlights</h3>
-        <v-calendar :attributes="highlights"/>
+        <v-calendar :attributes="highlights" ref="cal"/>
       </div>
       <div class="mb-6">
         <h3 class="text-base semibold text-grey-7 mb-3">Dots</h3>
@@ -109,14 +109,16 @@
 </template>
 
 <script>
-const { getThisMonthComps, getNextMonthComps } = require('@/utils/helpers');
-let { month: thisMonth, year: thisMonthYear } = getThisMonthComps();
-let { month: nextMonth, year: nextMonthYear } = getNextMonthComps(
+const { pageForThisMonth, pageForNextMonth } = require('@/utils/helpers');
+let { month: thisMonth, year: thisMonthYear } = pageForThisMonth();
+let { month: nextMonth, year: nextMonthYear } = pageForNextMonth(
   thisMonth,
   thisMonthYear,
 );
 thisMonth--;
 nextMonth--;
+
+console.log(thisMonth, thisMonthYear, nextMonth, nextMonthYear);
 
 const color = '#ff8080';
 const hSpacing = '15px';

@@ -1,6 +1,6 @@
 <script>
 import Popper from 'popper.js';
-import injectMixin from '@/utils/injectMixin';
+import { childMixin } from '@/utils/mixins/child';
 import { on, off, elementContains } from '@/utils/helpers';
 import { addTapOrClickHandler } from '@/utils/touch';
 import { isFunction } from '@/utils/_';

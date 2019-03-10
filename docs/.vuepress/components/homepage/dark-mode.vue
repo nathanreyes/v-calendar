@@ -24,8 +24,8 @@
 </template>
 
 <script>
-const { getThisMonthComps, getNextMonthComps } = require('@/utils/helpers');
-let { month, year } = getThisMonthComps();
+const { pageForThisMonth } = require('@/utils/helpers');
+let { month, year } = pageForThisMonth();
 
 export default {
   data() {

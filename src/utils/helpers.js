@@ -1,145 +1,11 @@
-import defaults from './defaults';
-import { parse } from './fecha';
-import { isNumber, isString, isDate, isArray, isObject, isFunction } from './_';
-
-const monthComps = {};
-
-// Calendar data
-export const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-export const today = new Date();
-export const todayComps = {
-  year: today.getFullYear(),
-  month: today.getMonth() + 1,
-  day: today.getDate(),
-};
-
-export const toDate = d => {
-  if (!d) return null;
-  if (isDate(d)) return new Date(d.getTime());
-  if (isNumber(d)) return new Date(d);
-  if (isString(d)) return parse(d, ['L', 'YYYY-MM-DD', 'YYYY/MM/DD']);
-  if (isObject(d))
-    return new Date(
-      d.year || today.getFullYear(),
-      d.month || today.getMonth(),
-      d.day || today.getDate(),
-    );
-  return new Date(d);
-};
-
-export const getPageForDate = date => {
-  const d = toDate(date);
-  return (
-    d && {
-      month: d.getMonth() + 1,
-      year: d.getFullYear(),
-    }
-  );
-};
-
-export const getPageForToday = () => {
-  const today = new Date();
-  return {
-    month: today.getMonth() + 1,
-    year: today.getFullYear(),
-  };
-};
+import { isArray, isObject, isFunction } from './_';
 
 export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
 
-export const getMonthDates = (year = 2000) => {
-  const dates = [];
-  for (let i = 0; i < 12; i++) {
-    dates.push(new Date(year, i, 15));
-  }
-  return dates;
-};
-
-export const addMonthsToDate = (months, date) => {
-  const d = toDate(date);
-  if (!d) return date;
-  d.setMonth(d.getMonth() + months);
-  return d;
-};
-
-export const getWeekdayDates = ({
-  firstDayOfWeek = 1,
-  year = 2000,
-  utc = false,
-}) => {
-  const dates = [];
-  for (let i = 1, j = 0; j < 7; i++) {
-    const d = utc ? new Date(Date.UTC(year, 0, i)) : new Date(year, 0, i);
-    const day = utc ? d.getUTCDay() : d.getDay();
-    if (day === firstDayOfWeek - 1 || j > 0) {
-      dates.push(d);
-      j++;
-    }
-  }
-  return dates;
-};
-
-// Days/month/year components for a given month and year
-export const getMonthComps = (month, year) => {
-  const key = `${month}.${year}`;
-  let comps = monthComps[key];
-  if (!comps) {
-    const firstDayOfWeek = defaults.firstDayOfWeek;
-    const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
-    const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
-    const weeks = Math.ceil(
-      (days + Math.abs(firstWeekday - firstDayOfWeek)) / 7,
-    );
-    comps = {
-      firstDayOfWeek,
-      inLeapYear,
-      firstWeekday,
-      days,
-      weeks,
-      month,
-      year,
-    };
-    monthComps[key] = comps;
-  }
-  return comps;
-};
-
 // Days/month/year components for a given date
-export const getDateComps = date => {
+export const getDateComps = (date, firstDayOfWeek = 1) => {
   if (!date || !date.getTime) return undefined;
-  return getMonthComps(date.getMonth() + 1, date.getFullYear());
-};
-
-// Days/month/year components for today's month
-export const getThisMonthComps = () =>
-  getMonthComps(todayComps.month, todayComps.year);
-
-// Day/month/year components for previous month
-export const getPrevMonthComps = (month, year) => {
-  if (month === 1) return getMonthComps(12, year - 1);
-  return getMonthComps(month - 1, year);
-};
-
-// Day/month/year components for next month
-export const getNextMonthComps = (month, year) => {
-  if (month === 12) return getMonthComps(1, year + 1);
-  return getMonthComps(month + 1, year);
-};
-
-export const getExampleMonthComps = () => {
-  const thisMonthComps = getThisMonthComps();
-  const nextMonthComps = getNextMonthComps(
-    thisMonthComps.month,
-    thisMonthComps.year,
-  );
-
-  return {
-    thisMonth: thisMonthComps.month - 1,
-    thisMonthYear: thisMonthComps.year,
-    nextMonth: nextMonthComps.month - 1,
-    nextMonthYear: nextMonthComps.year,
-  };
+  return getMonthComps(date.getMonth() + 1, date.getFullYear(), firstDayOfWeek);
 };
 
 export const pageIsValid = page => !!(page && page.month && page.year);
@@ -167,6 +33,20 @@ export const pageIsBetweenPages = (page, fromPage, toPage) =>
   !pageIsBeforePage(page, fromPage) &&
   !pageIsAfterPage(page, toPage);
 
+export const pageForDate = date => {
+  if (!date) return null;
+  return {
+    month: date.getMonth() + 1,
+    year: date.getFullYear(),
+  };
+};
+
+export const pageForThisMonth = () => pageForDate(new Date());
+
+export const pageForNextMonth = () => addPages(pageForThisMonth(), 1);
+
+export const pageForPrevMonth = () => addPages(pageForThisMonth(), -1);
+
 export const getMaxPage = (...args) =>
   args.reduce((prev, curr) => {
     if (!prev) return curr;
@@ -174,8 +54,7 @@ export const getMaxPage = (...args) =>
     return pageIsAfterPage(curr, prev) ? curr : prev;
   });
 
-export const addPages = (page, count) => {
-  let { month, year } = page || getPageForToday();
+export const addPages = ({ month, year }, count) => {
   const incr = count > 0 ? 1 : -1;
   for (let i = 0; i < Math.abs(count); i++) {
     month += incr;
@@ -191,18 +70,6 @@ export const addPages = (page, count) => {
     month,
     year,
   };
-};
-
-export const getFirstValidPage = (...args) => args.find(p => !!p);
-
-export const getFirstArrayItem = (array, fallbackValue) => {
-  if (!array) return fallbackValue;
-  return array.length ? array[0] : fallbackValue;
-};
-
-export const getLastArrayItem = (array, fallbackValue) => {
-  if (!array) return fallbackValue;
-  return array.length ? array[array.length - 1] : fallbackValue;
 };
 
 export const arrayHasItems = array => isArray(array) && array.length;

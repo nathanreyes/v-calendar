@@ -6,14 +6,10 @@ import CustomTransition from './CustomTransition';
 import CalendarDayPopovers from './CalendarDayPopovers';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '../utils/attributeStore';
-import defaults from '../utils/defaults';
 import {
-  getPageForDate,
-  getPageForToday,
+  pageForDate,
+  pageForThisMonth,
   addPages,
-  getMonthComps,
-  getPrevMonthComps,
-  getNextMonthComps,
   pageIsValid,
   pageIsBeforePage,
   pageIsAfterPage,
@@ -22,7 +18,7 @@ import {
   createGuid,
   toDate,
 } from '@/utils/helpers';
-import { format } from '@/utils/fecha';
+import Locale from '@/utils/locale';
 import { generateTheme } from '@/utils/theme';
 import { isNumber } from '@/utils/_';
 
@@ -214,6 +210,7 @@ export default {
     attributes: Array,
     formats: Object,
     theme: Object,
+    locale: String,
   },
   data() {
     return {
@@ -225,15 +222,17 @@ export default {
       sharedState: {
         dayPopoverId: createGuid(),
         theme: {},
+        formats: {},
+        locale: {},
       },
     };
   },
   computed: {
     minPage_() {
-      return this.minPage || getPageForDate(toDate(this.minDate));
+      return this.minPage || pageForDate(this.locale_.toDate(this.minDate));
     },
     maxPage_() {
-      return this.maxPage || getPageForDate(toDate(this.maxDate));
+      return this.maxPage || pageForDate(this.locale_.toDate(this.maxDate));
     },
     count() {
       return this.rows * this.columns;
@@ -255,12 +254,15 @@ export default {
     },
     formats_() {
       return {
-        ...defaults.formats,
+        ...this.$vc.formats,
         ...this.formats,
       };
     },
     attributes_() {
-      return AttributeStore(this.attributes);
+      return AttributeStore(this.attributes, this.locale_);
+    },
+    locale_() {
+      return new Locale(this.locale || this.$vc.defaults.locale);
     },
   },
   watch: {
@@ -279,12 +281,26 @@ export default {
     theme(val) {
       this.refreshTheme();
     },
+    formats_() {
+      this.refreshFormats();
+    },
+    locale_() {
+      this.refreshLocale();
+    },
   },
   created() {
     this.refreshTheme();
+    this.refreshFormats();
+    this.refreshLocale();
     this.refreshPages();
   },
   methods: {
+    refreshFormats() {
+      this.sharedState.formats = this.formats_;
+    },
+    refreshLocale() {
+      this.sharedState.locale = this.locale_;
+    },
     refreshTheme() {
       this.sharedState.theme = generateTheme({
         color: this.color,
@@ -319,10 +335,12 @@ export default {
         fromPage = addPages(page, -(position - 1));
       } else {
         // 2. Try the fromPage prop
-        fromPage = this.fromPage || getPageForDate(this.fromDate);
+        fromPage =
+          this.fromPage || pageForDate(this.locale_.toDate(this.fromDate));
         if (!pageIsValid(fromPage)) {
           // 3. Try the toPage prop
-          const toPage = this.toPage || getPageForDate(this.toDate);
+          const toPage =
+            this.toPage || pageForDate(this.locale_.toDate(this.toPage));
           if (pageIsValid(toPage)) {
             fromPage = addPages(toPage, -(this.count - 1));
           } else {
@@ -332,7 +350,7 @@ export default {
         }
       }
       // 5. Fall back to today's page
-      fromPage = pageIsValid(fromPage) ? fromPage : getPageForToday();
+      fromPage = pageIsValid(fromPage) ? fromPage : pageForThisMonth();
       // Adjust from page within allowed min/max pages
       const toPage = addPages(fromPage, this.count - 1);
       if (pageIsBeforePage(fromPage, this.minPage_)) {
@@ -379,8 +397,9 @@ export default {
     getPageForAttributes() {
       const attr = this.attributes_.find(attr => attr.pinPage);
       if (attr && arrayHasItems(attr.dates)) {
-        const [date] = attr.dates;
-        return getPageForDate(date.start || date.date);
+        let [date] = attr.dates;
+        date = date.start || date.date;
+        return pageForDate(this.locale_.toDate(date));
       }
       return null;
     },
@@ -389,16 +408,16 @@ export default {
       let page = this.pages.find(p => p.key === key);
       if (!page) {
         const date = new Date(year, month - 1, 15);
-        const monthComps = getMonthComps(month, year);
-        const prevMonthComps = getPrevMonthComps(month, year);
-        const nextMonthComps = getNextMonthComps(month, year);
+        const monthComps = this.locale_.getMonthComps(month, year);
+        const prevMonthComps = this.locale_.getPrevMonthComps(month, year);
+        const nextMonthComps = this.locale_.getNextMonthComps(month, year);
         page = {
           key,
           month,
           year,
-          title: format(date, this.formats_.title),
-          shortMonthLabel: format(date, 'MMM'),
-          monthLabel: format(date, 'MMMM'),
+          title: this.locale_.format(date, this.formats_.title),
+          shortMonthLabel: this.locale_.format(date, 'MMM'),
+          monthLabel: this.locale_.format(date, 'MMMM'),
           shortYearLabel: year.toString().substring(2),
           yearLabel: year.toString(),
           monthComps,
@@ -450,10 +469,10 @@ export default {
       const deltaX = t.screenX - this.touchState.startX;
       const deltaY = t.screenY - this.touchState.startY;
       const deltaTime = new Date().getTime() - this.touchState.startTime;
-      if (deltaTime < defaults.maxSwipeTime) {
+      if (deltaTime < this.$vc.defaults.maxSwipeTime) {
         if (
-          Math.abs(deltaX) >= defaults.minHorizontalSwipeDistance &&
-          Math.abs(deltaY) <= defaults.maxVerticalSwipeDistance
+          Math.abs(deltaX) >= this.$vc.defaults.minHorizontalSwipeDistance &&
+          Math.abs(deltaY) <= this.$vc.defaults.maxVerticalSwipeDistance
         ) {
           // Swipe left
           if (deltaX < 0) {

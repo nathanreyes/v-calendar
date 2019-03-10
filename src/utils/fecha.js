@@ -1,8 +1,7 @@
 /* eslint-disable no-bitwise, no-mixed-operators, no-useless-escape, no-multi-assign */
 /* DATE FORMATTING & PARSING USING A SLIGHTLY MODIFIED VERSION OF FECHA (https://github.com/taylorhakes/fecha) */
 /* ADDS A NARROW WEEKDAY FORMAT 'dd' */
-import defaults from './defaults';
-import { isString, isArray } from './_';
+import { isNumber, isString, isArray, isDate } from './_';
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
@@ -236,17 +235,14 @@ parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
 parseFlags.ss = parseFlags.s;
 parseFlags.A = parseFlags.a;
 
-export const format = (dateObj, mask) => {
-  if (typeof dateObj === 'number') {
+export const format = (dateObj, mask, locale) => {
+  if (isNumber) {
     dateObj = new Date(dateObj);
   }
-  if (
-    Object.prototype.toString.call(dateObj) !== '[object Date]' ||
-    isNaN(dateObj.getTime())
-  ) {
+  if (!isDate(dateObj)) {
     throw new Error('Invalid Date in fecha.format');
   }
-  mask = defaults.masks[mask] || mask;
+  mask = locale.masks[mask] || mask;
   const literals = [];
   // Make literals inactive by replacing them with ??
   mask = mask.replace(literal, ($0, $1) => {
@@ -256,18 +252,23 @@ export const format = (dateObj, mask) => {
   // Apply formatting rules
   mask = mask.replace(token, $0 =>
     $0 in formatFlags
-      ? formatFlags[$0](dateObj, defaults)
+      ? formatFlags[$0](dateObj, locale)
       : $0.slice(1, $0.length - 1),
   );
   // Inline literal values back into the formatted value
-  return mask.replace(/\?\?/g, () => literals.shift());
+  const str = mask.replace(/\?\?/g, () => literals.shift());
+  // if (mask === 'MMMM YYYY') {
+  //   console.log('Here', str);
+  // }
+  // console.log(mask);
+  return str;
 };
 
-const parseString = (dateStr, mask) => {
+const parseString = (dateStr, mask, locale) => {
   if (typeof mask !== 'string') {
     throw new Error('Invalid mask in fecha.parse');
   }
-  mask = defaults.masks[mask] || mask;
+  mask = locale.masks[mask] || mask;
   // Avoid regular expression denial of service, fail early for really long strings
   // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
   if (dateStr.length > 1000) {
@@ -284,7 +285,7 @@ const parseString = (dateStr, mask) => {
         isValid = false;
       } else {
         dateStr.replace(info[0], result => {
-          info[1](dateInfo, result, defaults);
+          info[1](dateInfo, result, locale);
           dateStr = dateStr.substr(index + result.length);
           return result;
         });
@@ -337,11 +338,12 @@ const parseString = (dateStr, mask) => {
   return date;
 };
 
-export const parse = (dateStr, mask) => {
+export const parse = (dateStr, mask, locale) => {
   const masks = (isArray(mask) && mask) || [
     (isString(mask) && mask) || 'YYYY-MM-DD',
   ];
   return (
-    masks.map(m => parseString(dateStr, m)).find(d => d) || new Date(dateStr)
+    masks.map(m => parseString(dateStr, m, locale)).find(d => d) ||
+    new Date(dateStr)
   );
 };

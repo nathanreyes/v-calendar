@@ -45,9 +45,9 @@
 </template>
 
 <script>
-const { getThisMonthComps, getNextMonthComps } = require('@/utils/helpers');
-let { month: thisMonth, year: thisMonthYear } = getThisMonthComps();
-let { month: nextMonth, year: nextMonthYear } = getNextMonthComps(
+const { pageForThisMonth, pageForNextMonth } = require('@/utils/helpers');
+let { month: thisMonth, year: thisMonthYear } = pageForThisMonth();
+let { month: nextMonth, year: nextMonthYear } = pageForNextMonth(
   thisMonth,
   thisMonthYear,
 );

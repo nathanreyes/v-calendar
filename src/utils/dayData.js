@@ -1,5 +1,3 @@
-import { todayComps } from '../utils/helpers';
-
 const _data = {};
 
 export const getCalendarDays = (page, trimMaxWeek) => {
@@ -24,6 +22,11 @@ export const getCalendarDays = (page, trimMaxWeek) => {
   let weekFromEnd = 1;
   let month = prevMonthComps.month;
   let year = prevMonthComps.year;
+  // Store todays comps
+  const today = new Date();
+  const todayDay = today.getDate();
+  const todayMonth = today.getMonth() + 1;
+  const todayYear = today.getFullYear();
   // Cycle through 6 weeks (max in month)
   for (let w = 1; w <= 6 && (!nextMonth || !trimMaxWeek); w++) {
     // Cycle through 7 days
@@ -54,9 +57,7 @@ export const getCalendarDays = (page, trimMaxWeek) => {
       const date = new Date(year, month - 1, day);
       const weekdayPosition = i;
       const isToday =
-        day === todayComps.day &&
-        month === todayComps.month &&
-        year === todayComps.year;
+        day === todayDay && month === todayMonth && year === todayYear;
       const isFirstDay = thisMonth && day === 1;
       const isLastDay = thisMonth && day === monthComps.days;
       const onTop = w === 1;

@@ -1,4 +1,4 @@
-export default {
+export const childMixin = {
   inject: ['sharedState'],
   computed: {
     defaults() {
@@ -10,8 +10,16 @@ export default {
     theme() {
       return this.sharedState.theme;
     },
+    locale() {
+      return this.sharedState.locale;
+    },
     dayPopoverId() {
       return this.sharedState.dayPopoverId;
+    },
+  },
+  methods: {
+    format(date, mask) {
+      return this.locale.format(date, mask);
     },
   },
 };

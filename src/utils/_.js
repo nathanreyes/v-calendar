@@ -5,6 +5,7 @@ import _isDate from 'lodash/isDate';
 import _isArrayLikeObject from 'lodash/isArrayLikeObject';
 import _isFunction from 'lodash/isFunction';
 import _isUndefined from 'lodash/isUndefined';
+import _isNil from 'lodash/isNil';
 
 import _kebabCase from 'lodash/kebabCase';
 import _capitalize from 'lodash/capitalize';
@@ -16,6 +17,7 @@ import _toPairs from 'lodash/toPairs';
 import _has from 'lodash/has';
 import _defaults from 'lodash/defaults';
 import _defaultsDeep from 'lodash/defaultsDeep';
+import _pick from 'lodash/pick';
 
 import _map from 'lodash/map';
 import _some from 'lodash/some';
@@ -27,11 +29,12 @@ export const getType = value =>
 export const isBoolean = _isBoolean;
 export const isNumber = _isNumber;
 export const isString = _isString;
-export const isDate = _isDate;
+export const isDate = value => _isDate(value) && !isNaN(value.getTime());
 export const isArray = _isArrayLikeObject;
 export const isObject = value => getType(value) === 'Object';
 export const isFunction = _isFunction;
 export const isUndefined = _isUndefined;
+export const isNil = _isNil;
 // Lodash string utilities
 export const kebabCase = _kebabCase;
 export const capitalize = _capitalize;
@@ -44,6 +47,7 @@ export const has = _has;
 export const hasAny = (obj, props) => _some(props, p => _has(obj, p));
 export const defaults = _defaults;
 export const defaultsDeep = _defaultsDeep;
+export const pick = _pick;
 // Lodash collection utilities
 export const map = _map;
 export const some = _some;

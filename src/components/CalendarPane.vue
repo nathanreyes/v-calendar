@@ -7,7 +7,7 @@
         <div :class="['vc-title-layout', titleClass]">
           <div class="vc-title-wrapper">
             <!--Title content-->
-            <popover-ref :id="navPopoverId" :visibility="navVisibility" is-interactive>
+            <popover-ref :id="navPopoverId" :visibility="navVisibility_" is-interactive>
               <div class="vc-title" :class="theme.title">
                 <slot name="header-title" v-bind="page">{{ page.title }}</slot>
               </div>
@@ -64,11 +64,8 @@ import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
-import injectMixin from '@/utils/injectMixin';
-import defaults from '@/utils/defaults';
-import { getWeekdayDates, evalFn, createGuid } from '@/utils/helpers';
-import { format } from '@/utils/fecha';
-import { todayComps } from '../utils/helpers';
+import { childMixin } from '@/utils/mixins/child';
+import { evalFn, createGuid } from '@/utils/helpers';
 
 export default {
   components: {
@@ -77,14 +74,14 @@ export default {
     PopoverRef,
     Popover,
   },
-  mixins: [injectMixin],
+  mixins: [childMixin],
   props: {
     position: { type: Number, default: 1 },
     page: Object,
     minPage: Object,
     maxPage: Object,
-    titlePosition: { type: String, default: () => defaults.titlePosition },
-    navVisibility: { type: String, default: () => defaults.navVisibility },
+    titlePosition: String,
+    navVisibility: String,
     canMove: {
       type: Function,
       default: () => true,
@@ -92,24 +89,30 @@ export default {
   },
   data() {
     return {
-      todayComps,
       navPopoverId: createGuid(),
     };
   },
-
   computed: {
+    titlePosition_() {
+      return this.titlePosition || this.defaults.titlePosition;
+    },
+    navVisibility_() {
+      return this.navVisibility || this.defaults.navVisibility;
+    },
     navSlots() {
       return ['nav-left-button', 'nav-right-button'].filter(
         slot => this.$scopedSlots[slot],
       );
     },
     weekdayLabels() {
-      return getWeekdayDates({ firstDayOfWeek: defaults.firstDayOfWeek }).map(
-        d => format(d, this.formats.weekdays),
-      );
+      return this.locale
+        .getWeekdayDates({
+          firstDayOfWeek: this.locale.firstDayOfWeek,
+        })
+        .map(d => this.format(d, this.formats.weekdays));
     },
     titleClass() {
-      return this.titlePosition ? `align-${this.titlePosition}` : '';
+      return this.titlePosition_ ? `align-${this.titlePosition_}` : '';
     },
     canMovePrevMonth() {
       return this.canMove(this.page.prevMonthComps);
@@ -141,7 +144,7 @@ export default {
       this.move(this.page_.prevMonthComps);
     },
     moveThisMonth() {
-      this.move(todayComps);
+      this.move(pageForThisMonth());
     },
     moveNextMonth() {
       this.move(this.page_.nextMonthComps);

@@ -2,7 +2,7 @@ import Attribute from './attribute';
 import { arrayHasItems } from './helpers';
 import { isFunction } from './_';
 
-const AttributeStore = attrs => {
+const AttributeStore = (attrs, locale) => {
   const list =
     (arrayHasItems(attrs) &&
       attrs
@@ -11,6 +11,7 @@ const AttributeStore = attrs => {
           Attribute({
             key: a.key || i.toString(),
             order: a.order || 0,
+            locale,
             ...a,
           }),
         )) ||

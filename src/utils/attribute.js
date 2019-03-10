@@ -1,6 +1,6 @@
 import DateInfo from './dateInfo';
 import { arrayHasItems } from './helpers';
-import { isArray, some } from './_';
+import { isArray, some, pick } from './_';
 
 const Attribute = config => {
   if (!config) return null;
@@ -11,15 +11,16 @@ const Attribute = config => {
   const hasDates = arrayHasItems(config.dates);
   const hasExcludeDates = arrayHasItems(config.excludeDates);
   const excludeMode = config.excludeMode || 'intersects';
+  const dateConfig = pick(config, ['order', 'locale']);
   const dates = (
     (hasDates && config.dates) || // Use provided dates if they have items
     (hasExcludeDates && [{}]) || // Use infinite range if exclude dates were provided
     []
   ) // Use just an empty array
-    .map(d => d && (d.isDateInfo ? d : DateInfo(d, config.order)))
+    .map(d => d && (d.isDateInfo ? d : new DateInfo(d, dateConfig)))
     .filter(d => d);
   const excludeDates = ((hasExcludeDates && config.excludeDates) || [])
-    .map(d => d && (d.isDateInfo ? d : DateInfo(d, config.order)))
+    .map(d => d && (d.isDateInfo ? d : new DateInfo(d, dateConfig)))
     .filter(d => d);
   const isComplex = some(dates, d => d.isComplex);
   const attr = {
