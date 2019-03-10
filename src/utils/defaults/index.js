@@ -2,6 +2,7 @@ import { POPOVER_VISIBILITIES } from '../constants';
 import formats from './formats.json';
 import screens from './screens.json';
 import theme from './theme.json';
+import locales from './locales';
 
 const defaults = {
   componentPrefix: 'v',
@@ -12,6 +13,7 @@ const defaults = {
   formats,
   screens,
   theme,
+  locales,
   datePickerInputProps: ({ dragValue, mode, format }) => ({
     ...(mode === 'single' && {
       style: {

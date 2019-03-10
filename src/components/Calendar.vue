@@ -262,7 +262,7 @@ export default {
       return AttributeStore(this.attributes, this.locale_);
     },
     locale_() {
-      return new Locale(this.locale || this.$vc.defaults.locale);
+      return this.$vc.getLocale(this.locale);
     },
   },
   watch: {
