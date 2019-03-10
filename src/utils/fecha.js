@@ -256,12 +256,7 @@ export const format = (dateObj, mask, locale) => {
       : $0.slice(1, $0.length - 1),
   );
   // Inline literal values back into the formatted value
-  const str = mask.replace(/\?\?/g, () => literals.shift());
-  // if (mask === 'MMMM YYYY') {
-  //   console.log('Here', str);
-  // }
-  // console.log(mask);
-  return str;
+  return mask.replace(/\?\?/g, () => literals.shift());
 };
 
 const parseString = (dateStr, mask, locale) => {

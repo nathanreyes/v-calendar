@@ -45,7 +45,6 @@ export default class DateInfo {
         // Initialize start and end dates (null means infinity)
         let start = this.toDate(config.start);
         let end = this.toDate(config.end);
-        // if (isNaN(start)) console.log('NaN', config.start, config.end);
         // Reconfigure start and end dates if needed
         if (start && end && start > end) {
           const temp = start;
@@ -93,8 +92,6 @@ export default class DateInfo {
             .filter(o => o);
           if (or.length) this.on = { ...this.on, or };
         }
-
-        // console.log(this);
       }
       // Assign flag if date is complex
       this.isComplex = !!this.on;

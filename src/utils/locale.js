@@ -113,19 +113,15 @@ export default class Locale {
 
   toDate(d, format) {
     if (isDate(d)) {
-      // console.log('date', d);
       return new Date(d.getTime());
     }
     if (isNumber(d)) {
-      console.log('number', d);
       return new Date(d);
     }
     if (isString(d)) {
-      console.log('string', d);
       return this.parse(d, format);
     }
     if (isObject(d)) {
-      console.log('object', d);
       const date = new Date();
       return new Date(
         d.year || date.getFullYear(),

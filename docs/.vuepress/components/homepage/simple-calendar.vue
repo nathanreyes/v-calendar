@@ -118,8 +118,6 @@ let { month: nextMonth, year: nextMonthYear } = pageForNextMonth(
 thisMonth--;
 nextMonth--;
 
-console.log(thisMonth, thisMonthYear, nextMonth, nextMonthYear);
-
 const color = '#ff8080';
 const hSpacing = '15px';
 
