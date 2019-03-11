@@ -50,14 +50,14 @@ export default {
   },
   mixins: [childMixin],
   props: {
-    day: Object,
+    day: { type: Object, required: true },
   },
   computed: {
     popovers() {
-      return this.day && this.day.popovers;
+      return this.day.popovers;
     },
     attributes() {
-      return this.day && this.day.attributes;
+      return this.day.attributes;
     },
     hasPopovers() {
       return !!arrayHasItems(this.popovers);

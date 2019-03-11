@@ -1,6 +1,6 @@
 <template>
   <!-- Content row -->
-  <div :class="['vc-day-popover-row', { 'selectable': isSelectable }]" @click="$emit('select')">
+  <div class="vc-day-popover-row">
     <!-- Indicator -->
     <div v-if="!hideIndicator && indicatorStyle" class="vc-day-popover-row-indicator">
       <span :style="indicatorStyle"></span>
@@ -19,44 +19,41 @@ export default {
     hideIndicator: Boolean,
   },
   computed: {
-    isSelectable() {
-      return this.$listeners.select;
-    },
     indicatorStyle() {
-      const attr = this.attribute;
-      if (attr.highlight) {
+      const { highlight, dot, bar } = this.attribute;
+      if (highlight) {
         return {
-          backgroundColor: attr.highlight.backgroundColor,
+          backgroundColor: highlight.backgroundColor,
           width: '10px',
           height: '5px',
           borderRadius: '3px',
-          opacity: attr.highlight.opacity,
+          opacity: highlight.opacity,
         };
       }
-      if (attr.dot) {
+      if (dot) {
         return {
-          backgroundColor: attr.dot.backgroundColor,
+          backgroundColor: dot.backgroundColor,
           width: '5px',
           height: '5px',
           borderRadius: '50%',
-          opacity: attr.dot.opacity,
+          opacity: dot.opacity,
         };
       }
-      if (attr.bar) {
+      if (bar) {
         return {
-          backgroundColor: attr.bar.backgroundColor,
+          backgroundColor: bar.backgroundColor,
           width: '10px',
           height: '3px',
-          opacity: attr.bar.opacity,
+          opacity: bar.opacity,
         };
       }
-      if (attr.contentStyle) {
-        return {
-          backgroundColor: attr.contentStyle.color,
-          width: '5px',
-          height: '5px',
-        };
-      }
+      // if (contentStyle) {
+      //   return {
+      //     backgroundColor: contentStyle.color,
+      //     width: '5px',
+      //     height: '5px',
+      //   };
+      // }
       return null;
     },
   },
@@ -65,18 +62,13 @@ export default {
 
 <style lang='sass' scoped>
 
-@import '../styles/mixins.sass'
+@import '../styles/vars.sass'
 
 .vc-day-popover-row
   display: flex
   align-items: center
   padding: 2px 5px
   transition: all $day-content-transition-time
-  width: 
-  &.selectable
-    cursor: pointer
-    &:hover
-      background-color: rgba(0, 0, 0, 0.1)
   &:not(:first-child)
     margin-top: 3px
   .vc-day-popover-row-indicator

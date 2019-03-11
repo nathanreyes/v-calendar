@@ -177,7 +177,15 @@ export default {
       return this.attributes.length;
     },
     attributesList() {
-      return this.attributes.onDay(this.day);
+      return this.attributes.onDay(this.day).map(attr => {
+        const { highlight, dot, bar, content } = attr;
+        return {
+          ...attr,
+          highlight: highlight && this.theme.normalizeHighlight(highlight),
+          dot: dot && this.theme.normalizeDot(dot),
+          bar: bar && this.theme.normalizeBar(bar),
+        };
+      });
     },
     attributesMap() {
       return objectFromArray(this.attributesList);
@@ -376,10 +384,7 @@ export default {
     processHighlight({ key, highlight, targetDate }, { backgrounds, content }) {
       if (!highlight) return;
       const { isDate, isComplex, startTime, endTime } = targetDate;
-      const { base, start, end } = this.theme.normalizeHighlight(
-        highlight,
-        this.theme,
-      );
+      const { base, start, end } = highlight;
       let targetArea;
       if (isDate || isComplex) {
         backgrounds.push({
@@ -475,7 +480,7 @@ export default {
     processDot({ key, dot, targetDate }, { dots }) {
       if (!dot) return;
       const { isDate, startTime, endTime } = targetDate;
-      const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
+      const { base, start, end } = dot;
       const onStart = startTime === this.dateTime;
       const onEnd = endTime === this.dateTime;
       if (isDate || onStart) {
@@ -498,7 +503,7 @@ export default {
     processBar({ key, bar, targetDate }, { bars }) {
       if (!bar) return;
       const { isDate, startTime, endTime } = targetDate;
-      const { base, start, end } = this.theme.normalizeBar(bar, this.theme);
+      const { base, start, end } = bar;
       const onStart = startTime === this.dateTime;
       const onEnd = endTime === this.dateTime;
       if (isDate || onStart) {
