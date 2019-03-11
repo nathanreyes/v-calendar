@@ -11,7 +11,7 @@ export const setupCalendar = (Vue, opts) => {
   setupScreens(Vue, mergedDefaults.screens);
   // Create a component for global state & event bus communication
   // ...Sorry, can't assume we are using Vuex as a library
-  const vc = new Vue({
+  const $vc = new Vue({
     data() {
       return {
         activeRefs: {},
@@ -61,6 +61,6 @@ export const setupCalendar = (Vue, opts) => {
       },
     },
   });
-  Vue.prototype.$vc = vc;
-  return vc;
+  Vue.prototype.$vc = $vc;
+  return $vc;
 };

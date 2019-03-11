@@ -18,7 +18,7 @@ import {
   createGuid,
   toDate,
 } from '@/utils/helpers';
-import { generateTheme } from '@/utils/theme';
+import Theme from '@/utils/theme';
 import { isNumber } from '@/utils/_';
 
 export default {
@@ -260,6 +260,14 @@ export default {
         ...this.formats,
       };
     },
+    theme_() {
+      const { color, isDark, theme } = this;
+      return new Theme({
+        color,
+        isDark,
+        config: theme,
+      });
+    },
     locale_() {
       return this.$vc.getLocale(this.locale);
     },
@@ -271,26 +279,20 @@ export default {
     toPage() {
       this.refreshPages();
     },
-    color() {
-      this.refreshTheme();
-    },
-    isDark() {
-      this.refreshTheme();
-    },
-    theme(val) {
-      this.refreshTheme();
-    },
     formats_() {
       this.refreshFormats();
+    },
+    theme_(val) {
+      this.refreshTheme();
     },
     locale_() {
       this.refreshLocale();
     },
   },
   created() {
-    this.refreshTheme();
     this.refreshFormats();
     this.refreshLocale();
+    this.refreshTheme();
     this.refreshPages();
   },
   methods: {
@@ -301,7 +303,7 @@ export default {
       this.sharedState.locale = this.locale_;
     },
     refreshTheme() {
-      this.sharedState.theme = generateTheme({
+      this.sharedState.theme = new Theme({
         color: this.color,
         isDark: this.isDark,
         config: this.theme,

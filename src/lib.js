@@ -18,9 +18,9 @@ const components = {
 const VCalendar = {
   install: (Vue, opts) => {
     // Setup plugin with options
-    const vc = setupCalendar(Vue, opts);
+    const $vc = setupCalendar(Vue, opts);
     Object.keys(components).forEach(k =>
-      Vue.component(`${vc.defaults.componentPrefix}${k}`, components[k]),
+      Vue.component(`${$vc.defaults.componentPrefix}${k}`, components[k]),
     );
   },
 };

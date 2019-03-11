@@ -7,7 +7,7 @@ import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
 import Attribute from '@/utils/attribute';
-import { generateTheme } from '@/utils/theme';
+import Theme from '@/utils/theme';
 import { addDays } from '@/utils/dateInfo';
 import { addTapOrClickHandler } from '@/utils/touch';
 import {
@@ -162,7 +162,7 @@ export default {
     },
     theme_() {
       const { color, isDark, theme } = this;
-      return generateTheme({
+      return new Theme({
         color,
         isDark,
         config: theme,
