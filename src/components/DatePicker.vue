@@ -100,7 +100,7 @@ export default {
     availableDates: null,
     color: String,
     isDark: Boolean,
-    inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
+    inputProps: { type: Object, default: () => ({}) },
     updateOnInput: Boolean,
     // updateOnInput: {
     //   type: Boolean,
@@ -111,9 +111,9 @@ export default {
     //   type: Number,
     //   default: () => defaults.datePickerInputDebounce,
     // },
-    dragAttribute: Object, // Resolved by computed property
-    selectAttribute: Object, // Resolved by computed property
-    disabledAttribute: Object, // Resolved by computed property
+    dragAttribute: Object,
+    selectAttribute: Object,
+    disabledAttribute: Object,
     popoverExpanded: Boolean,
     // popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
     popoverDirection: String,
@@ -284,9 +284,7 @@ export default {
       this.value_ = null;
     },
     value(val) {
-      if (!this.picker.valuesAreEqual(val, this.value_)) {
-        this.value_ = val;
-      }
+      this.refreshValue();
     },
     value_(val) {
       if (!this.disableFormatInput) this.formatInput();
@@ -316,7 +314,7 @@ export default {
     // },
   },
   created() {
-    this.formatInput();
+    this.refreshValue();
   },
   mounted() {
     on(document, 'keydown', this.onDocumentKeyDown);
@@ -333,6 +331,11 @@ export default {
     });
   },
   methods: {
+    refreshValue() {
+      if (!this.picker.valuesAreEqual(this.value, this.value_)) {
+        this.value_ = this.value;
+      }
+    },
     dateIsValid(date) {
       if (
         this.disabledAttribute &&
