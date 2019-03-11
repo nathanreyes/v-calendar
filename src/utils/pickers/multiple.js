@@ -10,8 +10,8 @@ import { isString, isDate, last } from '@/utils/_';
 
 export default class MultiplePicker {
   constructor({ format, parse }) {
-    this.format = format;
-    this.parse = parse;
+    this._format = format;
+    this._parse = parse;
   }
 
   hasValue(value) {
@@ -20,7 +20,7 @@ export default class MultiplePicker {
 
   format(value) {
     if (this.hasValue(value)) {
-      return value.map(d => this.format(d)).join(', ');
+      return value.map(d => this._format(d)).join(', ');
     }
     return '';
   }
@@ -29,7 +29,7 @@ export default class MultiplePicker {
     if (!isString(text)) return [];
     return text
       .split(',')
-      .map(s => this.parse(s))
+      .map(s => this._parse(s))
       .filter(d => isDate(d));
   }
 

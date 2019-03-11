@@ -3,8 +3,8 @@ import { isDate } from '@/utils/_';
 
 export default class SinglePicker {
   constructor({ format, parse }) {
-    this.format = format;
-    this.parse = parse;
+    this._format = format;
+    this._parse = parse;
   }
 
   hasValue(value) {
@@ -12,12 +12,11 @@ export default class SinglePicker {
   }
 
   format(value) {
-    console.log('format single', value);
-    return this.hasValue(value) ? this.format(value) : '';
+    return this.hasValue(value) ? this._format(value) : '';
   }
 
   parse(text) {
-    const value = this.parse(text);
+    const value = this._parse(text);
     return isDate(value) ? value : null;
   }
 

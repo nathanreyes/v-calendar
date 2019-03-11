@@ -5,13 +5,13 @@ import {
   datesAreEqual,
 } from '@/utils/helpers';
 import DateInfo from '@/utils/dateInfo';
-import { isDate } from '@/utils/_';
+import { isDate, isObject } from '@/utils/_';
 
 export default class RangePicker {
   constructor({ locale, format, parse }) {
-    this.locale = locale;
-    this.format = format;
-    this.parse = parse;
+    this._locale = locale;
+    this._format = format;
+    this._parse = parse;
   }
 
   hasValue(value) {
@@ -25,7 +25,7 @@ export default class RangePicker {
         start: new Date(value.start),
         end: new Date(value.end),
       },
-      { locale: this.locale, parseFormat: this.parseFormat },
+      { locale: this._locale, parseFormat: this.parseFormat },
     );
     return { start, end };
   }
@@ -33,11 +33,11 @@ export default class RangePicker {
   format(value, dragValue) {
     let startText, endText;
     if (dragValue) {
-      startText = this.format(dragValue.start);
-      endText = this.format(dragValue.end);
+      startText = this._format(dragValue.start);
+      endText = this._format(dragValue.end);
     } else if (value) {
-      startText = this.format(value.start);
-      endText = this.format(value.end);
+      startText = this._format(value.start);
+      endText = this._format(value.end);
     }
     if (!startText || !endText) return '';
     return `${startText} - ${endText}`;
