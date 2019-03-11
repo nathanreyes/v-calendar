@@ -5,7 +5,8 @@ import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
 import CalendarDayPopovers from './CalendarDayPopovers';
 import SvgIcon from './SvgIcon';
-import AttributeStore from '../utils/attributeStore';
+import AttributeStore from '@/utils/attributeStore';
+import { rootMixin } from '@/utils/mixins/root';
 import {
   pageForDate,
   pageForThisMonth,
@@ -18,7 +19,6 @@ import {
   createGuid,
   toDate,
 } from '@/utils/helpers';
-import Theme from '@/utils/theme';
 import { isNumber } from '@/utils/_';
 
 export default {
@@ -175,14 +175,15 @@ export default {
 
     return getContainerGrid();
   },
+  mixins: [rootMixin],
   provide() {
     return {
       sharedState: this.sharedState,
     };
   },
   props: {
-    color: { type: String, default: 'blue' },
-    isDark: { type: Boolean, default: false },
+    color: String,
+    isDark: Boolean,
     rows: {
       type: Number,
       default: 1,
@@ -209,7 +210,7 @@ export default {
     attributes: Array,
     formats: Object,
     theme: Object,
-    locale: String,
+    locale: null,
   },
   data() {
     return {
@@ -254,39 +255,22 @@ export default {
     attributes_() {
       return AttributeStore(this.attributes, this.locale_);
     },
-    formats_() {
-      return {
-        ...this.$vc.formats,
-        ...this.formats,
-      };
-    },
-    theme_() {
-      const { color, isDark, theme } = this;
-      return new Theme({
-        color,
-        isDark,
-        config: theme,
-      });
-    },
-    locale_() {
-      return this.$vc.getLocale(this.locale);
-    },
   },
   watch: {
+    formats_() {
+      this.refreshFormats();
+    },
+    locale_() {
+      this.refreshLocale();
+    },
+    theme_(val) {
+      this.refreshTheme();
+    },
     fromPage() {
       this.refreshPages();
     },
     toPage() {
       this.refreshPages();
-    },
-    formats_() {
-      this.refreshFormats();
-    },
-    theme_(val) {
-      this.refreshTheme();
-    },
-    locale_() {
-      this.refreshLocale();
     },
   },
   created() {
@@ -303,11 +287,7 @@ export default {
       this.sharedState.locale = this.locale_;
     },
     refreshTheme() {
-      this.sharedState.theme = new Theme({
-        color: this.color,
-        isDark: this.isDark,
-        config: this.theme,
-      });
+      this.sharedState.theme = this.theme_;
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);

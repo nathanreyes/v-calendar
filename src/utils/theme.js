@@ -1,6 +1,4 @@
-import defaultThemeConfig from './defaults/theme.json';
 import {
-  isBoolean,
   isObject,
   isString,
   has,
@@ -20,15 +18,8 @@ function concatString(toString, appendString) {
 }
 
 export default class Theme {
-  constructor({ color, isDark, config }) {
-    this._config = defaults(
-      {
-        color: color || defaultThemeConfig.color,
-        isDark: isBoolean(isDark) ? isDark : defaultThemeConfig.isDark,
-      },
-      config,
-      defaultThemeConfig,
-    );
+  constructor(config) {
+    this._config = { ...config };
     // Make properties of config appear as properties of theme
     toPairs(this._config).forEach(([prop]) => {
       Object.defineProperty(this, prop, {

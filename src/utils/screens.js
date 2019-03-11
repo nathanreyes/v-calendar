@@ -40,7 +40,7 @@ const buildMediaQuery = screens => {
     .join(', ');
 };
 
-const setupScreens = (Vue, screens) => {
+export const setupScreens = (Vue, screens) => {
   if (!screens) return;
   let setup = false;
   // Use a private Vue component to store reactive screen matches
@@ -90,5 +90,3 @@ const setupScreens = (Vue, screens) => {
     },
   });
 };
-
-export default setupScreens;

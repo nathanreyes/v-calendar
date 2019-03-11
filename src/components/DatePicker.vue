@@ -7,7 +7,7 @@ import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
 import Attribute from '@/utils/attribute';
-import Theme from '@/utils/theme';
+import { rootMixin } from '@/utils/mixins/root';
 import { addDays } from '@/utils/dateInfo';
 import { addTapOrClickHandler } from '@/utils/touch';
 import {
@@ -28,9 +28,8 @@ export default {
           ...this.$attrs,
           attributes: this.attributes_,
           formats: this.formats_,
-          color: this.color,
-          isDark: this.isDark,
-          theme: this.theme,
+          theme: this.theme_,
+          locale: this.locale_,
         },
         props: {},
         on: {
@@ -91,6 +90,7 @@ export default {
       }),
     ]);
   },
+  mixins: [rootMixin],
   props: {
     mode: { type: String, default: 'single' },
     value: { type: null, required: true },
@@ -100,9 +100,6 @@ export default {
     availableDates: null,
     color: String,
     isDark: Boolean,
-    formats: Object, // Resolved by computed property
-    theme: Object,
-    locale: String,
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
     updateOnInput: Boolean,
     // updateOnInput: {
@@ -141,6 +138,9 @@ export default {
     //   type: Boolean,
     //   default: () => defaults.popoverKeepVisibleOnInput,
     // },
+    formats: Object,
+    theme: Object,
+    locale: null,
   },
   data() {
     return {
@@ -154,23 +154,6 @@ export default {
     };
   },
   computed: {
-    formats_() {
-      return {
-        ...this.$vc.formats,
-        ...this.formats,
-      };
-    },
-    theme_() {
-      const { color, isDark, theme } = this;
-      return new Theme({
-        color,
-        isDark,
-        config: theme,
-      });
-    },
-    locale_() {
-      return this.$vc.getLocale(this.locale);
-    },
     inputFormats() {
       const inputFormat = this.formats_.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
