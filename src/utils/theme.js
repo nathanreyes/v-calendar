@@ -46,9 +46,9 @@ function normalizeAttr({ config, type, theme }) {
       // Mixin display configs
     } else if (hasAny(config, displayProps)) {
       root = {
-        base: { ...displayProps },
-        start: { ...displayProps },
-        end: { ...displayProps },
+        base: { ...config },
+        start: { ...config },
+        end: { ...config },
       };
     }
   }

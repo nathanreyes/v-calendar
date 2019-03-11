@@ -118,13 +118,9 @@ let { month: nextMonth, year: nextMonthYear } = pageForNextMonth(
 thisMonth--;
 nextMonth--;
 
-const color = '#ff8080';
-const hSpacing = '15px';
-
 export default {
   data() {
     return {
-      selectedColor: 'blue',
       highlights: [
         {
           highlight: 'red',
@@ -270,30 +266,35 @@ export default {
           description: 'Take Noah to basketball practice.',
           isComplete: false,
           dates: new Date(thisMonthYear, thisMonth, 1),
+          color: 'blue',
         },
         {
           id: 2,
           description: 'Get some milks.',
           isComplete: false,
           dates: new Date(thisMonthYear, thisMonth, 5),
+          color: 'red',
         },
         {
           id: 3,
           description: 'Pay the utility bill.',
           isComplete: false,
           dates: new Date(thisMonthYear, thisMonth, 19),
+          color: 'orange',
         },
         {
           id: 4,
           description: 'Pick up clothes from the cleaners.',
           isComplete: false,
           dates: new Date(thisMonthYear, thisMonth, 19),
+          color: 'purple',
         },
         {
           id: 5,
           description: 'Lunch with Leo.',
           isComplete: false,
           dates: new Date(thisMonthYear, thisMonth, 22),
+          color: 'green',
         },
       ],
     };
@@ -308,8 +309,8 @@ export default {
           customData: todo,
           order: todo.id,
           dot: {
-            backgroundColor: color,
-            opacity: todo.isComplete ? 0.3 : 1,
+            color: todo.color,
+            class: todo.isComplete ? 'opacity-25' : '',
           },
           popover: {
             slot: 'todo-row', // Matches slot from above
@@ -319,10 +320,6 @@ export default {
         // 'Add todo' attribute
         {
           key: -1,
-          contentHoverStyle: {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            cursor: 'pointer',
-          },
           dates: {},
           popover: {
             slot: 'add-todo',

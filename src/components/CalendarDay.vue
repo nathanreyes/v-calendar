@@ -335,6 +335,7 @@ export default {
             this.processContent(attr, glyphs);
             this.processDot(attr, glyphs);
             this.processBar(attr, glyphs);
+            this.processPopover(attr, glyphs);
           });
       }
       this.glyphs = glyphs;
@@ -517,7 +518,8 @@ export default {
         });
       }
     },
-    getPopover(attribute) {
+    processPopover(attribute, { popovers }) {
+      if (!attribute.popover) return;
       const {
         label,
         labelStyle,
@@ -527,7 +529,7 @@ export default {
         visibility,
         isInteractive,
       } = attribute.popover;
-      return {
+      popovers.splice(0, 0, {
         key: attribute.key,
         customData: attribute.customData,
         attribute,
@@ -538,7 +540,7 @@ export default {
         hideIndicator,
         visibility: visibility || (label ? 'hover' : 'click'),
         isInteractive: isInteractive !== undefined ? isInteractive : !label,
-      };
+      });
     },
   },
 };
