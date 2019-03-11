@@ -442,7 +442,10 @@ export default {
     },
     formatInput() {
       this.$nextTick(() => {
-        this.inputValue = this.picker.format(this.value_, this.dragValue);
+        const value = this.picker.hasValue(this.dragValue)
+          ? this.dragValue
+          : this.value;
+        this.inputValue = this.picker.format(value);
       });
     },
     hidePopover() {

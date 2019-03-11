@@ -30,15 +30,10 @@ export default class RangePicker {
     return { start, end };
   }
 
-  format(value, dragValue) {
-    let startText, endText;
-    if (dragValue) {
-      startText = this._format(dragValue.start);
-      endText = this._format(dragValue.end);
-    } else if (value) {
-      startText = this._format(value.start);
-      endText = this._format(value.end);
-    }
+  format(value) {
+    const { start, end } = this.normalize(value);
+    const startText = this._format(start);
+    const endText = this._format(end);
     if (!startText || !endText) return '';
     return `${startText} - ${endText}`;
   }
