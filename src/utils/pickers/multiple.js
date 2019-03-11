@@ -3,10 +3,9 @@ import {
   getMaxPage,
   addPages,
   arrayHasItems,
-  uniq,
   datesAreEqual,
 } from '@/utils/helpers';
-import { isString, isDate, last } from '@/utils/_';
+import { isString, isDate, last, uniq } from '@/utils/_';
 
 export default class MultiplePicker {
   constructor({ format, parse }) {

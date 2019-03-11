@@ -55,3 +55,4 @@ export const map = _map;
 export const some = _some;
 export const first = _first;
 export const last = _last;
+export const uniq = _uniq;
