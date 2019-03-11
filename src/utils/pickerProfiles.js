@@ -174,7 +174,7 @@ export const rangeFormatter = (value, dragValue, formatter) => {
 export const rangeParser = (text, parser) => {
   const dateTexts = text.split('-').map(s => s.trim());
   if (dateTexts.length >= 2) {
-    const { start, end } = DateInfo({
+    const { start, end } = new DateInfo({
       start: singleParser(dateTexts[0], parser),
       end: singleParser(dateTexts[1], parser),
     });
@@ -184,7 +184,7 @@ export const rangeParser = (text, parser) => {
 };
 export const rangeNormalizer = value => {
   if (!value || !value.start || !value.end) return null;
-  const { start, end } = DateInfo({
+  const { start, end } = new DateInfo({
     start: new Date(value.start),
     end: new Date(value.end),
   });

@@ -42,20 +42,15 @@
 <script>
 import CalendarDayPopoverRow from './CalendarDayPopoverRow';
 import { arrayHasItems } from '@/utils/helpers';
-import { format } from '@/utils/fecha';
+import { childMixin } from '@/utils/mixins/child';
 
 export default {
   components: {
     CalendarDayPopoverRow,
   },
+  mixins: [childMixin],
   props: {
     day: Object,
-    formats: Object,
-  },
-  data() {
-    return {
-      format,
-    };
   },
   computed: {
     popovers() {

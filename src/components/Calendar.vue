@@ -18,7 +18,6 @@ import {
   createGuid,
   toDate,
 } from '@/utils/helpers';
-import Locale from '@/utils/locale';
 import { generateTheme } from '@/utils/theme';
 import { isNumber } from '@/utils/_';
 
@@ -252,14 +251,14 @@ export default {
         pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
       );
     },
+    attributes_() {
+      return AttributeStore(this.attributes, this.locale_);
+    },
     formats_() {
       return {
         ...this.$vc.formats,
         ...this.formats,
       };
-    },
-    attributes_() {
-      return AttributeStore(this.attributes, this.locale_);
     },
     locale_() {
       return this.$vc.getLocale(this.locale);

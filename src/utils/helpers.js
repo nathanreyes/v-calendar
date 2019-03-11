@@ -1,4 +1,4 @@
-import { isArray, isObject, isFunction } from './_';
+import { isArray, isObject, isFunction, isDate } from './_';
 
 export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
 
@@ -71,6 +71,14 @@ export const addPages = ({ month, year }, count) => {
     year,
   };
 };
+
+export function datesAreEqual(a, b) {
+  const aIsDate = isDate(a);
+  const bIsDate = isDate(b);
+  if (!aIsDate && !bIsDate) return true;
+  if (aIsDate !== bIsDate) return false;
+  return a.getTime() === b.getTime();
+}
 
 export const arrayHasItems = array => isArray(array) && array.length;
 

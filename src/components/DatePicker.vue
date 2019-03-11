@@ -3,18 +3,17 @@ import Calendar from './Calendar';
 import Fragment from './Fragment';
 import Popover from './Popover';
 import PopoverRef from './PopoverRef';
-import PickerProfile from '@/utils/pickerProfiles';
+import SinglePicker from '@/utils/pickers/single';
+import MultiplePicker from '@/utils/pickers/multiple';
+import RangePicker from '@/utils/pickers/range';
 import Attribute from '@/utils/attribute';
-import defaults from '@/utils/defaults';
 import { generateTheme } from '@/utils/theme';
 import { addDays } from '@/utils/dateInfo';
-import { format, parse } from '@/utils/fecha';
 import { addTapOrClickHandler } from '@/utils/touch';
 import {
   arrayHasItems,
   evalFn,
   createGuid,
-  toDate,
   elementContains,
   on,
   off,
@@ -101,38 +100,47 @@ export default {
     availableDates: null,
     color: String,
     isDark: Boolean,
-    theme: Object,
     formats: Object, // Resolved by computed property
+    theme: Object,
+    locale: String,
     inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
-    updateOnInput: {
-      type: Boolean,
-      default: () => defaults.datePickerUpdateOnInput,
-    },
-    inputDebounce: {
-      type: Number,
-      default: () => defaults.datePickerInputDebounce,
-    },
+    updateOnInput: Boolean,
+    // updateOnInput: {
+    //   type: Boolean,
+    //   default: () => defaults.datePickerUpdateOnInput,
+    // },
+    inputDebounce: Number,
+    // inputDebounce: {
+    //   type: Number,
+    //   default: () => defaults.datePickerInputDebounce,
+    // },
     dragAttribute: Object, // Resolved by computed property
     selectAttribute: Object, // Resolved by computed property
     disabledAttribute: Object, // Resolved by computed property
-    popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
-    popoverDirection: {
-      type: String,
-      default: () => defaults.popoverDirection,
-    },
-    popoverAlign: { type: String, default: () => defaults.popoverAlign },
-    popoverVisibility: {
-      type: String,
-      default: () => defaults.popoverVisibility,
-    },
-    popoverContentOffset: {
-      type: Number,
-      default: () => defaults.popoverContentOffset,
-    },
-    popoverKeepVisibleOnInput: {
-      type: Boolean,
-      default: () => defaults.popoverKeepVisibleOnInput,
-    },
+    popoverExpanded: Boolean,
+    // popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
+    popoverDirection: String,
+    // popoverDirection: {
+    //   type: String,
+    //   default: () => defaults.popoverDirection,
+    // },
+    popoverAlign: String,
+    // popoverAlign: { type: String, default: () => defaults.popoverAlign },
+    popoverVisibility: String,
+    // popoverVisibility: {
+    //   type: String,
+    //   default: () => defaults.popoverVisibility,
+    // },
+    popoverContentOffset: Number,
+    // popoverContentOffset: {
+    //   type: Number,
+    //   default: () => defaults.popoverContentOffset,
+    // },
+    popoverKeepVisibileOnInput: Boolean,
+    // popoverKeepVisibleOnInput: {
+    //   type: Boolean,
+    //   default: () => defaults.popoverKeepVisibleOnInput,
+    // },
   },
   data() {
     return {
@@ -148,7 +156,7 @@ export default {
   computed: {
     formats_() {
       return {
-        ...defaults.formats,
+        ...this.$vc.formats,
         ...this.formats,
       };
     },
@@ -160,19 +168,30 @@ export default {
         config: theme,
       });
     },
+    locale_() {
+      return this.$vc.getLocale(this.locale);
+    },
     inputFormats() {
       const inputFormat = this.formats_.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
-    profile() {
-      return PickerProfile(
-        this.mode,
-        d => format(d, this.inputFormats[0]),
-        s => parse(s, this.inputFormats),
-      );
+    picker() {
+      const opts = {
+        locale: this.locale_,
+        format: d => this.locale_.format(d, this.inputFormats[0]),
+        parse: s => this.locale_.parse(s, this.inputFormats),
+      };
+      switch (this.mode) {
+        case 'multiple':
+          return new MultiplePicker(opts);
+        case 'range':
+          return new RangePicker(opts);
+        default:
+          return new SinglePicker(opts);
+      }
     },
     selectAttribute_() {
-      if (!this.profile.hasValue(this.value_)) return null;
+      if (!this.picker.hasValue(this.value_)) return null;
       const attribute = {
         key: 'select',
         ...this.selectAttribute,
@@ -185,7 +204,7 @@ export default {
       return attribute;
     },
     dragAttribute_() {
-      if (this.mode !== 'range' || !this.profile.hasValue(this.dragValue))
+      if (this.mode !== 'range' || !this.picker.hasValue(this.dragValue))
         return null;
       const attribute = {
         key: 'drag',
@@ -207,8 +226,8 @@ export default {
       }
       // Add disabled dates for minDate and maxDate props
       let { 'min-date': minDate, 'max-date': maxDate } = this.$attrs;
-      minDate = toDate(minDate);
-      maxDate = toDate(maxDate);
+      minDate = this.locale_.toDate(minDate);
+      maxDate = this.locale_.toDate(maxDate);
       if (minDate) {
         dates.push({ start: null, end: addDays(minDate, -1) });
       }
@@ -282,7 +301,7 @@ export default {
       this.value_ = null;
     },
     value(val) {
-      if (!this.profile.valuesAreEqual(val, this.value_)) {
+      if (!this.picker.valuesAreEqual(val, this.value_)) {
         this.value_ = val;
       }
     },
@@ -302,7 +321,7 @@ export default {
     },
     dragValue(val) {
       this.formatInput();
-      this.$emit('drag', this.profile.normalizeValue(val));
+      this.$emit('drag', this.picker.normalize(val));
     },
     // disabledAttribute_(val) {
     //   if (!this.dragValue && val) {
@@ -351,12 +370,12 @@ export default {
       }
     },
     onDayClick(day) {
-      this.profile.handleDayClick(day, this);
+      this.picker.handleDayClick(day, this);
       // Re-emit event
       this.$emit('dayclick', day);
     },
     onDayMouseEnter(day) {
-      this.profile.handleDayMouseEnter(day, this);
+      this.picker.handleDayMouseEnter(day, this);
       // Re-emit event
       this.$emit('daymouseenter', day);
     },
@@ -415,18 +434,16 @@ export default {
       // Reassign input value for good measure
       this.inputValue = isString(value) ? value : this.inputValue;
       // Parse value if needed
-      const userValue = isString(value)
-        ? this.profile.parseValue(value)
-        : value;
+      const userValue = isString(value) ? this.picker.parse(value) : value;
       // Filter out any disabled dates
-      const validatedValue = this.profile.filterDisabled({
-        value: this.profile.normalizeValue(userValue),
+      const validatedValue = this.picker.filterDisabled({
+        value: this.picker.normalizeValue(userValue),
         isRequired: this.isRequired,
         disabled: this.disabledAttribute_,
         fallbackValue: this.value_,
       });
       // If final value is equal to the current value
-      if (this.profile.valuesAreEqual(this.value_, validatedValue)) {
+      if (this.picker.valuesAreEqual(this.value_, validatedValue)) {
         // Just format input and hide popover if needed
         if (formatInput) this.formatInput();
         if (hidePopover && !this.isInline) this.hidePopover();
@@ -439,7 +456,7 @@ export default {
     },
     formatInput() {
       this.$nextTick(() => {
-        this.inputValue = this.profile.formatValue(this.value_, this.dragValue);
+        this.inputValue = this.picker.format(this.value_, this.dragValue);
       });
     },
     hidePopover() {

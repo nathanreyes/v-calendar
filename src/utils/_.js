@@ -22,6 +22,7 @@ import _pick from 'lodash/pick';
 import _map from 'lodash/map';
 import _some from 'lodash/some';
 import _last from 'lodash/last';
+import _uniq from 'lodash/uniq';
 
 // Type checkers
 export const getType = value =>

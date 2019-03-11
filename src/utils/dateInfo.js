@@ -10,7 +10,7 @@ export function addDays(date, days) {
 }
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale, format }) {
+  constructor(config, { order = 0, locale, parseFormat }) {
     this.isDateInfo = true;
     this.isRange = isObject(config) || isFunction(config);
     this.isDate = !this.isRange;
@@ -19,12 +19,12 @@ export default class DateInfo {
     this.toDate = locale.toDate;
     this.getMonthComps = locale.getMonthComps;
     this.firstDayOfWeek = locale.firstDayOfWeek;
-    this.opts = { order, locale };
+    this.opts = { order, locale, parseFormat };
     // Process date
     if (this.isDate) {
       this.type = 'date';
       // Initialize date from config
-      let date = this.toDate(config, format);
+      let date = this.toDate(config, parseFormat);
       // Can't accept invalid dates
       date = isDate(date) ? date : new Date();
       // Strip date time
