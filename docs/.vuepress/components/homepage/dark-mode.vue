@@ -2,7 +2,7 @@
   <div class="border-t border-b border-grey-9 my-10 shadow-inner" :style="bgStyle">
     <div class="section">
       <h2 class="h2 text-grey-2 mb-4">Dark Mode</h2>
-      <p class="text-lg font-medium text-grey-5 mb-8">Darken all the things</p>
+      <p class="text-lg font-medium text-grey-5 mb-6">Darken all the things</p>
       <div class="flex flex-col items-center md:flex-row md:justify-around">
         <div class="mb-6">
           <v-calendar color="blue" :attributes="attributes" is-dark/>

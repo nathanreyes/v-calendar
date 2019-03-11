@@ -2,8 +2,8 @@
   <div class="section">
     <h2 class="h2">Simple Calendars</h2>
     <p
-      class="mb-8"
-    >Build simple calendars for displaying attributes like highlights, dots, bars and even custom popovers with custom theme support.</p>
+      class="text-lg font-medium text-grey-6 mb-6"
+    >Show highlights, dots, bars and even custom popovers</p>
     <div class="flex flex-col items-center md:flex-row md:justify-around">
       <div class="mb-6">
         <h3 class="text-base semibold text-grey-7 mb-3">Highlights</h3>
