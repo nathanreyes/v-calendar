@@ -22,8 +22,9 @@
             <v-date-picker
               mode="range"
               v-model="range2"
-              :input-props="{ id: 'birthdate', class: inputClass }"
+              :input-props="{ id: 'birthdate' }"
               :disabled-dates="disabledDates"
+              :popover="{ placement: 'top' }"
             />
           </div>
         </form>
@@ -41,8 +42,6 @@ export default {
   data() {
     return {
       labelClass: 'block text-grey-7 text-sm text-left font-bold mb-2',
-      inputClass:
-        'shadow appearance-none border rounded w-full py-2 px-3 text-grey-7',
       inputLabel: 'Select Range',
       date: new Date(),
       dates: [
