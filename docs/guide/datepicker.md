@@ -1,10 +1,9 @@
 ---
+title: 'Date Picker'
 sidebarDepth: 2
 ---
 
 # Date Picker
-
-[Click here to reference the API for `v-date-picker`.](/api/datepicker.md)
 
 `v-date-picker` is a powerful date picker delivered with `v-calendar`. It is simply a wrapper for `v-calendar` so it comes with a lot of flexibility out of the box. For example, it can accept all props supported by `v-calendar` and emits all of the same events.
 
@@ -28,9 +27,7 @@ export default {
 };
 ```
 
-<ClientOnly>
-  <guide-datepicker-intro-popover />
-</ClientOnly>
+<guide-datepicker-intro-popover />
 
 Alternatively, the calendar can be displayed inline (not as a popover) by setting the`is-inline` prop.
 
@@ -51,10 +48,7 @@ export default {
   },
 };
 ```
-
-<ClientOnly>
-  <guide-datepicker-intro-inline />
-</ClientOnly>
+<guide-datepicker-intro-inline />
 
 ## Selection Modes
 
@@ -114,8 +108,7 @@ export default {
 ```
 
 <ClientOnly>
-  <guide-datepicker-multiple>
-  </guide-datepicker-multiple>
+  <guide-datepicker-multiple />
 </ClientOnly>
 
 When used as a popover (`is-inline === false`), the user may enter dates in the input element as a list of comma separated date values. Each date is parsed with the built-in date parser using the specified `input` format(s). If the user clears out the input text, the value is set to `null`. [Read this to learn how to configure the input element.](#customize-input-element)
@@ -146,11 +139,180 @@ export default {
 ```
 
 <ClientOnly>
-  <guide-datepicker-range>
-  </guide-datepicker-range>
+  <guide-datepicker-range />
 </ClientOnly>
 
 You can see how the default popover for the range selection displays the currently selected (or dragged) start date and end date with indicators showing the length of the day and night spans. As expected, [this popover can also be configured to your own slot or component](#customize-selection-popover).
+
+### Inline
+
+Use the `is-inline` prop to display the date picker inline.
+
+```html
+<v-date-picker
+  v-model="date"
+  is-inline
+  />
+```
+
+```js
+export default {
+  data() {
+    return {
+      date: new Date(),
+    }
+  }
+}
+```
+
+<guide-readme-dp-inline>
+</guide-readme-dp-inline>
+
+### Native Input
+
+By default, `v-date-picker` uses an input element to natively format and parse dates entered by the user. The `input` element can be classed, styled or assigned attributes via the `input-props` prop.
+
+```html
+<div class='w-full max-w-xs'>
+  <form
+    class='bg-white shadow-md rounded px-8 pt-6 pb-8'
+    @submit.prevent>
+    <label
+      class='block text-grey-7 text-sm font-bold mb-2'
+      for='date'>
+      Select Date
+    </label>
+    <v-date-picker
+      :input-props='inputProps'
+      v-model='date'>
+    </v-date-picker>
+  </form>
+</div>
+```
+
+```js
+export default {
+  data() {
+    return {
+      date: new Date(),
+      inputProps: {
+        id: 'date',
+        class:
+          'shadow appearance-none border rounded w-full py-2 px-3 text-grey-7',
+      },
+    };
+  },
+};
+```
+
+<guide-readme-dp-input />
+
+::: tip
+Reference [TailwindCSS](https://tailwindcss.com/docs/what-is-tailwind/) for style definitions.
+:::
+
+### Custom Slot
+
+Use a custom scoped slot to display your own input element or popover trigger. The `inputProps` and `inputEvents` scope variables are used to properly integrate your own input with the behavior provided by `v-date-picker`. [Click to learn more.](datepicker.md#use-custom-slot)
+
+```html
+<div class="w-full max-w-sm">
+  <form
+    class="bg-white shadow-md rounded px-8 pt-6 pb-8"
+    @submit.prevent>
+    <label
+      class="block text-grey-7 text-sm font-bold mb-2"
+      for="date">
+      Select Date Range
+    </label>
+    <div class="flex w-full">
+      <v-date-picker
+        mode="range"
+        v-model="date"
+        show-caps>
+        <input
+          id="date"
+          class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-7"
+          :class="{ 'border-red': errorMessage }"
+          slot-scope="{ inputProps, inputEvents }"
+          v-bind="inputProps"
+          v-on="inputEvents"
+        >
+      </v-date-picker>
+      <button
+        type="button"
+        class="bg-red-4 hover:bg-red-6 text-white font-bold py-2 px-4 rounded-r"
+        @click="date = null">
+        Clear
+      </button>
+    </div>
+    <p class="text-red-6 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
+    <p class="text-blue-5 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
+  </form>
+</div>
+```
+```js
+export default {
+  data() {
+    return {
+      date: null,
+    };
+  },
+  computed: {
+    errorMessage() {
+      if (!this.date) return 'Date is required.';
+      return '';
+    },
+  },
+};
+```
+<guide-readme-dp-custom-slot />
+
+### Disabling Dates
+
+You can disable dates, date ranges and date patterns using the following methods:
+
+  * Explicitly via `min-date` or `max-date`
+    ```html
+    <!--Set minimum date-->
+    <v-date-picker
+      v-model='date'
+      :min-date='new Date()'
+      is-inline>
+    </v-date-picker>
+    ```
+    <guide-readme-dp-min-max-dates />
+
+  * Explicitly via `disabled-dates` (still works with `min-date` or `max-date`).
+    ```html
+    <!--Disable weekend selection-->
+    <v-date-picker
+      v-model='date'
+      :disabled-dates='{ weekdays: [1, 7] }'
+      is-inline>
+    </v-date-picker>
+    ```
+    <guide-readme-dp-disabled-dates />
+
+  * Implicitly via `available-dates`. Any dates not included in `available-dates` are disabled.
+    ```html
+    <!--Today is the minimum date (null denotes infinite date)-->
+    <v-date-picker
+      :available-dates='{ start: new Date(), end: null }'
+      v-model='date'
+      is-inline>
+    </v-date-picker>
+    ```
+    <guide-readme-dp-available-dates />
+
+::: warning
+When using `disabled-dates` and `available-dates`, `v-calendar` will not automatically disable page navigation for you, whereas using `min-date` and `max-date` will disable pages that are before `min-date` and after `max-date`.
+
+Use the `min-date`, `min-page`, `max-date` or `max-page` props to manually assign the page bounds when using `disabled-dates` or `available-dates`.
+:::
+
+
+
 
 ## Format & Parse Dates
 

@@ -1,6 +1,10 @@
 <template>
   <div class="example">
-    <v-calendar :columns="2" :from-date="new Date(2018, 0, 1)" :attributes="attributes"></v-calendar>
+    <v-calendar
+      :columns="$screens({ lg: 2 }, 1)"
+      :from-date="new Date(2018, 0, 1)"
+      :attributes="attributes"
+    />
   </div>
 </template>
 
@@ -10,9 +14,7 @@ export default {
     return {
       attributes: [
         {
-          dot: {
-            backgroundColor: '#ff4d4d', // Red dot
-          },
+          dot: 'red',
           dates: [
             new Date(2018, 0, 1), // Jan 1st
             new Date(2018, 0, 10), // Jan 10th
@@ -22,9 +24,7 @@ export default {
           ],
         },
         {
-          dot: {
-            backgroundColor: '#398fac', // Turquoise dot
-          },
+          dot: 'cyan',
           dates: [
             new Date(2018, 0, 4), // Jan 4th
             new Date(2018, 0, 10), // Jan 10th
@@ -38,9 +38,7 @@ export default {
           ],
         },
         {
-          dot: {
-            backgroundColor: '#794dff', // Purple dot
-          },
+          dot: 'purple',
           dates: [
             new Date(2018, 0, 12), // Jan 12th
             new Date(2018, 0, 26), // Jan 26th

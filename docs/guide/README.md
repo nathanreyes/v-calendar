@@ -1,13 +1,13 @@
 ---
-title: 'Overview'
+title: 'V-Calendar'
+sidebarDepth: 2
 ---
 
-# Welcome to V-Calendar
+# V-Calendar
 
 V-Calendar is a clean and lightweight plugin for displaying simple, attributed calendars in Vue.js. It uses attributes to decorate the calendar with various visual indicators including highlighted date regions, dots, bars, content styles and classes, and even popovers for simple tooltips or custom slot content.
 
-<guide-readme-cal-intro>
-</guide-readme-cal-intro>
+<guide-attributes-intro/>
 
 Any single attribute may contain one of each object and can be displayed for single dates, date ranges and even complex date patterns. Some examples of complex patterns include:
 * Every other Friday
@@ -16,7 +16,7 @@ Any single attribute may contain one of each object and can be displayed for sin
 
 A date picker is included out of the box with single date, multiple date and date range selection modes. Because `v-date-picker` is simply a wrapper for `v-calendar`, both can be extensively customized using props, slots and theme styling, just like `v-calendar`. And of course, V-Calendar is responsive and mobile friendly. For example, it supports touch swipes for month navigation.
 
-## Calendar
+## Component
 
 `v-calendar` is the core component. By default, it has a neutral design that should blend nicely within any web application, with various layout configuration options: 
   * Responsive multi-row and multi-column layouts
@@ -58,7 +58,7 @@ V-Calendar allows you build responsive designs for multiple screen sizes.
 
 The basic approach can be described in two steps:
 
-1. Specify a few screen sizes to monitor by providing a set of breakpoints (`sm`, `md`, `lg` and `xl`). [The screen size names and dimensions are configurable](#customizing-screen-sizes).
+1. Specify a few screen sizes to monitor by providing a set of breakpoints (`sm`, `md`, `lg` and `xl`). [The screen size names and dimensions are configurable](#screen-sizes).
 
 2. Call the `$screens` function to assign props or create computed properties based on the current screen size. This function automatically re-evaluates behind the scenes any time the window crosses a breakpoint border.
 
@@ -129,10 +129,10 @@ export default {
 ```
 
 :::tip
-The `$screens` function is included as a mixin for all components when using V-Calendar. You can use it to make any of your props or computed properties responsive in any of your own components.
+The `$screens` function is included as a lightweight mixin for all components when using V-Calendar. You can use it to make any of your props or computed properties responsive in any of your own components.
 :::
 
-### Customizing Screen Sizes
+### Screen Sizes
 
 There are 4 screen sizes provided by default:
 ```js
@@ -167,337 +167,6 @@ Then, reference your custom screens when calling the `$screens` function.
   :columns="$screens({ default: 1, laptop: 2 })"
   />
 ```
-
-## Attributes
-
-Attributes provide a powerful way to communicate visual information to your users quickly and effectively. Fortunately, they are also easy to configure. 
-
-### Attribute Types
-
-Attributes are the general term for different kinds of visual adornments to calendar day cells. The following attribute types are currently supported.
-
-* Highlights (Highlighted Background Regions)
-* Dot Indicators
-* Bar Indicators
-* Content Classes :new:
-* Content Styles
-* Popovers
-
-For now, let's start by displaying a simple **highlight** on today's date.
-
-```html
-<v-calendar :attributes='attrs' />
-```
-
-```js
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          key: 'today',
-          highlight: {
-            backgroundColor: '#ff8080',
-            // Other properties allowed, like `height` & `borderRadius`
-          },
-          // Single date or array of dates or date expressions
-          dates: new Date(),
-        },
-      ],
-    };
-  },
-};
-```
-
-<guide-readme-cal-highlight>
-</guide-readme-cal-highlight>
-
-As you can see, attributes are passed as an array of objects (each object is a separate attribute). For the simple example above, we use the following props to build the attribute:
-
-* **`key`**: Uniquely identifies the attribute. This will come in handly later.
-* **`highlight`**: A highlight is a background region displayed on the calendar day.
-* **`dates`**: Specifies what dates the attribute should be displayed on.
-
-With the highlight, the day label loses some contrast, which is not what we want. To add some contrast to the highlighted date, we can use a content style, which is simply a style object that gets applied to the day content text.
-
-```js{11-14}
-export default {
-  data() {
-    return {
-      fromDate: date,
-      attrs: [
-        {
-          key: 'today',
-          highlight: {
-            backgroundColor: '#ff8080',
-          },
-          // Just use a normal style
-          contentStyle: {
-            color: '#fafafa',
-          },
-          dates: new Date(),
-        },
-      ],
-    };
-  },
-};
-```
-
-<guide-readme-cal-content-style>
-</guide-readme-cal-content-style>
-
-Finally, let's see how simple it is to add a popover label (or tooltip) to the calendar when this highlight is hovered over. To do that, we just need to add a popover object to our attribute.
-
-```js{13-15}
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          key: 'today',
-          highlight: {
-            backgroundColor: '#ff8080',
-          },
-          contentStyle: {
-            color: '#fafafa',
-          },
-          popover: {
-            label: 'You just hovered over today\'s date!',
-          },
-          dates: new Date(),
-        },
-      ],
-    };
-  },
-};
-```
-
-<guide-readme-cal-popover>
-</guide-readme-cal-popover>
-
-### Attribute Dates
-
-The second aspect of attributes is specifying where to display them. In the previous example, we saw that all we had to do was use a simple date object assigned to the `dates` property. Note that we aren't limited to using single dates. We can also use an array of dates.
-
-```js
-  ...
-  dates: [ new Date(2018, 0, 1), new Date(2018, 0, 15) ]
-  ...
-```
-
-<guide-readme-cal-multiple-dates>
-</guide-readme-cal-multiple-dates>
-
-Or date ranges...
-
-```js
-  ...
-  dates: [
-    { start: new Date(2018, 0, 1), end: new Date(2018, 0, 5) },
-    { start: new Date(2018, 0, 15), span: 5 } // # of days
-  ]
-  ...
-```
-
-<guide-readme-cal-date-ranges>
-</guide-readme-cal-date-ranges>
-
-Or date patterns.
-
-```js
-  ...
-  dates: { weekdays: [1, 7] } // On the weekends
-  ...
-```
-
-<guide-readme-cal-date-patterns>
-</guide-readme-cal-date-patterns>
-
-## Date Picker
-
-The `v-date-picker` component is a flexible date picker component wrapper around `v-calendar`, which means it supports all props, slots and events that `v-calendar` does.
-
-Using the `mode` prop, it is capable of 3 selection modes:
-  * Single dates (`"single"`)
-  * Multiple dates (`"multiple"`)
-  * Date ranges (`"range"`)
-
-Also, you can utilize 3 different methods of displaying the date picker:
-* **Inline**: Displays inline as a single calendar
-* **Native Input**: Displays a customizable built-in input as a trigger for the calendar popover
-* **Custom Slot**: Use a scoped slot as a trigger for the calendar popover
-
-### Inline
-
-Use the `is-inline` prop to display the date picker inline.
-
-```html
-<v-date-picker
-  v-model="date"
-  is-inline
-  />
-```
-
-```js
-export default {
-  data() {
-    return {
-      date: new Date(),
-    }
-  }
-}
-```
-
-<guide-readme-dp-inline>
-</guide-readme-dp-inline>
-
-### Native Input
-
-By default, `v-date-picker` uses an input element to natively format and parse dates entered by the user. The `input` element can be classed, styled or assigned attributes via the `input-props` prop.
-
-```html
-<div class='w-full max-w-xs'>
-  <form
-    class='bg-white shadow-md rounded px-8 pt-6 pb-8'
-    @submit.prevent>
-    <label
-      class='block text-grey-7 text-sm font-bold mb-2'
-      for='date'>
-      Select Date
-    </label>
-    <v-date-picker
-      :input-props='inputProps'
-      v-model='date'>
-    </v-date-picker>
-  </form>
-</div>
-```
-
-```js
-export default {
-  data() {
-    return {
-      date: new Date(),
-      inputProps: {
-        id: 'date',
-        class:
-          'shadow appearance-none border rounded w-full py-2 px-3 text-grey-7',
-      },
-    };
-  },
-};
-```
-
-<guide-readme-dp-input>
-</guide-readme-dp-input>
-
-::: tip
-Reference [TailwindCSS](https://tailwindcss.com/docs/what-is-tailwind/) for style definitions.
-:::
-
-### Custom Slot
-
-Use a custom scoped slot to display your own input element or popover trigger. The `inputProps` and `inputEvents` scope variables are used to properly integrate your own input with the behavior provided by `v-date-picker`. [Click to learn more.](datepicker.md#use-custom-slot)
-
-```html
-<div class="w-full max-w-sm">
-  <form
-    class="bg-white shadow-md rounded px-8 pt-6 pb-8"
-    @submit.prevent>
-    <label
-      class="block text-grey-7 text-sm font-bold mb-2"
-      for="date">
-      Select Date Range
-    </label>
-    <div class="flex w-full">
-      <v-date-picker
-        mode="range"
-        v-model="date"
-        show-caps>
-        <input
-          id="date"
-          class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-7"
-          :class="{ 'border-red': errorMessage }"
-          slot-scope="{ inputProps, inputEvents }"
-          v-bind="inputProps"
-          v-on="inputEvents"
-        >
-      </v-date-picker>
-      <button
-        type="button"
-        class="bg-red-4 hover:bg-red-6 text-white font-bold py-2 px-4 rounded-r"
-        @click="date = null">
-        Clear
-      </button>
-    </div>
-    <p class="text-red-6 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
-    <p class="text-blue-5 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
-  </form>
-</div>
-```
-```js
-export default {
-  data() {
-    return {
-      date: null,
-    };
-  },
-  computed: {
-    errorMessage() {
-      if (!this.date) return 'Date is required.';
-      return '';
-    },
-  },
-};
-```
-<guide-readme-dp-custom-slot>
-</guide-readme-dp-custom-slot>
-
-### Disabling Dates
-
-You can disable dates, date ranges and date patterns using the following methods:
-
-  * Explicitly via `min-date` or `max-date`
-    ```html
-    <!--Set minimum date-->
-    <v-date-picker
-      v-model='date'
-      :min-date='new Date()'
-      is-inline>
-    </v-date-picker>
-    ```
-    <guide-readme-dp-min-max-dates>
-    </guide-readme-dp-min-max-dates>
-
-  * Explicitly via `disabled-dates` (still works with `min-date` or `max-date`).
-    ```html
-    <!--Disable weekend selection-->
-    <v-date-picker
-      v-model='date'
-      :disabled-dates='{ weekdays: [1, 7] }'
-      is-inline>
-    </v-date-picker>
-    ```
-    <guide-readme-dp-disabled-dates>
-    </guide-readme-dp-disabled-dates>
-
-  * Implicitly via `available-dates`. Any dates not included in `available-dates` are disabled.
-    ```html
-    <!--Today is the minimum date (null denotes infinite date)-->
-    <v-date-picker
-      :available-dates='{ start: new Date(), end: null }'
-      v-model='date'
-      is-inline>
-    </v-date-picker>
-    ```
-    <guide-readme-dp-available-dates>
-    </guide-readme-dp-available-dates>
-
-::: warning
-When using `disabled-dates` and `available-dates`, `v-calendar` will not automatically disable page navigation for you, whereas using `min-date` and `max-date` will disable pages that are before `min-date` and after `max-date`.
-
-Use the `min-date`, `min-page`, `max-date` or `max-page` props to manually assign the page bounds when using `disabled-dates` or `available-dates`.
-:::
 
 ## Formatting & Parsing
 
@@ -604,15 +273,17 @@ With all of this in mind, it is probably best that you rely on the the plugin's 
 
 [Vue.js](https://vuejs.org) version 2.5+ is required.
 
-### 1 Install via npm
+### NPM
+
+#### 1 Install via npm
 
 ```bash
 npm install v-calendar
 ```
 
-### 2 Import and use VCalendar
+#### 2 Import and use VCalendar
 
-#### 2A. Plugin Method (**Recommended**)
+##### 2A. Plugin Method (**Recommended**)
 
 This is the most common use case.
 
@@ -628,7 +299,7 @@ Vue.use(VCalendar, {
 
 ```
 
-#### 2B. Components Method
+##### 2B. Components Method
 
 Or, you can just import and use the calendar if you don't need the `v-date-picker` or `v-popover` components. Keep in mind that `setupCalendar` still needs to be called (passing optional defaults) using this method.
 
@@ -646,7 +317,7 @@ setupCalendar({
 Vue.component('v-calendar', Calendar);
 ```
 
-### 3 Reference in your component templates
+#### 3 Reference in your component templates
 
 ```html
 <template>
@@ -671,7 +342,7 @@ export default {
 </script>
 ```
 
-### Or use a CDN
+### CDN
 ```html
 <html>
   <head>
@@ -705,7 +376,7 @@ export default {
 </html>
 ```
 
-### Polyfill
+### Polyfills
 
 `v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` (<= IE11) or even `Intl` (Javascript's internationalization object, <= IE10) if you wish to target older browsers. Two options for accomplishing this are:
 1. **Easy way:**

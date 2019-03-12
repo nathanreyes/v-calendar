@@ -12,14 +12,7 @@ export default {
       attrs: [
         {
           key: 'today',
-          highlight: {
-            backgroundColor: '#ff8080',
-            // Other properties are available too, like `height` & `borderRadius`
-          },
-          // Just use a normal style
-          contentStyle: {
-            color: '#fafafa',
-          },
+          highlight: true,
           dates: [
             { start: new Date(2018, 0, 1), end: new Date(2018, 0, 5) },
             { start: new Date(2018, 0, 15), span: 5 }, // # of days
