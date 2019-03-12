@@ -1,6 +1,6 @@
 import Theme from '@/utils/theme';
 import Locale from '@/utils/locale';
-import { defaultsDeep, has } from '@/utils/_';
+import { isObject, defaultsDeep, has, get } from '@/utils/_';
 
 export const rootMixin = {
   computed: {
@@ -16,13 +16,8 @@ export const rootMixin = {
       // Merge the default theme with the provided theme
       const config = defaultsDeep(this.theme, this.$vc.theme);
       // Merge in the color and isDark props if they were specifically provided
-      const props = this.$options.propsData;
-      if (has(props, 'color')) {
-        config.color = this.color;
-      }
-      if (has(props, 'isDark')) {
-        config.isDark = this.isDark;
-      }
+      config.color = this.passedProp('color', config.color);
+      config.isDark = this.passedProp('isDark', config.isDark);
       // Create the theme
       return new Theme(config);
     },
@@ -31,6 +26,26 @@ export const rootMixin = {
       if (this.locale instanceof Locale) return this.locale;
       // Let the $vc instance create the locale as they are shared when possible
       return this.$vc.getLocale(this.locale);
+    },
+  },
+  methods: {
+    propOrDefault(prop, defaultPath, strategy) {
+      return this.passedProp(
+        prop,
+        get(this.$vc.defaults, defaultPath),
+        strategy,
+      );
+    },
+    passedProp(prop, fallback, strategy) {
+      if (has(this.$options.propsData, prop)) {
+        console.log('has', prop, this[prop]);
+        const propValue = this[prop];
+        if (isObject(propValue) && strategy === 'merge') {
+          return defaultsDeep(propValue, fallback);
+        }
+        return propValue;
+      }
+      return fallback;
     },
   },
 };

@@ -46,13 +46,14 @@ export default {
     const inputSlot =
       (isFunction(this.$scopedSlots.default) &&
         this.$scopedSlots.default({
-          inputAttrs: this.inputAttrs,
+          inputClass: this.inputClass,
+          inputProps: this.inputProps_,
           inputEvents: this.inputEvents,
           updateValue: this.updateValue,
         })) ||
       h('input', {
         class: this.inputClass,
-        attrs: this.inputAttrs,
+        domProps: this.inputProps_,
         on: this.inputEvents,
       });
     // Return fragment with slot/input and popover w/ calendar
@@ -62,20 +63,13 @@ export default {
         {
           props: {
             id: this.datePickerPopoverId,
-            visibility: this.popoverVisibility,
+            visibility: this.popover_.visibility,
             isInteractive: true,
           },
         },
         [inputSlot],
       ),
       h(Popover, {
-        attrs: {
-          isExpanded: this.popoverExpanded,
-          direction: this.popoverDirection,
-          align: this.popoverAlign,
-          contentOffset: this.popoverContentOffset,
-          isInteractive: true,
-        },
         props: {
           id: this.datePickerPopoverId,
           placement: 'bottom-start',
@@ -100,44 +94,13 @@ export default {
     availableDates: null,
     color: String,
     isDark: Boolean,
-    inputProps: { type: Object, default: () => ({}) },
     updateOnInput: Boolean,
-    // updateOnInput: {
-    //   type: Boolean,
-    //   default: () => defaults.datePickerUpdateOnInput,
-    // },
     inputDebounce: Number,
-    // inputDebounce: {
-    //   type: Number,
-    //   default: () => defaults.datePickerInputDebounce,
-    // },
+    inputProps: { type: Object, default: () => ({}) },
+    popover: { type: Object, default: () => ({}) },
     dragAttribute: Object,
     selectAttribute: Object,
     disabledAttribute: Object,
-    popoverExpanded: Boolean,
-    // popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
-    popoverDirection: String,
-    // popoverDirection: {
-    //   type: String,
-    //   default: () => defaults.popoverDirection,
-    // },
-    popoverAlign: String,
-    // popoverAlign: { type: String, default: () => defaults.popoverAlign },
-    popoverVisibility: String,
-    // popoverVisibility: {
-    //   type: String,
-    //   default: () => defaults.popoverVisibility,
-    // },
-    popoverContentOffset: Number,
-    // popoverContentOffset: {
-    //   type: Number,
-    //   default: () => defaults.popoverContentOffset,
-    // },
-    popoverKeepVisibileOnInput: Boolean,
-    // popoverKeepVisibleOnInput: {
-    //   type: Boolean,
-    //   default: () => defaults.popoverKeepVisibleOnInput,
-    // },
     formats: Object,
     theme: Object,
     locale: null,
@@ -154,24 +117,50 @@ export default {
     };
   },
   computed: {
+    updateOnInput_() {
+      return this.propOrDefault('updateOnInput', 'datePicker.updateOnInput');
+    },
+    inputDebounce_() {
+      return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
+    },
     inputFormats() {
       const inputFormat = this.formats_.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
-    picker() {
-      const opts = {
-        locale: this.locale_,
-        format: d => this.locale_.format(d, this.inputFormats[0]),
-        parse: s => this.locale_.parse(s, this.inputFormats),
-      };
-      switch (this.mode) {
-        case 'multiple':
-          return new MultiplePicker(opts);
-        case 'range':
-          return new RangePicker(opts);
-        default:
-          return new SinglePicker(opts);
+    inputClass() {
+      const inputClass = this.inputProps.class;
+      const inputDragClass = this.inputProps.dragClass;
+      const themeInputClass = this.theme_.datePickerInput;
+      const themeInputDragClass = this.theme_.datePickerInputDrag;
+      if (this.picker.hasValue(this.dragValue)) {
+        return (
+          inputDragClass || inputClass || themeInputDragClass || themeInputClass
+        );
       }
+      return inputClass || themeInputClass;
+    },
+    inputProps_() {
+      // Merge the user props with local
+      const props = {
+        ...this.inputProps,
+        value: this.inputValue,
+        type: 'input',
+      };
+      // Delete class properties
+      delete props.class;
+      delete props.dragClass;
+      return props;
+    },
+    inputEvents() {
+      return {
+        input: this.inputInput,
+        change: this.inputChange,
+        // keydown: this.inputKeydown,
+        keyup: this.inputKeyup,
+      };
+    },
+    popover_() {
+      return this.propOrDefault('popover', 'datePicker.popover', 'merge');
     },
     selectAttribute_() {
       if (!this.picker.hasValue(this.value_)) return null;
@@ -243,39 +232,23 @@ export default {
       }
       return attrs;
     },
-    // inputProps_() {
-    //   const defaultProps = defaults.datePickerInputProps;
-    //   return {
-    //     ...evalFn(defaultProps, {
-    //       mode: this.mode,
-    //       value: this.value_,
-    //       dragValue: this.dragValue,
-    //       format: defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
-    //     }),
-    //     ...this.inputProps,
-    //     value: this.inputValue,
-    //   };
-    // },
-    inputClass() {
-      return this.theme_.datePickerInput;
-    },
-    inputAttrs() {
-      return {
-        ...this.inputProps,
-        value: this.inputValue,
-        type: 'input',
-      };
-    },
-    inputEvents() {
-      return {
-        input: this.inputInput,
-        change: this.inputChange,
-        // keydown: this.inputKeydown,
-        keyup: this.inputKeyup,
-      };
-    },
     popoverContentClass() {
       return this.theme_.container;
+    },
+    picker() {
+      const opts = {
+        locale: this.locale_,
+        format: d => this.locale_.format(d, this.inputFormats[0]),
+        parse: s => this.locale_.parse(s, this.inputFormats),
+      };
+      switch (this.mode) {
+        case 'multiple':
+          return new MultiplePicker(opts);
+        case 'range':
+          return new RangePicker(opts);
+        default:
+          return new SinglePicker(opts);
+      }
     },
   },
   watch: {
@@ -291,7 +264,7 @@ export default {
       if (
         !this.isInline &&
         this.mode !== 'multiple' &&
-        this.popoverVisibility !== 'visible' &&
+        this.popover_.visibility !== 'visible' &&
         !this.disablePopoverHide
       ) {
         this.hidePopover();
@@ -367,11 +340,11 @@ export default {
     },
     inputInput(e) {
       this.inputValue = e.target.value;
-      if (this.updateOnInput) {
+      if (this.updateOnInput_) {
         this.updateValue(this.inputValue, {
           formatInput: false,
           hidePopover: false,
-          debounce: this.inputDebounce,
+          debounce: this.inputDebounce_,
         });
       }
     },
@@ -402,7 +375,7 @@ export default {
       value = this.inputValue,
       {
         formatInput = false,
-        hidePopover = !this.popoverKeepVisibleOnInput,
+        hidePopover = !this.popover_.keepVisibleOnInput,
         debounce,
       } = {},
     ) {
@@ -423,7 +396,7 @@ export default {
       const userValue = isString(value) ? this.picker.parse(value) : value;
       // Filter out any disabled dates
       const validatedValue = this.picker.filterDisabled({
-        value: this.picker.normalizeValue(userValue),
+        value: this.picker.normalize(userValue),
         isRequired: this.isRequired,
         disabled: this.disabledAttribute_,
         fallbackValue: this.value_,
@@ -444,7 +417,7 @@ export default {
       this.$nextTick(() => {
         const value = this.picker.hasValue(this.dragValue)
           ? this.dragValue
-          : this.value;
+          : this.value_;
         this.inputValue = this.picker.format(value);
       });
     },

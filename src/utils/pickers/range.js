@@ -25,13 +25,15 @@ export default class RangePicker {
         start: new Date(value.start),
         end: new Date(value.end),
       },
-      { locale: this._locale, parseFormat: this.parseFormat },
+      { locale: this._locale },
     );
     return { start, end };
   }
 
   format(value) {
-    const { start, end } = this.normalize(value);
+    const nValue = this.normalize(value);
+    if (!nValue) return '';
+    const { start, end } = nValue;
     const startText = this._format(start);
     const endText = this._format(end);
     if (!startText || !endText) return '';
@@ -42,8 +44,8 @@ export default class RangePicker {
     let start, end;
     const dateTexts = text.split('-').map(s => s.trim());
     if (dateTexts.length >= 2) {
-      start = this.parse(dateTexts[0]);
-      end = this.parse(dateTexts[1]);
+      start = this._parse(dateTexts[0]);
+      end = this._parse(dateTexts[1]);
     }
     return start && end ? this.normalize({ start, end }) : null;
   }
