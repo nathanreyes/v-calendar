@@ -41,7 +41,9 @@ export default {
 
 <style lang='sass' scoped>
 
-$slide-translate: 20px
+$slide-translate: 18px
+$slide-duration: .15s
+$slide-timing: ease
 
 .none-enter-active,
 .none-leave-active
@@ -57,7 +59,8 @@ $slide-translate: 20px
 .slide-up-leave-active,
 .slide-down-enter-active,
 .slide-down-leave-active
-  transition: all .22s
+  transition: transform $slide-duration $slide-timing, opacity $slide-duration $slide-timing
+  backface-visibility: hidden
 
 .none-leave-active,
 .fade-leave-active,

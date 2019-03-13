@@ -142,16 +142,16 @@ export default class Theme {
       switch (targetConfig.fillMode) {
         case 'none':
           bgClass = this.getConfig('bgLow', targetConfig);
-          contentClass = this.getConfig('contentAccentHigh', targetConfig);
+          contentClass = this.getConfig('contentAccent', targetConfig);
           break;
         case 'light':
           bgClass = this.getConfig('bgAccentLow', targetConfig);
-          contentClass = this.getConfig('contentAccentHigh', targetConfig);
+          contentClass = this.getConfig('contentAccent', targetConfig);
           break;
         // Solid by default
         default:
           bgClass = this.getConfig('bgAccentHigh', targetConfig);
-          contentClass = this.getConfig('contentLow', targetConfig);
+          contentClass = this.getConfig('contentAccentContrast', targetConfig);
           break;
       }
       concatClass(targetConfig, 'class', bgClass);
