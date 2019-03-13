@@ -272,6 +272,9 @@ export default {
     toPage() {
       this.refreshPages();
     },
+    count() {
+      this.refreshPages();
+    },
   },
   created() {
     this.refreshFormats();

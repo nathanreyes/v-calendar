@@ -7,7 +7,7 @@ export default {
         'div',
         {
           class: [
-            'c-grid-divider-container',
+            'vc-grid-divider-container',
             isHorizontal ? 'is-horizontal' : 'is-vertical',
           ],
           style: {
@@ -112,7 +112,7 @@ export default {
     return h(
       'div',
       {
-        class: 'c-grid-container',
+        class: 'vc-grid-container',
         style: this.containerStyle,
       },
       [...getCells()],
@@ -151,17 +151,19 @@ export default {
 };
 </script>
 
-<style lang='sass'>
+<style scoped>
+.vc-grid-container {
+  position: relative;
+  flex-shrink: 1;
+  display: grid;
+}
 
-.c-grid-container
-  position: relative
-  flex-shrink: 1
-  display: grid
+.vc-grid-divider-container {
+  display: flex;
+  align-items: center;
+}
 
-.c-grid-divider-container
-  display: flex
-  align-items: center
-  &.is-vertical
-    flex-direction: column
-
+.vc-grid-divider-container.is-vertical {
+  flex-direction: column;
+}
 </style>
