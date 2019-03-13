@@ -52,33 +52,33 @@
     "light": "rounded text-xs text-white bg-grey-9 border border-grey-7 px-2 shadow",
     "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 px-2 shadow"
   },
-  "highlightBaseFill": "light",
-  "highlightStartEndFill": "solid",
-  "dotBaseFill": "solid",
-  "barBaseFill": "solid",
-  "fillNone": {
-    "light": "bg-white border-2 border-{color}-6",
-    "dark": "bg-grey-10 border-2 border-{color}-5"
+  "highlightBaseFillMode": "none",
+  "highlightStartEndFillMode": "solid",
+  "dotBaseFillMode": "solid",
+  "barBaseFillMode": "solid",
+  "bgLow": {
+    "light": "bg-white",
+    "dark": "bg-grey-10"
   },
-  "fillNoneContent": {
-    "light": "font-bold text-{color}-9",
-    "dark": "font-bold text-white"
+  "bgAccentLow": {
+    "light": "bg-{color}-2",
+    "dark": "bg-{color}-9"
   },
-  "fillLight": {
-    "light": "bg-{color}-2 opacity-75",
-    "dark": "bg-{color}-9 opacity-75"
-  },
-  "fillLightContent": {
-    "light": "font-bold text-{color}-9",
-    "dark": "font-bold text-white"
-  },
-  "fillSolid": {
+  "bgAccentHigh": {
     "light": "bg-{color}-6",
     "dark": "bg-{color}-5"
   },
-  "fillSolidContent": {
-    "light": "font-bold text-white hover:bg-transparent",
+  "contentLow": {
+    "light": "font-bold text-white",
+    "dark": "font-bold"
+  },
+  "contentHigh": {
+    "light": "font-bold text-black",
     "dark": "font-bold text-white"
+  },
+  "contentAccentHigh": {
+    "light": "font-bold text-{color}-9",
+    "dark": "font-bold text-{color}-2"
   },
   "datePickerInput": "shadow appearance-none border rounded w-full py-2 px-3 text-grey-8 bg-white leading-tight focus:outline-none focus:shadow-outline",
   "datePickerInputDrag": "shadow appearance-none border rounded w-full py-2 px-3 text-grey-4 bg-white leading-tight focus:outline-none focus:shadow-outline"

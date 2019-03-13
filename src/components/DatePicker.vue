@@ -215,17 +215,21 @@ export default {
         !arrayHasItems(this.availableDates)
       )
         return null;
-      return Attribute({
-        key: 'disabled',
-        ...this.disabledAttribute,
-        dates: this.disabledDates_,
-        excludeDates: this.availableDates,
-        excludeMode: 'includes',
-        order: 100,
-      });
+      return new Attribute(
+        {
+          key: 'disabled',
+          ...this.disabledAttribute,
+          dates: this.disabledDates_,
+          excludeDates: this.availableDates,
+          excludeMode: 'includes',
+          order: 100,
+        },
+        this.theme_,
+        this.locale_,
+      );
     },
     attributes_() {
-      const attrs = [...this.attributes];
+      const attrs = isArray(this.attributes) ? [...this.attributes] : [];
       if (this.dragAttribute_) {
         attrs.push(this.dragAttribute_);
       } else if (this.selectAttribute_) {

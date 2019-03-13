@@ -7,17 +7,18 @@ const AttributeStore = (attrs, theme, locale) => {
     (arrayHasItems(attrs) &&
       attrs
         .filter(a => a && a.dates)
-        .map(
-          (a, i) =>
-            new Attribute(
-              {
-                key: a.key || i.toString(),
-                order: a.order || 0,
-                ...a,
-              },
-              theme,
-              locale,
-            ),
+        .map((a, i) =>
+          a instanceof Attribute
+            ? a
+            : new Attribute(
+                {
+                  key: a.key || i.toString(),
+                  order: a.order || 0,
+                  ...a,
+                },
+                theme,
+                locale,
+              ),
         )) ||
     [];
   return {

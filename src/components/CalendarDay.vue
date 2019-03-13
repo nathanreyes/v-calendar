@@ -1,12 +1,7 @@
 <script>
 import PopoverRef from './PopoverRef';
 import { childMixin } from '@/utils/mixins/child';
-import {
-  evalFn,
-  arrayHasItems,
-  objectFromArray,
-  mixinOptionalProps,
-} from '@/utils/helpers';
+import { arrayHasItems, objectFromArray } from '@/utils/helpers';
 import { isFunction, some, last, get } from '@/utils/_';
 
 export default {
@@ -158,8 +153,6 @@ export default {
   },
   data() {
     return {
-      isHovered: false,
-      isFocused: false,
       glyphs: {},
     };
   },
@@ -177,38 +170,10 @@ export default {
       return this.attributes.length;
     },
     attributesList() {
-      return this.attributes.onDay(this.day).map(attr => {
-        const { highlight, dot, bar, content } = attr;
-        return {
-          ...attr,
-          highlight: highlight && this.theme.normalizeHighlight(highlight),
-          dot: dot && this.theme.normalizeDot(dot),
-          bar: bar && this.theme.normalizeBar(bar),
-        };
-      });
+      return this.attributes.onDay(this.day);
     },
     attributesMap() {
       return objectFromArray(this.attributesList);
-    },
-    shouldCheckDirty() {
-      return (
-        this.attributesLength &&
-        !!this.attributesList.find(
-          a =>
-            isFunction(a.highlight) ||
-            isFunction(a.highlightCaps) ||
-            isFunction(a.dot) ||
-            isFunction(a.bar) ||
-            isFunction(a.popover) ||
-            isFunction(a.content),
-        )
-      );
-    },
-    isHoveredDirty() {
-      return this.shouldCheckDirty && this.isHovered;
-    },
-    isFocusedDirty() {
-      return this.shouldCheckDirty && this.isFocused;
     },
     backgrounds() {
       return this.glyphs.backgrounds;
@@ -278,12 +243,6 @@ export default {
     },
   },
   watch: {
-    isHoveredDirty() {
-      this.refreshGlyphs();
-    },
-    isFocusedDirty() {
-      this.refreshGlyphs();
-    },
     attributesList() {
       this.refreshGlyphs();
     },
@@ -308,19 +267,15 @@ export default {
       this.$emit('daymouseenter', this.getDayEvent(e));
     },
     mouseover(e) {
-      this.isHovered = true;
       this.$emit('daymouseover', this.getDayEvent(e));
     },
     mouseleave(e) {
-      this.isHovered = false;
       this.$emit('daymouseleave', this.getDayEvent(e));
     },
     focusin(e) {
-      this.isFocused = true;
       this.$emit('dayfocusin', this.getDayEvent(e));
     },
     focusout(e) {
-      this.isFocused = false;
       this.$emit('dayfocusout', this.getDayEvent(e));
     },
     refreshGlyphs() {
@@ -332,58 +287,37 @@ export default {
         content: [],
       };
       if (arrayHasItems(this.attributesList)) {
-        this.attributesList
-          // Evaluate functions first
-          .map(attr =>
-            this.evalAttribute(attr, this.isHoveredDirty, this.isFocusedDirty),
-          )
+        this.attributesList.forEach(attr => {
           // Add glyphs for each attribute
-          .forEach(attr => {
-            this.processHighlight(attr, glyphs);
-            this.processContent(attr, glyphs);
-            this.processDot(attr, glyphs);
-            this.processBar(attr, glyphs);
-            this.processPopover(attr, glyphs);
-          });
+          const { targetDate } = attr;
+          const { isDate, isComplex, startTime, endTime } = targetDate;
+          const onStart = startTime === this.dateTime;
+          const onEnd = endTime === this.dateTime;
+          const onStartAndEnd = onStart && onEnd;
+          const onStartOrEnd = onStart || onEnd;
+          const dateInfo = {
+            isDate,
+            isComplex,
+            onStart,
+            onEnd,
+            onStartAndEnd,
+            onStartOrEnd,
+          };
+          this.processHighlight(attr, dateInfo, glyphs);
+          this.processContent(attr, dateInfo, glyphs);
+          this.processDot(attr, dateInfo, glyphs);
+          this.processBar(attr, dateInfo, glyphs);
+          this.processPopover(attr, glyphs);
+        });
       }
       this.glyphs = glyphs;
     },
-    evalAttribute(attribute, isHovered, isFocused) {
-      const { targetDate } = attribute;
-      const onStart = targetDate.startTime === this.dateTime;
-      const onEnd = targetDate.endTime === this.dateTime;
-      const inBetween = !onStart && !onEnd;
-      const validate = prop =>
-        evalFn(prop, {
-          day: this.day,
-          targetDate,
-          onStart,
-          onEnd,
-          inBetween,
-          isHovered,
-          isFocused,
-        });
-      return mixinOptionalProps(
-        attribute,
-        {
-          ...attribute,
-          onStart,
-          onEnd,
-          inBetween,
-        },
-        [
-          { name: 'highlight', validate },
-          { name: 'content', validate },
-          { name: 'dot', validate },
-          { name: 'bar', validate },
-          { name: 'popover', validate },
-          { name: 'customData' },
-        ],
-      ).target;
-    },
-    processHighlight({ key, highlight, targetDate }, { backgrounds, content }) {
+    processHighlight(
+      { key, highlight, targetDate },
+      { isDate, isComplex, onStart, onEnd, onStartAndEnd },
+      { backgrounds, content },
+    ) {
       if (!highlight) return;
-      const { isDate, isComplex, startTime, endTime } = targetDate;
       const { base, start, end } = highlight;
       let targetArea;
       if (isDate || isComplex) {
@@ -393,14 +327,10 @@ export default {
           class: `vc-highlight ${start.class}`,
         });
         content.push({
-          key: `${key}-highlight`,
+          key: `${key}-content`,
           class: start.contentClass,
         });
       } else {
-        const onStart = startTime === this.dateTime;
-        const onEnd = endTime === this.dateTime;
-        const onStartAndEnd = onStart && onEnd;
-        const onStartOrEnd = onStart || onEnd;
         if (onStartAndEnd) {
           backgrounds.push({
             key,
@@ -408,7 +338,7 @@ export default {
             class: `vc-highlight ${start.class}`,
           });
           content.push({
-            key: `${key}-highlight`,
+            key: `${key}-content`,
             class: start.contentClass,
           });
         } else if (onStart) {
@@ -423,7 +353,7 @@ export default {
             class: `vc-highlight ${start.class}`,
           });
           content.push({
-            key: `${key}-highlight-start`,
+            key: `${key}-content`,
             class: start.contentClass,
           });
         } else if (onEnd) {
@@ -438,7 +368,7 @@ export default {
             class: `vc-highlight ${end.class}`,
           });
           content.push({
-            key: `${key}-highlight-end`,
+            key: `${key}-content`,
             class: end.contentClass,
           });
         } else {
@@ -448,41 +378,39 @@ export default {
             class: `vc-highlight vc-highlight-middle ${base.class}`,
           });
           content.push({
-            key: `${key}-highlight-middle`,
+            key: `${key}-content`,
             class: base.contentClass,
           });
         }
       }
     },
-    processContent({ key, content, targetDate }, { content: contents }) {
+    processContent(
+      { key, content },
+      { isDate, onStart, onEnd },
+      { content: contents },
+    ) {
       if (!content) return;
-      // const { isDate, startTime, endTime } = targetDate;
-      // const { base, start, end } = this.theme.normalizeDot(dot, this.theme);
-      // const onStart = startTime === this.dateTime;
-      // const onEnd = endTime === this.dateTime;
-      // if (isDate || onStart) {
-      //   dots.push({
-      //     key,
-      //     class: `vc-dot ${start.class}`,
-      //   });
-      // } else if (onEnd) {
-      //   dots.push({
-      //     key,
-      //     class: `vc-dot ${end.class}`,
-      //   });
-      // } else {
-      //   dots.push({
-      //     key,
-      //     class: `vc-dot ${base.class}`,
-      //   });
-      // }
+      const { base, start, end } = content;
+      if (isDate || onStart) {
+        contents.push({
+          key,
+          class: start.class,
+        });
+      } else if (onEnd) {
+        contents.push({
+          key,
+          class: end.class,
+        });
+      } else {
+        contents.push({
+          key,
+          class: base.class,
+        });
+      }
     },
-    processDot({ key, dot, targetDate }, { dots }) {
+    processDot({ key, dot }, { isDate, onStart, onEnd }, { dots }) {
       if (!dot) return;
-      const { isDate, startTime, endTime } = targetDate;
       const { base, start, end } = dot;
-      const onStart = startTime === this.dateTime;
-      const onEnd = endTime === this.dateTime;
       if (isDate || onStart) {
         dots.push({
           key,
@@ -500,12 +428,9 @@ export default {
         });
       }
     },
-    processBar({ key, bar, targetDate }, { bars }) {
+    processBar({ key, bar }, { isDate, onStart, onEnd }, { bars }) {
       if (!bar) return;
-      const { isDate, startTime, endTime } = targetDate;
       const { base, start, end } = bar;
-      const onStart = startTime === this.dateTime;
-      const onEnd = endTime === this.dateTime;
       if (isDate || onStart) {
         bars.push({
           key,

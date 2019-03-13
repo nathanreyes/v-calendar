@@ -1,20 +1,22 @@
 import {
   isObject,
   isString,
+  isUndefined,
   has,
   hasAny,
   get,
   set,
   toPairs,
   defaults,
+  upperFirst,
 } from './_';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'color', 'fillMode'];
 
-function concatString(toString, appendString) {
-  if (!toString) return appendString;
-  return `${toString} ${appendString}`;
+function concatClass(obj, prop, className) {
+  if (!obj || !prop || !className) return;
+  obj[prop] = `${obj[prop] ? `${obj[prop]} ` : ''}${className}`;
 }
 
 export default class Theme {
@@ -28,6 +30,40 @@ export default class Theme {
           return this.getConfig(prop, {});
         },
       });
+    });
+    // Build and cache normalized attributes
+    this.buildNormalizedAttrs();
+  }
+
+  buildNormalizedAttrs() {
+    this.normalizedAttrs = {
+      highlight: {
+        opts: ['fillMode', 'class', 'contentClass'],
+      },
+      dot: { opts: ['class'] },
+      bar: { opts: ['class'] },
+      content: { opts: ['class'] },
+    };
+    toPairs(this.normalizedAttrs).map(([type, config]) => {
+      const attr = { base: {}, start: {}, end: {} };
+      config.opts.forEach(opt => {
+        const prefix = type;
+        const suffix = upperFirst(opt);
+        const base = this[`${prefix}Base${suffix}`];
+        const startEnd = this[`${prefix}StartEnd${suffix}`] || base;
+        const start = this[`${prefix}Start${suffix}`] || startEnd;
+        const end = this[`${prefix}End${suffix}`] || start;
+        if (!isUndefined(base)) {
+          attr.base[opt] = base;
+        }
+        if (!isUndefined(start)) {
+          attr.start[opt] = start;
+        }
+        if (!isUndefined(end)) {
+          attr.end[opt] = end;
+        }
+      });
+      config.attr = attr;
     });
   }
 
@@ -46,43 +82,39 @@ export default class Theme {
     return propVal;
   }
 
-  getFills(type) {
-    const base = this[`${type}BaseFill`];
-    const startEnd = this[`${type}StartEndFill`] || base;
-    const start = this[`${type}StartFill`] || startEnd;
-    const end = this[`${type}EndFill`] || start;
-    return {
-      base,
-      startEnd,
-      start,
-      end,
-    };
-  }
-
   // Normalizes attribute config to the structure defined by the properties
   normalizeAttr({ config, type }) {
     let rootColor = this.color;
-    const fills = this.getFills(type);
-    let root = {
-      base: { fillMode: fills.base },
-      start: { fillMode: fills.start },
-      end: { fillMode: fills.end },
-    };
-    // Assign default attribute for booleans or strings
+    let root = {};
+    // Get the normalized root config
+    const normAttr = this.normalizedAttrs[type].attr;
     if (config === true || isString(config)) {
+      // Assign default color for booleans or strings
       rootColor = isString(config) ? config : rootColor;
+      // Set the default root
+      root = { ...normAttr };
     } else if (isObject(config)) {
-      // Mixin target configs
       if (hasAny(config, targetProps)) {
+        // Mixin target configs
         root = { ...config };
+      } else {
         // Mixin display configs
-      } else if (hasAny(config, displayProps)) {
         root = {
           base: { ...config },
           start: { ...config },
           end: { ...config },
         };
       }
+    }
+    // Fill in missing targets
+    if (!root.base) {
+      root.base = root.startEnd || root.start || root.end;
+    }
+    if (!root.start) {
+      root.start = root.startEnd || root.base;
+    }
+    if (!root.end) {
+      root.end = root.startEnd || root.base;
     }
     // Normalize each target
     toPairs(root).forEach(([targetType, targetConfig]) => {
@@ -97,21 +129,13 @@ export default class Theme {
           root[targetType] = {};
         }
       }
-      // Set the fill if it is missing
-      if (!has(root, `${targetType}.fillMode`)) {
-        set(root, `${targetType}.fillMode`, fills[targetType]);
-      }
+      // Fill in missing options
+      defaults(root[targetType], normAttr[targetType]);
       // Set the theme color if it is missing
       if (!has(root, `${targetType}.color`)) {
         set(root, `${targetType}.color`, targetColor);
       }
     });
-    if (!root.start) {
-      root.start = root.startEnd || root.base;
-    }
-    if (!root.end) {
-      root.end = root.startEnd || root.base;
-    }
     return root;
   }
 
@@ -125,24 +149,21 @@ export default class Theme {
       let bgClass, contentClass;
       switch (targetConfig.fillMode) {
         case 'none':
-          bgClass = this.getConfig('fillNone', targetConfig);
-          contentClass = this.getConfig('fillNoneContent', targetConfig);
+          bgClass = this.getConfig('bgLow', targetConfig);
+          contentClass = this.getConfig('contentAccentHigh', targetConfig);
           break;
         case 'light':
-          bgClass = this.getConfig('fillLight', targetConfig);
-          contentClass = this.getConfig('fillLightContent', targetConfig);
+          bgClass = this.getConfig('bgAccentLow', targetConfig);
+          contentClass = this.getConfig('contentAccentHigh', targetConfig);
           break;
         // Solid by default
         default:
-          bgClass = this.getConfig('fillSolid', targetConfig);
-          contentClass = this.getConfig('fillSolidContent', targetConfig);
+          bgClass = this.getConfig('bgAccentHigh', targetConfig);
+          contentClass = this.getConfig('contentLow', targetConfig);
           break;
       }
-      targetConfig.class = concatString(targetConfig.class, bgClass);
-      targetConfig.contentClass = concatString(
-        targetConfig.contentClass,
-        contentClass,
-      );
+      concatClass(targetConfig, 'class', bgClass);
+      concatClass(targetConfig, 'contentClass', contentClass);
     });
     return highlight;
   }
@@ -154,20 +175,11 @@ export default class Theme {
     });
     toPairs(dot).map(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      let bgClass;
-      switch (targetConfig.fillMode) {
-        case 'none':
-          bgClass = this.getConfig('fillNone', targetConfig);
-          break;
-        case 'light':
-          bgClass = this.getConfig('fillLight', targetConfig);
-          break;
-        // Solid by default
-        default:
-          bgClass = this.getConfig('fillSolid', targetConfig);
-          break;
-      }
-      targetConfig.class = concatString(targetConfig.class, bgClass);
+      concatClass(
+        targetConfig,
+        'class',
+        this.getConfig('bgAccentHigh', targetConfig),
+      );
     });
     return dot;
   }
@@ -179,29 +191,28 @@ export default class Theme {
     });
     toPairs(bar).map(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      let bgClass;
-      switch (targetConfig.fillMode) {
-        case 'none':
-          bgClass = this.getConfig('fillNone', targetConfig);
-          break;
-        case 'light':
-          bgClass = this.getConfig('fillLight', targetConfig);
-          break;
-        // Solid by default
-        default:
-          bgClass = this.getConfig('fillSolid', targetConfig);
-          break;
-      }
-      targetConfig.class = concatString(targetConfig.class, bgClass);
+      concatClass(
+        targetConfig,
+        'class',
+        this.getConfig('bgAccentHigh', targetConfig),
+      );
     });
     return bar;
   }
 
-  // normalizeContent(config, theme) {
-  //   const content = normalizeAttr({
-  //     config,
-  //     type: 'content',
-  //     theme,
-  //   });
-  // }
+  normalizeContent(config) {
+    const content = this.normalizeAttr({
+      config,
+      type: 'content',
+    });
+    toPairs(content).map(([_, targetConfig]) => {
+      defaults(targetConfig, { isDark: this.isDark, color: this.color });
+      concatClass(
+        targetConfig,
+        'class',
+        this.getConfig('contentAccentHigh', targetConfig),
+      );
+    });
+    return content;
+  }
 }

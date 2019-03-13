@@ -9,6 +9,7 @@ import _isNil from 'lodash/isNil';
 
 import _kebabCase from 'lodash/kebabCase';
 import _capitalize from 'lodash/capitalize';
+import _upperFirst from 'lodash/upperFirst';
 
 import _get from 'lodash/get';
 import _set from 'lodash/set';
@@ -40,6 +41,7 @@ export const isNil = _isNil;
 // Lodash string utilities
 export const kebabCase = _kebabCase;
 export const capitalize = _capitalize;
+export const upperFirst = _upperFirst;
 // Lodash object utilities
 export const get = _get;
 export const set = _set;
