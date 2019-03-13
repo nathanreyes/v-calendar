@@ -1,62 +1,116 @@
 import DateInfo from './dateInfo';
-import { arrayHasItems } from './helpers';
-import { isArray, some, pick } from './_';
+import { arrayHasItems, createGuid } from './helpers';
+import { isUndefined, isArray, some } from './_';
 
-const Attribute = config => {
-  if (!config) return null;
-  if (config.isAttribute) return config;
-  if (config.dates && !isArray(config.dates)) config.dates = [config.dates];
-  if (config.excludeDates && !isArray(config.excludeDates))
-    config.excludeDates = [config.excludeDates];
-  const hasDates = arrayHasItems(config.dates);
-  const hasExcludeDates = arrayHasItems(config.excludeDates);
-  const excludeMode = config.excludeMode || 'intersects';
-  const dateConfig = pick(config, ['order', 'locale']);
-  const dates = (
-    (hasDates && config.dates) || // Use provided dates if they have items
-    (hasExcludeDates && [{}]) || // Use infinite range if exclude dates were provided
-    []
-  ) // Use just an empty array
-    .map(d => d && (d.isDateInfo ? d : new DateInfo(d, dateConfig)))
-    .filter(d => d);
-  const excludeDates = ((hasExcludeDates && config.excludeDates) || [])
-    .map(d => d && (d.isDateInfo ? d : new DateInfo(d, dateConfig)))
-    .filter(d => d);
-  const isComplex = some(dates, d => d.isComplex);
-  const attr = {
-    ...config,
-    isAttribute: true,
-    key: config.key || 'guid',
-    order: config.order || 0,
-    dates,
-    excludeDates,
-    isComplex,
-    // Accepts: Date or date range object
-    // Returns: First attribute date info that partially intersects the given date
-    intersectsDate: date =>
-      !attr.excludesDate(date) &&
-      (dates.find(d => d.intersectsDate(date)) || false),
-    // Accepts: Date or date range object
-    // Returns: First attribute date info that completely includes the given date
-    includesDate: date =>
-      !attr.excludesDate(date) &&
-      (dates.find(d => d.includesDate(date)) || false),
-    excludesDate: date =>
-      hasExcludeDates &&
-      excludeDates.find(
+export default class Attribute {
+  constructor(
+    {
+      key,
+      highlight,
+      content,
+      dot,
+      bar,
+      popover,
+      dates,
+      excludeDates,
+      excludeMode,
+      customData,
+      order,
+    },
+    theme,
+    locale,
+  ) {
+    this.key = isUndefined(key) ? createGuid() : key;
+    this.order = order || 0;
+    this.customData = customData;
+    // Normalize attribute types
+    if (highlight) {
+      this.highlight = theme.normalizeHighlight(highlight);
+    }
+    if (content) {
+      this.content = theme.normalizeContent(content);
+    }
+    if (dot) {
+      this.dot = theme.normalizeDot(dot);
+    }
+    if (bar) {
+      this.bar = theme.normalizeBar(bar);
+    }
+    if (popover) {
+      this.popover = popover;
+    }
+    // Wrap dates in array if needed
+    if (dates) {
+      this.dates = isArray(dates) ? dates : [dates];
+    }
+    this.hasDates = arrayHasItems(this.dates);
+    // Wrap exclude dates in array if needed
+    if (excludeDates) {
+      this.excludeDates = isArray(excludeDates) ? excludeDates : [excludeDates];
+    }
+    this.hasExcludeDates = arrayHasItems(this.excludeDates);
+    this.excludeMode = excludeMode || 'intersects';
+    // Assign final values for dates & excludeDates
+    this.dates = (
+      (this.hasDates && this.dates) ||
+      (this.hasExcludeDates && [{}]) ||
+      []
+    )
+      .map(
+        d =>
+          d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
+      )
+      .filter(d => d);
+    this.excludeDates = ((this.hasExcludeDates && this.excludeDates) || [])
+      .map(
+        d =>
+          d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
+      )
+      .filter(d => d);
+    this.isComplex = some(dates, d => d.isComplex);
+  }
+
+  // Accepts: Date or date range object
+  // Returns: First attribute date info that partially intersects the given date
+  intersectsDate(date) {
+    return (
+      !this.excludesDate(date) &&
+      (this.dates.find(d => d.intersectsDate(date)) || false)
+    );
+  }
+
+  // Accepts: Date or date range object
+  // Returns: First attribute date info that completely includes the given date
+  includesDate(date) {
+    return (
+      !this.excludesDate(date) &&
+      (this.dates.find(d => d.includesDate(date)) || false)
+    );
+  }
+
+  excludesDate(date) {
+    return (
+      this.hasExcludeDates &&
+      this.excludeDates.find(
         ed =>
-          (excludeMode === 'intersects' && ed.intersectsDate(date)) ||
-          (excludeMode === 'includes' && ed.includesDate(date)),
-      ),
-    // Accepts: Day object
-    // Returns: First attribute date info that occurs on given day.
-    includesDay: day =>
-      !attr.excludesDay(day) && (dates.find(d => d.includesDay(day)) || false),
-    excludesDay: day =>
-      hasExcludeDates && excludeDates.find(ed => ed.includesDay(day)),
-  };
-  // Return the attribute
-  return attr;
-};
+          (this.excludeMode === 'intersects' && ed.intersectsDate(date)) ||
+          (this.excludeMode === 'includes' && ed.includesDate(date)),
+      )
+    );
+  }
 
-export default Attribute;
+  // Accepts: Day object
+  // Returns: First attribute date info that occurs on given day.
+  includesDay(day) {
+    return (
+      !this.excludesDay(day) &&
+      (this.dates.find(d => d.includesDay(day)) || false)
+    );
+  }
+
+  excludesDay(day) {
+    return (
+      this.hasExcludeDates && this.excludeDates.find(ed => ed.includesDay(day))
+    );
+  }
+}

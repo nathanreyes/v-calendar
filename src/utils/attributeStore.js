@@ -2,18 +2,22 @@ import Attribute from './attribute';
 import { arrayHasItems } from './helpers';
 import { isFunction } from './_';
 
-const AttributeStore = (attrs, locale) => {
+const AttributeStore = (attrs, theme, locale) => {
   const list =
     (arrayHasItems(attrs) &&
       attrs
         .filter(a => a && a.dates)
-        .map((a, i) =>
-          Attribute({
-            key: a.key || i.toString(),
-            order: a.order || 0,
-            locale,
-            ...a,
-          }),
+        .map(
+          (a, i) =>
+            new Attribute(
+              {
+                key: a.key || i.toString(),
+                order: a.order || 0,
+                ...a,
+              },
+              theme,
+              locale,
+            ),
         )) ||
     [];
   return {

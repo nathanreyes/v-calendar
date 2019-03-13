@@ -253,7 +253,7 @@ export default {
       );
     },
     attributes_() {
-      return AttributeStore(this.attributes, this.locale_);
+      return AttributeStore(this.attributes, this.theme_, this.locale_);
     },
   },
   watch: {
