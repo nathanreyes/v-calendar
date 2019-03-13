@@ -54,6 +54,7 @@ export default {
               ],
               attrs: { ...this.dayContentProps },
               on: this.dayContentEvents,
+              ref: 'content',
             },
             [h('span', { class: this.dayContentClass }, [this.day.label])],
           );
@@ -235,7 +236,7 @@ export default {
     dayEvent() {
       return {
         ...this.day,
-        el: this.$el,
+        el: this.$refs.content,
         attributes: this.attributesList,
         attributesMap: this.attributesMap,
         popovers: this.popovers,

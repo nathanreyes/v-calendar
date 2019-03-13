@@ -35,6 +35,7 @@ export default {
         on: {
           ...this.$listeners,
           dayclick: this.onDayClick,
+          dayfocusin: this.onDayFocusIn,
           daymouseenter: this.onDayMouseEnter,
         },
         slots: this.$slots,
@@ -341,6 +342,12 @@ export default {
       this.picker.handleDayClick(day, this);
       // Re-emit event
       this.$emit('dayclick', day);
+    },
+    onDayFocusIn(day) {
+      // Remove focus from clicked days
+      day.el.blur();
+      // Re-emit event
+      this.$emit('dayfocusin', day);
     },
     onDayMouseEnter(day) {
       this.picker.handleDayMouseEnter(day, this);
