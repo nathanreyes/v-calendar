@@ -101,6 +101,7 @@ export default {
     dragAttribute: Object,
     selectAttribute: Object,
     disabledAttribute: Object,
+    attributes: Array,
     formats: Object,
     theme: Object,
     locale: null,
@@ -224,7 +225,7 @@ export default {
       });
     },
     attributes_() {
-      const attrs = [];
+      const attrs = [...this.attributes];
       if (this.dragAttribute_) {
         attrs.push(this.dragAttribute_);
       } else if (this.selectAttribute_) {
