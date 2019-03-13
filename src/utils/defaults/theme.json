@@ -52,10 +52,8 @@
     "light": "rounded text-xs text-white bg-grey-9 border border-grey-7 px-2 shadow",
     "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 px-2 shadow"
   },
-  "highlightBaseFillMode": "none",
+  "highlightBaseFillMode": "light",
   "highlightStartEndFillMode": "solid",
-  "dotBaseFillMode": "solid",
-  "barBaseFillMode": "solid",
   "bgLow": {
     "light": "bg-white",
     "dark": "bg-grey-10"

@@ -166,7 +166,7 @@ export default {
     selectAttribute_() {
       if (!this.picker.hasValue(this.value_)) return null;
       const attribute = {
-        key: 'select',
+        key: 'select-drag',
         ...this.selectAttribute,
         dates: this.value_,
       };
@@ -180,13 +180,17 @@ export default {
       if (this.mode !== 'range' || !this.picker.hasValue(this.dragValue))
         return null;
       const attribute = {
-        key: 'drag',
+        key: 'select-drag',
         ...this.dragAttribute,
         dates: this.dragValue,
       };
-      const { dot, bar, highlight } = attribute;
-      if (!dot && !bar && !highlight) {
-        attribute.highlight = true;
+      const { dot, bar, highlight, content } = attribute;
+      if (!dot && !bar && !highlight && !content) {
+        attribute.highlight = {
+          startEnd: {
+            fillMode: 'none',
+          },
+        };
       }
       return attribute;
     },

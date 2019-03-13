@@ -107,15 +107,7 @@ export default class Theme {
       }
     }
     // Fill in missing targets
-    if (!root.base) {
-      root.base = root.startEnd || root.start || root.end;
-    }
-    if (!root.start) {
-      root.start = root.startEnd || root.base;
-    }
-    if (!root.end) {
-      root.end = root.startEnd || root.base;
-    }
+    defaults(root, { start: root.startEnd, end: root.startEnd }, normAttr);
     // Normalize each target
     toPairs(root).forEach(([targetType, targetConfig]) => {
       let targetColor = rootColor;

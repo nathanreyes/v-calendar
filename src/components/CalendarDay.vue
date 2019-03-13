@@ -335,7 +335,7 @@ export default {
           backgrounds.push({
             key,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight ${start.class}`,
+            class: `vc-highlight vc-highlight-start-end ${start.class}`,
           });
           content.push({
             key: `${key}-content`,
@@ -343,14 +343,14 @@ export default {
           });
         } else if (onStart) {
           backgrounds.push({
-            key,
+            key: `${key}-base`,
             wrapperClass: 'vc-day-layer vc-day-box-right-center',
-            class: `vc-highlight vc-highlight-start ${base.class}`,
+            class: `vc-highlight vc-highlight-base-start ${base.class}`,
           });
           backgrounds.push({
-            key: `${key}-start`,
+            key,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight ${start.class}`,
+            class: `vc-highlight vc-highlight-start-end ${start.class}`,
           });
           content.push({
             key: `${key}-content`,
@@ -358,14 +358,14 @@ export default {
           });
         } else if (onEnd) {
           backgrounds.push({
-            key,
+            key: `${key}-base`,
             wrapperClass: 'vc-day-layer vc-day-box-left-center',
-            class: `vc-highlight vc-highlight-end ${base.class}`,
+            class: `vc-highlight vc-highlight-base-end ${base.class}`,
           });
           backgrounds.push({
-            key: `${key}-end`,
+            key,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight ${end.class}`,
+            class: `vc-highlight vc-highlight-start-end ${end.class}`,
           });
           content.push({
             key: `${key}-content`,
@@ -375,7 +375,7 @@ export default {
           backgrounds.push({
             key: `${key}-middle`,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight vc-highlight-middle ${base.class}`,
+            class: `vc-highlight vc-highlight-base-middle ${base.class}`,
           });
           content.push({
             key: `${key}-content`,
@@ -543,18 +543,18 @@ export default {
   width: 1.8rem
   height: 1.8rem
   border-radius: 50%
-  transition: height $background-transition-time
-  &.vc-highlight-start
+  &.vc-highlight-start-end
+    transition: background-color $day-content-transition-time
+  &.vc-highlight-base-start
     width: 50%
     border-radius: 0
-  &.vc-highlight-end
+  &.vc-highlight-base-end
     width: 50%
     border-radius: 0
-  &.vc-highlight-middle
+  &.vc-highlight-base-middle
     width: 100%
     border-radius: 0
     margin: 0 -1px
-    transition: height $background-transition-time
   &.vc-highlight-drag
     height: 1.75rem
 
