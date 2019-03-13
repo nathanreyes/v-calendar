@@ -49,8 +49,8 @@
     "dark": "font-medium text-sm cursor-pointer focus:font-bold"
   },
   "dayPopoverContainer": {
-    "light": "rounded text-xs text-white bg-grey-9 border border-grey-7 shadow",
-    "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 shadow"
+    "light": "rounded text-xs text-white bg-grey-9 border border-grey-7 px-2 shadow",
+    "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 px-2 shadow"
   },
   "highlightBaseFill": "light",
   "highlightStartEndFill": "solid",

@@ -130,14 +130,6 @@ export default {
   computed: {
     attributes() {
       return [
-        // Today attribute
-        {
-          contentStyle: {
-            fontWeight: '700',
-            color: '#66b3cc',
-          },
-          dates: new Date(),
-        },
         // Todo attributes
         ...this.todos.map(todo => ({
           key: todo.id,
@@ -145,8 +137,7 @@ export default {
           customData: todo,
           order: todo.id,
           dot: {
-            backgroundColor: color,
-            opacity: todo.isComplete ? 0.3 : 1,
+            class: todo.isComplete ? 'opacity-25' : '',
           },
           popover: {
             slot: 'todo-row', // Matches slot from above
@@ -154,10 +145,6 @@ export default {
         })),
         // 'Add Todo' attribute
         this.showAddTodo && {
-          contentHoverStyle: {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            cursor: 'pointer',
-          },
           dates: {}, // All dates
           popover: {
             slot: 'add-todo',

@@ -38,7 +38,6 @@ export const rootMixin = {
     },
     passedProp(prop, fallback, strategy) {
       if (has(this.$options.propsData, prop)) {
-        console.log('has', prop, this[prop]);
         const propValue = this[prop];
         if (isObject(propValue) && strategy === 'merge') {
           return defaultsDeep(propValue, fallback);

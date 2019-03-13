@@ -18,19 +18,19 @@
     <h3 class="text-lg mb-2">Popover Visibility</h3>
     <div class="flex mb-4">
       <div>
-        <input type="radio" id="hover" value="hover" v-model="popoverVisibility">
+        <input type="radio" id="hover" value="hover" v-model="popover.visibility">
         <label for="hover">Hover</label>
       </div>
       <div class="ml-2">
-        <input type="radio" id="focus" value="focus" v-model="popoverVisibility">
+        <input type="radio" id="focus" value="focus" v-model="popover.visibility">
         <label for="focus">Focus</label>
       </div>
       <div class="ml-2">
-        <input type="radio" id="click" value="click" v-model="popoverVisibility">
+        <input type="radio" id="click" value="click" v-model="popover.visibility">
         <label for="click">Click</label>
       </div>
       <div class="ml-2">
-        <input type="radio" id="visible" value="visible" v-model="popoverVisibility">
+        <input type="radio" id="visible" value="visible" v-model="popover.visibility">
         <label for="visible">Visible</label>
       </div>
     </div>
@@ -49,7 +49,7 @@
       :mode="mode"
       :is-inline="isInline"
       :is-dark="isDark"
-      :popover-visibility="popoverVisibility"
+      :popover="popover"
       :drag-attribute="dragAttribute"
     />
   </div>
@@ -63,15 +63,16 @@ export default {
       mode: 'range',
       isInline: true,
       isDark: false,
-      popoverVisibility: 'focus',
+      popover: {
+        visibility: 'focus',
+      },
       dragAttribute: {
         highlight: {
           base: {
             fillMode: 'light',
-            class: 'vc-highlight-drag',
           },
           startEnd: {
-            fillMode: 'none',
+            fillMode: 'light',
           },
         },
       },

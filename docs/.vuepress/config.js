@@ -34,7 +34,7 @@ module.exports = {
             '',
             'attributes',
             'datepicker',
-            // 'ui-customization',
+            'theming-guide',
             'migration-guide',
           ],
         },

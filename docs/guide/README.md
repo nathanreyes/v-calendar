@@ -5,16 +5,18 @@ sidebarDepth: 2
 
 # V-Calendar
 
-V-Calendar is a clean and lightweight plugin for displaying simple, attributed calendars in Vue.js. It uses attributes to decorate the calendar with various visual indicators including highlighted date regions, dots, bars, content styles and classes, and even popovers for simple tooltips or custom slot content.
+V-Calendar is a clean and lightweight plugin for displaying simple, attributed calendars in Vue.js. It uses attributes to decorate the calendar with various visual indicators including highlighted date regions, dots, bars, content classes and even popovers for simple tooltips or custom slot content.
 
 <guide-attributes-intro/>
 
-Any single attribute may contain one of each object and can be displayed for single dates, date ranges and even complex date patterns. Some examples of complex patterns include:
+Any of these indicators can be displayed for single dates, date ranges and even complex date patterns like the following:
 * Every other Friday
 * 15th of every month
 * Last Friday of every other month.
 
-A date picker is included out of the box with single date, multiple date and date range selection modes. Because `v-date-picker` is simply a wrapper for `v-calendar`, both can be extensively customized using props, slots and theme styling, just like `v-calendar`. And of course, V-Calendar is responsive and mobile friendly. For example, it supports touch swipes for month navigation.
+A date picker is included out of the box with single date, multiple date and date range selection modes. Also, because `v-date-picker` is simply a wrapper for `v-calendar`, both can be extensively customized using props, slots and custom custom theme support,
+
+And of course, V-Calendar is responsive and mobile friendly.
 
 ## Component
 

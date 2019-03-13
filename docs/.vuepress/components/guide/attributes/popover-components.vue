@@ -19,9 +19,11 @@ export default {
         end: new Date(2018, 0, 12),
       },
       selectAttribute: {
-        popover: ({ onEnd }) => ({
-          visibility: onEnd ? 'visible' : 'hover',
-        }),
+        end: {
+          popover: {
+            visibility: 'visible',
+          },
+        },
       },
     };
   },
