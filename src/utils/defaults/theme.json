@@ -55,8 +55,8 @@
   "highlightBaseFillMode": "light",
   "highlightStartEndFillMode": "solid",
   "bgLow": {
-    "light": "bg-white",
-    "dark": "bg-grey-10"
+    "light": "bg-white border-2 border-{color}-7",
+    "dark": "bg-grey-10 border-2 border-{color}-2"
   },
   "bgAccentLow": {
     "light": "bg-{color}-2",

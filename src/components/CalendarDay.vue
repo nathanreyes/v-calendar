@@ -336,7 +336,7 @@ export default {
           backgrounds.push({
             key,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight vc-highlight-start-end ${start.class}`,
+            class: `vc-highlight ${start.class}`,
           });
           content.push({
             key: `${key}-content`,
@@ -351,7 +351,7 @@ export default {
           backgrounds.push({
             key,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight vc-highlight-start-end ${start.class}`,
+            class: `vc-highlight ${start.class}`,
           });
           content.push({
             key: `${key}-content`,
@@ -366,7 +366,7 @@ export default {
           backgrounds.push({
             key,
             wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight vc-highlight-start-end ${end.class}`,
+            class: `vc-highlight ${end.class}`,
           });
           content.push({
             key: `${key}-content`,
@@ -544,17 +544,19 @@ export default {
   width: 1.8rem
   height: 1.8rem
   border-radius: 50%
-  &.vc-highlight-start-end
-    transition: background-color $day-content-transition-time
   &.vc-highlight-base-start
     width: 50%
     border-radius: 0
+    border-right-width: 0 !important
   &.vc-highlight-base-end
     width: 50%
     border-radius: 0
+    border-left-width: 0 !important
   &.vc-highlight-base-middle
     width: 100%
     border-radius: 0
+    border-left-width: 0 !important
+    border-right-width: 0 !important
     margin: 0 -1px
   &.vc-highlight-drag
     height: 1.75rem
