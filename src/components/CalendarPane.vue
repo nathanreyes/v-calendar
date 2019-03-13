@@ -64,7 +64,7 @@ import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
-import { childMixin } from '@/utils/mixins/child';
+import { childMixin } from '@/utils/mixins';
 import { evalFn, createGuid } from '@/utils/helpers';
 
 export default {

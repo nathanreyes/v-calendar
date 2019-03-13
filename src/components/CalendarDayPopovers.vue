@@ -42,7 +42,7 @@
 <script>
 import CalendarDayPopoverRow from './CalendarDayPopoverRow';
 import { arrayHasItems } from '@/utils/helpers';
-import { childMixin } from '@/utils/mixins/child';
+import { childMixin } from '@/utils/mixins';
 
 export default {
   components: {

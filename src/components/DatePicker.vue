@@ -7,7 +7,7 @@ import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
 import Attribute from '@/utils/attribute';
-import { rootMixin } from '@/utils/mixins/root';
+import { rootMixin } from '@/utils/mixins';
 import { addDays } from '@/utils/dateInfo';
 import { addTapOrClickHandler } from '@/utils/touch';
 import {

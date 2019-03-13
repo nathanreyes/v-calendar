@@ -6,7 +6,7 @@ import CustomTransition from './CustomTransition';
 import CalendarDayPopovers from './CalendarDayPopovers';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
-import { rootMixin } from '@/utils/mixins/root';
+import { rootMixin } from '@/utils/mixins';
 import {
   pageForDate,
   pageForThisMonth,

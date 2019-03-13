@@ -1,6 +1,6 @@
 <script>
 import PopoverRef from './PopoverRef';
-import { childMixin } from '@/utils/mixins/child';
+import { childMixin } from '@/utils/mixins';
 import { arrayHasItems, objectFromArray } from '@/utils/helpers';
 import { isFunction, some, last, get } from '@/utils/_';
 
@@ -486,7 +486,6 @@ export default {
   position: relative
   min-height: $day-min-height
   height: 100%
-  // transition: all $day-content-transition-time
   z-index: 1
 
 .vc-day-layer
@@ -538,7 +537,6 @@ export default {
   overflow: hidden
   pointer-events: none
   z-index: -1
-  backface-visibility: hidden // Prevents glitches in Chrome by forcing hardware acceleration
 
 .vc-highlight
   width: 1.8rem
