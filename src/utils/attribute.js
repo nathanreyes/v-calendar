@@ -16,6 +16,7 @@ export default class Attribute {
       excludeMode,
       customData,
       order,
+      pinPage,
     },
     theme,
     locale,
@@ -23,6 +24,7 @@ export default class Attribute {
     this.key = isUndefined(key) ? createGuid() : key;
     this.order = order || 0;
     this.customData = customData;
+    this.pinPage = pinPage;
     // Normalize attribute types
     if (highlight) {
       this.highlight = theme.normalizeHighlight(highlight);

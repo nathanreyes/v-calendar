@@ -207,7 +207,7 @@ export default {
     minPage: Object,
     maxPage: Object,
     transition: String,
-    attributes: Array,
+    attributes: [Object, Array],
     formats: Object,
     theme: Object,
     locale: null,
@@ -253,7 +253,9 @@ export default {
       );
     },
     attributes_() {
-      return AttributeStore(this.attributes, this.theme_, this.locale_);
+      return this.attributes instanceof AttributeStore
+        ? this.attributes
+        : new AttributeStore(this.attributes, this.theme_, this.locale_);
     },
   },
   watch: {
@@ -379,8 +381,8 @@ export default {
       return movePrev ? 'slide-right' : 'slide-left';
     },
     getPageForAttributes() {
-      const attr = this.attributes_.find(attr => attr.pinPage);
-      if (attr && arrayHasItems(attr.dates)) {
+      const attr = this.attributes_.pinAttr;
+      if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;
         return pageForDate(this.locale_.toDate(date));

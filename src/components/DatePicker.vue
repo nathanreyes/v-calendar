@@ -6,6 +6,7 @@ import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
+import AttributeStore from '@/utils/attributeStore';
 import Attribute from '@/utils/attribute';
 import { rootMixin } from '@/utils/mixins';
 import { addDays } from '@/utils/dateInfo';
@@ -170,6 +171,7 @@ export default {
         key: 'select-drag',
         ...this.selectAttribute,
         dates: this.value_,
+        pinPage: true,
       };
       const { dot, bar, highlight } = attribute;
       if (!dot && !bar && !highlight) {
@@ -240,7 +242,7 @@ export default {
       } else if (this.selectAttribute_) {
         attrs.push(this.selectAttribute_);
       }
-      return attrs;
+      return new AttributeStore(attrs, this.theme_, this.locale_);
     },
     popoverContentClass() {
       return this.theme_.container;

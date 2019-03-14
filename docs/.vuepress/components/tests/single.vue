@@ -51,7 +51,6 @@
       :is-dark="isDark"
       :popover="popover"
       :attributes="attrs"
-      :columns="$screens({ lg: 2 }, 1)"
     />
   </div>
 </template>
@@ -60,9 +59,9 @@
 export default {
   data() {
     return {
-      date: null,
+      date: { start: new Date(2019, 5, 5), end: new Date(2019, 10, 1) },
       mode: 'range',
-      isInline: true,
+      isInline: false,
       isDark: false,
       popover: {
         visibility: 'focus',
@@ -70,6 +69,7 @@ export default {
       attrs: [
         {
           highlight: {
+            color: 'grey',
             fillMode: 'none',
           },
           dates: new Date(),

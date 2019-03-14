@@ -2,47 +2,57 @@ import Attribute from './attribute';
 import { arrayHasItems } from './helpers';
 import { isFunction } from './_';
 
-const AttributeStore = (attrs, theme, locale) => {
-  const list =
-    (arrayHasItems(attrs) &&
-      attrs
-        .filter(a => a && a.dates)
-        .map((a, i) =>
-          a instanceof Attribute
-            ? a
+export default class AttributeStore {
+  constructor(attrs, theme, locale) {
+    const list = [];
+    let key = 1,
+      pinAttr = null;
+    if (arrayHasItems(attrs)) {
+      attrs.forEach(attr => {
+        if (!attr || !attr.dates) return;
+        const newAttr =
+          attr instanceof Attribute
+            ? attr
             : new Attribute(
                 {
-                  key: a.key || i.toString(),
-                  order: a.order || 0,
-                  ...a,
+                  key: attr.key || key.toString(),
+                  order: attr.order || 0,
+                  ...attr,
                 },
                 theme,
                 locale,
-              ),
-        )) ||
-    [];
-  return {
-    length: list.length,
-    atIndex: idx => {
-      return idx < list.length ? list[idx] : null;
-    },
-    find: match => {
-      if (!isFunction(match)) return null;
-      return list.find(attr => match(attr));
-    },
-    // Return a sorted array of objects consisting of
-    // ...the attribute
-    // ...and the first matching date info
-    onDay(day) {
-      return list
-        .map(attr => ({
-          ...attr,
-          targetDate: attr.includesDay(day),
-        }))
-        .filter(a => a.targetDate)
-        .sort((a, b) => a.targetDate.compare(b.targetDate));
-    },
-  };
-};
+              );
+        if (newAttr.pinPage) {
+          pinAttr = newAttr;
+        }
+        list.push(newAttr);
+        key++;
+      });
+    }
+    this.list = list;
+    this.length = list.length;
+    this.pinAttr = pinAttr;
+  }
 
-export default AttributeStore;
+  atIndex(idx) {
+    return idx < this.length ? this.list[idx] : null;
+  }
+
+  find(match) {
+    if (!isFunction(match)) return null;
+    return this.list.find(attr => match(attr));
+  }
+
+  // Return a sorted array of objects consisting of
+  // ...the attribute
+  // ...and the first matching date info
+  onDay(day) {
+    return this.list
+      .map(attr => ({
+        ...attr,
+        targetDate: attr.includesDay(day),
+      }))
+      .filter(a => a.targetDate)
+      .sort((a, b) => a.targetDate.compare(b.targetDate));
+  }
+}
