@@ -25,10 +25,10 @@ export default {
   render(h) {
     const timePickerSlot = (enableTime, mode) => {
       if(!enableTime) return null;
-      if(mode !== 'single') return null;
+      if(mode === 'range') return null;
       return h(TimePicker, {
         attrs: {
-          currentDate: this.value_,
+          currentDate: this.lastDate,
         },
         on: {
           hourchange: this.onHourChange,
@@ -137,6 +137,9 @@ export default {
     };
   },
   computed: {
+    lastDate() {
+      return this.picker.getLastDate(this);
+    },
     updateOnInput_() {
       return this.propOrDefault('updateOnInput', 'datePicker.updateOnInput');
     },
@@ -376,17 +379,17 @@ export default {
       this.$emit('daymouseenter', day);
     },
     onHourChange(hour) {
-      this.picker.handleHourChange(hour, this);
+      this.picker.handleTimeChange(hour, 'hour', this);
       // Re-emit event
       this.$emit('hourchange', hour);
     },
     onMinuteChange(minute) {
-      this.picker.handleMinuteChange(minute, this);
+      this.picker.handleTimeChange(minute, 'minute', this);
       // Re-emit event
       this.$emit('minutechange', minute);
     },
     onSecondChange(second) {
-      this.picker.handleSecondChange(second, this);
+      this.picker.handleTimeChange(second, 'second', this);
       // Re-emit event
       this.$emit('secondchange', second);
     },

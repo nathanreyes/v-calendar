@@ -4,6 +4,7 @@ import {
   addPages,
   arrayHasItems,
   datesAreEqual,
+  dateTimesAreEqual,
 } from '@/utils/helpers';
 import { isString, isDate, last, uniq } from '@/utils/_';
 
@@ -60,6 +61,10 @@ export default class MultiplePicker {
     return { from, to };
   }
 
+  getLastDate(picker) {
+    return last(picker.value_);
+  }
+
   handleDayClick(day, picker) {
     // Done if day selection is invalid
     if (!picker.dateIsValid(day.date)) {
@@ -70,7 +75,7 @@ export default class MultiplePicker {
     if (!this.hasValue(picker.value_)) {
       value = [day.date];
       // Check if value contains the selected date
-    } else if (picker.value_.some(d => d.getTime() === day.dateTime)) {
+    } else if (picker.value_.some(d => datesAreEqual(d, day.date))) {
       // Calculate the new dates array
       value = picker.value_.filter(v => !datesAreEqual(v, day.date));
       // Re-select the date if it is required
@@ -84,5 +89,35 @@ export default class MultiplePicker {
     picker.value_ = this.normalize(value);
   }
 
-  handleDayMouseEnter() {}
+  handleDayMouseEnter() {
+    // Don't do anything here
+  }
+
+  handleTimeChange(time, type, picker) {
+    if (!picker.lastDate) return;
+    // Copy date
+    const currentTime = new Date(picker.lastDate.valueOf());
+    // Set time to date
+    switch (type) {
+      case 'hour':
+        currentTime.setHours(time);
+        break;
+      case 'minute':
+        currentTime.setMinutes(time);
+        break;
+      case 'second':
+        currentTime.setSeconds(time);
+        break;
+      default:
+        break;
+    }
+
+    // Check if date time was changed
+    if (!dateTimesAreEqual(picker.lastDate, currentTime)) {
+      // Set value to current time
+      let value = [];
+      value = [...picker.value_.slice(0, -1), currentTime];
+      picker.value_ = this.normalize(value);
+    }
+  }
 }

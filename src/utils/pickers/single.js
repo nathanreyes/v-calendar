@@ -1,4 +1,4 @@
-import { pageForDate, datesAreEqual } from '@/utils/helpers';
+import { pageForDate, datesAreEqual, dateTimesAreEqual } from '@/utils/helpers';
 import { isDate } from '@/utils/_';
 
 export default class SinglePicker {
@@ -46,6 +46,10 @@ export default class SinglePicker {
     return { from, to: from };
   }
 
+  getLastDate(picker) {
+    return picker.value_;
+  }
+
   handleDayClick(day, picker) {
     // Done if day selection is invalid
     if (!picker.dateIsValid(day.date)) {
@@ -57,7 +61,7 @@ export default class SinglePicker {
       if (!picker.isRequired) picker.$emit('input', null);
     } else {
       // Set value to selected date and current time
-      const selectedDateTime = picker.combineDateAndTime(day.date, picker.value_);
+      const selectedDateTime = picker.value_ ? picker.combineDateAndTime(day.date, picker.value_) : day.date;
       picker.value_ = selectedDateTime;
     }
   }
@@ -66,40 +70,27 @@ export default class SinglePicker {
     // Don't do anything here
   }
 
-  handleHourChange(hour, picker) {
+  handleTimeChange(time, type, picker) {
+    if(!picker.lastDate) return;
     // Copy date
-    const currentTime = new Date(picker.value_.valueOf());
-    // Set hour value to date
-    currentTime.setHours(hour);
-
-    // Check if date was changed
-    if (!this.valuesAreEqual(picker.value_, currentTime)) {
-      // Set value to current time
-      picker.value_ = currentTime;
+    const currentTime = new Date(picker.lastDate.valueOf());
+    // Set time to date
+    switch (type) {
+      case 'hour':
+        currentTime.setHours(time);
+        break;
+      case 'minute':
+        currentTime.setMinutes(time);
+        break;
+      case 'second':
+        currentTime.setSeconds(time);
+        break;
+      default:
+        break;
     }
-  }
 
-  handleMinuteChange(minute, picker) {
-    // Copy date
-    const currentTime = new Date(picker.value_.valueOf());
-    // Set minute value to date
-    currentTime.setMinutes(minute);
-
-    // Check if date was changed
-    if (!this.valuesAreEqual(picker.value_, currentTime)) {
-      // Set value to current time
-      picker.value_ = currentTime;
-    }
-  }
-
-  handleSecondChange(second, picker) {
-    // Copy date
-    const currentTime = new Date(picker.value_.valueOf());
-    // Set second value to date
-    currentTime.setSeconds(second);
-
-    // Check if date was changed
-    if (!this.valuesAreEqual(picker.value_, currentTime)) {
+    // Check if date time was changed
+    if (!dateTimesAreEqual(picker.lastDate, currentTime)) {
       // Set value to current time
       picker.value_ = currentTime;
     }
