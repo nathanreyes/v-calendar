@@ -82,6 +82,7 @@ export default {
             direction: this.direction,
             align: this.align,
             args: this.args,
+            updateLayout: this.scheduleUpdate,
             hide: this.onHide,
           })) ||
         this.$slots.default
@@ -90,6 +91,7 @@ export default {
     popperOptions() {
       return {
         placement: this.placement,
+        onCreate: this.onPopperUpdate,
         onUpdate: this.onPopperUpdate,
       };
     },
@@ -224,6 +226,11 @@ export default {
     },
     onPopperUpdate(data) {
       this.refreshPlacements(data.placement);
+    },
+    scheduleUpdate() {
+      if (this.popper) {
+        this.popper.scheduleUpdate();
+      }
     },
     refreshPlacements(placement) {
       if (!placement) {

@@ -159,10 +159,12 @@ export default {
               }`,
             },
             scopedSlots: {
-              default: ({ args: day }) => {
+              default: ({ args: day, updateLayout, hide }) => {
                 return h(CalendarDayPopovers, {
                   props: {
                     day,
+                    updateLayout,
+                    hide,
                     formats: this.formats_,
                   },
                   scopedSlots: this.$scopedSlots,

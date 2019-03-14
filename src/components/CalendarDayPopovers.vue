@@ -1,8 +1,17 @@
 <template>
   <!-- Popover content -->
-  <div class="vc-day-popover-content" slot="popover-content">
+  <div slot="popover-content">
     <!-- Day popover header slot -->
-    <slot name="day-popover-header" :day="day" :attributes="day.attributes" :format="format"/>
+    <slot
+      name="day-popover-header"
+      :day="day"
+      :attributes="day.attributes"
+      :format="format"
+      :update-layout="updateLayout"
+      :hide="hide"
+    >
+      <span :class="theme.dayPopoverHeader">{{ format(day.date, formats.dayPopover) }}</span>
+    </slot>
     <!-- Content row slots -->
     <calendar-day-popover-row
       v-for="popover in popovers"
@@ -16,6 +25,8 @@
         :custom-data="popover.attribute.customData"
         :day="day"
         :format="format"
+        :update-layout="updateLayout"
+        :hide="hide"
       >
         <span
           v-if="popover.label"
@@ -24,18 +35,26 @@
           :key="popover.key"
         >{{ popover.label }}</span>
         <component
-          v-if="popover.component"
+          v-else-if="popover.component"
           :is="popover.component"
           :attribute="popover.attribute"
           :day-format="formats.dayPopover"
           :day="day"
           :format="format"
-        ></component>
+          :update-layout="updateLayout"
+          :hide="hide"
+        />
       </slot>
     </calendar-day-popover-row>
-    <!-- <p class="vc-day-no-popovers" v-if="!hasPopovers">Empty</p> -->
     <!-- Day popover footer slot -->
-    <slot name="day-popover-footer" :day="day" :attributes="attributes" :format="format"></slot>
+    <slot
+      name="day-popover-footer"
+      :day="day"
+      :attributes="attributes"
+      :format="format"
+      :update-layout="updateLayout"
+      :hide="hide"
+    ></slot>
   </div>
 </template>
 
@@ -51,6 +70,8 @@ export default {
   mixins: [childMixin],
   props: {
     day: { type: Object, required: true },
+    updateLayout: Function,
+    hide: Function,
   },
   computed: {
     popovers() {
@@ -65,16 +86,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.vc-day-popover-content {
-  line-height: 1.5;
-  padding: 5px 0;
-}
-.vc-day-no-popovers {
-  opacity: 0.8;
-  padding: 2px 6px;
-  margin: 0px;
-  line-height: 1.5;
-}
-</style>

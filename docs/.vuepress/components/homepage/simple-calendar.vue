@@ -22,12 +22,6 @@
       <div class="mb-6">
         <h3 class="text-base semibold text-grey-7 mb-3">Popovers</h3>
         <v-calendar :attributes="popovers">
-          <!--=========POPOVER HEADER SLOT=========-->
-          <div
-            slot="day-popover-header"
-            slot-scope="{ day }"
-            class="text-center font-bold mb-1 mx-2"
-          >{{ getPopoverHeaderLabel(day) }}</div>
           <!--============HOW TO USE ROW SLOTS===========-->
           <!--
             STEP 1: Insert element with a unique slot name ('todo-row' in this example). Make sure slot-scope is assigned, even if not used.      
@@ -36,22 +30,22 @@
           <!--===============TODO ROW SLOT==============-->
           <div
             slot="todo-row"
-            slot-scope="{ customData }"
+            slot-scope="{ customData, updateLayout }"
             class="flex flex-no-wrap items-center w-full"
           >
             <!--Todo content-->
             <div class="flex-grow text-left">
               <!--Show textbox when editing todo-->
               <input
-                class="appearance-none bg-white border p-1"
-                :style="{ minWidth: '220px' }"
                 v-if="customData.id === editId"
+                class="appearance-none bg-white border px-1"
+                :style="{ minWidth: '220px' }"
                 v-model="customData.description"
                 @keyup.enter="editId = 0"
                 v-focus-select
               >
               <!--Show status/description when not editing-->
-              <span v-else>
+              <span class="flex items-center" v-else>
                 <!--Completed checkbox-->
                 <input type="checkbox" v-model="customData.isComplete">
                 <!--Description-->
@@ -63,7 +57,10 @@
               </span>
             </div>
             <!--Edit/Done buttons-->
-            <a @click.prevent="toggleTodoEdit(customData)" class="ml-1 cursor-pointer">
+            <a
+              @click.prevent="toggleTodoEdit(customData, updateLayout)"
+              class="ml-1 cursor-pointer"
+            >
               <!--Edit button-->
               <svg
                 v-if="editId !== customData.id"
@@ -87,7 +84,7 @@
             </a>
             <!--Delete button-->
             <a
-              @click.prevent="deleteTodo(customData)"
+              @click.prevent="deleteTodo(customData, updateLayout)"
               v-if="!editId || editId !== customData.id"
               class="ml-1 cursor-pointer"
             >
@@ -331,18 +328,6 @@ export default {
     },
   },
   methods: {
-    getPopoverHeaderLabel(day) {
-      const options = {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      };
-      return day.date.toLocaleDateString(
-        window.navigator.userLanguage || window.navigator.language,
-        options,
-      );
-    },
     addTodo(day) {
       this.editId = ++this.incId;
       this.todos.push({
@@ -355,11 +340,13 @@ export default {
     toggleTodoComplete(todo) {
       todo.isComplete = !todo.isComplete;
     },
-    toggleTodoEdit(todo) {
+    toggleTodoEdit(todo, updateLayout) {
       this.editId = this.editId === todo.id ? 0 : todo.id;
+      updateLayout();
     },
-    deleteTodo(todo) {
+    deleteTodo(todo, updateLayout) {
       this.todos = this.todos.filter(t => t !== todo);
+      updateLayout();
     },
   },
   directives: {

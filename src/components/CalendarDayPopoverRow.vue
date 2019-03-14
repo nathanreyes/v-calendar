@@ -103,6 +103,5 @@ export default {
     flex-wrap: none
     flex-grow: 1
     width: max-content
-    transition: all $day-content-transition-time
 
 </style>
