@@ -65,6 +65,16 @@ export function datesAreEqual(a, b) {
   const bIsDate = isDate(b);
   if (!aIsDate && !bIsDate) return true;
   if (aIsDate !== bIsDate) return false;
+  // Remove time value for date compare
+  const dateOnlyA = new Date(a.valueOf());
+  dateOnlyA.setHours(0, 0, 0, 0);
+  const dateOnlyB = new Date(b.valueOf());
+  dateOnlyB.setHours(0, 0, 0, 0);
+  return dateOnlyA.getTime() === dateOnlyB.getTime();
+}
+
+export function dateTimesAreEqual(a, b) {
+  if (!datesAreEqual(a, b)) return false;
   return a.getTime() === b.getTime();
 }
 
