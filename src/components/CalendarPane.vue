@@ -45,6 +45,8 @@
         <slot :name="slot" v-bind="props"></slot>
       </template>
     </calendar-weeks>
+    <!-- Time picker slot -->
+    <slot name="timepicker" />
   </div>
 </template>
 

@@ -2,6 +2,7 @@
 import Calendar from './Calendar';
 import Popover from './Popover';
 import PopoverRef from './PopoverRef';
+import TimePicker from './TimePicker';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
@@ -22,6 +23,21 @@ import { isString, isFunction, isArray } from '@/utils/_';
 export default {
   name: 'VDatePicker',
   render(h) {
+    const timePickerSlot = (enableTime, mode) => {
+      if(!enableTime) return null;
+      if(mode !== 'single') return null;
+      return h(TimePicker, {
+        attrs: {
+          currentDate: this.value_,
+        },
+        on: {
+          hourchange: this.onHourChange,
+          minutechange: this.onMinuteChange,
+          secondchange: this.onSecondChange,
+        },
+        slot: 'timepicker'
+      });
+    };
     const calendar = () => h(Calendar, {
         attrs: {
           ...this.$attrs,
@@ -39,7 +55,9 @@ export default {
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
-      });
+      }
+      , [timePickerSlot(this.enableTime, this.mode)]
+    );
     // If inline just return the calendar
     if (this.isInline) return calendar();
     // Render the slot or ihput
@@ -105,6 +123,7 @@ export default {
     theme: Object,
     firstDayOfWeek: Number,
     locale: null,
+    enableTime: false,
   },
   data() {
     return {
@@ -355,6 +374,35 @@ export default {
       this.picker.handleDayMouseEnter(day, this);
       // Re-emit event
       this.$emit('daymouseenter', day);
+    },
+    onHourChange(hour) {
+      this.picker.handleHourChange(hour, this);
+      // Re-emit event
+      this.$emit('hourchange', hour);
+    },
+    onMinuteChange(minute) {
+      this.picker.handleMinuteChange(minute, this);
+      // Re-emit event
+      this.$emit('minutechange', minute);
+    },
+    onSecondChange(second) {
+      this.picker.handleSecondChange(second, this);
+      // Re-emit event
+      this.$emit('secondchange', second);
+    },
+    combineDateAndTime(date, time) {
+      // Copy date
+      const result = new Date(date.valueOf());
+      // Check if enable time picker
+      if (this.enableTime) {
+        // Combine date and time
+        const currentTime = new Date(time.valueOf());
+        result.setHours(currentTime.getHours());
+        result.setMinutes(currentTime.getMinutes());
+        result.setSeconds(currentTime.getSeconds());
+      }
+
+      return result;
     },
     inputInput(e) {
       this.inputValue = e.target.value;

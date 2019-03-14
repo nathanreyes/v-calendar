@@ -56,12 +56,52 @@ export default class SinglePicker {
       // Reset value to null if allowed
       if (!picker.isRequired) picker.$emit('input', null);
     } else {
-      // Set value to selected date
-      picker.value_ = day.date;
+      // Set value to selected date and current time
+      const selectedDateTime = picker.combineDateAndTime(day.date, picker.value_);
+      picker.value_ = selectedDateTime;
     }
   }
 
   handleDayMouseEnter() {
     // Don't do anything here
+  }
+
+  handleHourChange(hour, picker) {
+    // Copy date
+    const currentTime = new Date(picker.value_.valueOf());
+    // Set hour value to date
+    currentTime.setHours(hour);
+
+    // Check if date was changed
+    if (!this.valuesAreEqual(picker.value_, currentTime)) {
+      // Set value to current time
+      picker.value_ = currentTime;
+    }
+  }
+
+  handleMinuteChange(minute, picker) {
+    // Copy date
+    const currentTime = new Date(picker.value_.valueOf());
+    // Set minute value to date
+    currentTime.setMinutes(minute);
+
+    // Check if date was changed
+    if (!this.valuesAreEqual(picker.value_, currentTime)) {
+      // Set value to current time
+      picker.value_ = currentTime;
+    }
+  }
+
+  handleSecondChange(second, picker) {
+    // Copy date
+    const currentTime = new Date(picker.value_.valueOf());
+    // Set second value to date
+    currentTime.setSeconds(second);
+
+    // Check if date was changed
+    if (!this.valuesAreEqual(picker.value_, currentTime)) {
+      // Set value to current time
+      picker.value_ = currentTime;
+    }
   }
 }
