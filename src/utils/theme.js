@@ -202,7 +202,7 @@ export default class Theme {
       concatClass(
         targetConfig,
         'class',
-        this.getConfig('contentAccentHigh', targetConfig),
+        this.getConfig('contentAccent', targetConfig),
       );
     });
     return content;

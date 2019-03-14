@@ -84,7 +84,7 @@ export default {
 .vc-day-popover-row
   display: flex
   align-items: center
-  padding: 2px 0
+  padding: 0 0 2px 0
   transition: all $day-content-transition-time
   &:not(:first-child)
     margin-top: 3px

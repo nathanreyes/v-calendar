@@ -45,8 +45,8 @@
   },
   "dayNotInMonth": "opacity-0 pointer-events-none",
   "dayContent": {
-    "light": "font-medium text-sm cursor-pointer focus:font-bold",
-    "dark": "font-medium text-sm cursor-pointer focus:font-bold"
+    "light": "font-medium text-sm cursor-pointer focus:font-bold rounded-full",
+    "dark": "font-medium text-sm cursor-pointer focus:font-bold rounded-full"
   },
   "dayPopoverContainer": {
     "light": "rounded text-xs text-white font-medium bg-grey-9 border border-grey-7 px-2 shadow",
@@ -54,6 +54,7 @@
   },
   "highlightBaseFillMode": "light",
   "highlightStartEndFillMode": "solid",
+  "highlightStartEndClass": "rounded-full",
   "bgLow": {
     "light": "bg-white border-2 border-{color}-7",
     "dark": "bg-grey-10 border-2 border-{color}-2"

@@ -520,7 +520,6 @@ export default {
   align-items: center
   width: $day-content-width
   height: $day-content-height
-  border-radius: $day-content-border-radius
   transition: all $day-content-transition-time
   user-select: none
   margin: .1rem auto
@@ -541,18 +540,17 @@ export default {
 .vc-highlight
   width: 1.8rem
   height: 1.8rem
-  border-radius: 50%
   &.vc-highlight-base-start
-    width: 50%
-    border-radius: 0
+    width: 50% !important
+    border-radius: 0 !important
     border-right-width: 0 !important
   &.vc-highlight-base-end
-    width: 50%
-    border-radius: 0
+    width: 50% !important
+    border-radius: 0 !important
     border-left-width: 0 !important
   &.vc-highlight-base-middle
     width: 100%
-    border-radius: 0
+    border-radius: 0 !important
     border-left-width: 0 !important
     border-right-width: 0 !important
     margin: 0 -1px
