@@ -28,7 +28,7 @@ export default class DateInfo {
       // Can't accept invalid dates
       date = isDate(date) ? date : new Date();
       // Strip date time
-      date.setHours(0, 0, 0, 0);
+      // date.setHours(0, 0, 0, 0);
       // date.setUTCHours(0, 0, 0, 0);
       // Assign date
       this.date = date;
@@ -56,12 +56,12 @@ export default class DateInfo {
         // Reset invalid dates to null and strip times for valid dates
         if (start) {
           if (!isDate(start)) start = null;
-          else start.setHours(0, 0, 0, 0);
+          // else start.setHours(0, 0, 0, 0);
           // else start.setUTCHours(0, 0, 0, 0);
         }
         if (end) {
           if (!isDate(end)) end = null;
-          else end.setHours(0, 0, 0, 0);
+          // else end.setHours(0, 0, 0, 0);
           // else end.setUTCHours(0, 0, 0, 0);
         }
         // Assign start and end dates

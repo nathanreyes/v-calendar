@@ -3,6 +3,7 @@ import {
   getMaxPage,
   addPages,
   datesAreEqual,
+  dateTimesAreEqual,
 } from '@/utils/helpers';
 import DateInfo from '@/utils/dateInfo';
 import { isDate, isObject } from '@/utils/_';
@@ -77,6 +78,15 @@ end;
     return { from, to };
   }
 
+  getLastDate(picker) {
+    const { value_, dragValue } = picker;
+    // Get start drag date time if draging
+    if(picker.dragValue) return picker.dragValue.start;
+    // Get end value if not dragging
+    if(!picker.value_) return null;
+    return picker.value_.end;
+  }
+
   handleDayClick(day, picker) {
     const { dateTime } = day;
     // Start new drag selection if not dragging
@@ -117,6 +127,52 @@ end;
       // Assign drag value if it is valid
       if (picker.dateIsValid(newDragValue)) {
         picker.dragValue = newDragValue;
+      }
+    }
+  }
+
+  handleTimeChange(time, type, picker) {
+    if (!picker.lastDate) return;
+    // Copy date
+    const currentTime = new Date(picker.lastDate.valueOf());
+    // Set time to date
+    switch (type) {
+      case 'hour':
+        currentTime.setHours(time);
+        break;
+      case 'minute':
+        currentTime.setMinutes(time);
+        break;
+      case 'second':
+        currentTime.setSeconds(time);
+        break;
+      default:
+        break;
+    }
+
+    // Check if date time was changed
+    if (!dateTimesAreEqual(picker.lastDate, currentTime)) {
+      // Set value to current time
+      if (picker.dragValue) {
+        // Set start drag value if dragging
+        const newDragValue = {
+          start: currentTime,
+          end: new Date(picker.dragValue.end.valueOf()),
+        };
+        // Assign drag value if it is valid
+        if (picker.dateIsValid(newDragValue)) {
+          picker.dragValue = newDragValue;
+        }
+        return;
+      }
+      // set end value if not dragging
+      const newValue = this.normalize({
+        start: new Date(picker.value_.start.valueOf()),
+        end: currentTime,
+      });
+      // Assign new value if it is valid
+      if (picker.dateIsValid(newValue)) {
+        picker.value_ = newValue;
       }
     }
   }

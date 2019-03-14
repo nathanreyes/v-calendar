@@ -23,9 +23,8 @@ import { isString, isFunction, isArray } from '@/utils/_';
 export default {
   name: 'VDatePicker',
   render(h) {
-    const timePickerSlot = (enableTime, mode) => {
+    const timePickerSlot = enableTime => {
       if(!enableTime) return null;
-      if(mode === 'range') return null;
       return h(TimePicker, {
         attrs: {
           currentDate: this.lastDate,
@@ -56,7 +55,7 @@ export default {
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
       }
-      , [timePickerSlot(this.enableTime, this.mode)]
+      , [timePickerSlot(this.enableTime)]
     );
     // If inline just return the calendar
     if (this.isInline) return calendar();
