@@ -50,7 +50,8 @@
       :is-inline="isInline"
       :is-dark="isDark"
       :popover="popover"
-      :drag-attribute="dragAttribute"
+      :attributes="attrs"
+      :columns="$screens({ lg: 2 }, 1)"
     />
   </div>
 </template>
@@ -66,6 +67,14 @@ export default {
       popover: {
         visibility: 'focus',
       },
+      attrs: [
+        {
+          highlight: {
+            fillMode: 'none',
+          },
+          dates: new Date(),
+        },
+      ],
       dragAttribute: {
         highlight: {
           base: {

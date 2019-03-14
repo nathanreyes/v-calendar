@@ -71,7 +71,15 @@ export default {
       return [
         // Today attribute
         {
-          content: { class: 'font-bold' },
+          highlight: {
+            fillMode: 'none',
+            color: 'purple',
+            class: 'rounded-none',
+          },
+          content: {
+            class: 'italic',
+            color: 'purple',
+          },
           dates: new Date(),
         },
         // Attributes for meetings
