@@ -4,15 +4,9 @@ sidebarDepth: 2
 pageClass: docs-page
 ---
 
-## `locale`
+## Properties
 
-**Type:** String
-
-**Description:** Locale identification in [*language-region*](https://lingohub.com/documentation/developers/supported-locales/language-designators-with-regions/) format. Not all regions supported.
-
-**Default:** `undefined`
-
-## `componentPrefix`
+### `componentPrefix`
 
 **Type:** String
 
@@ -20,19 +14,75 @@ pageClass: docs-page
 
 **Default:** `"v"`
 
-## `firstDayOfWeek`
+### `titlePosition`
+
+**Type:** String
+
+**Description:** Position of the title in the header (`"left"`, `"center"`, `"right"`)
+
+**Default:** `"center"`
+
+### `navVisibility`
+
+**Type:** String
+
+**Description:** Visibility state for calendar navigation panel (`"focus"`, `"hover"`, `"visible"`, `"hidden"`)
+
+**Default:** `"focus"`
+
+### `transition`
+
+**Type:** String
+
+**Description:** Transition type for calendar panes when navigating to a new page (`"slide-h"`: Horizontal slide, `"slide-v"`: Vertical slide, `"fade"`, `"none"`).
+
+**Default:** `"slide-h"` when `row === 1 && column === 1`, `"fade"` otherwise.
+
+### `maxSwipeTime`
 
 **Type:** Number
 
-**Description:** Day number for the first day of the week (1: Sun - 7: Sat)
+**Description:** Maximum time in milliseconds allowed for a swipe gesture to complete
 
-**Default:** `1`
+**Default:** `300`
 
-## `formats`
+### `minHorizontalSwipeDistance`
+
+**Type:** Number
+
+**Description:** Minimum distance in pixels allowed for a horizontal swipe gesture
+
+**Default:** `60`
+
+### `maxVerticalSwipeDistance`
+
+**Type:** Number
+
+**Description:** Maximum distance in pixels allowed for a horizontal swipe gesture
+
+**Default:** `80`
+
+### `maxTapTolerance`
+
+**Type:** Number
+
+**Description:** Maximum distance in pixels allowed for a tap between `touchstart` and `touchend` events
+
+**Default:** `0`
+
+### `maxTapDuration`
+
+**Type:** Number
+
+**Description:** Maximum time in milliseconds allowed for a tap between `touchstart` and `touchend` events
+
+**Default:** `200`
+
+### `formats`
 
 **Type:** Object
 
-**Description:** Formats to use when display and parsing dates for various calendar sections
+**Description:** Formats to use when display and parsing dates for various calendar sections.
 
 **Default:**
 ```js
@@ -46,71 +96,48 @@ pageClass: docs-page
 }
 ```
 
-## `navVisibility`
+### `locale`
 
-**Type:** String
+**Type:** String, Object
 
-**Description:** Visibility state for calendar navigation panel (`"focus"`, `"hover"`, `"visible"`, `"hidden"`)
+**Description:** Locale identification string in [*language-region*](https://lingohub.com/documentation/developers/supported-locales/language-designators-with-regions/) format, or set of locale configuration properties if object is provided.
 
-**Default:** `"focus"`
+**Default:** `undefined`
 
-## `titlePosition`
+### `datePicker`
 
-**Type:** String
+**Type:** Object
 
-**Description:** Position of the title in the header (`"left"`, `"center"`, `"right"`)
+**Description:** Defaults applied for date picker *only*.
 
-**Default:** `"center"`
+**Default:** *Reference below for default values*
 
-## `transition`
-
-**Type:** String
-
-**Description:** Transition type for title when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`)
-
-**Default:** `"slide-h"` for single-paned, `"fade"` for multi-paned
-
-## `datePickerUpdateOnInput`
+### `datePicker.updateOnInput`
 
 **Type:** Boolean
 
-**Description:** Update the picker value after every `input` event.
+**Description:** Update the picker value after every `input` event. Otherwise, value is just updated on `change` event.
 
-**Default:** `false`
+**Default Value:** `true`
 
-## `datePickerInputDebounce`
+### `datePicker.inputDebounce`
 
 **Type:** Number
 
-**Description:** If `update-on-input` is enabled, the duration in milliseconds at which the `input` event is debounced when commiting a new date value.
+**Description:** If `update-on-input` is enabled, the duration in milliseconds at which the `input` event is debounced before updating the date value.
 
-**Default:** `1000`
+**Default Value:** `1000`
 
-## `popoverExpanded`
 
-**Type:** Boolean
+### `datePicker.popover`
 
-**Description:** Popover wrapper for input or slot is expanded to the full width of its container.
+**Type:** Object
 
-**Default:** `false`
+**Description:** Properties of the popover to apply for the calendar component. Not applicable when `is-inline === true`.
 
-## `popoverDirection`
+**Default Value:** *Reference below for default values.*
 
-**Type:** String
-
-**Description:** Direction that popover displays relative to input or slot element (`"bottom"`, `"top"`, `"left"`, `"right"`)
-
-**Default:** `"bottom"`
-
-## `popoverAlign`
-
-**Type:** String
-
-**Description:** How the popover is aligned relative to input or slot element (`"left"`, `"right"`, `"top"`, `"bottom"'`)
-
-**Default:** `"left"`
-
-## `popoverVisibility`
+### `datePicker.popover.visibility`
 
 **Type:** String
 
@@ -118,15 +145,7 @@ pageClass: docs-page
 
 **Default:** `"hover"`
 
-## `popoverContentOffset`
-
-**Type:** String
-
-**Description:** Distance that the popover content is offset from the input or slot element
-
-**Default:** `"10px`
-
-## `popoverKeepVisibleOnInput`
+### `datePicker.popover.keepVisibleOnInput`
 
 **Type:** Boolean
 
@@ -134,48 +153,16 @@ pageClass: docs-page
 
 **Default:** `false`
 
-## `maxSwipeTime`
+### `datePicker.popover.placement`
 
-**Type:** Number
+**Type:** String
 
-**Description:** Maximum time in milliseconds allowed for a swipe gesture to complete
+**Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change.
 
-**Default:** `300`
-
-## `minHorizontalSwipeDistance`
-
-**Type:** Number
-
-**Description:** Minimum distance in pixels allowed for a horizontal swipe gesture
-
-**Default:** `60`
-
-## `maxVerticalSwipeDistance`
-
-**Type:** Number
-
-**Description:** Maximum distance in pixels allowed for a horizontal swipe gesture
-
-**Default:** `80`
-
-## `maxTapTolerance`
-
-**Type:** Number
-
-**Description:** Maximum distance in pixels allowed for a tap between `touchstart` and `touchend` events
-
-**Default:** `0`
-
-## `maxTapDuration`
-
-**Type:** Number
-
-**Description:** Maximum time in milliseconds allowed for a tap between `touchstart` and `touchend` events
-
-**Default:** `200`
+**Default:** `"bottom"`
 
 <!--
-## 
+### 
 
 **Type:** 
 

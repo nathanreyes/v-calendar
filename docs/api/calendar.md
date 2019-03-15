@@ -21,6 +21,38 @@ sidebarDepth: 2
 
 **Default:** `1`
 
+### `title-position`
+
+**Type:** String
+
+**Description:** Position of the header title (`"left"`, `"center"`, `"right"`).
+
+**Default:** `"center"`
+
+### `nav-visibility`
+
+**Type:** String
+
+**Description:** Visibility state for calendar navigation panel (`"focus"`, `"hover"`, `"visible"`, `"hidden"`)
+
+**Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#nav-visibility)
+
+### `is-expanded`
+
+**Type:** Boolean
+
+**Description:** Expands calendar to fill the full width of its container.
+
+**Default:** `false`
+
+### `transition`
+
+**Type:** String
+
+**Description:** Transition type for calendar panes when navigating to a new page (`"slide-h"`: Horizontal slide, `"slide-v"`: Vertical slide, `"fade"`, `"none"`).
+
+**Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#transition)
+
 ### `step`
 
 **Type:** Number
@@ -41,22 +73,6 @@ sidebarDepth: 2
 Use the `.sync` modifier for two-way binding.
 :::
 
-### `to-page`
-
-**Type:** Object
-
-**Description:** Page for the last calendar pane located at row *n* and column *n*, where *n* is the max dimension.
-
-**Default:** `undefined` *Resolves to **n** month if not provided, where `n = rows * columns`.*
-
-:::tip
-Use the `.sync` modifier for two-way binding.
-:::
-
-:::warning
-To avoid erratic navigation behavior, do not try to assign both `from-page` and `to-page` at the same time (just pick one).
-:::
-
 ### `from-date`
 
 **Type:** Date
@@ -69,6 +85,26 @@ To avoid erratic navigation behavior, do not try to assign both `from-page` and 
 The `.sync` modifier does not work with this prop, unlike `from-page`.
 :::
 
+### `to-page`
+
+**Type:** Object
+
+**Description:** Page for the last calendar pane located at row *n* and column *n*, where *n* is the max dimension.
+
+**Default:** `undefined` *Resolves to **n** month if not provided, where `n = rows * columns`.*
+
+::: tip
+*Resolves to **n** month if not provided, where `n = rows * columns`.
+:::
+
+:::tip
+Use the `.sync` modifier for two-way binding.
+:::
+
+:::warning
+To avoid erratic navigation behavior, do not try to assign both `from-page` and `to-page` at the same time (just pick one).
+:::
+
 ### `to-date`
 
 **Type:** Date
@@ -78,7 +114,7 @@ The `.sync` modifier does not work with this prop, unlike `from-page`.
 **Default:** `undefined`
 
 :::warning
-The `.sync` modifier does not work with this prop, unlike `from-page`.
+The `.sync` modifier does not work with this prop, unlike `to-page`.
 :::
 
 ### `min-page`
@@ -86,14 +122,6 @@ The `.sync` modifier does not work with this prop, unlike `from-page`.
 **Type:** Object
 
 **Description:** Earliest page (month, year) that the user can navigate to.
-
-**Default:** `undefined`
-
-### `max-page`
-
-**Type:** Object
-
-**Description:** Latest page (month, year) that the user can navigate to.
 
 **Default:** `undefined`
 
@@ -105,6 +133,14 @@ The `.sync` modifier does not work with this prop, unlike `from-page`.
 
 **Default:** `undefined`
 
+### `max-page`
+
+**Type:** Object
+
+**Description:** Latest page (month, year) that the user can navigate to.
+
+**Default:** `undefined`
+
 ### `max-date`
 
 **Type:** Date
@@ -113,64 +149,6 @@ The `.sync` modifier does not work with this prop, unlike `from-page`.
 
 **Default:** `undefined`
 
-### `is-expanded`
-
-**Type:** Boolean
-
-**Description:** Expands calendar to fill the full width of its container.
-
-**Default:** `false`
-
-### `theme-styles`
-
-**Type:** Object
-
-**Description:** A variety of styles that are used to customize different components of the calendar.
-
-**Default:** [Reference theme styles](./theme-styles.md)
-
-### `title-position`
-
-**Type:** String
-
-**Description:** Position of the header title (`"left"`, `"center"`, `"right"`).
-
-**Default:** `"center"`
-
-### `transition`
-
-**Type:** String
-
-**Description:** Transition type for weeks when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`).
-
-**Default:** `""`
-
-### `nav-visibility`
-
-**Type:** String
-
-**Description:** Visibility state of the navigation panel. Use `"hover"` to automatically show when title is hovered on non-touch devices or tapped on touch devices. Use `"focus"` to automatically show when title enters or leaves focus. Use `"visible"` and `"hidden"` for manual control.
-
-**Default:** `"focus"`
-
-### `formats`
-
-**Type:** Object
-
-**Description:** Formats to use when display and parsing dates for various calendar sections.
-
-**Default:**
-```js
-{
-  title: 'MMMM YYYY',
-  weekdays: 'W',
-  navMonths: 'MMM',
-  input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
-  dayPopover: 'WWW, MMM D, YYYY',
-  data: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
-}
-```
-
 ### `attributes`
 
 **Type:** Array[Object]
@@ -178,6 +156,54 @@ The `.sync` modifier does not work with this prop, unlike `from-page`.
 **Description:** List of attributes to display in the calendar.
 
 **Default:** `[]`
+
+### `formats`
+
+**Type:** Object
+
+**Description:** Formats to use when display and parsing dates for various calendar sections.
+
+**Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#formats)
+
+### `color`
+
+**Type:** String
+
+**Description:** Shortcut for specifying the theme color.
+
+**Default:** `undefined` [Resolved by theme if not specified](#theme)
+
+### `is-dark`
+
+**Type:** Boolean
+
+**Description:** Shortcut for activating theme dark mode.
+
+**Default:** `undefed` [Resolved by theme if not specified](#theme)
+
+### `theme`
+
+**Type:** Object
+
+**Description:** Setting used to customize the tint color, dark mode and classes for various calendar sections.
+
+**Default:** `undefined` [Resolved by defaults if not completely specified](./defaults.md#theme)
+
+### `firstDayOfWeek`
+
+**Type:** Number
+
+**Description:** Day number for the first day of the week (1: Sun - 7: Sat). Ignore setting this default if you want to allow the locale to determine this setting.
+
+**Default:** `undefined` [Resolved by locale if not specified](#locale)
+
+### `locale`
+
+**Type:** String, Object
+
+**Description:** The locale identifier or locale configuration to use for displaying the calendar.
+
+**Default:** `undefined` [Resolved by defaults or detected locale if not completely specified](./defaults.md#locale)
 
 <!--
 ### 

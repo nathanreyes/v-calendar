@@ -4,7 +4,9 @@ sidebarDepth: 2
 pageClass: docs-page
 ---
 
-## `days`
+## Date Patterns
+
+### `days`
 
 **Type:** Number, Array
 
@@ -12,7 +14,7 @@ pageClass: docs-page
 
 **Range:** 1 to 31, -1 to -31
 
-## `weekdays`
+### `weekdays`
 
 **Type:** Number, Array
 
@@ -20,7 +22,7 @@ pageClass: docs-page
 
 **Range:** 1: Sun to 7: Sat
 
-## `ordinalWeekdays`
+### `ordinalWeekdays`
 
 **Type:** Object (key: Number / value: Number, Array)
 
@@ -30,7 +32,7 @@ pageClass: docs-page
   * key: 1 to 6, -1 to -6
   * value: 1: Sun to 7: Sat
 
-## `weeks`
+### `weeks`
 
 **Type:** Number, Array
 
@@ -38,7 +40,7 @@ pageClass: docs-page
 
 **Range:** 1 to 6, -1 to -6
 
-## `months`
+### `months`
 
 **Type:** Number, Array
 
@@ -46,7 +48,7 @@ pageClass: docs-page
 
 **Range:** 1 to 12
 
-## `years`
+### `years`
 
 **Type:** Number, Array
 
@@ -54,7 +56,7 @@ pageClass: docs-page
 
 **Range:** 4-digit integer
 
-## `dailyInterval`
+### `dailyInterval`
 
 **Type:** Number
 
@@ -62,7 +64,7 @@ pageClass: docs-page
 
 **Range:** n > 0
 
-## `weeklyInterval`
+### `weeklyInterval`
 
 **Type:** Number
 
@@ -70,7 +72,7 @@ pageClass: docs-page
 
 **Range:** n > 0
 
-## `monthlyInterval`
+### `monthlyInterval`
 
 **Type:** Number
 
@@ -78,7 +80,7 @@ pageClass: docs-page
 
 **Range:** n > 0
 
-## `yearlyInterval`
+### `yearlyInterval`
 
 **Type:** Number
 

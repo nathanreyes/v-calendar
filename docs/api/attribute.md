@@ -3,7 +3,7 @@ title: Attribute
 sidebarDepth: 2
 ---
 
-## Object
+## Properties
 
 ### `key`
 

@@ -10,14 +10,6 @@ sidebarDepth: 2
 
 ## Props
 
-### `value`
-
-**Type:** Date, Array[Date], Object
-
-**Description:** Selected date, dates or date range.
-
-**Default Value:** `null`
-
 ### `mode`
 
 **Type:** String
@@ -26,13 +18,25 @@ sidebarDepth: 2
 
 **Default Value:** `"single"`
 
+### `value`
+
+**Type:** Date, Array[Date], Object
+
+**Description:** Selected date, dates or date range.
+
+**Default Value:** `null`
+
 ### `is-required`
 
 **Type:** Boolean
 
-**Description:** Prevents the **user** from clearing the selected value. Setting `value = null` still allowed through code.
+**Description:** Prevents the **user** from clearing the selected value.
 
 **Default Value:** `false`
+
+::: tip
+Setting `value = null` still allowed through code.
+:::
 
 ### `is-inline`
 
@@ -62,7 +66,7 @@ sidebarDepth: 2
 
 **Type:** Array, Date, Object
 
-**Description:** Disabled dates or date range objects.
+**Description:** Dates or date range objects that are **not** allowed for selection.
 
 **Default Value:** `undefined`
 
@@ -70,7 +74,7 @@ sidebarDepth: 2
 
 **Type:** Array, Date, Object
 
-**Description:** Available dates or date range objects. All other dates are disabled.
+**Description:** Dates or date range objects that are available for selection. All other dates are disabled.
 
 **Default Value:** `undefined`
 
@@ -78,7 +82,7 @@ sidebarDepth: 2
 
 **Type:** Object
 
-**Description:** Object with props to apply to the input element. Not applicable for inline date pickers.
+**Description:** Props to apply to the input DOM element.  Not applicable when `is-inline === true`.
 
 **Default Value:** [Reference code]()
 
@@ -86,7 +90,7 @@ sidebarDepth: 2
 
 **Type:** Boolean
 
-**Description:** Update the picker value after every `input` event.
+**Description:** Update the picker value after every `input` event. Otherwise, value is just updated on `change` event.
 
 **Default Value:** `true`
 
@@ -94,98 +98,39 @@ sidebarDepth: 2
 
 **Type:** Number
 
-**Description:** If `update-on-input` is enabled, the duration in milliseconds at which the `input` event is debounced when commiting a new date value.
+**Description:** If `update-on-input` is enabled, the duration in milliseconds at which the `input` event is debounced before updating the date value.
 
 **Default Value:** `1000`
-
-### `tint-color`
-
-**Type:** String
-
-**Description:** Background color of the selected and dragged highlighted regions (`opacity: 0.5` for dragged). This setting is overridden by `select-attribute` and `drag-attribute` if specified.
-
-**Default Value:** `"#66B3CC"`
-
-### `select-attribute`
-
-**Type:** Object
-
-**Description:** Attribute to use for the date selection in all modes.
-
-**Default Value:** [Reference code]()
 
 ### `drag-attribute`
 
 **Type:** Object
 
-**Description:** Attribute to use for the dragged selection in "range" mode.
+**Description:** Attribute to use for the dragged selection in "range" mode. The `dates` property is ignored.
 
 **Default Value:** [Reference code]()
 
-### `show-caps`
+### `select-attribute`
 
-**Type:** Boolean
+**Type:** Object
 
-**Description:** Show caps and the end of the highlighted and dragged regions when `mode === "range"`
+**Description:** Attribute to use for the value selection in all modes. The `dates` property is ignored.
 
-**Default Value:** `false`
+**Default Value:** [Reference code]()
 
-### `show-popover`
+### `popover`
 
-**Type:** Boolean
+**Type:** Object
 
-**Description:** Show popover when selected or dragged date regions are hovered.
+**Description:** Properties of the popover to apply for the calendar component. Not applicable when `is-inline === true`.
 
-**Default Value:** `true`
+**Default Value:** [Reference code](./defaults.md)
 
-### `popover-expanded`
-
-**Type:** Boolean
-
-**Description:** Popover wrapper for input or slot is expanded to the full width of it's container.
-
-**Default Value:** `false`
-
-### `popover-direction`
-
-**Type:** String
-
-**Description:** Direction that popover displays relative to input or slot element: `"bottom"`, `"top"`, `"left"`, `"right"`
-
-**Default Value:** `"bottom"`
-
-### `popover-align`
-
-**Type:** String
-
-**Description:** How the popover is aligned relative to input or slot element: `"left"`, `"right"`, `"top"`, `"bottom"`
-
-**Default Value:** `"left"`
-
-### `popover-visibility`
-
-**Type:** Number
-
-**Description:** Visibility state of the popover: `"hover"`, `"focus"`, `"hidden"`, `"visible"`
-
-**Default Value:** `"hover"`
-
-### `popover-content-offset`
-
-**Type:** String
-
-**Description:** Distance that the popover content is offset from the input or slot element.
-
-**Default Value:** `"10px"`
-
-### `popover-keep-visible-on-input`
-
-**Type:** Boolean
-
-**Description:** Keep the popover visible after a valid input has been selected
-
-**Default Value:** `false`
-
+| Property | Type | Description |
+| --- | --- | --- |
+| `keepVisibleOnInput` | Boolean | Keep the popover visible after a date is selected, until the `visibility` determines. |
+| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. |
+| `visibility` | String | Visibility state for the input/slot popover (`"focus"`, `"hover"`, `"visible"`, `"hidden"`) |
 
 <!-- 
 ### 
