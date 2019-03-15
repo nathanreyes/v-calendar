@@ -42,11 +42,7 @@ export default {
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
-      },
-      [
-        this.$slots.timepicker
-      ]
-      );
+      });
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
