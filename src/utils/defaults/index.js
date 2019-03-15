@@ -6,7 +6,6 @@ import locales from './locales';
 
 export default {
   componentPrefix: 'v',
-  firstDayOfWeek: 1,
   navVisibility: 'click',
   titlePosition: 'center',
   transition: 'slide-h',
@@ -23,7 +22,6 @@ export default {
     updateOnInput: true,
     inputDebounce: 1000,
     popover: {
-      expanded: false,
       placement: 'bottom',
       visibility: POPOVER_VISIBILITIES.FOCUS,
       keepVisibleOnInput: false,

@@ -6,7 +6,7 @@ import CustomTransition from './CustomTransition';
 import CalendarDayPopovers from './CalendarDayPopovers';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
-import { rootMixin } from '@/utils/mixins';
+import { propOrDefaultMixin, rootMixin } from '@/utils/mixins';
 import {
   pageForDate,
   pageForThisMonth,
@@ -177,15 +177,13 @@ export default {
 
     return getContainerGrid();
   },
-  mixins: [rootMixin],
+  mixins: [propOrDefaultMixin, rootMixin],
   provide() {
     return {
       sharedState: this.sharedState,
     };
   },
   props: {
-    color: String,
-    isDark: Boolean,
     rows: {
       type: Number,
       default: 1,
@@ -211,8 +209,11 @@ export default {
     transition: String,
     attributes: [Object, Array],
     formats: Object,
+    color: String,
+    isDark: Boolean,
     theme: Object,
-    locale: null,
+    firstDayOfWeek: Number,
+    locale: [String, Object],
   },
   data() {
     return {

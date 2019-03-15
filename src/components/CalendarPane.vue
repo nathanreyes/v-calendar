@@ -64,7 +64,7 @@ import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
-import { childMixin } from '@/utils/mixins';
+import { propOrDefaultMixin, childMixin } from '@/utils/mixins';
 import { evalFn, createGuid } from '@/utils/helpers';
 
 export default {
@@ -74,7 +74,7 @@ export default {
     PopoverRef,
     Popover,
   },
-  mixins: [childMixin],
+  mixins: [propOrDefaultMixin, childMixin],
   props: {
     position: { type: Number, default: 1 },
     page: Object,
@@ -82,6 +82,7 @@ export default {
     maxPage: Object,
     titlePosition: String,
     navVisibility: String,
+    firstDayOfWeek: Number,
     canMove: {
       type: Function,
       default: () => true,
@@ -94,10 +95,13 @@ export default {
   },
   computed: {
     titlePosition_() {
-      return this.titlePosition || this.defaults.titlePosition;
+      return this.propOrDefault('titlePosition', 'titlePosition');
     },
     navVisibility_() {
-      return this.navVisibility || this.defaults.navVisibility;
+      return this.propOrDefault('navVisibility', 'navVisibility');
+    },
+    firstDayOfWeek_() {
+      return this.propOrDefault('firstDayOfWeek', 'firstDayOfWeek');
     },
     navSlots() {
       return ['nav-left-button', 'nav-right-button'].filter(

@@ -8,7 +8,7 @@ import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
 import AttributeStore from '@/utils/attributeStore';
 import Attribute from '@/utils/attribute';
-import { rootMixin } from '@/utils/mixins';
+import { rootMixin, propOrDefaultMixin } from '@/utils/mixins';
 import { addDays } from '@/utils/dateInfo';
 import { addTapOrClickHandler } from '@/utils/touch';
 import {
@@ -86,7 +86,7 @@ export default {
       }),
     ]);
   },
-  mixins: [rootMixin],
+  mixins: [rootMixin, propOrDefaultMixin],
   props: {
     mode: { type: String, default: 'single' },
     value: { type: null, required: true },
@@ -94,8 +94,6 @@ export default {
     isInline: Boolean,
     disabledDates: null,
     availableDates: null,
-    color: String,
-    isDark: Boolean,
     updateOnInput: Boolean,
     inputDebounce: Number,
     inputProps: { type: Object, default: () => ({}) },
@@ -105,7 +103,10 @@ export default {
     disabledAttribute: Object,
     attributes: Array,
     formats: Object,
+    color: String,
+    isDark: Boolean,
     theme: Object,
+    firstDayOfWeek: Number,
     locale: null,
   },
   data() {
