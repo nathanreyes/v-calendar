@@ -3,20 +3,22 @@
     <number-picker
       class="vc-numberpicker"
       v-model="hour_"
-      min="0"
-      max="23"
-    />:
+      :min="0"
+      :max="23"
+    />
+    <span>:</span>
     <number-picker
       class="vc-numberpicker"
       v-model="minute_"
-      min="0"
-      max="59"
-    />:
+      :min="0"
+      :max="59"
+    />
+    <span>:</span>
     <number-picker
       class="vc-numberpicker"
       v-model="second_"
-      min="0"
-      max="59"
+      :min="0"
+      :max="59"
     />
   </div>
 </template>
@@ -68,10 +70,13 @@ export default {
 </script>
 
 <style lang='sass' scoped>
+
+@import '../styles/vars.sass'
+@import '../styles/mixins.sass'
+
 .vc-timepicker
   display: flex
-  justify-content: space-around
-
-.vc-numberpicker
-  max-width: 60px
+  justify-content: space-between
+  align-items: baseline
+  padding: $timepicker-padding
 </style>
