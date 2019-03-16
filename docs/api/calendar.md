@@ -185,7 +185,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Type:** Object
 
-**Description:** Setting used to customize the tint color, dark mode and classes for various calendar sections.
+**Description:** Theme settings used to customize the tint color, dark mode and classes for various calendar sections.
 
 **Default:** `undefined` [Resolved by defaults if not completely specified](./defaults.md#theme)
 
@@ -193,7 +193,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Type:** Number
 
-**Description:** Day number for the first day of the week (1: Sun - 7: Sat). Ignore setting this default if you want to allow the locale to determine this setting.
+**Description:** Day number for the first day of the week (1: Sun - 7: Sat). Ignore setting this prop if you want to allow the locale to determine this setting.
 
 **Default:** `undefined` [Resolved by locale if not specified](#locale)
 

@@ -96,6 +96,31 @@ pageClass: docs-page
 }
 ```
 
+
+### `screens`
+
+**Type:** Object
+
+**Description:** Screen size breakpoints to use to obtain responsive layouts by calling the `$screens` function.
+
+**Default:**
+```js
+{
+  "sm": "576px",
+  "md": "768px",
+  "lg": "992px",
+  "xl": "1200px"
+}
+```
+
+### `theme`
+
+**Type:** Object
+
+**Description:** Theme settings used to customize the tint color, dark mode and classes for various calendar sections.
+
+**Default:** Reference the [theming guide](../guide/theming-guide.md) for providing default theme settings
+
 ### `locale`
 
 **Type:** String, Object
