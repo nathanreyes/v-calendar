@@ -2,12 +2,12 @@
   <!-- Content row -->
   <div class="vc-day-popover-row">
     <!-- Indicator -->
-    <div v-if="!hideIndicator && indicator" class="vc-day-popover-row-indicator">
+    <div v-if="indicator" class="vc-day-popover-row-indicator">
       <span :style="indicator.style" :class="indicator.class"></span>
     </div>
     <!-- Content -->
     <div class="vc-day-popover-row-content">
-      <slot>This is the default content slot.</slot>
+      <slot>No content provided</slot>
     </div>
   </div>
 </template>
@@ -18,11 +18,10 @@ export default {
   mixins: [childMixin],
   props: {
     attribute: Object,
-    hideIndicator: Boolean,
   },
   computed: {
     indicator() {
-      const { highlight, dot, bar } = this.attribute;
+      const { highlight, dot, bar, content } = this.attribute;
       if (highlight) {
         const { color, isDark } = highlight.start;
         return {
@@ -36,8 +35,7 @@ export default {
             borderRadius: '3px',
           },
         };
-      }
-      if (dot) {
+      } else if (dot) {
         const { color, isDark } = dot.start;
         return {
           class: this.theme.getConfig('bgAccentHigh', {
@@ -50,8 +48,7 @@ export default {
             borderRadius: '50%',
           },
         };
-      }
-      if (bar) {
+      } else if (bar) {
         const { color, isDark } = bar.start;
         return {
           class: this.theme.getConfig('bgAccentHigh', {
@@ -63,14 +60,15 @@ export default {
             height: '3px',
           },
         };
+      } else if (content) {
+        const { color, isDark } = content.start;
+        return {
+          class: this.theme.getConfig('contentContrast', {
+            color,
+            isDark: !isDark,
+          }),
+        };
       }
-      // if (content) {
-      //   return {
-      //     backgroundColor: contentStyle.color,
-      //     width: '5px',
-      //     height: '5px',
-      //   };
-      // }
       return null;
     },
   },
@@ -84,7 +82,6 @@ export default {
 .vc-day-popover-row
   display: flex
   align-items: center
-  padding: 0 0 2px 0
   transition: all $day-content-transition-time
   &:not(:first-child)
     margin-top: 3px

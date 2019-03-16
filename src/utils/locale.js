@@ -15,6 +15,10 @@ export default class Locale {
     this.monthNames = this.getMonthNames('long');
     this.monthNamesShort = this.getMonthNames('short');
     this.monthData = {};
+    // Bind methods
+    this.parse = this.parse.bind(this);
+    this.format = this.format.bind(this);
+    this.toDate = this.toDate.bind(this);
   }
 
   parse(dateStr, mask) {

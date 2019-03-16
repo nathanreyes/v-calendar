@@ -43,5 +43,9 @@ export const rootMixin = {
       // Let the $vc instance create the locale as they are shared when possible
       return this.$vc.getLocale(config);
     },
+    format() {
+      return (date, mask) =>
+        this.locale_ ? this.locale_.format(date, mask) : '';
+    },
   },
 };

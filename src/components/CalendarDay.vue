@@ -453,9 +453,8 @@ export default {
       if (!attribute.popover) return;
       const {
         label,
+        labelClass,
         labelStyle,
-        component,
-        slot,
         hideIndicator,
         visibility,
         isInteractive,
@@ -465,9 +464,8 @@ export default {
         customData: attribute.customData,
         attribute,
         label,
+        labelClass,
         labelStyle,
-        component,
-        slot,
         hideIndicator,
         visibility: visibility || (label ? 'hover' : 'click'),
         isInteractive: isInteractive !== undefined ? isInteractive : !label,

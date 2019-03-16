@@ -3,7 +3,7 @@ import Popover from './Popover';
 import Grid from './Grid';
 import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
-import CalendarDayPopovers from './CalendarDayPopovers';
+import PopoverRow from './PopoverRow';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
 import { propOrDefaultMixin, rootMixin } from '@/utils/mixins';
@@ -19,7 +19,7 @@ import {
   createGuid,
   toDate,
 } from '@/utils/helpers';
-import { isNumber } from '@/utils/_';
+import { isNumber, isFunction } from '@/utils/_';
 
 export default {
   name: 'Calendar',
@@ -71,7 +71,7 @@ export default {
               class: [
                 'vc-arrow',
                 { [directionClass]: true, 'vc-disabled': isDisabled },
-                this.sharedState.theme.arrows,
+                this.theme_.arrows,
               ],
               props: {
                 name: svgName,
@@ -83,6 +83,7 @@ export default {
         ],
       );
     };
+
     // Renderer for calendar container
     const getContainerGrid = () =>
       h(
@@ -93,7 +94,7 @@ export default {
             {
               'is-expanded': this.isExpanded,
             },
-            this.sharedState.theme.container,
+            this.theme_.container,
           ],
           on: {
             touchstart: this.touchStart,
@@ -152,21 +153,37 @@ export default {
             props: {
               id: this.sharedState.dayPopoverId,
               align: 'center',
-              contentClass: `c-day ${
-                this.sharedState.theme.dayPopoverContainer
-              }`,
+              contentClass: `c-day ${this.theme_.dayPopoverContainer}`,
             },
             scopedSlots: {
               default: ({ args: day, updateLayout, hide }) => {
-                return h(CalendarDayPopovers, {
-                  props: {
-                    day,
-                    updateLayout,
-                    hide,
-                    formats: this.formats_,
-                  },
-                  scopedSlots: this.$scopedSlots,
-                });
+                const attributes = day.attributes;
+                const formats = this.formats_;
+                const format = this.format;
+                return isFunction(this.$scopedSlots['day-popover'])
+                  ? this.$scopedSlots['day-popover']({
+                      day,
+                      attributes,
+                      formats,
+                      format,
+                      updateLayout,
+                      hide,
+                    })
+                  : h('div', [
+                      // Show popover header only if format is defined
+                      formats.dayPopover &&
+                        h('span', { class: this.theme_.dayPopoverHeader }, [
+                          format(day.date, formats.dayPopover),
+                        ]),
+                      attributes.map(attribute => {
+                        return h(PopoverRow, {
+                          key: attribute.key,
+                          props: {
+                            attribute,
+                          },
+                        });
+                      }),
+                    ]);
               },
             },
           }),

@@ -41,7 +41,7 @@ export default {
 
 <style lang='sass' scoped>
 
-$slide-translate: 18px
+$slide-translate: 22px
 $slide-duration: .15s
 $slide-timing: ease
 
