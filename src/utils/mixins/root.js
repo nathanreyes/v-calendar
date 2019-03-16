@@ -1,6 +1,6 @@
 import Theme from '@/utils/theme';
 import Locale from '@/utils/locale';
-import { isString, defaultsDeep } from '@/utils/_';
+import { isString, isObject, defaultsDeep } from '@/utils/_';
 
 export const rootMixin = {
   computed: {
@@ -27,28 +27,19 @@ export const rootMixin = {
       // Set default locale id if needed
       let config =
         this.locale || new Intl.DateTimeFormat().resolvedOptions().locale;
-      // Configure with locale id
-      if (isString(config)) {
-        // Load settings provided by default locales
-        const { locales } = this.$vc.defaults;
-        console.log(this.$vc.defaults);
-        const { firstDayOfWeek, dow, masks, L } =
-          locales[config] || locales[config.substring(0, 2)] || {};
-        console.log(firstDayOfWeek, dow, masks, L);
-        config = {
-          id: config,
-          firstDayOfWeek: firstDayOfWeek || dow,
-          masks: masks || { L },
-        };
-        // Configure with object and locale id
-      } else if (isObject(config)) {
-        defaultsDeep(config, this.$vc.defaults.locales[config.id]);
-      }
-      // Merge in the firstDayOfWeek prop if it was specifically provided
-      config.firstDayOfWeek = this.passedProp(
+      // Get the default settings for the provided locale
+      const { locales } = this.$vc.defaults;
+      const localeId = isString(config) ? config : config.id;
+      const defLocale =
+        locales[localeId] || locales[localeId.substring(0, 2)] || {};
+      // Sanitize defaults
+      defLocale.firstDayOfWeek = this.passedProp(
         'firstDayOfWeek',
-        config.firstDayOfWeek,
+        defLocale.firstDayOfWeek || defLocale.dow,
       );
+      defLocale.masks = defLocale.masks || { L: defLocale.L };
+      // Assign or merge defaults with provided config
+      config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
       // Let the $vc instance create the locale as they are shared when possible
       return this.$vc.getLocale(config);
     },

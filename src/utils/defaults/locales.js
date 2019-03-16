@@ -1,4 +1,3 @@
-// Infer first day of week === 1 if not listed (dow)
 const locales = {
   // Arabic
   ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
@@ -9,7 +8,7 @@ const locales = {
   // Chinese (China)
   'zh-CN': { dow: 2, L: 'YYYY/MM/DD' },
   // Chinese (Taiwan)
-  'zh-TW': { L: 'YYYY/MM/DD' },
+  'zh-TW': { dow: 1, L: 'YYYY/MM/DD' },
   // Croatian
   hr: { dow: 2, L: 'DD.MM.YYYY' },
   // Czech
@@ -19,11 +18,11 @@ const locales = {
   // Dutch
   nl: { dow: 2, L: 'DD.MM.YYYY' },
   // English (US)
-  'en-US': { L: 'MM/DD/YYYY' },
+  'en-US': { dow: 1, L: 'MM/DD/YYYY' },
   // English (Australia)
   'en-AU': { dow: 2, L: 'DD/MM/YYYY' },
   // English (Canada)
-  'en-CA': { L: 'YYYY-MM-DD' },
+  'en-CA': { dow: 1, L: 'YYYY-MM-DD' },
   // English (Great Britain)
   'en-GB': { dow: 2, L: 'DD/MM/YYYY' },
   // English (Ireland)
@@ -37,7 +36,7 @@ const locales = {
   // French
   fr: { dow: 2, L: 'DD/MM/YYYY' },
   // French (Canada)
-  'fr-CA': { L: 'YYYY-MM-DD' },
+  'fr-CA': { dow: 1, L: 'YYYY-MM-DD' },
   // French (Switzerland)
   'fr-CH': { dow: 2, L: 'DD.MM.YYYY' },
   // German
@@ -47,9 +46,9 @@ const locales = {
   // Italian
   it: { dow: 2, L: 'DD/MM/YYYY' },
   // Japanese
-  ja: { L: 'YYYY年M月D日' },
+  ja: { dow: 1, L: 'YYYY年M月D日' },
   // Korean
-  ko: { L: 'YYYY.MM.DD' },
+  ko: { dow: 1, L: 'YYYY.MM.DD' },
   // Macedonian
   mk: { dow: 2, L: 'D.MM.YYYY' },
   // Polish
@@ -67,7 +66,7 @@ const locales = {
   // Swedish
   sv: { dow: 2, L: 'YYYY-MM-DD' },
   // Thai
-  th: { L: 'DD/MM/YYYY' },
+  th: { dow: 1, L: 'DD/MM/YYYY' },
   // Turkish
   tr: { dow: 2, L: 'DD.MM.YYYY' },
   // Ukrainian

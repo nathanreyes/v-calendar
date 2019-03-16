@@ -5,7 +5,6 @@ const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 export default class Locale {
   constructor({ id, firstDayOfWeek, masks }) {
-    console.log('create locale', id, firstDayOfWeek, masks);
     this.id = id;
     this.firstDayOfWeek = firstDayOfWeek;
     this.masks = masks;
