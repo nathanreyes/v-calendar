@@ -133,9 +133,7 @@ export default {
                     props: {
                       rows: this.rows,
                       columns: this.columns,
-                      gap: this.gap,
                       columnWidth: 'minmax(256px, 1fr)',
-                      innerBorderClass: 'c-pane-inner-border',
                     },
                     attrs: {
                       ...this.$attrs,
@@ -193,10 +191,6 @@ export default {
       default: 1,
     },
     step: Number,
-    gap: {
-      type: String,
-      default: '1px',
-    },
     isExpanded: Boolean,
     fromDate: Date,
     toDate: Date,
