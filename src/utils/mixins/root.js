@@ -4,10 +4,10 @@ import { isString, isObject, defaultsDeep } from '@/utils/_';
 
 export const rootMixin = {
   computed: {
-    formats_() {
+    masks_() {
       return {
-        ...this.$vc.formats,
-        ...this.formats,
+        ...this.$vc.masks,
+        ...this.masks,
       };
     },
     theme_() {

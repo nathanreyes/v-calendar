@@ -18,7 +18,7 @@
               <calendar-nav
                 :value="page"
                 :validator="canMove"
-                :formats="formats"
+                :masks="masks"
                 @input="navPageSelected($event)"
               >
                 <!--Pass through nav slots-->
@@ -45,13 +45,7 @@
     <!--Weekdays horizontal divider-->
     <div class="vc-horizontal-divider" :class="theme.weekdaysDivider" v-if="theme.weekdaysDivider"/>
     <!--Weeks-->
-    <calendar-weeks
-      class="vc-weeks"
-      :page="page"
-      :formats="formats"
-      v-bind="$attrs"
-      v-on="$listeners"
-    >
+    <calendar-weeks class="vc-weeks" :page="page" :masks="masks" v-bind="$attrs" v-on="$listeners">
       <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="props">
         <slot :name="slot" v-bind="props"></slot>
       </template>
@@ -113,7 +107,7 @@ export default {
         .getWeekdayDates({
           firstDayOfWeek: this.locale.firstDayOfWeek,
         })
-        .map(d => this.format(d, this.formats.weekdays));
+        .map(d => this.format(d, this.masks.weekdays));
     },
     titleClass() {
       return this.titlePosition_ ? `align-${this.titlePosition_}` : '';

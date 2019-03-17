@@ -4,8 +4,8 @@ export const childMixin = {
     defaults() {
       return this.$vc.defaults;
     },
-    formats() {
-      return this.sharedState.formats;
+    masks() {
+      return this.sharedState.masks;
     },
     theme() {
       return this.sharedState.theme;

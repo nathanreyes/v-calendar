@@ -139,7 +139,7 @@ export default {
     monthItems() {
       return this.locale
         .getMonthDates()
-        .map(d => this.locale.format(d, this.formats.navMonths))
+        .map(d => this.locale.format(d, this.masks.navMonths))
         .map((ml, i) => {
           const month = i + 1;
           return {

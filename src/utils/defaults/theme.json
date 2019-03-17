@@ -52,6 +52,10 @@
     "light": "rounded text-xs text-white font-medium bg-grey-9 border border-grey-7 px-2 py-1 shadow",
     "dark": "rounded text-xs text-grey-10 font-medium bg-white border border-grey-2 px-2 py-1 shadow"
   },
+  "dayPopoverHeader": {
+    "light": "text-center text-xs text-grey-3 font-semibold",
+    "dark": "text-xs text-grey-7 font-semibold"
+  },
   "highlightBaseFillMode": "light",
   "highlightStartEndFillMode": "solid",
   "highlightStartEndClass": "rounded-full",

@@ -28,7 +28,7 @@ export default {
         attrs: {
           ...this.$attrs,
           attributes: this.attributes_,
-          formats: this.formats_,
+          masks: this.masks_,
           theme: this.theme_,
           locale: this.locale_,
         },
@@ -102,7 +102,7 @@ export default {
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
-    formats: Object,
+    masks: Object,
     color: String,
     isDark: Boolean,
     theme: Object,
@@ -127,8 +127,8 @@ export default {
     inputDebounce_() {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
     },
-    inputFormats() {
-      const inputFormat = this.formats_.input;
+    inputMasks() {
+      const inputFormat = this.masks_.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
     inputClass() {
@@ -251,8 +251,8 @@ export default {
     picker() {
       const opts = {
         locale: this.locale_,
-        format: d => this.locale_.format(d, this.inputFormats[0]),
-        parse: s => this.locale_.parse(s, this.inputFormats),
+        format: d => this.locale_.format(d, this.inputMasks[0]),
+        parse: s => this.locale_.parse(s, this.inputMasks),
       };
       switch (this.mode) {
         case 'multiple':

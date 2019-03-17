@@ -10,8 +10,8 @@ export const createVC = (Vue, defaults) =>
       };
     },
     computed: {
-      formats() {
-        return this.defaults.formats;
+      masks() {
+        return this.defaults.masks;
       },
       theme() {
         return this.defaults.theme;

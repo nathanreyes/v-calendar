@@ -37,7 +37,7 @@ export default {
           minPage: this.minPage_,
           maxPage: this.maxPage_,
           canMove: this.canMove,
-          formats: this.formats_,
+          masks: this.masks_,
         },
         on: {
           ...this.$listeners,
@@ -107,7 +107,7 @@ export default {
             'div',
             {
               class: [
-                'c-pane-transition',
+                'vc-pane-transition',
                 { 'in-transition': this.inTransition },
               ],
             },
@@ -158,22 +158,24 @@ export default {
             scopedSlots: {
               default: ({ args: day, updateLayout, hide }) => {
                 const attributes = day.attributes;
-                const formats = this.formats_;
+                const masks = this.masks_;
                 const format = this.format;
+                const dayTitle = format(day.date, masks.dayPopover);
                 return isFunction(this.$scopedSlots['day-popover'])
                   ? this.$scopedSlots['day-popover']({
                       day,
                       attributes,
-                      formats,
+                      masks,
                       format,
+                      dayTitle,
                       updateLayout,
                       hide,
                     })
                   : h('div', [
                       // Show popover header only if format is defined
-                      formats.dayPopover &&
-                        h('span', { class: this.theme_.dayPopoverHeader }, [
-                          format(day.date, formats.dayPopover),
+                      masks.dayPopover &&
+                        h('div', { class: this.theme_.dayPopoverHeader }, [
+                          format(day.date, masks.dayPopover),
                         ]),
                       attributes.map(attribute => {
                         return h(PopoverRow, {
@@ -219,7 +221,7 @@ export default {
     maxPage: Object,
     transition: String,
     attributes: [Object, Array],
-    formats: Object,
+    masks: Object,
     color: String,
     isDark: Boolean,
     theme: Object,
@@ -236,7 +238,7 @@ export default {
       sharedState: {
         dayPopoverId: createGuid(),
         theme: {},
-        formats: {},
+        masks: {},
         locale: {},
       },
     };
@@ -273,8 +275,8 @@ export default {
     },
   },
   watch: {
-    formats_() {
-      this.refreshFormats();
+    masks_() {
+      this.refreshMasks();
     },
     locale_() {
       this.refreshLocale();
@@ -293,14 +295,14 @@ export default {
     },
   },
   created() {
-    this.refreshFormats();
+    this.refreshMasks();
     this.refreshLocale();
     this.refreshTheme();
     this.refreshPages();
   },
   methods: {
-    refreshFormats() {
-      this.sharedState.formats = this.formats_;
+    refreshMasks() {
+      this.sharedState.masks = this.masks_;
     },
     refreshLocale() {
       this.sharedState.locale = this.locale_;
@@ -415,7 +417,7 @@ export default {
           key,
           month,
           year,
-          title: this.locale_.format(date, this.formats_.title),
+          title: this.locale_.format(date, this.masks_.title),
           shortMonthLabel: this.locale_.format(date, 'MMM'),
           monthLabel: this.locale_.format(date, 'MMMM'),
           shortYearLabel: year.toString().substring(2),
@@ -507,7 +509,7 @@ export default {
   box-sizing: border-box
   &.is-expanded
     min-width: 100%
-  .c-pane-transition
+  .vc-pane-transition
     width: 100%
     position: relative
     &.in-transition
