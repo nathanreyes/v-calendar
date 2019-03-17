@@ -1,5 +1,6 @@
 import { POPOVER_VISIBILITIES } from '../constants';
-import formats from './formats.json';
+import touch from './touch.json';
+import masks from './masks.json';
 import screens from './screens.json';
 import theme from './theme.json';
 import locales from './locales';
@@ -9,12 +10,8 @@ export default {
   navVisibility: 'click',
   titlePosition: 'center',
   transition: 'slide-h',
-  maxSwipeTime: 300, // ms
-  minHorizontalSwipeDistance: 60, // px
-  maxVerticalSwipeDistance: 80, // px
-  maxTapTolerance: 0, // ms
-  maxTapDuration: 200, // ms
-  formats,
+  touch,
+  masks,
   screens,
   theme,
   locales,
