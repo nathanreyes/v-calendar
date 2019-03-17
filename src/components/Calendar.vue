@@ -22,7 +22,7 @@ import {
 import { isNumber, isFunction } from '@/utils/_';
 
 export default {
-  name: 'Calendar',
+  name: 'VCalendar',
   render(h) {
     // Renderer for calendar panes
     const getPaneComponent = ({ position }) =>
@@ -175,7 +175,7 @@ export default {
                       // Show popover header only if format is defined
                       masks.dayPopover &&
                         h('div', { class: this.theme_.dayPopoverHeader }, [
-                          format(day.date, masks.dayPopover),
+                          dayTitle,
                         ]),
                       attributes.map(attribute => {
                         return h(PopoverRow, {

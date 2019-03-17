@@ -897,3 +897,25 @@ Now, we just need to display the attributes for the day as well. We can do so by
   </div>
 </v-calendar>
 ```
+
+Finally, if you wish to display indicators with your custom content, you can use the `v-popover-row` component included with the plugin. Just pass in the attribute for each row.
+
+<guide-attributes-popover-slot :step="4" />
+
+```html
+<v-calendar :attributes="attributes">
+  <div
+    slot="day-popover"
+    slot-scope="{ day, dayTitle, attributes }">
+    <div class="text-xs text-grey-3 font-semibold text-center">
+      {{ dayTitle }}
+    </div>
+    <v-popover-row
+      v-for="attr in attributes"
+      :key="attr.key"
+      :attribute="attr">
+      {{ customData.description }}
+    </v-popover-row>
+  </div>
+</v-calendar>
+```

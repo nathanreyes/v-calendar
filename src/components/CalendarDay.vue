@@ -141,10 +141,16 @@ export default {
           'vc-day',
           ...this.day.classes,
           { 'vc-day-box-center-center': !this.$scopedSlots['day-content'] },
-          { [this.theme.dayNotInMonth]: !this.inMonth },
         ],
       },
-      [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
+      [
+        h('div', { class: { [this.theme.dayNotInMonth]: !this.inMonth } }, [
+          backgroundsLayer(),
+          contentWrapperLayer(),
+          dotsLayer(),
+          barsLayer(),
+        ]),
+      ],
     );
   },
   inject: ['sharedState'],

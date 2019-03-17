@@ -22,6 +22,7 @@ import {
 import { isString, isFunction, isArray } from '@/utils/_';
 
 export default {
+  name: 'VDatePicker',
   render(h) {
     const calendar = () =>
       h(Calendar, {

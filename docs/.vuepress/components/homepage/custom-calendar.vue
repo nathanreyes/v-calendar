@@ -1,5 +1,7 @@
 <template>
   <div class="text-center section">
+    <h2 class="h2">Custom Calendars</h2>
+    <p class="text-lg font-medium text-grey-6 mb-6">Roll your own calendars using scoped slots</p>
     <v-calendar class="custom-calendar" :masks="masks" :attributes="attributes">
       <div
         slot="day-content"

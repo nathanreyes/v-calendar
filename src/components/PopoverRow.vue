@@ -7,7 +7,7 @@
     </div>
     <!-- Content -->
     <div class="vc-day-popover-row-content">
-      <slot>No content provided</slot>
+      <slot>{{ attribute.popover ? attribute.popover.label : "No content provided" }}</slot>
     </div>
   </div>
 </template>
@@ -15,13 +15,15 @@
 <script>
 import { childMixin } from '@/utils/mixins';
 export default {
+  name: 'VPopoverRow',
   mixins: [childMixin],
   props: {
     attribute: Object,
   },
   computed: {
     indicator() {
-      const { highlight, dot, bar, content } = this.attribute;
+      const { highlight, dot, bar, content, popover } = this.attribute;
+      if (popover && popover.hideIndicator) return null;
       if (highlight) {
         const { color, isDark } = highlight.start;
         return {

@@ -17,10 +17,6 @@ pageClass: 'homepage'
 
 <homepage-datepicker />
 
-### Custom Calendar
-
-Build out your own custom calendar using [scoped slots](https://vuejs.org/v2/guide/components-slots.html#Scoped-Slots).
-
 <homepage-custom-calendar />
 
 </div>

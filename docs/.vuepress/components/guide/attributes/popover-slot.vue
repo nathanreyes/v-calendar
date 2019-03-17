@@ -11,9 +11,15 @@
           class="text-xs text-grey-3 font-semibold text-center"
           v-else-if="step >= 3"
         >{{ dayTitle }}</div>
-        <ul v-if="step >= 3">
+        <ul v-if="step === 3">
           <li v-for="{key, customData} in attributes" :key="key">{{ customData.description }}</li>
         </ul>
+        <v-popover-row
+          v-if="step === 4"
+          v-for="attr in attributes"
+          :key="attr.key"
+          :attribute="attr"
+        >{{ attr.customData.description }}</v-popover-row>
       </div>
     </v-calendar>
   </div>
