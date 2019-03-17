@@ -21,7 +21,6 @@ pageClass: 'homepage'
 
 Build out your own custom calendar using [scoped slots](https://vuejs.org/v2/guide/components-slots.html#Scoped-Slots).
 
-<!-- <homepage-custom-calendar>
-</homepage-custom-calendar> -->
+<homepage-custom-calendar />
 
 </div>

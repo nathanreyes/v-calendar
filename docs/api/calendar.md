@@ -157,13 +157,13 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `[]`
 
-### `formats`
+### `masks`
 
 **Type:** Object
 
-**Description:** Formats to use when display and parsing dates for various calendar sections.
+**Description:** Masks to use when display and parsing dates for various calendar sections.
 
-**Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#formats)
+**Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#masks)
 
 ### `color`
 

@@ -1,6 +1,6 @@
 <template>
   <div class="text-center section">
-    <v-calendar class="custom-calendar" :formats="formats" :attributes="attributes">
+    <v-calendar class="custom-calendar" :masks="masks" :attributes="attributes">
       <div
         slot="day-content"
         slot-scope="{ day, attributes }"
@@ -25,7 +25,7 @@ export default {
     const month = new Date().getMonth();
     const year = new Date().getFullYear();
     return {
-      formats: {
+      masks: {
         weekdays: 'WWW',
       },
       attributes: [
@@ -111,7 +111,7 @@ export default {
 
 $day-border: 1px solid #b8c2cc
 $day-border-highlight: 1px solid #b8c2cc
-$day-width: 120px
+$day-width: 100px
 $day-height: 90px
 $weekday-border: 1px solid #eaeaea
 
@@ -121,21 +121,22 @@ $weekday-border: 1px solid #eaeaea
 ::-webkit-scrollbar-track
   display: none
 
-/deep/ .custom-calendar.c-pane-container
+/deep/ .custom-calendar.vc-pane-container
   width: 100%
-  .c-header
+  .vc-header
     background-color: #f1f5f8
-  .c-weeks
+  .vc-weeks
     padding: 0
-  .c-weekdays
+  .vc-weekdays
     background-color: #f8fafc
     border-bottom: $weekday-border
     border-top: $weekday-border
     padding: 5px 0
-  .c-day
+  .vc-day
     padding: 0 5px 3px 5px
     text-align: left
     height: $day-height
+    min-width: $day-width
     background-color: white
     &.weekday-1, &.weekday-7
       background-color: #eff8ff
@@ -145,6 +146,6 @@ $weekday-border: 1px solid #eaeaea
         border-bottom: $day-border-highlight
     &:not(.on-right)
       border-right: $day-border
-  .c-day-dots
+  .vc-day-dots
     margin-bottom: 5px
 </style>

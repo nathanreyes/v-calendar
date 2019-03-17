@@ -695,17 +695,11 @@ export default {
 
 ## Popovers
 
-Popovers provide unique opportunities for users to interact with your web applications. Displaying rich content or supporting inline editing are two such use cases. They come with lots of configurability built-in, including how and when they are displayed as well as how users should be allowed to interact with them.
+There are 2 basic approaches to displaying popovers within attributes.
 
-Popovers are configured on a per-attribute basis. That is, each attribute may configure its own popover content row. If two or more attributes have assigned popovers on the same day, the two rows are simply concatenated and displayed together in the same popover content window (the order of which is determined by the attribute's `order` property).
-
-Popovers come in two basic flavors:
-
-### Labels
+### 1. Labels
 
 Labels are the basic tooltip-style popover. They are configured as simple strings. By default, these popovers display when the user hovers over the day content and additionaly are not interactive to the user.
-
-Consider the following example:
 
 <guide-attributes-popover-labels />
 
@@ -746,6 +740,7 @@ export default {
           popover: {
             label: todo.description,
           },
+          customData: todo,
         })),
       ];
     },
@@ -808,464 +803,97 @@ If you would like to hide the indicator, just set the `hideIndicator` property t
     ...
 ```
 
-### Scoped Slots
+These are the additional configuration options you may use for further popover customization:
 
-Scoped slots provide a more advanced method of displaying popover content for attributes. Just insert scoped slots within `v-calendar` with unique names that can be referenced by popover objects created in your Javascript code.
+| Property | Type | Description |
+| --- | --- | --- |
+| `label` | String | Content to display in the popover. |
+| `labelClass` | String | Class to apply to the label. |
+| `labelStyle` | Object | Inline style to apply to the label. |
+| `hideIndicator` | Boolean | Hides the indicator that appears to the left of the label. |
+| `visibility` | String | Visibility mode for the popover (`"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`).
+| `isInteractive` | Boolean | Allows user to interactive with the popover contents. For example, this keeps the popover open when user hovers over the popover when `visibility === "hover"`, instead of hiding it by default. |
 
-In the previous example, we used simple popover labels to display todos in the calendar. This is a nice feature, but it would be *really* nice to allow the user to mark todos as completed or edit the todo description directly in the calendar itself. We can do this using slots.
+### 2. Scoped Slot
 
-<ClientOnly>
-  <guide-attributes-popover-slots>
-  </guide-attributes-popover-slots>
-</ClientOnly>
-
-#### Step 1: Create the slot in the template
-
-First, we need to define a slot to be used by one or more attribute popovers. To do this, we can just create a scoped slot with a name that doesn't clash with one of `v-calendar`'s [existing slot names](/api/calendar.md#scoped-slots).
-
-For our example, we'll create a slot with the name of `"todo-row"`. For our benefit, this slot is supplied with the following props which we can reference via the `slot-scope` element attribute:
-
-| Property | Description |
-| -------- | ----------- |
-| `attribute` | The attribute object associated with the popover content row. |
-| `customData` | The custom data associated with the attribute above. Shortcut for `attribute.customData`. |
-| `day` | The [day object](/api/day-object.md) associated with the popover. |
-| `format` | Function for formatting dates. Accepts `date: Date` and `format: String` arguments, respectively. |
+For a more customized approach you can insert your own `"day-popover"` custom scoped slot within `v-calendar`.
 
 ::: tip
 If you are not familiar with the convention of using scoped slots in Vue.js, you can reference the [Vue docs](https://vuejs.org/v2/guide/components.html#Scoped-Slots) or [this post by alligator.io](https://alligator.io/vuejs/scoped-component-slots/).
 :::
 
+<guide-attributes-popover-slot />
 
 ```html
-<template>
-  <v-calendar
-    :from-date='new Date(2018, 0, 1)'
-    :attributes='attributes'>
-    <!--===============TODO ROW SLOT==============-->
-    <div
-      slot='todo-row'
-      slot-scope='{ customData }'
-      class='flex flex-no-wrap items-center w-full'>
-      <!--Todo content-->
-      <div class='flex-grow'>
-        <!--Show textbox when editing todo-->
-        <input
-          class='appearance-none bg-white border p-1'
-          :style='{ minWidth: "220px" }'
-          v-if='customData.id === editId'
-          v-model='customData.description'
-          @keyup.enter='editId = 0'
-          v-focus-select />
-        <!--Show status/description when not editing-->
-        <span
-          v-else>
-          <!--Completed checkbox-->
-          <input
-            type='checkbox'
-            v-model='customData.isComplete' />
-          <!--Description-->
-          <span
-            class='ml-1 cursor-pointer'
-            :class='{ "line-through": customData.isComplete }'
-            @click='toggleTodoComplete(customData)'>
-            {{ customData.description }}
-          </span>
-        </span>
-      </div>
-      <!--Edit/Done buttons-->
-      <a
-        @click.prevent='toggleTodoEdit(customData)'
-        class='ml-1 cursor-pointer'>
-        <!--Edit button-->
-        <svg
-          v-if='editId !== customData.id'
-          class='fill-current text-blue-5'
-          viewBox='0 0 20 20'
-          width='12'
-          height='12'>
-          <path d='M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z'/>
-        </svg>
-        <!--Done button-->
-        <svg
-          v-else
-          class='fill-current text-green-5'
-          viewBox='0 0 20 20'
-          width='12'
-          height='12'>
-          <path d='M0 11l2-2 5 5L18 3l2 2L7 18z'/>
-        </svg>
-      </a>
-      <!--Delete button-->
-      <a
-        @click.prevent='deleteTodo(customData)'
-        v-if='!editId || editId !== customData.id'
-        class='ml-1 cursor-pointer'>
-        <svg
-          class='fill-current text-red-6'
-          viewBox='0 0 20 20'
-          width='12'
-          height='12'>
-          <path d='M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z'/>
-        </svg>
-      </a>
-    </div>
-  </v-calendar>
-</template>
-```
-
-#### Step 2: Reference the slot from the attribute's popover object
-
-Once we have created the uniquely named slot, all we need to do is reference that name from the `popover.slot` property.
-
-```js{65}
-const color = '#ff8080';
-const todos = [
-  {
-    id: 1,
-    description: 'Take Noah to basketball practice.',
-    isComplete: false,
-    dates: new Date(2018, 0, 1),
-  },
-  {
-    id: 2,
-    description: 'Get some milks.',
-    isComplete: false,
-    dates: new Date(2018, 0, 5),
-  },
-  {
-    id: 3,
-    description: 'Pay the utility bill.',
-    isComplete: false,
-    dates: new Date(2018, 0, 19),
-  },
-  {
-    id: 4,
-    description: 'Pick up clothes from the cleaners.',
-    isComplete: false,
-    dates: new Date(2018, 0, 19),
-  },
-  {
-    id: 5,
-    description: 'Lunch with Leo.',
-    isComplete: false,
-    dates: new Date(2018, 0, 22),
-  },
-];
-
-export default {
-  data() {
-    return {
-      incId: todos.length,
-      editId: 0,
-      todos,
-    };
-  },
-  computed: {
-    attributes() {
-      return [
-        // Today attribute
-        {
-          contentStyle: {
-            fontWeight: '700',
-            color: '#66b3cc',
-          },
-          dates: new Date(),
-        },
-        // Todo attributes
-        ...this.todos.map(todo => ({
-          key: todo.id,
-          dates: todo.dates,
-          customData: todo,
-          order: todo.id,
-          dot: {
-            backgroundColor: color,
-            opacity: todo.isComplete ? 0.3 : 1,
-          },
-          popover: {
-            slot: 'todo-row', // Matches slot from above
-          },
-        })),
-      ];
-    },
-  },
-  methods: {
-    toggleTodoComplete(todo) {
-      todo.isComplete = !todo.isComplete;
-    },
-    toggleTodoEdit(todo) {
-      this.editId = this.editId === todo.id ? 0 : todo.id;
-    },
-    deleteTodo(todo) {
-      this.todos = this.todos.filter(t => t !== todo);
-    },
-  },
-  directives: {
-    focusSelect: {
-      inserted(el) {
-        el.focus();
-        el.select();
-      },
-    },
-  },
-};
-```
-
-<ClientOnly>
-  <guide-attributes-popover-slots>
-  </guide-attributes-popover-slots>
-</ClientOnly>
-
-Let's note a few things from the example above:
-
-  1. We reference the attribute's `customData` via the `slot-scope` in order to properly display and edit the todo.
-  2. From within the slot, we can now call methods to delete and edit the todo using the `customData`.
-  3. From within the methods, we can mutate the list of todos (when deleting) or the todo itself (when marking complete or editing description).
-  4. These edits modify the state of the todos array. The attributes are then re-computed from this array and the UI is updated accordingly.
-
-Before wrapping up this example, we still need to add a custom day header and implement a way to add new todos. To do this, we'll utilize 2 new slots
-* **`day-popover-header`**: Slot used for displaying the day header
-* **`add-to`**: Slot with button for adding a new todo
-
-```html
-  ...
-  <!--=========DAY POPOVER HEADER SLOT=========-->
-  <div
-    slot="day-popover-header"
-    slot-scope="{ day, format }"
-    class="text-center pb-1 mb-1 border-b mx-1">
-    {{ format(day.date, "WWW, MMM D, YYYY") }}
+<v-calendar
+  :attributes="attributes"
+  >
+  <div slot="day-popover" slot-scope="">
+    Using my own content now
   </div>
-  <!--===============TODO ROW SLOT==============-->
-  ...
-  ...
-  ...
-  <!--================ADD TODO ROW SLOT===============-->
-  <div
-    slot='add-todo'
-    slot-scope='{ day }'
-    class='text-center w-full cursor-pointer'>
-    <a @click='addTodo(day)'>
-      + Add Todo
-    </a>
-  </div>
-  ...
+</v-calendar>
 ```
 
-Then we can add the new 'Add Todo' attribute to the attributes list.
+Notice that displaying static content here probably isn't going to help you much.
 
-```javascript
-...
-computed: {
-  attributes: [
-    // Today attribute
-    ...
-    // Todo attributes
-    ...
-    // 'Add Todo' attribute
-    {
-      contentHoverStyle: {
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
-        cursor: 'pointer',
-      },
-      dates: {}, // All dates
-      popover: {
-        slot: 'add-todo',
-        hideIndicator: true,
-      }
-    }
-  ]
-},
-...
-```
+Now that you are providing your own popover, you need to display the attributes on your own. Fortunately, the following `slot-scope` props should provide you with everything you need to help you display content for your custom data.
 
-Finally, we'll just add the method that gets called when the 'Add Todo' button is clicked.
-
-```javascript
-  ...
-  methods: {
-    ...
-    addTodo(day) {
-      this.editId = ++this.incId;
-      this.todos.push({
-        id: this.editId,
-        description: 'New todo',
-        isComplete: false,
-        dates: day.date,
-      });
-    },
-  }
-```
-<ClientOnly>
-  <guide-attributes-popover-slots
-    show-header
-    show-add-todo>
-  </guide-attributes-popover-slots>
-</ClientOnly>
-
-Awesome! We are finished! :tada: :tada: :tada:
-
-### Components
-
-The third option for configuring popovers is through the use of custom components. This is much like the `slot` option, except instead of using a slot with our custom content, we use a dedicated component (often a Single File Component). The key difference is in the way we access the `attribute`, `customData` and `day` objects.
-
-To access these objects, all we need to do is declare them as props on our custom component, and they will get passed in automatically by `v-date-picker` at the appropriate time. Perhaps the best way to understand this is to see how `v-date-picker` implements its native popover component for date selections.
-
-```html
-<v-date-picker
-  mode='range'
-  :select-attribute='selectAttribute'
-  v-model='range'
-  show-caps
-  is-inline>
-</v-date-picker>
-```
-
-```javascript
-export default {
-  data() {
-    return {
-      range: {
-        start: new Date(2018, 0, 8),
-        end: new Date(2018, 0, 12),
-      },
-      selectAttribute: {
-        popover: ({ onEnd }) => ({
-          visibility: onEnd ? 'visible' : 'hover',
-        })
-      }
-    }
-  }
-}
-```
-
-<ClientOnly>
-  <guide-attributes-popover-components>
-  </guide-attributes-popover-components>
-</ClientOnly>
-
-::: tip
-This example will walk through how `v-date-picker` implements the native popover component. Replace any reference to `DatePickerDayPopover` with your own component.
-:::
-
-#### Step 1: Create the component
-
-Create a new single file component (.vue file). Declare the following props if needed:
-
-| Prop | Type | Description |
-| ---- | ---- | ----------- |
-| `attribute` | Object | The attribute object associated with the popover content row. |
-| `customData` | Object | The custom data associated with the attribute above. Shortcut for `attribute.customData`. |
+| Property | Type | Description |
+| -------- | ---- | ----------- |
 | `day` | Object | The [day object](/api/day-object.md) associated with the popover. |
-| `format` | Function for formatting dates. Accepts `date: Date` and `format: String` arguments, respectively. |
+| `attributes` | Array | All the attributes assigned for the associated day. Only attributes with 'truthy' values assigned to their `popover` key are passed in. |
+| `format` | Function | Function for formatting dates. Accepts `date: Date` and `mask: String` arguments, respectively. |
+| `masks` | Object | Set of format masks for the calendar. |
+| `updateLayout` | Function | Call this function to force the popover to recalculate its layout. For example, making changes to elements within popover could cause it to grow or shrink. Calling this function will keep it positioned correctly. |
+| `hide` | Function | Call this function to forcefully hide the popover. |
 
-Here are the template and script sections for the popover used with `v-date-picker`
+Let's walk through the process of customizing the previous example. First, let's add a header to display the date for the popover.
+
+<guide-attributes-popover-slot :step="2" />
 
 ```html
-<div>
-  <div class='date-label'>
-    <div v-if='dateLabel'>
-      {{ this.dateLabel }}
-    </div>
-    <div v-if='startDateLabel'>
-      {{ this.startDateLabel }}
-    </div>
-    <div v-if='endDateLabel'>
-      {{ this.endDateLabel }}
+<v-calendar :attributes="attributes">
+  <div slot="day-popover" slot-scope="{ day, format, masks }">
+    <div class="text-xs text-grey-3 font-semibold text-center">
+      {{ format(day.date, masks.dayPopover) }}
     </div>
   </div>
+</v-calendar>
+```
+
+For the header, we use the `format` function to format the date for the current `day`, using the default `dayPopover` mask. Note: you could also just use your own custom mask.
+
+Because this technique for displaying the header is common, you can extract the pre-formatted `dayTitle` property.
+
+```html
+<v-calendar :attributes="attributes">
+  <div slot="day-popover" slot-scope="{ day, dayTitle }">
+    <div class="text-xs text-grey-3 font-semibold text-center">
+      {{ dayTitle }}
+    </div>
+  </div>
+</v-calendar>
+```
+
+Now, we just need to display the attributes for the day as well. We can do so by extracting the `attributes` array from the slot-scope expression. We'll use a simple list to display the attribute data.
+
+<guide-attributes-popover-slot :step="3" />
+
+```html
+<v-calendar :attributes="attributes">
   <div
-    v-if='isRange'
-    class='days-nights'>
-    <span class='days'>
-      <svg-icon
-        name='sun'
-        class='vc-sun-o'>
-      </svg-icon>
-      {{ days }}
-    </span>
-    <span class='nights'>
-      <svg-icon
-        name='moon'
-        class='vc-moon-o'>
-      </svg-icon>
-      {{ nights }}
-    </span>
+    slot="day-popover"
+    slot-scope="{ day, dayTitle, attributes }">
+    <div class="text-xs text-grey-3 font-semibold text-center">
+      {{ dayTitle }}
+    </div>
+        <ul>
+          <li
+            v-for="{key, customData} in attributes"
+            :key="key">
+            {{ customData.description }}
+          </li>
+        </ul>
   </div>
-</div>
-```
-
-```javascript
-import SvgIcon from './SvgIcon';
-
-export default {
-  components: {
-    SvgIcon,
-  },
-  props: {
-    attribute: Object,
-    dayFormat: String,
-    format: Function,
-  },
-  computed: {
-    date() {
-      return this.attribute.targetDate;
-    },
-    isDate() {
-      return this.date.isDate;
-    },
-    isRange() {
-      return this.date.isRange;
-    },
-    days() {
-      return this.date.daySpan + 1;
-    },
-    nights() {
-      return this.date.daySpan;
-    },
-    dateLabel() {
-      if (!this.date || !this.date.date) return '';
-      return this.getDateString(this.date.date);
-    },
-    startDateLabel() {
-      if (!this.date || !this.date.start) return '';
-      return this.getDateString(this.date.start);
-    },
-    endDateLabel() {
-      if (!this.date || !this.date.end) return '';
-      return this.getDateString(this.date.end);
-    },
-  },
-  methods: {
-    getDateString(date) {
-      return this.format(date, this.format);
-    },
-  },
-};
-```
-
-From the attribute, we can extract information about the date it is associated with through its `targetDate` property. The `targetDate` is a [`DateInfo`](data.md#dateinfo--attributes-lifecycle) object wrapper that contains general information about the the date associated with the attribute. This includes information such as the start date, end date, day and night length spans.
-
-#### Step 2: Import the component
-
-Simply import the component into the file that is serving as the parent or host for the `v-calendar` or `v-date-picker` child components.
-
-```javascript
-import DatePickerDayPopover from './DatePickerDayPopover'; // .vue file
-```
-
-#### Step 3: Assign the component
-
-Finally, when configuring the attribute (`select-attribute` and `drag-attribute` in this case), we assign the component to the popover's `component` property. Most often, if you are using your own component to display the popover content, it would be best to hide the default attribute indicator by setting `hideIndicator` to `true`.
-
-```javascript
-// ...configuring attribute
-attribute: {
-  // Configure the popover
-  popover: {
-    component: DatePickerDayPopover,
-    hideIndicator: true // Don't want to show the indicator
-  },
-  // ...other attribute properties
-}
+</v-calendar>
 ```

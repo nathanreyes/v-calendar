@@ -1,10 +1,6 @@
 <template>
-  <div class='center'>
-    <v-calendar
-      :attributes='attributes'
-      :from-date='new Date(2018, 0, 1)'
-      :formats='formats'>
-    </v-calendar>
+  <div class="center">
+    <v-calendar :attributes="attributes" :from-date="new Date(2018, 0, 1)" :masks="masks"></v-calendar>
   </div>
 </template>
 
@@ -37,7 +33,7 @@ export default {
           dates: new Date(2018, 0, 12),
         },
       ],
-      formats: {
+      masks: {
         title: 'MMM YYYY',
         weekdays: 'WW',
       },

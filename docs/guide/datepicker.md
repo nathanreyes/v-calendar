@@ -111,7 +111,7 @@ export default {
   <guide-datepicker-multiple />
 </ClientOnly>
 
-When used as a popover (`is-inline === false`), the user may enter dates in the input element as a list of comma separated date values. Each date is parsed with the built-in date parser using the specified `input` format(s). If the user clears out the input text, the value is set to `null`. [Read this to learn how to configure the input element.](#customize-input-element)
+When used as a popover (`is-inline === false`), the user may enter dates in the input element as a list of comma separated date values. Each date is parsed with the built-in date parser using the specified `input` mask(s). If the user clears out the input text, the value is set to `null`. [Read this to learn how to configure the input element.](#customize-input-element)
 
 ### Date Range
 
@@ -500,7 +500,7 @@ Here are the steps to utilize this approach.
 
 | Property | Description | Default Value |
 | -------- | ----------- | ------------- |
-| `formatInput` | If new value is valid, date picker should reformat the `inputValue` (based on `formats.input`). | `true` |
+| `formatInput` | If new value is valid, date picker should reformat the `inputValue` (based on `masks.input`). | `true` |
 | `hidePopover` | If new value is valid, date picker should hide popover. | `!popoverKeepVisibleOnInput` |
 | `debounce` | If new value is valid, debounce rate for which the value is assigned, in milliseconds. If missing, updates occur immediately. | `undefined` |
 

@@ -174,23 +174,23 @@ Then, reference your custom screens when calling the `$screens` function.
 
 Dates are formatted and/or parsed for the following component sections:
 
-| Property Name | Target Area | Default Format |
+| Property Name | Target Area | Default Mask |
 | ------------ | ----------- | -------------- |
-| `title` | Formats calendar header title | `"MMMM YYYY"` |
-| `weekdays` | Formats weekday headers | `"W"` |
-| `navMonths` | Formats month labels in navigation dropdown | `"MMM"` |
-| `input` | Formats and parses input element text when `is-inline === false`. (*`v-date-picker` only*) | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
-| `dayPopover` | Formats date in day popover when user hovers selected date. (*`v-date-picker` only*) | `"WWW, MMM D, YYYY"` |
+| `title` | Calendar header title | `"MMMM YYYY"` |
+| `weekdays` | Weekday headers | `"W"` |
+| `navMonths` | Month labels in navigation dropdown | `"MMM"` |
+| `dayPopover` | Date in day popover when user hovers selected date. | `"WWW, MMM D, YYYY"` |
+| `input` | Input element text when `is-inline === false`. (*`v-date-picker` only*) | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
 | `data` | Parses attribute dates, if needed | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
 
-By default, `v-calendar` uses Javascript's Internalization API ([which is increasingly well supported](https://caniuse.com/#search=Intl)) to derive the month and weekday names for the user's locale. This helps keep the package size to a minimum while utilizing an API that should only improve with time. It also uses the most appropriate long date format (`L`) for that locale (derived from [moment.js](https://github.com/moment/moment/tree/develop/src/locale)).
+By default, `v-calendar` uses Javascript's Internalization API ([which is increasingly well supported](https://caniuse.com/#search=Intl)) to derive the month and weekday names for the user's locale. This helps keep the package size to a minimum while utilizing an API that should only improve with time. It also uses the most appropriate long date mask (`L`) for that locale (derived from [moment.js](https://github.com/moment/moment/tree/develop/src/locale)).
 
-To use your own custom formats, configure and pass the `formats` object
+To use your own custom masks, configure and pass the `masks` object
   * As a prop to `v-calendar` or  `v-date-picker`
 
 ```html
 <v-date-picker
-  :formats='formats'
+  :masks='masks'
   v-model='myDate'>
 </v-date-picker>
 ```
@@ -199,7 +199,7 @@ export default {
   data() {
     return {
       myDate: null,
-      formats: {
+      masks: {
         title: 'MMMM YYYY',
         weekdays: 'W',
         navMonths: 'MMM',
@@ -218,7 +218,7 @@ import Vue from 'vue'
 import VCalendar from 'v-calendar'
 
 Vue.use(VCalendar, {
-  formats: {
+  masks: {
     title: 'MMMM YYYY',
     weekdays: 'W',
     navMonths: 'MMM',
@@ -229,17 +229,17 @@ Vue.use(VCalendar, {
 })
 ```
 
-### Parsing using multiple formats
+### Parsing using multiple masks
 
-You'll notice an array was used to specify the `input` format for `v-date-picker`. This is because it uses the supplied format(s) to parse, as well as display, the selected date. The first supplied format is used to display the date selection, while all formats are used (from first to last) to parse the date string. The first successfully parsed date is used as the selected date. This provides more flexibility for the user when manually typing in dates.
+You'll notice an array was used to specify the `input` mask for `v-date-picker`. This is because it uses the supplied masks(s) to parse, as well as display, the selected date. The first supplied mask is used to display the date selection, while all masks are used (from first to last) to parse the date string. The first successfully parsed date is used as the selected date. This provides more flexibility for the user when manually typing in dates.
 
-By default, `v-date-picker` will first try and use the localized long date format to parse the date, but will also try to parse formats that are globally unambiguous (*YYYY-MM-DD* and *YYYY/MM/DD*). Furthermore, because `v-date-picker` uses its own parsing logic ([rather than relying on the browser's inconsistent `Date.parse` function](http://blog.dygraphs.com/2012/03/javascript-and-dates-what-mess.html)), it can properly parse ISO-8601 dates to the user's local time zone instead of converting to UTC. If you plan on targeting browsers from multiple locales, it is probably best to defer to the default format settings.
+By default, `v-date-picker` will first try and use the localized long date mask to parse the date, but will also try to parse masks that are globally unambiguous (*YYYY-MM-DD* and *YYYY/MM/DD*). Furthermore, because `v-date-picker` uses its own parsing logic ([rather than relying on the browser's inconsistent `Date.parse` function](http://blog.dygraphs.com/2012/03/javascript-and-dates-what-mess.html)), it can properly parse ISO-8601 dates to the user's local time zone instead of converting to UTC. If you plan on targeting browsers from multiple locales, it is probably best to defer to the default mask settings.
 
-### Format Tokens
+### Mask Tokens
 
-Use the following tokens to configure your custom formats:
+Use the following tokens to configure your custom masks:
 
-| Category | Token | Output |
+| | Token | Output |
 | -------- | ----- | ------ |
 | **Month** | `M` | 1, 2, ..., 12 |
 | | `MM` | 01, 02, ..., 12 |

@@ -286,7 +286,7 @@ You can disable dates, date ranges and date patterns using the following props:
 
 Dates are formatted and/or parsed for the following component sections:
 
-| Component(s) | Target Area | Default Format |
+| Component(s) | Target Area | Default Mask |
 | ------------ | ----------- | -------------- |
 | `v-calendar` `v-date-picker` | Calendar header title | *MMMM YYYY* |
 | `v-calendar` `v-date-picker` | Weekday headers | *W* |
@@ -294,14 +294,14 @@ Dates are formatted and/or parsed for the following component sections:
 | `v-date-picker` | Input element when `is-inline === false` | *L* |
 | `v-date-picker` | Day popover when user hovers selected date | *WWW, MMM D, YYYY* |
 
-By default, `v-calendar` uses Javascript's Internalization API ([which is increasingly well supported](https://caniuse.com/#search=Intl)) to derive the month and weekday names for the user's locale. This helps keep the package size to a minimum while utilizing an API that should only improve with time. It also uses the most appropriate long date format (`L`) for that locale (derived from [moment.js](https://github.com/moment/moment/tree/develop/src/locale)).
+By default, `v-calendar` uses Javascript's Internalization API ([which is increasingly well supported](https://caniuse.com/#search=Intl)) to derive the month and weekday names for the user's locale. This helps keep the package size to a minimum while utilizing an API that should only improve with time. It also uses the most appropriate long date mask (`L`) for that locale (derived from [moment.js](https://github.com/moment/moment/tree/develop/src/locale)).
 
-To use your own custom formats, configure and pass the `formats` object
+To use your own custom masks, configure and pass the `masks` object
   * As a prop to `v-calendar` or  `v-date-picker`
 
 ```html
 <v-date-picker
-  :formats='formats'
+  :masks='masks'
   v-model='myDate'>
 </v-date-picker>
 ```
@@ -310,7 +310,7 @@ export default {
   data() {
     return {
       myDate: null,
-      formats: {
+      masks: {
         title: 'MMMM YYYY',
         weekdays: 'W',
         navMonths: 'MMM',
@@ -328,7 +328,7 @@ import Vue from 'vue'
 import VCalendar from 'v-calendar'
 
 Vue.use(VCalendar, {
-  formats: {
+  masks: {
     title: 'MMMM YYYY',
     weekdays: 'W',
     navMonths: 'MMM',
@@ -340,13 +340,13 @@ Vue.use(VCalendar, {
 
 ### Parsing dates for input element
 
-You'll notice an array was used to specify the formats for `v-date-picker`'s input element. This is because it uses the supplied format(s) to parse, as well as display, the selected date. The first supplied format is used to display the date selection, while all formats can be used to parse the date string. The first successfully parsed date is used as the selected date. This provides more flexibility for the user when manually typing in dates.
+You'll notice an array was used to specify the masks for `v-date-picker`'s input element. This is because it uses the supplied format(s) to parse, as well as display, the selected date. The first supplied format is used to display the date selection, while all masks can be used to parse the date string. The first successfully parsed date is used as the selected date. This provides more flexibility for the user when manually typing in dates.
 
-By default, `v-date-picker` will first try and use the localized long date format to parse the date, but will also try to parse formats that are globally unambiguous (*YYYY-MM-DD* and *YYYY/MM/DD*). Furthermore, because `v-date-picker` uses its own parsing logic ([rather than relying on the browser's inconsistent `Date.parse` function]()), it can properly parse ISO-8601 dates to the user's local time zone instead of converting to UTC. If you plan on targeting browsers from multiple locales, it is probably best to defer to the default format settings.
+By default, `v-date-picker` will first try and use the localized long date format to parse the date, but will also try to parse masks that are globally unambiguous (*YYYY-MM-DD* and *YYYY/MM/DD*). Furthermore, because `v-date-picker` uses its own parsing logic ([rather than relying on the browser's inconsistent `Date.parse` function]()), it can properly parse ISO-8601 dates to the user's local time zone instead of converting to UTC. If you plan on targeting browsers from multiple locales, it is probably best to defer to the default format settings.
 
 ### Format Tokens
 
-Use the following tokens to configure your custom formats:
+Use the following tokens to configure your custom masks:
 
 | Category | Token | Output |
 | -------- | ----- | ------ |
@@ -513,7 +513,7 @@ Vue.use(VCalendar, {
 | `locale` | String | Locale identification in [*language-region*](https://lingohub.com/documentation/developers/supported-locales/language-designators-with-regions/) format. Not all regions supported. | `undefined` |
 | `componentPrefix` | String | Custom prefix to use for plugin components. Replace if `v-calendar` and `v-date-picker` interfere with other component libraries. | `"v"` |
 | `firstDayOfWeek` | Number | Day number for the first day of the week (1: Sun - 7: Sat) | `1` |
-| `formats` | Object | Formats to use when display and parsing dates for various calendar sections | Reference code |
+| `masks` | Object | Masks to use when display and parsing dates for various calendar sections | Reference code |
 | `navVisibility` | String | Visibility state for calendar navigation panel (`"focus"`, `"hover"`, `"visible"`, `"hidden"`) | `"focus"` |
 | `titlePosition` | String | Position of the title in the header (`"left"`, `"center"`, `"right"`) | `"center"` |
 | `transition` | String | Transition type when navigating to a new page (`"slide-h"`, `"slide-v"`, `"fade"`, `"none"`) | `"slide-h"` |

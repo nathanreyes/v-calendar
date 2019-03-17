@@ -78,11 +78,11 @@ pageClass: docs-page
 
 **Default:** `200`
 
-### `formats`
+### `masks`
 
 **Type:** Object
 
-**Description:** Formats to use when display and parsing dates for various calendar sections.
+**Description:** Masks to use when display and parsing dates for various calendar sections.
 
 **Default:**
 ```js

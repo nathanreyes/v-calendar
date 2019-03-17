@@ -224,7 +224,7 @@ As of v0.9.0, you can use functions to define the `navMonthCell` and `navYearCel
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `month` | Number | Month number of the cell. |
-| `label` | String | Formatted month label per the [`formats`](#calendar-props) prop. |
+| `label` | String | Formatted month label per the [`masks`](#calendar-props) prop. |
 | `is-active` | Boolean | Month is selected, or active. |
 | `is-disabled` | Boolean | Month is disabled (ie. not selectable). |
 

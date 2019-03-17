@@ -22,10 +22,8 @@
       <div class="mb-6">
         <h3 class="text-base semibold text-grey-7 mb-3">Popovers</h3>
         <v-calendar :attributes="popovers">
-          <div slot="day-popover" slot-scope="{ day, format, formats, attributes, updateLayout }">
-            <span
-              class="text-xs text-grey-3 font-semibold"
-            >{{ format(day.date, formats.dayPopover) }}</span>
+          <div slot="day-popover" slot-scope="{ day, format, masks, attributes, updateLayout }">
+            <span class="text-xs text-grey-3 font-semibold">{{ format(day.date, masks.dayPopover) }}</span>
             <v-popover-row
               v-for="{ key, customData, highlight, dot, bar } in attributes"
               :key="key"
