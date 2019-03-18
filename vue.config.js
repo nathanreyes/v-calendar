@@ -4,7 +4,9 @@ module.exports = {
   css: {
     extract: true,
   },
+
   outputDir: 'lib',
+
   configureWebpack: {
     resolve: {
       alias: {
@@ -12,4 +14,6 @@ module.exports = {
       },
     },
   },
+
+  lintOnSave: undefined
 };

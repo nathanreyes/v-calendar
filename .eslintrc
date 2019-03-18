@@ -29,6 +29,7 @@
     "object-curly-newline": "off",
     "prefer-destructuring": "off",
     "function-paren-newline": "off",
-    "no-restricted-globals": "off"
+    "no-restricted-globals": "off",
+    "vue/html-self-closing": "error"
   }
 }

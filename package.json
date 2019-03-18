@@ -48,7 +48,6 @@
     "node-sass": "4.10.0",
     "sass-loader": "7.1.0",
     "tailwindcss": "0.5.2",
-    "vue-template-compiler": "^2.5.22",
     "vuepress": "^1.0.0-alpha.40"
   },
   "browserslist": [
