@@ -15,12 +15,7 @@
             <!--Navigation popover-->
             <popover :id="navPopoverId" :contentClass="theme.navPopoverContainer">
               <!--Navigation pane-->
-              <calendar-nav
-                :value="page"
-                :validator="canMove"
-                :masks="masks"
-                @input="navPageSelected($event)"
-              >
+              <calendar-nav :value="page" :validator="canMove" :masks="masks" @input="move($event)">
                 <!--Pass through nav slots-->
                 <template v-for="slot in navSlots" :slot="slot" slot-scope="props">
                   <slot :name="slot" v-bind="props"></slot>
@@ -59,7 +54,7 @@ import PopoverRef from './PopoverRef';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
 import { propOrDefaultMixin, childMixin } from '@/utils/mixins';
-import { evalFn, createGuid } from '@/utils/helpers';
+import { createGuid } from '@/utils/helpers';
 
 export default {
   components: {
@@ -112,46 +107,10 @@ export default {
     titleClass() {
       return this.titlePosition_ ? `align-${this.titlePosition_}` : '';
     },
-    canMovePrevMonth() {
-      return this.canMove(this.page.prevMonthComps);
-    },
-    canMoveNextMonth() {
-      return this.canMove(this.page.nextMonthComps);
-    },
   },
   methods: {
-    navPageSelected(page) {
-      this.move(page);
-    },
-    monthIsDisabled(month) {
-      if (this.minPage && this.yearNumber === this.minPage.year)
-        return month < this.minPage.month;
-      if (this.maxPage && this.yearNumber === this.maxPage.year)
-        return month > this.maxPage.month;
-      return false;
-    },
-    yearIsDisabled(year) {
-      if (this.minPage && year < this.minPage.year) return true;
-      if (this.maxPage && year > this.maxPage.year) return true;
-      return false;
-    },
-    movePrevYear() {
-      this.move({ month: this.page_.month, year: this.page_.year - 1 });
-    },
-    movePrevMonth() {
-      this.move(this.page_.prevMonthComps);
-    },
-    moveThisMonth() {
-      this.move(pageForThisMonth());
-    },
-    moveNextMonth() {
-      this.move(this.page_.nextMonthComps);
-    },
-    moveNextYear() {
-      this.move({ month: this.page_.month, year: this.page_.year + 1 });
-    },
-    move(pageInfo) {
-      this.$emit('update:page', pageInfo);
+    move(page) {
+      this.$emit('update:page', page);
     },
   },
 };

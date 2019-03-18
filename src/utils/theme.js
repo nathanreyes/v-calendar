@@ -138,7 +138,8 @@ export default class Theme {
     });
     toPairs(highlight).map(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      let bgClass, contentClass;
+      let bgClass,
+contentClass;
       switch (targetConfig.fillMode) {
         case 'none':
           bgClass = this.getConfig('bgLow', targetConfig);
@@ -165,7 +166,7 @@ export default class Theme {
       config,
       type: 'dot',
     });
-    toPairs(dot).map(([_, targetConfig]) => {
+    toPairs(dot).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
       concatClass(
         targetConfig,
@@ -181,7 +182,7 @@ export default class Theme {
       config,
       type: 'bar',
     });
-    toPairs(bar).map(([_, targetConfig]) => {
+    toPairs(bar).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
       concatClass(
         targetConfig,
@@ -197,7 +198,7 @@ export default class Theme {
       config,
       type: 'content',
     });
-    toPairs(content).map(([_, targetConfig]) => {
+    toPairs(content).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
       concatClass(
         targetConfig,

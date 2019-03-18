@@ -78,14 +78,10 @@ export const setupScreens = (Vue, screens) => {
     computed: {
       $screens() {
         // Return function that re-evaluates every time screen matches change
-        return (config, def) => {
-          return screenComp.matches.reduce(
-            (prev, curr) => {
-              return has(config, curr) ? config[curr] : prev;
-            },
+        return (config, def) => screenComp.matches.reduce(
+            (prev, curr) => has(config, curr) ? config[curr] : prev,
             isUndefined(def) ? config.default : def,
           );
-        };
       },
     },
   });

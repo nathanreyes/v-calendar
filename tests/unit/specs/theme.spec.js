@@ -11,8 +11,8 @@ const themeConfig = {
 
 describe.only('Theme', () => {
   it('should normalize highlight w/ true', () => {
-    let config = true;
-    let normConfig = normalizeHighlight(config, themeConfig);
+    const config = true;
+    const normConfig = normalizeHighlight(config, themeConfig);
     expect(normConfig).toEqual({
       base: {
         fillMode: 'light',
@@ -22,8 +22,8 @@ describe.only('Theme', () => {
   });
 
   it('should normalize highlight w/ false', () => {
-    let config = false;
-    let normConfig = normalizeHighlight(config, themeConfig);
+    const config = false;
+    const normConfig = normalizeHighlight(config, themeConfig);
     expect(normConfig).toEqual(null);
   });
 

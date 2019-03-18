@@ -25,13 +25,11 @@ export const rootMixin = {
       // Return the locale prop if it is an instance of the Locale class
       if (this.locale instanceof Locale) return this.locale;
       // Set default locale id if needed
-      let config =
-        this.locale || new Intl.DateTimeFormat().resolvedOptions().locale;
+      let config = this.locale || new Intl.DateTimeFormat().resolvedOptions().locale;
       // Get the default settings for the provided locale
       const { locales } = this.$vc.defaults;
       const localeId = isString(config) ? config : config.id;
-      const defLocale =
-        locales[localeId] || locales[localeId.substring(0, 2)] || {};
+      const defLocale = locales[localeId] || locales[localeId.substring(0, 2)] || {};
       // Sanitize defaults
       defLocale.firstDayOfWeek = this.passedProp(
         'firstDayOfWeek',
@@ -44,8 +42,7 @@ export const rootMixin = {
       return this.$vc.getLocale(config);
     },
     format() {
-      return (date, mask) =>
-        this.locale_ ? this.locale_.format(date, mask) : '';
+      return (date, mask) => this.locale_ ? this.locale_.format(date, mask) : '';
     },
   },
 };

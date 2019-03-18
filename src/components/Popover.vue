@@ -1,6 +1,5 @@
 <script>
 import Popper from 'popper.js';
-import { childMixin } from '@/utils/mixins';
 import { on, off, elementContains } from '@/utils/helpers';
 import { addTapOrClickHandler } from '@/utils/touch';
 import { isFunction } from '@/utils/_';
@@ -34,8 +33,8 @@ export default {
             },
           },
           [
-            this.isVisible &&
-              h(
+            this.isVisible
+              && h(
                 'div',
                 {
                   class: [
@@ -77,15 +76,15 @@ export default {
   computed: {
     content() {
       return (
-        (isFunction(this.$scopedSlots.default) &&
-          this.$scopedSlots.default({
+        (isFunction(this.$scopedSlots.default)
+          && this.$scopedSlots.default({
             direction: this.direction,
             align: this.align,
             args: this.args,
             updateLayout: this.scheduleUpdate,
             hide: this.onHide,
-          })) ||
-        this.$slots.default
+          }))
+        || this.$slots.default
       );
     },
     popperOptions() {
@@ -97,9 +96,9 @@ export default {
     },
     isVisible() {
       return !!(
-        this.ref &&
-        (this.$scopedSlots.default || this.$slots.default) &&
-        this.visibility !== 'hidden'
+        this.ref
+        && (this.$scopedSlots.default || this.$slots.default)
+        && this.visibility !== 'hidden'
       );
     },
   },
@@ -147,24 +146,24 @@ export default {
       off(this.$refs.popover, 'blur', this.onBlur);
       if (this.removeDocHandler) this.removeDocHandler();
     },
-    onMouseOver(e) {
+    onMouseOver() {
       if (this.isInteractive && this.visibility === 'hover') {
         clearTimeout(this._timer);
       }
     },
-    onMouseLeave(e) {
+    onMouseLeave() {
       if (this.isInteractive && this.visibility === 'hover') {
         this.onHide({
           ref: this.ref,
         });
       }
     },
-    onFocusIn(e) {
+    onFocusIn() {
       if (this.isInteractive && this.visibility === 'focus') {
         clearTimeout(this._timer);
       }
     },
-    onBlur(e) {
+    onBlur() {
       if (this.isInteractive && this.visibility === 'focus') {
         this.onHide({
           ref: this.ref,
@@ -177,8 +176,8 @@ export default {
       }
       // Don't hide if target element is contained within popover ref or content
       if (
-        elementContains(this.$refs.popover, e.target) ||
-        elementContains(this.ref, e.target)
+        elementContains(this.$refs.popover, e.target)
+        || elementContains(this.ref, e.target)
       ) {
         return;
       }
@@ -209,7 +208,7 @@ export default {
     setupPopper() {
       this.$nextTick(() => {
         if (!this.ref || !this.$refs.popover) return;
-        if (this.popper && this.popper.reference != this.ref) {
+        if (this.popper && this.popper.reference !== this.ref) {
           this.popper.destroy();
           this.popper = null;
         }

@@ -27,8 +27,7 @@ import _last from 'lodash/last';
 import _uniq from 'lodash/uniq';
 
 // Type checkers
-export const getType = value =>
-  Object.prototype.toString.call(value).slice(8, -1);
+export const getType = value => Object.prototype.toString.call(value).slice(8, -1);
 export const isBoolean = _isBoolean;
 export const isNumber = _isNumber;
 export const isString = _isString;

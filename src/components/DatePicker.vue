@@ -1,6 +1,5 @@
 <script>
 import Calendar from './Calendar';
-import Fragment from './Fragment';
 import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
@@ -13,7 +12,6 @@ import { addDays } from '@/utils/dateInfo';
 import { addTapOrClickHandler } from '@/utils/touch';
 import {
   arrayHasItems,
-  evalFn,
   createGuid,
   elementContains,
   on,
@@ -24,8 +22,7 @@ import { isString, isFunction, isArray } from '@/utils/_';
 export default {
   name: 'VDatePicker',
   render(h) {
-    const calendar = () =>
-      h(Calendar, {
+    const calendar = () => h(Calendar, {
         attrs: {
           ...this.$attrs,
           attributes: this.attributes_,
@@ -46,15 +43,14 @@ export default {
     // If inline just return the calendar
     if (this.isInline) return calendar();
     // Render the slot or ihput
-    const inputSlot =
-      (isFunction(this.$scopedSlots.default) &&
-        this.$scopedSlots.default({
+    const inputSlot = (isFunction(this.$scopedSlots.default)
+        && this.$scopedSlots.default({
           inputClass: this.inputClass,
           inputProps: this.inputProps_,
           inputEvents: this.inputEvents,
           updateValue: this.updateValue,
-        })) ||
-      h('input', {
+        }))
+      || h('input', {
         class: this.inputClass,
         domProps: this.inputProps_,
         on: this.inputEvents,
@@ -182,8 +178,9 @@ export default {
       return attribute;
     },
     dragAttribute_() {
-      if (this.mode !== 'range' || !this.picker.hasValue(this.dragValue))
+      if (this.mode !== 'range' || !this.picker.hasValue(this.dragValue)) {
         return null;
+      }
       const attribute = {
         key: 'select-drag',
         ...this.dragAttribute,
@@ -220,10 +217,11 @@ export default {
     },
     disabledAttribute_() {
       if (
-        !arrayHasItems(this.disabledDates_) &&
-        !arrayHasItems(this.availableDates)
-      )
+        !arrayHasItems(this.disabledDates_)
+        && !arrayHasItems(this.availableDates)
+      ) {
         return null;
+      }
       return new Attribute(
         {
           key: 'disabled',
@@ -270,16 +268,16 @@ export default {
       // Clear value on select mode change
       this.value_ = null;
     },
-    value(val) {
+    value() {
       this.refreshValue();
     },
     value_(val) {
       if (!this.disableFormatInput) this.formatInput();
       if (
-        !this.isInline &&
-        this.mode !== 'multiple' &&
-        this.popover_.visibility !== 'visible' &&
-        !this.disablePopoverHide
+        !this.isInline
+        && this.mode !== 'multiple'
+        && this.popover_.visibility !== 'visible'
+        && !this.disablePopoverHide
       ) {
         this.hidePopover();
       }
@@ -325,12 +323,12 @@ export default {
     },
     dateIsValid(date) {
       if (
-        this.disabledAttribute &&
-        this.disabledAttribute.intersectsDate(date)
+        this.disabledAttribute
+        && this.disabledAttribute.intersectsDate(date)
       ) {
         this.$emit('invalid-input', {
           reason: 'disabled',
-          value: day.date,
+          value: date,
         });
         return false;
       }

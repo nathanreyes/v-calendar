@@ -3,7 +3,6 @@ import Popover from './Popover';
 import Grid from './Grid';
 import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
-import PopoverRow from './PopoverRow';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
 import { propOrDefaultMixin, rootMixin } from '@/utils/mixins';
@@ -15,9 +14,7 @@ import {
   pageIsBeforePage,
   pageIsAfterPage,
   pageIsBetweenPages,
-  arrayHasItems,
   createGuid,
-  toDate,
 } from '@/utils/helpers';
 import { isNumber, isFunction } from '@/utils/_';
 
@@ -41,8 +38,7 @@ export default {
         },
         on: {
           ...this.$listeners,
-          'update:page': e =>
-            this.refreshPages({ page: e, position: position }),
+          'update:page': e => this.refreshPages({ page: e, position }),
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
@@ -82,6 +78,51 @@ export default {
             }),
         ],
       );
+    };
+
+    // Renderer for popover
+    const getDayPopover = () => {
+      return h(Popover, {
+        props: {
+          id: this.sharedState.dayPopoverId,
+          align: 'center',
+          contentClass: `c-day ${this.theme_.dayPopoverContainer}`,
+        },
+        scopedSlots: {
+          default: ({ args: day, updateLayout, hide }) => {
+            const attributes = day.attributes;
+            const masks = this.masks_;
+            const format = this.format;
+            const dayTitle = format(day.date, masks.dayPopover);
+            const popoverRow = () => import('./PopoverRow');
+            return isFunction(this.$scopedSlots['day-popover'])
+              ? this.$scopedSlots['day-popover']({
+                  day,
+                  attributes,
+                  masks,
+                  format,
+                  dayTitle,
+                  updateLayout,
+                  hide,
+                })
+              : h('div', [
+                  // Show popover header only if format is defined
+                  masks.dayPopover &&
+                    h('div', { class: this.theme_.dayPopoverHeader }, [
+                      dayTitle,
+                    ]),
+                  attributes.map(attribute =>
+                    h(popoverRow, {
+                      key: attribute.key,
+                      props: {
+                        attribute,
+                      },
+                    }),
+                  ),
+                ]);
+          },
+        },
+      });
     };
 
     // Renderer for calendar container
@@ -149,46 +190,7 @@ export default {
               getArrowButton(false),
             ],
           ),
-          h(Popover, {
-            props: {
-              id: this.sharedState.dayPopoverId,
-              align: 'center',
-              contentClass: `c-day ${this.theme_.dayPopoverContainer}`,
-            },
-            scopedSlots: {
-              default: ({ args: day, updateLayout, hide }) => {
-                const attributes = day.attributes;
-                const masks = this.masks_;
-                const format = this.format;
-                const dayTitle = format(day.date, masks.dayPopover);
-                return isFunction(this.$scopedSlots['day-popover'])
-                  ? this.$scopedSlots['day-popover']({
-                      day,
-                      attributes,
-                      masks,
-                      format,
-                      dayTitle,
-                      updateLayout,
-                      hide,
-                    })
-                  : h('div', [
-                      // Show popover header only if format is defined
-                      masks.dayPopover &&
-                        h('div', { class: this.theme_.dayPopoverHeader }, [
-                          dayTitle,
-                        ]),
-                      attributes.map(attribute => {
-                        return h(PopoverRow, {
-                          key: attribute.key,
-                          props: {
-                            attribute,
-                          },
-                        });
-                      }),
-                    ]);
-              },
-            },
-          }),
+          getDayPopover(),
         ],
       );
 
@@ -281,7 +283,7 @@ export default {
     locale_() {
       this.refreshLocale();
     },
-    theme_(val) {
+    theme_() {
       this.refreshTheme();
     },
     fromPage() {

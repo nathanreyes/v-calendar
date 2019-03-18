@@ -15,8 +15,7 @@ export default {
           columnWidth: '1fr',
         },
       },
-      this.days.map(day =>
-        h(CalendarDay, {
+      this.days.map(day => h(CalendarDay, {
           attrs: {
             ...this.$attrs,
             day,

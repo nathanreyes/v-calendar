@@ -102,4 +102,3 @@ $slide-timing: ease
   transform: translateY(-$slide-translate)
 
 </style>
-

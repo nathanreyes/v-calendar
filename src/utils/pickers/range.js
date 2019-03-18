@@ -41,7 +41,8 @@ export default class RangePicker {
   }
 
   parse(text) {
-    let start, end;
+    let start,
+end;
     const dateTexts = text.split('-').map(s => s.trim());
     if (dateTexts.length >= 2) {
       start = this._parse(dateTexts[0]);
@@ -53,8 +54,8 @@ export default class RangePicker {
   filterDisabled({ value, isRequired, disabled, fallbackValue }) {
     let newValue = isRequired ? fallbackValue : null;
     if (
-      this.hasValue(value) &&
-      (!disabled || !disabled.intersectsDate(value))
+      this.hasValue(value)
+      && (!disabled || !disabled.intersectsDate(value))
     ) {
       newValue = value;
     }

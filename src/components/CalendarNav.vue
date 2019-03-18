@@ -103,9 +103,7 @@
 
 <script>
 import SvgIcon from './SvgIcon';
-import DateInfo from '@/utils/dateInfo';
 import { childMixin } from '@/utils/mixins';
-import { evalFn } from '@/utils/helpers';
 import { first, last } from '@/utils/_';
 
 const _yearGroupCount = 12;
@@ -196,10 +194,11 @@ export default {
   methods: {
     getMonthAttributes(month) {
       if (
-        !this.attributesMap[this.yearIndex] ||
-        !this.attributesMap[this.yearIndex][month]
-      )
+        !this.attributesMap[this.yearIndex]
+        || !this.attributesMap[this.yearIndex][month]
+      ) {
         return undefined;
+      }
       return Object.values(this.attributesMap[this.yearIndex][month]);
     },
     getYearGroupIndex(year) {

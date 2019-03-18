@@ -10,8 +10,7 @@ export default class AttributeStore {
     if (arrayHasItems(attrs)) {
       attrs.forEach(attr => {
         if (!attr || !attr.dates) return;
-        const newAttr =
-          attr instanceof Attribute
+        const newAttr = attr instanceof Attribute
             ? attr
             : new Attribute(
                 {

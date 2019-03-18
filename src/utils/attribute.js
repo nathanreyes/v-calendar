@@ -54,19 +54,17 @@ export default class Attribute {
     this.excludeMode = excludeMode || 'intersects';
     // Assign final values for dates & excludeDates
     this.dates = (
-      (this.hasDates && this.dates) ||
-      (this.hasExcludeDates && [{}]) ||
-      []
+      (this.hasDates && this.dates)
+      || (this.hasExcludeDates && [{}])
+      || []
     )
       .map(
-        d =>
-          d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
+        d => d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
       )
       .filter(d => d);
     this.excludeDates = ((this.hasExcludeDates && this.excludeDates) || [])
       .map(
-        d =>
-          d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
+        d => d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
       )
       .filter(d => d);
     this.isComplex = some(dates, d => d.isComplex);
@@ -76,8 +74,8 @@ export default class Attribute {
   // Returns: First attribute date info that partially intersects the given date
   intersectsDate(date) {
     return (
-      !this.excludesDate(date) &&
-      (this.dates.find(d => d.intersectsDate(date)) || false)
+      !this.excludesDate(date)
+      && (this.dates.find(d => d.intersectsDate(date)) || false)
     );
   }
 
@@ -85,18 +83,17 @@ export default class Attribute {
   // Returns: First attribute date info that completely includes the given date
   includesDate(date) {
     return (
-      !this.excludesDate(date) &&
-      (this.dates.find(d => d.includesDate(date)) || false)
+      !this.excludesDate(date)
+      && (this.dates.find(d => d.includesDate(date)) || false)
     );
   }
 
   excludesDate(date) {
     return (
-      this.hasExcludeDates &&
-      this.excludeDates.find(
-        ed =>
-          (this.excludeMode === 'intersects' && ed.intersectsDate(date)) ||
-          (this.excludeMode === 'includes' && ed.includesDate(date)),
+      this.hasExcludeDates
+      && this.excludeDates.find(
+        ed => (this.excludeMode === 'intersects' && ed.intersectsDate(date))
+          || (this.excludeMode === 'includes' && ed.includesDate(date)),
       )
     );
   }
@@ -105,8 +102,8 @@ export default class Attribute {
   // Returns: First attribute date info that occurs on given day.
   includesDay(day) {
     return (
-      !this.excludesDay(day) &&
-      (this.dates.find(d => d.includesDay(day)) || false)
+      !this.excludesDay(day)
+      && (this.dates.find(d => d.includesDay(day)) || false)
     );
   }
 

@@ -1,6 +1,5 @@
 <script>
 import { on, off } from '@/utils/helpers';
-import { isFunction } from '@/utils/_';
 
 export default {
   props: {
@@ -10,11 +9,7 @@ export default {
     visibility: {
       type: String,
       default: 'hover',
-      validator: value => {
-        return (
-          ['hover', 'focus', 'click', 'visible', 'hidden'].indexOf(value) !== -1
-        );
-      },
+      validator: value => ['hover', 'focus', 'click', 'visible', 'hidden'].indexOf(value) !== -1,
     },
     isInteractive: Boolean,
     showDelay: { type: Number, default: 10 },
@@ -34,14 +29,14 @@ export default {
       );
     },
   },
-  render(h) {
+  render() {
     return this.$slots.default[0];
   },
   watch: {
-    visibility(val, oldVal) {
+    visibility() {
       this.refreshVisibility();
     },
-    args(val) {
+    args() {
       this.$nextTick(() => {
         if (this.isActive) {
           this.update();
@@ -77,7 +72,7 @@ export default {
         this.toggle();
       }
     },
-    onMouseOver(e) {
+    onMouseOver() {
       if (!this.isHovered) {
         this.isHovered = true;
         if (this.visibility === 'hover') {
@@ -85,13 +80,13 @@ export default {
         }
       }
     },
-    onMouseLeave(e) {
+    onMouseLeave() {
       this.isHovered = false;
       if (this.visibility === 'hover') {
         this.refreshVisibility();
       }
     },
-    onFocusIn(e) {
+    onFocusIn() {
       if (!this.isFocused) {
         this.isFocused = true;
         if (this.visibility === 'focus') {
@@ -99,7 +94,7 @@ export default {
         }
       }
     },
-    onBlur(e) {
+    onBlur() {
       this.isFocused = false;
       if (this.visibility === 'focus') {
         this.refreshVisibility();

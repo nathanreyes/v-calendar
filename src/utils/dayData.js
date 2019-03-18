@@ -8,8 +8,7 @@ export const getCalendarDays = (page, trimMaxWeek) => {
   days = [];
   const { monthComps, prevMonthComps, nextMonthComps } = page;
   const { firstDayOfWeek, firstWeekday } = monthComps;
-  const prevMonthDaysToShow =
-    firstWeekday + (firstWeekday < firstDayOfWeek ? 7 : 0) - firstDayOfWeek;
+  const prevMonthDaysToShow = firstWeekday + (firstWeekday < firstDayOfWeek ? 7 : 0) - firstDayOfWeek;
   let prevMonth = true;
   let thisMonth = false;
   let nextMonth = false;
@@ -56,8 +55,7 @@ export const getCalendarDays = (page, trimMaxWeek) => {
       //  so we'll supply all the data we can
       const date = new Date(year, month - 1, day);
       const weekdayPosition = i;
-      const isToday =
-        day === todayDay && month === todayMonth && year === todayYear;
+      const isToday = day === todayDay && month === todayMonth && year === todayYear;
       const isFirstDay = thisMonth && day === 1;
       const isLastDay = thisMonth && day === monthComps.days;
       const onTop = w === 1;

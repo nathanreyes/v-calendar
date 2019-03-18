@@ -115,8 +115,7 @@ export default class DateInfo {
         start = thisRange.start;
       } else {
         // Otherwise, use the earliest start date
-        start =
-          thisRange.start < otherRange.start
+        start = thisRange.start < otherRange.start
             ? thisRange.start
             : otherRange.start;
       }
@@ -168,8 +167,7 @@ export default class DateInfo {
 
   startOfWeek(date) {
     const day = date.getDay() + 1;
-    const daysToAdd =
-      day >= this.firstDayOfWeek
+    const daysToAdd = day >= this.firstDayOfWeek
         ? this.firstDayOfWeek - day
         : -(7 - (this.firstDayOfWeek - day));
     return addDays(date, daysToAdd);
@@ -194,46 +192,37 @@ export default class DateInfo {
   static get patterns() {
     return {
       dailyInterval: {
-        test: (day, interval, di) =>
-          di.diffInDays(di.start || new Date(), day.date) % interval === 0,
+        test: (day, interval, di) => di.diffInDays(di.start || new Date(), day.date) % interval === 0,
       },
       weeklyInterval: {
-        test: (day, interval, di) =>
-          di.diffInWeeks(di.start || new Date(), day.date) % interval === 0,
+        test: (day, interval, di) => di.diffInWeeks(di.start || new Date(), day.date) % interval === 0,
       },
       monthlyInterval: {
-        test: (day, interval, di) =>
-          di.diffInMonths(di.start || new Date(), day.date) % interval === 0,
+        test: (day, interval, di) => di.diffInMonths(di.start || new Date(), day.date) % interval === 0,
       },
       yearlyInterval: {
-        test: () => (day, interval, di) =>
-          di.diffInYears(di.start || new Date(), day.date) % interval === 0,
+        test: () => (day, interval, di) => di.diffInYears(di.start || new Date(), day.date) % interval === 0,
       },
       days: {
         validate: days => (isArray(days) ? days : [parseInt(days, 10)]),
-        test: (day, days) =>
-          days.includes(day.day) || days.includes(-day.dayFromEnd),
+        test: (day, days) => days.includes(day.day) || days.includes(-day.dayFromEnd),
       },
       weekdays: {
-        validate: weekdays =>
-          isArray(weekdays) ? weekdays : [parseInt(weekdays, 10)],
+        validate: weekdays => isArray(weekdays) ? weekdays : [parseInt(weekdays, 10)],
         test: (day, weekdays) => weekdays.includes(day.weekday),
       },
       ordinalWeekdays: {
-        validate: ordinalWeekdays =>
-          Object.keys(ordinalWeekdays).reduce((obj, ck) => {
+        validate: ordinalWeekdays => Object.keys(ordinalWeekdays).reduce((obj, ck) => {
             const weekdays = ordinalWeekdays[ck];
             if (!weekdays) return obj;
             obj[ck] = isArray(weekdays) ? weekdays : [parseInt(weekdays, 10)];
             return obj;
           }, {}),
-        test: (day, ordinalWeekdays) =>
-          Object.keys(ordinalWeekdays)
+        test: (day, ordinalWeekdays) => Object.keys(ordinalWeekdays)
             .map(k => parseInt(k, 10))
             .find(
-              k =>
-                ordinalWeekdays[k].includes(day.weekday) &&
-                (k === day.weekdayOrdinal || k === -day.weekdayOrdinalFromEnd),
+              k => ordinalWeekdays[k].includes(day.weekday)
+                && (k === day.weekdayOrdinal || k === -day.weekdayOrdinalFromEnd),
             ),
       },
       weekends: {
@@ -246,8 +235,7 @@ export default class DateInfo {
       },
       weeks: {
         validate: weeks => (isArray(weeks) ? weeks : [parseInt(weeks, 10)]),
-        test: (day, weeks) =>
-          weeks.includes(day.week) || weeks.includes(-day.weekFromEnd),
+        test: (day, weeks) => weeks.includes(day.week) || weeks.includes(-day.weekFromEnd),
       },
       months: {
         validate: months => (isArray(months) ? months : [parseInt(months, 10)]),
@@ -270,8 +258,7 @@ export default class DateInfo {
   static testConfig(config, day, dateInfo) {
     if (isFunction(config)) return config(day);
     if (isObject(config)) {
-      return Object.keys(config).every(k =>
-        DateInfo.patterns[k].test(day, config[k], dateInfo),
+      return Object.keys(config).every(k => DateInfo.patterns[k].test(day, config[k], dateInfo),
       );
     }
     return null;
@@ -326,8 +313,7 @@ export default class DateInfo {
   // Determines if first date partially intersects second date
   // NOTE: This is a shallow test (no patterns tested)
   dateShallowIntersectsDate(date1, date2) {
-    if (date1.isDate)
-      return date2.isDate
+    if (date1.isDate) return date2.isDate
         ? date1.dateTime === date2.dateTime
         : dateShallowIncludesDate(date2, date1);
     if (date2.isDate) return dateShallowIncludesDate(date1, date2);
@@ -384,8 +370,7 @@ export default class DateInfo {
       return true;
     }
     // Both dates are date ranges
-    if (date1.start && (!date2.start || date2.start < date1.start))
-      return false;
+    if (date1.start && (!date2.start || date2.start < date1.start)) return false;
     if (date1.end && (!date2.end || date2.end > date1.end)) return false;
     return true;
   }
@@ -401,14 +386,12 @@ export default class DateInfo {
     // No patterns to test
     if (!this.on) return true;
     // Fail if 'and' condition fails
-    if (this.on.and && !DateInfo.testConfig(this.on.and, day, this))
-      return false;
+    if (this.on.and && !DateInfo.testConfig(this.on.and, day, this)) return false;
     // Fail if every 'or' condition fails
     if (
-      this.on.or &&
-      !this.on.or.some(or => DateInfo.testConfig(or, day, this))
-    )
-      return false;
+      this.on.or
+      && !this.on.or.some(or => DateInfo.testConfig(or, day, this))
+    ) return false;
     // Patterns match
     return true;
   }

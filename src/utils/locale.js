@@ -22,14 +22,14 @@ export default class Locale {
   }
 
   parse(dateStr, mask) {
-    return parse(dateStr, mask || this.masks[L], this);
+    return parse(dateStr, mask || this.masks.L, this);
   }
 
   format(date, mask) {
-    return format(date, mask || this.masks[L], this);
+    return format(date, mask || this.masks.L, this);
   }
 
-  toDate(d, format) {
+  toDate(d, mask) {
     if (isDate(d)) {
       return new Date(d.getTime());
     }
@@ -37,7 +37,7 @@ export default class Locale {
       return new Date(d);
     }
     if (isString(d)) {
-      return this.parse(d, format);
+      return this.parse(d, mask);
     }
     if (isObject(d)) {
       const date = new Date();
@@ -92,8 +92,7 @@ export default class Locale {
     const key = `${month}.${year}`;
     let comps = this.monthData[key];
     if (!comps) {
-      const inLeapYear =
-        (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+      const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
       const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
       const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
       const weeks = Math.ceil(

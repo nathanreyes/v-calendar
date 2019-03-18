@@ -6,8 +6,7 @@ export default {
   mounted() {
     const parent = this.$el.parentElement;
     if (parent != null) {
-      this.$slots.default.forEach(slot =>
-        parent.insertBefore(slot.elm, this.$el),
+      this.$slots.default.forEach(slot => parent.insertBefore(slot.elm, this.$el),
       );
       this.$el.remove();
     }

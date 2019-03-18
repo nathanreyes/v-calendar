@@ -1,7 +1,6 @@
 import Locale from '@/utils/locale';
 
-export const createVC = (Vue, defaults) =>
-  new Vue({
+export const createVC = (Vue, defaults) => new Vue({
     data() {
       return {
         defaults,

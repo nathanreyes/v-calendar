@@ -14,6 +14,7 @@
 
 <script>
 import { childMixin } from '@/utils/mixins';
+
 export default {
   name: 'VPopoverRow',
   mixins: [childMixin],
@@ -37,7 +38,8 @@ export default {
             borderRadius: '3px',
           },
         };
-      } else if (dot) {
+      }
+      if (dot) {
         const { color, isDark } = dot.start;
         return {
           class: this.theme.getConfig('bgAccentHigh', {
@@ -50,7 +52,8 @@ export default {
             borderRadius: '50%',
           },
         };
-      } else if (bar) {
+      }
+      if (bar) {
         const { color, isDark } = bar.start;
         return {
           class: this.theme.getConfig('bgAccentHigh', {
@@ -62,7 +65,8 @@ export default {
             height: '3px',
           },
         };
-      } else if (content) {
+      }
+      if (content) {
         const { color, isDark } = content.start;
         return {
           class: this.theme.getConfig('contentContrast', {
