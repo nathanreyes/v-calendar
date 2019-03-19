@@ -37,8 +37,8 @@
   },
   "navCell": "w-12 text-center py-1 mx-1 rounded",
   "navCellInactive": {
-    "light": "cursor-pointer hover:bg-grey-10",
-    "dark": "cursor-pointer hover:bg-grey-2"
+    "light": "cursor-pointer hover:bg-grey-10 border-2 border-transparent",
+    "dark": "cursor-pointer hover:bg-grey-2 border-2 border-transparent"
   },
   "navCellInactiveCurrent": {
     "light": "text-{color}-1 cursor-pointer hover:bg-grey-10 border-2 border-{color}-1",
