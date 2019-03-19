@@ -32,7 +32,7 @@ export default class DateInfo {
       // date.setUTCHours(0, 0, 0, 0);
       // Assign date
       this.date = date;
-      this.dateTime = date.getTime();
+      this.dateTime = date.setHours(0, 0, 0, 0) && date.getTime();
     }
     // Process date range
     if (this.isRange) {
@@ -67,8 +67,8 @@ export default class DateInfo {
         // Assign start and end dates
         this.start = start;
         this.end = end;
-        this.startTime = start && start.getTime();
-        this.endTime = end && end.getTime();
+        this.startTime = start && start.setHours(0, 0, 0, 0) && start.getTime();
+        this.endTime = end && end.setHours(0, 0, 0, 0) && end.getTime();
         // Assign spans
         if (start && end) {
           this.daySpan = this.diffInDays(start, end);
