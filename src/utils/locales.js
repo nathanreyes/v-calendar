@@ -75,7 +75,7 @@ const locales = {
   // Ukrainian
   uk: { dow: 2, L: 'DD.MM.YYYY' },
   // Slovenian
-  'sl_SI': { dow: 2, L: 'DD.MM.YYYY' },
+  'sl-SI': { dow: 2, L: 'DD.MM.YYYY' },
 };
 locales.en = locales['en-US'];
 locales.zh = locales['zh-CN'];
