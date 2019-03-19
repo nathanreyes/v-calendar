@@ -1,103 +1,40 @@
 <template>
   <!--Nav panel-->
-  <div class="vc-nav-pane">
-    <!--Nav months-->
-    <template v-if="mode_ === 'month'">
-      <!--Months header-->
-      <div class="vc-nav-header" :class="theme.navHeader">
-        <!--Previous year button-->
-        <div class="vc-nav-arrow-layout">
-          <slot name="nav-left-button" :month-items="[...monthItems]" :move="movePrevYear">
-            <svg-icon name="left-arrow" class="vc-nav-arrow" @click="movePrevYear"></svg-icon>
-          </slot>
-        </div>
-        <!--Mode switch button-->
-        <span
-          class="vc-nav-title"
-          :class="theme.navTitle"
-          @click="selectMode('year')"
-        >{{ yearIndex }}</span>
-        <!--Next year button-->
-        <div class="vc-nav-arrow-layout">
-          <slot name="nav-right-button" :month-items="[...monthItems]" :move="moveNextYear">
-            <svg-icon name="right-arrow" class="vc-nav-arrow" @click="moveNextYear"></svg-icon>
-          </slot>
-        </div>
+  <div class="py-1">
+    <!--Nav header-->
+    <div class="flex justify-between items-center mx-2">
+      <!--Move prev button-->
+      <div @click="movePrev" class="flex justify-center items-center" :class="theme.navArrows">
+        <slot name="nav-left-button">
+          <svg-icon name="left-arrow"/>
+        </slot>
       </div>
-      <!--Months table-->
-      <table class="vc-nav-table">
-        <tr v-for="(row, i) in monthRows" :key="i">
-          <td v-for="item in row" :key="item.month">
-            <div
-              class="vc-nav-table-cell"
-              :class="{
+      <!--Mode switch button-->
+      <span :class="theme.navTitle" @click="toggleMode">{{ title }}</span>
+      <!--Move next-->
+      <div @click="moveNext" class="flex justify-center items-center" :class="theme.navArrows">
+        <slot name="nav-right-button">
+          <svg-icon name="right-arrow"/>
+        </slot>
+      </div>
+    </div>
+    <!--Navigation items-->
+    <div v-for="(row, i) in itemRows" :key="i" class="flex justify-between items-center mx-1 mb-1">
+      <div
+        v-for="(item, j) in row"
+        :key="j"
+        class="w-12 text-center py-1 mx-1 rounded"
+        :class="{
                   [theme.navCell]: !item.isActive,
                   [theme.navCellActive]: item.isActive,
                   'vc-disabled': item.isDisabled
                 }"
-              @click="monthClick(item.month)"
-            >
-              <!--Month label-->
-              {{ item.label }}
-            </div>
-          </td>
-        </tr>
-      </table>
-    </template>
-    <!--Nav years-->
-    <template v-if="mode_ === 'year'">
-      <div class="vc-nav-header" :class="theme.navHeader">
-        <!--Previous year group button-->
-        <div class="vc-nav-arrow-layout">
-          <slot
-            name="nav-left-button"
-            :first-year="firstYear"
-            :last-year="lastYear"
-            :year-items="[...yearItems]"
-            :move="movePrevYearGroup"
-          >
-            <svg-icon name="left-arrow" class="vc-nav-arrow" @click="movePrevYearGroup"></svg-icon>
-          </slot>
-        </div>
-        <!--Mode switch button-->
-        <span
-          class="vc-nav-title"
-          :class="theme.navTitle"
-          @click="selectMode('month')"
-        >{{ firstYear }} - {{ lastYear }}</span>
-        <!--Next year group button-->
-        <div class="vc-nav-arrow-layout">
-          <slot
-            name="nav-right-button"
-            :first-year="firstYear"
-            :last-year="lastYear"
-            :year-items="[...yearItems]"
-            :move="moveNextYearGroup"
-          >
-            <svg-icon name="right-arrow" class="vc-nav-arrow" @click="moveNextYearGroup"></svg-icon>
-          </slot>
-        </div>
+        @click="item.click"
+      >
+        <!--Item label-->
+        {{ item.label }}
       </div>
-      <!--Years table-->
-      <table class="vc-nav-table">
-        <tr v-for="(row, i) in yearRows" :key="i">
-          <td v-for="item in row" :key="item.year">
-            <div
-              class="vc-nav-table-cell"
-              :class="{
-                  [theme.navCell]: !item.isActive,
-                  [theme.navCellActive]: item.isActive,
-                  'vc-disabled': item.isDisabled
-                }"
-              @click="yearClick(item.year)"
-            >
-              <!--Year label-->
-              {{ item.year }}
-            </div>
-          </td>
-        </tr>
-      </table>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -114,17 +51,14 @@ export default {
   },
   mixins: [childMixin],
   props: {
-    mode: { type: String, default: 'month' },
     value: { type: Object, default: () => ({ month: 0, year: 0 }) },
     validator: { type: Function, default: () => () => true },
-    attributes: Array,
   },
   data() {
     return {
-      mode_: '',
+      monthMode: true,
       yearIndex: 0,
       yearGroupIndex: 0,
-      attributesMap: {},
     };
   },
   computed: {
@@ -133,6 +67,11 @@ export default {
     },
     year() {
       return this.value ? this.value.year || 0 : 0;
+    },
+    title() {
+      return this.monthMode
+        ? this.yearIndex
+        : `${this.firstYear} - ${this.lastYear}`;
     },
     monthItems() {
       return this.locale
@@ -143,9 +82,9 @@ export default {
           return {
             month,
             label: ml,
-            attributes: this.getMonthAttributes(month),
             isActive: month === this.month && this.yearIndex === this.year,
             isDisabled: !this.validator({ month, year: this.yearIndex }),
+            click: () => this.monthClick(month),
           };
         });
     },
@@ -157,11 +96,16 @@ export default {
         items.push({
           month: 0,
           year: i,
+          label: i,
           isActive: i === this.year,
           isDisabled: !this.validator({ month: this.month, year: i }),
+          click: () => this.yearClick(i),
         });
       }
       return items;
+    },
+    itemRows() {
+      return this.monthMode ? this.monthRows : this.yearRows;
     },
     monthRows() {
       return this.createRows(this.monthItems, 3);
@@ -177,9 +121,6 @@ export default {
     },
   },
   watch: {
-    mode(val) {
-      this.mode_ = val;
-    },
     year() {
       this.yearIndex = this.year;
     },
@@ -188,19 +129,9 @@ export default {
     },
   },
   created() {
-    this.mode_ = this.mode;
     this.yearIndex = this.year;
   },
   methods: {
-    getMonthAttributes(month) {
-      if (
-        !this.attributesMap[this.yearIndex]
-        || !this.attributesMap[this.yearIndex][month]
-      ) {
-        return undefined;
-      }
-      return Object.values(this.attributesMap[this.yearIndex][month]);
-    },
     getYearGroupIndex(year) {
       return Math.floor(year / _yearGroupCount);
     },
@@ -209,11 +140,22 @@ export default {
     },
     yearClick(year) {
       this.yearIndex = year;
-      this.selectMode('month');
+      this.monthMode = true;
     },
-    selectMode(mode) {
-      this.mode_ = mode;
-      this.$emit('update:mode', mode);
+    toggleMode() {
+      this.monthMode = !this.monthMode;
+    },
+    movePrev() {
+      if (this.monthMode) {
+        this.movePrevYear();
+      }
+      this.movePrevYearGroup();
+    },
+    moveNext() {
+      if (this.monthMode) {
+        this.moveNextYear();
+      }
+      this.moveNextYearGroup();
     },
     movePrevYear() {
       this.yearIndex--;
@@ -245,103 +187,11 @@ export default {
 
 <style lang='sass' scoped>
 
-@import '../styles/vars.sass'
-@import '../styles/mixins.sass'
-
-$nav-title-transition: all .25s ease-in-out
-$nav-table-cell-width: 60px
-$nav-table-cell-transition: all 0.1s ease-in-out
-
-.vc-nav-pane
-  transition: height 5s ease-in-out
-  width: $nav-table-cell-width*3
-  overflow: hidden
-
-.vc-nav-header
-  display: flex
-  justify-content: space-between
-  align-items: center
-  padding: 3px 0
-
-.vc-nav-arrow-layout
-  +box()
-  min-width: 26px
-
-.vc-nav-arrow
-  +box()
-  font-size: $arrow-font-size
-  transition: $arrow-transition
-  cursor: pointer
-  user-select: none
-
-.vc-nav-title
-  transition: $nav-title-transition
-  cursor: pointer
-  user-select: none
-
-.vc-nav-table
-  &, tr, td, th
-    margin: 0
-    padding: 0
-    background: none
-    border: none
-    border-collapse: collapse
-    border-spacing: 0
-
-.vc-nav-table
-  table-layout: fixed
-  width: 100%
-  tr
-    td
-      width: $nav-table-cell-width
-      height: 34px
-      &:first-child
-        border-left: 0
-      &:last-child
-        border-right: 0
-    &:last-child
-      td
-        border-bottom: 0
-
-.vc-nav-table-cell
-  display: flex
-  flex-direction: column
-  justify-content: center
-  align-items: center
-  height: 100%
-  position: relative
-  user-select: none
-  cursor: pointer
-  transition: $nav-table-cell-transition
-  // &:hover
-  //   background-color: $nav-table-cell-hover-background-color
-
 .vc-disabled
   opacity: 0.2
   cursor: not-allowed
   pointer-events: none
   &:hover
     background-color: transparent
-
-.vc-indicators
-  position: absolute
-  display: flex
-  justify-content: center
-  align-items: center
-  bottom: 5px
-  width: 100%
-  transition: $nav-table-cell-transition
-  .vc-indicator
-    width: 5px
-    height: 5px
-    border-radius: 50%
-    &:not(:first-child)
-      margin-left: 3px
-
-.indicators-enter-active, .indicators-leave-active
-  transition: $nav-table-cell-transition
-
-.indicators-enter, .indicators-leave-to
-  opacity: 0
 
 </style>

@@ -33,8 +33,8 @@ export default {
             },
           },
           [
-            this.isVisible
-              && h(
+            this.isVisible &&
+              h(
                 'div',
                 {
                   class: [
@@ -76,15 +76,15 @@ export default {
   computed: {
     content() {
       return (
-        (isFunction(this.$scopedSlots.default)
-          && this.$scopedSlots.default({
+        (isFunction(this.$scopedSlots.default) &&
+          this.$scopedSlots.default({
             direction: this.direction,
             align: this.align,
             args: this.args,
             updateLayout: this.scheduleUpdate,
             hide: this.onHide,
-          }))
-        || this.$slots.default
+          })) ||
+        this.$slots.default
       );
     },
     popperOptions() {
@@ -96,9 +96,9 @@ export default {
     },
     isVisible() {
       return !!(
-        this.ref
-        && (this.$scopedSlots.default || this.$slots.default)
-        && this.visibility !== 'hidden'
+        this.ref &&
+        (this.$scopedSlots.default || this.$slots.default) &&
+        this.visibility !== 'hidden'
       );
     },
   },
@@ -176,8 +176,8 @@ export default {
       }
       // Don't hide if target element is contained within popover ref or content
       if (
-        elementContains(this.$refs.popover, e.target)
-        || elementContains(this.ref, e.target)
+        elementContains(this.$refs.popover, e.target) ||
+        elementContains(this.ref, e.target)
       ) {
         return;
       }

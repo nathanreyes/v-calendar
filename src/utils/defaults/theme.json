@@ -24,24 +24,24 @@
   },
   "weekdaysDivider": "",
   "navPopoverContainer": {
-    "light": "rounded text-xs text-white bg-grey-9 border border-grey-2 shadow",
-    "dark": "rounded text-xs text-grey-10 bg-white border border-grey-2 shadow"
-  },
-  "navHeader": {
-    "light": "",
-    "dark": ""
+    "light": "rounded-lg text-sm font-semibold text-white bg-grey-9 border border-grey-8 shadow",
+    "dark": "rounded-lg text-sm font-semibold text-grey-10 bg-white border border-grey-2 shadow"
   },
   "navTitle": {
-    "light": "font-semibold",
-    "dark": "font-semibold"
+    "light": "text-{color}-1 font-bold hover:bg-grey-10 cursor-pointer px-2 py-1 rounded",
+    "dark": "text-grey-9 font-bold hover:bg-grey-2 cursor-pointer px-2 py-1 rounded"
+  },
+  "navArrows": {
+    "light": "hover-bg-grey-10 cursor-pointer",
+    "dark": "hover-bg-grey-2 cursor-pointer"
   },
   "navCell": {
-    "light": "",
-    "dark": ""
+    "light": "cursor-pointer hover:bg-grey-10",
+    "dark": "cursor-pointer hover:bg-grey-2"
   },
   "navCellActive": {
-    "light": "",
-    "dark": ""
+    "light": "bg-{color}-1 text-{color}-10 font-bold shadow",
+    "dark": "bg-{color}-5 text-white font-bold shadow"
   },
   "dayNotInMonth": "opacity-0 pointer-events-none",
   "dayContent": {
@@ -53,7 +53,7 @@
     "dark": "rounded text-xs text-grey-10 font-medium bg-white border border-grey-2 px-2 py-1 shadow"
   },
   "dayPopoverHeader": {
-    "light": "text-center text-xs text-grey-3 font-semibold",
+    "light": "text-center text-xs text-grey-3",
     "dark": "text-xs text-grey-7 font-semibold"
   },
   "highlightBaseFillMode": "light",
