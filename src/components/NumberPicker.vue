@@ -128,6 +128,8 @@ export default {
   font-size: $text-base
 
 .vc-numberpicker__dropdown
+  position: absolute
+  background-color: $white
   border-radius: $numberpicker-border-radius
   border: solid 1px
   padding: 0
