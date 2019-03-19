@@ -35,9 +35,14 @@
     "light": "hover-bg-grey-10 cursor-pointer",
     "dark": "hover-bg-grey-2 cursor-pointer"
   },
-  "navCell": {
+  "navCell": "w-12 text-center py-1 mx-1 rounded",
+  "navCellInactive": {
     "light": "cursor-pointer hover:bg-grey-10",
     "dark": "cursor-pointer hover:bg-grey-2"
+  },
+  "navCellInactiveCurrent": {
+    "light": "text-{color}-1 cursor-pointer hover:bg-grey-10 border-2 border-{color}-1",
+    "dark": "text-{color}-8 cursor-pointer hover:bg-grey-2 border-2 border-{color}-8"
   },
   "navCellActive": {
     "light": "bg-{color}-1 text-{color}-10 font-bold shadow",

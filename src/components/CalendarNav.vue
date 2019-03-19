@@ -20,17 +20,7 @@
     </div>
     <!--Navigation items-->
     <div v-for="(row, i) in itemRows" :key="i" class="flex justify-between items-center mx-1 mb-1">
-      <div
-        v-for="(item, j) in row"
-        :key="j"
-        class="w-12 text-center py-1 mx-1 rounded"
-        :class="{
-                  [theme.navCell]: !item.isActive,
-                  [theme.navCellActive]: item.isActive,
-                  'vc-disabled': item.isDisabled
-                }"
-        @click="item.click"
-      >
+      <div v-for="(item, j) in row" :key="j" :class="item.classes" @click="item.click">
         <!--Item label-->
         {{ item.label }}
       </div>
@@ -42,6 +32,7 @@
 import SvgIcon from './SvgIcon';
 import { childMixin } from '@/utils/mixins';
 import { first, last } from '@/utils/_';
+import { pageForDate } from '@/utils/helpers';
 
 const _yearGroupCount = 12;
 
@@ -74,32 +65,58 @@ export default {
         : `${this.firstYear} - ${this.lastYear}`;
     },
     monthItems() {
+      const { month: thisMonth, year: thisYear } = pageForDate(new Date());
       return this.locale
         .getMonthDates()
         .map(d => this.locale.format(d, this.masks.navMonths))
-        .map((ml, i) => {
+        .map((label, i) => {
           const month = i + 1;
+          const isActive = month === this.month && this.yearIndex === this.year;
+          const isCurrent = month === thisMonth && this.yearIndex === thisYear;
+          const isDisabled = !this.validator({ month, year: this.yearIndex });
+          const classes = [this.theme.navCell];
+          if (isActive) {
+            classes.push(this.theme.navCellActive);
+          } else if (isCurrent) {
+            classes.push(this.theme.navCellInactiveCurrent);
+          } else {
+            classes.push(this.theme.navCellInactive);
+          }
+          if (isDisabled) {
+            classes.push('opacity-25');
+          }
           return {
-            month,
-            label: ml,
-            isActive: month === this.month && this.yearIndex === this.year,
-            isDisabled: !this.validator({ month, year: this.yearIndex }),
+            label,
+            classes,
             click: () => this.monthClick(month),
           };
         });
     },
     yearItems() {
+      const { month: thisMonth, year: thisYear } = pageForDate(new Date());
       const startYear = this.yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
       const items = [];
-      for (let i = startYear; i < endYear; i += 1) {
+      for (let year = startYear; year < endYear; year += 1) {
+        const isActive = year === this.year;
+        const isCurrent = year === thisYear;
+        const isDisabled = !this.validator({ month: this.month, year });
+        const classes = [this.theme.navCell];
+        if (isActive) {
+          classes.push(this.theme.navCellActive);
+        } else if (isCurrent) {
+          classes.push(this.theme.navCellInactiveCurrent);
+        } else {
+          classes.push(this.theme.navCellInactive);
+        }
+        if (isDisabled) {
+          classes.push('opacity-25');
+        }
         items.push({
-          month: 0,
-          year: i,
-          label: i,
-          isActive: i === this.year,
-          isDisabled: !this.validator({ month: this.month, year: i }),
-          click: () => this.yearClick(i),
+          year,
+          label: year,
+          classes,
+          click: () => this.yearClick(year),
         });
       }
       return items;
