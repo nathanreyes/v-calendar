@@ -285,47 +285,44 @@ export default {
   position: relative
   z-index: 10
   .vc-popover-caret
-    display: block
-    position: absolute
-    border-width: 1px 1px 0 0
-    background-color: inherit
-    border-color: inherit
-    width: 12px
-    height: 12px
     content: ''
-    z-index: 11
+    position: absolute
+    display: block
+    width: 0
+    height: 0
+    border-width: 10px
+    border-style: solid
+    border-color: transparent
+    border-bottom-color: inherit
+    z-index: 12
   &.direction-bottom
     margin-top: $popover-content-offset
     .vc-popover-caret
       top: 0
-      border-width: 1px 1px 0 0
   &.direction-top
     margin-bottom: $popover-content-offset
     .vc-popover-caret
       top: 100%
-      border-width: 0 0 1px 1px
   &.direction-left
     margin-right: $popover-content-offset
     .vc-popover-caret
       left: 100%
-      border-width: 0 1px 1px 0
   &.direction-right
     margin-left: $popover-content-offset
     .vc-popover-caret
       left: 0
-      border-width: 1px 0 0 1px
   &.align-left
     .vc-popover-caret
       left: $popover-caret-horizontal-offset
-      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+      transform: translateX(-50%) translateY(-100%)
   &.align-right
     .vc-popover-caret
       right: $popover-caret-horizontal-offset
-      transform: translateY(-50%) translateX(50%) rotate(-45deg)
+      transform: translateX(50%) translateY(-100%)
   &.align-center
     .vc-popover-caret
       left: 50%
-      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+      transform: translateX(-50%) translateY(-100%)
   &.align-top
     .vc-popover-caret
       top: $popover-caret-vertical-offset

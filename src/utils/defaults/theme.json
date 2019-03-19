@@ -24,8 +24,8 @@
   },
   "weekdaysDivider": "",
   "navPopoverContainer": {
-    "light": "rounded-lg text-sm font-semibold text-white bg-grey-9 border border-grey-8 shadow",
-    "dark": "rounded-lg text-sm font-semibold text-grey-10 bg-white border border-grey-2 shadow"
+    "light": "rounded-lg text-sm font-semibold text-white bg-grey-9 border-grey-9 shadow",
+    "dark": "rounded-lg text-sm font-semibold text-grey-10 bg-white border-white shadow"
   },
   "navTitle": {
     "light": "text-{color}-1 font-bold hover:bg-grey-10 cursor-pointer px-2 py-1 rounded",
