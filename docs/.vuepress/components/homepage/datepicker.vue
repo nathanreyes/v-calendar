@@ -24,7 +24,6 @@
               v-model="range2"
               :input-props="{ id: 'birthdate' }"
               :disabled-dates="disabledDates"
-              :popover="{ placement: 'top' }"
             />
           </div>
         </form>

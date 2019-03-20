@@ -9,13 +9,15 @@ export default {
   mixins: [childMixin],
   render(h) {
     // Backgrounds layer
-    const backgroundsLayer = () => this.hasBackgrounds
-      && h(
+    const backgroundsLayer = () =>
+      this.hasBackgrounds &&
+      h(
         'div',
         {
           class: 'vc-highlights vc-day-layer',
         },
-        this.backgrounds.map(({ key, wrapperClass, class: bgClass }) => h(
+        this.backgrounds.map(({ key, wrapperClass, class: bgClass }) =>
+          h(
             'div',
             {
               key,
@@ -31,7 +33,8 @@ export default {
       );
 
     // Content layer
-    const contentLayer = () => isFunction(this.$scopedSlots['day-content'])
+    const contentLayer = () =>
+      isFunction(this.$scopedSlots['day-content'])
         ? this.$scopedSlots['day-content']({
             day: this.day,
             attributes: this.attributesList,
@@ -58,14 +61,16 @@ export default {
       if (!this.hasPopovers) {
         return contentLayer();
       }
+      const { visibility, placement, isInteractive } = this.popoverState;
       return h(
         PopoverRef,
         {
           props: {
             id: this.dayPopoverId,
             args: this.dayEvent,
-            visibility: this.popoverVisibility,
-            isInteractive: this.popoverIsInteractive,
+            visibility: visibility,
+            placement: placement,
+            isInteractive: isInteractive,
           },
         },
         [contentLayer()],
@@ -73,8 +78,9 @@ export default {
     };
 
     // Dots layer
-    const dotsLayer = () => this.hasDots
-      && h(
+    const dotsLayer = () =>
+      this.hasDots &&
+      h(
         'div',
         {
           class: 'vc-day-layer vc-day-box-center-bottom',
@@ -85,7 +91,8 @@ export default {
             {
               class: 'vc-dots',
             },
-            this.dots.map(({ key, class: bgClass }) => h('span', {
+            this.dots.map(({ key, class: bgClass }) =>
+              h('span', {
                 class: bgClass,
                 key,
               }),
@@ -95,8 +102,9 @@ export default {
       );
 
     // Bars layer
-    const barsLayer = () => this.hasBars
-      && h(
+    const barsLayer = () =>
+      this.hasBars &&
+      h(
         'div',
         {
           class: 'vc-day-layer vc-day-box-center-bottom',
@@ -107,7 +115,8 @@ export default {
             {
               class: 'vc-bars',
             },
-            this.bars.map(({ key, class: bgClass }) => h('span', {
+            this.bars.map(({ key, class: bgClass }) =>
+              h('span', {
                 class: bgClass,
                 key,
               }),
@@ -144,6 +153,7 @@ export default {
   data() {
     return {
       glyphs: {},
+      popoverState: {},
     };
   },
   computed: {
@@ -192,17 +202,6 @@ export default {
     hasPopovers() {
       return !!arrayHasItems(this.popovers);
     },
-    popoverVisibility() {
-      return (
-        (this.hasPopovers
-          && ['visible', 'hover', 'focus', 'click'].find(v => some(this.popovers, p => p.visibility === v),
-          ))
-        || 'hidden'
-      );
-    },
-    popoverIsInteractive() {
-      return this.hasPopovers && some(this.popovers, p => p.isInteractive);
-    },
     dayContentClass() {
       return get(last(this.content), 'class');
     },
@@ -237,6 +236,23 @@ export default {
     },
     theme() {
       this.refreshGlyphs();
+    },
+    popovers() {
+      const visibilities = ['click', 'focus', 'hover', 'visible'];
+      let placement = '';
+      let isInteractive = false;
+      let vIdx = -1;
+      this.popovers.forEach(p => {
+        const vNew = visibilities.indexOf(p.visibility);
+        vIdx = vNew > vIdx ? vNew : vIdx;
+        placement = placement || p.placement;
+        isInteractive = isInteractive || p.isInteractive;
+      });
+      this.popoverState = {
+        visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
+        placement: placement || 'bottom',
+        isInteractive,
+      };
     },
   },
   created() {
@@ -319,56 +335,56 @@ export default {
           class: start.contentClass,
         });
       } else if (onStartAndEnd) {
-          backgrounds.push({
-            key,
-            wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight ${start.class}`,
-          });
-          content.push({
-            key: `${key}-content`,
-            class: start.contentClass,
-          });
-        } else if (onStart) {
-          backgrounds.push({
-            key: `${key}-base`,
-            wrapperClass: 'vc-day-layer vc-day-box-right-center',
-            class: `vc-highlight vc-highlight-base-start ${base.class}`,
-          });
-          backgrounds.push({
-            key,
-            wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight ${start.class}`,
-          });
-          content.push({
-            key: `${key}-content`,
-            class: start.contentClass,
-          });
-        } else if (onEnd) {
-          backgrounds.push({
-            key: `${key}-base`,
-            wrapperClass: 'vc-day-layer vc-day-box-left-center',
-            class: `vc-highlight vc-highlight-base-end ${base.class}`,
-          });
-          backgrounds.push({
-            key,
-            wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight ${end.class}`,
-          });
-          content.push({
-            key: `${key}-content`,
-            class: end.contentClass,
-          });
-        } else {
-          backgrounds.push({
-            key: `${key}-middle`,
-            wrapperClass: 'vc-day-layer vc-day-box-center-center',
-            class: `vc-highlight vc-highlight-base-middle ${base.class}`,
-          });
-          content.push({
-            key: `${key}-content`,
-            class: base.contentClass,
-          });
-        }
+        backgrounds.push({
+          key,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight ${start.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: start.contentClass,
+        });
+      } else if (onStart) {
+        backgrounds.push({
+          key: `${key}-base`,
+          wrapperClass: 'vc-day-layer vc-day-box-right-center',
+          class: `vc-highlight vc-highlight-base-start ${base.class}`,
+        });
+        backgrounds.push({
+          key,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight ${start.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: start.contentClass,
+        });
+      } else if (onEnd) {
+        backgrounds.push({
+          key: `${key}-base`,
+          wrapperClass: 'vc-day-layer vc-day-box-left-center',
+          class: `vc-highlight vc-highlight-base-end ${base.class}`,
+        });
+        backgrounds.push({
+          key,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight ${end.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: end.contentClass,
+        });
+      } else {
+        backgrounds.push({
+          key: `${key}-middle`,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight vc-highlight-base-middle ${base.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: base.contentClass,
+        });
+      }
     },
     processContent(
       { key, content },
@@ -442,6 +458,7 @@ export default {
         labelStyle,
         hideIndicator,
         visibility,
+        placement,
         isInteractive,
       } = attribute.popover;
       popovers.splice(0, 0, {
@@ -453,6 +470,7 @@ export default {
         labelStyle,
         hideIndicator,
         visibility: visibility || (label ? 'hover' : 'click'),
+        placement: placement || 'bottom',
         isInteractive: isInteractive !== undefined ? isInteractive : !label,
       });
     },

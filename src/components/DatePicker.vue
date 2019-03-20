@@ -57,6 +57,7 @@ export default {
         domProps: this.inputProps_,
         on: this.inputEvents,
       });
+    const { visibility, placement } = this.popover_;
     // Return fragment with slot/input and popover w/ calendar
     return h('span', [
       h(
@@ -64,7 +65,8 @@ export default {
         {
           props: {
             id: this.datePickerPopoverId,
-            visibility: this.popover_.visibility,
+            visibility,
+            placement,
             isInteractive: true,
           },
         },

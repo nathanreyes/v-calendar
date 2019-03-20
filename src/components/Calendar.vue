@@ -85,8 +85,7 @@ export default {
       return h(Popover, {
         props: {
           id: this.sharedState.dayPopoverId,
-          align: 'center',
-          contentClass: `c-day ${this.theme_.dayPopoverContainer}`,
+          contentClass: this.theme_.dayPopoverContainer,
         },
         scopedSlots: {
           default: ({ args: day, updateLayout, hide }) => {
@@ -497,9 +496,6 @@ export default {
 
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
-
-/deep/ .vc-popover-content.vc-day
-  padding: $day-popover-padding
 
 .vc-pane-container
   position: relative

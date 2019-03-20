@@ -19,8 +19,8 @@ export default {
     updateOnInput: true,
     inputDebounce: 1000,
     popover: {
-      placement: 'bottom',
       visibility: POPOVER_VISIBILITIES.FOCUS,
+      placement: 'bottom-start',
       keepVisibleOnInput: false,
     },
   },

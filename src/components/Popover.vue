@@ -2,7 +2,7 @@
 import Popper from 'popper.js';
 import { on, off, elementContains } from '@/utils/helpers';
 import { addTapOrClickHandler } from '@/utils/touch';
-import { isFunction } from '@/utils/_';
+import { isFunction, last } from '@/utils/_';
 
 export default {
   render(h) {
@@ -44,7 +44,7 @@ export default {
                     class: [
                       'vc-popover-caret',
                       `direction-${this.direction}`,
-                      `align-${this.align}`,
+                      `align-${this.alignment}`,
                     ],
                   }),
                 ],
@@ -56,7 +56,6 @@ export default {
   },
   props: {
     id: { type: String, required: true },
-    placement: { type: String, default: 'bottom' },
     transition: { type: String, default: 'slide-fade' },
     contentClass: String,
   },
@@ -65,10 +64,9 @@ export default {
       ref: null,
       args: null,
       visibility: '',
+      placement: 'bottom',
       isInteractive: false,
       delay: 10,
-      direction: 'bottom',
-      align: 'center',
     };
   },
   computed: {
@@ -77,7 +75,7 @@ export default {
         (isFunction(this.$scopedSlots.default) &&
           this.$scopedSlots.default({
             direction: this.direction,
-            align: this.align,
+            alignment: this.alignment,
             args: this.args,
             updateLayout: this.scheduleUpdate,
             hide: this.onHide,
@@ -99,6 +97,23 @@ export default {
         this.visibility !== 'hidden'
       );
     },
+    direction() {
+      if (!this.placement) return 'bottom';
+      return this.placement.split('-')[0] || 'bottom';
+    },
+    alignment() {
+      const isLeftRight =
+        this.direction === 'left' || this.direction === 'right';
+      let alignment = this.placement.split('-');
+      alignment = alignment.length > 1 ? alignment[1] : '';
+      if (['start', 'top', 'left'].includes(alignment)) {
+        return isLeftRight ? 'top' : 'left';
+      }
+      if (['end', 'bottom', 'right'].includes(alignment)) {
+        return isLeftRight ? 'bottom' : 'right';
+      }
+      return isLeftRight ? 'middle' : 'center';
+    },
   },
   watch: {
     ref(val) {
@@ -118,7 +133,6 @@ export default {
       this.$vc.$off(`hide:${this.id}`, this.onHide);
       this.$vc.$off(`update:${this.id}`, this.onUpdate);
     });
-    this.refreshPlacements(this.placement);
   },
   mounted() {
     this.addEvents();
@@ -182,10 +196,11 @@ export default {
       // Hide the popover
       this.ref = null;
     },
-    onShow({ ref, args, visibility, isInteractive }) {
+    onShow({ ref, args, visibility, placement, isInteractive }) {
       clearTimeout(this._timer);
       this.args = args;
       this.visibility = visibility;
+      this.placement = placement;
       this.isInteractive = isInteractive;
       this.ref = ref;
     },
@@ -222,40 +237,11 @@ export default {
       });
     },
     onPopperUpdate(data) {
-      this.refreshPlacements(data.placement);
+      this.placement = data.placement;
     },
     scheduleUpdate() {
       if (this.popper) {
         this.popper.scheduleUpdate();
-      }
-    },
-    refreshPlacements(placement) {
-      if (!placement) {
-        this.direction = 'bottom';
-        this.align = 'center';
-      } else {
-        const placements = placement.split('-');
-        const direction = placements[0];
-        let align = '';
-        switch (direction) {
-          case 'bottom':
-          case 'top':
-            if (placements.length > 1) {
-              align = placements[1] === 'start' ? 'left' : 'right';
-            } else {
-              align = 'center';
-            }
-            break;
-          case 'left':
-          case 'right':
-            if (placements.length > 1) {
-              align = placements[1] === 'start' ? 'top' : 'bottom';
-            } else {
-              align = 'middle';
-            }
-        }
-        this.direction = direction;
-        this.align = align;
       }
     },
     afterLeave() {

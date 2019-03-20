@@ -9,8 +9,10 @@ export default {
     visibility: {
       type: String,
       default: 'hover',
-      validator: value => ['hover', 'focus', 'click', 'visible', 'hidden'].indexOf(value) !== -1,
+      validator: value =>
+        ['hover', 'focus', 'click', 'visible', 'hidden'].indexOf(value) !== -1,
     },
+    placement: { type: String, default: 'bottom' },
     isInteractive: Boolean,
     showDelay: { type: Number, default: 10 },
     hideDelay: { type: Number, default: 150 },
@@ -140,6 +142,7 @@ export default {
         ref: this.reference,
         args: this.args,
         visibility: this.visibility,
+        placement: this.placement,
         isInteractive: this.isInteractive,
         delay: this.showDelay,
       });

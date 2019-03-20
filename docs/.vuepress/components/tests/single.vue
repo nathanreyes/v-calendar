@@ -64,7 +64,7 @@ export default {
       isInline: false,
       isDark: false,
       popover: {
-        visibility: 'visible',
+        visibility: 'focus',
         placement: 'bottom-start',
       },
       attrs: [
