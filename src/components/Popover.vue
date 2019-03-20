@@ -56,7 +56,7 @@ export default {
   },
   props: {
     id: { type: String, required: true },
-    placement: { type: String, default: 'top-end' },
+    placement: { type: String, default: 'bottom-start' },
     transition: { type: String, default: 'slide-fade' },
     contentClass: String,
   },
@@ -273,11 +273,12 @@ export default {
 
 <style lang='sass' scoped>
 
-$popover-content-offset: 10px
+$popover-horizontal-content-offset: 8px
+$popover-vertical-content-offset: 10px
 $popover-slide-translation: 15px
 $popover-transition-time: 0.14s ease-in-out
-$popover-caret-horizontal-offset: 0px
-$popover-caret-vertical-offset: 18px
+$popover-caret-horizontal-offset: 18px
+$popover-caret-vertical-offset: 8px
 
 .vc-popover-content-wrapper
   position: absolute
@@ -291,13 +292,13 @@ $popover-caret-vertical-offset: 18px
   position: relative
   z-index: 10
   &.direction-bottom
-    margin-top: $popover-content-offset
+    margin-top: $popover-vertical-content-offset
   &.direction-top
-    margin-bottom: $popover-content-offset
+    margin-bottom: $popover-vertical-content-offset
   &.direction-left
-    margin-right: $popover-content-offset
+    margin-right: $popover-horizontal-content-offset
   &.direction-right
-    margin-left: $popover-content-offset
+    margin-left: $popover-horizontal-content-offset
 
 .vc-popover-caret
   content: ''
@@ -305,42 +306,54 @@ $popover-caret-vertical-offset: 18px
   display: block
   width: 0
   height: 0
-  border-width: 10px
+  border-width: 8px
   border-style: solid
   border-color: transparent
   border-bottom-color: inherit
   &.direction-bottom
     top: 0
+    &.align-left
+      transform: translateY(-100%)
+    &.align-center
+      transform: translateX(-50%) translateY(-100%)
+    &.align-right
+      transform: translateY(-100%)
   &.direction-top
     top: 100%
+    &.align-left
+      transform: rotate(180deg)
+    &.align-center
+      transform: translateX(-50%) rotate(180deg)
+    &.align-right
+      transform: rotate(180deg)
   &.direction-left
     left: 100%
-    transform: translateY(-50%) rotate(90deg)
+    &.align-top
+      transform: rotate(90deg)
+    &.align-middle
+      transform: translateY(-50%) rotate(90deg)
+    &.align-bottom
+      transform: rotate(90deg)
   &.direction-right
     left: 0
-    transform: translateY(-50%) rotate(-90deg)
+    &.align-top
+      transform: translateX(-100%) rotate(-90deg)
+    &.align-middle
+      transform: translateX(-100%) translateY(-50%) rotate(-90deg)
+    &.align-bottom
+      transform: translateX(-100%) rotate(-90deg)
   &.align-left
     left: $popover-caret-horizontal-offset
-    transform: translateY(-100%)
   &.align-center
     left: 50%
-    &.direction-bottom
-      transform: translateX(-50%) translateY(-100%)
-    &.direction-top
-      transform: translateX(-50%) rotate(180deg)
   &.align-right
     right: $popover-caret-horizontal-offset
-    &.direction-bottom
-      transform: translateY(-100%)
   &.align-top
     top: $popover-caret-vertical-offset
-    // transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-middle
     top: 50%
-    // transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-bottom
     bottom: $popover-caret-vertical-offset
-    // transform: translateY(50%) translateX(-50%) rotate(-45deg)
 
 .fade-enter-active,
 .fade-leave-active,
