@@ -22,7 +22,8 @@ import { isString, isFunction, isArray } from '@/utils/_';
 export default {
   name: 'VDatePicker',
   render(h) {
-    const calendar = () => h(Calendar, {
+    const calendar = () =>
+      h(Calendar, {
         attrs: {
           ...this.$attrs,
           attributes: this.attributes_,
@@ -43,14 +44,15 @@ export default {
     // If inline just return the calendar
     if (this.isInline) return calendar();
     // Render the slot or ihput
-    const inputSlot = (isFunction(this.$scopedSlots.default)
-        && this.$scopedSlots.default({
+    const inputSlot =
+      (isFunction(this.$scopedSlots.default) &&
+        this.$scopedSlots.default({
           inputClass: this.inputClass,
           inputProps: this.inputProps_,
           inputEvents: this.inputEvents,
           updateValue: this.updateValue,
-        }))
-      || h('input', {
+        })) ||
+      h('input', {
         class: this.inputClass,
         domProps: this.inputProps_,
         on: this.inputEvents,
@@ -72,7 +74,7 @@ export default {
         props: {
           id: this.datePickerPopoverId,
           placement: 'bottom-start',
-          contentClass: this.popoverContentClass,
+          contentClass: this.theme_.container,
         },
         scopedSlots: {
           default() {
@@ -217,8 +219,8 @@ export default {
     },
     disabledAttribute_() {
       if (
-        !arrayHasItems(this.disabledDates_)
-        && !arrayHasItems(this.availableDates)
+        !arrayHasItems(this.disabledDates_) &&
+        !arrayHasItems(this.availableDates)
       ) {
         return null;
       }
@@ -243,9 +245,6 @@ export default {
         attrs.push(this.selectAttribute_);
       }
       return new AttributeStore(attrs, this.theme_, this.locale_);
-    },
-    popoverContentClass() {
-      return this.theme_.container;
     },
     picker() {
       const opts = {
@@ -274,10 +273,10 @@ export default {
     value_(val) {
       if (!this.disableFormatInput) this.formatInput();
       if (
-        !this.isInline
-        && this.mode !== 'multiple'
-        && this.popover_.visibility !== 'visible'
-        && !this.disablePopoverHide
+        !this.isInline &&
+        this.mode !== 'multiple' &&
+        this.popover_.visibility !== 'visible' &&
+        !this.disablePopoverHide
       ) {
         this.hidePopover();
       }
@@ -323,8 +322,8 @@ export default {
     },
     dateIsValid(date) {
       if (
-        this.disabledAttribute
-        && this.disabledAttribute.intersectsDate(date)
+        this.disabledAttribute &&
+        this.disabledAttribute.intersectsDate(date)
       ) {
         this.$emit('invalid-input', {
           reason: 'disabled',

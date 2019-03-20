@@ -56,7 +56,7 @@ export default {
   },
   props: {
     id: { type: String, required: true },
-    placement: { type: String, default: 'bottom-start' },
+    placement: { type: String, default: 'bottom' },
     transition: { type: String, default: 'slide-fade' },
     contentClass: String,
   },
@@ -304,20 +304,19 @@ $popover-caret-vertical-offset: 8px
   content: ''
   position: absolute
   display: block
-  width: 0
-  height: 0
-  border-width: 8px
-  border-style: solid
-  border-color: transparent
-  border-bottom-color: inherit
+  width: 12px
+  height: 12px
+  border: inherit
+  background: inherit
+  z-index: -1
   &.direction-bottom
     top: 0
     &.align-left
-      transform: translateY(-100%)
+      transform: translateY(-50%) rotate(45deg)
     &.align-center
-      transform: translateX(-50%) translateY(-100%)
+      transform: translateX(-50%) translateY(-50%) rotate(45deg)
     &.align-right
-      transform: translateY(-100%)
+      transform: translateY(-50%) rotate(45deg)
   &.direction-top
     top: 100%
     &.align-left
