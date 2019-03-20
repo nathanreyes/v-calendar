@@ -9,12 +9,7 @@ export default {
     return h(
       'div',
       {
-        class: [
-          'vc-popover-content-wrapper',
-          `direction-${this.direction}`,
-          `align-${this.align}`,
-          { interactive: this.isInteractive },
-        ],
+        class: 'vc-popover-content-wrapper',
         attrs: {
           tabindex: this.isInteractive ? 0 : -1,
         },
@@ -40,14 +35,17 @@ export default {
                   class: [
                     'vc-popover-content',
                     `direction-${this.direction}`,
-                    `align-${this.align}`,
                     this.contentClass,
                   ],
                 },
                 [
                   this.content,
                   h('span', {
-                    class: 'vc-popover-caret',
+                    class: [
+                      'vc-popover-caret',
+                      `direction-${this.direction}`,
+                      `align-${this.align}`,
+                    ],
                   }),
                 ],
               ),
@@ -58,9 +56,9 @@ export default {
   },
   props: {
     id: { type: String, required: true },
-    placement: { type: String, default: 'bottom' },
+    placement: { type: String, default: 'top-end' },
     transition: { type: String, default: 'slide-fade' },
-    contentClass: { type: String, default: '' },
+    contentClass: String,
   },
   data() {
     return {
@@ -239,18 +237,22 @@ export default {
         const placements = placement.split('-');
         const direction = placements[0];
         let align = '';
-        if (['bottom', 'top'].includes(direction)) {
-          if (placements.length > 1) {
-            align = placements[1] === 'start' ? 'left' : 'right';
-          } else {
-            align = 'center';
-          }
-        } else if (['left', 'right'].includes(direction)) {
-          if (placements.length > 1) {
-            align = placements[1] === 'top' ? 'middle' : 'bottom';
-          } else {
-            align = 'middle';
-          }
+        switch (direction) {
+          case 'bottom':
+          case 'top':
+            if (placements.length > 1) {
+              align = placements[1] === 'start' ? 'left' : 'right';
+            } else {
+              align = 'center';
+            }
+            break;
+          case 'left':
+          case 'right':
+            if (placements.length > 1) {
+              align = placements[1] === 'start' ? 'top' : 'bottom';
+            } else {
+              align = 'middle';
+            }
         }
         this.direction = direction;
         this.align = align;
@@ -271,7 +273,11 @@ export default {
 
 <style lang='sass' scoped>
 
-@import '../styles/vars.sass'
+$popover-content-offset: 10px
+$popover-slide-translation: 15px
+$popover-transition-time: 0.14s ease-in-out
+$popover-caret-horizontal-offset: 0px
+$popover-caret-vertical-offset: 18px
 
 .vc-popover-content-wrapper
   position: absolute
@@ -284,57 +290,57 @@ export default {
 .vc-popover-content
   position: relative
   z-index: 10
-  .vc-popover-caret
-    content: ''
-    position: absolute
-    display: block
-    width: 0
-    height: 0
-    border-width: 10px
-    border-style: solid
-    border-color: transparent
-    border-bottom-color: inherit
-    z-index: 12
   &.direction-bottom
     margin-top: $popover-content-offset
-    .vc-popover-caret
-      top: 0
   &.direction-top
     margin-bottom: $popover-content-offset
-    .vc-popover-caret
-      top: 100%
   &.direction-left
     margin-right: $popover-content-offset
-    .vc-popover-caret
-      left: 100%
   &.direction-right
     margin-left: $popover-content-offset
-    .vc-popover-caret
-      left: 0
+
+.vc-popover-caret
+  content: ''
+  position: absolute
+  display: block
+  width: 0
+  height: 0
+  border-width: 10px
+  border-style: solid
+  border-color: transparent
+  border-bottom-color: inherit
+  &.direction-bottom
+    top: 0
+  &.direction-top
+    top: 100%
+  &.direction-left
+    left: 100%
+    transform: translateY(-50%) rotate(90deg)
+  &.direction-right
+    left: 0
+    transform: translateY(-50%) rotate(-90deg)
   &.align-left
-    .vc-popover-caret
-      left: $popover-caret-horizontal-offset
-      transform: translateX(-50%) translateY(-100%)
-  &.align-right
-    .vc-popover-caret
-      right: $popover-caret-horizontal-offset
-      transform: translateX(50%) translateY(-100%)
+    left: $popover-caret-horizontal-offset
+    transform: translateY(-100%)
   &.align-center
-    .vc-popover-caret
-      left: 50%
+    left: 50%
+    &.direction-bottom
       transform: translateX(-50%) translateY(-100%)
+    &.direction-top
+      transform: translateX(-50%) rotate(180deg)
+  &.align-right
+    right: $popover-caret-horizontal-offset
+    &.direction-bottom
+      transform: translateY(-100%)
   &.align-top
-    .vc-popover-caret
-      top: $popover-caret-vertical-offset
-      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+    top: $popover-caret-vertical-offset
+    // transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-middle
-    .vc-popover-caret
-      top: 50%
-      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
+    top: 50%
+    // transform: translateY(-50%) translateX(-50%) rotate(-45deg)
   &.align-bottom
-    .vc-popover-caret
-      bottom: $popover-caret-vertical-offset
-      transform: translateY(50%) translateX(-50%) rotate(-45deg)
+    bottom: $popover-caret-vertical-offset
+    // transform: translateY(50%) translateX(-50%) rotate(-45deg)
 
 .fade-enter-active,
 .fade-leave-active,
