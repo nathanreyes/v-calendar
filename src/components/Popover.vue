@@ -98,7 +98,6 @@ export default {
       );
     },
     direction() {
-      if (!this.placement) return 'bottom';
       return this.placement.split('-')[0] || 'bottom';
     },
     alignment() {
