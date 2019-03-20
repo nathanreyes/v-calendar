@@ -306,7 +306,8 @@ $popover-caret-vertical-offset: 8px
   display: block
   width: 12px
   height: 12px
-  border: inherit
+  border-top: inherit
+  border-left: inherit
   background: inherit
   z-index: -1
   &.direction-bottom
@@ -320,27 +321,27 @@ $popover-caret-vertical-offset: 8px
   &.direction-top
     top: 100%
     &.align-left
-      transform: rotate(180deg)
+      transform: translateY(-50%) rotate(-135deg)
     &.align-center
-      transform: translateX(-50%) rotate(180deg)
+      transform: translateX(-50%) translateY(-50%) rotate(-135deg)
     &.align-right
-      transform: rotate(180deg)
+      transform: translateY(-50%) rotate(-135deg)
   &.direction-left
     left: 100%
     &.align-top
-      transform: rotate(90deg)
+      transform: translateX(-50%) rotate(135deg)
     &.align-middle
-      transform: translateY(-50%) rotate(90deg)
+      transform: translateY(-50%) translateX(-50%) rotate(135deg)
     &.align-bottom
-      transform: rotate(90deg)
+      transform: translateX(-50%) rotate(135deg)
   &.direction-right
     left: 0
     &.align-top
-      transform: translateX(-100%) rotate(-90deg)
+      transform: translateX(-50%) rotate(-45deg)
     &.align-middle
-      transform: translateX(-100%) translateY(-50%) rotate(-90deg)
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
     &.align-bottom
-      transform: translateX(-100%) rotate(-90deg)
+      transform: translateX(-50%) rotate(-45deg)
   &.align-left
     left: $popover-caret-horizontal-offset
   &.align-center
