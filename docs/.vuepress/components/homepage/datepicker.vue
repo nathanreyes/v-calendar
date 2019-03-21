@@ -1,19 +1,19 @@
 <template>
   <div class="section text-center">
     <h2 class="h2 mb-6">Date Picker</h2>
-    <p class="text-lg font-medium text-grey-6 mb-2">Single Dates</p>
+    <p class="text-lg font-medium text-gray-600 mb-2">Single Dates</p>
     <div class="flex flex-col items-center mb-6">
       <v-date-picker v-model="date" is-inline/>
     </div>
-    <p class="text-lg font-medium text-grey-6 mb-2">Multiple Dates</p>
+    <p class="text-lg font-medium text-gray-600 mb-2">Multiple Dates</p>
     <div class="flex flex-col items-center mb-6">
       <v-date-picker mode="multiple" v-model="dates" is-inline/>
     </div>
-    <p class="text-lg font-medium text-grey-6 mb-2">Date Ranges</p>
+    <p class="text-lg font-medium text-gray-600 mb-2">Date Ranges</p>
     <div class="flex flex-col items-center mb-6">
       <v-date-picker mode="range" v-model="range" is-inline/>
     </div>
-    <p class="text-lg font-medium text-grey-6">Popover Mode</p>
+    <p class="text-lg font-medium text-gray-600">Popover Mode</p>
     <div class="example mt-0">
       <div class="w-full max-w-sm">
         <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
@@ -40,7 +40,7 @@ thisMonth--;
 export default {
   data() {
     return {
-      labelClass: 'block text-grey-7 text-sm text-left font-bold mb-2',
+      labelClass: 'block text-gray-700 text-sm text-left font-bold mb-2',
       inputLabel: 'Select Range',
       date: new Date(),
       dates: [

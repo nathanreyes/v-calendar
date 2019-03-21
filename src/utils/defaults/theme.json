@@ -2,51 +2,51 @@
   "color": "blue",
   "isDark": false,
   "container": {
-    "light": "border border-grey-3 rounded-lg text-black bg-white",
-    "dark": "border border-grey-9 rounded-lg text-grey-2 bg-grey-10 shadow"
+    "light": "border border-gray-400 rounded-lg text-gray-900 bg-white",
+    "dark": "border border-gray-900 rounded-lg text-gray-200 bg-gray-900 shadow"
   },
   "header": {
-    "light": "text-grey-9",
-    "dark": "text-grey-2"
+    "light": "text-gray-900",
+    "dark": "text-gray-200"
   },
   "headerDivider": "",
   "title": {
-    "light": "text-lg text-grey-9 font-semibold",
-    "dark": "text-lg text-grey-1 font-semibold"
+    "light": "text-lg text-gray-900 font-semibold",
+    "dark": "text-lg text-gray-100 font-semibold"
   },
   "arrows": {
-    "light": "text-grey-6",
+    "light": "text-gray-600",
     "dark": "text-white"
   },
   "weekdays": {
-    "light": "text-sm font-bold text-grey-4",
-    "dark": "text-sm font-bold text-{color}-2"
+    "light": "text-sm font-bold text-gray-500",
+    "dark": "text-sm font-bold text-{color}-200"
   },
   "weekdaysDivider": "",
   "navPopoverContainer": {
-    "light": "rounded-lg text-sm font-semibold text-white bg-grey-9 border border-grey-7 shadow",
-    "dark": "rounded-lg text-sm font-semibold text-grey-10 bg-white border border-grey-1 shadow"
+    "light": "rounded-lg text-sm font-semibold text-white bg-gray-800 border border-gray-700 py-1 shadow",
+    "dark": "rounded-lg text-sm font-semibold text-gray-800 bg-white border border-gray-100 py-1 shadow"
   },
   "navTitle": {
-    "light": "text-{color}-1 font-bold hover:bg-grey-10 cursor-pointer px-2 py-1 rounded",
-    "dark": "text-grey-9 font-bold hover:bg-grey-2 cursor-pointer px-2 py-1 rounded"
+    "light": "text-{color}-100 font-bold hover:bg-gray-900 cursor-pointer px-2 py-1 rounded",
+    "dark": "text-gray-900 font-bold hover:bg-gray-200 cursor-pointer px-2 py-1 rounded"
   },
   "navArrows": {
-    "light": "hover-bg-grey-10 cursor-pointer",
-    "dark": "hover-bg-grey-2 cursor-pointer"
+    "light": "hover-bg-gray-900 cursor-pointer",
+    "dark": "hover-bg-gray-200 cursor-pointer"
   },
   "navCell": "w-12 text-center py-1 mx-1 rounded",
   "navCellInactive": {
-    "light": "cursor-pointer hover:bg-grey-10 border-2 border-transparent",
-    "dark": "cursor-pointer hover:bg-grey-2 border-2 border-transparent"
+    "light": "cursor-pointer hover:bg-gray-900 border-2 border-transparent",
+    "dark": "cursor-pointer hover:bg-gray-200 border-2 border-transparent"
   },
   "navCellInactiveCurrent": {
-    "light": "text-{color}-1 cursor-pointer hover:bg-grey-10 border-2 border-{color}-1",
-    "dark": "text-{color}-8 cursor-pointer hover:bg-grey-2 border-2 border-{color}-8"
+    "light": "text-{color}-100 cursor-pointer hover:bg-gray-900 border-2 border-{color}-100",
+    "dark": "text-{color}-800 cursor-pointer hover:bg-gray-200 border-2 border-{color}-800"
   },
   "navCellActive": {
-    "light": "bg-{color}-1 text-{color}-10 font-bold shadow",
-    "dark": "bg-{color}-5 text-white font-bold shadow"
+    "light": "bg-{color}-100 text-{color}-900 font-bold shadow",
+    "dark": "bg-{color}-500 text-white font-bold shadow"
   },
   "dayNotInMonth": "opacity-0 pointer-events-none",
   "dayContent": {
@@ -54,36 +54,36 @@
     "dark": "font-medium text-sm cursor-pointer focus:font-bold rounded-full"
   },
   "dayPopoverContainer": {
-    "light": "rounded text-xs text-white font-medium bg-grey-9 border border-grey-7 px-2 py-1 shadow",
-    "dark": "rounded text-xs text-grey-10 font-medium bg-white border border-grey-2 px-2 py-1 shadow"
+    "light": "rounded text-xs text-white font-medium bg-gray-800 border border-gray-700 px-2 py-1 shadow",
+    "dark": "rounded text-xs text-gray-900 font-medium bg-white border border-gray-200 px-2 py-1 shadow"
   },
   "dayPopoverHeader": {
-    "light": "text-center text-xs text-grey-3",
-    "dark": "text-xs text-grey-7 font-semibold"
+    "light": "text-center text-xs text-gray-300",
+    "dark": "text-xs text-gray-700 font-semibold"
   },
   "highlightBaseFillMode": "light",
   "highlightStartEndFillMode": "solid",
   "highlightStartEndClass": "rounded-full",
   "bgLow": {
-    "light": "bg-white border-2 border-{color}-7",
-    "dark": "bg-grey-10 border-2 border-{color}-2"
+    "light": "bg-white border-2 border-{color}-700",
+    "dark": "bg-gray-10 border-2 border-{color}-200"
   },
   "bgAccentLow": {
-    "light": "bg-{color}-2",
-    "dark": "bg-{color}-9"
+    "light": "bg-{color}-200",
+    "dark": "bg-{color}-900"
   },
   "bgAccentHigh": {
-    "light": "bg-{color}-6",
-    "dark": "bg-{color}-5"
+    "light": "bg-{color}-600",
+    "dark": "bg-{color}-500"
   },
   "contentAccent": {
-    "light": "font-bold text-{color}-9",
-    "dark": "font-bold text-{color}-1"
+    "light": "font-bold text-{color}-900",
+    "dark": "font-bold text-{color}-100"
   },
   "contentAccentContrast": {
     "light": "font-bold text-white",
     "dark": "font-bold text-white"
   },
-  "datePickerInput": "shadow appearance-none border rounded w-full py-2 px-3 text-grey-8 bg-white leading-tight focus:outline-none focus:shadow-outline",
-  "datePickerInputDrag": "shadow appearance-none border rounded w-full py-2 px-3 text-grey-4 bg-white leading-tight focus:outline-none focus:shadow-outline"
+  "datePickerInput": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 bg-white leading-tight focus:outline-none focus:shadow-outline",
+  "datePickerInputDrag": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 bg-white leading-tight focus:outline-none focus:shadow-outline"
 }

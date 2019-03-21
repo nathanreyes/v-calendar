@@ -1,6 +1,6 @@
 <template>
   <!--Nav panel-->
-  <div class="py-1">
+  <div>
     <!--Nav header-->
     <div class="flex justify-between items-center mx-2">
       <!--Move prev button-->

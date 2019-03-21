@@ -2,13 +2,13 @@
   <div class="example">
     <div class="w-full max-w-sm">
       <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
-        <label class="block text-grey-7 text-sm font-bold mb-2" for="date">Select Date Range</label>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="date">Select Date Range</label>
         <div class="flex w-full">
           <v-date-picker mode="range" v-model="date" show-caps>
             <input
               id="date"
-              class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-7"
-              :class="{ 'border-red-6': errorMessage }"
+              class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
+              :class="{ 'border-red-600': errorMessage }"
               slot-scope="{ inputProps, inputEvents }"
               v-bind="inputProps"
               v-on="inputEvents"
@@ -20,8 +20,8 @@
             @click="date = null"
           >Clear</button>
         </div>
-        <p class="text-red-6 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
-        <p class="text-blue-5 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
+        <p class="text-red-600 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
+        <p class="text-blue-500 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
       </form>
     </div>
   </div>

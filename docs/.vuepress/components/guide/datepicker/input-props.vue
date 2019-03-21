@@ -4,7 +4,7 @@
       v-model="date"
       class="flex-grow"
       :input-props="{
-        class: "w-full shadow appearance-none border rounded py-2 px-3 text-grey-7 focus:border-blue-4",
+        class: "w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:border-blue-4",
         placeholder: "Please enter your birthday",
         readonly: true
       }"

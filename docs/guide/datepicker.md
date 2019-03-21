@@ -178,7 +178,7 @@ By default, `v-date-picker` uses an input element to natively format and parse d
     class='bg-white shadow-md rounded px-8 pt-6 pb-8'
     @submit.prevent>
     <label
-      class='block text-grey-7 text-sm font-bold mb-2'
+      class='block text-gray-700 text-sm font-bold mb-2'
       for='date'>
       Select Date
     </label>
@@ -198,7 +198,7 @@ export default {
       inputProps: {
         id: 'date',
         class:
-          'shadow appearance-none border rounded w-full py-2 px-3 text-grey-7',
+          'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700',
       },
     };
   },
@@ -221,7 +221,7 @@ Use a custom scoped slot to display your own input element or popover trigger. T
     class="bg-white shadow-md rounded px-8 pt-6 pb-8"
     @submit.prevent>
     <label
-      class="block text-grey-7 text-sm font-bold mb-2"
+      class="block text-gray-700 text-sm font-bold mb-2"
       for="date">
       Select Date Range
     </label>
@@ -232,7 +232,7 @@ Use a custom scoped slot to display your own input element or popover trigger. T
         show-caps>
         <input
           id="date"
-          class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-7"
+          class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
           :class="{ 'border-red': errorMessage }"
           slot-scope="{ inputProps, inputEvents }"
           v-bind="inputProps"
@@ -412,7 +412,7 @@ Here, we assign some [Tailwind](https://tailwindcss.com/docs/what-is-tailwind/) 
 <v-date-picker
   v-model='myDate'
   :input-props='{
-    class: "w-full shadow appearance-none border rounded py-2 px-3 text-grey-7 hover:border-blue-5",
+    class: "w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 hover:border-blue-5",
     placeholder: "Please enter your birthday",
     readonly: true
   }'>
@@ -518,7 +518,7 @@ Here are the steps to utilize this approach.
       class='bg-white shadow-md rounded px-8 pt-6 pb-8'
       @submit.prevent>
       <label
-        class='block text-grey-7 text-sm font-bold mb-2'
+        class='block text-gray-700 text-sm font-bold mb-2'
         for='date'>
         Select Date Range
       </label>
@@ -533,7 +533,7 @@ Here are the steps to utilize this approach.
             slot-scope='{ inputProps, inputEvents }'>
             <input
               id='date'
-              class='shadow appearance-none border rounded-l w-full py-2 px-3 text-grey-7'
+              class='shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700'
               :class='{ "border-red-6": errorMessage }'
               v-bind='inputProps'
               v-on='inputEvents'>

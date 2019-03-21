@@ -70,7 +70,7 @@ export default {
       attrs: [
         {
           highlight: {
-            color: 'grey',
+            color: 'gray',
             fillMode: 'none',
           },
           dates: new Date(),

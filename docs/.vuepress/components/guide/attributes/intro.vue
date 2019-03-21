@@ -44,7 +44,7 @@ const todos = [
     description: 'Take Noah to basketball practice.',
     isComplete: false,
     dates: { weekdays: 6 }, // Every Friday
-    color: 'grey',
+    color: 'gray',
   },
   {
     description: 'Get some milks.',

@@ -47,7 +47,7 @@
     "babel-jest": "^22.0.4",
     "node-sass": "4.10.0",
     "sass-loader": "7.1.0",
-    "tailwindcss": "0.5.2",
+    "tailwindcss": "^1.0.0-beta.3",
     "vuepress": "^1.0.0-alpha.40"
   },
   "browserslist": [

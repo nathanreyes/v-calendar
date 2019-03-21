@@ -9,7 +9,7 @@
  *
  * @import "tailwindcss/preflight";
  */
-@tailwind preflight;
+@tailwind base;
 
 /**
  * This injects any component classes registered by plugins.
@@ -25,11 +25,11 @@
 }
 
 .example {
-  @apply my-8 p-8 flex flex-col items-center justify-center bg-grey-1 border-t border-b;
+  @apply my-8 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
 }
 
 input[type='text'] {
-  @apply w-full shadow appearance-none border rounded py-2 px-3 text-grey-7;
+  @apply w-full shadow appearance-none border rounded py-2 px-3 text-gray-700;
 }
 
 .homepage {
@@ -46,14 +46,14 @@ input[type='text'] {
 }
 
 .section {
-  @apply max-w-md mx-auto px-4 my-10;
+  @apply max-w-2xl mx-auto px-4 my-10;
 }
 
 .h2 {
-  @apply text-2xl text-grey-8 border-none p-0 mb-4;
+  @apply text-2xl text-gray-800 border-none p-0 mb-4;
 }
 .h3 {
-  @apply text-lg text-grey-7 font-medium mb-3;
+  @apply text-lg text-gray-700 font-medium mb-3;
 }
 
 /**

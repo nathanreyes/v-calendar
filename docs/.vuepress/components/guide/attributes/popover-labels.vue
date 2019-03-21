@@ -1,7 +1,7 @@
 <template>
   <div class="example">
-    <p class="text-lg text-grey-8 font-semibold mb-2 mt-0" v-if="visibility === 'focus'">Focus</p>
-    <p class="text-lg text-grey-8 font-semibold mb-2 mt-0" v-if="visibility === 'click'">Click</p>
+    <p class="text-lg text-gray-800 font-semibold mb-2 mt-0" v-if="visibility === 'focus'">Focus</p>
+    <p class="text-lg text-gray-800 font-semibold mb-2 mt-0" v-if="visibility === 'click'">Click</p>
     <v-calendar :attributes="attributes"></v-calendar>
   </div>
 </template>

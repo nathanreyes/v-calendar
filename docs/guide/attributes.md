@@ -854,7 +854,7 @@ Let's walk through the process of customizing the previous example. First, let's
 ```html
 <v-calendar :attributes="attributes">
   <div slot="day-popover" slot-scope="{ day, format, masks }">
-    <div class="text-xs text-grey-3 font-semibold text-center">
+    <div class="text-xs text-gray-300 font-semibold text-center">
       {{ format(day.date, masks.dayPopover) }}
     </div>
   </div>
@@ -868,7 +868,7 @@ Because this technique for displaying the header is common, you can extract the 
 ```html
 <v-calendar :attributes="attributes">
   <div slot="day-popover" slot-scope="{ day, dayTitle }">
-    <div class="text-xs text-grey-3 font-semibold text-center">
+    <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
   </div>
@@ -884,7 +884,7 @@ Now, we just need to display the attributes for the day as well. We can do so by
   <div
     slot="day-popover"
     slot-scope="{ day, dayTitle, attributes }">
-    <div class="text-xs text-grey-3 font-semibold text-center">
+    <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
         <ul>
@@ -907,7 +907,7 @@ Finally, if you wish to display indicators with your custom content, you can use
   <div
     slot="day-popover"
     slot-scope="{ day, dayTitle, attributes }">
-    <div class="text-xs text-grey-3 font-semibold text-center">
+    <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
     <v-popover-row

@@ -2,28 +2,28 @@
   <div class="section">
     <h2 class="h2">Simple Calendars</h2>
     <p
-      class="text-lg font-medium text-grey-6 mb-6"
+      class="text-lg font-medium text-gray-600 mb-6"
     >Show highlights, dots, bars and even custom popovers</p>
     <div class="flex flex-col items-center md:flex-row md:justify-around">
       <div class="mb-6">
-        <h3 class="text-base semibold text-grey-7 mb-3">Highlights</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">Highlights</h3>
         <v-calendar :attributes="highlights" ref="cal"/>
       </div>
       <div class="mb-6">
-        <h3 class="text-base semibold text-grey-7 mb-3">Dots</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">Dots</h3>
         <v-calendar :attributes="dots"/>
       </div>
     </div>
     <div class="flex flex-col items-center md:flex-row md:justify-around mb-8">
       <div class="mb-6">
-        <h3 class="text-base semibold text-grey-7 mb-3">Bars</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">Bars</h3>
         <v-calendar :attributes="bars"/>
       </div>
       <div class="mb-6">
-        <h3 class="text-base semibold text-grey-7 mb-3">Popovers</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">Popovers</h3>
         <v-calendar :attributes="popovers">
           <div slot="day-popover" slot-scope="{ day, format, masks, attributes, updateLayout }">
-            <span class="text-xs text-grey-3 font-semibold">{{ format(day.date, masks.dayPopover) }}</span>
+            <span class="text-xs text-gray-3 font-semibold">{{ format(day.date, masks.dayPopover) }}</span>
             <v-popover-row
               v-for="{ key, customData, highlight, dot, bar } in attributes"
               :key="key"
@@ -62,7 +62,7 @@
                   <!--Edit button-->
                   <svg
                     v-if="editId !== customData.id"
-                    class="fill-current text-blue-3"
+                    class="fill-current text-blue-300"
                     viewBox="0 0 20 20"
                     width="12"
                     height="12"
@@ -72,7 +72,7 @@
                   <!--Done button-->
                   <svg
                     v-else
-                    class="fill-current text-green-3"
+                    class="fill-current text-green-300"
                     viewBox="0 0 20 20"
                     width="12"
                     height="12"
@@ -86,7 +86,7 @@
                   v-if="!editId || editId !== customData.id"
                   class="ml-1 cursor-pointer"
                 >
-                  <svg class="fill-current text-red-3" viewBox="0 0 20 20" width="12" height="12">
+                  <svg class="fill-current text-red-300" viewBox="0 0 20 20" width="12" height="12">
                     <path
                       d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
                     ></path>
@@ -96,7 +96,7 @@
             </v-popover-row>
             <a
               @click="addTodo(day)"
-              class="block text-center text-green-2 hover:text-green-3 font-semibold cursor-pointer px-1 mt-1"
+              class="block text-center text-green-200 hover:text-green-300 font-semibold cursor-pointer px-1 mt-1"
             >+ Add Todo</a>
           </div>
         </v-calendar>
@@ -309,7 +309,9 @@ export default {
             color: todo.color,
             class: todo.isComplete ? 'opacity-25' : '',
           },
-          popover: true,
+          popover: {
+            label: todo.description,
+          },
         })),
         // 'Add todo' attribute
         {

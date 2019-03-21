@@ -4,11 +4,11 @@
       <div slot="day-popover" slot-scope="{ day, format, masks, dayTitle, attributes }">
         <span v-if="step === 1">Using my own content now</span>
         <div
-          class="text-xs text-grey-3 font-semibold text-center"
+          class="text-xs text-gray-300 font-semibold text-center"
           v-else-if="step === 2"
         >{{ format(day.date, `${masks.dayPopover}`) }}</div>
         <div
-          class="text-xs text-grey-3 font-semibold text-center"
+          class="text-xs text-gray-300 font-semibold text-center"
           v-else-if="step >= 3"
         >{{ dayTitle }}</div>
         <ul v-if="step === 3">
