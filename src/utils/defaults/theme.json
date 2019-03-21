@@ -37,7 +37,7 @@
   },
   "navCell": "w-12 text-center py-1 mx-1 rounded",
   "navCellInactive": {
-    "light": "cursor-pointer hover:bg-gray-900 border-2 border-transparent",
+    "light": "cursor-pointer hover:bg-gray-900 hover:shadow-inner border-2 border-transparent",
     "dark": "cursor-pointer hover:bg-gray-200 border-2 border-transparent"
   },
   "navCellInactiveCurrent": {
