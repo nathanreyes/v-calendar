@@ -1,5 +1,6 @@
 <script>
 import Popover from './Popover';
+import PopoverRow from './PopoverRow';
 import Grid from './Grid';
 import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
@@ -89,11 +90,10 @@ export default {
         },
         scopedSlots: {
           default: ({ args: day, updateLayout, hide }) => {
-            const attributes = day.attributes;
+            const attributes = day.attributes.filter(a => a.popover);
             const masks = this.masks_;
             const format = this.format;
             const dayTitle = format(day.date, masks.dayPopover);
-            const popoverRow = () => import('./PopoverRow');
             return isFunction(this.$scopedSlots['day-popover'])
               ? this.$scopedSlots['day-popover']({
                   day,
@@ -111,7 +111,7 @@ export default {
                       dayTitle,
                     ]),
                   attributes.map(attribute =>
-                    h(popoverRow, {
+                    h(PopoverRow, {
                       key: attribute.key,
                       props: {
                         attribute,
