@@ -3,8 +3,8 @@ const purgecss = require('@fullhuman/postcss-purgecss');
 
 module.exports = {
   plugins: [
-    require('autoprefixer'),
     tailwindcss('./tailwind.config.js'),
+    require('autoprefixer'),
     process.env.NODE_ENV === 'production'
       ? purgecss({
           content: ['./src/**/*.vue'],
