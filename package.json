@@ -36,7 +36,12 @@
     "build:docs": "vuepress build docs",
     "deploy:docs": "vuepress build docs && netlify deploy"
   },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "popper.js": "^1.14.7"
+  },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^1.1.0",
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.4.0",
     "@vue/cli-plugin-unit-jest": "^3.4.0",
@@ -54,9 +59,5 @@
     ">1%",
     "not ie 11",
     "not op_mini all"
-  ],
-  "dependencies": {
-    "lodash": "^4.17.11",
-    "popper.js": "^1.14.7"
-  }
+  ]
 }

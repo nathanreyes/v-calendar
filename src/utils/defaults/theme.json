@@ -32,8 +32,8 @@
     "dark": "text-gray-900 font-bold hover:bg-gray-200 cursor-pointer px-2 py-1 rounded"
   },
   "navArrows": {
-    "light": "hover-bg-gray-900 cursor-pointer",
-    "dark": "hover-bg-gray-200 cursor-pointer"
+    "light": "hover:bg-gray-900 cursor-pointer rounded",
+    "dark": "hover:bg-gray-200 cursor-pointer rounded"
   },
   "navCell": "w-12 text-center py-1 mx-1 rounded",
   "navCellInactive": {

@@ -30,6 +30,7 @@
     "prefer-destructuring": "off",
     "function-paren-newline": "off",
     "no-restricted-globals": "off",
-    "vue/html-self-closing": "error"
+    "vue/html-self-closing": "error",
+    "implicit-arrow-linebreak": "off"
   }
 }

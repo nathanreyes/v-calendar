@@ -494,6 +494,7 @@ export default {
 
 <style lang='sass' scoped>
 
+@import '../styles/tailwind.css'
 @import '../styles/vars.sass'
 @import '../styles/mixins.sass'
 
