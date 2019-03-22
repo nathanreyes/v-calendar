@@ -495,8 +495,14 @@ export default {
 <style lang='sass' scoped>
 
 @import '../styles/tailwind.css'
-@import '../styles/vars.sass'
 @import '../styles/mixins.sass'
+
+$font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default
+
+$arrow-font-size: 1.6rem
+$arrow-transition: fill-opacity .3s ease-in-out
+$arrow-horizontal-offset: 10px
+$arrow-vertical-offset: 11px
 
 .vc-pane-container
   position: relative

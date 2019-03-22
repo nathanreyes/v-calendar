@@ -118,8 +118,12 @@ export default {
 
 <style lang='sass' scoped>
 
-@import '../styles/vars.sass'
 @import '../styles/mixins.sass'
+
+$pane-horizontal-padding: 8px !default
+$header-padding:          10px
+$weekday-padding:         0 $pane-horizontal-padding 2px $pane-horizontal-padding
+$weeks-padding:           5px $pane-horizontal-padding 7px $pane-horizontal-padding
 
 .vc-pane
   flex-grow: 1

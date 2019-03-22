@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   css: {
-    extract: true,
+    extract: false,
   },
 
   outputDir: 'lib',

@@ -83,7 +83,7 @@ export default {
 
 <style lang='sass' scoped>
 
-@import '../styles/vars.sass'
+$day-content-transition-time: 0.13s ease-in
 
 .vc-day-popover-row
   display: flex

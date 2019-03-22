@@ -32,17 +32,15 @@ input[type='text'] {
   @apply w-full shadow appearance-none border rounded py-2 px-3 text-gray-700;
 }
 
-.homepage {
-  .home {
-    max-width: initial;
-    padding: 3.6rem 0 2rem 0;
-  }
-  .hero {
-    @apply px-4;
-    .img {
-      max-height: 240px;
-    }
-  }
+.homepage .home {
+  max-width: initial;
+  padding: 3.6rem 0 2rem 0;
+}
+.homepage .hero {
+  @apply px-4;
+}
+.homepage .hero .img {
+  max-height: 240px;
 }
 
 .section {

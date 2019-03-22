@@ -2,88 +2,88 @@
   "color": "blue",
   "isDark": false,
   "container": {
-    "light": "border border-gray-400 rounded-lg text-gray-900 bg-white",
-    "dark": "border border-gray-900 rounded-lg text-gray-200 bg-gray-900 shadow"
+    "light": "vc-border vc-border-gray-400 rounded-lg vc-text-gray-900 vc-bg-white",
+    "dark": "vc-border vc-border-gray-900 rounded-lg vc-text-gray-200 vc-bg-gray-900 vc-shadow"
   },
   "header": {
-    "light": "text-gray-900",
-    "dark": "text-gray-200"
+    "light": "vc-text-gray-900",
+    "dark": "vc-text-gray-200"
   },
   "headerDivider": "",
   "title": {
-    "light": "text-lg text-gray-900 font-semibold",
-    "dark": "text-lg text-gray-100 font-semibold"
+    "light": "vc-text-lg vc-text-gray-900 vc-font-semibold",
+    "dark": "vc-text-lg vc-text-gray-100 vc-font-semibold"
   },
   "arrows": {
-    "light": "text-gray-600",
-    "dark": "text-white"
+    "light": "vc-text-gray-600",
+    "dark": "vc-text-white"
   },
   "weekdays": {
-    "light": "text-sm font-bold text-gray-500",
-    "dark": "text-sm font-bold text-{color}-200"
+    "light": "vc-text-sm vc-font-bold vc-text-gray-500",
+    "dark": "vc-text-sm vc-font-bold vc-text-{color}-200"
   },
   "weekdaysDivider": "",
   "navPopoverContainer": {
-    "light": "rounded-lg text-sm font-semibold text-white bg-gray-800 border border-gray-700 py-1 shadow",
-    "dark": "rounded-lg text-sm font-semibold text-gray-800 bg-white border border-gray-100 py-1 shadow"
+    "light": "rounded-lg vc-text-sm vc-font-semibold vc-text-white vc-bg-gray-800 border vc-border-gray-700 vc-py-1 vc-shadow",
+    "dark": "rounded-lg vc-text-sm vc-font-semibold vc-text-gray-800 vc-bg-white border vc-border-gray-100 vc-py-1 vc-shadow"
   },
   "navTitle": {
-    "light": "text-{color}-100 font-bold hover:bg-gray-900 cursor-pointer px-2 py-1 rounded",
-    "dark": "text-gray-900 font-bold hover:bg-gray-200 cursor-pointer px-2 py-1 rounded"
+    "light": "vc-text-{color}-100 vc-font-bold hover:vc-bg-gray-900 vc-cursor-pointer vc-px-2 vc-py-1 rounded",
+    "dark": "vc-text-gray-900 vc-font-bold hover:vc-bg-gray-200 vc-cursor-pointer vc-px-2 vc-py-1 rounded"
   },
   "navArrows": {
-    "light": "hover:bg-gray-900 cursor-pointer rounded",
-    "dark": "hover:bg-gray-200 cursor-pointer rounded"
+    "light": "hover:vc-bg-gray-900 vc-cursor-pointer rounded",
+    "dark": "hover:vc-bg-gray-200 vc-cursor-pointer rounded"
   },
-  "navCell": "w-12 text-center py-1 mx-1 rounded",
+  "navCell": "w-12 vc-text-center vc-py-1 mx-1 rounded",
   "navCellInactive": {
-    "light": "cursor-pointer hover:bg-gray-900 hover:shadow-inner border-2 border-transparent",
-    "dark": "cursor-pointer hover:bg-gray-200 border-2 border-transparent"
+    "light": "vc-cursor-pointer hover:vc-bg-gray-900 hover:vc-shadow-inner vc-border-2 vc-border-transparent",
+    "dark": "vc-cursor-pointer hover:vc-bg-gray-200 vc-border-2 vc-border-transparent"
   },
   "navCellInactiveCurrent": {
-    "light": "text-{color}-100 cursor-pointer hover:bg-gray-900 border-2 border-{color}-100",
-    "dark": "text-{color}-800 cursor-pointer hover:bg-gray-200 border-2 border-{color}-800"
+    "light": "vc-text-{color}-100 vc-cursor-pointer hover:vc-bg-gray-900 vc-border-2 vc-border-{color}-100",
+    "dark": "vc-text-{color}-800 vc-cursor-pointer hover:vc-bg-gray-200 vc-border-2 vc-border-{color}-800"
   },
   "navCellActive": {
-    "light": "bg-{color}-100 text-{color}-900 font-bold shadow",
-    "dark": "bg-{color}-500 text-white font-bold shadow"
+    "light": "vc-bg-{color}-100 vc-text-{color}-900 vc-font-bold vc-shadow",
+    "dark": "vc-bg-{color}-500 vc-text-white vc-font-bold vc-shadow"
   },
   "dayNotInMonth": "opacity-0 pointer-events-none",
   "dayContent": {
-    "light": "font-medium text-sm cursor-pointer focus:font-bold rounded-full",
-    "dark": "font-medium text-sm cursor-pointer focus:font-bold rounded-full"
+    "light": "vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold rounded-full",
+    "dark": "vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold rounded-full"
   },
   "dayPopoverContainer": {
-    "light": "rounded text-xs text-white font-medium bg-gray-800 border border-gray-700 px-2 py-1 shadow",
-    "dark": "rounded text-xs text-gray-900 font-medium bg-white border border-gray-200 px-2 py-1 shadow"
+    "light": "rounded vc-text-xs vc-text-white vc-font-medium vc-bg-gray-800 border vc-border-gray-700 vc-px-2 vc-py-1 vc-shadow",
+    "dark": "rounded vc-text-xs vc-text-gray-900 vc-font-medium vc-bg-white border vc-border-gray-200 vc-px-2 vc-py-1 vc-shadow"
   },
   "dayPopoverHeader": {
-    "light": "text-center text-xs text-gray-300",
-    "dark": "text-xs text-gray-700 font-semibold"
+    "light": "vc-text-center vc-text-xs vc-text-gray-300",
+    "dark": "vc-text-xs vc-text-gray-700 vc-font-semibold"
   },
   "highlightBaseFillMode": "light",
   "highlightStartEndFillMode": "solid",
   "highlightStartEndClass": "rounded-full",
   "bgLow": {
-    "light": "bg-white border-2 border-{color}-700",
-    "dark": "bg-gray-10 border-2 border-{color}-200"
+    "light": "vc-bg-white vc-border-2 vc-border-{color}-700",
+    "dark": "vc-bg-gray-10 vc-border-2 vc-border-{color}-200"
   },
   "bgAccentLow": {
-    "light": "bg-{color}-200",
-    "dark": "bg-{color}-900"
+    "light": "vc-vc-bg-{color}-200",
+    "dark": "vc-bg-{color}-900"
   },
   "bgAccentHigh": {
-    "light": "bg-{color}-600",
-    "dark": "bg-{color}-500"
+    "light": "vc-bg-{color}-600",
+    "dark": "vc-bg-{color}-500"
   },
   "contentAccent": {
-    "light": "font-bold text-{color}-900",
-    "dark": "font-bold text-{color}-100"
+    "light": "vc-font-bold vc-text-{color}-900",
+    "dark": "vc-font-bold vc-text-{color}-100"
   },
   "contentAccentContrast": {
-    "light": "font-bold text-white",
-    "dark": "font-bold text-white"
+    "light": "vc-font-bold vc-text-white",
+    "dark": "vc-font-bold vc-text-white"
   },
-  "datePickerInput": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 bg-white leading-tight focus:outline-none focus:shadow-outline",
-  "datePickerInputDrag": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 bg-white leading-tight focus:outline-none focus:shadow-outline"
+  "datePickerInput": "vc-shadow vc-appearance-none border rounded vc-w-full vc-py-2 vc-px-3 vc-text-gray-800 vc-bg-white leading-tight focus:outline-none focus:vc-shadow-outline",
+  "datePickerInputDrag": "vc-shadow vc-appearance-none border rounded vc-w-full vc-py-2 vc-px-3 vc-text-gray-400 vc-bg-white leading-tight focus:outline-none focus:vc-shadow-outline"
 }

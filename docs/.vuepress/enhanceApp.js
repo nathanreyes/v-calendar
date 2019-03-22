@@ -1,5 +1,5 @@
 import VCalendar from '../../src/lib';
-import './tailwind.scss';
+import './styles/tailwind.css';
 
 export default ({ Vue }) => {
   Vue.use(VCalendar);
