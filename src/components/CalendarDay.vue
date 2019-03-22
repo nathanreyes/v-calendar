@@ -214,7 +214,6 @@ export default {
       return {
         click: this.click,
         mouseenter: this.mouseenter,
-        mouseover: this.mouseover,
         mouseleave: this.mouseleave,
         focusin: this.focusin,
         focusout: this.focusout,
@@ -270,9 +269,6 @@ export default {
     },
     mouseenter(e) {
       this.$emit('daymouseenter', this.getDayEvent(e));
-    },
-    mouseover(e) {
-      this.$emit('daymouseover', this.getDayEvent(e));
     },
     mouseleave(e) {
       this.$emit('daymouseleave', this.getDayEvent(e));
