@@ -81,30 +81,33 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="postcss" scoped>
+--day-content-transition-time: 0.13s ease-in;
 
-$day-content-transition-time: 0.13s ease-in
-
-.vc-day-popover-row
-  display: flex
-  align-items: center
-  transition: all $day-content-transition-time
-  &:not(:first-child)
-    margin-top: 3px
-  .vc-day-popover-row-indicator
-    display: flex
-    justify-content: center
-    align-items: center
-    flex-grow: 0
-    width: 15px
-    margin-right: 3px
-    span
-      transition: all $day-content-transition-time
-  .vc-day-popover-row-content
-    display: flex
-    align-items: center
-    flex-wrap: none
-    flex-grow: 1
-    width: max-content
-
+.vc-day-popover-row {
+  display: flex;
+  align-items: center;
+  transition: all var(--day-content-transition-time);
+  &:not(:first-child) {
+    margin-top: 3px;
+  }
+  .vc-day-popover-row-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 0;
+    width: 15px;
+    margin-right: 3px;
+    span {
+      transition: all var(--day-content-transition-time);
+    }
+  }
+  .vc-day-popover-row-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: none;
+    flex-grow: 1;
+    width: max-content;
+  }
+}
 </style>

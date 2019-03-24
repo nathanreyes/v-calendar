@@ -130,9 +130,10 @@ export default {
         'div',
         {
           class: [
-            'vc-pane-container',
+            'vc-container',
+            'vc-relative',
             {
-              'is-expanded': this.isExpanded,
+              'vc-min-w-full': this.isExpanded,
             },
             this.theme_.container,
           ],
@@ -147,8 +148,8 @@ export default {
             'div',
             {
               class: [
-                'vc-pane-transition',
-                { 'in-transition': this.inTransition },
+                'vc-w-full vc-relative',
+                { 'vc-overflow-hidden': this.inTransition },
               ],
             },
             [
@@ -492,57 +493,61 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="postcss" scoped>
+.vc-container {
+  --arrow-font-size: 1.6rem;
+  --arrow-transition: fill-opacity 0.3s ease-in-out;
 
-@import '../styles/tailwind.css'
-@import '../styles/mixins.sass'
+  --slide-translate: 22px;
+  --slide-duration: 0.15s;
+  --slide-timing: ease;
 
-$font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default
+  font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'Helvetica', 'Arial', sans-serif;
+  line-height: 1.5;
+  width: max-content;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  & /deep/ * {
+    box-sizing: inherit;
+    &:focus {
+      outline: none;
+    }
+  }
+}
 
-$arrow-font-size: 1.6rem
-$arrow-transition: fill-opacity .3s ease-in-out
-$arrow-horizontal-offset: 10px
-$arrow-vertical-offset: 11px
+.vc-arrow-layout {
+  --arrow-horizontal-offset: 10px;
+  --arrow-vertical-offset: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: var(--arrow-vertical-offset);
+  &.is-left {
+    left: var(--arrow-horizontal-offset);
+  }
+  &.is-right {
+    right: var(--arrow-horizontal-offset);
+  }
+}
 
-.vc-pane-container
-  position: relative
-  font-family: $font-family
-  line-height: 1.5
-  width: max-content
-  -webkit-font-smoothing: antialiased
-  -moz-osx-font-smoothing: grayscale
-  box-sizing: border-box
-  &.is-expanded
-    min-width: 100%
-  .vc-pane-transition
-    width: 100%
-    position: relative
-    &.in-transition
-      overflow: hidden
-  /deep/ *
-    box-sizing: inherit
-    &:focus
-      outline: none
-
-.vc-arrow-layout
-  +box()
-  position: absolute
-  top: $arrow-vertical-offset
-  &.is-left
-    left: $arrow-horizontal-offset
-  &.is-right
-    right: $arrow-horizontal-offset
-
-.vc-arrow
-  +box()
-  transition: $arrow-transition
-  cursor: pointer
-  user-select: none
-  &.vc-disabled
-    cursor: not-allowed
-    pointer-events: none
-    opacity: 0.2
-  &:hover
-    fill-opacity: 0.5
-
+.vc-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: var(--arrow-transition);
+  cursor: pointer;
+  user-select: none;
+  &.vc-disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.2;
+  }
+  &:hover {
+    fill-opacity: 0.5;
+  }
+}
 </style>

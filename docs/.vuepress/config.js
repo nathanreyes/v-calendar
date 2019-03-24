@@ -1,5 +1,6 @@
 const path = require('path');
-var tailwindcss = require('tailwindcss');
+const postcssPresetEnv = require('postcss-preset-env');
+const tailwindcss = require('tailwindcss');
 
 module.exports = {
   title: 'V-Calendar',
@@ -83,11 +84,42 @@ module.exports = {
   },
   postcss: {
     plugins: [
-      tailwindcss('docs/.vuepress/tailwind.config.js'),
       require('autoprefixer'),
+      postcssPresetEnv({
+        stage: 3,
+        features: { 'nesting-rules': true, 'custom-properties': true },
+      }),
     ],
   },
   configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /tailwind\.css$/,
+          use: [
+            {
+              loader: 'postcss-loader',
+              options: {
+                indent: 'postcss',
+                plugins: [tailwindcss('docs/.vuepress/tailwind.config.js')],
+              },
+            },
+          ],
+        },
+        {
+          test: /tailwind-lib\.css$/,
+          use: [
+            {
+              loader: 'postcss-loader',
+              options: {
+                indent: 'postcss',
+                plugins: [tailwindcss('./tailwind.config.js')],
+              },
+            },
+          ],
+        },
+      ],
+    },
     resolve: {
       alias: {
         '@': path.resolve('src'),

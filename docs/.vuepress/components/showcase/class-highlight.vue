@@ -1,11 +1,11 @@
 <template>
   <v-date-picker
-    mode='range'
-    v-model='date'
-    :select-attribute='selectAttribute'
-    :drag-attribute='dragAttribute'
-    is-inline>
-  </v-date-picker>
+    mode="range"
+    v-model="date"
+    :select-attribute="selectAttribute"
+    :drag-attribute="dragAttribute"
+    is-inline
+  ></v-date-picker>
 </template>
 
 <script>
@@ -26,8 +26,8 @@ export default {
 };
 </script>
 
-<style lang='scss'>
-.c-pane-container /deep/ {
+<style>
+/* .c-pane-container /deep/ {
   .select-drag.c-day {
     background-color: blue;
     color: white;
@@ -35,5 +35,5 @@ export default {
       opacity: 0.5;
     }
   }
-}
+} */
 </style>

@@ -32,6 +32,7 @@
     "no-restricted-globals": "off",
     "vue/html-self-closing": "error",
     "implicit-arrow-linebreak": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "class-methods-use-this": "off"
   }
 }

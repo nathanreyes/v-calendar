@@ -326,14 +326,21 @@ export default class DateInfo {
   // Determines if first date partially intersects second date
   // NOTE: This is a shallow test (no patterns tested)
   dateShallowIntersectsDate(date1, date2) {
-    if (date1.isDate)
+    if (date1.isDate) {
       return date2.isDate
         ? date1.dateTime === date2.dateTime
         : this.dateShallowIncludesDate(date2, date1);
-    if (date2.isDate) return this.dateShallowIncludesDate(date1, date2);
+    }
+    if (date2.isDate) {
+      return this.dateShallowIncludesDate(date1, date2);
+    }
     // Both ranges
-    if (date1.start && date2.end && date1.start > date2.end) return false;
-    if (date1.end && date2.start && date1.end < date2.start) return false;
+    if (date1.start && date2.end && date1.start > date2.end) {
+      return false;
+    }
+    if (date1.end && date2.start && date1.end < date2.start) {
+      return false;
+    }
     return true;
   }
 
@@ -342,8 +349,12 @@ export default class DateInfo {
   // NOTE: This is a deep test (patterns tested)
   includesDate(other) {
     const date = other.isDateInfo ? other : new DateInfo(other, this.opts);
-    if (!this.shallowIncludesDate(date)) return false;
-    if (!this.on) return true;
+    if (!this.shallowIncludesDate(date)) {
+      return false;
+    }
+    if (!this.on) {
+      return true;
+    }
     const range = this.findShallowIntersectingRange(this, date);
     let result = true;
     this.iterateDatesInRange(range, state => {
@@ -371,22 +382,33 @@ export default class DateInfo {
   dateShallowIncludesDate(date1, date2) {
     // First date is simple date
     if (date1.isDate) {
-      if (date2.isDate) return date1.dateTime === date2.dateTime;
-      if (!date2.startTime || !date2.endTime) return false;
+      if (date2.isDate) {
+        return date1.dateTime === date2.dateTime;
+      }
+      if (!date2.startTime || !date2.endTime) {
+        return false;
+      }
       return (
         date1.dateTime === date2.startTime && date1.dateTime === date2.endTime
       );
     }
     // Second date is simple date and first is date range
     if (date2.isDate) {
-      if (date1.start && date2.date < date1.start) return false;
-      if (date1.end && date2.date > date1.end) return false;
+      if (date1.start && date2.date < date1.start) {
+        return false;
+      }
+      if (date1.end && date2.date > date1.end) {
+        return false;
+      }
       return true;
     }
     // Both dates are date ranges
-    if (date1.start && (!date2.start || date2.start < date1.start))
+    if (date1.start && (!date2.start || date2.start < date1.start)) {
       return false;
-    if (date1.end && (!date2.end || date2.end > date1.end)) return false;
+    }
+    if (date1.end && (!date2.end || date2.end > date1.end)) {
+      return false;
+    }
     return true;
   }
 
@@ -401,14 +423,16 @@ export default class DateInfo {
     // No patterns to test
     if (!this.on) return true;
     // Fail if 'and' condition fails
-    if (this.on.and && !DateInfo.testConfig(this.on.and, day, this))
+    if (this.on.and && !DateInfo.testConfig(this.on.and, day, this)) {
       return false;
+    }
     // Fail if every 'or' condition fails
     if (
       this.on.or &&
       !this.on.or.some(or => DateInfo.testConfig(or, day, this))
-    )
+    ) {
       return false;
+    }
     // Patterns match
     return true;
   }

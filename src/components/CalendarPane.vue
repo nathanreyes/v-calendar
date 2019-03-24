@@ -116,67 +116,75 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="postcss" scoped>
+.vc-pane {
+  --header-padding: 10px;
+  --weekday-padding: 0 8px 2px 8px;
+  --weeks-padding: 5px 8px 7px 8px;
 
-@import '../styles/mixins.sass'
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
 
-$pane-horizontal-padding: 8px !default
-$header-padding:          10px
-$weekday-padding:         0 $pane-horizontal-padding 2px $pane-horizontal-padding
-$weeks-padding:           5px $pane-horizontal-padding 7px $pane-horizontal-padding
+.vc-horizontal-divider {
+  align-self: center;
+}
 
-.vc-pane
-  flex-grow: 1
-  flex-shrink: 1
-  display: flex
-  flex-direction: column
-  justify-content: center
-  align-items: stretch
+.vc-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  user-select: none;
+  padding: var(--header-padding);
+  &.align-left {
+    order: -1;
+    justify-content: flex-start;
+  }
+  &.align-right {
+    order: 1;
+    justify-content: flex-end;
+  }
+}
 
-.vc-horizontal-divider
-  align-self: center
+.vc-title-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
 
-.vc-header
-  flex-shrink: 0
-  display: flex
-  align-items: stretch
-  user-select: none
-  padding: $header-padding
-  &.align-left
-    order: -1
-    justify-content: flex-start
-  &.align-right
-    order: 1
-    justify-content: flex-end
+.vc-title-wrapper {
+  position: relative;
+}
 
-.vc-title-layout
-  display: flex
-  justify-content: center
-  align-items: center
-  flex-grow: 1
+.vc-title {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
 
-.vc-title-wrapper
-  position: relative
+.vc-weekdays {
+  flex-shrink: 0;
+  display: flex;
+  padding: var(--weekday-padding);
+}
 
-.vc-title
-  cursor: pointer
-  user-select: none
-  white-space: nowrap
+.vc-weekday {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  cursor: default;
+  user-select: none;
+}
 
-.vc-weekdays
-  flex-shrink: 0
-  display: flex
-  padding: $weekday-padding
-
-.vc-weekday
-  +box()
-  flex: 1
-  cursor: default
-  user-select: none
-
-.vc-weeks
-  flex-shrink: 1
-  flex-grow: 1
-  padding: $weeks-padding
-
+.vc-weeks {
+  flex-shrink: 1;
+  flex-grow: 1;
+  padding: var(--weeks-padding);
+}
 </style>

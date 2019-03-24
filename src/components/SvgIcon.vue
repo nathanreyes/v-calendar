@@ -64,12 +64,12 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="postcss" scoped>
 .vc-svg-icon {
   display: inline-block;
   stroke: currentColor;
   stroke-width: 0;
-  path {
+  & path {
     fill: currentColor;
   }
 }

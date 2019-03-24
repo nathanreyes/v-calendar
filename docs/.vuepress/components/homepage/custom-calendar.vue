@@ -109,9 +109,8 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
-
-$day-border: 1px solid #b8c2cc
+<style scoped>
+/* $day-border: 1px solid #b8c2cc
 $day-border-highlight: 1px solid #b8c2cc
 $day-width: 100px
 $day-height: 90px
@@ -123,7 +122,7 @@ $weekday-border: 1px solid #eaeaea
 ::-webkit-scrollbar-track
   display: none
 
-/deep/ .custom-calendar.vc-pane-container
+/deep/ .custom-calendar.vc-container
   width: 100%
   .vc-header
     background-color: #f1f5f8
@@ -149,5 +148,5 @@ $weekday-border: 1px solid #eaeaea
     &:not(.on-right)
       border-right: $day-border
   .vc-day-dots
-    margin-bottom: 5px
+    margin-bottom: 5px */
 </style>

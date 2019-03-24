@@ -42,8 +42,8 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
-/deep/ .c-pane-container {
+<style scoped>
+/* /deep/ .c-pane-container {
   background: linear-gradient(to bottom right, #25266c, #343698);
   border-radius: 10px;
   padding: 0 8px;
@@ -85,5 +85,5 @@ export default {
     font-weight: 500;
     margin: 8px;
   }
-}
+} */
 </style>

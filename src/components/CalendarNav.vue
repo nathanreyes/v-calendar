@@ -2,9 +2,13 @@
   <!--Nav panel-->
   <div>
     <!--Nav header-->
-    <div class="flex justify-between items-center mx-2">
+    <div class="vc-flex vc-justify-between vc-items-center vc-mx-2">
       <!--Move prev button-->
-      <div @click="movePrev" class="flex justify-center items-center" :class="theme.navArrows">
+      <div
+        @click="movePrev"
+        class="vc-flex vc-justify-center vc-items-center"
+        :class="theme.navArrows"
+      >
         <slot name="nav-left-button">
           <svg-icon name="left-arrow"/>
         </slot>
@@ -12,14 +16,22 @@
       <!--Mode switch button-->
       <span :class="theme.navTitle" @click="toggleMode">{{ title }}</span>
       <!--Move next-->
-      <div @click="moveNext" class="flex justify-center items-center" :class="theme.navArrows">
+      <div
+        @click="moveNext"
+        class="vc-flex vc-justify-center vc-items-center"
+        :class="theme.navArrows"
+      >
         <slot name="nav-right-button">
           <svg-icon name="right-arrow"/>
         </slot>
       </div>
     </div>
     <!--Navigation items-->
-    <div v-for="(row, i) in itemRows" :key="i" class="flex justify-between items-center mx-1 mb-1">
+    <div
+      v-for="(row, i) in itemRows"
+      :key="i"
+      class="vc-flex vc-justify-between vc-items-center vc-mx-1 vc-mb-1"
+    >
       <div v-for="(item, j) in row" :key="j" :class="item.classes" @click="item.click">
         <!--Item label-->
         {{ item.label }}
@@ -83,7 +95,7 @@ export default {
             classes.push(this.theme.navCellInactive);
           }
           if (isDisabled) {
-            classes.push('opacity-25');
+            classes.push('vc-opacity-25');
           }
           return {
             label,
@@ -93,7 +105,7 @@ export default {
         });
     },
     yearItems() {
-      const { month: thisMonth, year: thisYear } = pageForDate(new Date());
+      const { month, year: thisYear } = pageForDate(new Date());
       const startYear = this.yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
       const items = [];
@@ -110,7 +122,7 @@ export default {
           classes.push(this.theme.navCellInactive);
         }
         if (isDisabled) {
-          classes.push('opacity-25');
+          classes.push('vc-opacity-25');
         }
         items.push({
           year,
@@ -201,14 +213,3 @@ export default {
   },
 };
 </script>
-
-<style lang='sass' scoped>
-
-.vc-disabled
-  opacity: 0.2
-  cursor: not-allowed
-  pointer-events: none
-  &:hover
-    background-color: transparent
-
-</style>

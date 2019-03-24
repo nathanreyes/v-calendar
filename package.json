@@ -28,7 +28,7 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "serve": "vue-cli-service serve --open",
+    "serve": "vue-cli-service serve src/lib.js",
     "build": "vue-cli-service build --target lib src/lib.js",
     "test": "vue-cli-service test:unit --watch",
     "lint": "vue-cli-service lint",
@@ -50,8 +50,7 @@
     "@vue/test-utils": "^1.0.0-beta.28",
     "babel-core": "^7.0.0-0",
     "babel-jest": "^22.0.4",
-    "node-sass": "4.10.0",
-    "sass-loader": "7.1.0",
+    "postcss-preset-env": "^6.6.0",
     "tailwindcss": "^1.0.0-beta.3",
     "vuepress": "^1.0.0-alpha.40"
   },

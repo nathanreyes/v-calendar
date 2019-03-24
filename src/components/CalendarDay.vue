@@ -2,7 +2,7 @@
 import PopoverRef from './PopoverRef';
 import { childMixin } from '@/utils/mixins';
 import { arrayHasItems, objectFromArray } from '@/utils/helpers';
-import { isFunction, some, last, get } from '@/utils/_';
+import { isFunction, last, get } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
@@ -68,9 +68,9 @@ export default {
           props: {
             id: this.dayPopoverId,
             args: this.dayEvent,
-            visibility: visibility,
-            placement: placement,
-            isInteractive: isInteractive,
+            visibility,
+            placement,
+            isInteractive,
           },
         },
         [contentLayer()],
@@ -474,115 +474,144 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="postcss" scoped>
+.vc-day {
+  --day-content-width: 1.8rem;
+  --day-content-height: 1.8rem;
+  --day-content-transition-time: 0.13s ease-in;
 
-@import '../styles/mixins.sass'
+  --dot-diameter: 5px;
+  --dot-border-radius: 50%;
+  --dot-spacing: 3px;
 
-$day-min-height: 1.8rem
-$day-content-width: 1.8rem
-$day-content-height: 1.8rem
-$day-content-transition-time: 0.13s ease-in
+  --bar-height: 3px;
+  --bars-width: 75%;
 
-$dot-diameter: 5px
-$dot-border-radius: 50%
-$dot-spacing: 3px
+  position: relative;
+  min-height: 1.8rem;
+  height: 100%;
+  z-index: 1;
+}
 
-$bar-height: 3px
-$bars-width: 75%
+.vc-day-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+}
 
-.vc-day
-  position: relative
-  min-height: $day-min-height
-  height: 100%
-  z-index: 1
+.vc-day-box-center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  transform-origin: 50% 50%;
+}
 
-.vc-day-layer
-  position: absolute
-  left: 0
-  right: 0
-  top: 0
-  bottom: 0
-  pointer-events: none
+.vc-day-box-left-center {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  transform-origin: 0% 50%;
+}
 
-.vc-day-box-center-center
-  +box()
-  height: 100%
-  transform-origin: 50% 50%
+.vc-day-box-right-center {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  transform-origin: 100% 50%;
+}
 
-.vc-day-box-left-center
-  +box(flex-start)
-  height: 100%
-  transform-origin: 0% 50%
+.vc-day-box-center-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
 
-.vc-day-box-right-center
-  +box(flex-end)
-  height: 100%
-  transform-origin: 100% 50%
+.vc-day-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--day-content-width);
+  height: var(--day-content-height);
+  transition: all var(--day-content-transition-time);
+  user-select: none;
+  margin: 0.1rem auto;
+  &:hover {
+    background-color: hsla(211, 13%, 65%, 0.2);
+    &.vc-is-dark {
+      background-color: hsla(209, 14%, 37%, 0.4);
+    }
+  }
+  &:focus {
+    background-color: hsla(211, 13%, 65%, 0.4);
+    &.vc-is-dark {
+      background-color: hsla(209, 14%, 37%, 0.7);
+    }
+  }
+}
 
-.vc-day-box-center-bottom
-  +box(center, flex-end)
+.vc-highlights {
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
 
-.vc-day-content
-  display: flex
-  justify-content: center
-  align-items: center
-  width: $day-content-width
-  height: $day-content-height
-  transition: all $day-content-transition-time
-  user-select: none
-  margin: .1rem auto
-  &:hover
-    background-color: hsla(211, 13%, 65%, 0.2)
-    &.vc-is-dark
-      background-color: hsla(209, 14%, 37%, 0.4)
-  &:focus
-    background-color: hsla(211, 13%, 65%, 0.4)
-    &.vc-is-dark
-      background-color: hsla(209, 14%, 37%, 0.7)
+.vc-highlight {
+  width: 1.8rem;
+  height: 1.8rem;
+  &.vc-highlight-base-start {
+    width: 50% !important;
+    border-radius: 0 !important;
+    border-right-width: 0 !important;
+  }
+  &.vc-highlight-base-end {
+    width: 50% !important;
+    border-radius: 0 !important;
+    border-left-width: 0 !important;
+  }
+  &.vc-highlight-base-middle {
+    width: 100%;
+    border-radius: 0 !important;
+    border-left-width: 0 !important;
+    border-right-width: 0 !important;
+    margin: 0 -1px;
+  }
+  &.vc-highlight-drag {
+    height: 1.75rem;
+  }
+}
 
-.vc-highlights
-  overflow: hidden
-  pointer-events: none
-  z-index: -1
+.vc-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.vc-highlight
-  width: 1.8rem
-  height: 1.8rem
-  &.vc-highlight-base-start
-    width: 50% !important
-    border-radius: 0 !important
-    border-right-width: 0 !important
-  &.vc-highlight-base-end
-    width: 50% !important
-    border-radius: 0 !important
-    border-left-width: 0 !important
-  &.vc-highlight-base-middle
-    width: 100%
-    border-radius: 0 !important
-    border-left-width: 0 !important
-    border-right-width: 0 !important
-    margin: 0 -1px
-  &.vc-highlight-drag
-    height: 1.75rem
+.vc-dot {
+  width: var(--dot-diameter);
+  height: var(--dot-diameter);
+  border-radius: var(--dot-border-radius);
+  transition: all var(--day-content-transition-time);
+  &:not(:last-child) {
+    margin-right: var(--dot-spacing);
+  }
+}
 
-.vc-dots
-  +box()
+.vc-bars {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: var(--bars-width);
+}
 
-.vc-dot
-  width: $dot-diameter
-  height: $dot-diameter
-  border-radius: $dot-border-radius
-  transition: all $day-content-transition-time
-  &:not(:last-child)
-    margin-right: $dot-spacing
-
-.vc-bars
-  +box(flex-start)
-  width: $bars-width
-
-.vc-bar
-  flex-grow: 1
-  height: $bar-height
-  transition: all $day-content-transition-time
-
+.vc-bar {
+  flex-grow: 1;
+  height: var(--bar-height);
+  transition: all var(--day-content-transition-time);
+}
 </style>

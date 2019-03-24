@@ -1,4 +1,5 @@
-var tailwindcss = require('tailwindcss');
+const postcssPresetEnv = require('postcss-preset-env');
+const tailwindcss = require('tailwindcss');
 const purgecss = require('@fullhuman/postcss-purgecss');
 
 const colors = [
@@ -19,16 +20,17 @@ const colors = [
 
 module.exports = {
   plugins: [
+    postcssPresetEnv({ stage: 2 }),
     tailwindcss('./tailwind.config.js'),
     require('autoprefixer'),
-    // process.env.NODE_ENV === 'production'
-    //   ? purgecss({
-    //       content: ['./src/**/*.vue'],
-    //       whitelistPatterns: [
-    //         ...colors.map(c => new RegExp(`^vc-.*${c}`, 'g')),
-    //         /^vc-border/,
-    //       ],
-    //     })
-    //   : '',
+    process.env.NODE_ENV === 'production'
+      ? purgecss({
+          content: ['./src/**/*.vue', './src/**/*.json'],
+          whitelistPatterns: [
+            ...colors.map(c => new RegExp(`^vc-.*${c}`, 'g')),
+            /^vc-border/,
+          ],
+        })
+      : '',
   ],
 };

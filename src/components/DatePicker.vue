@@ -453,8 +453,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-/deep/ .vc-pane-container {
+<style lang="postcss" scoped>
+/deep/ .vc-container {
   border: none;
 }
 </style>

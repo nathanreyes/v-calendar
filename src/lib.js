@@ -3,6 +3,7 @@ import DatePicker from '@/components/DatePicker';
 import Popover from '@/components/Popover';
 import PopoverRef from '@/components/PopoverRef';
 import { setupCalendar } from '@/utils/setup';
+import '@/styles/tailwind-lib.css';
 
 // Export components individually
 export { setupCalendar, Calendar, DatePicker, Popover, PopoverRef };

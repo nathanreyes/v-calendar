@@ -2,7 +2,7 @@
 import Popper from 'popper.js';
 import { on, off, elementContains } from '@/utils/helpers';
 import { addTapOrClickHandler } from '@/utils/touch';
-import { isFunction, last } from '@/utils/_';
+import { isFunction } from '@/utils/_';
 
 export default {
   render(h) {
@@ -256,111 +256,146 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="postcss" scoped>
+.vc-popover-content-wrapper {
+  --popover-horizontal-content-offset: 8px;
+  --popover-vertical-content-offset: 10px;
+  --popover-slide-translation: 15px;
+  --popover-transition-time: 0.14s ease-in-out;
+  --popover-caret-horizontal-offset: 18px;
+  --popover-caret-vertical-offset: 8px;
 
-$popover-horizontal-content-offset: 8px
-$popover-vertical-content-offset: 10px
-$popover-slide-translation: 15px
-$popover-transition-time: 0.14s ease-in-out
-$popover-caret-horizontal-offset: 18px
-$popover-caret-vertical-offset: 8px
+  position: absolute;
+  display: block;
+  outline: none;
+  z-index: 10;
+  &.interactive {
+    pointer-events: all;
+  }
+}
 
-.vc-popover-content-wrapper
-  position: absolute
-  display: block
-  outline: none
-  z-index: 10
-  &.interactive
-    pointer-events: all
+.vc-popover-content {
+  position: relative;
+  z-index: 10;
+  &.direction-bottom {
+    margin-top: var(--popover-vertical-content-offset);
+  }
+  &.direction-top {
+    margin-bottom: var(--popover-vertical-content-offset);
+  }
+  &.direction-left {
+    margin-right: var(--popover-horizontal-content-offset);
+  }
+  &.direction-right {
+    margin-left: var(--popover-horizontal-content-offset);
+  }
+}
 
-.vc-popover-content
-  position: relative
-  z-index: 10
-  &.direction-bottom
-    margin-top: $popover-vertical-content-offset
-  &.direction-top
-    margin-bottom: $popover-vertical-content-offset
-  &.direction-left
-    margin-right: $popover-horizontal-content-offset
-  &.direction-right
-    margin-left: $popover-horizontal-content-offset
-
-.vc-popover-caret
-  content: ''
-  position: absolute
-  display: block
-  width: 12px
-  height: 12px
-  border-top: inherit
-  border-left: inherit
-  background: inherit
-  z-index: -1
-  &.direction-bottom
-    top: 0
-    &.align-left
-      transform: translateY(-50%) rotate(45deg)
-    &.align-center
-      transform: translateX(-50%) translateY(-50%) rotate(45deg)
-    &.align-right
-      transform: translateY(-50%) rotate(45deg)
-  &.direction-top
-    top: 100%
-    &.align-left
-      transform: translateY(-50%) rotate(-135deg)
-    &.align-center
-      transform: translateX(-50%) translateY(-50%) rotate(-135deg)
-    &.align-right
-      transform: translateY(-50%) rotate(-135deg)
-  &.direction-left
-    left: 100%
-    &.align-top
-      transform: translateX(-50%) rotate(135deg)
-    &.align-middle
-      transform: translateY(-50%) translateX(-50%) rotate(135deg)
-    &.align-bottom
-      transform: translateX(-50%) rotate(135deg)
-  &.direction-right
-    left: 0
-    &.align-top
-      transform: translateX(-50%) rotate(-45deg)
-    &.align-middle
-      transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-    &.align-bottom
-      transform: translateX(-50%) rotate(-45deg)
-  &.align-left
-    left: $popover-caret-horizontal-offset
-  &.align-center
-    left: 50%
-  &.align-right
-    right: $popover-caret-horizontal-offset
-  &.align-top
-    top: $popover-caret-vertical-offset
-  &.align-middle
-    top: 50%
-  &.align-bottom
-    bottom: $popover-caret-vertical-offset
+.vc-popover-caret {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-top: inherit;
+  border-left: inherit;
+  background: inherit;
+  z-index: -1;
+  &.direction-bottom {
+    top: 0;
+    &.align-left {
+      transform: translateY(-50%) rotate(45deg);
+    }
+    &.align-center {
+      transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    }
+    &.align-right {
+      transform: translateY(-50%) rotate(45deg);
+    }
+  }
+  &.direction-top {
+    top: 100%;
+    &.align-left {
+      transform: translateY(-50%) rotate(-135deg);
+    }
+    &.align-center {
+      transform: translateX(-50%) translateY(-50%) rotate(-135deg);
+    }
+    &.align-right {
+      transform: translateY(-50%) rotate(-135deg);
+    }
+  }
+  &.direction-left {
+    left: 100%;
+    &.align-top {
+      transform: translateX(-50%) rotate(135deg);
+    }
+    &.align-middle {
+      transform: translateY(-50%) translateX(-50%) rotate(135deg);
+    }
+    &.align-bottom {
+      transform: translateX(-50%) rotate(135deg);
+    }
+  }
+  &.direction-right {
+    left: 0;
+    &.align-top {
+      transform: translateX(-50%) rotate(-45deg);
+    }
+    &.align-middle {
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg);
+    }
+    &.align-bottom {
+      transform: translateX(-50%) rotate(-45deg);
+    }
+  }
+  &.align-left {
+    left: var(--popover-caret-horizontal-offset);
+  }
+  &.align-center {
+    left: 50%;
+  }
+  &.align-right {
+    right: var(--popover-caret-horizontal-offset);
+  }
+  &.align-top {
+    top: var(--popover-caret-vertical-offset);
+  }
+  &.align-middle {
+    top: 50%;
+  }
+  &.align-bottom {
+    bottom: var(--popover-caret-vertical-offset);
+  }
+}
 
 .fade-enter-active,
 .fade-leave-active,
 .slide-fade-enter-active,
-.slide-fade-leave-active
-  transition: all $popover-transition-time
-  pointer-events: none
+.slide-fade-leave-active {
+  transition: all var(--popover-transition-time);
+  pointer-events: none;
+}
 
 .fade-enter,
-.fade-leave-to
-  opacity: 0
+.fade-leave-to {
+  opacity: 0;
+}
 
 .slide-fade-enter,
-.slide-fade-leave-to
-  opacity: 0
-  &.direction-bottom
-    transform: translateY(-$popover-slide-translation)
-  &.direction-top
-    transform: translateY($popover-slide-translation)
-  &.direction-left
-    transform: translateX($popover-slide-translation)
-  &.direction-right
-    transform: translateX(-$popover-slide-translation)
-
+.slide-fade-leave-to {
+  opacity: 0;
+  &.direction-bottom {
+    transform: translateY(calc(-1 * var(--popover-slide-translation)));
+  }
+  &.direction-top {
+    transform: translateY(var(--popover-slide-translation));
+  }
+  &.direction-left {
+    transform: translateX(var(--popover-slide-translation));
+  }
+  &.direction-right {
+    transform: translateX(calc(-1 * var(--popover-slide-translation)));
+  }
+}
 </style>
