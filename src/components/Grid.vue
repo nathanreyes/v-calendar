@@ -97,6 +97,6 @@ export default {
   position: relative;
   flex-shrink: 1;
   display: grid;
-  /* overflow: scroll; */
+  overflow: scroll;
 }
 </style>

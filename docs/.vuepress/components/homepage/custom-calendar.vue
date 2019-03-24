@@ -133,7 +133,7 @@ export default {
   & .vc-weeks {
     padding: 0;
   }
-  & .vc-weekdays {
+  & .vc-weekday {
     background-color: var(--weekday-bg);
     border-bottom: var(--weekday-border);
     border-top: var(--weekday-border);

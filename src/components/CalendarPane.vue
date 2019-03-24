@@ -1,69 +1,122 @@
-<template>
-  <div ref="pane" class="vc-pane">
-    <!--Header slot-->
-    <slot name="header" v-bind="page">
-      <div class="vc-header" :class="theme.header">
-        <!--Header title-->
-        <div :class="['vc-title-layout', titleClass]">
-          <div class="vc-title-wrapper">
-            <!--Title content-->
-            <popover-ref :id="navPopoverId" :visibility="navVisibility_" is-interactive>
-              <div class="vc-title" :class="theme.title">
-                <slot name="header-title" v-bind="page">{{ page.title }}</slot>
-              </div>
-            </popover-ref>
-            <!--Navigation popover-->
-            <popover :id="navPopoverId" :contentClass="theme.navPopoverContainer">
-              <!--Navigation pane-->
-              <calendar-nav :value="page" :validator="canMove" :masks="masks" @input="move($event)">
-                <!--Pass through nav slots-->
-                <template v-for="slot in navSlots" :slot="slot" slot-scope="props">
-                  <slot :name="slot" v-bind="props"></slot>
-                </template>
-              </calendar-nav>
-            </popover>
-          </div>
-        </div>
-      </div>
-    </slot>
-    <!--Header horizontal divider-->
-    <div class="vc-horizontal-divider" :class="theme.headerDivider" v-if="theme.headerDivider"/>
-    <!--Weekday labels-->
-    <div class="vc-weekdays">
-      <div
-        v-for="(weekday, i) in weekdayLabels"
-        :key="i + 1"
-        class="vc-weekday"
-        :class="theme.weekdays"
-      >{{ weekday }}</div>
-    </div>
-    <!--Weekdays horizontal divider-->
-    <div class="vc-horizontal-divider" :class="theme.weekdaysDivider" v-if="theme.weekdaysDivider"/>
-    <!--Weeks-->
-    <calendar-weeks class="vc-weeks" :page="page" :masks="masks" v-bind="$attrs" v-on="$listeners">
-      <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="props">
-        <slot :name="slot" v-bind="props"></slot>
-      </template>
-    </calendar-weeks>
-  </div>
-</template>
-
 <script>
 import Popover from './Popover';
 import PopoverRef from './PopoverRef';
-import CalendarWeeks from './CalendarWeeks';
 import CalendarNav from './CalendarNav';
+import CalendarDay from './CalendarDay';
+import Grid from './Grid';
+import { getCalendarDays } from '@/utils/dayData';
 import { propOrDefaultMixin, childMixin } from '@/utils/mixins';
 import { createGuid } from '@/utils/helpers';
 
 export default {
-  components: {
-    CalendarWeeks,
-    CalendarNav,
-    PopoverRef,
-    Popover,
-  },
   mixins: [propOrDefaultMixin, childMixin],
+  render(h) {
+    // Header
+    const header = this.$scopedSlots.header
+      ? this.$scopedSlots.header(this.page)
+      : h(
+          'div',
+          {
+            class: ['vc-header', this.theme.header],
+          },
+          [
+            // Header title
+            h('div', { class: ['vc-title-layout', this.titleClass] }, [
+              h('div', { class: 'vc-title-wrapper' }, [
+                // Navigation popover ref with title
+                h(
+                  PopoverRef,
+                  {
+                    props: {
+                      id: this.navPopoverId,
+                      visibility: this.navVisibility_,
+                      isInteractive: true,
+                    },
+                  },
+                  [
+                    // Title content
+                    h('div', { class: ['vc-title', this.theme.title] }, [
+                      this.$scopedSlots['header-title']
+                        ? this.$ScopedSlots['header-title'](this.page)
+                        : this.page.title,
+                    ]),
+                  ],
+                ),
+                // Navigation popover
+                h(
+                  Popover,
+                  {
+                    props: {
+                      id: this.navPopoverId,
+                      contentClass: this.theme.navPopoverContainer,
+                    },
+                  },
+                  [
+                    // Navigation pane
+                    h(CalendarNav, {
+                      props: {
+                        value: this.page,
+                        validator: this.canMove,
+                        masks: this.masks,
+                      },
+                      on: {
+                        input: $event => this.move($event),
+                      },
+                      scopedSlots: this.$scopedSlots,
+                    }),
+                  ],
+                ),
+              ]),
+            ]),
+          ],
+        );
+
+    // Weeks
+    const weeks = h(
+      Grid,
+      {
+        class: 'vc-weeks',
+        props: {
+          rows: 7,
+          columns: 7,
+          columnWidth: '1fr',
+        },
+      },
+      [
+        ...this.weekdayLabels.map((wl, i) =>
+          h(
+            'div',
+            {
+              key: i + 1,
+              class: ['vc-weekday', this.theme.weekdays],
+            },
+            [wl],
+          ),
+        ),
+        ...getCalendarDays(this.page).map(day =>
+          h(CalendarDay, {
+            attrs: {
+              ...this.$attrs,
+              day,
+            },
+            on: {
+              ...this.$listeners,
+            },
+            scopedSlots: this.$scopedSlots,
+          }),
+        ),
+      ],
+    );
+
+    return h(
+      'div',
+      {
+        class: 'vc-pane',
+        ref: 'pane',
+      },
+      [header, weeks],
+    );
+  },
   props: {
     position: { type: Number, default: 1 },
     page: Object,

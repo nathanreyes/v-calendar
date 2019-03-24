@@ -9,9 +9,8 @@
     "light": "vc-text-gray-900",
     "dark": "vc-text-gray-200"
   },
-  "headerDivider": "",
   "title": {
-    "light": "vc-text-lg vc-text-gray-900 vc-font-semibold",
+    "light": "vc-text-lg vc-text-gray-900 vc-font-semibold hover:vc-opacity-75",
     "dark": "vc-text-lg vc-text-gray-100 vc-font-semibold"
   },
   "arrows": {
@@ -22,7 +21,6 @@
     "light": "vc-text-sm vc-font-bold vc-text-gray-500",
     "dark": "vc-text-sm vc-font-bold vc-text-{color}-200"
   },
-  "weekdaysDivider": "",
   "navPopoverContainer": {
     "light": "vc-rounded-lg vc-text-sm vc-font-semibold vc-text-white vc-bg-gray-800 vc-border vc-border-gray-700 vc-py-1 vc-shadow",
     "dark": "vc-rounded-lg vc-text-sm vc-font-semibold vc-text-gray-800 vc-bg-white vc-border vc-border-gray-100 vc-py-1 vc-shadow"
