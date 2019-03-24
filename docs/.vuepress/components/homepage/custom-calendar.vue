@@ -109,44 +109,58 @@ export default {
 };
 </script>
 
-<style scoped>
-/* $day-border: 1px solid #b8c2cc
-$day-border-highlight: 1px solid #b8c2cc
-$day-width: 100px
-$day-height: 90px
-$weekday-border: 1px solid #eaeaea
+<style lang="postcss" scoped>
+::-webkit-scrollbar {
+  width: 0px;
+}
 
-::-webkit-scrollbar
-  width: 0px
+::-webkit-scrollbar-track {
+  display: none;
+}
 
-::-webkit-scrollbar-track
-  display: none
+/deep/ .custom-calendar.vc-container {
+  --day-border: 1px solid #b8c2cc;
+  --day-border-highlight: 1px solid #b8c2cc;
+  --day-width: 100px;
+  --day-height: 90px;
+  --weekday-bg: #f8fafc;
+  --weekday-border: 1px solid #eaeaea;
 
-/deep/ .custom-calendar.vc-container
-  width: 100%
-  .vc-header
-    background-color: #f1f5f8
-  .vc-weeks
-    padding: 0
-  .vc-weekdays
-    background-color: #f8fafc
-    border-bottom: $weekday-border
-    border-top: $weekday-border
-    padding: 5px 0
-  .vc-day
-    padding: 0 5px 3px 5px
-    text-align: left
-    height: $day-height
-    min-width: $day-width
-    background-color: white
-    &.weekday-1, &.weekday-7
-      background-color: #eff8ff
-    &:not(.on-bottom)
-      border-bottom: $day-border
-      &.weekday-1
-        border-bottom: $day-border-highlight
-    &:not(.on-right)
-      border-right: $day-border
-  .vc-day-dots
-    margin-bottom: 5px */
+  width: 100%;
+  & .vc-header {
+    background-color: #f1f5f8;
+  }
+  & .vc-weeks {
+    padding: 0;
+  }
+  & .vc-weekdays {
+    background-color: var(--weekday-bg);
+    border-bottom: var(--weekday-border);
+    border-top: var(--weekday-border);
+    padding: 5px 0;
+  }
+  & .vc-day {
+    padding: 0 5px 3px 5px;
+    text-align: left;
+    height: var(--day-height);
+    min-width: var(--day-width);
+    background-color: white;
+    &.weekday-1,
+    &.weekday-7 {
+      background-color: #eff8ff;
+    }
+    &:not(.on-bottom) {
+      border-bottom: var(--day-border);
+      &.weekday-1 {
+        border-bottom: var(--day-border-highlight);
+      }
+    }
+    &:not(.on-right) {
+      border-right: var(--day-border);
+    }
+  }
+  & .vc-day-dots {
+    margin-bottom: 5px;
+  }
+}
 </style>
