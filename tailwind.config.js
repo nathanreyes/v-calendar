@@ -5,5 +5,6 @@ module.exports = {
     backgroundColor: ['hover', 'focus'],
     borderColor: ['hover', 'focus'],
     textColor: ['hover', 'focus'],
+    opacity: ['responsive', 'hover'],
   },
 };

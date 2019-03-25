@@ -11,11 +11,11 @@
   },
   "title": {
     "light": "vc-text-lg vc-text-gray-900 vc-font-semibold hover:vc-opacity-75",
-    "dark": "vc-text-lg vc-text-gray-100 vc-font-semibold"
+    "dark": "vc-text-lg vc-text-gray-100 vc-font-semibold hover:vc-opacity-75"
   },
   "arrows": {
-    "light": "vc-text-gray-600",
-    "dark": "vc-text-white"
+    "light": "vc-text-gray-600 hover:vc-opacity-50",
+    "dark": "vc-text-white hover:vc-opacity-50"
   },
   "weekdays": {
     "light": "vc-text-sm vc-font-bold vc-text-gray-500",
@@ -26,21 +26,21 @@
     "dark": "vc-rounded-lg vc-text-sm vc-font-semibold vc-text-gray-800 vc-bg-white vc-border vc-border-gray-100 vc-py-1 vc-shadow"
   },
   "navTitle": {
-    "light": "vc-text-{color}-100 vc-font-bold hover:vc-bg-gray-900 vc-cursor-pointer vc-px-2 vc-py-1 vc-rounded",
-    "dark": "vc-text-gray-900 vc-font-bold hover:vc-bg-gray-200 vc-cursor-pointer vc-px-2 vc-py-1 vc-rounded"
+    "light": "vc-text-{color}-100 vc-font-bold hover:vc-bg-gray-900 vc-px-2 vc-py-1 vc-rounded",
+    "dark": "vc-text-gray-900 vc-font-bold hover:vc-bg-gray-200 vc-px-2 vc-py-1 vc-rounded"
   },
   "navArrows": {
-    "light": "hover:vc-bg-gray-900 vc-cursor-pointer vc-rounded",
-    "dark": "hover:vc-bg-gray-200 vc-cursor-pointer vc-rounded"
+    "light": "hover:vc-bg-gray-900 vc-rounded",
+    "dark": "hover:vc-bg-gray-200 vc-rounded"
   },
   "navCell": "vc-w-12 vc-text-center vc-py-1 vc-mx-1 vc-rounded",
   "navCellInactive": {
-    "light": "vc-cursor-pointer hover:vc-bg-gray-900 hover:vc-shadow-inner vc-border-2 vc-border-transparent",
-    "dark": "vc-cursor-pointer hover:vc-bg-gray-200 vc-border-2 vc-border-transparent"
+    "light": "hover:vc-bg-gray-900 hover:vc-shadow-inner vc-border-2 vc-border-transparent",
+    "dark": "hover:vc-bg-gray-200 vc-border-2 vc-border-transparent"
   },
   "navCellInactiveCurrent": {
-    "light": "vc-text-{color}-100 vc-cursor-pointer hover:vc-bg-gray-900 vc-border-2 vc-border-{color}-100",
-    "dark": "vc-text-{color}-800 vc-cursor-pointer hover:vc-bg-gray-200 vc-border-2 vc-border-{color}-800"
+    "light": "vc-text-{color}-100 vc-font-bold hover:vc-bg-gray-900 vc-border-2 vc-border-{color}-100",
+    "dark": "vc-text-{color}-600 vc-font-bold hover:vc-bg-gray-200 vc-border-2 vc-border-{color}-500"
   },
   "navCellActive": {
     "light": "vc-bg-{color}-100 vc-text-{color}-900 vc-font-bold vc-shadow",
@@ -56,7 +56,7 @@
     "dark": "vc-rounded vc-text-xs vc-text-gray-900 vc-font-medium vc-bg-white vc-border vc-border-gray-200 vc-px-2 vc-py-1 vc-shadow"
   },
   "dayPopoverHeader": {
-    "light": "vc-text-center vc-text-xs vc-text-gray-300",
+    "light": "vc-text-xs vc-text-gray-300 vc-font-semibold",
     "dark": "vc-text-xs vc-text-gray-700 vc-font-semibold"
   },
   "highlightBaseFillMode": "light",

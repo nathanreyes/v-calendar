@@ -45,7 +45,7 @@ export default {
             'span',
             {
               class: [
-                'vc-day-content',
+                'vc-day-content vc-select-none',
                 this.theme.dayContent,
                 { 'vc-is-dark': this.theme.isDark },
               ],
@@ -539,18 +539,17 @@ export default {
   width: var(--day-content-width);
   height: var(--day-content-height);
   transition: all var(--day-content-transition-time);
-  user-select: none;
   margin: 0.1rem auto;
   &:hover {
-    background-color: hsla(211, 13%, 65%, 0.2);
+    background-color: hsla(211, 25%, 84%, 0.3);
     &.vc-is-dark {
-      background-color: hsla(209, 14%, 37%, 0.4);
+      background-color: hsla(216, 15%, 52%, 0.3);
     }
   }
   &:focus {
-    background-color: hsla(211, 13%, 65%, 0.4);
+    background-color: hsla(211, 25%, 84%, 0.4);
     &.vc-is-dark {
-      background-color: hsla(209, 14%, 37%, 0.7);
+      background-color: hsla(216, 15%, 52%, 0.4);
     }
   }
 }

@@ -6,7 +6,7 @@
       <!--Move prev button-->
       <div
         @click="movePrev"
-        class="vc-flex vc-justify-center vc-items-center"
+        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer"
         :class="theme.navArrows"
       >
         <slot name="nav-left-button">
@@ -14,11 +14,11 @@
         </slot>
       </div>
       <!--Mode switch button-->
-      <span :class="theme.navTitle" @click="toggleMode">{{ title }}</span>
+      <span class="vc-cursor-pointer" :class="theme.navTitle" @click="toggleMode">{{ title }}</span>
       <!--Move next-->
       <div
         @click="moveNext"
-        class="vc-flex vc-justify-center vc-items-center"
+        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer"
         :class="theme.navArrows"
       >
         <slot name="nav-right-button">
@@ -86,7 +86,7 @@ export default {
           const isActive = month === this.month && this.yearIndex === this.year;
           const isCurrent = month === thisMonth && this.yearIndex === thisYear;
           const isDisabled = !this.validator({ month, year: this.yearIndex });
-          const classes = [this.theme.navCell];
+          const classes = [this.theme.navCell, 'vc-cursor-pointer'];
           if (isActive) {
             classes.push(this.theme.navCellActive);
           } else if (isCurrent) {

@@ -66,7 +66,7 @@ export default {
           slot ||
             h(SvgIcon, {
               class: [
-                'vc-arrow',
+                'vc-arrow vc-cursor-pointer vc-select-none',
                 { [directionClass]: true, 'vc-disabled': isDisabled },
                 this.theme_.arrows,
               ],
@@ -107,9 +107,13 @@ export default {
               : h('div', [
                   // Show popover header only if format is defined
                   masks.dayPopover &&
-                    h('div', { class: this.theme_.dayPopoverHeader }, [
-                      dayTitle,
-                    ]),
+                    h(
+                      'div',
+                      {
+                        class: ['vc-text-center', this.theme_.dayPopoverHeader],
+                      },
+                      [dayTitle],
+                    ),
                   attributes.map(attribute =>
                     h(PopoverRow, {
                       key: attribute.key,
@@ -496,7 +500,6 @@ export default {
 <style lang="postcss" scoped>
 .vc-container {
   --arrow-font-size: 1.6rem;
-  --arrow-transition: fill-opacity 0.3s ease-in-out;
 
   --slide-translate: 22px;
   --slide-duration: 0.15s;
@@ -538,16 +541,5 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: var(--arrow-transition);
-  cursor: pointer;
-  user-select: none;
-  &.vc-disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.2;
-  }
-  &:hover {
-    fill-opacity: 0.5;
-  }
 }
 </style>
