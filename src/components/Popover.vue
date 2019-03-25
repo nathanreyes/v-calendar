@@ -67,6 +67,7 @@ export default {
       placement: 'bottom',
       isInteractive: false,
       delay: 10,
+      popperEl: null,
     };
   },
   computed: {
@@ -78,7 +79,7 @@ export default {
             alignment: this.alignment,
             args: this.args,
             updateLayout: this.scheduleUpdate,
-            hide: this.onHide,
+            hide: () => this.onHide({ ref: this.ref }),
           })) ||
         this.$slots.default
       );
@@ -88,6 +89,10 @@ export default {
         placement: this.placement,
         onCreate: this.onPopperUpdate,
         onUpdate: this.onPopperUpdate,
+        modifiers: {
+          hide: { enabled: false },
+          preventOverflow: { enabled: false },
+        },
       };
     },
     isVisible() {
@@ -134,6 +139,7 @@ export default {
     });
   },
   mounted() {
+    this.popoverEl = this.$refs.popover;
     this.addEvents();
   },
   beforeDestroy() {
@@ -141,20 +147,20 @@ export default {
   },
   methods: {
     addEvents() {
-      on(this.$refs.popover, 'mouseover', this.onMouseOver);
-      on(this.$refs.popover, 'mouseleave', this.onMouseLeave);
-      on(this.$refs.popover, 'focusin', this.onFocusIn);
-      on(this.$refs.popover, 'blur', this.onBlur);
+      on(this.popoverEl, 'mouseover', this.onMouseOver);
+      on(this.popoverEl, 'mouseleave', this.onMouseLeave);
+      on(this.popoverEl, 'focusin', this.onFocusIn);
+      on(this.popoverEl, 'blur', this.onBlur);
       this.removeDocHandler = addTapOrClickHandler(
         document,
         this.onDocumentClick,
       );
     },
     removeEvents() {
-      off(this.$refs.popover, 'mouseover', this.onMouseOver);
-      off(this.$refs.popover, 'mouseleave', this.onMouseLeave);
-      off(this.$refs.popover, 'focusin', this.onFocusIn);
-      off(this.$refs.popover, 'blur', this.onBlur);
+      off(this.popoverEl, 'mouseover', this.onMouseOver);
+      off(this.popoverEl, 'mouseleave', this.onMouseLeave);
+      off(this.popoverEl, 'focusin', this.onFocusIn);
+      off(this.popoverEl, 'blur', this.onBlur);
       if (this.removeDocHandler) this.removeDocHandler();
     },
     onMouseOver() {
@@ -187,7 +193,7 @@ export default {
       }
       // Don't hide if target element is contained within popover ref or content
       if (
-        elementContains(this.$refs.popover, e.target) ||
+        elementContains(this.popoverEl, e.target) ||
         elementContains(this.ref, e.target)
       ) {
         return;
@@ -227,7 +233,7 @@ export default {
         if (!this.popper) {
           this.popper = new Popper(
             this.ref,
-            this.$refs.popover,
+            this.popoverEl,
             this.popperOptions,
           );
         } else {

@@ -37,7 +37,7 @@ export default {
                     // Title content
                     h('div', { class: ['vc-title', this.theme.title] }, [
                       this.$scopedSlots['header-title']
-                        ? this.$ScopedSlots['header-title'](this.page)
+                        ? this.$scopedSlots['header-title'](this.page)
                         : this.page.title,
                     ]),
                   ],

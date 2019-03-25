@@ -2,7 +2,7 @@
   <div class="text-center section">
     <h2 class="h2">Custom Calendars</h2>
     <p class="text-lg font-medium text-gray-600 mb-6">Roll your own calendars using scoped slots</p>
-    <v-calendar class="custom-calendar" :masks="masks" :attributes="attributes">
+    <v-calendar class="custom-calendar max-w-full" :masks="masks" :attributes="attributes">
       <div
         slot="day-content"
         slot-scope="{ day, attributes }"
@@ -121,12 +121,11 @@ export default {
 /deep/ .custom-calendar.vc-container {
   --day-border: 1px solid #b8c2cc;
   --day-border-highlight: 1px solid #b8c2cc;
-  --day-width: 100px;
+  --day-width: 90px;
   --day-height: 90px;
   --weekday-bg: #f8fafc;
   --weekday-border: 1px solid #eaeaea;
 
-  width: 100%;
   & .vc-header {
     background-color: #f1f5f8;
   }
