@@ -126,6 +126,8 @@ export default {
   --weekday-bg: #f8fafc;
   --weekday-border: 1px solid #eaeaea;
 
+  border-radius: 0;
+
   & .vc-header {
     background-color: #f1f5f8;
   }

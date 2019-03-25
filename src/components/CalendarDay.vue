@@ -136,12 +136,13 @@ export default {
         ],
       },
       [
-        h('div', { class: { [this.theme.dayNotInMonth]: !this.inMonth } }, [
-          backgroundsLayer(),
-          contentWrapperLayer(),
-          dotsLayer(),
-          barsLayer(),
-        ]),
+        h(
+          'div',
+          {
+            class: ['vc-h-full', { [this.theme.dayNotInMonth]: !this.inMonth }],
+          },
+          [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
+        ),
       ],
     );
   },
