@@ -9,6 +9,8 @@ pageClass: 'homepage'
 
 <div class='text-center'>
 
+<homepage-banner />
+
 <homepage-simple-calendar />
 
 <homepage-multi-calendar />
