@@ -32,7 +32,12 @@
       :key="i"
       class="vc-flex vc-justify-between vc-items-center vc-mx-1 vc-mb-1"
     >
-      <div v-for="(item, j) in row" :key="j" :class="item.classes" @click="item.click">
+      <div
+        v-for="(item, j) in row"
+        :key="j"
+        :class="[ ...item.classes, 'vc-cursor-pointer']"
+        @click="item.click"
+      >
         <!--Item label-->
         {{ item.label }}
       </div>
@@ -86,7 +91,7 @@ export default {
           const isActive = month === this.month && this.yearIndex === this.year;
           const isCurrent = month === thisMonth && this.yearIndex === thisYear;
           const isDisabled = !this.validator({ month, year: this.yearIndex });
-          const classes = [this.theme.navCell, 'vc-cursor-pointer'];
+          const classes = [this.theme.navCell];
           if (isActive) {
             classes.push(this.theme.navCellActive);
           } else if (isCurrent) {
