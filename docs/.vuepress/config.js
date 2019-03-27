@@ -18,8 +18,8 @@ module.exports = {
         link: '/api/',
       },
       {
-        text: 'Migrations',
-        link: '/migrations/v1.0.0-beta.1',
+        text: 'Changelog',
+        link: '/changelog/v1.0.0-beta.1',
       },
       // {
       //   text: 'Showcase',
@@ -38,9 +38,9 @@ module.exports = {
           children: ['', 'attributes', 'datepicker', 'theming-guide'],
         },
       ],
-      '/migrations/': [
+      '/changelog/': [
         {
-          title: 'Migrations',
+          title: 'Changelog',
           collapsable: false,
           children: ['v1.0.0-beta.1', 'v0.9.0', 'v0.8.0'],
         },
