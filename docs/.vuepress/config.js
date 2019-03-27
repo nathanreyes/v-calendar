@@ -17,6 +17,10 @@ module.exports = {
         text: 'API',
         link: '/api/',
       },
+      {
+        text: 'Migrations',
+        link: '/migrations/',
+      },
       // {
       //   text: 'Showcase',
       //   link: '/showcase/',
@@ -31,13 +35,14 @@ module.exports = {
         {
           title: 'Guide',
           collapsable: false,
-          children: [
-            '',
-            'attributes',
-            'datepicker',
-            'theming-guide',
-            'migration-guide',
-          ],
+          children: ['', 'attributes', 'datepicker', 'theming-guide'],
+        },
+      ],
+      '/migrations/': [
+        {
+          title: 'Migrations',
+          collapsable: false,
+          children: ['v1.0.0-beta.1', 'v0.9.0', 'v0.8.0'],
         },
       ],
       '/api/': [
