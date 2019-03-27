@@ -22,14 +22,6 @@
 | `from-date` | Date | Added | Convenient alternative to `from-page` |
 | `to-date` | Date | Added | Convenient alternative to `to-page` |
 
-* Deprecates the `dayCellNotInMonth` theme style in favor of
-  * using the `.c-day:not(.in-month)` class selector
-  ```css
-  /deep/ .c-day:not(.in-month) {
-    opacity: 0;
-  }
-  ```
-  * or using a function for the `dayCell` theme style
 * CSS is inlined, so no longer need to import file from local package
 
 ### `v-date-picker`

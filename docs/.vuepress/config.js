@@ -19,7 +19,7 @@ module.exports = {
       },
       {
         text: 'Migrations',
-        link: '/migrations/',
+        link: '/migrations/v1.0.0-beta.1',
       },
       // {
       //   text: 'Showcase',
