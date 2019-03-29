@@ -171,10 +171,6 @@ export default {
 
 <style lang="postcss" scoped>
 .vc-pane {
-  --header-padding: 10px;
-  --weekday-padding: 0 8px 2px 8px;
-  --weeks-padding: 5px 8px 7px 8px;
-
   flex-grow: 1;
   flex-shrink: 1;
   display: flex;
