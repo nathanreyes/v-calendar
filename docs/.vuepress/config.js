@@ -19,7 +19,7 @@ module.exports = {
       },
       {
         text: 'Changelog',
-        link: '/changelog/v1.0.0',
+        link: '/changelog/v1.0',
       },
       // {
       //   text: 'Showcase',
