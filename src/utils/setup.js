@@ -4,7 +4,7 @@ import { createVC } from '@/utils/vc';
 import { isObject, defaultsDeep } from '@/utils/_';
 
 export const setupCalendar = (Vue, opts) => {
-  // Merge built-in  defaults with user defaults
+  // Merge built-in defaults with user defaults
   const mergedDefaults = isObject(opts) ? { ...opts } : {};
   defaultsDeep(mergedDefaults, defaults);
   // Install support for responsive screens

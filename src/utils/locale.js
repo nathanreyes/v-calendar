@@ -4,7 +4,7 @@ import { isDate, isNumber, isString, isObject, clamp } from '@/utils/_';
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 export default class Locale {
-  constructor({ id, firstDayOfWeek, masks }) {
+  constructor(id, { firstDayOfWeek, masks }) {
     this.id = id;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, 7);
     this.masks = masks;

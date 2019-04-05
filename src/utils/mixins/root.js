@@ -31,7 +31,7 @@ export const rootMixin = {
       // Get the detected locale string
       const detLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
       let config = this.locale;
-      // Get the default locale id
+      // Resolve the locale id
       let id = isString(config)
         ? config
         : has(config, 'id')
@@ -49,7 +49,7 @@ export const rootMixin = {
       // Assign or merge defaults with provided config
       config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
       // Create a new locale
-      return new Locale(config);
+      return new Locale(id, config);
     },
     format() {
       return (date, mask) =>
