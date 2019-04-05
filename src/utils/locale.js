@@ -1,12 +1,12 @@
 import { format, parse } from '@/utils/fecha';
-import { isDate, isNumber, isString, isObject } from '@/utils/_';
+import { isDate, isNumber, isString, isObject, clamp } from '@/utils/_';
 
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 export default class Locale {
   constructor({ id, firstDayOfWeek, masks }) {
     this.id = id;
-    this.firstDayOfWeek = firstDayOfWeek || 1;
+    this.firstDayOfWeek = clamp(firstDayOfWeek, 1, 7);
     this.masks = masks;
     this.dayNames = this.getDayNames('long');
     this.dayNamesShort = this.getDayNames('short');

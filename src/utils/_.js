@@ -7,6 +7,8 @@ import _isFunction from 'lodash/isFunction';
 import _isUndefined from 'lodash/isUndefined';
 import _isNil from 'lodash/isNil';
 
+import _clamp from 'lodash/clamp';
+
 import _kebabCase from 'lodash/kebabCase';
 import _capitalize from 'lodash/capitalize';
 import _upperFirst from 'lodash/upperFirst';
@@ -27,7 +29,8 @@ import _last from 'lodash/last';
 import _uniq from 'lodash/uniq';
 
 // Type checkers
-export const getType = value => Object.prototype.toString.call(value).slice(8, -1);
+export const getType = value =>
+  Object.prototype.toString.call(value).slice(8, -1);
 export const isBoolean = _isBoolean;
 export const isNumber = _isNumber;
 export const isString = _isString;
@@ -37,6 +40,8 @@ export const isObject = value => getType(value) === 'Object';
 export const isFunction = _isFunction;
 export const isUndefined = _isUndefined;
 export const isNil = _isNil;
+// Lodash number utilities
+export const clamp = _clamp;
 // Lodash string utilities
 export const kebabCase = _kebabCase;
 export const capitalize = _capitalize;
