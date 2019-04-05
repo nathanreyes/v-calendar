@@ -121,8 +121,8 @@ const formatFlags = {
   ZZ(dateObj) {
     const o = dateObj.getTimezoneOffset();
     return (
-      (o > 0 ? '-' : '+')
-      + pad(Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60), 4)
+      (o > 0 ? '-' : '+') +
+      pad(Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60), 4)
     );
   },
 };
@@ -250,7 +250,8 @@ export const format = (dateObj, mask, locale) => {
     return '??';
   });
   // Apply formatting rules
-  mask = mask.replace(token, $0 => $0 in formatFlags
+  mask = mask.replace(token, $0 =>
+    $0 in formatFlags
       ? formatFlags[$0](dateObj, locale)
       : $0.slice(1, $0.length - 1),
   );
@@ -295,9 +296,9 @@ const parseString = (dateStr, mask, locale) => {
 
   const today = new Date();
   if (
-    dateInfo.isPm === true
-    && dateInfo.hour != null
-    && +dateInfo.hour !== 12
+    dateInfo.isPm === true &&
+    dateInfo.hour != null &&
+    +dateInfo.hour !== 12
   ) {
     dateInfo.hour = +dateInfo.hour + 12;
   } else if (dateInfo.isPm === false && +dateInfo.hour === 12) {
@@ -337,7 +338,7 @@ export const parse = (dateStr, mask, locale) => {
     (isString(mask) && mask) || 'YYYY-MM-DD',
   ];
   return (
-    masks.map(m => parseString(dateStr, m, locale)).find(d => d)
-    || new Date(dateStr)
+    masks.map(m => parseString(dateStr, m, locale)).find(d => d) ||
+    new Date(dateStr)
   );
 };
