@@ -261,13 +261,13 @@ Use the following tokens to configure your custom masks:
 
 ---
 
-## I18n
+## i18n
 
 VCalendar utilizes the [well supported](https://caniuse.com/#feat=internationalization) Internationalization API to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
 
 At the moment, this API still cannot provide all recommended default settings per locale (such as 'first day of the week'), so those settings are provided out of the box for a reasonable number of locales, with a decent fallback for those locales that aren't included.
 
-With all of this in mind, it is probably best that you rely on the the plugin's built-in methods for detecting the user's locale. However, if you would like to force a specific locale for all users, you may supply your own [default locale](#custom-defaults) using the [*language-region*](https://lingohub.com/documentation/developers/supported-locales/language-designators-with-regions/) format.
+With all of this in mind, it is probably best that you rely on the the plugin's built-in methods for detecting the user's locale. However, if you would like to force a specific locale for all users, you may supply your own [default locale](#custom-defaults) using the [*language-region*](https://lingohub.com/developers/supported-locales/language-designators-with-regions/) format.
 
 ---
 
