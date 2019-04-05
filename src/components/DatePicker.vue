@@ -27,7 +27,6 @@ export default {
         attrs: {
           ...this.$attrs,
           attributes: this.attributes_,
-          masks: this.masks_,
           theme: this.theme_,
           locale: this.locale_,
         },
@@ -103,12 +102,6 @@ export default {
     selectAttribute: Object,
     disabledAttribute: Object,
     attributes: Array,
-    masks: Object,
-    color: String,
-    isDark: Boolean,
-    theme: Object,
-    firstDayOfWeek: Number,
-    locale: null,
   },
   data() {
     return {
@@ -129,7 +122,7 @@ export default {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
     },
     inputMasks() {
-      const inputFormat = this.masks_.input;
+      const inputFormat = this.locale_.masks.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
     inputClass() {

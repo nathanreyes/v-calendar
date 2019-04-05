@@ -4,7 +4,6 @@ import PopoverRef from './PopoverRef';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
 import Grid from './Grid';
-import { getCalendarDays } from '@/utils/dayData';
 import { propOrDefaultMixin, childMixin } from '@/utils/mixins';
 import { createGuid } from '@/utils/helpers';
 
@@ -57,7 +56,6 @@ export default {
                       props: {
                         value: this.page,
                         validator: this.canMove,
-                        masks: this.masks,
                       },
                       on: {
                         input: $event => this.move($event),
@@ -93,7 +91,7 @@ export default {
             [wl],
           ),
         ),
-        ...getCalendarDays(this.page).map(day =>
+        ...this.locale.getCalendarDays(this.page).map(day =>
           h(CalendarDay, {
             attrs: {
               ...this.$attrs,
@@ -118,13 +116,9 @@ export default {
     );
   },
   props: {
-    position: { type: Number, default: 1 },
     page: Object,
-    minPage: Object,
-    maxPage: Object,
     titlePosition: String,
     navVisibility: String,
-    firstDayOfWeek: Number,
     canMove: {
       type: Function,
       default: () => true,
@@ -142,9 +136,6 @@ export default {
     navVisibility_() {
       return this.propOrDefault('navVisibility', 'navVisibility');
     },
-    firstDayOfWeek_() {
-      return this.propOrDefault('firstDayOfWeek', 'firstDayOfWeek');
-    },
     navSlots() {
       return ['nav-left-button', 'nav-right-button'].filter(
         slot => this.$scopedSlots[slot],
@@ -152,9 +143,7 @@ export default {
     },
     weekdayLabels() {
       return this.locale
-        .getWeekdayDates({
-          firstDayOfWeek: this.locale.firstDayOfWeek,
-        })
+        .getWeekdayDates()
         .map(d => this.format(d, this.masks.weekdays));
     },
     titleClass() {

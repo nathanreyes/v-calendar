@@ -1,10 +1,8 @@
-import Locale from '@/utils/locale';
-
-export const createVC = (Vue, defaults) => new Vue({
+export const createVC = (Vue, defaults) => {
+  return new Vue({
     data() {
       return {
         defaults,
-        locales: {},
         activeRefs: {},
       };
     },
@@ -15,15 +13,9 @@ export const createVC = (Vue, defaults) => new Vue({
       theme() {
         return this.defaults.theme;
       },
-    },
-    methods: {
-      getLocale({ id, firstDayOfWeek, masks }) {
-        let locale = this.locales[id];
-        if (!locale) {
-          locale = new Locale({ id, firstDayOfWeek, masks });
-          this.locales[id] = locale;
-        }
-        return locale;
+      locales() {
+        return this.defaults.locales;
       },
     },
   });
+};

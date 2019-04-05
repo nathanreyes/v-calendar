@@ -3,13 +3,15 @@ import Locale from '@/utils/locale';
 import { isString, isObject, has, defaultsDeep } from '@/utils/_';
 
 export const rootMixin = {
+  props: {
+    color: String,
+    isDark: Boolean,
+    theme: Object,
+    firstDayOfWeek: Number,
+    masks: Object,
+    locale: [String, Object],
+  },
   computed: {
-    masks_() {
-      return {
-        ...this.$vc.masks,
-        ...this.masks,
-      };
-    },
     theme_() {
       // Return the theme prop if it is an instance of the Theme class
       if (this.theme instanceof Theme) return this.theme;
@@ -25,27 +27,29 @@ export const rootMixin = {
       // Return the locale prop if it is an instance of the Locale class
       if (this.locale instanceof Locale) return this.locale;
       // Get the default locales
-      const { locales } = this.$vc.defaults;
-      // Get the detected locale
+      const locales = this.$vc.locales;
+      // Get the detected locale string
       const detLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
-      let config = this.locale || detLocale;
+      let config = this.locale;
+      // Get the default locale id
       let id = isString(config)
         ? config
-        : isObject(config)
+        : has(config, 'id')
         ? config.id
         : detLocale;
       id = [id, id.substring(0, 2)].find(i => has(locales, i)) || detLocale;
-      const defLocale = defaultsDeep(locales[id], { id });
-      // Sanitize defaults
+      // Get the default locale, but prioritize the default masks
+      const defLocale = defaultsDeep({ masks: this.$vc.masks }, locales[id]);
+      // Let props override locale settings
       defLocale.firstDayOfWeek = this.passedProp(
         'firstDayOfWeek',
-        defLocale.firstDayOfWeek || defLocale.dow,
+        defLocale.firstDayOfWeek,
       );
-      defLocale.masks = defLocale.masks || { L: defLocale.L };
+      defLocale.masks = defaultsDeep(this.masks, defLocale.masks);
       // Assign or merge defaults with provided config
       config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
-      // Let the $vc instance create the locale as they are shared when possible
-      return this.$vc.getLocale(config);
+      // Create a new locale
+      return new Locale(config);
     },
     format() {
       return (date, mask) =>

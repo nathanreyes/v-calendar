@@ -1,4 +1,6 @@
-const locales = {
+import { toPairs } from '@/utils/_';
+
+let locales = {
   // Arabic
   ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
   // Bulgarian
@@ -74,5 +76,13 @@ const locales = {
 };
 locales.en = locales['en-US'];
 locales.zh = locales['zh-CN'];
+
+toPairs(locales).forEach(([id, { dow, L }]) => {
+  locales[id] = {
+    id,
+    firstDayOfWeek: dow,
+    masks: { L },
+  };
+});
 
 export default locales;

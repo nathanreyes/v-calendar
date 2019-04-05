@@ -30,12 +30,10 @@ export default {
           attributes: this.attributes_,
         },
         props: {
-          position,
           page: this.pages[position - 1],
           minPage: this.minPage_,
           maxPage: this.maxPage_,
           canMove: this.canMove,
-          masks: this.masks_,
         },
         on: {
           ...this.$listeners,
@@ -91,7 +89,7 @@ export default {
         scopedSlots: {
           default: ({ args: day, updateLayout, hide }) => {
             const attributes = day.attributes.filter(a => a.popover);
-            const masks = this.masks_;
+            const masks = this.locale_.masks;
             const format = this.format;
             const dayTitle = format(day.date, masks.dayPopover);
             return isFunction(this.$scopedSlots['day-popover'])
@@ -227,12 +225,6 @@ export default {
     maxPage: Object,
     transition: String,
     attributes: [Object, Array],
-    masks: Object,
-    color: String,
-    isDark: Boolean,
-    theme: Object,
-    firstDayOfWeek: Number,
-    locale: [String, Object],
   },
   data() {
     return {
@@ -281,9 +273,6 @@ export default {
     },
   },
   watch: {
-    masks_() {
-      this.refreshMasks();
-    },
     locale_() {
       this.refreshLocale();
     },
@@ -301,17 +290,14 @@ export default {
     },
   },
   created() {
-    this.refreshMasks();
     this.refreshLocale();
     this.refreshTheme();
     this.refreshPages();
   },
   methods: {
-    refreshMasks() {
-      this.sharedState.masks = this.masks_;
-    },
     refreshLocale() {
       this.sharedState.locale = this.locale_;
+      this.sharedState.masks = this.locale_.masks;
     },
     refreshTheme() {
       this.sharedState.theme = this.theme_;
@@ -423,7 +409,7 @@ export default {
           key,
           month,
           year,
-          title: this.locale_.format(date, this.masks_.title),
+          title: this.locale_.format(date, this.locale_.masks.title),
           shortMonthLabel: this.locale_.format(date, 'MMM'),
           monthLabel: this.locale_.format(date, 'MMMM'),
           shortYearLabel: year.toString().substring(2),
