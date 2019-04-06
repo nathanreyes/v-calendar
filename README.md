@@ -526,5 +526,3 @@ Vue.use(VCalendar, {
 | `maxSwipeTime` | Number | Maximum time in milliseconds allowed for a swipe gesture to complete | `300` |
 | `minHorizontalSwipeDistance` | Number | Minimum distance in pixels allowed for a horizontal swipe gesture | `60` |
 | `maxVerticalSwipeDistance` | Number | Maximum distance in pixels allowed for a horizontal swipe gesture | `80` |
-| `maxTapTolerance` | Number | Maximum distance in pixels allowed for a tap between `touchstart` and `touchend` events | `0` |
-| `maxTapDuration` | Number | Maximum time in milliseconds allowed for a tap between `touchstart` and `touchend` events | `200` |
