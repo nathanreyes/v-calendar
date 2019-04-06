@@ -310,7 +310,7 @@ With all of this in mind, it is probably best that you rely on the the plugin's 
 #### 1 Install via npm
 
 ```bash
-npm install v-calendar
+npm install v-calendar@next
 ```
 
 #### 2 Import and use VCalendar
@@ -341,8 +341,8 @@ import { setupCalendar, Calendar} from 'v-calendar'
 
 // Remember to setup calendar (passing in defaults if needed)
 setupCalendar({
-  firstDayOfWeek: 2,  // Monday,
-  ...,                // ...other defaults
+  componentPrefix: 'vc-',
+  ...,
 });
 
 // Register component(s)

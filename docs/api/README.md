@@ -1,5 +1,9 @@
 # Overview
 
+:::warning
+This page is currently being updated.
+:::
+
 [Defaults](./defaults.md)
 
 [Calendar](./calendar.md)
@@ -16,14 +20,11 @@
   * [Dot](./attribute.md#dot)
   * [Bar](./attribute.md#bar)
   * [Popover](./attribute.md#popover)
-  * [Content Style](./attribute.md#content-style)
-  * [Content Hover Style](./attribute.md#content-hover-style)
+  * [Content](./attribute.md#content)
 
 [Date Picker](./datepicker.md)
   * [Props](./datepicker.md#props)
   * [Events](./datepicker.md#events)
   * [Slots](./datepicker.md#slots)
-
-[Theme Styles](./theme-styles.html)
 
 [Date Patterns](./date-patterns.html)
