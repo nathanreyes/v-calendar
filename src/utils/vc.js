@@ -1,5 +1,5 @@
-export const createVC = (Vue, defaults) => {
-  return new Vue({
+export const createVC = (Vue, defaults) =>
+  new Vue({
     data() {
       return {
         defaults,
@@ -18,4 +18,3 @@ export const createVC = (Vue, defaults) => {
       },
     },
   });
-};
