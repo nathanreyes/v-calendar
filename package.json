@@ -52,7 +52,10 @@
     "babel-jest": "^22.0.4",
     "postcss-preset-env": "^6.6.0",
     "tailwindcss": "^1.0.0-beta.3",
-    "vuepress": "^1.0.0-alpha.40"
+    "vuepress": "^1.0.0-alpha.46"
+  },
+  "peerDependencies": {
+    "vue": "^2.5.18"
   },
   "browserslist": [
     ">1%",

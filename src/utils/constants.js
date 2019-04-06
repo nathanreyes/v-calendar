@@ -5,6 +5,4 @@ export const POPOVER_VISIBILITIES = {
   CLICK: 'click',
   HIDDEN: 'hidden',
   VISIBLE: 'visible',
-  isManual: v => v === 'hidden' || v === 'visible',
-  isManaged: v => v === 'hover' || v === 'focus' || v === 'click',
 };
