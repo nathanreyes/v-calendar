@@ -349,31 +349,6 @@ setupCalendar({
 Vue.component('v-calendar', Calendar);
 ```
 
-#### 3 Reference in your component templates
-
-```html
-<template>
-  <v-calendar>
-  </v-calendar>
-  <v-date-picker
-    mode='single'
-    v-model='date'>
-  </v-date-picker>
-</template>
-```
-
-```js
-<script>
-export default {
-  data() {
-    return {
-      date: new Date(),
-    };
-  },
-};
-</script>
-```
-
 ### CDN
 ```html
 <html>
@@ -408,7 +383,7 @@ export default {
 </html>
 ```
 
-### Polyfills
+<!-- ### Polyfills
 
 `v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` (<= IE11) or even `Intl` (Javascript's internationalization object, <= IE10) if you wish to target older browsers. Two options for accomplishing this are:
 1. **Easy way:**
@@ -416,7 +391,7 @@ export default {
 
   `<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl" />`
 
-2. In Node/Browserify/Webpack environments, use [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) to insert the polyfill for you.
+2. In Node/Browserify/Webpack environments, use [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) to insert the polyfill for you. -->
 
 ## Custom Defaults
 
