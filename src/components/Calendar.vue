@@ -7,6 +7,7 @@ import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
 import { propOrDefaultMixin, rootMixin } from '@/utils/mixins';
+import { addHorizontalSwipeHandler } from '@/utils/touch';
 import {
   pageForDate,
   pageForThisMonth,
@@ -139,11 +140,7 @@ export default {
             },
             this.theme_.container,
           ],
-          on: {
-            touchstart: this.touchStart,
-            touchmove: this.touchMove,
-            touchend: this.touchEnd,
-          },
+          ref: 'container',
         },
         [
           h(
@@ -294,6 +291,22 @@ export default {
     this.refreshTheme();
     this.refreshPages();
   },
+  mounted() {
+    // Add swipe handler to move to next and previous pages
+    const removeHandlers = addHorizontalSwipeHandler(
+      this.$refs.container,
+      ({ toLeft, toRight }) => {
+        if (toLeft) {
+          this.moveNext();
+        } else if (toRight) {
+          this.movePrev();
+        }
+      },
+      this.$vc.defaults.touch,
+    );
+    // Clean up on destroy
+    this.$once('beforeDestroy', () => removeHandlers());
+  },
   methods: {
     refreshLocale() {
       this.sharedState.locale = this.locale_;
@@ -427,57 +440,6 @@ export default {
       // Reassign position if needed
       page.position = position;
       return page;
-    },
-    touchStart(e) {
-      const t = e.changedTouches[0];
-      this.touchState = {
-        active: true,
-        startX: t.screenX,
-        startY: t.screenY,
-        startTime: new Date().getTime(),
-        isSwiping: false,
-        isMonitoringSwipe: true,
-      };
-    },
-    touchMove(e) {
-      if (!this.touchState.isMonitoringSwipe) {
-        if (this.touchState.isSwiping) e.preventDefault();
-        return;
-      }
-      const deltaTime = new Date().getTime() - this.touchState.startTime;
-      if (deltaTime <= 5) {
-        e.preventDefault();
-        return;
-      }
-      const t = e.changedTouches[0];
-      const deltaX = t.screenX - this.touchState.startX;
-      const deltaY = t.screenY - this.touchState.startY;
-      if (Math.abs(deltaX) >= Math.abs(deltaY)) {
-        this.touchState.isSwiping = true;
-        e.preventDefault();
-      }
-      this.touchState.isMonitoringSwipe = false;
-    },
-    touchEnd(e) {
-      const t = e.changedTouches[0];
-      const deltaX = t.screenX - this.touchState.startX;
-      const deltaY = t.screenY - this.touchState.startY;
-      const deltaTime = new Date().getTime() - this.touchState.startTime;
-      if (deltaTime < this.$vc.defaults.maxSwipeTime) {
-        if (
-          Math.abs(deltaX) >= this.$vc.defaults.minHorizontalSwipeDistance &&
-          Math.abs(deltaY) <= this.$vc.defaults.maxVerticalSwipeDistance
-        ) {
-          // Swipe left
-          if (deltaX < 0) {
-            // Move to previous month
-            this.moveNext();
-          } else {
-            // Move to next month
-            this.movePrev();
-          }
-        }
-      }
     },
   },
 };

@@ -1,7 +1,5 @@
 {
   "maxSwipeTime": 300,
   "minHorizontalSwipeDistance": 60,
-  "maxVerticalSwipeDistance": 80,
-  "maxTapTolerance": 0,
-  "maxTapDuration": 200
+  "maxVerticalSwipeDistance": 80
 }
