@@ -170,9 +170,93 @@ Then, reference your custom screens when calling the `$screens` function.
   />
 ```
 
-## Formatting & Parsing
+---
 
-Dates are formatted and/or parsed for the following component sections:
+## i18n
+
+VCalendar utilizes the [well supported](https://caniuse.com/#feat=internationalization) Internationalization API to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
+
+### Locales
+
+A locale includes multiple settings that are typically assigned on a per region basis. This currently includes the following:
+
+| Setting | Description |
+| --- | --- |
+| `firstDayOfWeek` | The day the specified the first day of the week. This is a number from 1 to 7 (Sunday to Saturday, respectfully). |
+| `masks` | Set of masks to use for common sections of the calendar including the title, weekday labels, month labels in the navigation pane and more. |
+| `L` | Common tokens used to represent the common single date expression. (`'MM/DD/YYYY'` for *en-US*) |
+| `dayNames` | Full length identifiers for the days of the week. |
+| `dayNamesShort` | 3-character identifiers for the days of the week. |
+| `dayNamesShorter` | 2-character identifiers for the days of the week. |
+| `dayNamesNarrow` | 1-character identifiers for the days of the week. |
+| `monthNames` | Full length identifiers for the months of the year. |
+| `monthNamesShort` | Abbreviated identifiers for the months of the year. |
+
+There are multiple ways which you can configure the locale for a specific calendar. Locales may be configured globally via the defaults object as well as on a per-calendar basis with the `locale` prop.
+
+#### **No specified locale**
+
+```html
+<v-calendar />
+```
+
+With no locale specified, the locale detected by the Internationalization API is used.
+
+#### **No specified locale w/ override props**
+
+```html
+<v-calendar :first-day-of-week="1" :masks="{ L: 'YYYY-MM-DD' }" />
+```
+
+Uses the detected locale with a customized `firstDayOfWeek` or `masks` that will override the built-in locale settings. When using a customized `masks` prop, the default masks will supply any masks that are missing, so you are free to provide single overrides.
+
+#### **String Locale**
+
+```html
+<v-calendar locale="es" />
+```
+
+With a string locale, the locale with the matching identifier is used. The Internationalization API is used to generate the `dayNames`, `dayNamesShort`, `dayNamesShorter`, `dayNamesNarrow`, `monthNames` and `monthNamesShort` properties. Because the API does not provide common values for the `firstDayOfWeek` or `masks` these are loaded from the plugin defaults (unless specifically provided via props).
+
+#### **Object Locale**
+
+```html
+<v-calendar locale="{ id: 'pt-PT', firstDayOfWeek: 1, masks: { L: 'YYYY-MM-DD' } }" />
+```
+
+With an object locale, you can simply provide all the settings you need together in a single object.
+Note that `firstDayOfWeek` and `masks` props will override this object.
+
+#### **Providing default locales for all calendars**
+
+More conveniently, you may override or provide missing locale information via the `locales` property of the defaults object when using VCalendar. This should be an object with the locale identifier as the key and an object with the locale settings.
+
+```js
+import Vue from 'vue'
+import VCalendar from 'v-calendar'
+
+Vue.use(VCalendar, {
+  locales: {
+    'pt-PT': {
+      firstDayOfWeek: 1,
+      masks: {
+        L: 'YYYY-MM-DD',
+        // ...optional `title`, `weekdays`, `navMonths`, etc
+      }
+    }
+  }
+});
+```
+
+Then, all you need to do is reference your locale when using the calendar component.
+
+```html
+<v-calendar locale="pt-PT" />
+```
+
+### Formatting & Parsing Using Masks
+
+As mentioned before, the locale masks are used to properly format and/or parse dates for the following calendar sections:
 
 | Property Name | Target Area | Default Mask |
 | ------------ | ----------- | -------------- |
@@ -183,53 +267,7 @@ Dates are formatted and/or parsed for the following component sections:
 | `input` | Input element text when `is-inline === false`. (*`v-date-picker` only*) | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
 | `data` | Parses attribute dates, if needed | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
 
-By default, `v-calendar` uses Javascript's Internalization API ([which is increasingly well supported](https://caniuse.com/#search=Intl)) to derive the month and weekday names for the user's locale. This helps keep the package size to a minimum while utilizing an API that should only improve with time. It also uses the most appropriate long date mask (`L`) for that locale (derived from [moment.js](https://github.com/moment/moment/tree/develop/src/locale)).
-
-To use your own custom masks, configure and pass the `masks` object
-  * As a prop to `v-calendar` or  `v-date-picker`
-
-```html
-<v-date-picker
-  :masks='masks'
-  v-model='myDate'>
-</v-date-picker>
-```
-```js
-export default {
-  data() {
-    return {
-      myDate: null,
-      masks: {
-        title: 'MMMM YYYY',
-        weekdays: 'W',
-        navMonths: 'MMM',
-        input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'], // Only for `v-date-picker`
-        dayPopover: 'L', // Only for `v-date-picker`
-        data: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'] // For attribute dates
-      }
-    }
-  }
-}
-```
-  * As a default when using VCalendar
-
-```js
-import Vue from 'vue'
-import VCalendar from 'v-calendar'
-
-Vue.use(VCalendar, {
-  masks: {
-    title: 'MMMM YYYY',
-    weekdays: 'W',
-    navMonths: 'MMM',
-    input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
-    dayPopover: 'L',
-    data: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD']
-  }
-})
-```
-
-### Parsing using multiple masks
+#### Parsing using multiple masks
 
 You'll notice an array was used to specify the `input` mask for `v-date-picker`. This is because it uses the supplied masks(s) to parse, as well as display, the selected date. The first supplied mask is used to display the date selection, while all masks are used (from first to last) to parse the date string. The first successfully parsed date is used as the selected date. This provides more flexibility for the user when manually typing in dates.
 
@@ -259,14 +297,6 @@ Use the following tokens to configure your custom masks:
 | | `YYYY` | 1970, 1971, ..., 2069 |
 | **Long Date** | `L` | 01/21/1983 (en-US), 21/01/1983 (en-GB), ..., 1983/01/21 (*civilized*) |
 
----
-
-## i18n
-
-VCalendar utilizes the [well supported](https://caniuse.com/#feat=internationalization) Internationalization API to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
-
-At the moment, this API still cannot provide all recommended default settings per locale (such as 'first day of the week'), so those settings are provided out of the box for a reasonable number of locales, with a decent fallback for those locales that aren't included.
-
 With all of this in mind, it is probably best that you rely on the the plugin's built-in methods for detecting the user's locale. However, if you would like to force a specific locale for all users, you may supply your own [default locale](#custom-defaults) using the [*language-region*](https://lingohub.com/developers/supported-locales/language-designators-with-regions/) format.
 
 ---
@@ -293,9 +323,9 @@ This is the most common use case.
 import Vue from 'vue';
 import VCalendar from 'v-calendar';
 
-// Use v-calendar, v-date-picker & v-popover components
+// Use v-calendar & v-date-picker components
 Vue.use(VCalendar, {
-  firstDayOfWeek: 2,  // Monday
+  componentPrefix: 'vc-',  // Use <vc-calendar /> instead of <v-calendar />
   ...,                // ...other defaults
 });
 
