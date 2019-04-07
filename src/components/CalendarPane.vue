@@ -205,17 +205,12 @@ export default {
   white-space: nowrap;
 }
 
-.vc-weekdays {
-  flex-shrink: 0;
-  display: flex;
-  padding: var(--weekday-padding);
-}
-
 .vc-weekday {
   display: flex;
   justify-content: center;
   align-items: center;
   flex: 1;
+  padding: var(--weekday-padding);
   cursor: default;
   user-select: none;
 }

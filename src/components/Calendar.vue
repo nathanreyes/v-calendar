@@ -453,20 +453,19 @@ export default {
   --slide-duration: 0.15s;
   --slide-timing: ease;
 
-  --header-padding: 10px;
-  --weekday-padding: 0 8px 2px 8px;
-  --weeks-padding: 5px 8px 7px 8px;
+  --header-padding: 10px 10px 0 10px;
+  --weekday-padding: 5px 0;
+  --weeks-padding: 5px 6px 7px 6px;
   --arrow-horizontal-offset: 10px;
   --arrow-vertical-offset: 11px;
 
   font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     'Helvetica', 'Arial', sans-serif;
-  line-height: 1.5;
-  width: max-content;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
+  width: max-content;
   & /deep/ * {
     box-sizing: inherit;
     &:focus {
