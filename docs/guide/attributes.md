@@ -95,7 +95,7 @@ Finally, let's quickly see how simple it is to add a popover label (or tooltip) 
 
 <guide-attributes-popover />
 
-```js{13-15}
+```js{8-10}
 export default {
   data() {
     return {
@@ -139,7 +139,7 @@ Here is the basic structure of attributes:
   />
 ```
 
-```javascript
+```js
 ...
 data() {
   return {
@@ -210,7 +210,7 @@ Consider this example where an opacity is applied to a bar attribute when it is 
 </v-calendar>
 ```
 
-```javascript
+```js
 export default {
   data() {
     return {
@@ -244,7 +244,7 @@ In the previous example, we saw that all we had to do was use a simple date obje
 
 <guide-attributes-highlight/>
 
-```javascript
+```js
 ...
 data() {
   return {
@@ -296,7 +296,7 @@ Use `null` you would like to to specify an infinite start or end date.
 
 <guide-attributes-date-range-no-start/>
 
-```javascript
+```js
   ...
   dates: {
     start: null, // From the beginning of time
@@ -307,7 +307,7 @@ Use `null` you would like to to specify an infinite start or end date.
 
 Optionally, if using `null` dates, you can omit them entirely.
 
-```javascript
+```js
 ...
 dates: {
   end: new Date() // Same as before
@@ -319,7 +319,7 @@ Thus, an empty object is a valid date expression...
 
 <guide-attributes-date-range-no-start-end/>
 
-```javascript
+```js
   ...
   // From the beginning of time until the end of time
   dates: {},
@@ -365,19 +365,39 @@ By specifying unique target areas for the highlight, we can override this behavi
 
 <guide-attributes-highlight-range :base="{ fillMode: 'solid' }" />
 
+```html
+<v-calendar :attributes="attrs" />
+```
+
+```js{5-8}
+export default {
+  data() {
+    return {
+      attrs: [
+        highlight: {
+          start: { fillMode: 'solid' },
+          end: { fillMode: 'solid' },
+        },
+        dates: {
+          start: new Date(2019, 0, 14),
+          end: new Date(2019, 0, 18)
+        },
+      ]
+    };
+  }
+};
+```
+
+Here the `start` and `end` targets are configured as objects with the `fillMode` property set to `solid`. Here are all of the attribute areas that may be targeted.
+
 | Key | Target Area |
 | --- | ----------- |
 | `base` | Base background layer applied to entire span of the highlight |
-| `baseStart` | First day of the highlight span on the base layer |
-| `baseEnd` |  Last day of the highlight span on the base layer |
-| `baseStartEnd` | First or last day of the highlight span on the base layer |
-| `start` | First day of the highlight span on an overlaid layer |
-| `end` | Last day of the highlight span on an overlaid layer |
-| `startEnd` | First or last day of the highlight span on and overlaid layer |
+| `start` | First day of the highlight span overlaid on the base layer |
+| `end` | Last day of the highlight span overlaid on the base layer |
+| `startEnd` | First and last day of the highlight span overlaid on the base |
 
-For highlights, when targeting the `start`, `end` and `startEnd` sections, a second background is laid on top of the base background.
-
-[Insert picture here]
+For highlights, when targeting the `start`, `end` and `startEnd` areas, a second background is laid on top of the base background. For all other attributes, they serve as a replacement for the `base` area.
 
 Any settings that apply for the `highlight` may also be applied to each subsection.
 
@@ -410,7 +430,7 @@ highlight: {
 
 The third kind of date expression is date patterns. They can target dates that would be incredibly difficult, if not impossible, to do otherwise with simple dates or date ranges. To configure a date pattern, let's first start with a date range.
 
-```javascript
+```js
 {
   start: new Date(2018, 0, 1),  // Jan 1st, 2018
   end: new Date(2019, 0, 1)     // Jan 1st, 2019
@@ -421,7 +441,7 @@ The only thing we need to do to convert this date range into a date pattern is t
 
 <guide-attributes-date-patterns/>
 
-```javascript
+```js
 {
   start: new Date(2018, 0, 1),  // Jan 1st, 2018
   end: new Date(2019, 0, 1)     // Jan 1st, 2019
@@ -433,11 +453,13 @@ We can also target other specific day properties, like `days: [6, 15]` for the 6
 
 Consider another example of displaying dot indicators on the last Friday of every other month, starting on January 1st of 2018. We could do so like this.
 
-```javascript
+<guide-attributes-date-patterns-1 />
+
+```js
 ...
   attrs: [
     {
-      dot: { backgroundColor: 'red' },
+      dot: 'red',
       dates: {
         start: new Date('1/1/2018'),
         monthlyInterval: 2,           // Every other month
@@ -450,7 +472,7 @@ Consider another example of displaying dot indicators on the last Friday of ever
 
 Now, for some reason, we also want to display them on the 15th of every other month, so our first attempt might be to modify the dates to this:
 
-```javascript
+```js{6}
 ...
 dates: {
   start: new Date('1/1/2018'),
@@ -465,7 +487,7 @@ But this would be **wrong**, because all component specifiers are conditionally 
 
 To evaluate a set of conditions *or* another set, we can break the sets of conditions out into an array assigned to the `on` property.
 
-```javascript
+```js{5-8}
 ...
 dates: {
   start: new Date('1/1/2018'),
@@ -495,13 +517,13 @@ Here is a complete reference of date component specifiers available.
 | `monthlyInterval` | Number | Interval number of months from the start date (or today). | n > 0 |
 | `yearlyInterval` | Number | Interval number of years from the start date (or today). | n > 0 |
 
+### Include vs Exclude Dates
+
 Currently, there are four props where you can use date expressions:
   * [`dates`](/api/attribute.md#dates): Date or date range objects (patterns supported) to include for the attributes.
   * [`exclude-dates`](/api/attribute.html#excludedates): Date or date range objects (patterns supported) to exclude for attributes. All other dates are included.
   * [`disabled-dates`](/api/datepicker.html#disabled-dates) Disabled dates for `v-date-picker`.
   * [`available-dates`](/api/datepicker.html#available-dates) Available dates for `v-date-picker`. All other dates are disabled.
-
-### Explicit vs Implicit
 
 In both occasions where date expressions are used (attributes and `v-date-picker`), you'll notice that they come in pairs. One expression is for the explicit form (`dates` for attributes, `disabled-dates` for `v-date-picker`), and the other expression is for the implicit form (`exclude-dates` for attributes, `available-dates` for `v-date-picker`).
 
@@ -512,14 +534,26 @@ However, it might be more efficient to express what dates you would like to excl
 ```html
 <v-date-picker
   v-model='myDate'
-  :disabled-dates='[{ start: null, end: new Date(2017, 11, 31)}, { start: new Date(2018, 1, 1), end: null }]'>
+  :disabled-dates='[
+    {
+      start: null,
+      end: new Date(2017, 11, 31)
+    },
+    {
+      start: new Date(2018, 1, 1),
+      end: null
+    }
+  ]'>
 </v-date-picker>
 ```
 
 ```html
 <v-date-picker
   v-model='myDate'
-  :available-dates='{ start: new Date(2018, 0, 1), end: new Date(2018, 0, 31) }'>
+  :available-dates='{
+    start: new Date(2018, 0, 1),
+    end: new Date(2018, 0, 31)
+  }'>
 </v-date-picker>
 ```
 
@@ -588,7 +622,7 @@ These are the additional configuration options you may use for further dot custo
   />
 ```
 
-```javascript
+```js
 export default {
   data() {
     return {
@@ -655,7 +689,7 @@ These are the additional configuration options you may use for further bar custo
   />
 ```
 
-```javascript
+```js
 export default {
   data() {
     return {
@@ -711,7 +745,7 @@ Labels are the basic tooltip-style popover. They are configured as simple string
 </template>
 ```
 
-```javascript
+```js
 export default {
   data() {
     const todos = [
@@ -754,7 +788,7 @@ If we want to force the user to click on the day content in order to display the
 
 <guide-attributes-popover-labels visibility="focus" />
 
-```javascript
+```js
     ...
     popover: {
       label: todo.description,
@@ -765,7 +799,7 @@ If we want to force the user to click on the day content in order to display the
 
 <guide-attributes-popover-labels visibility="click" />
 
-```javascript
+```js
     ...
     popover: {
       label: todo.description,
@@ -793,7 +827,7 @@ If you would like to hide the indicator, just set the `hideIndicator` property t
 
 <guide-attributes-popover-labels hide-indicators />
 
-```javascript
+```js
     ...
     popover: {
       label: todo.description,

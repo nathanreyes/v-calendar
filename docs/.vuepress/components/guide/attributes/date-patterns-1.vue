@@ -11,8 +11,12 @@ export default {
       fromDate: new Date(2018, 0, 1),
       attrs: [
         {
-          highlight: true,
-          dates: { weekdays: [1, 7] }, // On the weekends
+          dot: 'red',
+          dates: {
+            start: new Date('1/1/2018'),
+            monthlyInterval: 2, // Every other month
+            ordinalWeekdays: { [-1]: 6 }, // ...on the last Friday
+          },
         },
       ],
     };
