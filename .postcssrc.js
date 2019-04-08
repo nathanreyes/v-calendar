@@ -2,6 +2,7 @@ const postcssPresetEnv = require('postcss-preset-env');
 const tailwindcss = require('tailwindcss');
 const purgecss = require('@fullhuman/postcss-purgecss');
 
+// Whitelist Tailwind classes with these colors for theme support
 const colors = [
   'transparent',
   'black',

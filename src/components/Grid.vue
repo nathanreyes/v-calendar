@@ -98,5 +98,6 @@ export default {
   flex-shrink: 1;
   display: grid;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 </style>
