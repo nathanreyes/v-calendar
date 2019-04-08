@@ -130,6 +130,7 @@ export default {
 
   & .vc-header {
     background-color: #f1f5f8;
+    padding: 10px 0;
   }
   & .vc-weeks {
     padding: 0;

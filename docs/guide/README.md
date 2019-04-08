@@ -184,7 +184,6 @@ A locale includes multiple settings that are typically assigned on a per region 
 | --- | --- |
 | `firstDayOfWeek` | The day the specified the first day of the week. This is a number from 1 to 7 (Sunday to Saturday, respectfully). |
 | `masks` | Set of masks to use for common sections of the calendar including the title, weekday labels, month labels in the navigation pane and more. |
-| `L` | Common tokens used to represent the common single date expression. (`'MM/DD/YYYY'` for *en-US*) |
 | `dayNames` | Full length identifiers for the days of the week. |
 | `dayNamesShort` | 3-character identifiers for the days of the week. |
 | `dayNamesShorter` | 2-character identifiers for the days of the week. |

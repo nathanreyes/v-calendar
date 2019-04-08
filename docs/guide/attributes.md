@@ -369,14 +369,14 @@ By specifying unique target areas for the highlight, we can override this behavi
 <v-calendar :attributes="attrs" />
 ```
 
-```js{5-8}
+```js{6-7}
 export default {
   data() {
     return {
       attrs: [
         highlight: {
-          start: { fillMode: 'solid' },
-          end: { fillMode: 'solid' },
+          // Override light fillMode for base
+          base: { fillMode: 'solid' },
         },
         dates: {
           start: new Date(2019, 0, 14),
@@ -392,39 +392,29 @@ Here the `start` and `end` targets are configured as objects with the `fillMode`
 
 | Key | Target Area |
 | --- | ----------- |
-| `base` | Base background layer applied to entire span of the highlight |
-| `start` | First day of the highlight span overlaid on the base layer |
-| `end` | Last day of the highlight span overlaid on the base layer |
-| `startEnd` | First and last day of the highlight span overlaid on the base |
+| `base` | Entire span of the date region |
+| `start` | First day of the date region |
+| `end` | Last day of the date region |
+| `startEnd` | First and last day of the date region |
 
 For highlights, when targeting the `start`, `end` and `startEnd` areas, a second background is laid on top of the base background. For all other attributes, they serve as a replacement for the `base` area.
 
-Any settings that apply for the `highlight` may also be applied to each subsection.
+Any settings that apply for the `highlight` may also be applied to each target area.
 
 
 ```js
 
-// 2A. Produces same result as 1A
 highlight: {
   base: true,
   startEnd: true
 }
 
-// 2B. Produces same result as 1B
 highlight: {
   base: 'red',
   startEnd: 'red',
 }
 
-// 2C. Produces same result as 2B, but without the end caps
-highlight: {
-  base: 'red'
-}
 ```
-
-<!-- <ClientOnly>
-  <guide-attributes-highlights />
-</ClientOnly> -->
 
 ### Date Patterns
 
