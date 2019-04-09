@@ -205,6 +205,14 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `undefined` [Resolved by defaults or detected locale if not completely specified](./defaults.md#locale)
 
+### `disable-page-swipe`
+
+**Type:** Boolean
+
+**Description:** Disables swipe detection for navigating forwards and backwards.
+
+**Default:** `undefined`
+
 <!--
 ### 
 
