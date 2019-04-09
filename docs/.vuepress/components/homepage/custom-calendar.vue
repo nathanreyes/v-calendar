@@ -1,8 +1,15 @@
 <template>
   <div class="text-center section">
     <h2 class="h2">Custom Calendars</h2>
-    <p class="text-lg font-medium text-gray-600 mb-6">Roll your own calendars using scoped slots</p>
-    <v-calendar class="custom-calendar max-w-full" :masks="masks" :attributes="attributes">
+    <p class="text-lg font-medium text-gray-600 mb-6">
+      Roll your own calendars using scoped slots
+    </p>
+    <v-calendar
+      class="custom-calendar max-w-full"
+      :masks="masks"
+      :attributes="attributes"
+      disable-page-swipe
+    >
       <div
         slot="day-content"
         slot-scope="{ day, attributes }"
@@ -14,7 +21,9 @@
             v-for="attr in attributes"
             class="text-xs leading-tight rounded-sm p-1 mt-0 mb-1"
             :class="attr.customData.class"
-          >{{ attr.customData.title }}</p>
+          >
+            {{ attr.customData.title }}
+          </p>
         </div>
       </div>
     </v-calendar>
