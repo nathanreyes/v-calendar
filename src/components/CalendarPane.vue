@@ -20,52 +20,58 @@ export default {
           },
           [
             // Header title
-            h('div', { class: ['vc-title-layout', this.titleClass] }, [
-              h('div', { class: 'vc-title-wrapper' }, [
-                // Navigation popover ref with title
-                h(
-                  PopoverRef,
-                  {
-                    props: {
-                      id: this.navPopoverId,
-                      visibility: this.navVisibility_,
-                      isInteractive: true,
-                    },
-                  },
-                  [
-                    // Title content
-                    h('div', { class: ['vc-title', this.theme.title] }, [
-                      this.$scopedSlots['header-title']
-                        ? this.$scopedSlots['header-title'](this.page)
-                        : this.page.title,
-                    ]),
-                  ],
-                ),
-                // Navigation popover
-                h(
-                  Popover,
-                  {
-                    props: {
-                      id: this.navPopoverId,
-                      contentClass: this.theme.navPopoverContainer,
-                    },
-                  },
-                  [
-                    // Navigation pane
-                    h(CalendarNav, {
+            h(
+              'div',
+              {
+                class: `vc-title-layout align-${this.titlePosition}`,
+              },
+              [
+                h('div', { class: 'vc-title-wrapper' }, [
+                  // Navigation popover ref with title
+                  h(
+                    PopoverRef,
+                    {
                       props: {
-                        value: this.page,
-                        validator: this.canMove,
+                        id: this.navPopoverId,
+                        visibility: this.navVisibility_,
+                        isInteractive: true,
                       },
-                      on: {
-                        input: $event => this.move($event),
+                    },
+                    [
+                      // Title content
+                      h('div', { class: ['vc-title', this.theme.title] }, [
+                        this.$scopedSlots['header-title']
+                          ? this.$scopedSlots['header-title'](this.page)
+                          : this.page.title,
+                      ]),
+                    ],
+                  ),
+                  // Navigation popover
+                  h(
+                    Popover,
+                    {
+                      props: {
+                        id: this.navPopoverId,
+                        contentClass: this.theme.navPopoverContainer,
                       },
-                      scopedSlots: this.$scopedSlots,
-                    }),
-                  ],
-                ),
-              ]),
-            ]),
+                    },
+                    [
+                      // Navigation pane
+                      h(CalendarNav, {
+                        props: {
+                          value: this.page,
+                          validator: this.canMove,
+                        },
+                        on: {
+                          input: $event => this.move($event),
+                        },
+                        scopedSlots: this.$scopedSlots,
+                      }),
+                    ],
+                  ),
+                ]),
+              ],
+            ),
           ],
         );
 
@@ -130,9 +136,6 @@ export default {
     };
   },
   computed: {
-    titlePosition_() {
-      return this.propOrDefault('titlePosition', 'titlePosition');
-    },
     navVisibility_() {
       return this.propOrDefault('navVisibility', 'navVisibility');
     },
@@ -145,9 +148,6 @@ export default {
       return this.locale
         .getWeekdayDates()
         .map(d => this.format(d, this.masks.weekdays));
-    },
-    titleClass() {
-      return this.titlePosition_ ? `align-${this.titlePosition_}` : '';
     },
   },
   methods: {
@@ -193,6 +193,12 @@ export default {
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  &.align-left {
+    justify-content: flex-start;
+  }
+  &.align-right {
+    justify-content: flex-end;
+  }
 }
 
 .vc-title-wrapper {
@@ -203,6 +209,7 @@ export default {
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
+  padding: var(--title-padding);
 }
 
 .vc-weekday {

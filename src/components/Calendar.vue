@@ -31,6 +31,7 @@ export default {
           attributes: this.attributes_,
         },
         props: {
+          titlePosition: this.titlePosition_,
           page: this.pages[position - 1],
           minPage: this.minPage_,
           maxPage: this.maxPage_,
@@ -50,13 +51,12 @@ export default {
         (isPrev && this.$slots.headerLeftButton) ||
         (!isPrev && this.$slots.headerRightButton);
       const svgName = isPrev ? 'left-arrow' : 'right-arrow';
-      const directionClass = isPrev ? 'is-left' : 'is-right';
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
       const onClick = isPrev ? this.movePrev : this.moveNext;
       return h(
         'span',
         {
-          class: ['vc-arrow-layout', { [directionClass]: true }],
+          class: 'vc-arrow-layout',
           attrs: {
             tabindex: '0',
           },
@@ -66,7 +66,7 @@ export default {
             h(SvgIcon, {
               class: [
                 'vc-arrow vc-cursor-pointer vc-select-none',
-                { [directionClass]: true, 'vc-disabled': isDisabled },
+                { 'vc-disabled': isDisabled },
                 this.theme_.arrows,
               ],
               props: {
@@ -185,8 +185,13 @@ export default {
                   }),
                 ],
               ),
-              getArrowButton(true),
-              getArrowButton(false),
+              h(
+                'div',
+                {
+                  class: [`vc-arrows-container title-${this.titlePosition_}`],
+                },
+                [getArrowButton(true), getArrowButton(false)],
+              ),
             ],
           ),
           getDayPopover(),
@@ -211,6 +216,7 @@ export default {
       default: 1,
     },
     step: Number,
+    titlePosition: String,
     isExpanded: Boolean,
     fromDate: Date,
     toDate: Date,
@@ -239,6 +245,9 @@ export default {
     };
   },
   computed: {
+    titlePosition_() {
+      return this.propOrDefault('titlePosition', 'titlePosition');
+    },
     minPage_() {
       return this.minPage || pageForDate(this.locale_.toDate(this.minDate));
     },
@@ -447,13 +456,14 @@ export default {
 
 <style lang="postcss" scoped>
 .vc-container {
-  --arrow-font-size: 1.6rem;
-
   --slide-translate: 22px;
   --slide-duration: 0.15s;
   --slide-timing: ease;
 
   --header-padding: 10px 10px 0 10px;
+  --title-padding: 0 8px;
+  --arrows-padding: 10px;
+  --arrow-font-size: 1.6rem;
   --weekday-padding: 5px 0;
   --weeks-padding: 5px 6px 7px 6px;
   --arrow-horizontal-offset: 10px;
@@ -474,18 +484,25 @@ export default {
   }
 }
 
+.vc-arrows-container {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: var(--arrows-padding);
+  &.title-left {
+    justify-content: flex-end;
+  }
+  &.title-right {
+    justify-content: flex-start;
+  }
+}
+
 .vc-arrow-layout {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: var(--arrow-vertical-offset);
-  &.is-left {
-    left: var(--arrow-horizontal-offset);
-  }
-  &.is-right {
-    right: var(--arrow-horizontal-offset);
-  }
 }
 
 .vc-arrow {
