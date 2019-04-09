@@ -228,11 +228,11 @@ export default {
     maxPage: Object,
     transition: String,
     attributes: [Object, Array],
+    disablePageSwipe: Boolean,
   },
   data() {
     return {
       pages: [],
-      touchState: {},
       transitionName: '',
       inTransition: false,
       isRefreshing: false,
@@ -301,20 +301,22 @@ export default {
     this.refreshPages();
   },
   mounted() {
-    // Add swipe handler to move to next and previous pages
-    const removeHandlers = addHorizontalSwipeHandler(
-      this.$refs.container,
-      ({ toLeft, toRight }) => {
-        if (toLeft) {
-          this.moveNext();
-        } else if (toRight) {
-          this.movePrev();
-        }
-      },
-      this.$vc.defaults.touch,
-    );
-    // Clean up on destroy
-    this.$once('beforeDestroy', () => removeHandlers());
+    if (!this.disablePageSwipe) {
+      // Add swipe handler to move to next and previous pages
+      const removeHandlers = addHorizontalSwipeHandler(
+        this.$refs.container,
+        ({ toLeft, toRight }) => {
+          if (toLeft) {
+            this.moveNext();
+          } else if (toRight) {
+            this.movePrev();
+          }
+        },
+        this.$vc.defaults.touch,
+      );
+      // Clean up on destroy
+      this.$once('beforeDestroy', () => removeHandlers());
+    }
   },
   methods: {
     refreshLocale() {
