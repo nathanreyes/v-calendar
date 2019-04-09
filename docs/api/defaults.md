@@ -38,46 +38,6 @@ pageClass: docs-page
 
 **Default:** `"slide-h"` when `row === 1 && column === 1`, `"fade"` otherwise.
 
-### `maxSwipeTime`
-
-**Type:** Number
-
-**Description:** Maximum time in milliseconds allowed for a swipe gesture to complete
-
-**Default:** `300`
-
-### `minHorizontalSwipeDistance`
-
-**Type:** Number
-
-**Description:** Minimum distance in pixels allowed for a horizontal swipe gesture
-
-**Default:** `60`
-
-### `maxVerticalSwipeDistance`
-
-**Type:** Number
-
-**Description:** Maximum distance in pixels allowed for a horizontal swipe gesture
-
-**Default:** `80`
-
-### `maxTapTolerance`
-
-**Type:** Number
-
-**Description:** Maximum distance in pixels allowed for a tap between `touchstart` and `touchend` events
-
-**Default:** `0`
-
-### `maxTapDuration`
-
-**Type:** Number
-
-**Description:** Maximum time in milliseconds allowed for a tap between `touchstart` and `touchend` events
-
-**Default:** `200`
-
 ### `masks`
 
 **Type:** Object
@@ -106,10 +66,10 @@ pageClass: docs-page
 **Default:**
 ```js
 {
-  "sm": "576px",
+  "sm": "640px",
   "md": "768px",
-  "lg": "992px",
-  "xl": "1200px"
+  "lg": "1024px",
+  "xl": "1280px"
 }
 ```
 
@@ -128,6 +88,19 @@ pageClass: docs-page
 **Description:** Locale identification string in [*language-region*](https://lingohub.com/documentation/developers/supported-locales/language-designators-with-regions/) format, or set of locale configuration properties if object is provided.
 
 **Default:** `undefined`
+
+### `locales`
+
+**Type:** Object
+
+**Description:** Use this object if your locales are missing or you wish to override specific settings for existing locales. The key should match the locale identifier ('en-US') and the value may optionally include any of the following property settings:
+
+| Setting | Description |
+| --- | --- |
+| `firstDayOfWeek` | The day the specified the first day of the week. This is a number from 1 to 7 (Sunday to Saturday, respectfully). |
+| `masks` | Set of masks to use for common sections of the calendar including the title, weekday labels, month labels in the navigation pane and more. |
+
+**Default:** 
 
 ### `datePicker`
 
@@ -185,6 +158,38 @@ pageClass: docs-page
 **Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change.
 
 **Default:** `"bottom"`
+
+### `touch`
+
+**Type:** Object
+
+**Description:** Defaults applied for touch swipes
+
+**Default:** *Reference below for default values*
+
+### `touch.maxSwipeTime`
+
+**Type:** Number
+
+**Description:** Maximum time in milliseconds allowed for a swipe gesture to complete
+
+**Default:** `300`
+
+### `touch.minHorizontalSwipeDistance`
+
+**Type:** Number
+
+**Description:** Minimum distance in pixels allowed for a horizontal swipe gesture
+
+**Default:** `60`
+
+### `touch.maxVerticalSwipeDistance`
+
+**Type:** Number
+
+**Description:** Maximum distance in pixels allowed for a horizontal swipe gesture
+
+**Default:** `80`
 
 <!--
 ### 
