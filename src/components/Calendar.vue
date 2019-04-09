@@ -491,6 +491,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: var(--arrows-padding);
+  pointer-events: none;
   &.title-left {
     justify-content: flex-end;
   }
@@ -503,6 +504,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: auto;
 }
 
 .vc-arrow {
