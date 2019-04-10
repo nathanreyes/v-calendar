@@ -9,13 +9,24 @@ export const addTapOrClickHandler = (element, handler) => {
   }
   // State variables
   let tap = false;
+  let disableClick = false;
   const touchstart = () => (tap = true);
   const touchmove = () => (tap = false);
   const touchend = event => {
-    if (event.type === 'click') tap = true;
     if (tap) {
+      // Reset state
+      tap = false;
+      // Disable click so we don't call handler twice
+      disableClick = true;
+      handler(event);
+      return;
+    }
+    // Make sure tap event hasn't disabled click
+    if (event.type === 'click' && !disableClick) {
       handler(event);
     }
+    // Reset state
+    disableClick = false;
   };
   // Add event handlers
   on(element, 'touchstart', touchstart);

@@ -1,6 +1,7 @@
 <script>
 import PopoverRef from './PopoverRef';
 import { childMixin } from '@/utils/mixins';
+import { addTapOrClickHandler } from '@/utils/touch';
 import { arrayHasItems, objectFromArray } from '@/utils/helpers';
 import { isFunction, last, get } from '@/utils/_';
 
@@ -213,7 +214,6 @@ export default {
     },
     dayContentEvents() {
       return {
-        click: this.click,
         mouseenter: this.mouseenter,
         mouseleave: this.mouseleave,
         focusin: this.focusin,
@@ -257,6 +257,9 @@ export default {
   },
   created() {
     this.refreshGlyphs();
+  },
+  mounted() {
+    addTapOrClickHandler(this.$refs.content, this.click);
   },
   methods: {
     getDayEvent(origEvent) {
@@ -477,17 +480,6 @@ export default {
 
 <style lang="postcss" scoped>
 .vc-day {
-  --day-content-width: 1.8rem;
-  --day-content-height: 1.8rem;
-  --day-content-transition-time: 0.13s ease-in;
-
-  --dot-diameter: 5px;
-  --dot-border-radius: 50%;
-  --dot-spacing: 3px;
-
-  --bar-height: 3px;
-  --bars-width: 75%;
-
   position: relative;
   min-height: 1.8rem;
   height: 100%;

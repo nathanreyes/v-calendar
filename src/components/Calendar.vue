@@ -471,6 +471,17 @@ export default {
   --arrow-horizontal-offset: 10px;
   --arrow-vertical-offset: 11px;
 
+  --day-content-width: 1.8rem;
+  --day-content-height: 1.8rem;
+  --day-content-transition-time: 0.13s ease-in;
+
+  --dot-diameter: 5px;
+  --dot-border-radius: 50%;
+  --dot-spacing: 3px;
+
+  --bar-height: 3px;
+  --bars-width: 75%;
+
   font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     'Helvetica', 'Arial', sans-serif;
