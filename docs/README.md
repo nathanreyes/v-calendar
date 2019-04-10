@@ -11,6 +11,10 @@ pageClass: 'homepage'
 
 <homepage-banner />
 
+```bash
+npm i --save v-calendar@next
+```
+
 <homepage-simple-calendar />
 
 <homepage-multi-calendar />

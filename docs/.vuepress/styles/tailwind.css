@@ -8,14 +8,6 @@
 
 .example {
   @apply my-8 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
-  margin-left: -1.5rem;
-  margin-right: -1.5rem;
-}
-
-@screen sm {
-  .example {
-    @apply mx-0;
-  }
 }
 
 input[type='text'] {
@@ -31,6 +23,12 @@ input[type='text'] {
 }
 .homepage .hero .img {
   max-height: 240px;
+}
+
+.homepage .content {
+  & div[class*='language-'] {
+    @apply max-w-md mx-auto;
+  }
 }
 
 .section {
