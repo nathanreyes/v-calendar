@@ -42,6 +42,10 @@ input[type='text'] {
   @apply text-lg text-gray-700 font-medium mb-3;
 }
 
+ul {
+  @apply list-disc;
+}
+
 @tailwind utilities;
 
 p {

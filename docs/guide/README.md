@@ -14,7 +14,7 @@ Any of these indicators can be displayed for single dates, date ranges and even 
 * 15th of every month
 * Last Friday of every other month.
 
-A date picker is included out of the box with single date, multiple date and date range selection modes. Also, because `v-date-picker` is simply a wrapper for `v-calendar`, both can be extensively customized using props, slots and custom custom theme support,
+A date picker is included out of the box with single date, multiple date and date range selection modes. Also, because `v-date-picker` is simply a wrapper for `v-calendar`, it supports the same props, slots and custom custom theme support,
 
 And of course, V-Calendar is responsive and mobile friendly.
 
@@ -43,6 +43,26 @@ To expand the component to the full width of its container, set the `is-expanded
 ```
 
 <guide-readme-cal-expanded />
+
+### Title Positioning
+
+To make the title header left or right aligned, use the `title-position` prop.
+
+#### Left Aligned
+
+```html
+<v-calendar title-position="left" />
+```
+
+<guide-readme-cal-title-position title-position="left" />
+
+#### Right Aligned
+
+```html
+<v-calendar title-position="right" />
+```
+
+<guide-readme-cal-title-position title-position="right" />
 
 ### Multiple Rows & Columns
 
@@ -138,11 +158,11 @@ The `$screens` function is included as a lightweight mixin for all components wh
 
 There are 4 screen sizes provided by default:
 ```js
-screens: {
-  sm: '576px',  // (min-width: 576px)
-  md: '768px',  // (min-width: 768px)
-  lg: '992px',  // (min-width: 992px)
-  xl: '1200px'  // (min-width: 1200px)
+{
+  "sm": "640px",  // (min-width: 640px)
+  "md": "768px",  // (min-width: 768px)
+  "lg": "1024px", // (min-width: 1024px)
+  "xl": "1280px"  // (min-width: 1280px)
 }
 ```
 
@@ -204,8 +224,12 @@ With no locale specified, the locale detected by the Internationalization API is
 #### **No specified locale w/ override props**
 
 ```html
-<v-calendar :first-day-of-week="1" :masks="{ L: 'YYYY-MM-DD' }" />
+<v-calendar :first-day-of-week="2" />
 ```
+
+<div class="example">
+  <v-calendar :first-day-of-week="2" />
+</div>
 
 Uses the detected locale with a customized `firstDayOfWeek` or `masks` that will override the built-in locale settings. When using a customized `masks` prop, the default masks will supply any masks that are missing, so you are free to provide single overrides.
 
@@ -215,6 +239,10 @@ Uses the detected locale with a customized `firstDayOfWeek` or `masks` that will
 <v-calendar locale="es" />
 ```
 
+<div class="example">
+  <v-calendar locale="es" />
+</div>
+
 With a string locale, the locale with the matching identifier is used. The Internationalization API is used to generate the `dayNames`, `dayNamesShort`, `dayNamesShorter`, `dayNamesNarrow`, `monthNames` and `monthNamesShort` properties. Because the API does not provide common values for the `firstDayOfWeek` or `masks` these are loaded from the plugin defaults (unless specifically provided via props).
 
 #### **Object Locale**
@@ -222,6 +250,10 @@ With a string locale, the locale with the matching identifier is used. The Inter
 ```html
 <v-calendar locale="{ id: 'pt-PT', firstDayOfWeek: 1, masks: { L: 'YYYY-MM-DD' } }" />
 ```
+
+<div class="example">
+  <v-calendar :locale="{ id: 'pt-PT', firstDayOfWeek: 1, masks: { L: 'YYYY-MM-DD' } }" />
+</div>
 
 With an object locale, you can simply provide all the settings you need together in a single object.
 Note that `firstDayOfWeek` and `masks` props will override this object.
@@ -252,6 +284,10 @@ Then, all you need to do is reference your locale when using the calendar compon
 ```html
 <v-calendar locale="pt-PT" />
 ```
+
+<div class="example">
+  <v-calendar locale="pt-PT" />
+</div>
 
 ### Formatting & Parsing Using Masks
 
@@ -324,7 +360,7 @@ import VCalendar from 'v-calendar';
 
 // Use v-calendar & v-date-picker components
 Vue.use(VCalendar, {
-  componentPrefix: 'vc-',  // Use <vc-calendar /> instead of <v-calendar />
+  componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
   ...,                // ...other defaults
 });
 
@@ -340,7 +376,7 @@ import { setupCalendar, Calendar} from 'v-calendar'
 
 // Remember to setup calendar (passing in defaults if needed)
 setupCalendar({
-  componentPrefix: 'vc-',
+  componentPrefix: 'vc',
   ...,
 });
 
