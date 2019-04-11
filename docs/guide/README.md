@@ -224,14 +224,14 @@ With no locale specified, the locale detected by the Internationalization API is
 #### **No specified locale w/ override props**
 
 ```html
-<v-calendar :first-day-of-week="2" />
+<v-calendar :first-day-of-week="2" :masks="{ title: 'MMM YYYY' }" />
 ```
 
 <div class="example">
-  <v-calendar :first-day-of-week="2" />
+  <v-calendar :first-day-of-week="2" :masks="{ title: 'MMM YYYY' }" />
 </div>
 
-Uses the detected locale with a customized `firstDayOfWeek` or `masks` that will override the built-in locale settings. When using a customized `masks` prop, the default masks will supply any masks that are missing, so you are free to provide single overrides.
+Uses the detected locale with customized `firstDayOfWeek` or `masks` that will override the built-in locale settings. When using a customized `masks` prop, the default masks will supply any masks that are missing, so you are free to provide single overrides.
 
 #### **String Locale**
 
@@ -248,11 +248,11 @@ With a string locale, the locale with the matching identifier is used. The Inter
 #### **Object Locale**
 
 ```html
-<v-calendar locale="{ id: 'pt-PT', firstDayOfWeek: 1, masks: { L: 'YYYY-MM-DD' } }" />
+<v-calendar :locale="{ id: 'da', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }" />
 ```
 
 <div class="example">
-  <v-calendar :locale="{ id: 'pt-PT', firstDayOfWeek: 1, masks: { L: 'YYYY-MM-DD' } }" />
+  <v-calendar :locale="{ id: 'da', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }" />
 </div>
 
 With an object locale, you can simply provide all the settings you need together in a single object.
