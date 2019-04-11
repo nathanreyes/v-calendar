@@ -2,7 +2,7 @@ import { POPOVER_VISIBILITIES } from '../constants';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';
-import theme from './theme.json';
+import theme from './theme';
 import locales from './locales';
 
 export default {
