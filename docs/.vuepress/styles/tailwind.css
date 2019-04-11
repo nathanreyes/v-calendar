@@ -8,6 +8,9 @@
 
 .example {
   @apply my-8 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
+  &.is-dark {
+    @apply bg-gray-800;
+  }
 }
 
 input[type='text'] {

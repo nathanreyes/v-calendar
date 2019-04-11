@@ -32,6 +32,22 @@ And of course, V-Calendar is responsive and mobile friendly.
 
 <guide-readme-cal-basic />
 
+### Colors & Dark Mode
+
+You can apply a theme color or dark mode by using the `color` and `is-dark` props.
+
+```html
+<v-calendar color="red" is-dark />
+```
+
+<div class="example is-dark">
+  <v-date-picker mode="range" :value="null" color="red" is-dark is-inline />
+</div>
+
+:::tip
+The following colors are provided out of the box: **gray**, **red**, **orange**, **yellow**, **green**, **teal**, **blue**, **indigo**, **purple**, **pink**.
+:::
+
 ## Layouts
 
 ### Full Width
