@@ -77,7 +77,7 @@ export default {
   highlightStartEndClass: 'vc-rounded-full',
   bgLow: {
     light: 'vc-bg-white vc-border-2 vc-border-{color}-700',
-    dark: 'vc-bg-gray-10 vc-border-2 vc-border-{color}-200',
+    dark: 'vc-bg-gray-900 vc-border-2 vc-border-{color}-200',
   },
   bgAccentLow: {
     light: 'vc-bg-{color}-200',
