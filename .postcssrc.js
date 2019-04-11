@@ -2,23 +2,6 @@ const postcssPresetEnv = require('postcss-preset-env');
 const tailwindcss = require('tailwindcss');
 const purgecss = require('@fullhuman/postcss-purgecss');
 
-// Whitelist Tailwind classes with these colors for theme support
-const colors = [
-  'transparent',
-  'black',
-  'white',
-  'gray',
-  'red',
-  'orange',
-  'yellow',
-  'green',
-  'teal',
-  'blue',
-  'indigo',
-  'purple',
-  'pink',
-];
-
 module.exports = {
   plugins: [
     postcssPresetEnv({
@@ -42,10 +25,7 @@ module.exports = {
               extensions: ['vue', 'js'],
             },
           ],
-          whitelistPatterns: [
-            ...colors.map(c => new RegExp(`^vc-.*${c}`, 'g')),
-            /^vc-border/,
-          ],
+          whitelistPatterns: [/^vc-bg/, /^vc-text/, /^vc-border/],
         })
       : '',
   ],
