@@ -3,6 +3,10 @@ title: 'Date Picker'
 sidebarDepth: 2
 ---
 
+:::warning
+This page is currently being updated.
+:::
+
 # Date Picker
 
 `v-date-picker` is a powerful date picker delivered with `v-calendar`. It is simply a wrapper for `v-calendar` so it comes with a lot of flexibility out of the box. For example, it can accept all props supported by `v-calendar` and emits all of the same events.
