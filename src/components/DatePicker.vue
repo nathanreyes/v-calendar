@@ -39,6 +39,7 @@ export default {
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
+        ref: 'calendar',
       });
     // If inline just return the calendar
     if (this.isInline) return calendar();
@@ -278,6 +279,8 @@ export default {
         !this.disablePopoverHide
       ) {
         this.hidePopover();
+      } else if (this.picker.hasValue(val) && this.$refs.calendar) {
+        this.$refs.calendar.showPageRange(this.picker.getPageRange(val));
       }
       this.disableFormatInput = false;
       this.disablePopoverHide = false;

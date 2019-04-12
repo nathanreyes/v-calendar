@@ -18,7 +18,7 @@ import {
   pageIsBetweenPages,
   createGuid,
 } from '@/utils/helpers';
-import { isNumber, isFunction } from '@/utils/_';
+import { isNumber, isFunction, first, last } from '@/utils/_';
 
 export default {
   name: 'VCalendar',
@@ -451,6 +451,18 @@ export default {
       // Reassign position if needed
       page.position = position;
       return page;
+    },
+    showPageRange({ from, to }) {
+      let firstPage = first(this.pages);
+      let lastPage = last(this.pages);
+      let page = from;
+      if (pageIsAfterPage(to, lastPage)) {
+        page = addPages(to, -(this.pages.length - 1));
+      }
+      if (pageIsBeforePage(from, page)) {
+        page = from;
+      }
+      this.refreshPages({ page });
     },
   },
 };
