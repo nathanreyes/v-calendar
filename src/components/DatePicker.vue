@@ -222,6 +222,7 @@ export default {
       return new Attribute(
         {
           key: 'disabled',
+          content: { class: 'vc-opacity-25 vc-pointer-events-none' },
           ...this.disabledAttribute,
           dates: this.disabledDates_,
           excludeDates: this.availableDates,
@@ -238,6 +239,9 @@ export default {
         attrs.push(this.dragAttribute_);
       } else if (this.selectAttribute_) {
         attrs.push(this.selectAttribute_);
+      }
+      if (this.disabledAttribute_) {
+        attrs.push(this.disabledAttribute_);
       }
       return new AttributeStore(attrs, this.theme_, this.locale_);
     },
