@@ -46,7 +46,7 @@ export default {
             'span',
             {
               class: [
-                'vc-day-content vc-select-none',
+                'vc-day-content',
                 this.theme.dayContent,
                 { 'vc-is-dark': this.theme.isDark },
               ],
@@ -533,6 +533,7 @@ export default {
   height: var(--day-content-height);
   transition: all var(--day-content-transition-time);
   margin: 0.1rem auto;
+  user-select: none;
   &:hover {
     background-color: hsla(211, 25%, 84%, 0.3);
     &.vc-is-dark {

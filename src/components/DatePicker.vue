@@ -271,16 +271,18 @@ export default {
       this.refreshValue();
     },
     value_(val) {
-      if (!this.disableFormatInput) this.formatInput();
-      if (
-        !this.isInline &&
-        this.mode !== 'multiple' &&
-        this.popover_.visibility !== 'visible' &&
-        !this.disablePopoverHide
-      ) {
-        this.hidePopover();
-      } else if (this.picker.hasValue(val) && this.$refs.calendar) {
-        this.$refs.calendar.showPageRange(this.picker.getPageRange(val));
+      if (!this.isInline) {
+        if (!this.disableFormatInput) this.formatInput();
+        if (
+          this.mode !== 'multiple' &&
+          this.popover_.visibility !== 'visible' &&
+          !this.disablePopoverHide
+        ) {
+          this.hidePopover();
+        }
+        if (this.picker.hasValue(val) && this.$refs.calendar) {
+          this.$refs.calendar.showPageRange(this.picker.getPageRange(val));
+        }
       }
       this.disableFormatInput = false;
       this.disablePopoverHide = false;
