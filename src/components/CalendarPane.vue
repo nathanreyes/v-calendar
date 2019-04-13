@@ -35,6 +35,13 @@ export default {
                         id: this.navPopoverId,
                         visibility: this.navVisibility_,
                         isInteractive: true,
+                        placement: `bottom${
+                          this.titlePosition === 'left'
+                            ? '-start'
+                            : this.titlePosition === 'right'
+                            ? '-end'
+                            : ''
+                        }`,
                       },
                     },
                     [
