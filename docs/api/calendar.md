@@ -262,6 +262,26 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Params:** [`day`](./day-object.md)
 
+## Methods
+
+To call methods on a component, assign a ref and call the method any time on or after the `mounted` lifecycle hook.
+
+```html
+<v-calendar ref="calendar' />
+```
+
+```js
+...
+mounted() {
+  this.$refs.calendar.showPageRange({ from: new Date(0, 1, 2020), to: new Date(0, 31, 2020) });
+}
+...
+```
+
+### `showPageRange({ from, to })`
+
+**Description:** Navigates to the calendar page(s) that best displays a given date range.
+
 <!--
 ### 
 
