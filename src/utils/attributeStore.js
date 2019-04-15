@@ -1,12 +1,12 @@
 import Attribute from './attribute';
-import { arrayHasItems } from './helpers';
+import { arrayHasItems, hash } from './helpers';
 import { isFunction } from './_';
 
 export default class AttributeStore {
   constructor(attrs, theme, locale) {
     const list = [];
-    let key = 1,
-      pinAttr = null;
+    let key = 1;
+    let pinAttr = null;
     if (arrayHasItems(attrs)) {
       attrs.forEach(attr => {
         if (!attr || !attr.dates) return;
@@ -32,6 +32,32 @@ export default class AttributeStore {
     this.list = list;
     this.length = list.length;
     this.pinAttr = pinAttr;
+  }
+
+  reset(attrs) {
+    const map = {};
+    const list = [];
+    const newList = [];
+
+    attrs.forEach((attr, i) => {
+      if (!attr || !attr.dates) return;
+      const key = attr.key || i.toString();
+      const order = attr.order || 0;
+      const hashcode = hash(JSON.toString(attr));
+      let newAttr = null;
+      let exAttr = this.map[key];
+      if (!exAttr || exAttr.hashcode !== hashcode) {
+        exAttr = new Attribute(
+          {
+            key,
+            order,
+            ...attr,
+          },
+          this.theme,
+          this.locale,
+        );
+      }
+    });
   }
 
   atIndex(idx) {
