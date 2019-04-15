@@ -44,7 +44,6 @@ export default class AttributeStore {
       const key = attr.key || i.toString();
       const order = attr.order || 0;
       const hashcode = hash(JSON.toString(attr));
-      let newAttr = null;
       let exAttr = this.map[key];
       if (!exAttr || exAttr.hashcode !== hashcode) {
         exAttr = new Attribute(
@@ -56,7 +55,10 @@ export default class AttributeStore {
           this.theme,
           this.locale,
         );
+        newList.push(exAttr);
       }
+      map[key] = exAttr;
+      list.push(exAttr);
     });
   }
 
