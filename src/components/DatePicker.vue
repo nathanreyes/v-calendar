@@ -350,7 +350,9 @@ export default {
     },
     onDayFocusIn(day) {
       // Remove focus from clicked days
-      day.el.blur();
+      if (day.el) {
+        day.el.blur();
+      }
       // Re-emit event
       this.$emit('dayfocusin', day);
     },
