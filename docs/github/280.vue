@@ -71,18 +71,6 @@ export default {
 
       this.calendar.attributes = calendarAttributes;
     },
-    getEventRange(startDate, endDate) {
-      var dates = [startDate, endDate];
-
-      var currDate = this.$moment(startDate).startOf('day');
-      var lastDate = this.$moment(endDate).startOf('day');
-
-      while (currDate.add(1, 'days').diff(lastDate) < 0) {
-        dates.push(currDate.clone().toDate());
-      }
-
-      return dates;
-    },
     mergeArraysWithoutDuplicates(...arr) {
       return [...new Set([].concat(...arr))];
     },
