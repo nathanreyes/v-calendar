@@ -45,16 +45,12 @@ export default {
         : h(
             'span',
             {
-              class: [
-                'vc-day-content',
-                this.theme.dayContent,
-                { 'vc-is-dark': this.theme.isDark },
-              ],
+              class: this.dayContentClass,
               attrs: { ...this.dayContentProps },
               on: this.dayContentEvents,
               ref: 'content',
             },
-            [h('span', { class: this.dayContentClass }, [this.day.label])],
+            [this.day.label],
           );
 
     // Popover content wrapper
@@ -168,6 +164,9 @@ export default {
     inMonth() {
       return this.day.inMonth;
     },
+    isDisabled() {
+      return this.day.isDisabled;
+    },
     attributesLength() {
       return this.attributes.length;
     },
@@ -205,7 +204,12 @@ export default {
       return !!arrayHasItems(this.popovers);
     },
     dayContentClass() {
-      return get(last(this.content), 'class');
+      return `vc-day-content ${
+        this.isDisabled ? this.theme.dayContentDisabled : this.theme.dayContent
+      } ${this.theme.isDark ? 'vc-is-dark' : ''} ${get(
+        last(this.content),
+        'class',
+      )}`;
     },
     dayContentProps() {
       return {
@@ -531,19 +535,18 @@ export default {
   align-items: center;
   width: var(--day-content-width);
   height: var(--day-content-height);
-  transition: all var(--day-content-transition-time);
-  margin: 0.1rem auto;
+  margin: var(--day-content-margin);
   user-select: none;
   &:hover {
-    background-color: hsla(211, 25%, 84%, 0.3);
+    background-color: var(--day-content-bg-color-hover);
     &.vc-is-dark {
-      background-color: hsla(216, 15%, 52%, 0.3);
+      background-color: var(--day-content-dark-bg-color-hover);
     }
   }
   &:focus {
-    background-color: hsla(211, 25%, 84%, 0.4);
+    background-color: var(--day-content-bg-color-focus);
     &.vc-is-dark {
-      background-color: hsla(216, 15%, 52%, 0.4);
+      background-color: var(--day-content-dark-bg-color-focus);
     }
   }
 }
@@ -555,8 +558,8 @@ export default {
 }
 
 .vc-highlight {
-  width: 1.8rem;
-  height: 1.8rem;
+  width: var(--day-content-width);
+  height: var(--day-content-height);
   &.vc-highlight-base-start {
     width: 50% !important;
     border-radius: 0 !important;

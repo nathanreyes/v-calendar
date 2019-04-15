@@ -485,7 +485,12 @@ export default {
 
   --day-content-width: 1.8rem;
   --day-content-height: 1.8rem;
+  --day-content-margin: 0.1rem auto;
   --day-content-transition-time: 0.13s ease-in;
+  --day-content-bg-color-hover: hsla(211, 25%, 84%, 0.3);
+  --day-content-dark-bg-color-hover: hsla(216, 15%, 52%, 0.3);
+  --day-content-bg-color-focus: hsla(211, 25%, 84%, 0.4);
+  --day-content-dark-bg-color-focus: hsla(216, 15%, 52%, 0.4);
 
   --dot-diameter: 5px;
   --dot-border-radius: 50%;
