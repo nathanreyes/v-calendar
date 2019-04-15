@@ -10,11 +10,16 @@
         :class="theme.navArrows"
       >
         <slot name="nav-left-button">
-          <svg-icon name="left-arrow"/>
+          <svg-icon name="left-arrow" />
         </slot>
       </div>
       <!--Mode switch button-->
-      <span class="vc-cursor-pointer" :class="theme.navTitle" @click="toggleMode">{{ title }}</span>
+      <span
+        class="vc-cursor-pointer"
+        :class="theme.navTitle"
+        @click="toggleMode"
+        >{{ title }}</span
+      >
       <!--Move next-->
       <div
         @click="moveNext"
@@ -22,7 +27,7 @@
         :class="theme.navArrows"
       >
         <slot name="nav-right-button">
-          <svg-icon name="right-arrow"/>
+          <svg-icon name="right-arrow" />
         </slot>
       </div>
     </div>
@@ -35,7 +40,7 @@
       <div
         v-for="(item, j) in row"
         :key="j"
-        :class="[ ...item.classes, 'vc-cursor-pointer']"
+        :class="[...item.classes, 'vc-cursor-pointer']"
         @click="item.click"
       >
         <!--Item label-->
