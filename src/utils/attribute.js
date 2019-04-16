@@ -6,6 +6,7 @@ export default class Attribute {
   constructor(
     {
       key,
+      hashcode,
       highlight,
       content,
       dot,
@@ -22,6 +23,7 @@ export default class Attribute {
     locale,
   ) {
     this.key = isUndefined(key) ? createGuid() : key;
+    this.hashcode = hashcode;
     this.order = order || 0;
     this.customData = customData;
     this.pinPage = pinPage;

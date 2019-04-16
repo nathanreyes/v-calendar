@@ -332,6 +332,8 @@ export default {
     },
     refreshStore() {
       const newAttrs = this.store.refresh(this.attributes);
+      console.log('newAttrs', newAttrs.length);
+      this.fillAttrs(this.pages, newAttrs);
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
@@ -457,7 +459,29 @@ export default {
       }
       // Reassign position if needed
       page.position = position;
+      // Assign day info
+      page.days = this.locale_.getCalendarDays(page);
+      // Fill attributes for all the page days
+      this.fillAttrs([page], this.store.list);
       return page;
+    },
+    fillAttrs(pages, attrs) {
+      pages.forEach(p => {
+        p.days.forEach(d => {
+          const attributes = [];
+          attrs.forEach(attr => {
+            const targetDate = attr.includesDay(d);
+            if (targetDate) {
+              console.log('set', targetDate.start, targetDate.end, 'for', d.id);
+              attributes.push({
+                ...attr,
+                targetDate,
+              });
+            }
+          });
+          d.attributes = attributes;
+        });
+      });
     },
     showPageRange({ from, to }) {
       let firstPage = first(this.pages);

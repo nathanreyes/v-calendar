@@ -38,7 +38,6 @@ export default {
       isFunction(this.$scopedSlots['day-content'])
         ? this.$scopedSlots['day-content']({
             day: this.day,
-            attributes: this.attributesList,
             dayProps: this.dayContentProps,
             dayEvents: this.dayContentEvents,
           })
@@ -146,7 +145,6 @@ export default {
   inject: ['sharedState'],
   props: {
     day: { type: Object, required: true },
-    attributes: Object,
   },
   data() {
     return {
@@ -166,15 +164,6 @@ export default {
     },
     isDisabled() {
       return this.day.isDisabled;
-    },
-    attributesLength() {
-      return this.attributes.length;
-    },
-    attributesList() {
-      return this.attributes.onDay(this.day);
-    },
-    attributesMap() {
-      return objectFromArray(this.attributesList);
     },
     backgrounds() {
       return this.glyphs.backgrounds;
@@ -228,16 +217,11 @@ export default {
       return {
         ...this.day,
         el: this.$refs.content,
-        attributes: this.attributesList,
-        attributesMap: this.attributesMap,
         popovers: this.popovers,
       };
     },
   },
   watch: {
-    attributesList() {
-      this.refreshGlyphs();
-    },
     theme() {
       this.refreshGlyphs();
     },
@@ -295,8 +279,8 @@ export default {
         popovers: [],
         content: [],
       };
-      if (arrayHasItems(this.attributesList)) {
-        this.attributesList.forEach(attr => {
+      if (arrayHasItems(this.day.attributes)) {
+        this.day.attributes.forEach(attr => {
           // Add glyphs for each attribute
           const { targetDate } = attr;
           const { isDate, isComplex, startTime, endTime } = targetDate;

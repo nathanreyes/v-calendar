@@ -25,21 +25,21 @@ export default class AttributeStore {
         const hashcode = hash(JSON.stringify(attr.dates));
         let exAttr = this.map[key];
         if (!exAttr || exAttr.hashcode !== hashcode) {
-          console.log(this.cnt++);
           exAttr = new Attribute(
             {
               key,
               order,
+              hashcode,
               ...attr,
             },
             this.theme,
             this.locale,
           );
+          newList.push(exAttr);
         }
         if (exAttr.pinPage) {
           pinAttr = exAttr;
         }
-        newList.push(exAttr);
         map[key] = exAttr;
         list.push(exAttr);
       });

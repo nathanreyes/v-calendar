@@ -104,7 +104,7 @@ export default {
             [wl],
           ),
         ),
-        ...this.locale.getCalendarDays(this.page).map(day =>
+        ...this.page.days.map(day =>
           h(CalendarDay, {
             attrs: {
               ...this.$attrs,
