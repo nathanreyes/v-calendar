@@ -199,7 +199,7 @@ export default class Locale {
         const onLeft = i === 1;
         const onRight = i === 7;
         days.push({
-          id: `${month}.${day}`,
+          id: `${month}-${day}`,
           label: day.toString(),
           day,
           dayFromEnd,

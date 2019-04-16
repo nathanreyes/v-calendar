@@ -114,6 +114,7 @@ export default {
               ...this.$listeners,
             },
             scopedSlots: this.$scopedSlots,
+            ref: day.id,
           }),
         ),
       ],
@@ -160,6 +161,13 @@ export default {
   methods: {
     move(page) {
       this.$emit('update:page', page);
+    },
+    refresh(ids) {
+      ids.forEach(id => {
+        if (this.$refs[id]) {
+          this.$refs[id].refresh();
+        }
+      });
     },
   },
 };

@@ -18,21 +18,22 @@ import {
   pageIsBetweenPages,
   createGuid,
 } from '@/utils/helpers';
-import { isNumber, isFunction, first, last } from '@/utils/_';
+import { isNumber, isFunction, set, first, last } from '@/utils/_';
 
 export default {
   name: 'VCalendar',
   render(h) {
     // Renderer for calendar panes
-    const getPaneComponent = ({ position }) =>
-      h(CalendarPane, {
+    const getPaneComponent = ({ position }) => {
+      const page = this.pages[position - 1];
+      return h(CalendarPane, {
         attrs: {
           ...this.$attrs,
           attributes: this.store,
         },
         props: {
           titlePosition: this.titlePosition_,
-          page: this.pages[position - 1],
+          page,
           minPage: this.minPage_,
           maxPage: this.maxPage_,
           canMove: this.canMove,
@@ -43,7 +44,9 @@ export default {
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
+        ref: page.key,
       });
+    };
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
@@ -89,7 +92,9 @@ export default {
         },
         scopedSlots: {
           default: ({ args: day, updateLayout, hide }) => {
-            const attributes = day.attributes.filter(a => a.popover);
+            const attributes = Object.values(day.attributes).filter(
+              a => a.popover,
+            );
             const masks = this.locale_.masks;
             const format = this.format;
             const dayTitle = format(day.date, masks.dayPopover);
@@ -332,7 +337,6 @@ export default {
     },
     refreshStore() {
       const newAttrs = this.store.refresh(this.attributes);
-      console.log('newAttrs', newAttrs.length);
       this.fillAttrs(this.pages, newAttrs);
     },
     canMove(page) {
@@ -431,7 +435,7 @@ export default {
       return null;
     },
     buildPage({ month, year }, position) {
-      const key = `${year.toString()}.${month.toString()}`;
+      const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
       if (!page) {
         const date = new Date(year, month - 1, 15);
@@ -466,20 +470,28 @@ export default {
       return page;
     },
     fillAttrs(pages, attrs) {
+      const rPages = {};
       pages.forEach(p => {
         p.days.forEach(d => {
-          const attributes = [];
+          const attributes = d.attributes || {};
           attrs.forEach(attr => {
             const targetDate = attr.includesDay(d);
             if (targetDate) {
-              console.log('set', targetDate.start, targetDate.end, 'for', d.id);
-              attributes.push({
+              set(rPages, `${p.key}.${d.id}`, true);
+              const newAttr = {
                 ...attr,
                 targetDate,
-              });
+              };
+              attributes[attr.key] = newAttr;
             }
           });
           d.attributes = attributes;
+        });
+      });
+      // Refresh page days for which attributes were affected
+      this.$nextTick(() => {
+        Object.keys(rPages).forEach(p => {
+          this.$refs[p].refresh(Object.keys(rPages[p]));
         });
       });
     },

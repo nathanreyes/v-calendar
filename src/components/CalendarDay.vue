@@ -223,7 +223,7 @@ export default {
   },
   watch: {
     theme() {
-      this.refreshGlyphs();
+      this.refresh();
     },
     popovers() {
       const visibilities = ['click', 'focus', 'hover', 'visible'];
@@ -244,7 +244,7 @@ export default {
     },
   },
   created() {
-    this.refreshGlyphs();
+    this.refresh();
   },
   mounted() {
     addTapOrClickHandler(this.$refs.content, this.click);
@@ -271,7 +271,7 @@ export default {
     focusout(e) {
       this.$emit('dayfocusout', this.getDayEvent(e));
     },
-    refreshGlyphs() {
+    refresh() {
       const glyphs = {
         backgrounds: [],
         dots: [],
@@ -279,8 +279,9 @@ export default {
         popovers: [],
         content: [],
       };
-      if (arrayHasItems(this.day.attributes)) {
-        this.day.attributes.forEach(attr => {
+      const attributes = Object.values(this.day.attributes);
+      if (arrayHasItems(attributes)) {
+        attributes.forEach(attr => {
           // Add glyphs for each attribute
           const { targetDate } = attr;
           const { isDate, isComplex, startTime, endTime } = targetDate;
