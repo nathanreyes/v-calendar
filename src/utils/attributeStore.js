@@ -3,63 +3,51 @@ import { arrayHasItems, hash } from './helpers';
 import { isFunction } from './_';
 
 export default class AttributeStore {
-  constructor(attrs, theme, locale) {
-    const list = [];
-    let key = 1;
-    let pinAttr = null;
-    if (arrayHasItems(attrs)) {
-      attrs.forEach(attr => {
-        if (!attr || !attr.dates) return;
-        const newAttr =
-          attr instanceof Attribute
-            ? attr
-            : new Attribute(
-                {
-                  key: attr.key || key.toString(),
-                  order: attr.order || 0,
-                  ...attr,
-                },
-                theme,
-                locale,
-              );
-        if (newAttr.pinPage) {
-          pinAttr = newAttr;
-        }
-        list.push(newAttr);
-        key++;
-      });
-    }
-    this.list = list;
-    this.length = list.length;
-    this.pinAttr = pinAttr;
+  constructor(theme, locale) {
+    this.theme = theme;
+    this.locale = locale;
+    this.map = {};
+    this.list = [];
+
+    this.cnt = 0;
   }
 
-  reset(attrs) {
+  refresh(attrs) {
     const map = {};
     const list = [];
     const newList = [];
-
-    attrs.forEach((attr, i) => {
-      if (!attr || !attr.dates) return;
-      const key = attr.key || i.toString();
-      const order = attr.order || 0;
-      const hashcode = hash(JSON.toString(attr));
-      let exAttr = this.map[key];
-      if (!exAttr || exAttr.hashcode !== hashcode) {
-        exAttr = new Attribute(
-          {
-            key,
-            order,
-            ...attr,
-          },
-          this.theme,
-          this.locale,
-        );
+    let pinAttr = null;
+    if (arrayHasItems(attrs)) {
+      attrs.forEach((attr, i) => {
+        if (!attr || !attr.dates) return;
+        const key = attr.key || i.toString();
+        const order = attr.order || 0;
+        const hashcode = hash(JSON.stringify(attr.dates));
+        let exAttr = this.map[key];
+        if (!exAttr || exAttr.hashcode !== hashcode) {
+          console.log(this.cnt++);
+          exAttr = new Attribute(
+            {
+              key,
+              order,
+              ...attr,
+            },
+            this.theme,
+            this.locale,
+          );
+        }
+        if (exAttr.pinPage) {
+          pinAttr = exAttr;
+        }
         newList.push(exAttr);
-      }
-      map[key] = exAttr;
-      list.push(exAttr);
-    });
+        map[key] = exAttr;
+        list.push(exAttr);
+      });
+    }
+    this.map = map;
+    this.list = list;
+    this.pinAttr = pinAttr;
+    return newList;
   }
 
   atIndex(idx) {

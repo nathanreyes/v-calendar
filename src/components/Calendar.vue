@@ -28,7 +28,7 @@ export default {
       h(CalendarPane, {
         attrs: {
           ...this.$attrs,
-          attributes: this.attributes_,
+          attributes: this.store,
         },
         props: {
           titlePosition: this.titlePosition_,
@@ -233,6 +233,7 @@ export default {
   data() {
     return {
       pages: [],
+      store: null,
       transitionName: '',
       inTransition: false,
       isRefreshing: false,
@@ -272,11 +273,6 @@ export default {
         pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
       );
     },
-    attributes_() {
-      return this.attributes instanceof AttributeStore
-        ? this.attributes
-        : new AttributeStore(this.attributes, this.theme_, this.locale_);
-    },
   },
   watch: {
     locale_() {
@@ -294,10 +290,14 @@ export default {
     count() {
       this.refreshPages();
     },
+    attributes() {
+      this.refreshStore();
+    },
   },
   created() {
     this.refreshLocale();
     this.refreshTheme();
+    this.initStore();
     this.refreshPages();
   },
   mounted() {
@@ -325,6 +325,13 @@ export default {
     },
     refreshTheme() {
       this.sharedState.theme = this.theme_;
+    },
+    initStore() {
+      this.store = new AttributeStore(this.theme_, this.locale_);
+      this.refreshStore();
+    },
+    refreshStore() {
+      const newAttrs = this.store.refresh(this.attributes);
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
@@ -413,7 +420,7 @@ export default {
       return movePrev ? 'slide-right' : 'slide-left';
     },
     getPageForAttributes() {
-      const attr = this.attributes_.pinAttr;
+      const attr = this.store.pinAttr;
       if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;

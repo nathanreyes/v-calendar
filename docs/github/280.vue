@@ -64,9 +64,9 @@ export default {
 
       // Merge arrays
       calendarAttributes = this.mergeArraysWithoutDuplicates(
-        calendarAttributes,
+        // calendarAttributes,
         calendarEvents,
-        calendarAvailabilites,
+        // calendarAvailabilites,
       );
 
       this.calendar.attributes = calendarAttributes;

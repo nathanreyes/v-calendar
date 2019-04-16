@@ -241,10 +241,11 @@ export default {
       } else if (this.selectAttribute_) {
         attrs.push(this.selectAttribute_);
       }
-      if (this.disabledAttribute_) {
-        attrs.push(this.disabledAttribute_);
-      }
-      return new AttributeStore(attrs, this.theme_, this.locale_);
+      return attrs;
+      // if (this.disabledAttribute_) {
+      //   attrs.push(this.disabledAttribute_);
+      // }
+      // return new AttributeStore(attrs, this.theme_, this.locale_);
     },
     picker() {
       const opts = {
