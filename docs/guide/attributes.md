@@ -181,7 +181,7 @@ The `customData` property is used to link your own custom data object to the att
 By default, attributes are ordered to display the most information possible. For example, when attributes with highlighted regions overlap, single date regions appear above date range regions, and date ranges with a later start date appear above those with an earlier start date. 
 
 <p align='center'>
-  <img src='http://res.cloudinary.com/dqgcfqzpk/image/upload/v1524511198/v-calendar/attributes-order.png' title='Ordering with highlights' width='200'>
+  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524511198/v-calendar/attributes-order.png' title='Ordering with highlights' width='200'>
 </p>
 
 If you would like to force an attribute to display above (or before) all others and override these rules, assign an order value greater than 0.
@@ -803,14 +803,14 @@ Also, you'll notice there is a small indicator next to the popover content row f
 In the previous example, because a red dot was used, the indicator displays the same.
 
 <p align='center'>
-  <img src='http://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-dot.png' title='Popover dot indicator' width='100'>
+  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-dot.png' title='Popover dot indicator' width='100'>
 </p>
 
 Here is how a bar or highlight would appear, respectively.
 
 <p align='center'>
-  <img src='http://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-bar.png' title='Popover bar indicator' width='100'>
-  <img src='http://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-highlight.png' title='Popover highlight indicator' width='105'>
+  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-bar.png' title='Popover bar indicator' width='100'>
+  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-highlight.png' title='Popover highlight indicator' width='105'>
 </p>
 
 If you would like to hide the indicator, just set the `hideIndicator` property to `true`;
