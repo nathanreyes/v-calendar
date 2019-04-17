@@ -49,9 +49,7 @@ export default {
   mounted() {
     this.reference = this.element || this.$slots.default[0].elm;
     this.addEvents();
-    this.$once('beforeDestroy', () => {
-      this.removeEvents();
-    });
+    this.$once('beforeDestroy', () => this.removeEvents());
     this.refreshVisibility();
   },
   methods: {
