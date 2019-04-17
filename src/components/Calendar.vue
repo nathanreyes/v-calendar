@@ -18,7 +18,15 @@ import {
   pageIsBetweenPages,
   createGuid,
 } from '@/utils/helpers';
-import { isNumber, isFunction, set, first, last } from '@/utils/_';
+import {
+  isNumber,
+  isFunction,
+  set,
+  hasAny,
+  omit,
+  first,
+  last,
+} from '@/utils/_';
 
 export default {
   name: 'VCalendar',
@@ -44,7 +52,9 @@ export default {
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
-        ref: page.key,
+        key: page.key,
+        ref: 'pages',
+        refInFor: true,
       });
     };
 
@@ -296,7 +306,10 @@ export default {
       this.refreshPages();
     },
     attributes() {
-      this.refreshStore();
+      this.refreshAttrs();
+    },
+    pages() {
+      this.refreshAttrs();
     },
   },
   created() {
@@ -333,11 +346,6 @@ export default {
     },
     initStore() {
       this.store = new AttributeStore(this.theme_, this.locale_);
-      this.refreshStore();
-    },
-    refreshStore() {
-      const newAttrs = this.store.refresh(this.attributes);
-      this.fillAttrs(this.pages, newAttrs);
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
@@ -465,34 +473,44 @@ export default {
       page.position = position;
       // Assign day info
       page.days = this.locale_.getCalendarDays(page);
-      // Fill attributes for all the page days
-      this.fillAttrs([page], this.store.list);
       return page;
     },
-    fillAttrs(pages, attrs) {
-      const rPages = {};
-      pages.forEach(p => {
+    refreshAttrs() {
+      // Refresh attribute store - get adds and deletes for efficient DOM updates
+      const { adds, deletes } = this.store.refresh(this.attributes);
+      // For each page...
+      this.pages.forEach(p => {
+        // For each day...
         p.days.forEach(d => {
-          const attributes = d.attributes || {};
-          attrs.forEach(attr => {
+          // Get the current attributes
+          let attributes = d.attributes || {};
+          // Strip out attributes that need to be removed
+          if (hasAny(attributes, deletes)) {
+            attributes = omit(attributes, deletes);
+            // Flag day so that it refreshes
+            d.refresh = true;
+          }
+          adds.forEach(attr => {
             const targetDate = attr.includesDay(d);
             if (targetDate) {
-              set(rPages, `${p.key}.${d.id}`, true);
               const newAttr = {
                 ...attr,
                 targetDate,
               };
               attributes[attr.key] = newAttr;
+              // Flag day so that it refreshes
+              d.refresh = true;
             }
           });
-          d.attributes = attributes;
+          // Reassign day attributes
+          if (d.refresh) {
+            d.attributes = attributes;
+          }
         });
       });
-      // Refresh page days for which attributes were affected
+      // Refresh pages
       this.$nextTick(() => {
-        Object.keys(rPages).forEach(p => {
-          this.$refs[p].refresh(Object.keys(rPages[p]));
-        });
+        this.$refs.pages.forEach(p => p.refresh());
       });
     },
     showPageRange({ from, to }) {

@@ -272,6 +272,8 @@ export default {
       this.$emit('dayfocusout', this.getDayEvent(e));
     },
     refresh() {
+      if (!this.day.refresh) return;
+      this.day.refresh = false;
       const glyphs = {
         backgrounds: [],
         dots: [],

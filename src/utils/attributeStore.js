@@ -8,23 +8,25 @@ export default class AttributeStore {
     this.locale = locale;
     this.map = {};
     this.list = [];
-
-    this.cnt = 0;
   }
 
   refresh(attrs) {
     const map = {};
     const list = [];
-    const newList = [];
     let pinAttr = null;
+    // Keep record of added and deleted attributes
+    const adds = [];
+    const deletes = new Set(Object.keys(this.map));
     if (arrayHasItems(attrs)) {
       attrs.forEach((attr, i) => {
         if (!attr || !attr.dates) return;
         const key = attr.key || i.toString();
         const order = attr.order || 0;
-        const hashcode = hash(JSON.stringify(attr.dates));
+        const hashcode = hash(JSON.stringify(attr));
         let exAttr = this.map[key];
-        if (!exAttr || exAttr.hashcode !== hashcode) {
+        if (exAttr && exAttr.hashcode === hashcode) {
+          deletes.delete(key);
+        } else {
           exAttr = new Attribute(
             {
               key,
@@ -35,9 +37,9 @@ export default class AttributeStore {
             this.theme,
             this.locale,
           );
-          newList.push(exAttr);
+          adds.push(exAttr);
         }
-        if (exAttr.pinPage) {
+        if (exAttr && exAttr.pinPage) {
           pinAttr = exAttr;
         }
         map[key] = exAttr;
@@ -47,7 +49,7 @@ export default class AttributeStore {
     this.map = map;
     this.list = list;
     this.pinAttr = pinAttr;
-    return newList;
+    return { adds, deletes: Array.from(deletes) };
   }
 
   atIndex(idx) {
