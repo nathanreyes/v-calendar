@@ -7,8 +7,8 @@
       <v-date-picker
         v-model="calendar.selectedDate"
         mode="range"
-        :rows="4"
-        :columns="2"
+        :rows="1"
+        :columns="1"
         :min-date="new Date()"
         :attributes="calendar.attributes"
         class="calendar mt-lg"
