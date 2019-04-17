@@ -247,7 +247,9 @@ export default {
     this.refresh();
   },
   mounted() {
-    addTapOrClickHandler(this.$refs.content, this.click);
+    const removeHandlers = addTapOrClickHandler(this.$refs.content, this.click);
+    // Clean up on destroy
+    this.$once('beforeDestroy', () => removeHandlers());
   },
   methods: {
     getDayEvent(origEvent) {
