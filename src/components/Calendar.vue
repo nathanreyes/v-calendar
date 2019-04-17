@@ -309,7 +309,7 @@ export default {
       this.refreshAttrs();
     },
     pages() {
-      this.refreshAttrs();
+      this.refreshAttrs(true);
     },
   },
   created() {
@@ -475,9 +475,9 @@ export default {
       page.days = this.locale_.getCalendarDays(page);
       return page;
     },
-    refreshAttrs() {
+    refreshAttrs(reset) {
       // Refresh attribute store - get adds and deletes for efficient DOM updates
-      const { adds, deletes } = this.store.refresh(this.attributes);
+      const { adds, deletes } = this.store.refresh(this.attributes, reset);
       // For each page...
       this.pages.forEach(p => {
         // For each day...

@@ -10,13 +10,13 @@ export default class AttributeStore {
     this.list = [];
   }
 
-  refresh(attrs) {
+  refresh(attrs, reset) {
     const map = {};
     const list = [];
     let pinAttr = null;
     // Keep record of added and deleted attributes
     const adds = [];
-    const deletes = new Set(Object.keys(this.map));
+    const deletes = new Set(reset ? [] : Object.keys(this.map));
     if (arrayHasItems(attrs)) {
       attrs.forEach((attr, i) => {
         if (!attr || !attr.dates) return;
@@ -24,7 +24,7 @@ export default class AttributeStore {
         const order = attr.order || 0;
         const hashcode = hash(JSON.stringify(attr));
         let exAttr = this.map[key];
-        if (exAttr && exAttr.hashcode === hashcode) {
+        if (!reset && exAttr && exAttr.hashcode === hashcode) {
           deletes.delete(key);
         } else {
           exAttr = new Attribute(
