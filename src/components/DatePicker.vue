@@ -280,8 +280,7 @@ export default {
           !this.disablePopoverHide
         ) {
           this.hidePopover();
-        }
-        if (this.picker.hasValue(val) && this.$refs.calendar) {
+        } else if (this.picker.hasValue(val) && this.$refs.calendar) {
           this.$refs.calendar.showPageRange(this.picker.getPageRange(val));
         }
       }
