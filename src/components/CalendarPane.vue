@@ -104,7 +104,7 @@ export default {
             [wl],
           ),
         ),
-        ...this.locale.getCalendarDays(this.page).map(day =>
+        ...this.page.days.map(day =>
           h(CalendarDay, {
             attrs: {
               ...this.$attrs,
@@ -114,6 +114,9 @@ export default {
               ...this.$listeners,
             },
             scopedSlots: this.$scopedSlots,
+            key: day.id,
+            ref: 'days',
+            refInFor: true,
           }),
         ),
       ],
@@ -160,6 +163,9 @@ export default {
   methods: {
     move(page) {
       this.$emit('update:page', page);
+    },
+    refresh() {
+      this.$refs.days.forEach(d => d.refresh());
     },
   },
 };

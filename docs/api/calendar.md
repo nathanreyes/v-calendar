@@ -320,25 +320,30 @@ mounted() {
 
 **Description:** Calendar day content cell.
 
-**Props:** [`day`](./day-object.md), `attributes: Array`, `contentStyle: Object`
+**Props:**
 
-### `day-popover-header`
+| Props | Type | Description |
+| --- | --- | --- |
+| `day` | [Day Object](./day-object.md) | Day object. |
+| `dayEvents` | Object | Events that should get mapped to your custom content DOM element. |
+| `attributes` | Array | List of ordered attributes for the day. |
+| `attributesMap` | Object | Object map of the attributes using their designated key. |
 
-**Description:** If popover content is visible, this slot displays as the header.
+### `day-popover`
 
-**Props:** [`day` props](./day-object.md)
+**Description:** Custom popover content for attributes.
 
-### `day-popover-footer`
+**Props:**
 
-**Description:** If popover content is visible, this slot displays as the footer.
-
-**Props:** [`day` props](./day-object.md)
-
-### *`custom-name`*
-
-**Description:** Any number of custom named slots that are referenced by attribute popovers.
-
-**Props:** `attribute: Object`, [`day`](./day-object.md), `customData: Any`
+| Props | Type | Description |
+| --- | --- | --- |
+| `day` | [Day Object](./day-object.md) | Day object. |
+| `attributes` | Array | List of ordered attributes with an assigned popover for the day. |
+| `masks` | Object | Resolved locale masks |
+| `format` | Function | Call to format a custom date and mask |
+| `dayTitle` | String | Pre-formatted string using the `dayPopover` mask |
+| `updateLayout` | Function | Call to forcefully update the popover layout (such as when content changes are made) |
+| `hide` | Function | Call to forcefully hide the popover |
 
 <!--
 ### 

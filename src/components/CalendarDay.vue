@@ -38,7 +38,8 @@ export default {
       isFunction(this.$scopedSlots['day-content'])
         ? this.$scopedSlots['day-content']({
             day: this.day,
-            attributes: this.attributesList,
+            attributes: this.day.attributes,
+            attributesMap: this.day.attributesMap,
             dayProps: this.dayContentProps,
             dayEvents: this.dayContentEvents,
           })
@@ -146,7 +147,6 @@ export default {
   inject: ['sharedState'],
   props: {
     day: { type: Object, required: true },
-    attributes: Object,
   },
   data() {
     return {
@@ -166,15 +166,6 @@ export default {
     },
     isDisabled() {
       return this.day.isDisabled;
-    },
-    attributesLength() {
-      return this.attributes.length;
-    },
-    attributesList() {
-      return this.attributes.onDay(this.day);
-    },
-    attributesMap() {
-      return objectFromArray(this.attributesList);
     },
     backgrounds() {
       return this.glyphs.backgrounds;
@@ -218,6 +209,7 @@ export default {
     },
     dayContentEvents() {
       return {
+        click: this.click,
         mouseenter: this.mouseenter,
         mouseleave: this.mouseleave,
         focusin: this.focusin,
@@ -228,18 +220,13 @@ export default {
       return {
         ...this.day,
         el: this.$refs.content,
-        attributes: this.attributesList,
-        attributesMap: this.attributesMap,
         popovers: this.popovers,
       };
     },
   },
   watch: {
-    attributesList() {
-      this.refreshGlyphs();
-    },
     theme() {
-      this.refreshGlyphs();
+      this.refresh();
     },
     popovers() {
       const visibilities = ['click', 'focus', 'hover', 'visible'];
@@ -260,10 +247,7 @@ export default {
     },
   },
   created() {
-    this.refreshGlyphs();
-  },
-  mounted() {
-    addTapOrClickHandler(this.$refs.content, this.click);
+    this.refresh();
   },
   methods: {
     getDayEvent(origEvent) {
@@ -287,7 +271,9 @@ export default {
     focusout(e) {
       this.$emit('dayfocusout', this.getDayEvent(e));
     },
-    refreshGlyphs() {
+    refresh() {
+      if (!this.day.refresh) return;
+      this.day.refresh = false;
       const glyphs = {
         backgrounds: [],
         dots: [],
@@ -295,30 +281,31 @@ export default {
         popovers: [],
         content: [],
       };
-      if (arrayHasItems(this.attributesList)) {
-        this.attributesList.forEach(attr => {
-          // Add glyphs for each attribute
-          const { targetDate } = attr;
-          const { isDate, isComplex, startTime, endTime } = targetDate;
-          const onStart = startTime === this.dateTime;
-          const onEnd = endTime === this.dateTime;
-          const onStartAndEnd = onStart && onEnd;
-          const onStartOrEnd = onStart || onEnd;
-          const dateInfo = {
-            isDate,
-            isComplex,
-            onStart,
-            onEnd,
-            onStartAndEnd,
-            onStartOrEnd,
-          };
-          this.processHighlight(attr, dateInfo, glyphs);
-          this.processContent(attr, dateInfo, glyphs);
-          this.processDot(attr, dateInfo, glyphs);
-          this.processBar(attr, dateInfo, glyphs);
-          this.processPopover(attr, glyphs);
-        });
-      }
+      this.day.attributes = Object.values(this.day.attributesMap || {}).sort(
+        (a, b) => a.order - b.order,
+      );
+      this.day.attributes.forEach(attr => {
+        // Add glyphs for each attribute
+        const { targetDate } = attr;
+        const { isDate, isComplex, startTime, endTime } = targetDate;
+        const onStart = startTime === this.dateTime;
+        const onEnd = endTime === this.dateTime;
+        const onStartAndEnd = onStart && onEnd;
+        const onStartOrEnd = onStart || onEnd;
+        const dateInfo = {
+          isDate,
+          isComplex,
+          onStart,
+          onEnd,
+          onStartAndEnd,
+          onStartOrEnd,
+        };
+        this.processHighlight(attr, dateInfo, glyphs);
+        this.processContent(attr, dateInfo, glyphs);
+        this.processDot(attr, dateInfo, glyphs);
+        this.processBar(attr, dateInfo, glyphs);
+        this.processPopover(attr, glyphs);
+      });
       this.glyphs = glyphs;
     },
     processHighlight(

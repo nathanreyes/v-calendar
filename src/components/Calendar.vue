@@ -18,38 +18,50 @@ import {
   pageIsBetweenPages,
   createGuid,
 } from '@/utils/helpers';
-import { isNumber, isFunction, first, last } from '@/utils/_';
+import {
+  isNumber,
+  isFunction,
+  set,
+  hasAny,
+  omit,
+  first,
+  last,
+} from '@/utils/_';
 
 export default {
   name: 'VCalendar',
   render(h) {
     // Renderer for calendar panes
-    const getPaneComponent = ({ position }) =>
-      h(CalendarPane, {
+    const panes = this.pages.map((page, i) => {
+      return h(CalendarPane, {
         attrs: {
           ...this.$attrs,
-          attributes: this.attributes_,
+          attributes: this.store,
         },
         props: {
           titlePosition: this.titlePosition_,
-          page: this.pages[position - 1],
+          page,
           minPage: this.minPage_,
           maxPage: this.maxPage_,
           canMove: this.canMove,
         },
         on: {
           ...this.$listeners,
-          'update:page': e => this.refreshPages({ page: e, position }),
+          'update:page': e => this.refreshPages({ page: e, position: i + 1 }),
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
+        key: page.key,
+        ref: 'pages',
+        refInFor: true,
       });
+    });
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const slot =
-        (isPrev && this.$slots.headerLeftButton) ||
-        (!isPrev && this.$slots.headerRightButton);
+        (isPrev && this.$slots['header-left-button']) ||
+        (!isPrev && this.$slots['header-right-button']);
       const svgName = isPrev ? 'left-arrow' : 'right-arrow';
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
       const onClick = isPrev ? this.movePrev : this.moveNext;
@@ -89,7 +101,9 @@ export default {
         },
         scopedSlots: {
           default: ({ args: day, updateLayout, hide }) => {
-            const attributes = day.attributes.filter(a => a.popover);
+            const attributes = Object.values(day.attributes).filter(
+              a => a.popover,
+            );
             const masks = this.locale_.masks;
             const format = this.format;
             const dayTitle = format(day.date, masks.dayPopover);
@@ -168,21 +182,22 @@ export default {
                   },
                 },
                 [
-                  h(Grid, {
-                    key: this.pages[0].key,
-                    class: 'grid',
-                    props: {
-                      rows: this.rows,
-                      columns: this.columns,
-                      columnWidth: 'minmax(256px, 1fr)',
+                  h(
+                    Grid,
+                    {
+                      class: 'grid',
+                      props: {
+                        rows: this.rows,
+                        columns: this.columns,
+                        columnWidth: 'minmax(256px, 1fr)',
+                      },
+                      attrs: {
+                        ...this.$attrs,
+                      },
+                      key: this.pages[0].key,
                     },
-                    attrs: {
-                      ...this.$attrs,
-                    },
-                    scopedSlots: {
-                      default: getPaneComponent,
-                    },
-                  }),
+                    panes,
+                  ),
                 ],
               ),
               h(
@@ -233,6 +248,7 @@ export default {
   data() {
     return {
       pages: [],
+      store: null,
       transitionName: '',
       inTransition: false,
       isRefreshing: false,
@@ -272,11 +288,6 @@ export default {
         pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
       );
     },
-    attributes_() {
-      return this.attributes instanceof AttributeStore
-        ? this.attributes
-        : new AttributeStore(this.attributes, this.theme_, this.locale_);
-    },
   },
   watch: {
     locale_() {
@@ -294,10 +305,17 @@ export default {
     count() {
       this.refreshPages();
     },
+    attributes() {
+      this.refreshAttrs({ resetPages: true });
+    },
+    pages() {
+      this.refreshAttrs({ resetStore: true });
+    },
   },
   created() {
     this.refreshLocale();
     this.refreshTheme();
+    this.initStore();
     this.refreshPages();
   },
   mounted() {
@@ -325,6 +343,9 @@ export default {
     },
     refreshTheme() {
       this.sharedState.theme = this.theme_;
+    },
+    initStore() {
+      this.store = new AttributeStore(this.theme_, this.locale_);
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
@@ -413,7 +434,7 @@ export default {
       return movePrev ? 'slide-right' : 'slide-left';
     },
     getPageForAttributes() {
-      const attr = this.attributes_.pinAttr;
+      const attr = this.store.pinAttr;
       if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;
@@ -422,9 +443,11 @@ export default {
       return null;
     },
     buildPage({ month, year }, position) {
-      const key = `${year.toString()}.${month.toString()}`;
+      const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
-      if (!page) {
+      if (page) {
+        page.days.forEach(d => (d.refresh = true));
+      } else {
         const date = new Date(year, month - 1, 15);
         const monthComps = this.locale_.getMonthComps(month, year);
         const prevMonthComps = this.locale_.getPrevMonthComps(month, year);
@@ -446,11 +469,56 @@ export default {
           moveThisMonth: () => this.moveThisMonth(),
           movePrevMonth: () => this.move(prevMonthComps),
           moveNextMonth: () => this.move(nextMonthComps),
+          refresh: true,
         };
+        // Assign day info
+        page.days = this.locale_.getCalendarDays(page);
       }
       // Reassign position if needed
       page.position = position;
       return page;
+    },
+    refreshAttrs({ resetStore, resetPages }) {
+      // Refresh attribute store - get adds and deletes for efficient DOM updates
+      const { adds, deletes } = this.store.refresh(this.attributes, resetStore);
+      // Get pages to refresh
+      const pages = this.pages.filter(p => resetPages || p.refresh);
+      // For each page...
+      pages.forEach(p => {
+        // Reset refresh flag
+        p.refresh = false;
+        // For each day...
+        p.days.forEach(d => {
+          // Get the current attributes
+          let map = d.attributesMap || {};
+          // Strip out attributes that need to be removed
+          if (hasAny(map, deletes)) {
+            map = omit(map, deletes);
+            // Flag day so that it refreshes
+            d.refresh = true;
+          }
+          adds.forEach(attr => {
+            const targetDate = attr.includesDay(d);
+            if (targetDate) {
+              const newAttr = {
+                ...attr,
+                targetDate,
+              };
+              map[attr.key] = newAttr;
+              // Flag day so that it refreshes
+              d.refresh = true;
+            }
+          });
+          // Reassign day attributes
+          if (d.refresh) {
+            d.attributesMap = map;
+          }
+        });
+      });
+      // Refresh pages
+      this.$nextTick(() => {
+        this.$refs.pages.forEach(p => p.refresh());
+      });
     },
     showPageRange({ from, to }) {
       let firstPage = first(this.pages);

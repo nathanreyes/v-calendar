@@ -21,6 +21,7 @@ import _has from 'lodash/has';
 import _defaults from 'lodash/defaults';
 import _defaultsDeep from 'lodash/defaultsDeep';
 import _pick from 'lodash/pick';
+import _omit from 'lodash/omit';
 
 import _map from 'lodash/map';
 import _some from 'lodash/some';
@@ -56,6 +57,7 @@ export const hasAny = (obj, props) => _some(props, p => _has(obj, p));
 export const defaults = _defaults;
 export const defaultsDeep = _defaultsDeep;
 export const pick = _pick;
+export const omit = _omit;
 // Lodash collection utilities
 export const map = _map;
 export const some = _some;

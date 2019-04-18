@@ -1,37 +1,55 @@
 import Attribute from './attribute';
-import { arrayHasItems } from './helpers';
+import { arrayHasItems, hash } from './helpers';
 import { isFunction } from './_';
 
 export default class AttributeStore {
-  constructor(attrs, theme, locale) {
+  constructor(theme, locale) {
+    this.theme = theme;
+    this.locale = locale;
+    this.map = {};
+    this.list = [];
+  }
+
+  refresh(attrs, reset) {
+    const map = {};
     const list = [];
-    let key = 1,
-      pinAttr = null;
+    let pinAttr = null;
+    // Keep record of added and deleted attributes
+    const adds = [];
+    const deletes = reset ? new Set() : new Set(Object.keys(this.map));
     if (arrayHasItems(attrs)) {
-      attrs.forEach(attr => {
+      attrs.forEach((attr, i) => {
         if (!attr || !attr.dates) return;
-        const newAttr =
-          attr instanceof Attribute
-            ? attr
-            : new Attribute(
-                {
-                  key: attr.key || key.toString(),
-                  order: attr.order || 0,
-                  ...attr,
-                },
-                theme,
-                locale,
-              );
-        if (newAttr.pinPage) {
-          pinAttr = newAttr;
+        const key = attr.key || i.toString();
+        const order = attr.order || 0;
+        const hashcode = hash(JSON.stringify(attr));
+        let exAttr = this.map[key];
+        if (!reset && exAttr && exAttr.hashcode === hashcode) {
+          deletes.delete(key);
+        } else {
+          exAttr = new Attribute(
+            {
+              key,
+              order,
+              hashcode,
+              ...attr,
+            },
+            this.theme,
+            this.locale,
+          );
+          adds.push(exAttr);
         }
-        list.push(newAttr);
-        key++;
+        if (exAttr && exAttr.pinPage) {
+          pinAttr = exAttr;
+        }
+        map[key] = exAttr;
+        list.push(exAttr);
       });
     }
+    this.map = map;
     this.list = list;
-    this.length = list.length;
     this.pinAttr = pinAttr;
+    return { adds, deletes: Array.from(deletes) };
   }
 
   atIndex(idx) {

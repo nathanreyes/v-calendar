@@ -138,9 +138,8 @@ export default class Locale {
   }
 
   // Buils day components for a given page
-  getCalendarDays(page, trimMaxWeek) {
+  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }, trimMaxWeek) {
     const days = [];
-    const { monthComps, prevMonthComps, nextMonthComps } = page;
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
       firstWeekday + (firstWeekday < firstDayOfWeek ? 7 : 0) - firstDayOfWeek;
@@ -199,7 +198,7 @@ export default class Locale {
         const onLeft = i === 1;
         const onRight = i === 7;
         days.push({
-          id: `${month}.${day}`,
+          id: `${month}-${day}`,
           label: day.toString(),
           day,
           dayFromEnd,
