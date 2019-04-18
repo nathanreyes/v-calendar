@@ -7,8 +7,9 @@
       <v-date-picker
         v-model="calendar.selectedDate"
         mode="range"
-        :rows="1"
-        :columns="1"
+        color="purple"
+        :rows="4"
+        :columns="2"
         :min-date="new Date()"
         :attributes="calendar.attributes"
         class="calendar mt-lg"
@@ -45,7 +46,10 @@ export default {
       var calendarAvailabilites = this.calendar.availabilities.map(
         availability => ({
           key: `availability.${availability.Date}`,
-          highlight: availability.ColorCode,
+          highlight: {
+            color: availability.ColorCode,
+            class: 'av-highlight',
+          },
           dates: availability.Date,
           customData: availability,
         }),
@@ -64,9 +68,8 @@ export default {
 
       // Merge arrays
       calendarAttributes = this.mergeArraysWithoutDuplicates(
-        // calendarAttributes,
         calendarEvents,
-        // calendarAvailabilites,
+        calendarAvailabilites,
       );
 
       this.calendar.attributes = calendarAttributes;
