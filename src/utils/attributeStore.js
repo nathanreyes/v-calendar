@@ -16,7 +16,7 @@ export default class AttributeStore {
     let pinAttr = null;
     // Keep record of added and deleted attributes
     const adds = [];
-    const deletes = new Set(reset ? [] : Object.keys(this.map));
+    const deletes = reset ? new Set() : new Set(Object.keys(this.map));
     if (arrayHasItems(attrs)) {
       attrs.forEach((attr, i) => {
         if (!attr || !attr.dates) return;

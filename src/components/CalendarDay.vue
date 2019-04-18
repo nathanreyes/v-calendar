@@ -207,6 +207,7 @@ export default {
     },
     dayContentEvents() {
       return {
+        click: this.click,
         mouseenter: this.mouseenter,
         mouseleave: this.mouseleave,
         focusin: this.focusin,
@@ -246,11 +247,6 @@ export default {
   created() {
     this.refresh();
   },
-  mounted() {
-    const removeHandlers = addTapOrClickHandler(this.$refs.content, this.click);
-    // Clean up on destroy
-    this.$once('beforeDestroy', () => removeHandlers());
-  },
   methods: {
     getDayEvent(origEvent) {
       return {
@@ -283,7 +279,9 @@ export default {
         popovers: [],
         content: [],
       };
-      const attributes = Object.values(this.day.attributes);
+      const attributes = Object.values(this.day.attributes).sort(
+        (a, b) => a.order - b.order,
+      );
       if (arrayHasItems(attributes)) {
         attributes.forEach(attr => {
           // Add glyphs for each attribute

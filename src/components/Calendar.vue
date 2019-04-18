@@ -306,10 +306,10 @@ export default {
       this.refreshPages();
     },
     attributes() {
-      this.refreshAttrs();
+      this.refreshAttrs({ resetPages: true });
     },
     pages() {
-      this.refreshAttrs(true);
+      this.refreshAttrs({ resetStore: true });
     },
   },
   created() {
@@ -446,6 +446,7 @@ export default {
       const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
       if (!page) {
+        console.log('create page', JSON.stringify({ month, year }));
         const date = new Date(year, month - 1, 15);
         const monthComps = this.locale_.getMonthComps(month, year);
         const prevMonthComps = this.locale_.getPrevMonthComps(month, year);
@@ -467,19 +468,25 @@ export default {
           moveThisMonth: () => this.moveThisMonth(),
           movePrevMonth: () => this.move(prevMonthComps),
           moveNextMonth: () => this.move(nextMonthComps),
+          refresh: true,
         };
+        // Assign day info
+        page.days = this.locale_.getCalendarDays(page);
       }
       // Reassign position if needed
       page.position = position;
-      // Assign day info
-      page.days = this.locale_.getCalendarDays(page);
       return page;
     },
-    refreshAttrs(reset) {
+    refreshAttrs({ resetStore, resetPages }) {
+      console.log('refreshAttrs', JSON.stringify({ resetStore, resetPages }));
       // Refresh attribute store - get adds and deletes for efficient DOM updates
-      const { adds, deletes } = this.store.refresh(this.attributes, reset);
+      const { adds, deletes } = this.store.refresh(this.attributes, resetStore);
+      // Get pages to refresh
+      const pages = this.pages.filter(p => resetPages || p.refresh);
       // For each page...
-      this.pages.forEach(p => {
+      pages.forEach(p => {
+        // Reset refresh flag
+        p.refresh = false;
         // For each day...
         p.days.forEach(d => {
           // Get the current attributes
