@@ -38,6 +38,8 @@ export default {
       isFunction(this.$scopedSlots['day-content'])
         ? this.$scopedSlots['day-content']({
             day: this.day,
+            attributes: this.day.attributes,
+            attributesMap: this.day.attributesMap,
             dayProps: this.dayContentProps,
             dayEvents: this.dayContentEvents,
           })
@@ -279,33 +281,31 @@ export default {
         popovers: [],
         content: [],
       };
-      const attributes = Object.values(this.day.attributes || {}).sort(
+      this.day.attributes = Object.values(this.day.attributesMap || {}).sort(
         (a, b) => a.order - b.order,
       );
-      if (arrayHasItems(attributes)) {
-        attributes.forEach(attr => {
-          // Add glyphs for each attribute
-          const { targetDate } = attr;
-          const { isDate, isComplex, startTime, endTime } = targetDate;
-          const onStart = startTime === this.dateTime;
-          const onEnd = endTime === this.dateTime;
-          const onStartAndEnd = onStart && onEnd;
-          const onStartOrEnd = onStart || onEnd;
-          const dateInfo = {
-            isDate,
-            isComplex,
-            onStart,
-            onEnd,
-            onStartAndEnd,
-            onStartOrEnd,
-          };
-          this.processHighlight(attr, dateInfo, glyphs);
-          this.processContent(attr, dateInfo, glyphs);
-          this.processDot(attr, dateInfo, glyphs);
-          this.processBar(attr, dateInfo, glyphs);
-          this.processPopover(attr, glyphs);
-        });
-      }
+      this.day.attributes.forEach(attr => {
+        // Add glyphs for each attribute
+        const { targetDate } = attr;
+        const { isDate, isComplex, startTime, endTime } = targetDate;
+        const onStart = startTime === this.dateTime;
+        const onEnd = endTime === this.dateTime;
+        const onStartAndEnd = onStart && onEnd;
+        const onStartOrEnd = onStart || onEnd;
+        const dateInfo = {
+          isDate,
+          isComplex,
+          onStart,
+          onEnd,
+          onStartAndEnd,
+          onStartOrEnd,
+        };
+        this.processHighlight(attr, dateInfo, glyphs);
+        this.processContent(attr, dateInfo, glyphs);
+        this.processDot(attr, dateInfo, glyphs);
+        this.processBar(attr, dateInfo, glyphs);
+        this.processPopover(attr, glyphs);
+      });
       this.glyphs = glyphs;
     },
     processHighlight(

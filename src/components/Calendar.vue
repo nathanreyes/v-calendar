@@ -60,8 +60,8 @@ export default {
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const slot =
-        (isPrev && this.$slots.headerLeftButton) ||
-        (!isPrev && this.$slots.headerRightButton);
+        (isPrev && this.$slots['header-left-button']) ||
+        (!isPrev && this.$slots['header-right-button']);
       const svgName = isPrev ? 'left-arrow' : 'right-arrow';
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
       const onClick = isPrev ? this.movePrev : this.moveNext;
@@ -490,10 +490,10 @@ export default {
         // For each day...
         p.days.forEach(d => {
           // Get the current attributes
-          let attributes = d.attributes || {};
+          let map = d.attributesMap || {};
           // Strip out attributes that need to be removed
-          if (hasAny(attributes, deletes)) {
-            attributes = omit(attributes, deletes);
+          if (hasAny(map, deletes)) {
+            map = omit(map, deletes);
             // Flag day so that it refreshes
             d.refresh = true;
           }
@@ -504,14 +504,14 @@ export default {
                 ...attr,
                 targetDate,
               };
-              attributes[attr.key] = newAttr;
+              map[attr.key] = newAttr;
               // Flag day so that it refreshes
               d.refresh = true;
             }
           });
           // Reassign day attributes
           if (d.refresh) {
-            d.attributes = attributes;
+            d.attributesMap = map;
           }
         });
       });
