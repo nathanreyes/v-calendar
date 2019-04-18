@@ -279,7 +279,7 @@ export default {
         popovers: [],
         content: [],
       };
-      const attributes = Object.values(this.day.attributes).sort(
+      const attributes = Object.values(this.day.attributes || {}).sort(
         (a, b) => a.order - b.order,
       );
       if (arrayHasItems(attributes)) {

@@ -32,8 +32,7 @@ export default {
   name: 'VCalendar',
   render(h) {
     // Renderer for calendar panes
-    const getPaneComponent = ({ position }) => {
-      const page = this.pages[position - 1];
+    const panes = this.pages.map((page, i) => {
       return h(CalendarPane, {
         attrs: {
           ...this.$attrs,
@@ -48,7 +47,7 @@ export default {
         },
         on: {
           ...this.$listeners,
-          'update:page': e => this.refreshPages({ page: e, position }),
+          'update:page': e => this.refreshPages({ page: e, position: i + 1 }),
         },
         slots: this.$slots,
         scopedSlots: this.$scopedSlots,
@@ -56,7 +55,7 @@ export default {
         ref: 'pages',
         refInFor: true,
       });
-    };
+    });
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
@@ -183,21 +182,22 @@ export default {
                   },
                 },
                 [
-                  h(Grid, {
-                    key: this.pages[0].key,
-                    class: 'grid',
-                    props: {
-                      rows: this.rows,
-                      columns: this.columns,
-                      columnWidth: 'minmax(256px, 1fr)',
+                  h(
+                    Grid,
+                    {
+                      class: 'grid',
+                      props: {
+                        rows: this.rows,
+                        columns: this.columns,
+                        columnWidth: 'minmax(256px, 1fr)',
+                      },
+                      attrs: {
+                        ...this.$attrs,
+                      },
+                      key: this.pages[0].key,
                     },
-                    attrs: {
-                      ...this.$attrs,
-                    },
-                    scopedSlots: {
-                      default: getPaneComponent,
-                    },
-                  }),
+                    panes,
+                  ),
                 ],
               ),
               h(
@@ -445,8 +445,9 @@ export default {
     buildPage({ month, year }, position) {
       const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
-      if (!page) {
-        console.log('create page', JSON.stringify({ month, year }));
+      if (page) {
+        page.days.forEach(d => (d.refresh = true));
+      } else {
         const date = new Date(year, month - 1, 15);
         const monthComps = this.locale_.getMonthComps(month, year);
         const prevMonthComps = this.locale_.getPrevMonthComps(month, year);
@@ -478,7 +479,6 @@ export default {
       return page;
     },
     refreshAttrs({ resetStore, resetPages }) {
-      console.log('refreshAttrs', JSON.stringify({ resetStore, resetPages }));
       // Refresh attribute store - get adds and deletes for efficient DOM updates
       const { adds, deletes } = this.store.refresh(this.attributes, resetStore);
       // Get pages to refresh
