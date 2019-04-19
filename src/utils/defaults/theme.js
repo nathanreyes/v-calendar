@@ -63,8 +63,8 @@ export default {
       'vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold vc-rounded-full',
   },
   dayContentDisabled: {
-    light: '',
-    dark: '',
+    light: 'vc-pointer-events-none',
+    dark: 'vc-pointer-events-none',
   },
   dayPopoverContainer: {
     light:

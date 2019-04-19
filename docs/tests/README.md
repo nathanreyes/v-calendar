@@ -4,7 +4,7 @@ title: 'Tests'
 
 <div class='text-center'>
 
-<!-- <tests-single /> -->
+<tests-single />
 <!-- <tests-theme /> -->
 <!-- <github-179 /> -->
 <!-- <github-254 />

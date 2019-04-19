@@ -59,7 +59,7 @@
 export default {
   data() {
     return {
-      date: { start: new Date(2019, 5, 5), end: new Date(2019, 10, 1) },
+      date: { start: new Date(2019, 0, 5), end: new Date(2019, 0, 1) },
       mode: 'range',
       isInline: false,
       isDark: false,

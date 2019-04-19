@@ -3,11 +3,11 @@ import { arrayHasItems, hash } from './helpers';
 import { isFunction } from './_';
 
 export default class AttributeStore {
-  constructor(theme, locale) {
+  constructor(theme, locale, attrs) {
     this.theme = theme;
     this.locale = locale;
     this.map = {};
-    this.list = [];
+    this.refresh(attrs, true);
   }
 
   refresh(attrs, reset) {

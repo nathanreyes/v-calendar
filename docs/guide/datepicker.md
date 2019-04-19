@@ -11,9 +11,15 @@ This page is currently being updated.
 
 `v-date-picker` is a powerful date picker delivered with `v-calendar`. It is simply a wrapper for `v-calendar` so it comes with a lot of flexibility out of the box. For example, it can accept all props supported by `v-calendar` and emits all of the same events.
 
-Also, it uses [customizable](#customize-attributes) attributes under the hood to represent date selections (uses a `highlight` and `contentStyle`, by default). For example, you could change the date selection to dots instead of a highlight if that makes more sense for your application.
+Also, it uses [customizable](#customize-attributes) attributes under the hood to represent selected dates. For example, you could change the date selection from a highlight to dots if that makes more sense for your application.
 
-By default, it displays the calendar picker in a popover for an input element (which can be replaced with the default slot).
+## Display Options
+
+### Popover
+
+By default, it displays the calendar picker in a popover for an input element. This is the default display option.
+
+<guide-datepicker-intro-popover />
 
 ```html
 <v-date-picker
@@ -31,9 +37,30 @@ export default {
 };
 ```
 
-<guide-datepicker-intro-popover />
+### Custom Slot
+
+Using the default slot, you can replace the input element with your own trigger element.
+
+<guide-datepicker-custom-slot />
+
+```html
+<v-date-picker v-model="date" :popover="{ placement: 'bottom' }">
+  <button class="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded focus:outline-none">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      class="w-4 h-4 fill-current">
+      <path d="M1 4c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4zm2 2v12h14V6H3zm2-6h2v2H5V0zm8 0h2v2h-2V0zM5 9h2v2H5V9zm0 4h2v2H5v-2zm4-4h2v2H9V9zm0 4h2v2H9v-2zm4-4h2v2h-2V9zm0 4h2v2h-2v-2z" />
+    </svg>
+  </button>
+</v-date-picker>
+```
+
+### Inline
 
 Alternatively, the calendar can be displayed inline (not as a popover) by setting the`is-inline` prop.
+
+<guide-datepicker-intro-inline />
 
 ```html
 <v-date-picker
@@ -52,7 +79,6 @@ export default {
   },
 };
 ```
-<guide-datepicker-intro-inline />
 
 ## Selection Modes
 
@@ -64,6 +90,8 @@ export default {
 ### Single Date
 
 The first and most common mode is single date selection. It uses a native Javascript `Date` object for its internal `value`, and the value can be cleared by setting the value to `null`. This is the default mode, so the `mode` prop declaration can be omitted if desired:
+
+<guide-datepicker-single />
 
 ```html
 <v-date-picker
@@ -81,14 +109,11 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-single>
-  </guide-datepicker-single>
-</ClientOnly>
-
 ### Multiple Dates
 
-The second mode is multiple date selection. It uses an array of `Date` objects for its internal `value` state. The selected value can be cleared by setting the value to `null` or an empty array `[]`. 
+The second mode is multiple date selection. It uses an array of `Date` objects for its internal `value` state. The selected value can be cleared by setting the value to `null` or an empty array `[]`.
+
+<guide-datepicker-multiple />
 
 ```html
 <v-date-picker
@@ -111,15 +136,13 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-multiple />
-</ClientOnly>
-
 When used as a popover (`is-inline === false`), the user may enter dates in the input element as a list of comma separated date values. Each date is parsed with the built-in date parser using the specified `input` mask(s). If the user clears out the input text, the value is set to `null`. [Read this to learn how to configure the input element.](#customize-input-element)
 
 ### Date Range
 
 The third mode is date range selection. It uses an object consisting of optional start and end dates. The selected value can be cleared by setting the value to `null`. Using an empty object `{ }` for the value is equivalent to a range with infinite start and end dates.
+
+<guide-datepicker-range />
 
 ```html
 <v-date-picker
@@ -142,137 +165,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-range />
-</ClientOnly>
-
-You can see how the default popover for the range selection displays the currently selected (or dragged) start date and end date with indicators showing the length of the day and night spans. As expected, [this popover can also be configured to your own slot or component](#customize-selection-popover).
-
-### Inline
-
-Use the `is-inline` prop to display the date picker inline.
-
-```html
-<v-date-picker
-  v-model="date"
-  is-inline
-  />
-```
-
-```js
-export default {
-  data() {
-    return {
-      date: new Date(),
-    }
-  }
-}
-```
-
-<guide-readme-dp-inline>
-</guide-readme-dp-inline>
-
-### Native Input
-
-By default, `v-date-picker` uses an input element to natively format and parse dates entered by the user. The `input` element can be classed, styled or assigned attributes via the `input-props` prop.
-
-```html
-<div class='w-full max-w-xs'>
-  <form
-    class='bg-white shadow-md rounded px-8 pt-6 pb-8'
-    @submit.prevent>
-    <label
-      class='block text-gray-700 text-sm font-bold mb-2'
-      for='date'>
-      Select Date
-    </label>
-    <v-date-picker
-      :input-props='inputProps'
-      v-model='date'>
-    </v-date-picker>
-  </form>
-</div>
-```
-
-```js
-export default {
-  data() {
-    return {
-      date: new Date(),
-      inputProps: {
-        id: 'date',
-        class:
-          'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700',
-      },
-    };
-  },
-};
-```
-
-<guide-readme-dp-input />
-
-::: tip
-Reference [TailwindCSS](https://tailwindcss.com/docs/what-is-tailwind/) for style definitions.
-:::
-
-### Custom Slot
-
-Use a custom scoped slot to display your own input element or popover trigger. The `inputProps` and `inputEvents` scope variables are used to properly integrate your own input with the behavior provided by `v-date-picker`. [Click to learn more.](datepicker.md#use-custom-slot)
-
-```html
-<div class="w-full max-w-sm">
-  <form
-    class="bg-white shadow-md rounded px-8 pt-6 pb-8"
-    @submit.prevent>
-    <label
-      class="block text-gray-700 text-sm font-bold mb-2"
-      for="date">
-      Select Date Range
-    </label>
-    <div class="flex w-full">
-      <v-date-picker
-        mode="range"
-        v-model="date"
-        show-caps>
-        <input
-          id="date"
-          class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
-          :class="{ 'border-red': errorMessage }"
-          slot-scope="{ inputProps, inputEvents }"
-          v-bind="inputProps"
-          v-on="inputEvents"
-        >
-      </v-date-picker>
-      <button
-        type="button"
-        class="bg-red-4 hover:bg-red-6 text-white font-bold py-2 px-4 rounded-r"
-        @click="date = null">
-        Clear
-      </button>
-    </div>
-    <p class="text-red-6 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
-    <p class="text-blue-5 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
-  </form>
-</div>
-```
-```js
-export default {
-  data() {
-    return {
-      date: null,
-    };
-  },
-  computed: {
-    errorMessage() {
-      if (!this.date) return 'Date is required.';
-      return '';
-    },
-  },
-};
-```
-<guide-readme-dp-custom-slot />
-
-### Disabling Dates
+## Disabling Dates
 
 You can disable dates, date ranges and date patterns using the following methods:
 
@@ -316,8 +209,6 @@ Use the `min-date`, `min-page`, `max-date` or `max-page` props to manually assig
 :::
 
 
-
-
 ## Format & Parse Dates
 
 Please reference the [formatting & parsing section of the README](/guide/#formatting-parsing) for steps to customizing the input element's formatting and parsing behavior.
@@ -345,10 +236,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-min-max>
-  </guide-datepicker-min-max>
-</ClientOnly>
+<guide-datepicker-min-max />
 
 ## Disable Dates & Patterns
 
@@ -378,10 +266,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-disable-dates>
-  </guide-datepicker-disable-dates>
-</ClientOnly>
+<guide-datepicker-disable-dates />
 
 ## Require Selected Date
 
@@ -401,6 +286,63 @@ This effectively prevents the *user* from clearing the value. The developer can 
 ::: tip
 The following applies for date pickers in popover mode (`is-inline === false`)
 :::
+
+If providing your own `<input />` element, use the `inputProps` and `inputEvents` scope variables to properly integrate your own input with the behavior provided by `v-date-picker`. [Click to learn more.](datepicker.md#use-custom-slot)
+
+<guide-readme-dp-custom-slot />
+
+```html
+<div class="w-full max-w-sm">
+  <form
+    class="bg-white shadow-md rounded px-8 pt-6 pb-8"
+    @submit.prevent>
+    <label
+      class="block text-gray-700 text-sm font-bold mb-2"
+      for="date">
+      Select Date Range
+    </label>
+    <div class="flex w-full">
+      <v-date-picker
+        mode="range"
+        v-model="date"
+        show-caps>
+        <input
+          id="date"
+          class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
+          :class="{ 'border-red': errorMessage }"
+          slot-scope="{ inputProps, inputEvents }"
+          v-bind="inputProps"
+          v-on="inputEvents"
+        >
+      </v-date-picker>
+      <button
+        type="button"
+        class="bg-red-4 hover:bg-red-6 text-white font-bold py-2 px-4 rounded-r"
+        @click="date = null">
+        Clear
+      </button>
+    </div>
+    <p class="text-red-6 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
+    <p class="text-blue-5 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
+  </form>
+</div>
+```
+
+```js
+export default {
+  data() {
+    return {
+      date: null,
+    };
+  },
+  computed: {
+    errorMessage() {
+      if (!this.date) return 'Date is required.';
+      return '';
+    },
+  },
+};
+```
 
 There are 2 ways to customize the input element for `v-date-picker`
   1. Apply props for styling and behavior to the built in `input` element.
