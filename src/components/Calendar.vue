@@ -305,11 +305,12 @@ export default {
     count() {
       this.refreshPages();
     },
-    attributes() {
-      this.refreshAttrs({ resetPages: true });
+    attributes(val) {
+      const { adds, deletes } = this.store.refresh(val);
+      this.refreshPageAttrs(this.pages, adds, deletes);
     },
-    pages() {
-      this.refreshAttrs({ resetStore: true });
+    pages(val) {
+      this.refreshPageAttrs(val.filter(p => p.refresh), this.store.list);
     },
   },
   created() {
@@ -345,7 +346,10 @@ export default {
       this.sharedState.theme = this.theme_;
     },
     initStore() {
-      this.store = new AttributeStore(this.theme_, this.locale_);
+      this.store =
+        this.attributes instanceof AttributeStore
+          ? this.attributes
+          : new AttributeStore(this.theme_, this.locale_, this.attributes);
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
@@ -434,13 +438,14 @@ export default {
       return movePrev ? 'slide-right' : 'slide-left';
     },
     getPageForAttributes() {
+      let page = null;
       const attr = this.store.pinAttr;
       if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;
-        return pageForDate(this.locale_.toDate(date));
+        page = pageForDate(this.locale_.toDate(date));
       }
-      return null;
+      return page;
     },
     buildPage({ month, year }, position) {
       const key = `${year.toString()}-${month.toString()}`;
@@ -478,11 +483,7 @@ export default {
       page.position = position;
       return page;
     },
-    refreshAttrs({ resetStore, resetPages }) {
-      // Refresh attribute store - get adds and deletes for efficient DOM updates
-      const { adds, deletes } = this.store.refresh(this.attributes, resetStore);
-      // Get pages to refresh
-      const pages = this.pages.filter(p => resetPages || p.refresh);
+    refreshPageAttrs(pages = [], adds = [], deletes = []) {
       // For each page...
       pages.forEach(p => {
         // Reset refresh flag

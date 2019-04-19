@@ -17,7 +17,7 @@ import {
   on,
   off,
 } from '@/utils/helpers';
-import { isString, isFunction, isArray } from '@/utils/_';
+import { isUndefined, isString, isFunction, isArray } from '@/utils/_';
 
 export default {
   name: 'VDatePicker',
@@ -111,6 +111,7 @@ export default {
       inputValue: '',
       disableFormatInput: false,
       disablePopoverHide: false,
+      disableAdjustPageRange: false,
       updateTimeout: null,
       datePickerPopoverId: createGuid(),
     };
@@ -127,16 +128,12 @@ export default {
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
     inputClass() {
-      const inputClass = this.inputProps.class;
-      const inputDragClass = this.inputProps.dragClass;
-      const themeInputClass = this.theme_.datePickerInput;
-      const themeInputDragClass = this.theme_.datePickerInputDrag;
-      if (this.picker.hasValue(this.dragValue)) {
-        return (
-          inputDragClass || inputClass || themeInputDragClass || themeInputClass
-        );
-      }
-      return inputClass || themeInputClass;
+      const inputClass = this.inputProps.class || this.theme_.datePickerInput;
+      const inputDragClass =
+        this.inputProps.dragClass || this.theme_.datePickerInputDrag;
+      return this.picker.hasValue(this.dragValue)
+        ? inputDragClass || inputClass
+        : inputClass;
     },
     inputProps_() {
       // Merge the user props with local
@@ -242,6 +239,7 @@ export default {
         attrs.push(this.selectAttribute_);
       }
       return attrs;
+      // return new AttributeStore(attrs, this.theme_, this.locale_);
       // if (this.disabledAttribute_) {
       //   attrs.push(this.disabledAttribute_);
       // }
@@ -274,18 +272,12 @@ export default {
     value_(val) {
       if (!this.isInline) {
         if (!this.disableFormatInput) this.formatInput();
-        if (
-          this.mode !== 'multiple' &&
-          this.popover_.visibility !== 'visible' &&
-          !this.disablePopoverHide
-        ) {
-          this.hidePopover();
-        } else if (this.picker.hasValue(val) && this.$refs.calendar) {
-          this.$refs.calendar.showPageRange(this.picker.getPageRange(val));
-        }
+        if (!this.disablePopoverHide) this.hidePopover();
+        if (!this.disableAdjustPageRange) this.adjustPageRange();
       }
       this.disableFormatInput = false;
       this.disablePopoverHide = false;
+      this.disableAdjustPageRange = false;
       this.$emit('input', val);
     },
     dragValue(val) {
@@ -305,6 +297,7 @@ export default {
     this.refreshValue();
   },
   mounted() {
+    // Handle escape key presses
     on(document, 'keydown', this.onDocumentKeyDown);
     // Clear drag on background click
     const offTapOrClickHandler = addTapOrClickHandler(document, e => {
@@ -377,14 +370,6 @@ export default {
         hidePopover: false,
       });
     },
-    // inputKeydown(e) {
-    //   if (e.keyCode === 13) {
-    //     this.updateValue(this.value_, {
-    //       formatInput: true,
-    //       hidePopover: false,
-    //     });
-    //   }
-    // },
     inputKeyup(e) {
       // Escape key
       if (e.keyCode === 27) {
@@ -399,20 +384,29 @@ export default {
       {
         formatInput = false,
         hidePopover = !this.popover_.keepVisibleOnInput,
+        adjustPageRange = true,
         debounce,
       } = {},
     ) {
       clearTimeout(this.updateTimeout);
       if (debounce === undefined || debounce < 0) {
-        this.forceUpdateValue(value, { formatInput, hidePopover });
+        this.forceUpdateValue(value, {
+          formatInput,
+          hidePopover,
+          adjustPageRange,
+        });
       } else {
         this.updateTimeout = setTimeout(() => {
           this.updateTimeout = null;
-          this.forceUpdateValue(value, { formatInput, hidePopover });
+          this.forceUpdateValue(value, {
+            formatInput,
+            hidePopover,
+            adjustPageRange,
+          });
         }, debounce);
       }
     },
-    forceUpdateValue(value, { formatInput, hidePopover }) {
+    forceUpdateValue(value, { formatInput, hidePopover, adjustPageRange }) {
       // Reassign input value for good measure
       this.inputValue = isString(value) ? value : this.inputValue;
       // Parse value if needed
@@ -430,9 +424,18 @@ export default {
         if (formatInput) this.formatInput();
         if (hidePopover && !this.isInline) this.hidePopover();
       } else {
-        // Value has changed, so handle formatting and hiding on value change
-        this.disableFormatInput = !formatInput;
-        this.disablePopoverHide = !hidePopover;
+        // Value has changed, so handle formatting, popover hiding and page adjustment on value change
+        this.disableFormatInput = isUndefined(formatInput)
+          ? false
+          : !formatInput;
+        this.disablePopoverHide = isUndefined(hidePopover)
+          ? this.popover.keepVisibleOnInput ||
+            this.mode !== 'multiple' ||
+            this.popover_.visibility !== 'visible'
+          : !hidePopover;
+        this.disableAdjustPageRange = isUndefined(adjustPageRange)
+          ? false
+          : !adjustPageRange;
         this.value_ = validatedValue;
       }
     },
@@ -451,6 +454,13 @@ export default {
           ref: popover.ref,
           delay: 400,
         });
+      }
+    },
+    adjustPageRange() {
+      if (this.picker.hasValue(this.value_) && this.$refs.calendar) {
+        this.$refs.calendar.showPageRange(
+          this.picker.getPageRange(this.value_),
+        );
       }
     },
   },
