@@ -189,7 +189,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `undefined` [Resolved by defaults if not completely specified](./defaults.md#theme)
 
-### `firstDayOfWeek`
+### `first-day-of-week`
 
 **Type:** Number
 

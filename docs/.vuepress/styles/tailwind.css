@@ -38,6 +38,10 @@ input[type='text'] {
   @apply max-w-2xl mx-auto px-4 my-10;
 }
 
+h1 {
+  @apply text-3xl text-gray-900;
+}
+
 .h2 {
   @apply text-2xl text-gray-800 border-none p-0 mb-4;
 }
@@ -48,6 +52,15 @@ input[type='text'] {
 ul {
   @apply list-disc;
 }
+
+/* .sidebar-links {
+  & > li > .sidebar-link {
+  }
+} */
+
+/* .sidebar-group-items > li > .sidebar-sub-headers > .sidebar-sub-header {
+  @apply uppercase text-lg;
+} */
 
 @tailwind utilities;
 
