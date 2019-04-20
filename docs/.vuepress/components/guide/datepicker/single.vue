@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date" :popover="{ visibility: 'visible' }"/>
+    <v-date-picker v-model="date"/>
   </div>
 </template>
 
