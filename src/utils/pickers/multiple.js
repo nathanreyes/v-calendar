@@ -50,7 +50,7 @@ export default class MultiplePicker {
     const bHasItems = this.hasValue(b);
     if (!aHasItems && !bHasItems) return true;
     if (aHasItems !== bHasItems || a.length !== b.length) return false;
-    return a.some(d => !b.includes(d));
+    return !a.some(d => !b.includes(d)) && !b.some(d => !a.includes(d));
   }
 
   getPageRange(value) {

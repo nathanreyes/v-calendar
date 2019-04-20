@@ -109,7 +109,7 @@ export default {
       value_: null,
       dragValue: null,
       inputValue: '',
-      doFormatInput: _defFormatInput,
+      doFormatInput: true,
       doHidePopover: false,
       doAdjustPageRange: false,
       updateTimeout: null,
@@ -276,15 +276,8 @@ export default {
       this.refreshValue();
     },
     value_(val) {
-      if (!this.isInline) {
-        if (this.doFormatInput) this.formatInput();
-        if (this.doHidePopover) this.hidePopover();
-        if (this.doAdjustPageRange) this.adjustPageRange();
-      }
-      this.doFormatInput = true;
-      this.doHidePopover = false;
-      this.doAdjustPageRange = false;
       this.$emit('input', val);
+      this.handleValueChange();
     },
     dragValue(val) {
       this.formatInput();
@@ -366,6 +359,7 @@ export default {
         this.updateValue(this.inputValue, {
           formatInput: false,
           hidePopover: false,
+          adjustPageRange: true,
           debounce: this.inputDebounce_,
         });
       }
@@ -374,6 +368,7 @@ export default {
       this.updateValue(this.inputValue, {
         formatInput: true,
         hidePopover: false,
+        adjustPageRange: false,
       });
     },
     inputKeyup(e) {
@@ -382,17 +377,13 @@ export default {
         this.updateValue(this.value_, {
           formatInput: true,
           hidePopover: true,
+          adjustPageRange: false,
         });
       }
     },
     updateValue(
       value = this.inputValue,
-      {
-        formatInput = false,
-        hidePopover = !this.popover_.keepVisibleOnInput,
-        adjustPageRange = true,
-        debounce,
-      } = {},
+      { formatInput, hidePopover, adjustPageRange, debounce } = {},
     ) {
       clearTimeout(this.updateTimeout);
       if (debounce === undefined || debounce < 0) {
@@ -424,18 +415,28 @@ export default {
         disabled: this.disabledAttribute_,
         fallbackValue: this.value_,
       });
+      // Set state for handling value change
+      this.doFormatInput = formatInput;
+      this.doHidePopover = hidePopover;
+      this.doAdjustPageRange = adjustPageRange;
       // If final value is equal to the current value
       if (this.picker.valuesAreEqual(this.value_, validatedValue)) {
-        // Just format input and hide popover if needed
-        if (formatInput) this.formatInput();
-        if (hidePopover && !this.isInline) this.hidePopover();
+        // Just handle value change
+        this.handleValueChange();
       } else {
-        // Value has changed, so handle formatting, popover hiding and page adjustment on value change
-        this.doFormatInput = formatInput;
-        this.doHidePopover = hidePopover;
-        this.doAdjustPageRange = adjustPageRange;
+        // Assign new value
         this.value_ = validatedValue;
       }
+    },
+    handleValueChange() {
+      if (!this.isInline) {
+        if (this.doFormatInput) this.formatInput();
+        if (this.doHidePopover) this.hidePopover();
+        if (this.doAdjustPageRange) this.adjustPageRange();
+      }
+      this.doFormatInput = true;
+      this.doHidePopover = false;
+      this.doAdjustPageRange = false;
     },
     formatInput() {
       this.$nextTick(() => {
