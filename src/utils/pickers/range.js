@@ -41,8 +41,7 @@ export default class RangePicker {
   }
 
   parse(text) {
-    let start,
-end;
+    let start, end;
     const dateTexts = text.split('-').map(s => s.trim());
     if (dateTexts.length >= 2) {
       start = this._parse(dateTexts[0]);
@@ -54,8 +53,8 @@ end;
   filterDisabled({ value, isRequired, disabled, fallbackValue }) {
     let newValue = isRequired ? fallbackValue : null;
     if (
-      this.hasValue(value)
-      && (!disabled || !disabled.intersectsDate(value))
+      this.hasValue(value) &&
+      (!disabled || !disabled.intersectsDate(value))
     ) {
       newValue = value;
     }
@@ -98,6 +97,8 @@ end;
       });
       // Assign new value if it is valid
       if (picker.dateIsValid(newValue)) {
+        picker.doFormatInput = true;
+        picker.doHidePopover = true;
         // Clear drag selection
         picker.dragValue = null;
         picker.value_ = newValue;

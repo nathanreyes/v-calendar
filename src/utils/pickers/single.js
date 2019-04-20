@@ -54,8 +54,12 @@ export default class SinglePicker {
     // Check if selected date was reselected
     if (this.valuesAreEqual(day.date, picker.value_)) {
       // Reset value to null if allowed
-      if (!picker.isRequired) picker.$emit('input', null);
+      if (!picker.isRequired) {
+        picker.value_ = null;
+      }
     } else {
+      picker.doFormatInput = true;
+      picker.doHidePopover = true;
       // Set value to selected date
       picker.value_ = day.date;
     }

@@ -109,9 +109,9 @@ export default {
       value_: null,
       dragValue: null,
       inputValue: '',
-      disableFormatInput: false,
-      disablePopoverHide: false,
-      disableAdjustPageRange: false,
+      doFormatInput: _defFormatInput,
+      doHidePopover: false,
+      doAdjustPageRange: false,
       updateTimeout: null,
       datePickerPopoverId: createGuid(),
     };
@@ -157,6 +157,12 @@ export default {
     },
     popover_() {
       return this.propOrDefault('popover', 'datePicker.popover', 'merge');
+    },
+    canHidePopover() {
+      return !(
+        this.popover.keepVisibleOnInput ||
+        this.popover_.visibility !== 'visible'
+      );
     },
     selectAttribute_() {
       if (!this.picker.hasValue(this.value_)) return null;
@@ -271,13 +277,13 @@ export default {
     },
     value_(val) {
       if (!this.isInline) {
-        if (!this.disableFormatInput) this.formatInput();
-        if (!this.disablePopoverHide) this.hidePopover();
-        if (!this.disableAdjustPageRange) this.adjustPageRange();
+        if (this.doFormatInput) this.formatInput();
+        if (this.doHidePopover) this.hidePopover();
+        if (this.doAdjustPageRange) this.adjustPageRange();
       }
-      this.disableFormatInput = false;
-      this.disablePopoverHide = false;
-      this.disableAdjustPageRange = false;
+      this.doFormatInput = true;
+      this.doHidePopover = false;
+      this.doAdjustPageRange = false;
       this.$emit('input', val);
     },
     dragValue(val) {
@@ -425,17 +431,9 @@ export default {
         if (hidePopover && !this.isInline) this.hidePopover();
       } else {
         // Value has changed, so handle formatting, popover hiding and page adjustment on value change
-        this.disableFormatInput = isUndefined(formatInput)
-          ? false
-          : !formatInput;
-        this.disablePopoverHide = isUndefined(hidePopover)
-          ? this.popover.keepVisibleOnInput ||
-            this.mode !== 'multiple' ||
-            this.popover_.visibility !== 'visible'
-          : !hidePopover;
-        this.disableAdjustPageRange = isUndefined(adjustPageRange)
-          ? false
-          : !adjustPageRange;
+        this.doFormatInput = formatInput;
+        this.doHidePopover = hidePopover;
+        this.doAdjustPageRange = adjustPageRange;
         this.value_ = validatedValue;
       }
     },

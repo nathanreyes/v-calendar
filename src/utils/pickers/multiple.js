@@ -81,6 +81,8 @@ export default class MultiplePicker {
       // Append selected date
       value = [...picker.value_, day.date];
     }
+    this.doFormatInput = true;
+    this.doHidePopover = false;
     picker.value_ = this.normalize(value);
   }
 
