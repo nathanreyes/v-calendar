@@ -1,6 +1,5 @@
 import Attribute from './attribute';
 import { arrayHasItems, hash } from './helpers';
-import { isFunction } from './_';
 
 export default class AttributeStore {
   constructor(theme, locale, attrs) {
@@ -50,15 +49,6 @@ export default class AttributeStore {
     this.list = list;
     this.pinAttr = pinAttr;
     return { adds, deletes: Array.from(deletes) };
-  }
-
-  atIndex(idx) {
-    return idx < this.length ? this.list[idx] : null;
-  }
-
-  find(match) {
-    if (!isFunction(match)) return null;
-    return this.list.find(attr => match(attr));
   }
 
   // Return a sorted array of objects consisting of
