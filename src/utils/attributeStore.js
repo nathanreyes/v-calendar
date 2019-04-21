@@ -23,9 +23,12 @@ export default class AttributeStore {
         const order = attr.order || 0;
         const hashcode = hash(JSON.stringify(attr));
         let exAttr = this.map[key];
+        // If tracking delta changes (not reset), and attribute hash hasn't changed
         if (!reset && exAttr && exAttr.hashcode === hashcode) {
+          // ...remove attribute from the list of deletes
           deletes.delete(key);
         } else {
+          // Otherwise, create attribute and add to the list of adds
           exAttr = new Attribute(
             {
               key,
@@ -38,9 +41,11 @@ export default class AttributeStore {
           );
           adds.push(exAttr);
         }
+        // Keep track of attribute to pin for initial page
         if (exAttr && exAttr.pinPage) {
           pinAttr = exAttr;
         }
+        // Add attribute to map and list
         map[key] = exAttr;
         list.push(exAttr);
       });
@@ -49,18 +54,5 @@ export default class AttributeStore {
     this.list = list;
     this.pinAttr = pinAttr;
     return { adds, deletes: Array.from(deletes) };
-  }
-
-  // Return a sorted array of objects consisting of
-  // ...the attribute
-  // ...and the first matching date info
-  onDay(day) {
-    return this.list
-      .map(attr => ({
-        ...attr,
-        targetDate: attr.includesDay(day),
-      }))
-      .filter(a => a.targetDate)
-      .sort((a, b) => a.targetDate.compare(b.targetDate));
   }
 }

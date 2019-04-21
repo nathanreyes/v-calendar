@@ -369,7 +369,7 @@ export default {
       }
     },
     refreshPages({ page, position = 1 } = {}) {
-      // Exit if we just finished refreshing
+      // Exit if we are refreshing
       if (this.isRefreshing) return;
       // Calculate the page to start displaying from
       let fromPage = null;
