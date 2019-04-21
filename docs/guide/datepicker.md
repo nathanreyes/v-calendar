@@ -3,10 +3,6 @@ title: 'Date Picker'
 sidebarDepth: 2
 ---
 
-:::warning
-This page is currently being updated.
-:::
-
 # Date Picker
 
 `v-date-picker` is a powerful date picker delivered with `v-calendar`. It is simply a wrapper for `v-calendar` so it comes with a lot of flexibility out of the box. For example, it can accept all props supported by `v-calendar` and emits all of the same events.
@@ -166,6 +162,10 @@ export default {
   }
 }
 ```
+
+:::warning
+Content below is currently being updated.
+:::
 
 ## Disabling Dates
 
@@ -367,10 +367,7 @@ Here, we assign some [Tailwind](https://tailwindcss.com/docs/what-is-tailwind/) 
 </v-date-picker>
 ```
 
-<ClientOnly>
-  <guide-datepicker-input-props>
-  </guide-datepicker-input-props>
-</ClientOnly>
+<guide-datepicker-input-props />
 
 ### Disable Update On Input
 
@@ -395,10 +392,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-disable-update>
-  </guide-datepicker-disable-update>
-</ClientOnly>
+<guide-datepicker-disable-update />
 
 ::: tip
 The user can still commit changes via the input `change` event, which fires when the `enter` key is pressed or focus is removed from the input (consistent among browsers). However, this can cause erratic behavior if the input is embedded within a form element. [Read here for more details on embedding `v-date-picker` in form elements.](#embed-in-forms)
@@ -425,10 +419,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-input-debounce>
-  </guide-datepicker-input-debounce>
-</ClientOnly>
+<guide-datepicker-input-debounce />
 
 ### Use Custom Slot
 
@@ -525,10 +516,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-readme-dp-custom-slot>
-  </guide-readme-dp-custom-slot>
-</ClientOnly>
+<guide-readme-dp-custom-slot />
 
 ## Customize Attributes
 
@@ -575,10 +563,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-select-attribute>
-  </guide-datepicker-select-attribute>
-</ClientOnly>
+<guide-datepicker-select-attribute />
 
 Or if we want disabled dates to display a line through the days...
 
@@ -614,10 +599,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-disable-attribute>
-  </guide-datepicker-disable-attribute>
-</ClientOnly>
+<guide-datepicker-disable-attribute />
 
 ## Customize Selection Popover
 
@@ -649,10 +631,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-single-popover>
-  </guide-datepicker-single-popover>
-</ClientOnly>
+<guide-datepicker-single-popover />
 
 ### Popover for Date Range Attribute
 
@@ -683,10 +662,7 @@ export default {
 }
 ```
 
-<ClientOnly>
-  <guide-datepicker-range-popover>
-  </guide-datepicker-range-popover>
-</ClientOnly>
+<guide-datepicker-range-popover/>
 
 If you would like to provide your own popover, you can do so by configuring the `popover` object for the `select-attribute` and/or the `drag-attribute` to display your own custom slot or component.
 
