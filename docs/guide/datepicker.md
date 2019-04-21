@@ -44,7 +44,9 @@ Using the default slot, you can replace the input element with your own trigger 
 <guide-datepicker-custom-slot />
 
 ```html
-<v-date-picker v-model="date" :popover="{ placement: 'bottom' }">
+<v-date-picker
+  v-model="date"
+  :popover="{ placement: 'bottom', visibility: 'click' }">
   <button class="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded focus:outline-none">
     <svg
       xmlns="http://www.w3.org/2000/svg"
