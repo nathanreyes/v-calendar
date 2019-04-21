@@ -23,9 +23,9 @@ export default class AttributeStore {
         const order = attr.order || 0;
         const hashcode = hash(JSON.stringify(attr));
         let exAttr = this.map[key];
-        // If tracking delta changes (not reset), and attribute hash hasn't changed
+        // If just tracking delta changes and attribute hash hasn't changed
         if (!reset && exAttr && exAttr.hashcode === hashcode) {
-          // ...remove attribute from the list of deletes
+          // ...don't need to replace the attribute
           deletes.delete(key);
         } else {
           // Otherwise, create attribute and add to the list of adds
