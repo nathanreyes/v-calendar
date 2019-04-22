@@ -245,11 +245,6 @@ export default {
         attrs.push(this.selectAttribute_);
       }
       return attrs;
-      // return new AttributeStore(attrs, this.theme_, this.locale_);
-      // if (this.disabledAttribute_) {
-      //   attrs.push(this.disabledAttribute_);
-      // }
-      // return new AttributeStore(attrs, this.theme_, this.locale_);
     },
     picker() {
       const opts = {
@@ -316,19 +311,19 @@ export default {
         this.value_ = this.value;
       }
     },
-    dateIsValid(date) {
-      if (
-        this.disabledAttribute &&
-        this.disabledAttribute.intersectsDate(date)
-      ) {
-        this.$emit('invalid-input', {
-          reason: 'disabled',
-          value: date,
-        });
-        return false;
-      }
-      return true;
-    },
+    // dateIsValid(date) {
+    //   if (
+    //     this.disabledAttribute &&
+    //     this.disabledAttribute.intersectsDate(date)
+    //   ) {
+    //     this.$emit('invalid-input', {
+    //       reason: 'disabled',
+    //       value: date,
+    //     });
+    //     return false;
+    //   }
+    //   return true;
+    // },
     onDocumentKeyDown(e) {
       // Clear drag on escape keydown
       if (this.dragValue && e.keyCode === 27) {
