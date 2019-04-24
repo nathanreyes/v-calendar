@@ -93,15 +93,12 @@ export default {
     value: { type: null, required: true },
     isRequired: Boolean,
     isInline: Boolean,
-    disabledDates: null,
-    availableDates: null,
     updateOnInput: Boolean,
     inputDebounce: Number,
     inputProps: { type: Object, default: () => ({}) },
     popover: { type: Object, default: () => ({}) },
     dragAttribute: Object,
     selectAttribute: Object,
-    disabledAttribute: Object,
     attributes: Array,
   },
   data() {
@@ -197,46 +194,6 @@ export default {
       }
       return attribute;
     },
-    disabledDates_() {
-      const dates = [];
-      // Add the manually applied disabled dates
-      if (this.disabledDates) {
-        if (isArray(this.disabledDates)) dates.push(...this.disabledDates);
-        else dates.push(this.disabledDates);
-      }
-      // Add disabled dates for minDate and maxDate props
-      let { 'min-date': minDate, 'max-date': maxDate } = this.$attrs;
-      minDate = this.locale_.toDate(minDate);
-      maxDate = this.locale_.toDate(maxDate);
-      if (minDate) {
-        dates.push({ start: null, end: addDays(minDate, -1) });
-      }
-      if (maxDate) {
-        dates.push({ start: addDays(maxDate, 1), end: null });
-      }
-      return dates;
-    },
-    disabledAttribute_() {
-      if (
-        !arrayHasItems(this.disabledDates_) &&
-        !arrayHasItems(this.availableDates)
-      ) {
-        return null;
-      }
-      return new Attribute(
-        {
-          key: 'disabled',
-          content: { class: 'vc-opacity-25 vc-pointer-events-none' },
-          ...this.disabledAttribute,
-          dates: this.disabledDates_,
-          excludeDates: this.availableDates,
-          excludeMode: 'includes',
-          order: 100,
-        },
-        this.theme_,
-        this.locale_,
-      );
-    },
     attributes_() {
       const attrs = isArray(this.attributes) ? [...this.attributes] : [];
       if (this.dragAttribute_) {
@@ -278,14 +235,6 @@ export default {
       this.formatInput();
       this.$emit('drag', this.picker.normalize(val));
     },
-    // disabledAttribute_(val) {
-    //   if (!this.dragValue && val) {
-    //     this.updateValue(this.value, {
-    //       formatInput: true,
-    //       hidePopover: false,
-    //     });
-    //   }
-    // },
   },
   created() {
     this.refreshValue();
@@ -311,19 +260,10 @@ export default {
         this.value_ = this.value;
       }
     },
-    // dateIsValid(date) {
-    //   if (
-    //     this.disabledAttribute &&
-    //     this.disabledAttribute.intersectsDate(date)
-    //   ) {
-    //     this.$emit('invalid-input', {
-    //       reason: 'disabled',
-    //       value: date,
-    //     });
-    //     return false;
-    //   }
-    //   return true;
-    // },
+    dateIsValid(date) {
+      var disabledAttribute = this.$refs.calendar.disabledAttribute;
+      return !!disabledAttribute && !disabledAttribute.intersectsDate(date);
+    },
     onDocumentKeyDown(e) {
       // Clear drag on escape keydown
       if (this.dragValue && e.keyCode === 27) {
@@ -406,8 +346,6 @@ export default {
       // Filter out any disabled dates
       const validatedValue = this.picker.filterDisabled({
         value: this.picker.normalize(userValue),
-        isRequired: this.isRequired,
-        disabled: this.disabledAttribute_,
         fallbackValue: this.value_,
       });
       // Set state for handling value change

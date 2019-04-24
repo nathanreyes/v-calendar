@@ -6,8 +6,10 @@ import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
+import Attribute from '@/utils/attribute';
 import { propOrDefaultMixin, rootMixin } from '@/utils/mixins';
 import { addHorizontalSwipeHandler } from '@/utils/touch';
+import { addDays } from '@/utils/dateInfo';
 import {
   pageForDate,
   pageForThisMonth,
@@ -20,6 +22,7 @@ import {
 } from '@/utils/helpers';
 import {
   isNumber,
+  isArray,
   isFunction,
   set,
   hasAny,
@@ -241,6 +244,8 @@ export default {
     maxDate: null,
     minPage: Object,
     maxPage: Object,
+    disabledDates: null,
+    availableDates: null,
     transition: String,
     attributes: [Object, Array],
     disablePageSwipe: Boolean,
@@ -288,6 +293,37 @@ export default {
         pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
       );
     },
+    disabledAttribute() {
+      // Build up a complete list of disabled dates
+      let dates = [];
+      // Initialize with disabled dates prop, if any
+      if (this.disabledDates) {
+        dates = isArray(this.disabledDates)
+          ? this.disabledDates
+          : [this.disabledDates];
+      }
+      // Add disabled dates for minDate and maxDate props
+      const minDate = this.locale_.toDate(this.minDate);
+      const maxDate = this.locale_.toDate(this.maxDate);
+      if (minDate) {
+        dates.push({ start: null, end: addDays(minDate, -1) });
+      }
+      if (maxDate) {
+        dates.push({ start: addDays(maxDate, 1), end: null });
+      }
+      // Return the new disabled attribute
+      return new Attribute(
+        {
+          key: 'disabled',
+          dates,
+          excludeDates: this.availableDates,
+          excludeMode: 'includes',
+          order: 100,
+        },
+        this.theme_,
+        this.locale_,
+      );
+    },
   },
   watch: {
     locale_() {
@@ -304,6 +340,10 @@ export default {
     },
     count() {
       this.refreshPages();
+    },
+    color() {
+      this.store.refresh(this.attributes, true);
+      this.refreshPageAttrs(this.pages, this.store.list);
     },
     attributes(val) {
       const { adds, deletes } = this.store.refresh(val);
@@ -477,7 +517,7 @@ export default {
           refresh: true,
         };
         // Assign day info
-        page.days = this.locale_.getCalendarDays(page);
+        page.days = this.locale_.getCalendarDays(page, this.disabledAttribute);
       }
       // Reassign position if needed
       page.position = position;

@@ -9,7 +9,7 @@ export default class AttributeStore {
     this.refresh(attrs, true);
   }
 
-  refresh(attrs, reset, disabled) {
+  refresh(attrs, reset) {
     const map = {};
     const list = [];
     let pinAttr = null;
@@ -39,9 +39,6 @@ export default class AttributeStore {
             this.theme,
             this.locale,
           );
-          if (disabled) {
-            const dDate = disabled.intersects();
-          }
           adds.push(exAttr);
         }
         // Keep track of attribute to pin for initial page
