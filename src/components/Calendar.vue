@@ -330,7 +330,10 @@ export default {
       this.refreshLocale();
     },
     theme_() {
+      console.log('theme changed');
       this.refreshTheme();
+      this.store.refresh(this.attributes, true);
+      this.refreshPageAttrs(this.pages, this.store.list);
     },
     fromPage() {
       this.refreshPages();
@@ -340,10 +343,6 @@ export default {
     },
     count() {
       this.refreshPages();
-    },
-    color() {
-      this.store.refresh(this.attributes, true);
-      this.refreshPageAttrs(this.pages, this.store.list);
     },
     attributes(val) {
       const { adds, deletes } = this.store.refresh(val);
