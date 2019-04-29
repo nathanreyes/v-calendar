@@ -41,7 +41,13 @@ You can apply a theme color or dark mode by using the `color` and `is-dark` prop
 ```
 
 <div class="example is-dark">
-  <v-date-picker mode="range" :value="null" color="red" is-dark is-inline />
+  <v-date-picker
+    mode="range"
+    :value="null"
+    color="red"
+    is-dark
+    is-inline
+    />
 </div>
 
 :::tip

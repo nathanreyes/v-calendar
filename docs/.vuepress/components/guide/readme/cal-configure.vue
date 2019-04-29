@@ -1,8 +1,17 @@
 <template>
   <div class="example">
-    <div class="flex justify-center flex-wrap list-reset mb-4">
+    <div class="flex justify-center mb-1">
       <button
-        v-for="color in colors"
+        v-for="color in colors_1"
+        :key="color.value"
+        class="mx-1"
+        :class="colorClass(color)"
+        @click="selectedColor = color"
+      >{{ color.label}}</button>
+    </div>
+    <div class="flex justify-center mb-2">
+      <button
+        v-for="color in colors_2"
         :key="color.value"
         class="mx-1"
         :class="colorClass(color)"
@@ -15,6 +24,7 @@
         >Active Pill</a>
       </li>-->
     </div>
+    <button :class="darkClass" @click="isDark = !isDark">Dark</button>
     <v-calendar :color="selectedColor.value" :is-dark="isDark" :attributes="attrs"/>
   </div>
 </template>
@@ -66,7 +76,8 @@ export default {
     ];
     return {
       selectedColor: colors[0],
-      colors,
+      colors_1: colors.slice(0, 5),
+      colors_2: colors.slice(5, 10),
       isDark: false,
       attrs: [
         {
@@ -76,6 +87,16 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    darkClass() {
+      const shared =
+        'text-sm font-semibold block w-full rounded py-1 mb-4 focus:outline-none';
+      if (this.isDark) {
+        return `${shared} bg-gray-800 text-white`;
+      }
+      return `${shared} hover:bg-gray-200 border border-gray-800 text-gray-900`;
+    },
   },
   methods: {
     colorClass(color) {
