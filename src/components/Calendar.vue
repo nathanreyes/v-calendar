@@ -328,12 +328,11 @@ export default {
   watch: {
     locale_() {
       this.refreshLocale();
+      this.initStore();
     },
     theme_() {
-      console.log('theme changed');
       this.refreshTheme();
-      this.store.refresh(this.attributes, true);
-      this.refreshPageAttrs(this.pages, this.store.list);
+      this.initStore();
     },
     fromPage() {
       this.refreshPages();
@@ -389,6 +388,9 @@ export default {
         this.attributes instanceof AttributeStore
           ? this.attributes
           : new AttributeStore(this.theme_, this.locale_, this.attributes);
+      if (this.pages.length) {
+        this.refreshPageAttrs(this.pages, this.store.list);
+      }
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);

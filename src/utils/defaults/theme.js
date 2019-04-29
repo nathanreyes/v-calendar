@@ -85,7 +85,7 @@ export default {
   },
   bgAccentLow: {
     light: 'vc-bg-{color}-200',
-    dark: 'vc-bg-{color}-900',
+    dark: 'vc-bg-{color}-800 vc-opacity-75',
   },
   bgAccentHigh: {
     light: 'vc-bg-{color}-600',
