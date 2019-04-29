@@ -91,7 +91,7 @@ export default {
   computed: {
     darkClass() {
       const shared =
-        'text-sm font-semibold block w-full rounded py-1 mb-4 focus:outline-none';
+        'text-sm font-semibold block w-64 rounded py-1 mb-4 focus:outline-none';
       if (this.isDark) {
         return `${shared} bg-gray-800 text-white`;
       }
