@@ -1,10 +1,6 @@
 <template>
-  <div class='example'>
-    <v-date-picker
-      class='flex-grow'
-      mode='multiple'
-      v-model='dates'>
-    </v-date-picker>
+  <div class="example">
+    <v-date-picker class="flex-grow w-full" mode="multiple" v-model="dates"/>
   </div>
 </template>
 

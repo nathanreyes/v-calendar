@@ -146,8 +146,7 @@ The third mode is date range selection. It uses an object consisting of optional
 <v-date-picker
   mode='range'
   v-model='range'
-  show-caps>
-</v-date-picker>
+  />
 ```
 
 ```javascript
@@ -253,8 +252,8 @@ Here, we assign some [Tailwind](https://tailwindcss.com/docs/what-is-tailwind/) 
     class: "w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 hover:border-blue-5",
     placeholder: "Please enter your birthday",
     readonly: true
-  }'>
-</v-date-picker>
+  }'
+  />
 ```
 
 <guide-datepicker-input-props />
