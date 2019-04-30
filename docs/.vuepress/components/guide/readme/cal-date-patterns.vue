@@ -12,7 +12,11 @@ export default {
       attrs: [
         {
           highlight: true,
-          dates: { weekdays: [1, 7] }, // On the weekends
+          dates: {
+            start: new Date(2018, 0, 1), // Jan 1st, 2018
+            end: new Date(2019, 0, 1), // Jan 1st, 2019
+            weekdays: [1, 7], // ...on Sundays and Saturdays
+          },
         },
       ],
     };

@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-calendar :attributes="attrs"></v-calendar>
+    <v-calendar :attributes="attrs"/>
   </div>
 </template>
 
