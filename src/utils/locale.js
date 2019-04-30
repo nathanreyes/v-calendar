@@ -16,6 +16,7 @@ export default class Locale {
     this.monthNamesShort = this.getMonthNames('short');
     this.monthData = {};
     // Bind methods
+    this.getMonthComps = this.getMonthComps.bind(this);
     this.parse = this.parse.bind(this);
     this.format = this.format.bind(this);
     this.toDate = this.toDate.bind(this);
@@ -95,7 +96,7 @@ export default class Locale {
 
   // Days/month/year components for a given month and year
   getMonthComps(month, year) {
-    const key = `${month}.${year}`;
+    const key = `${month}-${year}`;
     let comps = this.monthData[key];
     if (!comps) {
       const inLeapYear =
@@ -138,7 +139,10 @@ export default class Locale {
   }
 
   // Buils day components for a given page
-  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }, trimMaxWeek) {
+  getCalendarDays(
+    { monthComps, prevMonthComps, nextMonthComps, trimMaxWeek },
+    disabledAttribute,
+  ) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
@@ -197,7 +201,7 @@ export default class Locale {
         const onBottom = w === 6;
         const onLeft = i === 1;
         const onRight = i === 7;
-        days.push({
+        const dayObject = {
           id: `${month}-${day}`,
           label: day.toString(),
           day,
@@ -244,7 +248,12 @@ export default class Locale {
               'on-right': onRight,
             },
           ],
-        });
+        };
+        // Set the day disabled state
+        dayObject.isDisabled = !!(
+          disabledAttribute && disabledAttribute.includesDay(dayObject)
+        );
+        days.push(dayObject);
         // See if we've hit the last day of the month
         if (thisMonth && isLastDay) {
           thisMonth = false;

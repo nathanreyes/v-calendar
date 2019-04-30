@@ -4,10 +4,10 @@
       <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
         <label class="block text-gray-700 text-sm font-bold mb-2" for="date">Select Date Range</label>
         <div class="flex w-full">
-          <v-date-picker mode="range" v-model="date" show-caps>
+          <v-date-picker mode="range" v-model="date" class="flex-grow">
             <input
               id="date"
-              class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
+              class="shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
               :class="{ 'border-red-600': errorMessage }"
               slot-scope="{ inputProps, inputEvents }"
               v-bind="inputProps"
@@ -16,7 +16,7 @@
           </v-date-picker>
           <button
             type="button"
-            class="bg-red-4 hover:bg-red-6 text-white font-bold py-2 px-4 rounded-r"
+            class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-r"
             @click="date = null"
           >Clear</button>
         </div>

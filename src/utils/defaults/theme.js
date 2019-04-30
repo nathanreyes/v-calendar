@@ -63,8 +63,8 @@ export default {
       'vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold vc-rounded-full',
   },
   dayContentDisabled: {
-    light: 'vc-pointer-events-none',
-    dark: 'vc-pointer-events-none',
+    light: 'vc-text-sm vc-text-gray-400 vc-font-medium vc-pointer-events-none',
+    dark: 'vc-text-sm vc-text-gray-600 vc-font-medium vc-pointer-events-none',
   },
   dayPopoverContainer: {
     light:
@@ -85,7 +85,7 @@ export default {
   },
   bgAccentLow: {
     light: 'vc-bg-{color}-200',
-    dark: 'vc-bg-{color}-900',
+    dark: 'vc-bg-{color}-800 vc-opacity-75',
   },
   bgAccentHigh: {
     light: 'vc-bg-{color}-600',

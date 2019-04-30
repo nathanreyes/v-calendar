@@ -163,112 +163,13 @@ export default {
 }
 ```
 
-:::warning
-Content below is currently being updated.
-:::
-
-## Disabling Dates
-
-You can disable dates, date ranges and date patterns using the following methods:
-
-  * Explicitly via `min-date` or `max-date`
-    ```html
-    <!--Set minimum date-->
-    <v-date-picker
-      v-model='date'
-      :min-date='new Date()'
-      is-inline>
-    </v-date-picker>
-    ```
-    <guide-readme-dp-min-max-dates />
-
-  * Explicitly via `disabled-dates` (still works with `min-date` or `max-date`).
-    ```html
-    <!--Disable weekend selection-->
-    <v-date-picker
-      v-model='date'
-      :disabled-dates='{ weekdays: [1, 7] }'
-      is-inline>
-    </v-date-picker>
-    ```
-    <guide-readme-dp-disabled-dates />
-
-  * Implicitly via `available-dates`. Any dates not included in `available-dates` are disabled.
-    ```html
-    <!--Today is the minimum date (null denotes infinite date)-->
-    <v-date-picker
-      :available-dates='{ start: new Date(), end: null }'
-      v-model='date'
-      is-inline>
-    </v-date-picker>
-    ```
-    <guide-readme-dp-available-dates />
-
-::: warning
-When using `disabled-dates` and `available-dates`, `v-calendar` will not automatically disable page navigation for you, whereas using `min-date` and `max-date` will disable pages that are before `min-date` and after `max-date`.
-
-Use the `min-date`, `min-page`, `max-date` or `max-page` props to manually assign the page bounds when using `disabled-dates` or `available-dates`.
-:::
-
-
 ## Format & Parse Dates
 
-Please reference the [formatting & parsing section of the README](/guide/#formatting-parsing) for steps to customizing the input element's formatting and parsing behavior.
+Please reference the [formatting & parsing section](/guide/#formatting-parsing) for steps to customizing the input element's formatting and parsing behavior.
 
-## Set Min/Max Dates
+## Disable Dates
 
-Set min and max dates by assigning their respective `min-date` and `max-date` props. This will block date selection as well as calendar navigation for months outside of these specified dates.
-
-```html
-<v-date-picker
-  v-model='date'
-  :min-date='new Date(2018, 0, 1)'
-  :max-date='new Date(2018, 0, 31)'
-  is-inline>
-</v-date-picker>
-```
-
-```javascript
-export default {
-  data() {
-    return {
-      date: null
-    }
-  }
-}
-```
-
-<guide-datepicker-min-max />
-
-## Disable Dates & Patterns
-
-Sometimes you need more granularity than `min-date` and `max-date` provide. That is where `disabled-dates` and `available-dates` can be used.
-
-The `disabled-dates` and `available-date` props are implemented using, you guessed it, an attribute. There is a `disabled-attribute` (which you [can customize](#customize-attributes)) that simply uses `disabled-dates` for its `dates` expression and `available-dates` for its `exclude-dates` expression. So, to understand how they work, you simply need to understand [the rules for configuring dates with attributes](attributes.md#using-dates).
-
-Let's consider the previous example of setting a min and max dates. Suppose we would also like to disable the weekends. Here is how that would look.
-
-```html
-<v-date-picker
-  v-model="date"
-  mode="range"
-  :min-date="new Date(2018, 0, 1)"
-  :max-date="new Date(2018, 1, 28)"
-  :disabled-dates="{ weekdays: [1, 7] }"
-  />
-```
-
-```javascript
-export default {
-  data() {
-    return {
-      date: null
-    }
-  }
-}
-```
-
-<guide-datepicker-disable-dates />
+Refer to the [disabling dates section](./README.md#disabling-dates).
 
 ## Require Selected Date
 
@@ -295,37 +196,26 @@ If providing your own `<input />` element, use the `inputProps` and `inputEvents
 
 ```html
 <div class="w-full max-w-sm">
-  <form
-    class="bg-white shadow-md rounded px-8 pt-6 pb-8"
-    @submit.prevent>
-    <label
-      class="block text-gray-700 text-sm font-bold mb-2"
-      for="date">
-      Select Date Range
-    </label>
+  <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="date">Select Date Range</label>
     <div class="flex w-full">
-      <v-date-picker
-        mode="range"
-        v-model="date"
-        show-caps>
+      <v-date-picker mode="range" v-model="date" class="flex-grow">
         <input
           id="date"
-          class="flex-grow shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
-          :class="{ 'border-red': errorMessage }"
+          class="shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
+          :class="{ 'border-red-600': errorMessage }"
           slot-scope="{ inputProps, inputEvents }"
           v-bind="inputProps"
           v-on="inputEvents"
-        >
-      </v-date-picker>
+        />
       <button
         type="button"
-        class="bg-red-4 hover:bg-red-6 text-white font-bold py-2 px-4 rounded-r"
-        @click="date = null">
-        Clear
-      </button>
+        class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-r"
+        @click="date = null"
+      >Clear</button>
     </div>
-    <p class="text-red-6 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
-    <p class="text-blue-5 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
+    <p class="text-red-600 text-xs italic mt-1" v-if="errorMessage">{{ errorMessage }}</p>
+    <p class="text-blue-500 text-xs font-bold mt-1" v-else>We got it. Thanks!</p>
   </form>
 </div>
 ```
@@ -347,8 +237,8 @@ export default {
 ```
 
 There are 2 ways to customize the input element for `v-date-picker`
-  1. Apply props for styling and behavior to the built in `input` element.
-  2. Provide your own custom slot to use for the `input` element or omit it entirely.
+* Apply props for styling and behavior to the built in `input` element.
+* Provide your own custom slot to use for the `input` element or omit it entirely.
 
 ### Set `input-props`
 

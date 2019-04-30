@@ -102,7 +102,7 @@ export default class DateInfo {
   // NOTE: This is a shallow calculation (does not take patterns into account),
   //   so this method should only really be called for special conditions
   //   where absolute accuracy is not necessarily needed
-  static findShallowIntersectingRange(date1, date2) {
+  findShallowIntersectingRange(date1, date2) {
     const thisRange = date1.toRange();
     const otherRange = date2.toRange();
     // Start with infinite start and end dates
@@ -447,7 +447,7 @@ export default class DateInfo {
         this.opts,
       );
     }
-    return DateInfo(
+    return new DateInfo(
       {
         start: this.start,
         end: this.end,
