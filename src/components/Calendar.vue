@@ -620,7 +620,7 @@ export default {
     line-height: 1.5;
     border-width: 0;
     border-style: solid;
-    box-sizing: inherit;
+    box-sizing: border-box;
     &:focus {
       outline: none;
     }
