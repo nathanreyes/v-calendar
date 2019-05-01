@@ -578,7 +578,7 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
 .vc-container {
   --slide-translate: 22px;
   --slide-duration: 0.15s;
@@ -614,9 +614,12 @@ export default {
     'Helvetica', 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  box-sizing: border-box;
   width: max-content;
-  & /deep/ * {
+  &,
+  & * {
+    line-height: 1.5;
+    border-width: 0;
+    border-style: solid;
     box-sizing: inherit;
     &:focus {
       outline: none;
