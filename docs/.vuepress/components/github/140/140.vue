@@ -1,12 +1,10 @@
 <template>
-  <div class='example'>
-    <v-date-picker
-      mode='range'
-      v-model='date'
-      :available-dates='availableDates'
-      popover-visibility='visible'>
-    </v-date-picker>
-  </div>
+  <v-date-picker
+    mode="range"
+    v-model="date"
+    :available-dates="availableDates"
+    popover-visibility="visible"
+  ></v-date-picker>
 </template>
 
 <script>

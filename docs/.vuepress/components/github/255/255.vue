@@ -1,15 +1,13 @@
 <template>
-  <div class="example">
-    <v-date-picker
-      mode="range"
-      v-model="dates"
-      :columns="2"
-      :max-date="maxDate"
-      :from-page="fromPage"
-      :to-page="toPage"
-      is-inline
-    />
-  </div>
+  <v-date-picker
+    mode="range"
+    v-model="dates"
+    :columns="2"
+    :max-date="maxDate"
+    :from-page="fromPage"
+    :to-page="toPage"
+    is-inline
+  />
 </template>
 
 <script>

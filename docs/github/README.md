@@ -1,9 +1,8 @@
 ---
-title: 'Github'
+title: 'Github Issues'
+sidebarDepth: 2
 ---
 
-## Github
+## Github Issues
 
-### No. 280
-
-[View Example](./280)
+### [280](./280.md)

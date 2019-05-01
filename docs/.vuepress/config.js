@@ -2,6 +2,12 @@ const path = require('path');
 const postcssPresetEnv = require('postcss-preset-env');
 const tailwindcss = require('tailwindcss');
 
+// const fs = require('fs');
+// const files = fs.readdirSync(
+//   path.resolve('./docs/.vuepress/components/github'),
+// ).map(p => );
+// console.log(files);
+
 module.exports = {
   title: 'V-Calendar',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
@@ -21,14 +27,6 @@ module.exports = {
         text: 'Changelog',
         link: '/changelog/v1.0',
       },
-      // {
-      //   text: 'Showcase',
-      //   link: '/showcase/',
-      // },
-      // {
-      //   text: 'Tests',
-      //   link: '/tests/',
-      // },
     ],
     sidebar: {
       '/guide/': [

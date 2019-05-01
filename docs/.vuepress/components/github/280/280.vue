@@ -1,27 +1,22 @@
 <template>
-  <div>
-    <h2
-      class="text-center text-lg font-medium mt-4"
-    >280: Date Picker - Poor performance when showing multiple months with attributes</h2>
-    <div class="example">
-      <v-date-picker
-        v-model="calendar.selectedDate"
-        mode="range"
-        color="purple"
-        :rows="4"
-        :columns="2"
-        :min-date="new Date()"
-        :attributes="calendar.attributes"
-        class="calendar mt-lg"
-        is-inline
-      />
-    </div>
+  <div class="example">
+    <v-date-picker
+      v-model="calendar.selectedDate"
+      mode="range"
+      color="purple"
+      :rows="4"
+      :columns="2"
+      :min-date="new Date()"
+      :attributes="calendar.attributes"
+      class="calendar mt-lg"
+      is-inline
+    />
   </div>
 </template>
 
 <script>
-import availabilities from './data/280/availabilites.json';
-import events from './data/280/events.json';
+import availabilities from './availabilites.json';
+import events from './events.json';
 
 export default {
   name: 'VCalendarTest',
