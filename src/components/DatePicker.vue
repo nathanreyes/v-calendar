@@ -5,19 +5,10 @@ import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
-import AttributeStore from '@/utils/attributeStore';
-import Attribute from '@/utils/attribute';
 import { rootMixin, propOrDefaultMixin } from '@/utils/mixins';
-import { addDays } from '@/utils/dateInfo';
 import { addTapOrClickHandler } from '@/utils/touch';
-import {
-  arrayHasItems,
-  createGuid,
-  elementContains,
-  on,
-  off,
-} from '@/utils/helpers';
-import { isUndefined, isString, isFunction, isArray } from '@/utils/_';
+import { createGuid, elementContains, on, off } from '@/utils/helpers';
+import { isString, isFunction, isArray } from '@/utils/_';
 
 export default {
   name: 'VDatePicker',
@@ -261,7 +252,7 @@ export default {
       }
     },
     dateIsValid(date) {
-      var disabledAttribute = this.$refs.calendar.disabledAttribute;
+      const disabledAttribute = this.$refs.calendar.disabledAttribute;
       return !!disabledAttribute && !disabledAttribute.intersectsDate(date);
     },
     onDocumentKeyDown(e) {
