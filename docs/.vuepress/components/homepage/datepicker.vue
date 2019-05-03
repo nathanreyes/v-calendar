@@ -4,19 +4,19 @@
       <h2 class="h2 mb-6">Date Picker</h2>
       <p class="text-lg font-medium text-gray-600 mb-2">Single Dates</p>
       <div class="flex flex-col items-center mb-6">
-        <v-date-picker v-model="date" is-inline />
+        <v-date-picker v-model="date" is-inline/>
       </div>
       <p class="text-lg font-medium text-gray-600 mb-2">Multiple Dates</p>
       <div class="flex flex-col items-center mb-6">
-        <v-date-picker mode="multiple" v-model="dates" is-inline />
+        <v-date-picker mode="multiple" v-model="dates" is-inline/>
       </div>
       <p class="text-lg font-medium text-gray-600 mb-2">Date Ranges</p>
       <div class="flex flex-col items-center mb-6">
-        <v-date-picker mode="range" v-model="range" is-inline />
+        <v-date-picker mode="range" v-model="range" is-inline/>
       </div>
       <p class="text-lg font-medium text-gray-600">Popover Mode</p>
     </div>
-    <div class="example mt-0">
+    <div class="example-home mt-0">
       <div class="w-full max-w-sm">
         <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
           <div class="mb-4">

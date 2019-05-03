@@ -6,11 +6,15 @@
   @apply my-8 flex justify-around items-start;
 }
 
-.example {
+.example,
+.example-home {
   @apply my-8 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
   &.is-dark {
     @apply bg-gray-800;
   }
+}
+
+.example {
   @media (max-width: 419px) {
     margin-left: -1.5rem;
     margin-right: -1.5rem;
