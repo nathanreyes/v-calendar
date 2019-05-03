@@ -7,9 +7,8 @@
           <v-date-picker mode="range" v-model="date" class="flex-grow">
             <input
               id="date"
-              class="shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700"
-              :class="{ 'border-red-600': errorMessage }"
-              slot-scope="{ inputProps, inputEvents }"
+              slot-scope="{ inputProps, inputEvents, isDragging }"
+              :class="[`shadow appearance-none border rounded-l w-full py-2 px-3 ${ isDragging ? 'text-gray-400' : 'text-gray-700' }`, { 'border-red-600': errorMessage }]"
               v-bind="inputProps"
               v-on="inputEvents"
             >

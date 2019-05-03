@@ -1,9 +1,6 @@
 <template>
-  <div class='example'>
-    <v-date-picker
-      v-model='date'
-      :input-debounce='500'>
-    </v-date-picker>
+  <div class="example">
+    <v-date-picker v-model="date" :input-debounce="500"/>
   </div>
 </template>
 
@@ -11,7 +8,7 @@
 export default {
   data() {
     return {
-      date: null,
+      date: new Date(),
     };
   },
 };

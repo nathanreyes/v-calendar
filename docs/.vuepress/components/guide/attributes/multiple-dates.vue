@@ -20,7 +20,11 @@ export default {
           contentStyle: {
             color: '#fafafa',
           },
-          dates: [new Date(2018, 0, 1), new Date(2018, 0, 15)],
+          dates: [
+            new Date(2018, 0, 1),
+            { start: new Date(2018, 0, 10), end: new Date(2018, 0, 12) },
+            new Date(2018, 0, 15),
+          ],
         },
       ],
     };

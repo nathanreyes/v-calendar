@@ -61,6 +61,10 @@ ul {
   @apply list-disc;
 }
 
+ol {
+  @apply list-decimal;
+}
+
 /* .sidebar-links {
   & > li > .sidebar-link {
   }

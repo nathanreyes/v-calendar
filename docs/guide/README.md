@@ -118,7 +118,7 @@ For example, suppose we wish to display a single column on mobile. Then, at the 
 
 <guide-readme-cal-responsive />
 
-As you can see, we use the `$screens` function to target multiple screens. We pass an object to specify the screen-to-value relationships with target screen sizes as the key. Use the `default` key to target the default mobile layout.
+When calling the `$screens` function to target multiple screens, pass an object to specify the screen-to-value relationships with target screen sizes as the key. Use the `default` key to target the default mobile layout.
 
 Alternatively, we can pass the default value as a second parameter to the `$screens` function.
 
@@ -220,9 +220,9 @@ Then, reference your custom screens when calling the `$screens` function.
 
 Understanding how to configure date expressions is a critical part to using VCalendar. Specifically, they are used for the following purposes:
 
-- Determining where how and attributes are displayed within the calendar
-- Disabling dates from selection by the user
-- Determining the selected date value(s) for `v-date-picker`
+- Determining where and how attributes are displayed
+- Disabling date selection by the user
+- Setting the selected date(s) for `v-date-picker`
 
 In this guide, a **date expression** may be used to denote any of the following:
 
@@ -233,9 +233,9 @@ In this guide, a **date expression** may be used to denote any of the following:
 
 ### Single Dates
 
-The first kind of date expression allowed is a simple native Javascript date object. It is the most simple, and perhaps most common, way to configure `dates` for an attribute. Here is an example of displaying an attribute on today's date.
+The first type of date expression is a simple native Javascript date object.
 
-We'll get into how to configure attributes in more detail later, but for now we can just focus on the `dates` expression below:
+Here is an example of using a date to display a simple attribute. We'll get into how to configure attributes in more detail later, but for now we can just focus on the `dates` expression below:
 
 <guide-attributes-highlight/>
 
@@ -254,20 +254,18 @@ data() {
 }
 ```
 
-Simple enough. Here we just use a single date to display the attribute.
-
 :::tip
 The `dates` key implies that an array should be used. While arrays are allowed, if you pass a single date object, it will get wrapped in an array for you.
 :::
 
 ### Date Ranges
 
-Date ranges define a range of continous dates. They are expressed as a simple object with the following properties:
+Date ranges define a range of contiguous dates. They are expressed as a simple object with the following properties:
 
 | Property | Description |
 | --- | --- |
-| `start` | Date that defines the start of the date range |
-| `end` | Date that defined the end of the date range (optional) |
+| `start` | Start of the date range |
+| `end` | End of the date range (optional) |
 |`span` | Number of days to extend the range after the start date (optional). This may be used instead of the `end` date. |
 
 <guide-readme-cal-date-ranges/>
@@ -317,7 +315,7 @@ Thus, an empty object is a valid date expression...
 
 ### Date Patterns
 
-Date patterns are an extension of date ranges. They can target dates that would be incredibly difficult, if not impossible, to do otherwise with simple dates or date ranges. To configure a date pattern, let's first start with a date range.
+Date patterns are an extension of date ranges. They can target dates that would be incredibly difficult, if not impossible, to do otherwise with simple dates or date ranges. To configure a date pattern, let's first start with a simple date range.
 
 ```js
   ...
@@ -328,7 +326,7 @@ Date patterns are an extension of date ranges. They can target dates that would 
   ...
 ```
 
-The only thing we need to do to convert this date range into a date pattern is to start adding patterns to it. For this simple example, we'll just target the weekends.
+The only thing we need to do to convert this date range into a date pattern is to start adding patterns to it. For this example, we'll just target the weekends.
 
 <guide-readme-cal-date-patterns/>
 
@@ -344,7 +342,7 @@ The only thing we need to do to convert this date range into a date pattern is t
 
 We can also target other specific day properties, like `days: [6, 15]` for the 6th and 15th of the month, `weeks: [-1]` for the last week of the month and even `ordinalWeekdays: { [-1]: 1 }` for the last Sunday of the month.
 
-Consider another example of displaying dot indicators on the last Friday of every other month, starting on January 1st of 2018. We could do so like this.
+For the next example, let's display dot indicators on the last Friday of every other month, starting on January 1st of 2018.
 
 <guide-readme-cal-date-patterns-1 />
 
@@ -395,7 +393,7 @@ dates: {
 ...
 ```
 
-Note how we kept the `monthlyInterval` condition outside of the others. Any conditions that should be **anded** with all the others can be extracted out of the array. This prevents unnecessary duplication of conditions within the array.
+Note how we kept the `monthlyInterval` condition outside of the array. Any conditions that should be **anded** with all the others can be extracted out of the array. This prevents unnecessary duplication of conditions within the array.
 
 Here is a complete reference of date component specifiers available.
 
@@ -420,7 +418,14 @@ Any of the previously mentioned singular date expressions may be combined using 
 
 ```js
   ...
-  dates: [ new Date(2018, 0, 1), new Date(2018, 0, 15) ]
+  dates: [
+    new Date(2018, 0, 1),
+    {
+      start: new Date(2018, 0, 10),
+      end: new Date(2018, 0, 12)
+    },
+    new Date(2018, 0, 15),
+  ],
   ...
 ```
 
@@ -430,7 +435,7 @@ Any of the previously mentioned singular date expressions may be combined using 
 In pre-v1 versions, dates could only be disabled for `v-date-picker`. Disabling dates are now supported for `v-calendar` as well.
 :::
 
-As mentioned earlier, date expressions are not only used to define attributes. They can also be used to "disable" calendar days. When a date is disabled, the following default action occurs:
+As mentioned earlier, date expressions are not only used to define attributes. They can also be used to "disable" calendar days. When a date is disabled, the following default behavior is applied:
 
 * Pointer events are disabled for the disabled calendar day cells
 * Day text color has less contrast than normal day cells
@@ -513,17 +518,17 @@ Use the `min-date`, `min-page`, `max-date` or `max-page` props to manually assig
 
 ### Include vs Exclude Dates
 
-Currently, there are four props where you can use date expressions:
-  * [`attribute.dates`](/api/attribute.md#dates): Date expressions to include for the attributes.
-  * [`attribute.excludeDates`](/api/attribute.html#exclude-dates): Date expressions to exclude for attributes. All other dates are included.
-  * [`disabled-dates`](/api/datepicker.html#disabled-dates) Disabled dates prop for `v-calendar` & `v-date-picker`.
-  * [`available-dates`](/api/datepicker.html#available-dates) Available dates prop for `v-calendar` & `v-date-picker`. All other dates are disabled.
+Currently, there are four places where date expressions are used:
+* [`attribute.dates`](/api/attribute.md#dates): Date(s) to display attributes .
+* [`attribute.excludeDates`](/api/attribute.html#exclude-dates): Date(s) to NOT display attributes. All other dates are displayed.
+* [`disabled-dates`](/api/datepicker.html#disabled-dates) Date(s) to disable for `v-calendar` & `v-date-picker`.
+* [`available-dates`](/api/datepicker.html#available-dates) Date(s) to enable for `v-calendar` & `v-date-picker`. All other dates are disabled.
 
-In both occasions where date expressions are used (attributes and `v-calendar` or `v-date-picker`), you'll notice that they come in pairs. One expression is for the explicit form (`dates`, `disabled-dates`), and the other expression is for the implicit form (`exclude-dates`, `available-dates`).
+In all places where date expressions are used, you'll notice that they come in pairs. One expression is for the explicit form (`dates`, `disabled-dates`), and the other expression is for the implicit form (`exclude-dates`, `available-dates`).
 
-The explicit form is the most direct form of expressing what dates you want; you give it the date and the calendar displays the attribute on (or disables) that date.
+The explicit form is the most direct form of expressing what dates to target.
 
-However, it might be more efficient to express what dates you would like to exclude, or avoid. For example, in `v-date-picker`, if you only want to allow date selections in the month of January of 2018, both of these expressions would work:
+However, it might be more efficient to express what dates you would like to exclude, or avoid. For example, in `v-date-picker`, if you only want to allow date selections in the month of January of 2018, both of these expressions would work just fine:
 
 ```html
 <v-date-picker
@@ -795,7 +800,7 @@ Custom defaults can be provided on initialization. Note that almost all of these
 
 ```js
 Vue.use(VCalendar, {
-  firstDayOfWeek: 2, // Set first day of week to Monday
+  componentPrefix: 'vc', // Now use vc-calendar and vc-date-picker
   ...
 })
 ```
