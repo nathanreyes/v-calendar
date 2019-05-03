@@ -593,6 +593,7 @@ export default {
   --arrow-horizontal-offset: 10px;
   --arrow-vertical-offset: 11px;
 
+  --day-min-height: 1.8rem;
   --day-content-width: 1.8rem;
   --day-content-height: 1.8rem;
   --day-content-margin: 0.1rem auto;
@@ -601,6 +602,8 @@ export default {
   --day-content-dark-bg-color-hover: hsla(216, 15%, 52%, 0.3);
   --day-content-bg-color-focus: hsla(211, 25%, 84%, 0.4);
   --day-content-dark-bg-color-focus: hsla(216, 15%, 52%, 0.4);
+
+  --highlight-height: 1.75rem;
 
   --dot-diameter: 5px;
   --dot-border-radius: 50%;

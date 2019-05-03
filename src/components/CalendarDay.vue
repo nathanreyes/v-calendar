@@ -195,12 +195,10 @@ export default {
       return !!arrayHasItems(this.popovers);
     },
     dayContentClass() {
+      const contentClass = get(last(this.content), 'class') || '';
       return `vc-day-content ${
         this.isDisabled ? this.theme.dayContentDisabled : this.theme.dayContent
-      } ${this.theme.isDark ? 'vc-is-dark' : ''} ${get(
-        last(this.content),
-        'class',
-      )}`;
+      } ${this.theme.isDark ? 'vc-is-dark' : ''} ${contentClass}`;
     },
     dayContentProps() {
       return {
@@ -472,7 +470,7 @@ export default {
 <style lang="postcss" scoped>
 .vc-day {
   position: relative;
-  min-height: 1.8rem;
+  min-height: --day-min-height;
   height: 100%;
   z-index: 1;
 }
@@ -545,8 +543,8 @@ export default {
 }
 
 .vc-highlight {
-  width: var(--day-content-width);
-  height: var(--day-content-height);
+  width: var(--highlight-height);
+  height: var(--highlight-height);
   &.vc-highlight-base-start {
     width: 50% !important;
     border-radius: 0 !important;
@@ -563,9 +561,6 @@ export default {
     border-left-width: 0 !important;
     border-right-width: 0 !important;
     margin: 0 -1px;
-  }
-  &.vc-highlight-drag {
-    height: 1.75rem;
   }
 }
 
