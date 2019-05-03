@@ -41,11 +41,13 @@ export default {
           inputClass: this.inputClass,
           inputProps: this.inputProps_,
           inputEvents: this.inputEvents,
+          isDragging: !!this.dragValue,
           updateValue: this.updateValue,
+          hidePopover: this.hidePopover,
         })) ||
       h('input', {
         class: this.inputClass,
-        domProps: this.inputProps_,
+        attrs: this.inputProps_,
         on: this.inputEvents,
       });
     const { visibility, placement } = this.popover_;
