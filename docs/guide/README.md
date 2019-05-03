@@ -426,6 +426,10 @@ Any of the previously mentioned singular date expressions may be combined using 
 
 ### Disabling Dates
 
+:::tip
+In pre-v1 versions, dates could only be disabled for `v-date-picker`. Disabling dates are now supported for `v-calendar` as well.
+:::
+
 As mentioned earlier, date expressions are not only used to define attributes. They can also be used to "disable" calendar days. When a date is disabled, the following default action occurs:
 
 * Pointer events are disabled for the disabled calendar day cells
@@ -480,6 +484,7 @@ When using `disabled-dates`, you can use a full date expression to specify a set
 ```html
 <!--Disable weekend selection-->
 <v-date-picker
+  mode='range'
   v-model='date'
   :disabled-dates='{ weekdays: [1, 7] }'
   is-inline>

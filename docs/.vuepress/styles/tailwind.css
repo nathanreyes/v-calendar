@@ -11,6 +11,10 @@
   &.is-dark {
     @apply bg-gray-800;
   }
+  @media (max-width: 419px) {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
 }
 
 input[type='text'] {

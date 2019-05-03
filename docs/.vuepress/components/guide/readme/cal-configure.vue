@@ -25,7 +25,12 @@
       </li>-->
     </div>
     <button :class="darkClass" @click="isDark = !isDark">Dark</button>
-    <v-calendar :color="selectedColor.value" :is-dark="isDark" :attributes="attrs"/>
+    <v-calendar
+      :color="selectedColor.value"
+      :is-dark="isDark"
+      :attributes="attrs"
+      :from-page="{ month: 4, year: 2019 }"
+    />
   </div>
 </template>
 
@@ -75,7 +80,7 @@ export default {
       },
     ];
     return {
-      selectedColor: colors[0],
+      selectedColor: colors.find(c => c.value === 'blue'),
       colors_1: colors.slice(0, 5),
       colors_2: colors.slice(5, 10),
       isDark: false,
