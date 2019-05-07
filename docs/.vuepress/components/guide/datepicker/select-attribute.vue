@@ -10,9 +10,7 @@ export default {
     return {
       date: new Date(),
       selectAttribute: {
-        dot: {
-          backgroundColor: 'red',
-        },
+        dot: true,
       },
     };
   },

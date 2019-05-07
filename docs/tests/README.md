@@ -1,5 +1,6 @@
 ---
 title: 'Tests'
+layout: TestLayout
 ---
 
 <div class='text-center'>

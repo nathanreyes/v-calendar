@@ -376,6 +376,7 @@ Both attributes are assigned a key of `"select-drag"`.
 
 For example, say we want to use a `dot` instead of a `highlight` to denote the selected date. All we would need to do is pass a new `select-attribute`:
 
+<guide-datepicker-select-attribute />
 
 ```html
 <v-date-picker
@@ -391,15 +392,13 @@ export default {
     return {
       date: new Date(),
       selectAttribute: {
-        dot: {
-          backgroundColor: 'red'
-        }
+        dot: true
       }
     }
   }
 }
 ```
 
-<guide-datepicker-select-attribute />
+<!-- <guide-datepicker-range-popover /> -->
 
 <!-- ## Embed in Forms -->

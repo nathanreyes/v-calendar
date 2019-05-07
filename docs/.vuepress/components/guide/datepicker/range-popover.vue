@@ -1,6 +1,12 @@
 <template>
   <div class="example">
-    <v-date-picker mode="range" :select-attribute="selectAttribute" v-model="range" is-inline/>
+    <v-date-picker mode="range" v-model="range" is-inline>
+      <!-- <div slot="day-popover" slot-scope="{ format}">
+        {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
+        -
+        {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}
+      </div>-->
+    </v-date-picker>
   </div>
 </template>
 
@@ -8,16 +14,21 @@
 export default {
   data() {
     return {
+      dragValue: null,
       range: {
-        start: new Date(2018, 0, 1),
-        end: new Date(2018, 0, 6),
-      },
-      selectAttribute: {
-        popover: ({ onEnd }) => ({
-          visibility: onEnd ? 'visible' : 'hover',
-        }),
+        start: new Date(2018, 0, 8),
+        end: new Date(2018, 0, 12),
       },
     };
+  },
+  computed: {
+    selectDragAttribute() {
+      return {
+        popover: {
+          visibility: 'hover',
+        },
+      };
+    },
   },
 };
 </script>
