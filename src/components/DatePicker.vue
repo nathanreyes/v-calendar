@@ -237,7 +237,11 @@ export default {
     on(document, 'keydown', this.onDocumentKeyDown);
     // Clear drag on background click
     const offTapOrClickHandler = addTapOrClickHandler(document, e => {
-      if (!elementContains(this.$el, e.target)) {
+      if (
+        document.body.contains(e.target) &&
+        !elementContains(this.$el, e.target) &&
+        this.dragValue
+      ) {
         this.dragValue = null;
       }
     });
