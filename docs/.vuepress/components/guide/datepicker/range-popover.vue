@@ -1,11 +1,18 @@
 <template>
   <div class="example">
-    <v-date-picker mode="range" v-model="range" is-inline>
-      <!-- <div slot="day-popover" slot-scope="{ format}">
+    <v-date-picker
+      mode="range"
+      v-model="range"
+      :select-attribute="selectDragAttribute"
+      :drag-attribute="selectDragAttribute"
+      is-inline
+      @drag="dragValue = $event"
+    >
+      <div slot="day-popover" slot-scope="{ format}">
         {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
         -
         {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}
-      </div>-->
+      </div>
     </v-date-picker>
   </div>
 </template>

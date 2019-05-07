@@ -399,6 +399,50 @@ export default {
 }
 ```
 
-<!-- <guide-datepicker-range-popover /> -->
+Next is an example of adding a simple popover to the dragged and selected date ranges. Note that here we include the `day-popover` slot, and make sure to assign a truthy value to the `popover` property of the attribute.
+
+We'll first try to display the dragged range, then fall back to the selected range.
+
+<guide-datepicker-range-popover />
+
+```html
+<v-date-picker
+  mode="range"
+  v-model="range"
+  :select-attribute="selectDragAttribute"
+  :drag-attribute="selectDragAttribute"
+  is-inline
+  @drag="dragValue = $event"
+>
+  <div slot="day-popover" slot-scope="{ format}">
+    {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
+    -
+    {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}
+  </div>
+</v-date-picker>
+```
+
+```js
+export default {
+  data() {
+    return {
+      dragValue: null,
+      range: {
+        start: new Date(2018, 0, 8),
+        end: new Date(2018, 0, 12),
+      },
+    };
+  },
+  computed: {
+    selectDragAttribute() {
+      return {
+        popover: {
+          visibility: 'hover',
+        },
+      };
+    },
+  },
+};
+```
 
 <!-- ## Embed in Forms -->

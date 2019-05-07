@@ -492,8 +492,8 @@ When using `disabled-dates`, you can use a full date expression to specify a set
   mode='range'
   v-model='date'
   :disabled-dates='{ weekdays: [1, 7] }'
-  is-inline>
-</v-date-picker>
+  is-inline
+  />
 ```
 
 #### 4. Implicitly via `available-dates`.
@@ -506,8 +506,8 @@ Any dates not included in `available-dates` are disabled.
 <v-date-picker
   :available-dates='{ start: new Date(), end: null }'
   v-model='date'
-  is-inline>
-</v-date-picker>
+  is-inline
+  />
 ```
 
 ::: warning
@@ -763,7 +763,7 @@ Vue.component('v-calendar', Calendar);
   <body>
     <div id='app'>
       <v-calendar></v-calendar>
-      <v-date-picker :mode='mode' v-model='selectedDate'></v-date-picker>
+      <v-date-picker :mode='mode' v-model='selectedDate' />
     </div>
     <!--2. Link Vue Javascript-->
     <script src='https://unpkg.com/vue/dist/vue.js'></script>
