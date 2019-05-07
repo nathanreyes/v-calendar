@@ -162,8 +162,8 @@ export default {
         dates: this.value_,
         pinPage: true,
       };
-      const { dot, bar, highlight } = attribute;
-      if (!dot && !bar && !highlight) {
+      const { dot, bar, highlight, content } = attribute;
+      if (!dot && !bar && !highlight && !content) {
         attribute.highlight = true;
       }
       return attribute;

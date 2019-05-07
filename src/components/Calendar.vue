@@ -19,24 +19,16 @@ import {
   pageIsAfterPage,
   pageIsBetweenPages,
   createGuid,
+  arrayHasItems,
 } from '@/utils/helpers';
-import {
-  isNumber,
-  isArray,
-  isFunction,
-  set,
-  hasAny,
-  omit,
-  first,
-  last,
-} from '@/utils/_';
+import { isNumber, isArray, isFunction, hasAny, omit, last } from '@/utils/_';
 
 export default {
   name: 'VCalendar',
   render(h) {
     // Renderer for calendar panes
-    const panes = this.pages.map((page, i) => {
-      return h(CalendarPane, {
+    const panes = this.pages.map((page, i) =>
+      h(CalendarPane, {
         attrs: {
           ...this.$attrs,
           attributes: this.store,
@@ -57,8 +49,8 @@ export default {
         key: page.key,
         ref: 'pages',
         refInFor: true,
-      });
-    });
+      }),
+    );
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
@@ -96,8 +88,8 @@ export default {
     };
 
     // Renderer for popover
-    const getDayPopover = () => {
-      return h(Popover, {
+    const getDayPopover = () =>
+      h(Popover, {
         props: {
           id: this.sharedState.dayPopoverId,
           contentClass: this.theme_.dayPopoverContainer,
@@ -142,7 +134,6 @@ export default {
           },
         },
       });
-    };
 
     // Renderer for calendar container
     const getContainerGrid = () =>
@@ -197,7 +188,7 @@ export default {
                       attrs: {
                         ...this.$attrs,
                       },
-                      key: this.pages[0].key,
+                      key: arrayHasItems(this.pages) ? this.pages[0].key : '',
                     },
                     panes,
                   ),
@@ -256,7 +247,6 @@ export default {
       store: null,
       transitionName: '',
       inTransition: false,
-      isRefreshing: false,
       sharedState: {
         dayPopoverId: createGuid(),
         theme: {},
@@ -410,8 +400,6 @@ export default {
       }
     },
     refreshPages({ page, position = 1 } = {}) {
-      // Exit if we are refreshing
-      if (this.isRefreshing) return;
       // Calculate the page to start displaying from
       let fromPage = null;
       // 1. Try the page parameter
@@ -442,7 +430,6 @@ export default {
       } else if (pageIsAfterPage(toPage, this.maxPage_)) {
         fromPage = addPages(this.maxPage_, -(this.count - 1));
       }
-      this.isRefreshing = true;
       // Create the new pages
       const pages = [...Array(this.count).keys()].map(i =>
         this.buildPage(addPages(fromPage, i)),
@@ -456,8 +443,6 @@ export default {
       this.$emit('update:fromPage', fromPage);
       this.$emit('update:topage', toPage);
       this.$emit('update:toPage', toPage);
-      // Not refreshing anymore
-      this.$nextTick(() => (this.isRefreshing = false));
     },
     getPageTransition(oldPage, newPage) {
       if (this.transition === 'none') return this.transition;
@@ -563,8 +548,7 @@ export default {
       });
     },
     showPageRange({ from, to }) {
-      let firstPage = first(this.pages);
-      let lastPage = last(this.pages);
+      const lastPage = last(this.pages);
       let page = from;
       if (pageIsAfterPage(to, lastPage)) {
         page = addPages(to, -(this.pages.length - 1));
