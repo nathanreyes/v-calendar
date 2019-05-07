@@ -399,7 +399,9 @@ export default {
 }
 ```
 
-Next is an example of adding a simple popover to the dragged and selected date ranges. Note that here we include the `day-popover` slot, and make sure to assign a truthy value to the `popover` property of the attribute.
+### Selection Popover
+
+Finally, let's look at an example of adding a simple popover to the dragged and selected date ranges. Note that here we include the `day-popover` slot, and make sure to assign a truthy value to the `popover` property of the attribute.
 
 We'll first try to display the dragged range, then fall back to the selected range.
 
