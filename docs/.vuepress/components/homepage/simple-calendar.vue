@@ -32,10 +32,15 @@
             }}</span>
             <!--Todo Rows-->
             <v-popover-row
-              v-for="{ key, customData, highlight, dot, bar } in attributes"
+              v-for="{
+                key,
+                customData,
+                highlight,
+                dot,
+                bar,
+              } in attributes.filter(a => a.customData)"
               :key="key"
               :attribute="{ highlight, dot, bar }"
-              v-if="customData"
             >
               <div class="flex flex-no-wrap items-center w-full">
                 <!--Todo content-->
