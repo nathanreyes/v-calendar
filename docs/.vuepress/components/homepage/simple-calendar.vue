@@ -26,9 +26,11 @@
             slot="day-popover"
             slot-scope="{ day, format, masks, attributes, updateLayout }"
           >
+            <!--Day Header-->
             <span class="text-xs text-gray-3 font-semibold">{{
               format(day.date, masks.dayPopover)
             }}</span>
+            <!--Todo Rows-->
             <v-popover-row
               v-for="{ key, customData, highlight, dot, bar } in attributes"
               :key="key"
@@ -41,7 +43,7 @@
                   <!--Show textbox when editing todo-->
                   <input
                     v-if="customData.id === editId"
-                    class="appearance-none bg-white border px-1"
+                    class="appearance-none bg-white border px-1 text-black"
                     :style="{ minWidth: '180px' }"
                     v-model="customData.description"
                     @keyup.enter="editId = 0"
@@ -107,6 +109,7 @@
                 </a>
               </div>
             </v-popover-row>
+            <!--Add Todo Row-->
             <a
               @click="addTodo(day)"
               class="block text-center text-green-200 hover:text-green-300 font-semibold cursor-pointer px-1 mt-1"
@@ -324,13 +327,12 @@ export default {
             class: todo.isComplete ? 'opacity-25' : '',
           },
           popover: {
-            label: todo.description,
             visibility: 'click',
           },
         })),
         // 'Add todo' attribute
         {
-          key: -1,
+          key: 'add-todo',
           dates: {},
           popover: true,
         },
