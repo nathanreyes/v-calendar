@@ -19,7 +19,7 @@ export default class AttributeStore {
     if (arrayHasItems(attrs)) {
       attrs.forEach((attr, i) => {
         if (!attr || !attr.dates) return;
-        const key = attr.key || i.toString();
+        const key = attr.key ? attr.key.toString() : i.toString();
         const order = attr.order || 0;
         const hashcode = hash(JSON.stringify(attr));
         let exAttr = this.map[key];
