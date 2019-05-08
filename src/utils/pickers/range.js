@@ -41,7 +41,8 @@ export default class RangePicker {
   }
 
   parse(text) {
-    let start, end;
+    let start;
+    let end;
     const dateTexts = text.split('-').map(s => s.trim());
     if (dateTexts.length >= 2) {
       start = this._parse(dateTexts[0]);

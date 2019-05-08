@@ -1,8 +1,7 @@
 <script>
 import PopoverRef from './PopoverRef';
 import { childMixin } from '@/utils/mixins';
-import { addTapOrClickHandler } from '@/utils/touch';
-import { arrayHasItems, objectFromArray } from '@/utils/helpers';
+import { arrayHasItems } from '@/utils/helpers';
 import { isFunction, last, get } from '@/utils/_';
 
 export default {

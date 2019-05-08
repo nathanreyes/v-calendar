@@ -3,7 +3,7 @@
   <div class="vc-day-popover-row">
     <!-- Indicator -->
     <div v-if="indicator" class="vc-day-popover-row-indicator">
-      <span :style="indicator.style" :class="indicator.class"></span>
+      <span :style="indicator.style" :class="indicator.class" />
     </div>
     <!-- Content -->
     <div class="vc-day-popover-row-content">
