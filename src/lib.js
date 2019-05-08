@@ -2,6 +2,7 @@ import Calendar from '@/components/Calendar';
 import DatePicker from '@/components/DatePicker';
 import Popover from '@/components/Popover';
 import PopoverRef from '@/components/PopoverRef';
+import PopoverRow from '@/components/PopoverRow';
 import { setupCalendar } from '@/utils/setup';
 import '@/styles/tailwind-lib.css';
 
@@ -14,7 +15,7 @@ const components = {
   DatePicker,
   Popover,
   PopoverRef,
-  PopoverRow: () => import('@/components/PopoverRow'),
+  PopoverRow,
 };
 
 // Declare install function executed by Vue.use()

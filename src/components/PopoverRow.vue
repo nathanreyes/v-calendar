@@ -7,7 +7,9 @@
     </div>
     <!-- Content -->
     <div class="vc-day-popover-row-content">
-      <slot>{{ attribute.popover ? attribute.popover.label : "No content provided" }}</slot>
+      <slot>{{
+        attribute.popover ? attribute.popover.label : 'No content provided'
+      }}</slot>
     </div>
   </div>
 </template>

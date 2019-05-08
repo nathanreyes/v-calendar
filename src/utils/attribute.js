@@ -24,8 +24,8 @@ export default class Attribute {
   ) {
     this.key = isUndefined(key) ? createGuid() : key;
     this.hashcode = hashcode;
-    this.order = order || 0;
     this.customData = customData;
+    this.order = order || 0;
     this.pinPage = pinPage;
     // Normalize attribute types
     if (highlight) {
