@@ -498,13 +498,13 @@ Here is how a bar or highlight would appear, respectively.
 
 If you would like to hide the indicator, just set the `hideIndicator` property to `true`;
 
-<guide-attributes-popover-labels hide-indicators />
+<guide-attributes-popover-labels visibility="hover" hide-indicators />
 
 ```js
     ...
     popover: {
       label: todo.description,
-      visibility: 'focus',
+      visibility: 'hover',
       hideIndicator: true,
     }
     ...
@@ -518,7 +518,7 @@ These are the additional configuration options you may use for further popover c
 | `labelClass` | String | Class to apply to the label. |
 | `labelStyle` | Object | Inline style to apply to the label. |
 | `hideIndicator` | Boolean | Hides the indicator that appears to the left of the label. |
-| `visibility` | String | Visibility mode for the popover (`"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`).
+| `visibility` | String | Visibility mode for the popover (`"hover-focus"`, `"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`).
 | `isInteractive` | Boolean | Allows user to interactive with the popover contents. For example, this keeps the popover open when user hovers over the popover when `visibility === "hover"`, instead of hiding it by default. |
 
 ### 2. Scoped Slot

@@ -139,9 +139,9 @@ pageClass: docs-page
 
 **Type:** String
 
-**Description:** Visibility state of the popover (`"hover"`, `"focus"`, `"hidden"`, `"visible"`)
+**Description:** Visibility state of the popover (`"hover-focus"`, `"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`)
 
-**Default:** `"hover"`
+**Default:** `"hover-focus"`
 
 ### `datePicker.popover.keepVisibleOnInput`
 
