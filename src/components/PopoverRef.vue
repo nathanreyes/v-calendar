@@ -1,5 +1,5 @@
 <script>
-import { on, off } from '@/utils/helpers';
+import { on, off, elementContains } from '@/utils/helpers';
 
 export default {
   props: {
@@ -8,9 +8,11 @@ export default {
     args: null,
     visibility: {
       type: String,
-      default: 'hover',
+      default: 'hover-focus',
       validator: value =>
-        ['hover', 'focus', 'click', 'visible', 'hidden'].indexOf(value) !== -1,
+        ['hover-focus', 'hover', 'focus', 'click', 'visible', 'hidden'].indexOf(
+          value,
+        ) !== -1,
     },
     placement: { type: String, default: 'bottom' },
     isInteractive: Boolean,
@@ -58,14 +60,16 @@ export default {
       on(this.reference, 'mouseover', this.onMouseOver);
       on(this.reference, 'mouseleave', this.onMouseLeave);
       on(this.reference, 'focusin', this.onFocusIn);
-      on(this.reference, 'blur', this.onBlur);
+      on(this.reference, 'focusout', this.onFocusOut);
+      // on(this.reference, 'blur', this.onFocusOut);
     },
     removeEvents() {
       off(this.reference, 'click', this.onClick);
       off(this.reference, 'mouseover', this.onMouseOver);
       off(this.reference, 'mouseleave', this.onMouseLeave);
       off(this.reference, 'focusin', this.onFocusIn);
-      off(this.reference, 'blur', this.onBlur);
+      off(this.reference, 'focusout', this.onFocusOut);
+      // off(this.reference, 'blur', this.onFocusOut);
     },
     onClick() {
       if (this.visibility === 'click') {
@@ -75,29 +79,36 @@ export default {
     onMouseOver() {
       if (!this.isHovered) {
         this.isHovered = true;
-        if (this.visibility === 'hover') {
+        if (this.visibility.includes('hover')) {
           this.refreshVisibility();
         }
       }
     },
     onMouseLeave() {
-      this.isHovered = false;
-      if (this.visibility === 'hover') {
-        this.refreshVisibility();
+      if (this.isHovered) {
+        this.isHovered = false;
+        if (
+          this.visibility === 'hover' ||
+          (this.visibility === 'hover-focus' && !this.isFocused)
+        ) {
+          this.refreshVisibility();
+        }
       }
     },
     onFocusIn() {
       if (!this.isFocused) {
         this.isFocused = true;
-        if (this.visibility === 'focus') {
+        if (this.visibility.includes('focus')) {
           this.refreshVisibility();
         }
       }
     },
-    onBlur() {
-      this.isFocused = false;
-      if (this.visibility === 'focus') {
-        this.refreshVisibility();
+    onFocusOut(e) {
+      if (this.isFocused && !elementContains(this.reference, e.relatedTarget)) {
+        this.isFocused = false;
+        if (this.visibility.includes('focus')) {
+          this.refreshVisibility();
+        }
       }
     },
     refreshVisibility() {
@@ -112,6 +123,13 @@ export default {
         case 'focus':
           if (this.isFocused) {
             this.show();
+          } else if (this.isActive) {
+            this.hide();
+          }
+          break;
+        case 'hover-focus':
+          if (this.isHovered || this.isFocused) {
+            this.show({ visibility: this.isFocused ? 'focus' : 'hover' });
           } else if (this.isActive) {
             this.hide();
           }
@@ -135,11 +153,11 @@ export default {
         });
       }
     },
-    show() {
+    show({ visibility } = {}) {
       this.$vc.$emit(`show:${this.id}`, {
         ref: this.reference,
         args: this.args,
-        visibility: this.visibility,
+        visibility: visibility || this.visibility,
         placement: this.placement,
         isInteractive: this.isInteractive,
         delay: this.showDelay,

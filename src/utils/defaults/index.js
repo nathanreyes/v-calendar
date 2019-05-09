@@ -1,4 +1,3 @@
-import { POPOVER_VISIBILITIES } from '../constants';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';
@@ -19,7 +18,7 @@ export default {
     updateOnInput: true,
     inputDebounce: 1000,
     popover: {
-      visibility: POPOVER_VISIBILITIES.FOCUS,
+      visibility: 'hover-focus',
       placement: 'bottom-start',
       keepVisibleOnInput: false,
     },

@@ -135,7 +135,7 @@ export const off = (element, event, handler) => {
 };
 
 export const elementContains = (element, child) =>
-  element === child || element.contains(child);
+  !!element && !!child && (element === child || element.contains(child));
 
 export function hash(str) {
   let hashcode = 0;
