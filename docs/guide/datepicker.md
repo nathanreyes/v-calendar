@@ -440,6 +440,7 @@ export default {
       return {
         popover: {
           visibility: 'hover',
+          isInteractive: false, // Defaults to true when using slot
         },
       };
     },

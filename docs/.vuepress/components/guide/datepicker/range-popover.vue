@@ -8,7 +8,7 @@
       is-inline
       @drag="dragValue = $event"
     >
-      <div slot="day-popover" slot-scope="{ format}">
+      <div slot="day-popover" slot-scope="{ format }">
         {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
         -
         {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}
@@ -33,6 +33,7 @@ export default {
       return {
         popover: {
           visibility: 'hover',
+          isInteractive: false,
         },
       };
     },
