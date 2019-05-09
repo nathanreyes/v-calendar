@@ -9,7 +9,10 @@ export default {
     return h(
       'div',
       {
-        class: 'vc-popover-content-wrapper',
+        class: [
+          'vc-popover-content-wrapper',
+          { 'is-interactive': this.isInteractive },
+        ],
         attrs: {
           tabindex: this.isInteractive ? 0 : -1,
         },
@@ -275,8 +278,8 @@ export default {
   display: block;
   outline: none;
   z-index: 10;
-  &.interactive {
-    pointer-events: all;
+  &:not(.is-interactive) {
+    pointer-events: none;
   }
 }
 
