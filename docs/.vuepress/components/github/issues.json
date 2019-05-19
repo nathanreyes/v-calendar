@@ -13,5 +13,10 @@
     "number": "304",
     "component": "github-304-304",
     "title": ""
+  },
+  {
+    "number": "311",
+    "component": "github-311-311",
+    "title": "Conflict happening with availableDates and range mode"
   }
 ]
