@@ -74,13 +74,14 @@ export default {
           highlight: {
             fillMode: 'none',
             color: 'purple',
-            class: 'rounded-none',
+            class: 'rounded-none bg-transparent',
           },
           content: {
             class: 'italic',
             color: 'purple',
           },
           dates: new Date(),
+          order: 100,
         },
         // Attributes for meetings
         ...this.meetings.map(({ description, dates, color }) => ({
