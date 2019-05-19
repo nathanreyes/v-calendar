@@ -74,6 +74,8 @@ const locales = {
   tr: { dow: 2, L: 'DD.MM.YYYY' },
   // Ukrainian
   uk: { dow: 2, L: 'DD.MM.YYYY' },
+  // Estonian
+  et: { dow: 2, L: 'DD.MM.YYYY' },
 };
 locales.en = locales['en-US'];
 locales.zh = locales['zh-CN'];
