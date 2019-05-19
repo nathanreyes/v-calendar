@@ -10,21 +10,21 @@ export function addDays(date, days) {
 }
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale, parseFormat }) {
+  constructor(config, { order = 0, locale }) {
     this.isDateInfo = true;
     this.isRange = isObject(config) || isFunction(config);
     this.isDate = !this.isRange;
     this.order = order;
     this.locale = locale;
-    this.toDate = locale.toDate;
+    this.mask = locale.masks.data;
     this.getMonthComps = locale.getMonthComps;
     this.firstDayOfWeek = locale.firstDayOfWeek;
-    this.opts = { order, locale, parseFormat };
+    this.opts = { order, locale };
     // Process date
     if (this.isDate) {
       this.type = 'date';
       // Initialize date from config
-      let date = this.toDate(config, parseFormat);
+      let date = this.toDate(config);
       // Can't accept invalid dates
       date = isDate(date) ? date : new Date();
       // Strip date time
@@ -96,6 +96,11 @@ export default class DateInfo {
       // Assign flag if date is complex
       this.isComplex = !!this.on;
     }
+  }
+
+  toDate(date) {
+    const mask = this.locale.masks.data;
+    return this.locale.toDate(date, mask);
   }
 
   // Returns a date range that intersects two DateInfo objects

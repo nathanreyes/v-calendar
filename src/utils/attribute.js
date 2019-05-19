@@ -26,6 +26,7 @@ export default class Attribute {
     this.hashcode = hashcode;
     this.customData = customData;
     this.order = order || 0;
+    this.dateOpts = { order, locale };
     this.pinPage = pinPage;
     // Normalize attribute types
     if (highlight) {
@@ -54,28 +55,27 @@ export default class Attribute {
     }
     this.hasExcludeDates = arrayHasItems(this.excludeDates);
     this.excludeMode = excludeMode || 'intersects';
-    // Assign final values for dates & excludeDates
+    // Assign final dates
     this.dates = (
       (this.hasDates && this.dates) ||
       (this.hasExcludeDates && [{}]) ||
       []
     )
       .map(
-        d =>
-          d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
+        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
       )
       .filter(d => d);
+    // Assign final exclude dates
     this.excludeDates = ((this.hasExcludeDates && this.excludeDates) || [])
       .map(
-        d =>
-          d && (d instanceof DateInfo ? d : new DateInfo(d, { order, locale })),
+        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
       )
       .filter(d => d);
     this.isComplex = some(dates, d => d.isComplex);
   }
 
   // Accepts: Date or date range object
-  // Returns: First attribute date info that partially intersects the given date
+  // Returns: First date that partially intersects the given date
   intersectsDate(date) {
     return (
       !this.excludesDate(date) &&
@@ -84,8 +84,9 @@ export default class Attribute {
   }
 
   // Accepts: Date or date range object
-  // Returns: First attribute date info that completely includes the given date
+  // Returns: First date that completely includes the given date
   includesDate(date) {
+    date = date instanceof DateInfo ? date : new DateInfo(date, this.dateOpts);
     return (
       !this.excludesDate(date) &&
       (this.dates.find(d => d.includesDate(date)) || false)
@@ -93,6 +94,7 @@ export default class Attribute {
   }
 
   excludesDate(date) {
+    date = date instanceof DateInfo ? date : new DateInfo(date, this.dateOpts);
     return (
       this.hasExcludeDates &&
       this.excludeDates.find(
