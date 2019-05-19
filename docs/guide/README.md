@@ -26,11 +26,11 @@ And of course, V-Calendar is responsive and mobile friendly.
   * Semantic-inspired navigation popover
   * Navigation transitions (horizontal slide, vertical slide, fade)
 
+<guide-readme-cal-basic />
+
 ```html
 <v-calendar />
 ```
-
-<guide-readme-cal-basic />
 
 ### Colors & Dark Mode
 
@@ -42,10 +42,6 @@ The following colors are provided out of the box: **gray**, **red**, **orange**,
 
 <guide-readme-cal-configure />
 
-```html
-<v-date-picker mode="range" :value="null" color="red" is-dark is-inline />
-```
-
 <div class="example is-dark">
   <v-date-picker
     mode="range"
@@ -56,17 +52,27 @@ The following colors are provided out of the box: **gray**, **red**, **orange**,
     />
 </div>
 
+```html
+<v-date-picker
+  mode="range"
+  :value="null"
+  color="red"
+  is-dark
+  is-inline
+  />
+```
+
 ## Layouts
 
 ### Full Width
 
 To expand the component to the full width of its container, set the `is-expanded` prop.
 
+<guide-readme-cal-expanded />
+
 ```html
 <v-calendar is-expanded />
 ```
-
-<guide-readme-cal-expanded />
 
 ### Title Positioning
 
@@ -74,29 +80,29 @@ To make the title header left or right aligned, use the `title-position` prop.
 
 #### Left Aligned
 
+<guide-readme-cal-title-position title-position="left" />
+
 ```html
 <v-calendar title-position="left" />
 ```
 
-<guide-readme-cal-title-position title-position="left" />
-
 #### Right Aligned
+
+<guide-readme-cal-title-position title-position="right" />
 
 ```html
 <v-calendar title-position="right" />
 ```
 
-<guide-readme-cal-title-position title-position="right" />
-
 ### Multiple Rows & Columns
 
 Use the `rows` and `columns` props to create multi-row and multi-column static layouts.
 
+<guide-readme-cal-rows-columns />
+
 ```html
 <v-calendar :rows="2" />
 ```
-
-<guide-readme-cal-rows-columns />
 
 ### Responsive Layouts
 
@@ -112,11 +118,11 @@ V-Calendar takes a mobile-first approach, where each screen represents a minimum
 
 For example, suppose we wish to display a single column on mobile. Then, at the large size, we wish to expand the calendar to two columns.
 
+<guide-readme-cal-responsive />
+
 ```html
 <v-calendar :columns="$screens({ default: 1, lg: 2 })" />
 ```
-
-<guide-readme-cal-responsive />
 
 When calling the `$screens` function to target multiple screens, pass an object to specify the screen-to-value relationships with target screen sizes as the key. Use the `default` key to target the default mobile layout.
 
@@ -129,6 +135,8 @@ Alternatively, we can pass the default value as a second parameter to the `$scre
 
 Let's add to the previous example so that a new row is added for large screens. Also, we would also like to expand the pane width to fill its container on mobile when only one column and row is displayed.
 
+<guide-readme-cal-responsive-expanded />
+
 ```html
 <v-calendar
   :columns="$screens({ default: 1, lg: 2 })"
@@ -136,8 +144,6 @@ Let's add to the previous example so that a new row is added for large screens. 
   :is-expanded="$screens({ default: true, lg: false })"
   />
 ```
-
-<guide-readme-cal-responsive-expanded />
 
 We could rework the previous example to make it a bit more intuitive by creating a comprehensive `layout` computed property that just calls the `$screens` function once.
 
