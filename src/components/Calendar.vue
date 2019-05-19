@@ -563,6 +563,19 @@ export default {
 </script>
 
 <style lang="postcss">
+.vc-container,
+.vc-container *,
+.vc-popover-content,
+.vc-popover-content * {
+  line-height: 1.5;
+  border-width: 0;
+  border-style: solid;
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+  }
+}
+
 .vc-container {
   --slide-translate: 22px;
   --slide-duration: 0.15s;
@@ -602,16 +615,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   width: max-content;
-  &,
-  & * {
-    line-height: 1.5;
-    border-width: 0;
-    border-style: solid;
-    box-sizing: border-box;
-    &:focus {
-      outline: none;
-    }
-  }
 }
 
 .vc-arrows-container {
