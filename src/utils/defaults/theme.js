@@ -55,6 +55,7 @@ export default {
     light: 'vc-bg-{color}-100 vc-text-{color}-900 vc-font-bold vc-shadow',
     dark: 'vc-bg-{color}-500 vc-text-white vc-font-bold vc-shadow',
   },
+  navCellDisabled: 'vc-opacity-25',
   dayNotInMonth: 'vc-opacity-0 vc-pointer-events-none',
   dayContent: {
     light:

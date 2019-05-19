@@ -105,7 +105,7 @@ export default {
             classes.push(this.theme.navCellInactive);
           }
           if (isDisabled) {
-            classes.push('vc-opacity-25');
+            classes.push(this.theme.navCellDisabled);
           }
           return {
             label,
