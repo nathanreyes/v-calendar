@@ -51,8 +51,8 @@ export default {
         on: this.inputEvents,
       });
     const { visibility, placement } = this.popover_;
-    // Return fragment with slot/input and popover w/ calendar
-    return h('span', [
+    // Convert this span to a fragment when supported in Vue
+    return h('span', { class: 'vc-reset' }, [
       h(
         PopoverRef,
         {

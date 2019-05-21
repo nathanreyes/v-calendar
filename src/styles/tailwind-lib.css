@@ -1,3 +1,18 @@
+/* Resets usually supplied by Tailwind @base */
+.vc-reset {
+  &,
+  & * {
+    line-height: 1.5;
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: theme('borderColor.default', currentColor);
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
 .vc-disabled {
   @apply vc-opacity-25 vc-pointer-events-none vc-cursor-not-allowed;
 }

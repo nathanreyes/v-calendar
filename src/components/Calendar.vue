@@ -143,6 +143,7 @@ export default {
           class: [
             'vc-container',
             'vc-relative',
+            'vc-reset',
             {
               'vc-min-w-full': this.isExpanded,
             },
@@ -335,10 +336,10 @@ export default {
     },
     attributes(val) {
       const { adds, deletes } = this.store.refresh(val);
-      this.refreshPageAttrs(this.pages, adds, deletes);
+      this.refreshAttrs(this.pages, adds, deletes);
     },
     pages(val) {
-      this.refreshPageAttrs(val.filter(p => p.refresh), this.store.list);
+      this.refreshAttrs(val.filter(p => p.refresh), this.store.list);
     },
   },
   created() {
@@ -372,15 +373,6 @@ export default {
     },
     refreshTheme() {
       this.sharedState.theme = this.theme_;
-    },
-    initStore() {
-      this.store =
-        this.attributes instanceof AttributeStore
-          ? this.attributes
-          : new AttributeStore(this.theme_, this.locale_, this.attributes);
-      if (this.pages.length) {
-        this.refreshPageAttrs(this.pages, this.store.list);
-      }
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
@@ -509,22 +501,38 @@ export default {
       page.position = position;
       return page;
     },
-    refreshPageAttrs(pages = [], adds = [], deletes = []) {
+    initStore() {
+      // Create a new attribute store
+      this.store = new AttributeStore(
+        this.theme_,
+        this.locale_,
+        this.attributes,
+      );
+      // Refresh attributes for existing pages
+      this.refreshAttrs(this.pages, this.store.list, [], true);
+    },
+    refreshAttrs(pages = [], adds = [], deletes = [], reset) {
+      if (!arrayHasItems(pages)) return;
       // For each page...
       pages.forEach(p => {
         // Reset refresh flag
         p.refresh = false;
         // For each day...
         p.days.forEach(d => {
-          // Get the current attributes
-          let map = d.attributesMap || {};
-          // Strip out attributes that need to be removed
-          if (hasAny(map, deletes)) {
-            map = omit(map, deletes);
-            // Flag day so that it refreshes
+          let map = {};
+          // If resetting and day isn't initialized or has some attributes
+          if (reset && (!d.attributesMap || arrayHasItems(d.attributes))) {
+            // Flag day for refresh
+            d.refresh = true;
+          } else if (hasAny(d.attributesMap, deletes)) {
+            // Delete attributes from the delete list
+            map = omit(d.attributesMap, deletes);
+            // Flag day for refresh
             d.refresh = true;
           }
+          // For each attribute to add...
           adds.forEach(attr => {
+            // Add it if it includes the current day
             const targetDate = attr.includesDay(d);
             if (targetDate) {
               const newAttr = {
@@ -532,7 +540,7 @@ export default {
                 targetDate,
               };
               map[attr.key] = newAttr;
-              // Flag day so that it refreshes
+              // Flag day for refresh
               d.refresh = true;
             }
           });
@@ -543,9 +551,7 @@ export default {
         });
       });
       // Refresh pages
-      this.$nextTick(() => {
-        this.$refs.pages.forEach(p => p.refresh());
-      });
+      this.$refs.pages.forEach(p => p.refresh());
     },
     showPageRange({ from, to }) {
       const lastPage = last(this.pages);
@@ -563,19 +569,6 @@ export default {
 </script>
 
 <style lang="postcss">
-.vc-container,
-.vc-container *,
-.vc-popover-content,
-.vc-popover-content * {
-  line-height: 1.5;
-  border-width: 0;
-  border-style: solid;
-  box-sizing: border-box;
-  &:focus {
-    outline: none;
-  }
-}
-
 .vc-container {
   --slide-translate: 22px;
   --slide-duration: 0.15s;
