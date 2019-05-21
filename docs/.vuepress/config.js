@@ -6,13 +6,13 @@ const tailwindcss = require('tailwindcss');
 // const files = fs.readdirSync(
 //   path.resolve('./docs/.vuepress/components/github'),
 // ).map(p => );
-// console.log(files);
 
 module.exports = {
   title: 'V-Calendar',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
   // Google analytics
   ga: 'UA-113780759-1',
+  head: [['link', { rel: 'icon', href: 'favicon.png' }]],
   themeConfig: {
     nav: [
       {
