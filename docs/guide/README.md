@@ -5,7 +5,7 @@ sidebarDepth: 2
 
 # V-Calendar
 
-V-Calendar is a clean and lightweight plugin for displaying simple, attributed calendars in Vue.js. It uses attributes to decorate the calendar with various visual indicators including highlighted date regions, dots, bars, content classes and even popovers for simple tooltips or custom slot content.
+V-Calendar is a modern and flexible plugin for displaying simple, attributed calendars in Vue.js. It uses attributes to decorate the calendar with various visual indicators including highlighted date regions, dots, bars, content classes and even popovers for simple tooltips or custom slot content.
 
 <guide-attributes-intro/>
 
