@@ -1,22 +1,27 @@
 [
   {
-    "number": "255",
+    "number": 255,
     "component": "github-255-255",
     "title": ""
   },
   {
-    "number": "280",
+    "number": 280,
     "component": "github-280-280",
     "title": "Date Picker - Poor performance when showing multiple months with attributes"
   },
   {
-    "number": "304",
+    "number": 304,
     "component": "github-304-304",
     "title": ""
   },
   {
-    "number": "311",
+    "number": 311,
     "component": "github-311-311",
     "title": "Conflict happening with availableDates and range mode"
+  },
+  {
+    "number": 312,
+    "component": "github-312-312",
+    "title": "Calendar highlights won't be removed after attribute changes"
   }
 ]
