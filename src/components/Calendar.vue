@@ -339,7 +339,7 @@ export default {
       this.refreshAttrs(this.pages, adds, deletes);
     },
     pages(val) {
-      this.refreshAttrs(val.filter(p => p.refresh), this.store.list);
+      this.refreshAttrs(val, this.store.list, null, true);
     },
   },
   created() {
@@ -468,9 +468,7 @@ export default {
     buildPage({ month, year }, position) {
       const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
-      if (page) {
-        page.days.forEach(d => (d.refresh = true));
-      } else {
+      if (!page) {
         const date = new Date(year, month - 1, 15);
         const monthComps = this.locale_.getMonthComps(month, year);
         const prevMonthComps = this.locale_.getPrevMonthComps(month, year);
@@ -515,20 +513,21 @@ export default {
       if (!arrayHasItems(pages)) return;
       // For each page...
       pages.forEach(p => {
-        // Reset refresh flag
-        p.refresh = false;
         // For each day...
         p.days.forEach(d => {
           let map = {};
-          // If resetting and day isn't initialized or has some attributes
-          if (reset && (!d.attributesMap || arrayHasItems(d.attributes))) {
-            // Flag day for refresh
-            d.refresh = true;
+          // If resetting...
+          if (reset) {
+            // Flag day for refresh if it has attributes
+            d.refresh = arrayHasItems(d.attributes);
           } else if (hasAny(d.attributesMap, deletes)) {
             // Delete attributes from the delete list
             map = omit(d.attributesMap, deletes);
             // Flag day for refresh
             d.refresh = true;
+          } else {
+            // Get the existing attributes
+            map = d.attributesMap || {};
           }
           // For each attribute to add...
           adds.forEach(attr => {
@@ -551,7 +550,9 @@ export default {
         });
       });
       // Refresh pages
-      this.$refs.pages.forEach(p => p.refresh());
+      this.$nextTick(() => {
+        this.$refs.pages.forEach(p => p.refresh());
+      });
     },
     showPageRange({ from, to }) {
       const lastPage = last(this.pages);

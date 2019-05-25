@@ -243,9 +243,6 @@ export default {
       };
     },
   },
-  created() {
-    this.refresh();
-  },
   methods: {
     getDayEvent(origEvent) {
       return {
