@@ -34,14 +34,8 @@ export default {
                       props: {
                         id: this.navPopoverId,
                         visibility: this.navVisibility_,
+                        placement: this.navPlacement,
                         isInteractive: true,
-                        placement: `bottom${
-                          this.titlePosition === 'left'
-                            ? '-start'
-                            : this.titlePosition === 'right'
-                            ? '-end'
-                            : ''
-                        }`,
                       },
                     },
                     [
@@ -153,6 +147,16 @@ export default {
       return ['nav-left-button', 'nav-right-button'].filter(
         slot => this.$scopedSlots[slot],
       );
+    },
+    navPlacement() {
+      switch (this.titlePosition) {
+        case 'left':
+          return 'bottom-start';
+        case 'right':
+          return 'bottom-end';
+        default:
+          return 'bottom';
+      }
     },
     weekdayLabels() {
       return this.locale
