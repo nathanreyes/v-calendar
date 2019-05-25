@@ -2,7 +2,7 @@
   {
     "number": 255,
     "component": "github-255-255",
-    "title": ""
+    "title": "v-date-picker and max-date, from-page, is-double-paned show selectData, not from-page"
   },
   {
     "number": 280,
@@ -12,7 +12,7 @@
   {
     "number": 304,
     "component": "github-304-304",
-    "title": ""
+    "title": "Two instances of vCalendar override each other. DatePicker is fine."
   },
   {
     "number": 311,
@@ -23,5 +23,10 @@
     "number": 312,
     "component": "github-312-312",
     "title": "Calendar highlights won't be removed after attribute changes"
+  },
+  {
+    "number": 318,
+    "component": "github-318-318",
+    "title": "Dragging over highlighted days in range mode"
   }
 ]

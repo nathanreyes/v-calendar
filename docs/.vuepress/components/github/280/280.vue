@@ -4,7 +4,7 @@
       v-model="calendar.selectedDate"
       mode="range"
       color="purple"
-      :rows="4"
+      :rows="2"
       :columns="2"
       :min-date="new Date()"
       :attributes="calendar.attributes"

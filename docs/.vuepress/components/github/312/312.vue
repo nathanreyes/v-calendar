@@ -8,7 +8,7 @@
         mode="range"
         :value="null"
         :attributes="attributes"
-        :locale="locale"
+        :locale="{ id: 'de', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }"
         is-dark
       />
     </div>
