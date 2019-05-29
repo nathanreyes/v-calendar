@@ -28,5 +28,15 @@
     "number": 318,
     "component": "github-318-318",
     "title": "Dragging over highlighted days in range mode"
+  },
+  {
+    "number": 323,
+    "component": "github-323-323",
+    "title": "Changing the minDate and maxDate in v-calendar doesn't not refresh the disabled dates"
+  },
+  {
+    "number": 324,
+    "component": "github-324-324",
+    "title": "showPageRange method not working yet?"
   }
 ]

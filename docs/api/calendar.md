@@ -273,14 +273,33 @@ To call methods on a component, assign a ref and call the method any time on or 
 ```js
 ...
 mounted() {
-  this.$refs.calendar.showPageRange({ from: new Date(0, 1, 2020), to: new Date(0, 31, 2020) });
+  // Get reference to the calendar component
+  const calendar = this.$refs.calendar;
+  // Call method of the component
+  calendar.showPageRange(new Date());
 }
 ...
 ```
 
-### `showPageRange({ from, to })`
+### `showPageRange(Date|Object)`
 
 **Description:** Navigates to the calendar page(s) that best displays a given date range.
+
+```js
+  ...
+  const date = new Date(2020, 0, 1); // January, 2020
+  const page = { month: 2, year: 2020 }; // February, 2020
+  // Pass a date
+  calendar.showPageRange(date);
+  // Pass a page ({ month, year })
+  calendar.showPageRange(page);
+  // From a date or page
+  calendar.showPageRange({ from: date });
+  // To a date or page
+  calendar.showPageRange({ to: page });
+  // From a date or page to a date or page
+  calendar.showPageRange({ from: date, to: page })
+```
 
 <!--
 ### 
