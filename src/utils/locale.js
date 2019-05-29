@@ -139,10 +139,7 @@ export default class Locale {
   }
 
   // Buils day components for a given page
-  getCalendarDays(
-    { monthComps, prevMonthComps, nextMonthComps, trimMaxWeek },
-    disabledAttribute,
-  ) {
+  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps, trimMaxWeek }) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
@@ -201,7 +198,7 @@ export default class Locale {
         const onBottom = w === 6;
         const onLeft = i === 1;
         const onRight = i === 7;
-        const dayObject = {
+        days.push({
           id: `${month}-${day}`,
           label: day.toString(),
           day,
@@ -248,12 +245,7 @@ export default class Locale {
               'on-right': onRight,
             },
           ],
-        };
-        // Set the day disabled state
-        dayObject.isDisabled = !!(
-          disabledAttribute && disabledAttribute.includesDay(dayObject)
-        );
-        days.push(dayObject);
+        });
         // See if we've hit the last day of the month
         if (thisMonth && isLastDay) {
           thisMonth = false;

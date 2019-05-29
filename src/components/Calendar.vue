@@ -21,7 +21,16 @@ import {
   createGuid,
   arrayHasItems,
 } from '@/utils/helpers';
-import { isNumber, isArray, isFunction, hasAny, omit, last } from '@/utils/_';
+import {
+  isNumber,
+  isDate,
+  isArray,
+  isObject,
+  isFunction,
+  hasAny,
+  omit,
+  last,
+} from '@/utils/_';
 
 export default {
   name: 'VCalendar',
@@ -338,6 +347,9 @@ export default {
       const { adds, deletes } = this.store.refresh(val);
       this.refreshAttrs(this.pages, adds, deletes);
     },
+    disabledAttribute() {
+      this.refreshDisabledDays();
+    },
     pages(val) {
       this.refreshAttrs(val, this.store.list, null, true);
     },
@@ -426,6 +438,8 @@ export default {
       const pages = [...Array(this.count).keys()].map(i =>
         this.buildPage(addPages(fromPage, i)),
       );
+      // Refresh disabled days for new pages
+      this.refreshDisabledDays(pages);
       // Assign the new transition
       this.transitionName = this.getPageTransition(this.pages[0], pages[0]);
       // Assign the new pages
@@ -435,6 +449,14 @@ export default {
       this.$emit('update:fromPage', fromPage);
       this.$emit('update:topage', toPage);
       this.$emit('update:toPage', toPage);
+    },
+    refreshDisabledDays(pages = this.pages) {
+      pages.forEach(page => {
+        page.days.forEach(d => {
+          d.isDisabled =
+            !!this.disabledAttribute && this.disabledAttribute.includesDay(d);
+        });
+      });
     },
     getPageTransition(oldPage, newPage) {
       if (this.transition === 'none') return this.transition;
@@ -554,14 +576,30 @@ export default {
         this.$refs.pages.forEach(p => p.refresh());
       });
     },
-    showPageRange({ from, to }) {
-      const lastPage = last(this.pages);
-      let page = from;
-      if (pageIsAfterPage(to, lastPage)) {
-        page = addPages(to, -(this.pages.length - 1));
+    showPageRange(range) {
+      let fromPage;
+      let toPage;
+      if (isDate(range)) {
+        fromPage = pageForDate(range);
+      } else if (isObject(range)) {
+        const { month, year } = range;
+        const { from, to } = range;
+        if (isNumber(month) && isNumber(year)) {
+          fromPage = range;
+        } else if (from || to) {
+          fromPage = isDate(from) ? pageForDate(from) : from;
+          toPage = isDate(to) ? pageForDate(to) : to;
+        }
+      } else {
+        return;
       }
-      if (pageIsBeforePage(from, page)) {
-        page = from;
+      const lastPage = last(this.pages);
+      let page = fromPage;
+      if (pageIsAfterPage(toPage, lastPage)) {
+        page = addPages(toPage, -(this.pages.length - 1));
+      }
+      if (pageIsBeforePage(fromPage, page)) {
+        page = fromPage;
       }
       this.refreshPages({ page });
     },
