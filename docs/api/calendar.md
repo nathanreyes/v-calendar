@@ -21,6 +21,14 @@ sidebarDepth: 2
 
 **Default:** `1`
 
+### `step`
+
+**Type:** Number
+
+**Description:** Number of months to step when navigating forwards and backwards.
+
+**Default:** `0` *Resolves to **n** if not provided, where `n = rows * columns`.*
+
 ### `title-position`
 
 **Type:** String
@@ -28,14 +36,6 @@ sidebarDepth: 2
 **Description:** Position of the header title (`"left"`, `"center"`, `"right"`).
 
 **Default:** `"center"`
-
-### `nav-visibility`
-
-**Type:** String
-
-**Description:** Visibility state for calendar navigation panel (`"focus"`, `"hover"`, `"visible"`, `"hidden"`)
-
-**Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#nav-visibility)
 
 ### `is-expanded`
 
@@ -45,6 +45,14 @@ sidebarDepth: 2
 
 **Default:** `false`
 
+### `nav-visibility`
+
+**Type:** String
+
+**Description:** Visibility state for calendar navigation panel (`"focus"`, `"hover"`, `"visible"`, `"hidden"`)
+
+**Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#nav-visibility)
+
 ### `transition`
 
 **Type:** String
@@ -52,14 +60,6 @@ sidebarDepth: 2
 **Description:** Transition type for calendar panes when navigating to a new page (`"slide-h"`: Horizontal slide, `"slide-v"`: Vertical slide, `"fade"`, `"none"`).
 
 **Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#transition)
-
-### `step`
-
-**Type:** Number
-
-**Description:** Number of months to step when navigating forwards and backwards.
-
-**Default:** `0` *Resolves to **n** if not provided, where `n = rows * columns`.*
 
 ### `from-page`
 
@@ -157,6 +157,22 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `[]`
 
+### `disabled-dates`
+
+**Type:** Date that can be one of a Javascript date object, a date range object with `start`, `end`, `span` or [pattern tokens](./date-patterns.md)
+
+**Description:** Dates that are disabled from user selection or navigation.
+
+**Default:** `null`
+
+### `available-dates`
+
+**Type:** Date that can be one of a Javascript date object, a date range object with `start`, `end`, `span` or [pattern tokens](./date-patterns.md)
+
+**Description:** Dates or date range objects that are available for selection or navigation. All other dates are disabled.
+
+**Default Value:** `undefined`
+
 ### `masks`
 
 **Type:** Object
@@ -250,15 +266,21 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Params:** [`day`](./day-object.md)
 
-### `daymouseover`
-
-**Description:** Forwarded from the `mouseover` event for the day content element.
-
-**Params:** [`day`](./day-object.md)
-
 ### `daymouseleave`
 
 **Description:** Forwarded from the `mouseleave` event for the day content element.
+
+**Params:** [`day`](./day-object.md)
+
+### `dayfocusin`
+
+**Description:** Forwarded from the `focusin` event for the day content element.
+
+**Params:** [`day`](./day-object.md)
+
+### `dayfocusout`
+
+**Description:** Forwarded from the `focusout` event for the day content element.
 
 **Params:** [`day`](./day-object.md)
 
@@ -309,6 +331,24 @@ mounted() {
 **Params:** 
 -->
 
+## Slots
+
+### `header-left-button`
+
+**Description:** Calendar header button on the left side for moving to the previous page(s).
+
+### `header-right-button`
+
+**Description:** Calendar header button on the right side for moving to the next page(s).
+
+### `nav-left-button`
+
+**Description:** Calendar navigation header button on the left side for moving to the previous page(s).
+
+### `nav-right-button`
+
+**Description:** Calendar navigation header button on the right side for moving to the next page(s).
+
 ## Scoped Slots
 
 ### `header`
@@ -320,18 +360,6 @@ mounted() {
 ### `header-title`
 
 **Description:** Calendar header title. This slot is animated if `title-transition` is assigned.
-
-**Props:** [`page` props](./page-object.md)
-
-### `header-left-button`
-
-**Description:** Calendar header button on the left side.
-
-**Props:** [`page` props](./page-object.md)
-
-### `header-right-button`
-
-**Description:** Calendar header button on the right side.
 
 **Props:** [`page` props](./page-object.md)
 
