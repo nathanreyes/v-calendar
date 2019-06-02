@@ -38,8 +38,8 @@ export const rootMixin = {
         ? config.id
         : detLocale;
       id = [id, id.substring(0, 2)].find(i => has(locales, i)) || detLocale;
-      // Get the default locale, but prioritize the default masks
-      const defLocale = defaultsDeep({ masks: this.$vc.masks }, locales[id]);
+      // Spread the default locale to prevent repetitive update loops
+      const defLocale = { ...locales[id] };
       // Let props override locale settings
       defLocale.firstDayOfWeek = this.passedProp(
         'firstDayOfWeek',

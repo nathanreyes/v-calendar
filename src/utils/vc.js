@@ -1,3 +1,5 @@
+import { mapValues, defaults as _defaults } from '@/utils/_';
+
 export const createVC = (Vue, defaults) =>
   new Vue({
     data() {
@@ -7,14 +9,14 @@ export const createVC = (Vue, defaults) =>
       };
     },
     computed: {
-      masks() {
-        return this.defaults.masks;
-      },
       theme() {
         return this.defaults.theme;
       },
       locales() {
-        return this.defaults.locales;
+        return mapValues(this.defaults.locales, v => {
+          v.masks = _defaults(v.masks, this.defaults.masks);
+          return v;
+        });
       },
     },
   });
