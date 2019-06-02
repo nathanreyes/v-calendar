@@ -46,38 +46,6 @@ Setting `value = null` still allowed through code.
 
 **Default Value:** `false`
 
-### `min-date`
-
-**Type:** Date
-
-**Description:** Minimum date selectable by the user.
-
-**Default Value:** `undefined`
-
-### `max-date`
-
-**Type:** Date
-
-**Description:** Maximum date selectable by the user.
-
-**Default Value:** `undefined`
-
-### `disabled-dates`
-
-**Type:** Array, Date, Object
-
-**Description:** Dates or date range objects that are **not** allowed for selection.
-
-**Default Value:** `undefined`
-
-### `available-dates`
-
-**Type:** Array, Date, Object
-
-**Description:** Dates or date range objects that are available for selection. All other dates are disabled.
-
-**Default Value:** `undefined`
-
 ### `input-props`
 
 **Type:** Object
@@ -170,8 +138,6 @@ Setting `value = null` still allowed through code.
 
 **Description:** Default slot to use as the popover anchor for v-date-picker. <sup>[[1]](#dp-slots-note-1)</sup> Not applicable to inline date pickers.
 
-**Props:** `inputValue: String`, `updateValue: Function`
+**Props:**
 
-::: tip
-Reference [this example](../guide/datepicker.md#use-custom-slot) of using a custom slot.
-:::
+Reference the section on using [custom slots](../guide/datepicker.md#use-custom-slot) for available props.
