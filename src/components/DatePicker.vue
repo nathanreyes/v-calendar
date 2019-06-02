@@ -12,7 +12,7 @@ import {
 } from '@/utils/mixins';
 import { addTapOrClickHandler } from '@/utils/touch';
 import { createGuid, elementContains, on, off } from '@/utils/helpers';
-import { isString, isFunction, isArray } from '@/utils/_';
+import { isString, isArray } from '@/utils/_';
 
 export default {
   name: 'VDatePicker',

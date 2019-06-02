@@ -2,7 +2,7 @@
 import PopoverRef from './PopoverRef';
 import { childMixin, safeScopedSlotMixin } from '@/utils/mixins';
 import { arrayHasItems } from '@/utils/helpers';
-import { isFunction, last, get } from '@/utils/_';
+import { last, get } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',

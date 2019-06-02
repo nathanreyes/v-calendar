@@ -30,7 +30,6 @@ import {
   isDate,
   isArray,
   isObject,
-  isFunction,
   hasAny,
   omit,
   last,
