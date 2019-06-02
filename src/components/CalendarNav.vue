@@ -5,9 +5,9 @@
     <div class="vc-flex vc-justify-between vc-items-center vc-mx-2">
       <!--Move prev button-->
       <div
-        @click="movePrev"
         class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer"
         :class="theme.navArrows"
+        @click="movePrev"
       >
         <slot name="nav-left-button">
           <svg-icon name="left-arrow" />
@@ -20,11 +20,11 @@
         @click="toggleMode"
         >{{ title }}</span
       >
-      <!--Move next-->
+      <!--Move next button-->
       <div
-        @click="moveNext"
         class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer"
         :class="theme.navArrows"
+        @click="moveNext"
       >
         <slot name="nav-right-button">
           <svg-icon name="right-arrow" />

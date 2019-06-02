@@ -1,12 +1,12 @@
 <script>
 import PopoverRef from './PopoverRef';
-import { childMixin } from '@/utils/mixins';
+import { childMixin, safeScopedSlotMixin } from '@/utils/mixins';
 import { arrayHasItems } from '@/utils/helpers';
 import { isFunction, last, get } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
-  mixins: [childMixin],
+  mixins: [childMixin, safeScopedSlotMixin],
   render(h) {
     // Backgrounds layer
     const backgroundsLayer = () =>
@@ -34,24 +34,23 @@ export default {
 
     // Content layer
     const contentLayer = () =>
-      isFunction(this.$scopedSlots['day-content'])
-        ? this.$scopedSlots['day-content']({
-            day: this.day,
-            attributes: this.day.attributes,
-            attributesMap: this.day.attributesMap,
-            dayProps: this.dayContentProps,
-            dayEvents: this.dayContentEvents,
-          })
-        : h(
-            'span',
-            {
-              class: this.dayContentClass,
-              attrs: { ...this.dayContentProps },
-              on: this.dayContentEvents,
-              ref: 'content',
-            },
-            [this.day.label],
-          );
+      this.safeScopedSlot('day-content', {
+        day: this.day,
+        attributes: this.day.attributes,
+        attributesMap: this.day.attributesMap,
+        dayProps: this.dayContentProps,
+        dayEvents: this.dayContentEvents,
+      }) ||
+      h(
+        'span',
+        {
+          class: this.dayContentClass,
+          attrs: { ...this.dayContentProps },
+          on: this.dayContentEvents,
+          ref: 'content',
+        },
+        [this.day.label],
+      );
 
     // Popover content wrapper
     const contentWrapperLayer = () => {

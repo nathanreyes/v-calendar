@@ -4,77 +4,83 @@ import PopoverRef from './PopoverRef';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
 import Grid from './Grid';
-import { propOrDefaultMixin, childMixin } from '@/utils/mixins';
+import {
+  propOrDefaultMixin,
+  childMixin,
+  safeScopedSlotMixin,
+} from '@/utils/mixins';
 import { createGuid } from '@/utils/helpers';
 
 export default {
-  mixins: [propOrDefaultMixin, childMixin],
+  mixins: [propOrDefaultMixin, childMixin, safeScopedSlotMixin],
   render(h) {
     // Header
-    const header = this.$scopedSlots.header
-      ? this.$scopedSlots.header(this.page)
-      : h(
-          'div',
-          {
-            class: ['vc-header', this.theme.header],
-          },
-          [
-            // Header title
-            h(
-              'div',
-              {
-                class: `vc-title-layout align-${this.titlePosition}`,
-              },
-              [
-                h('div', { class: 'vc-title-wrapper' }, [
-                  // Navigation popover ref with title
-                  h(
-                    PopoverRef,
-                    {
-                      props: {
-                        id: this.navPopoverId,
-                        visibility: this.navVisibility_,
-                        placement: this.navPlacement,
-                        isInteractive: true,
-                      },
+    const header =
+      this.safeScopedSlot('header', this.page) ||
+      h(
+        'div',
+        {
+          class: ['vc-header', this.theme.header],
+        },
+        [
+          // Header title
+          h(
+            'div',
+            {
+              class: `vc-title-layout align-${this.titlePosition}`,
+            },
+            [
+              h('div', { class: 'vc-title-wrapper' }, [
+                // Navigation popover ref with title
+                h(
+                  PopoverRef,
+                  {
+                    props: {
+                      id: this.navPopoverId,
+                      visibility: this.navVisibility_,
+                      placement: this.navPlacement,
+                      isInteractive: true,
                     },
-                    [
-                      // Title content
-                      h('div', { class: ['vc-title', this.theme.title] }, [
-                        this.$scopedSlots['header-title']
-                          ? this.$scopedSlots['header-title'](this.page)
-                          : this.page.title,
-                      ]),
-                    ],
-                  ),
-                  // Navigation popover
-                  h(
-                    Popover,
-                    {
-                      props: {
-                        id: this.navPopoverId,
-                        contentClass: this.theme.navPopoverContainer,
-                      },
+                  },
+                  [
+                    // Title content
+                    h('div', { class: ['vc-title', this.theme.title] }, [
+                      this.safeScopedSlot(
+                        'header-title',
+                        this.page,
+                        this.page.title,
+                      ),
+                    ]),
+                  ],
+                ),
+                // Navigation popover
+                h(
+                  Popover,
+                  {
+                    props: {
+                      id: this.navPopoverId,
+                      contentClass: this.theme.navPopoverContainer,
                     },
-                    [
-                      // Navigation pane
-                      h(CalendarNav, {
-                        props: {
-                          value: this.page,
-                          validator: this.canMove,
-                        },
-                        on: {
-                          input: $event => this.move($event),
-                        },
-                        scopedSlots: this.$scopedSlots,
-                      }),
-                    ],
-                  ),
-                ]),
-              ],
-            ),
-          ],
-        );
+                  },
+                  [
+                    // Navigation pane
+                    h(CalendarNav, {
+                      props: {
+                        value: this.page,
+                        validator: this.canMove,
+                      },
+                      on: {
+                        input: $event => this.move($event),
+                      },
+                      scopedSlots: this.$scopedSlots,
+                    }),
+                  ],
+                ),
+              ]),
+            ],
+          ),
+        ],
+      );
 
     // Weeks
     const weeks = h(
@@ -142,11 +148,6 @@ export default {
   computed: {
     navVisibility_() {
       return this.propOrDefault('navVisibility', 'navVisibility');
-    },
-    navSlots() {
-      return ['nav-left-button', 'nav-right-button'].filter(
-        slot => this.$scopedSlots[slot],
-      );
     },
     navPlacement() {
       switch (this.titlePosition) {

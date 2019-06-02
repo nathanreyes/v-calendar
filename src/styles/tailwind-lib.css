@@ -13,10 +13,6 @@
   }
 }
 
-.vc-disabled {
-  @apply vc-opacity-25 vc-pointer-events-none vc-cursor-not-allowed;
-}
-
 .vc-box-center-center {
   @apply vc-flex vc-justify-center vc-items-center;
 }

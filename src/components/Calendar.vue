@@ -7,7 +7,11 @@ import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
 import Attribute from '@/utils/attribute';
-import { propOrDefaultMixin, rootMixin } from '@/utils/mixins';
+import {
+  propOrDefaultMixin,
+  rootMixin,
+  safeScopedSlotMixin,
+} from '@/utils/mixins';
 import { addHorizontalSwipeHandler } from '@/utils/touch';
 import { addDays } from '@/utils/dateInfo';
 import {
@@ -53,7 +57,6 @@ export default {
           ...this.$listeners,
           'update:page': e => this.refreshPages({ page: e, position: i + 1 }),
         },
-        slots: this.$slots,
         scopedSlots: this.$scopedSlots,
         key: page.key,
         ref: 'pages',
@@ -63,33 +66,33 @@ export default {
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
-      const slot =
-        (isPrev && this.$slots['header-left-button']) ||
-        (!isPrev && this.$slots['header-right-button']);
-      const svgName = isPrev ? 'left-arrow' : 'right-arrow';
+      const click = isPrev ? this.movePrev : this.moveNext;
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
-      const onClick = isPrev ? this.movePrev : this.moveNext;
       return h(
-        'span',
+        'div',
         {
-          class: 'vc-arrow-layout',
+          class: [
+            `vc-flex vc-justify-center vc-items-center vc-cursor-pointer vc-select-none ${
+              isDisabled
+                ? 'vc-opacity-25 vc-pointer-events-none vc-cursor-not-allowed'
+                : 'vc-pointer-events-auto'
+            }`,
+            this.theme_.arrows,
+          ],
           attrs: {
             tabindex: '0',
           },
+          on: {
+            click,
+          },
         },
         [
-          slot ||
+          (isPrev
+            ? this.safeScopedSlot('header-left-button', { click })
+            : this.safeScopedSlot('header-right-button', { click })) ||
             h(SvgIcon, {
-              class: [
-                'vc-arrow vc-cursor-pointer vc-select-none',
-                { 'vc-disabled': isDisabled },
-                this.theme_.arrows,
-              ],
               props: {
-                name: svgName,
-              },
-              on: {
-                click: onClick,
+                name: isPrev ? 'left-arrow' : 'right-arrow',
               },
             }),
         ],
@@ -111,35 +114,36 @@ export default {
             const masks = this.locale_.masks;
             const format = this.format;
             const dayTitle = format(day.date, masks.dayPopover);
-            return isFunction(this.$scopedSlots['day-popover'])
-              ? this.$scopedSlots['day-popover']({
-                  day,
-                  attributes,
-                  masks,
-                  format,
-                  dayTitle,
-                  updateLayout,
-                  hide,
-                })
-              : h('div', [
-                  // Show popover header only if format is defined
-                  masks.dayPopover &&
-                    h(
-                      'div',
-                      {
-                        class: ['vc-text-center', this.theme_.dayPopoverHeader],
-                      },
-                      [dayTitle],
-                    ),
-                  attributes.map(attribute =>
-                    h(PopoverRow, {
-                      key: attribute.key,
-                      props: {
-                        attribute,
-                      },
-                    }),
+            return (
+              this.safeScopedSlot('day-popover', {
+                day,
+                attributes,
+                masks,
+                format,
+                dayTitle,
+                updateLayout,
+                hide,
+              }) ||
+              h('div', [
+                // Show popover header only if format is defined
+                masks.dayPopover &&
+                  h(
+                    'div',
+                    {
+                      class: ['vc-text-center', this.theme_.dayPopoverHeader],
+                    },
+                    [dayTitle],
                   ),
-                ]);
+                attributes.map(attribute =>
+                  h(PopoverRow, {
+                    key: attribute.key,
+                    props: {
+                      attribute,
+                    },
+                  }),
+                ),
+              ])
+            );
           },
         },
       });
@@ -219,7 +223,7 @@ export default {
 
     return getContainerGrid();
   },
-  mixins: [propOrDefaultMixin, rootMixin],
+  mixins: [propOrDefaultMixin, rootMixin, safeScopedSlotMixin],
   provide() {
     return {
       sharedState: this.sharedState,
@@ -663,18 +667,5 @@ export default {
   &.title-right {
     justify-content: flex-start;
   }
-}
-
-.vc-arrow-layout {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: auto;
-}
-
-.vc-arrow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

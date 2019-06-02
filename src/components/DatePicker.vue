@@ -5,7 +5,11 @@ import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
-import { rootMixin, propOrDefaultMixin } from '@/utils/mixins';
+import {
+  rootMixin,
+  propOrDefaultMixin,
+  safeScopedSlotMixin,
+} from '@/utils/mixins';
 import { addTapOrClickHandler } from '@/utils/touch';
 import { createGuid, elementContains, on, off } from '@/utils/helpers';
 import { isString, isFunction, isArray } from '@/utils/_';
@@ -28,7 +32,6 @@ export default {
           dayfocusin: this.onDayFocusIn,
           daymouseenter: this.onDayMouseEnter,
         },
-        slots: this.$slots,
         scopedSlots: this.$scopedSlots,
         ref: 'calendar',
       });
@@ -36,15 +39,14 @@ export default {
     if (this.isInline) return calendar();
     // Render the slot or ihput
     const inputSlot =
-      (isFunction(this.$scopedSlots.default) &&
-        this.$scopedSlots.default({
-          inputClass: this.inputClass,
-          inputProps: this.inputProps_,
-          inputEvents: this.inputEvents,
-          isDragging: !!this.dragValue,
-          updateValue: this.updateValue,
-          hidePopover: this.hidePopover,
-        })) ||
+      this.safeScopedSlot('default', {
+        inputClass: this.inputClass,
+        inputProps: this.inputProps_,
+        inputEvents: this.inputEvents,
+        isDragging: !!this.dragValue,
+        updateValue: this.updateValue,
+        hidePopover: this.hidePopover,
+      }) ||
       h('input', {
         class: this.inputClass,
         attrs: this.inputProps_,
@@ -80,7 +82,7 @@ export default {
       }),
     ]);
   },
-  mixins: [rootMixin, propOrDefaultMixin],
+  mixins: [rootMixin, propOrDefaultMixin, safeScopedSlotMixin],
   props: {
     mode: { type: String, default: 'single' },
     value: { type: null, required: true },
