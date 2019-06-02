@@ -10,7 +10,7 @@ This page is currently being updated.
   * [Props](./calendar.md#props)
   * [Events](./calendar.md#events)
   * [Methods](./calendar.md#methods)
-  * [Slots](./calendar.md#slots)
+  * [Scoped Slots](./calendar.md#scoped-slots)
 
 [Page Object](./page-object.md)
 

@@ -331,24 +331,6 @@ mounted() {
 **Params:** 
 -->
 
-## Slots
-
-### `header-left-button`
-
-**Description:** Calendar header button on the left side for moving to the previous page(s).
-
-### `header-right-button`
-
-**Description:** Calendar header button on the right side for moving to the next page(s).
-
-### `nav-left-button`
-
-**Description:** Calendar navigation header button on the left side for moving to the previous page(s).
-
-### `nav-right-button`
-
-**Description:** Calendar navigation header button on the right side for moving to the next page(s).
-
 ## Scoped Slots
 
 ### `header`
@@ -391,6 +373,22 @@ mounted() {
 | `dayTitle` | String | Pre-formatted string using the `dayPopover` mask |
 | `updateLayout` | Function | Call to forcefully update the popover layout (such as when content changes are made) |
 | `hide` | Function | Call to forcefully hide the popover |
+
+### `header-left-button`
+
+**Description:** Calendar header button on the left side for moving to the previous page(s).
+
+### `header-right-button`
+
+**Description:** Calendar header button on the right side for moving to the next page(s).
+
+### `nav-left-button`
+
+**Description:** Calendar navigation header button on the left side for moving to the previous page(s).
+
+### `nav-right-button`
+
+**Description:** Calendar navigation header button on the right side for moving to the next page(s).
 
 <!--
 ### 
