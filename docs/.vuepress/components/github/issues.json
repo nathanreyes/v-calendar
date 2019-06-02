@@ -38,5 +38,15 @@
     "number": 324,
     "component": "github-324-324",
     "title": "showPageRange method not working yet?"
+  },
+  {
+    "number": 326,
+    "component": "github-326-326",
+    "title": "Available dates is not grayed out"
+  },
+  {
+    "number": 330,
+    "component": "github-330-330",
+    "title": "Title mask doesn't work from config"
   }
 ]
