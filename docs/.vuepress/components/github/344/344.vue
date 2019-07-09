@@ -1,0 +1,14 @@
+<template>
+  <v-date-picker :max-date="maxDate" v-model="value" is-inline />
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      maxDate: new Date(),
+      value: new Date(2020, 0, 1),
+    };
+  },
+};
+</script>

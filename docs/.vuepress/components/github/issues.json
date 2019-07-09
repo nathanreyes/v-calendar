@@ -48,5 +48,15 @@
     "number": 330,
     "component": "github-330-330",
     "title": "Title mask doesn't work from config"
+  },
+  {
+    "number": 344,
+    "component": "github-344-344",
+    "title": "Why max-date is adding 1 month"
+  },
+  {
+    "number": 346,
+    "component": "github-346-346",
+    "title": "Accessibility audit"
   }
 ]
