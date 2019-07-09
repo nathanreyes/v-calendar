@@ -1,6 +1,6 @@
 import { toPairs } from '@/utils/_';
 
-let locales = {
+const locales = {
   // Arabic
   ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
   // Bulgarian
