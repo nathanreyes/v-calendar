@@ -16,8 +16,9 @@ export default {
     dark: 'vc-text-lg vc-text-gray-100 vc-font-semibold hover:vc-opacity-75',
   },
   arrows: {
-    light: 'vc-text-gray-600 hover:vc-opacity-50',
-    dark: 'vc-text-white hover:vc-opacity-50',
+    light:
+      'vc-text-gray-600 vc-rounded hover:vc-opacity-50 focus:vc-bg-gray-200',
+    dark: 'vc-text-white vc-rounded hover:vc-opacity-50 focus:vc-bg-gray-800',
   },
   weekdays: {
     light: 'vc-text-sm vc-font-bold vc-text-gray-500',
