@@ -13,9 +13,6 @@ export default {
           'vc-popover-content-wrapper',
           { 'is-interactive': this.isInteractive },
         ],
-        attrs: {
-          tabindex: this.isInteractive ? 0 : -1,
-        },
         ref: 'popover',
       },
       [
