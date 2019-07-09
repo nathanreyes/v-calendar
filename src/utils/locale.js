@@ -1,12 +1,13 @@
 import { format, parse } from '@/utils/fecha';
 import { isDate, isNumber, isString, isObject, clamp } from '@/utils/_';
 
+const daysInWeek = 7;
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 export default class Locale {
   constructor(id, { firstDayOfWeek, masks }) {
     this.id = id;
-    this.firstDayOfWeek = clamp(firstDayOfWeek, 1, 7);
+    this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
     this.dayNames = this.getDayNames('long');
     this.dayNamesShort = this.getDayNames('short');
@@ -73,7 +74,7 @@ export default class Locale {
     firstDayOfWeek = this.firstDayOfWeek,
   } = {}) {
     const dates = [];
-    for (let i = 1, j = 0; j < 7; i++) {
+    for (let i = 1, j = 0; j < daysInWeek; i++) {
       const d = utc ? new Date(Date.UTC(year, 0, i)) : new Date(year, 0, i);
       const day = utc ? d.getUTCDay() : d.getDay();
       if (day === firstDayOfWeek - 1 || j > 0) {
@@ -104,7 +105,7 @@ export default class Locale {
       const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
       const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
       const weeks = Math.ceil(
-        (days + Math.abs(firstWeekday - this.firstDayOfWeek)) / 7,
+        (days + Math.abs(firstWeekday - this.firstDayOfWeek)) / daysInWeek,
       );
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
@@ -139,18 +140,27 @@ export default class Locale {
   }
 
   // Buils day components for a given page
-  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps, trimMaxWeek }) {
+  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
-      firstWeekday + (firstWeekday < firstDayOfWeek ? 7 : 0) - firstDayOfWeek;
+      firstWeekday +
+      (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -
+      firstDayOfWeek;
     let prevMonth = true;
     let thisMonth = false;
     let nextMonth = false;
+    // Formatter for aria labels
+    const formatter = new Intl.DateTimeFormat(this.id, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
     // Init counters with previous month's data
     let day = prevMonthComps.days - prevMonthDaysToShow + 1;
     let dayFromEnd = prevMonthComps.days - day + 1;
-    let weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
+    let weekdayOrdinal = Math.floor((day - 1) / daysInWeek + 1);
     let weekdayOrdinalFromEnd = 1;
     let week = prevMonthComps.weeks;
     let weekFromEnd = 1;
@@ -162,20 +172,22 @@ export default class Locale {
     const todayMonth = today.getMonth() + 1;
     const todayYear = today.getFullYear();
     // Cycle through 6 weeks (max in month)
-    for (let w = 1; w <= 6 && (!nextMonth || !trimMaxWeek); w++) {
-      // Cycle through 7 days
+    for (let w = 1; w <= 6; w++) {
+      // Cycle through days in week
       for (
         let i = 1, weekday = firstDayOfWeek;
-        i <= 7;
-        i++, weekday += weekday === 7 ? -6 : 1
+        i <= daysInWeek;
+        i++, weekday += weekday === daysInWeek ? 1 - daysInWeek : 1
       ) {
         // We need to know when to start counting actual month days
         if (prevMonth && weekday === firstWeekday) {
           // Reset counters for current month
           day = 1;
           dayFromEnd = monthComps.days;
-          weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
-          weekdayOrdinalFromEnd = Math.floor((monthComps.days - day) / 7 + 1);
+          weekdayOrdinal = Math.floor((day - 1) / daysInWeek + 1);
+          weekdayOrdinalFromEnd = Math.floor(
+            (monthComps.days - day) / daysInWeek + 1,
+          );
           week = 1;
           weekFromEnd = monthComps.weeks;
           month = monthComps.month;
@@ -189,7 +201,9 @@ export default class Locale {
         //  We don't know how the UI wants to display various days,
         //  so we'll supply all the data we can
         const date = new Date(year, month - 1, day);
+        const id = this.format(date, 'YYYY-MM-DD');
         const weekdayPosition = i;
+        const weekdayPositionFromEnd = daysInWeek - i;
         const isToday =
           day === todayDay && month === todayMonth && year === todayYear;
         const isFirstDay = thisMonth && day === 1;
@@ -197,14 +211,16 @@ export default class Locale {
         const onTop = w === 1;
         const onBottom = w === 6;
         const onLeft = i === 1;
-        const onRight = i === 7;
+        const onRight = i === daysInWeek;
         days.push({
-          id: `${month}-${day}`,
+          id,
           label: day.toString(),
+          ariaLabel: formatter.format(date),
           day,
           dayFromEnd,
           weekday,
           weekdayPosition,
+          weekdayPositionFromEnd,
           weekdayOrdinal,
           weekdayOrdinalFromEnd,
           week,
@@ -224,6 +240,7 @@ export default class Locale {
           onLeft,
           onRight,
           classes: [
+            `id-${id}`,
             `day-${day}`,
             `day-from-end-${dayFromEnd}`,
             `weekday-${weekday}`,
@@ -255,7 +272,7 @@ export default class Locale {
           dayFromEnd = nextMonthComps.days;
           weekdayOrdinal = 1;
           weekdayOrdinalFromEnd = Math.floor(
-            (nextMonthComps.days - day) / 7 + 1,
+            (nextMonthComps.days - day) / daysInWeek + 1,
           );
           week = 1;
           weekFromEnd = nextMonthComps.weeks;
@@ -265,8 +282,10 @@ export default class Locale {
         } else {
           day++;
           dayFromEnd--;
-          weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
-          weekdayOrdinalFromEnd = Math.floor((monthComps.days - day) / 7 + 1);
+          weekdayOrdinal = Math.floor((day - 1) / daysInWeek + 1);
+          weekdayOrdinalFromEnd = Math.floor(
+            (monthComps.days - day) / daysInWeek + 1,
+          );
         }
       }
       // Append week days

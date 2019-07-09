@@ -29,8 +29,9 @@ export default {
         on: {
           ...this.$listeners,
           dayclick: this.onDayClick,
-          dayfocusin: this.onDayFocusIn,
           daymouseenter: this.onDayMouseEnter,
+          daykeydown: this.onDayKeydown,
+          dayfocusin: this.onDayFocusIn,
         },
         scopedSlots: this.$scopedSlots,
         ref: 'calendar',
@@ -274,19 +275,31 @@ export default {
       // Re-emit event
       this.$emit('dayclick', day);
     },
-    onDayFocusIn(day) {
-      // Remove focus from clicked days
-      if (day.el) {
-        day.el.blur();
-      }
-      // Re-emit event
-      this.$emit('dayfocusin', day);
-    },
     onDayMouseEnter(day) {
       this.picker.handleDayMouseEnter(day, this);
       // Re-emit event
       this.$emit('daymouseenter', day);
     },
+    onDayFocusIn(day) {
+      this.picker.handleDayMouseEnter(day, this);
+      // Re-emit event
+      this.$emit('dayfocusin', day);
+    },
+    onDayKeydown(day) {
+      switch (day.event.key) {
+        case ' ':
+        case 'Enter': {
+          this.picker.handleDayClick(day, this);
+          break;
+        }
+        case 'Escape': {
+          this.hidePopover();
+        }
+      }
+      // Re-emit event
+      this.$emit('daykeydown', day);
+    },
+
     inputInput(e) {
       this.inputValue = e.target.value;
       if (this.updateOnInput_) {

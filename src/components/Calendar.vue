@@ -13,7 +13,7 @@ import {
   safeScopedSlotMixin,
 } from '@/utils/mixins';
 import { addHorizontalSwipeHandler } from '@/utils/touch';
-import { addDays } from '@/utils/dateInfo';
+import DateInfo, { addDays, addMonths, addYears } from '@/utils/dateInfo';
 import {
   pageForDate,
   pageForThisMonth,
@@ -55,6 +55,14 @@ export default {
         on: {
           ...this.$listeners,
           'update:page': e => this.refreshPages({ page: e, position: i + 1 }),
+          dayfocusin: e => {
+            this.lastFocusedDay = e;
+            this.$emit('dayfocusin', e);
+          },
+          dayfocusout: e => {
+            this.lastFocusedDay = null;
+            this.$emit('dayfocusout', e);
+          },
         },
         scopedSlots: this.$scopedSlots,
         key: page.key,
@@ -65,7 +73,7 @@ export default {
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
-      const click = isPrev ? this.movePrev : this.moveNext;
+      const click = () => (isPrev ? this.movePrev() : this.moveNext());
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
       return h(
         'div',
@@ -152,6 +160,10 @@ export default {
       h(
         'div',
         {
+          attrs: {
+            'data-helptext':
+              'Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year',
+          },
           class: [
             'vc-container',
             'vc-relative',
@@ -161,6 +173,9 @@ export default {
             },
             this.theme_.container,
           ],
+          on: {
+            keydown: this.handleKeydown,
+          },
           ref: 'container',
         },
         [
@@ -258,6 +273,8 @@ export default {
     return {
       pages: [],
       store: null,
+      lastFocusedDay: null,
+      focusableDay: new Date().getDate(),
       transitionName: '',
       inTransition: false,
       sharedState: {
@@ -350,11 +367,17 @@ export default {
       const { adds, deletes } = this.store.refresh(val);
       this.refreshAttrs(this.pages, adds, deletes);
     },
+    pages(val) {
+      this.refreshAttrs(val, this.store.list, null, true);
+    },
     disabledAttribute() {
       this.refreshDisabledDays();
     },
-    pages(val) {
-      this.refreshAttrs(val, this.store.list, null, true);
+    lastFocusedDay(val) {
+      if (val) {
+        this.focusableDay = val.day;
+        this.refreshFocusableDays();
+      }
     },
   },
   created() {
@@ -398,12 +421,16 @@ export default {
     moveNext() {
       this.move(this.step_);
     },
-    move(monthsOrPage) {
-      if (isNumber(monthsOrPage)) {
-        this.refreshPages({
-          page: addPages(this.pages[0], monthsOrPage),
-          position: 1,
-        });
+    move(monthsOrPage, { completion = null, position = 1 } = {}) {
+      const page = isNumber(monthsOrPage)
+        ? addPages(this.pages[0], monthsOrPage)
+        : monthsOrPage;
+      this.refreshPages({
+        page,
+        position,
+      });
+      if (completion) {
+        this.$nextTick(() => completion());
       }
     },
     refreshPages({ page, position = 1 } = {}) {
@@ -411,7 +438,9 @@ export default {
       let fromPage = null;
       // 1. Try the page parameter
       if (pageIsValid(page)) {
-        fromPage = addPages(page, -(position - 1));
+        const pagesToAdd =
+          position > 0 ? 1 - position : -(this.count + position);
+        fromPage = addPages(page, pagesToAdd);
       } else {
         // 2. Try the fromPage prop
         fromPage =
@@ -421,7 +450,7 @@ export default {
           const toPage =
             this.toPage || pageForDate(this.locale_.toDate(this.toPage));
           if (pageIsValid(toPage)) {
-            fromPage = addPages(toPage, -(this.count - 1));
+            fromPage = addPages(toPage, 1 - this.count);
           } else {
             // 4. Try the first attribute
             fromPage = this.getPageForAttributes();
@@ -435,7 +464,7 @@ export default {
       if (pageIsBeforePage(fromPage, this.minPage_)) {
         fromPage = this.minPage_;
       } else if (pageIsAfterPage(toPage, this.maxPage_)) {
-        fromPage = addPages(this.maxPage_, -(this.count - 1));
+        fromPage = addPages(this.maxPage_, 1 - this.count);
       }
       // Create the new pages
       const pages = [...Array(this.count).keys()].map(i =>
@@ -443,6 +472,8 @@ export default {
       );
       // Refresh disabled days for new pages
       this.refreshDisabledDays(pages);
+      // Refresh focusable days for new pages
+      this.refreshFocusableDays(pages);
       // Assign the new transition
       this.transitionName = this.getPageTransition(this.pages[0], pages[0]);
       // Assign the new pages
@@ -453,13 +484,20 @@ export default {
       this.$emit('update:topage', toPage);
       this.$emit('update:toPage', toPage);
     },
-    refreshDisabledDays(pages = this.pages) {
-      pages.forEach(page => {
-        page.days.forEach(d => {
-          d.isDisabled =
-            !!this.disabledAttribute && this.disabledAttribute.includesDay(d);
-        });
-      });
+    refreshDisabledDays(pages) {
+      this.getPageDays(pages).forEach(
+        d =>
+          (d.isDisabled =
+            !!this.disabledAttribute && this.disabledAttribute.includesDay(d)),
+      );
+    },
+    refreshFocusableDays(pages) {
+      this.getPageDays(pages).forEach(
+        d => (d.isFocusable = d.inMonth && d.day === this.focusableDay),
+      );
+    },
+    getPageDays(pages = this.pages) {
+      return pages.reduce((prev, curr) => prev.concat(curr.days), []);
     },
     getPageTransition(oldPage, newPage) {
       if (this.transition === 'none') return this.transition;
@@ -490,7 +528,7 @@ export default {
       }
       return page;
     },
-    buildPage({ month, year }, position) {
+    buildPage({ month, year }) {
       const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
       if (!page) {
@@ -518,10 +556,8 @@ export default {
           refresh: true,
         };
         // Assign day info
-        page.days = this.locale_.getCalendarDays(page, this.disabledAttribute);
+        page.days = this.locale_.getCalendarDays(page);
       }
-      // Reassign position if needed
-      page.position = position;
       return page;
     },
     initStore() {
@@ -605,6 +641,98 @@ export default {
         page = fromPage;
       }
       this.refreshPages({ page });
+    },
+    handleKeydown(e) {
+      if (this.lastFocusedDay != null) {
+        this.handleDayKeydown({
+          day: this.lastFocusedDay,
+          event: e,
+        });
+      }
+    },
+    handleDayKeydown({ day, event }) {
+      const date = day.date;
+      let newDate = null;
+      switch (event.key) {
+        case 'ArrowLeft': {
+          // Move to previous day
+          newDate = addDays(date, -1);
+          break;
+        }
+        case 'ArrowRight': {
+          // Move to next day
+          newDate = addDays(date, 1);
+          break;
+        }
+        case 'ArrowUp': {
+          // Move to previous week
+          newDate = addDays(date, -7);
+          break;
+        }
+        case 'ArrowDown': {
+          // Move to next week
+          newDate = addDays(date, 7);
+          break;
+        }
+        case 'Home': {
+          // Move to first weekday position
+          newDate = addDays(date, -day.weekdayPosition + 1);
+          break;
+        }
+        case 'End': {
+          // Move to last weekday position
+          newDate = addDays(date, day.weekdayPositionFromEnd);
+          break;
+        }
+        case 'PageUp': {
+          if (event.altKey) {
+            // Move to previous year w/ Alt/Option key
+            newDate = addYears(date, -1);
+          } else {
+            // Move to previous month
+            newDate = addMonths(date, -1);
+          }
+          break;
+        }
+        case 'PageDown': {
+          if (event.altKey) {
+            // Move to next year w/ Alt/Option key
+            newDate = addYears(date, 1);
+          } else {
+            // Move to next month
+            newDate = addMonths(date, 1);
+          }
+          break;
+        }
+      }
+      if (newDate) {
+        event.preventDefault();
+        this.setFocusedDate(newDate);
+      }
+    },
+    setFocusedDate(date) {
+      if (!date || !arrayHasItems(this.pages)) return;
+      const dateInfo = new DateInfo(date, { locale: this.locale_ });
+
+      const day = this.getPageDays().find(
+        d => d.inMonth && dateInfo.includesDay(d),
+      );
+      if (day) {
+        // Set focus on the element for the date
+        const focusableEl = this.$el.querySelector(
+          `.id-${day.id}.in-month .vc-focusable`,
+        );
+        if (focusableEl) {
+          focusableEl.focus();
+        }
+      } else {
+        const page = pageForDate(date);
+        const position = pageIsBeforePage(page, this.pages[0]) ? -1 : 1;
+        this.move(page, {
+          completion: () => this.setFocusedDate(date),
+          position,
+        });
+      }
     },
   },
 };

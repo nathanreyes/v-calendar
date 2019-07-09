@@ -194,13 +194,14 @@ export default {
     },
     dayContentClass() {
       const contentClass = get(last(this.content), 'class') || '';
-      return `vc-day-content ${
+      return `vc-day-content vc-focusable ${
         this.isDisabled ? this.theme.dayContentDisabled : this.theme.dayContent
       } ${this.theme.isDark ? 'vc-is-dark' : ''} ${contentClass}`;
     },
     dayContentProps() {
       return {
-        tabindex: '0',
+        tabindex: this.day.isFocusable ? '0' : '-1',
+        'aria-label': this.day.ariaLabel,
       };
     },
     dayContentEvents() {
@@ -210,6 +211,7 @@ export default {
         mouseleave: this.mouseleave,
         focusin: this.focusin,
         focusout: this.focusout,
+        keydown: this.keydown,
       };
     },
     dayEvent() {
@@ -263,6 +265,9 @@ export default {
     },
     focusout(e) {
       this.$emit('dayfocusout', this.getDayEvent(e));
+    },
+    keydown(e) {
+      this.$emit('daykeydown', this.getDayEvent(e));
     },
     refresh() {
       if (!this.day.refresh) return;
