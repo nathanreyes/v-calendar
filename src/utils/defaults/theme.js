@@ -26,31 +26,33 @@ export default {
   },
   navPopoverContainer: {
     light:
-      'vc-rounded-lg vc-text-sm vc-font-semibold vc-text-white vc-bg-gray-800 vc-border vc-border-gray-700 vc-py-1 vc-shadow',
+      'vc-rounded-lg vc-text-sm vc-font-semibold vc-text-white vc-bg-gray-800 vc-border vc-border-gray-700 vc-p-1 vc-shadow',
     dark:
-      'vc-rounded-lg vc-text-sm vc-font-semibold vc-text-gray-800 vc-bg-white vc-border vc-border-gray-100 vc-py-1 vc-shadow',
+      'vc-rounded-lg vc-text-sm vc-font-semibold vc-text-gray-800 vc-bg-white vc-border vc-border-gray-100 vc-p-1 vc-shadow',
   },
   navTitle: {
     light:
-      'vc-text-{color}-100 vc-font-bold hover:vc-bg-gray-900 vc-px-2 vc-py-1 vc-rounded',
+      'vc-text-{color}-100 vc-font-bold vc-px-2 vc-py-1 vc-rounded hover:vc-bg-gray-900 focus:vc-bg-gray-900',
     dark:
-      'vc-text-gray-900 vc-font-bold hover:vc-bg-gray-200 vc-px-2 vc-py-1 vc-rounded',
+      'vc-text-gray-900 vc-font-bold vc-px-2 vc-py-1 vc-rounded hover:vc-bg-gray-200 focus:vc-bg-gray-900',
   },
   navArrows: {
-    light: 'hover:vc-bg-gray-900 vc-rounded',
-    dark: 'hover:vc-bg-gray-200 vc-rounded',
+    light: 'hover:vc-bg-gray-900 focus:vc-bg-gray-900 vc-rounded',
+    dark: 'hover:vc-bg-gray-200 focus:vc-bg-gray-900 vc-rounded',
   },
-  navCell: 'vc-w-12 vc-text-center vc-py-1 vc-mx-1 vc-rounded',
-  navCellInactive: {
+  navCell: {
     light:
-      'hover:vc-bg-gray-900 hover:vc-shadow-inner vc-border-2 vc-border-transparent',
-    dark: 'hover:vc-bg-gray-200 vc-border-2 vc-border-transparent',
+      'vc-font-semibold vc-w-12 vc-text-center vc-py-1 vc-rounded hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-bg-gray-900 focus:vc-text-white focus:vc-shadow-inner',
+    dark:
+      'vc-font-semibold vc-w-12 vc-text-center vc-py-1 vc-rounded hover:vc-bg-gray-200 hover:vc-text-gray-900 focus:vc-bg-gray-200 focus:vc-text-gray-900',
+  },
+  navCellInactive: {
+    light: 'vc-border-2 vc-border-transparent',
+    dark: 'vc-border-2 vc-border-transparent',
   },
   navCellInactiveCurrent: {
-    light:
-      'vc-text-{color}-100 vc-font-bold hover:vc-bg-gray-900 vc-border-2 vc-border-{color}-100',
-    dark:
-      'vc-text-{color}-600 vc-font-bold hover:vc-bg-gray-200 vc-border-2 vc-border-{color}-500',
+    light: 'vc-text-{color}-100 vc-font-bold vc-border-2 vc-border-{color}-100',
+    dark: 'vc-text-{color}-600 vc-font-bold vc-border-2 vc-border-{color}-500',
   },
   navCellActive: {
     light: 'vc-bg-{color}-100 vc-text-{color}-900 vc-font-bold vc-shadow',

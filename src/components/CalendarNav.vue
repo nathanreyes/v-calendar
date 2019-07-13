@@ -2,55 +2,67 @@
   <!--Nav panel-->
   <div>
     <!--Nav header-->
-    <div class="vc-flex vc-justify-between vc-items-center vc-mx-2">
+    <grid :columns="3" ref="headerGrid" @rollover="onHeaderRollover">
       <!--Move prev button-->
-      <div
-        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer"
+      <button
+        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer mr-auto"
         :class="theme.navArrows"
+        tabindex="-1"
         @click="movePrev"
+        ref="prevButton"
       >
         <slot name="nav-left-button">
           <svg-icon name="left-arrow" />
         </slot>
-      </div>
+      </button>
       <!--Mode switch button-->
-      <span
-        class="vc-cursor-pointer"
+      <button
+        class="vc-cursor-pointer vc-grid-focus"
         :class="theme.navTitle"
         @click="toggleMode"
-        >{{ title }}</span
+        :style="{ whiteSpace: 'nowrap' }"
+        ref="titleButton"
       >
+        {{ title }}
+      </button>
       <!--Move next button-->
-      <div
-        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer"
+      <button
+        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer ml-auto"
         :class="theme.navArrows"
+        tabindex="-1"
         @click="moveNext"
+        ref="nextButton"
       >
         <slot name="nav-right-button">
           <svg-icon name="right-arrow" />
         </slot>
-      </div>
-    </div>
+      </button>
+    </grid>
     <!--Navigation items-->
-    <div
-      v-for="(row, i) in itemRows"
-      :key="i"
-      class="vc-flex vc-justify-between vc-items-center vc-mx-1 vc-mb-1"
+    <grid
+      :rows="4"
+      :columns="3"
+      gap="1px 5px"
+      ref="itemsGrid"
+      @rollover="onItemsRollover"
     >
-      <div
-        v-for="(item, j) in row"
-        :key="j"
+      <button
+        v-for="item in activeItems"
+        :key="item.label"
+        :aria-label="item.ariaLabel"
         :class="[...item.classes, 'vc-cursor-pointer']"
+        :tabindex="item.isActive ? 0 : -1"
         @click="item.click"
+        ref="items"
       >
-        <!--Item label-->
         {{ item.label }}
-      </div>
-    </div>
+      </button>
+    </grid>
   </div>
 </template>
 
 <script>
+import Grid from './Grid';
 import SvgIcon from './SvgIcon';
 import { childMixin } from '@/utils/mixins';
 import { first, last } from '@/utils/_';
@@ -60,6 +72,7 @@ const _yearGroupCount = 12;
 
 export default {
   components: {
+    Grid,
     SvgIcon,
   },
   mixins: [childMixin],
@@ -98,7 +111,7 @@ export default {
           const isDisabled = !this.validator({ month, year: this.yearIndex });
           const classes = [this.theme.navCell];
           if (isActive) {
-            classes.push(this.theme.navCellActive);
+            classes.push(this.theme.navCellActive, 'vc-grid-focus');
           } else if (isCurrent) {
             classes.push(this.theme.navCellInactiveCurrent);
           } else {
@@ -109,6 +122,10 @@ export default {
           }
           return {
             label,
+            ariaLabel: `${label} ${this.yearIndex}`,
+            isActive,
+            isCurrent,
+            isDisabled,
             classes,
             click: () => this.monthClick(month),
           };
@@ -125,7 +142,7 @@ export default {
         const isDisabled = !this.validator({ month: this.month, year });
         const classes = [this.theme.navCell];
         if (isActive) {
-          classes.push(this.theme.navCellActive);
+          classes.push(this.theme.navCellActive, 'vc-grid-focus');
         } else if (isCurrent) {
           classes.push(this.theme.navCellInactiveCurrent);
         } else {
@@ -137,20 +154,18 @@ export default {
         items.push({
           year,
           label: year,
+          ariaLabel: year,
+          isActive,
+          isCurrent,
+          isDisabled,
           classes,
           click: () => this.yearClick(year),
         });
       }
       return items;
     },
-    itemRows() {
-      return this.monthMode ? this.monthRows : this.yearRows;
-    },
-    monthRows() {
-      return this.createRows(this.monthItems, 3);
-    },
-    yearRows() {
-      return this.createRows(this.yearItems, 3);
+    activeItems() {
+      return this.monthMode ? this.monthItems : this.yearItems;
     },
     firstYear() {
       return first(this.yearItems.map(i => i.year));
@@ -169,6 +184,9 @@ export default {
   },
   created() {
     this.yearIndex = this.year;
+  },
+  mounted() {
+    this.$refs.itemsGrid.tryFocus();
   },
   methods: {
     getYearGroupIndex(year) {
@@ -208,17 +226,35 @@ export default {
     moveNextYearGroup() {
       this.yearGroupIndex++;
     },
-    createRows(items, columnCount) {
-      const rows = [];
-      let row = [];
-      items.forEach(item => {
-        row.push(item);
-        if (row.length >= columnCount) {
-          rows.push(row);
-          row = [];
+    onHeaderRollover(e) {
+      switch (e.direction) {
+        case 'vertical-trailing':
+          this.$refs.itemsGrid.tryFocus();
+        default: {
+          e.handled = true;
         }
-      });
-      return rows;
+      }
+    },
+    onItemsRollover(e) {
+      switch (e.direction) {
+        case 'horizontal-leading': {
+          this.movePrev();
+          break;
+        }
+        case 'horizontal-trailing': {
+          this.moveNext();
+          break;
+        }
+        case 'vertical-leading': {
+          this.$refs.headerGrid.tryFocus();
+          e.handled = true;
+          break;
+        }
+        case 'vertical-trailing': {
+          e.handled = true;
+          break;
+        }
+      }
     },
   },
 };

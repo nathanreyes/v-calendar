@@ -212,6 +212,7 @@ export default {
                         rows: this.rows,
                         columns: this.columns,
                         columnWidth: 'minmax(256px, 1fr)',
+                        disableFocus: true,
                       },
                       attrs: {
                         ...this.$attrs,
