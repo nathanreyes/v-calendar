@@ -101,35 +101,34 @@ export default {
     },
     monthItems() {
       const { month: thisMonth, year: thisYear } = pageForDate(new Date());
-      return this.locale
-        .getMonthDates()
-        .map(d => this.locale.format(d, this.masks.navMonths))
-        .map((label, i) => {
-          const month = i + 1;
-          const isActive = month === this.month && this.yearIndex === this.year;
-          const isCurrent = month === thisMonth && this.yearIndex === thisYear;
-          const isDisabled = !this.validator({ month, year: this.yearIndex });
-          const classes = [this.theme.navCell];
-          if (isActive) {
-            classes.push(this.theme.navCellActive, 'vc-grid-focus');
-          } else if (isCurrent) {
-            classes.push(this.theme.navCellInactiveCurrent);
-          } else {
-            classes.push(this.theme.navCellInactive);
-          }
-          if (isDisabled) {
-            classes.push(this.theme.navCellDisabled);
-          }
-          return {
-            label,
-            ariaLabel: `${label} ${this.yearIndex}`,
-            isActive,
-            isCurrent,
-            isDisabled,
-            classes,
-            click: () => this.monthClick(month),
-          };
-        });
+      return this.locale.getMonthDates().map((d, i) => {
+        const month = i + 1;
+        const label = this.locale.format(d, this.masks.navMonths);
+        const ariaLabel = this.locale.format(d, 'MMMM YYYY');
+        const isActive = month === this.month && this.yearIndex === this.year;
+        const isCurrent = month === thisMonth && this.yearIndex === thisYear;
+        const isDisabled = !this.validator({ month, year: this.yearIndex });
+        const classes = [this.theme.navCell];
+        if (isActive) {
+          classes.push(this.theme.navCellActive, 'vc-grid-focus');
+        } else if (isCurrent) {
+          classes.push(this.theme.navCellInactiveCurrent);
+        } else {
+          classes.push(this.theme.navCellInactive);
+        }
+        if (isDisabled) {
+          classes.push(this.theme.navCellDisabled);
+        }
+        return {
+          label,
+          ariaLabel,
+          isActive,
+          isCurrent,
+          isDisabled,
+          classes,
+          click: () => this.monthClick(month),
+        };
+      });
     },
     yearItems() {
       const { month, year: thisYear } = pageForDate(new Date());
