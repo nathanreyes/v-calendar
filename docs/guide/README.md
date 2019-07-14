@@ -763,19 +763,28 @@ Vue.component('v-calendar', Calendar);
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
     <meta http-equiv='x-ua-compatible' content='ie=edge'>
-    <!--1. Link VCalendar CSS-->
-    <link rel='stylesheet' href='https://unpkg.com/v-calendar/lib/v-calendar.min.css'>
+    <!-- IMPORTANT: No CSS link needed as of v1 Beta (@next) - It's all inlined -->
+    <!-- Pre v1.0.0 versions need the minified css -->
+    <!-- <link rel='stylesheet' href='https://unpkg.com/v-calendar/lib/v-calendar.min.css'> -->
   </head>
   <body>
     <div id='app'>
       <v-calendar></v-calendar>
       <v-date-picker :mode='mode' v-model='selectedDate' />
     </div>
-    <!--2. Link Vue Javascript-->
+
+    <!-- 1. Link Vue Javascript -->
     <script src='https://unpkg.com/vue/dist/vue.js'></script>
-    <!--3. Link VCalendar Javascript (Plugin automatically installed)-->
-    <script src='https://unpkg.com/v-calendar'></script>
-    <!--4. Create the Vue instance-->
+
+    <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
+    <!-- @next v1 beta  -->
+    <script src='https://unpkg.com/v-calendar@next'></script>
+    <!-- Latest stable (Right now, this is very different from the v1 Beta)-->
+    <!-- Hardcoded version -->
+    <!-- <script src='https://unpkg.com/v-calendar@1.0.0-beta.14/lib/v-calendar.umd.min.js'></script> -->
+    <!-- <script src='https://unpkg.com/v-calendar'></script> -->
+
+    <!--3. Create the Vue instance-->
     <script>
       new Vue({
         el: '#app',
