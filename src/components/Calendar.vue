@@ -644,15 +644,14 @@ export default {
       this.refreshPages({ page });
     },
     handleKeydown(e) {
-      if (this.lastFocusedDay != null) {
-        this.handleDayKeydown({
-          day: this.lastFocusedDay,
-          event: e,
-        });
+      const day = this.lastFocusedDay;
+      if (day != null) {
+        day.event = e;
+        this.handleDayKeydown(day);
       }
     },
-    handleDayKeydown({ day, event }) {
-      const date = day.date;
+    handleDayKeydown(day) {
+      const { date, event } = day;
       let newDate = null;
       switch (event.key) {
         case 'ArrowLeft': {

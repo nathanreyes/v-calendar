@@ -91,6 +91,7 @@ export default {
           rows: 7,
           columns: 7,
           columnWidth: '1fr',
+          disableFocus: true,
         },
       },
       [
