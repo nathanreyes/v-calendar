@@ -147,6 +147,7 @@ export default {
   },
   methods: {
     addEvents() {
+      on(this.popoverEl, 'click', this.onClick);
       on(this.popoverEl, 'mouseover', this.onMouseOver);
       on(this.popoverEl, 'mouseleave', this.onMouseLeave);
       on(this.popoverEl, 'focusin', this.onFocusIn);
@@ -157,11 +158,15 @@ export default {
       );
     },
     removeEvents() {
+      off(this.popoverEl, 'click', this.onClick);
       off(this.popoverEl, 'mouseover', this.onMouseOver);
       off(this.popoverEl, 'mouseleave', this.onMouseLeave);
       off(this.popoverEl, 'focusin', this.onFocusIn);
       off(this.popoverEl, 'blur', this.onBlur);
       if (this.removeDocHandler) this.removeDocHandler();
+    },
+    onClick(e) {
+      e.stopPropagation();
     },
     onMouseOver() {
       if (this.isInteractive && this.visibility === 'hover') {
