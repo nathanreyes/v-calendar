@@ -58,5 +58,10 @@
     "number": 346,
     "component": "github-346-346",
     "title": "Accessibility audit"
+  },
+  {
+    "number": 370,
+    "component": "github-370-370",
+    "title": "Locale change only changes weekday names but not month names"
   }
 ]
