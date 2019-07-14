@@ -747,23 +747,23 @@ export default {
   --header-padding: 10px 10px 0 10px;
   --title-padding: 0 8px;
   --arrows-padding: 10px;
-  --arrow-font-size: 1.6rem;
+  --arrow-font-size: 26px;
   --weekday-padding: 5px 0;
   --weeks-padding: 5px 6px 7px 6px;
   --arrow-horizontal-offset: 10px;
   --arrow-vertical-offset: 11px;
 
-  --day-min-height: 1.8rem;
-  --day-content-width: 1.8rem;
-  --day-content-height: 1.8rem;
-  --day-content-margin: 0.1rem auto;
+  --day-min-height: 28px;
+  --day-content-width: 28px;
+  --day-content-height: 28px;
+  --day-content-margin: 1.6px auto;
   --day-content-transition-time: 0.13s ease-in;
   --day-content-bg-color-hover: hsla(211, 25%, 84%, 0.3);
   --day-content-dark-bg-color-hover: hsla(216, 15%, 52%, 0.3);
   --day-content-bg-color-focus: hsla(211, 25%, 84%, 0.4);
   --day-content-dark-bg-color-focus: hsla(216, 15%, 52%, 0.4);
 
-  --highlight-height: 1.75rem;
+  --highlight-height: 28px;
 
   --dot-diameter: 5px;
   --dot-border-radius: 50%;
