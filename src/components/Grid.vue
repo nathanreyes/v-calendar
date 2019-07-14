@@ -203,7 +203,7 @@ export default {
         ];
         const focusableEl = selectors
           .map(s => el.querySelector(s))
-          .find(el => el);
+          .find(e => e);
         if (focusableEl) {
           focusableEl.focus();
           return true;
