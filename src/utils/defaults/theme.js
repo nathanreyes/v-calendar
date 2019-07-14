@@ -34,11 +34,11 @@ export default {
     light:
       'vc-text-{color}-100 vc-font-bold vc-px-2 vc-py-1 vc-rounded hover:vc-bg-gray-900 focus:vc-bg-gray-900',
     dark:
-      'vc-text-gray-900 vc-font-bold vc-px-2 vc-py-1 vc-rounded hover:vc-bg-gray-200 focus:vc-bg-gray-900',
+      'vc-text-gray-900 vc-font-bold vc-px-2 vc-py-1 vc-rounded hover:vc-bg-gray-200 focus:vc-bg-gray-200',
   },
   navArrows: {
     light: 'hover:vc-bg-gray-900 focus:vc-bg-gray-900 vc-rounded',
-    dark: 'hover:vc-bg-gray-200 focus:vc-bg-gray-900 vc-rounded',
+    dark: 'hover:vc-bg-gray-200 focus:vc-bg-gray-200 vc-rounded',
   },
   navCell: {
     light:
