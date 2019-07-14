@@ -777,12 +777,12 @@ Vue.component('v-calendar', Calendar);
     <script src='https://unpkg.com/vue/dist/vue.js'></script>
 
     <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
-    <!-- @next v1 beta  -->
+    <!-- @next v1 Beta  -->
     <script src='https://unpkg.com/v-calendar@next'></script>
     <!-- Latest stable (Right now, this is very different from the v1 Beta)-->
+    <!-- <script src='https://unpkg.com/v-calendar'></script> -->
     <!-- Hardcoded version -->
     <!-- <script src='https://unpkg.com/v-calendar@1.0.0-beta.14/lib/v-calendar.umd.min.js'></script> -->
-    <!-- <script src='https://unpkg.com/v-calendar'></script> -->
 
     <!--3. Create the Vue instance-->
     <script>
