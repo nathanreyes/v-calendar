@@ -131,7 +131,7 @@ export default {
       });
     },
     yearItems() {
-      const { month, year: thisYear } = pageForDate(new Date());
+      const { _, year: thisYear } = pageForDate(new Date());
       const startYear = this.yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
       const items = [];
@@ -230,10 +230,9 @@ export default {
       switch (e.direction) {
         case 'vertical-trailing':
           this.$refs.itemsGrid.tryFocus();
-        default: {
-          e.handled = true;
-        }
+          break;
       }
+      e.handled = true;
     },
     onItemsRollover(e) {
       switch (e.direction) {

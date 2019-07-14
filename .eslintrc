@@ -33,6 +33,8 @@
     "vue/html-self-closing": "error",
     "implicit-arrow-linebreak": "off",
     "operator-linebreak": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "no-unused-vars": [2, { "args": "after-used" }],
+    "default-case": "off"
   }
 }

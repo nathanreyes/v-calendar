@@ -111,13 +111,6 @@ export const mixinOptionalProps = (source, target, props) => {
   };
 };
 
-export const createGuid = () => {
-  function S4() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  }
-  return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
-};
-
 export const on = (element, event, handler) => {
   if (element && event && handler) {
     document.addEventListener
@@ -137,6 +130,15 @@ export const off = (element, event, handler) => {
 export const elementContains = (element, child) =>
   !!element && !!child && (element === child || element.contains(child));
 
+/* eslint-disable no-bitwise */
+
+export const createGuid = () => {
+  function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+  return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
+};
+
 export function hash(str) {
   let hashcode = 0;
   let i = 0;
@@ -149,3 +151,5 @@ export function hash(str) {
   }
   return hashcode;
 }
+
+/* eslint-enable no-bitwise */
