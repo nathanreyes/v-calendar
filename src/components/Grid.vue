@@ -35,6 +35,8 @@ export default {
       // Build cells
       for (let r = 1, p = 1; r <= this.rows; r++) {
         for (let c = 1; c <= this.columns; c++) {
+          const rFromEnd = r - this.rows - 1;
+          const cFromEnd = c - this.columns - 1;
           // Add the cell for current row & column
           cells.push(
             h(
@@ -43,13 +45,9 @@ export default {
                 class: [
                   'vc-grid-cell',
                   `vc-grid-cell-row-${r}`,
+                  `vc-grid-cell-row-${rFromEnd}`,
                   `vc-grid-cell-col-${c}`,
-                  {
-                    'vc-grid-cell-row-first': r === 1,
-                    'vc-grid-cell-row-last': r === this.rows,
-                    'vc-grid-cell-col-first': c === 1,
-                    'vc-grid-cell-col-last': c === this.columns,
-                  },
+                  `vc-grid-cell-col-${cFromEnd}`,
                 ],
                 style: {
                   'grid-row': r,
