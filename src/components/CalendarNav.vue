@@ -198,6 +198,7 @@ export default {
     yearClick(year) {
       this.yearIndex = year;
       this.monthMode = true;
+      this.$refs.itemsGrid.tryFocus();
     },
     toggleMode() {
       this.monthMode = !this.monthMode;
