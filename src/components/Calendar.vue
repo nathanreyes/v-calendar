@@ -32,6 +32,7 @@ import {
   isObject,
   hasAny,
   omit,
+  head,
   last,
 } from '@/utils/_';
 
@@ -349,6 +350,7 @@ export default {
   watch: {
     locale_() {
       this.refreshLocale();
+      this.refreshPages({ page: head(this.pages), ignoreCache: true });
       this.initStore();
     },
     theme_() {
@@ -434,7 +436,7 @@ export default {
         this.$nextTick(() => completion());
       }
     },
-    refreshPages({ page, position = 1 } = {}) {
+    refreshPages({ page, position = 1, ignoreCache } = {}) {
       // Calculate the page to start displaying from
       let fromPage = null;
       // 1. Try the page parameter
@@ -469,7 +471,7 @@ export default {
       }
       // Create the new pages
       const pages = [...Array(this.count).keys()].map(i =>
-        this.buildPage(addPages(fromPage, i)),
+        this.buildPage(addPages(fromPage, i), ignoreCache),
       );
       // Refresh disabled days for new pages
       this.refreshDisabledDays(pages);
@@ -529,10 +531,10 @@ export default {
       }
       return page;
     },
-    buildPage({ month, year }) {
+    buildPage({ month, year }, ignoreCache) {
       const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
-      if (!page) {
+      if (!page || ignoreCache) {
         const date = new Date(year, month - 1, 15);
         const monthComps = this.locale_.getMonthComps(month, year);
         const prevMonthComps = this.locale_.getPrevMonthComps(month, year);

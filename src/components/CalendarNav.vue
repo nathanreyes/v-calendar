@@ -65,7 +65,7 @@
 import Grid from './Grid';
 import SvgIcon from './SvgIcon';
 import { childMixin } from '@/utils/mixins';
-import { first, last } from '@/utils/_';
+import { head, last } from '@/utils/_';
 import { pageForDate } from '@/utils/helpers';
 
 const _yearGroupCount = 12;
@@ -167,7 +167,7 @@ export default {
       return this.monthMode ? this.monthItems : this.yearItems;
     },
     firstYear() {
-      return first(this.yearItems.map(i => i.year));
+      return head(this.yearItems.map(i => i.year));
     },
     lastYear() {
       return last(this.yearItems.map(i => i.year));
