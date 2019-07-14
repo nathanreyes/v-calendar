@@ -200,7 +200,11 @@ export default {
     },
     dayContentProps() {
       return {
-        tabindex: this.day.isFocusable ? '0' : '-1',
+        tabindex: this.day.isFocusable
+          ? '0'
+          : this.day.inMonth
+          ? '-1'
+          : undefined,
         'aria-label': this.day.ariaLabel,
       };
     },
@@ -471,6 +475,7 @@ export default {
 .vc-day {
   position: relative;
   min-height: --day-min-height;
+  width: 100%;
   height: 100%;
   z-index: 1;
 }
