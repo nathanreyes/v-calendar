@@ -1,62 +1,71 @@
 <template>
   <!--Nav panel-->
-  <div>
+  <div class="vc-nav-container">
     <!--Nav header-->
     <grid :columns="3" ref="headerGrid" @rollover="onHeaderRollover">
       <!--Move prev button-->
-      <button
-        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer mr-auto"
+      <span
+        role="button"
+        class="vc-flex vc-justify-center vc-items-center vc-mr-auto"
         :class="theme.navArrows"
         tabindex="-1"
         @click="movePrev"
+        @keydown="e => onSpaceOrEnter(e, movePrev)"
         ref="prevButton"
       >
         <slot name="nav-left-button">
           <svg-icon name="left-arrow" />
         </slot>
-      </button>
+      </span>
       <!--Mode switch button-->
-      <button
-        class="vc-cursor-pointer vc-grid-focus"
+      <span
+        role="button"
+        class="vc-grid-focus"
         :class="theme.navTitle"
-        @click="toggleMode"
         :style="{ whiteSpace: 'nowrap' }"
+        tabindex="0"
+        @click="toggleMode"
+        @keydown="e => onSpaceOrEnter(e, toggleMode)"
         ref="titleButton"
       >
         {{ title }}
-      </button>
+      </span>
       <!--Move next button-->
-      <button
-        class="vc-flex vc-justify-center vc-items-center vc-cursor-pointer ml-auto"
+      <span
+        role="button"
+        class="vc-flex vc-justify-center vc-items-center vc-ml-auto"
         :class="theme.navArrows"
         tabindex="-1"
         @click="moveNext"
+        @keydown="e => onSpaceOrEnter(e, moveNext)"
         ref="nextButton"
       >
         <slot name="nav-right-button">
           <svg-icon name="right-arrow" />
         </slot>
-      </button>
+      </span>
     </grid>
     <!--Navigation items-->
     <grid
       :rows="4"
       :columns="3"
-      gap="1px 5px"
+      gap="2px"
       ref="itemsGrid"
       @rollover="onItemsRollover"
     >
-      <button
+      <span
         v-for="item in activeItems"
         :key="item.label"
+        role="button"
         :aria-label="item.ariaLabel"
-        :class="[...item.classes, 'vc-cursor-pointer']"
+        :class="item.classes"
         :tabindex="item.isActive ? 0 : -1"
         @click="item.click"
+        @keydown="e => onSpaceOrEnter(e, item.click)"
         ref="items"
       >
         {{ item.label }}
-      </button>
+      </span>
     </grid>
   </div>
 </template>
@@ -66,7 +75,7 @@ import Grid from './Grid';
 import SvgIcon from './SvgIcon';
 import { childMixin } from '@/utils/mixins';
 import { head, last } from '@/utils/_';
-import { pageForDate } from '@/utils/helpers';
+import { pageForDate, onSpaceOrEnter } from '@/utils/helpers';
 
 const _yearGroupCount = 12;
 
@@ -85,6 +94,7 @@ export default {
       monthMode: true,
       yearIndex: 0,
       yearGroupIndex: 0,
+      onSpaceOrEnter,
     };
   },
   computed: {
@@ -258,3 +268,9 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss">
+.vc-nav-container {
+  width: var(--nav-container-width);
+}
+</style>

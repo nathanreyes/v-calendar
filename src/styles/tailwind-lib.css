@@ -11,6 +11,10 @@
       outline: none;
     }
   }
+  & button,
+  & [role='button'] {
+    cursor: pointer;
+  }
 }
 
 .vc-box-center-center {

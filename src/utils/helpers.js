@@ -130,6 +130,13 @@ export const off = (element, event, handler) => {
 export const elementContains = (element, child) =>
   !!element && !!child && (element === child || element.contains(child));
 
+export const onSpaceOrEnter = (event, handler) => {
+  if (event.key === ' ' || event.key === 'Enter') {
+    handler(event);
+    event.preventDefault();
+  }
+};
+
 /* eslint-disable no-bitwise */
 
 export const createGuid = () => {

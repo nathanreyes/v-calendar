@@ -24,6 +24,7 @@ import {
   pageIsBetweenPages,
   createGuid,
   arrayHasItems,
+  onSpaceOrEnter,
 } from '@/utils/helpers';
 import {
   isNumber,
@@ -75,6 +76,7 @@ export default {
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const click = () => (isPrev ? this.movePrev() : this.moveNext());
+      const keydown = e => onSpaceOrEnter(e, click);
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
       return h(
         'div',
@@ -88,10 +90,12 @@ export default {
             this.theme_.arrows,
           ],
           attrs: {
+            role: 'button',
             tabindex: '0',
           },
           on: {
             click,
+            keydown,
           },
         },
         [
@@ -754,6 +758,8 @@ export default {
   --weeks-padding: 5px 6px 7px 6px;
   --arrow-horizontal-offset: 10px;
   --arrow-vertical-offset: 11px;
+
+  --nav-container-width: 170px;
 
   --day-min-height: 28px;
   --day-content-width: 28px;

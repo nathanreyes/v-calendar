@@ -290,6 +290,7 @@ export default {
         case ' ':
         case 'Enter': {
           this.picker.handleDayClick(day, this);
+          day.event.preventDefault();
           break;
         }
         case 'Escape': {

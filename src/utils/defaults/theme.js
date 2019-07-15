@@ -32,27 +32,29 @@ export default {
   },
   navTitle: {
     light:
-      'vc-text-{color}-100 vc-font-bold vc-px-2 vc-py-1 vc-rounded hover:vc-bg-gray-900 focus:vc-bg-gray-900',
+      'vc-text-{color}-100 vc-font-bold vc-px-2 vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 focus:vc-border-{color}-600',
     dark:
-      'vc-text-gray-900 vc-font-bold vc-px-2 vc-py-1 vc-rounded hover:vc-bg-gray-200 focus:vc-bg-gray-200',
+      'vc-text-gray-900 vc-font-bold vc-px-2 vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
   },
   navArrows: {
-    light: 'hover:vc-bg-gray-900 focus:vc-bg-gray-900 vc-rounded',
-    dark: 'hover:vc-bg-gray-200 focus:vc-bg-gray-200 vc-rounded',
+    light:
+      'vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 focus:vc-border-{color}-600',
+    dark:
+      'vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
   },
   navCell: {
     light:
-      'vc-font-semibold vc-w-12 vc-text-center vc-py-1 vc-rounded hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-bg-gray-900 focus:vc-text-white focus:vc-shadow-inner',
+      'vc-w-full vc-font-semibold vc-cursor-pointer vc-text-center vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-border-{color}-600',
     dark:
-      'vc-font-semibold vc-w-12 vc-text-center vc-py-1 vc-rounded hover:vc-bg-gray-200 hover:vc-text-gray-900 focus:vc-bg-gray-200 focus:vc-text-gray-900',
+      'vc-w-full vc-font-semibold vc-cursor-pointer vc-text-center vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 hover:vc-text-gray-900 focus:vc-border-{color}-400',
   },
   navCellInactive: {
-    light: 'vc-border-2 vc-border-transparent',
-    dark: 'vc-border-2 vc-border-transparent',
+    light: 'vc-border-transparent',
+    dark: 'vc-border-transparent',
   },
   navCellInactiveCurrent: {
-    light: 'vc-text-{color}-100 vc-font-bold vc-border-2 vc-border-{color}-100',
-    dark: 'vc-text-{color}-600 vc-font-bold vc-border-2 vc-border-{color}-500',
+    light: 'vc-text-{color}-100 vc-font-bold vc-border-{color}-100',
+    dark: 'vc-text-{color}-600 vc-font-bold vc-border-{color}-500',
   },
   navCellActive: {
     light: 'vc-bg-{color}-100 vc-text-{color}-900 vc-font-bold vc-shadow',
