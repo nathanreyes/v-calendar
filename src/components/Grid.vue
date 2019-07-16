@@ -215,7 +215,7 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .vc-grid-container {
   position: relative;
   flex-shrink: 1;
