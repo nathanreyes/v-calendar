@@ -17,8 +17,9 @@ export default {
   },
   arrows: {
     light:
-      'vc-text-gray-600 vc-rounded hover:vc-opacity-50 focus:vc-bg-gray-200',
-    dark: 'vc-text-white vc-rounded hover:vc-opacity-50 focus:vc-bg-gray-800',
+      'vc-text-gray-600 vc-rounded vc-border-transparent hover:vc-opacity-50 focus:vc-border-gray-300',
+    dark:
+      'vc-text-white vc-rounded vc-border-transparent hover:vc-opacity-50 focus:vc-border-gray-700',
   },
   weekdays: {
     light: 'vc-text-sm vc-font-bold vc-text-gray-500',
@@ -32,42 +33,36 @@ export default {
   },
   navTitle: {
     light:
-      'vc-text-{color}-100 vc-font-bold vc-px-2 vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 focus:vc-border-{color}-600',
+      'vc-text-{color}-100 vc-font-bold vc-leading-snug vc-px-2 vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 focus:vc-border-{color}-600',
     dark:
-      'vc-text-gray-900 vc-font-bold vc-px-2 vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
+      'vc-text-gray-900 vc-font-bold vc-leading-snug vc-px-2 vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
   },
   navArrows: {
     light:
-      'vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 focus:vc-border-{color}-600',
+      'vc-leading-snug vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 focus:vc-border-{color}-600',
     dark:
-      'vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
+      'vc-leading-snug vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
   },
   navCell: {
     light:
-      'vc-w-full vc-font-semibold vc-cursor-pointer vc-text-center vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-border-{color}-600',
+      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-snug vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-border-{color}-600',
     dark:
-      'vc-w-full vc-font-semibold vc-cursor-pointer vc-text-center vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 hover:vc-text-gray-900 focus:vc-border-{color}-400',
+      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-snug vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 hover:vc-text-gray-900 focus:vc-border-{color}-400',
   },
-  navCellInactive: {
-    light: 'vc-border-transparent',
-    dark: 'vc-border-transparent',
-  },
+  navCellInactive: 'vc-border-transparent',
   navCellInactiveCurrent: {
     light: 'vc-text-{color}-100 vc-font-bold vc-border-{color}-100',
     dark: 'vc-text-{color}-600 vc-font-bold vc-border-{color}-500',
   },
   navCellActive: {
-    light: 'vc-bg-{color}-100 vc-text-{color}-900 vc-font-bold vc-shadow',
-    dark: 'vc-bg-{color}-500 vc-text-white vc-font-bold vc-shadow',
-  },
-  navCellDisabled: 'vc-opacity-25',
-  dayNotInMonth: 'vc-opacity-0 vc-pointer-events-none',
-  dayContent: {
     light:
-      'vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold vc-rounded-full',
+      'vc-bg-{color}-100 vc-text-{color}-900 vc-border-transparent vc-font-bold vc-shadow',
     dark:
-      'vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold vc-rounded-full',
+      'vc-bg-{color}-500 vc-text-white vc-border-transparent vc-font-bold vc-shadow',
   },
+  dayNotInMonth: 'vc-opacity-0 vc-pointer-events-none',
+  dayContent:
+    'vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold vc-rounded-full',
   dayContentDisabled: {
     light: 'vc-text-sm vc-text-gray-400 vc-font-medium vc-pointer-events-none',
     dark: 'vc-text-sm vc-text-gray-600 vc-font-medium vc-pointer-events-none',
@@ -101,10 +96,7 @@ export default {
     light: 'vc-font-bold vc-text-{color}-900',
     dark: 'vc-font-bold vc-text-{color}-100',
   },
-  contentAccentContrast: {
-    light: 'vc-font-bold vc-text-white',
-    dark: 'vc-font-bold vc-text-white',
-  },
+  contentAccentContrast: 'vc-font-bold vc-text-white',
   datePickerInput:
     'vc-shadow vc-appearance-none vc-border vc-rounded vc-w-full vc-py-2 vc-px-3 vc-text-gray-800 vc-bg-white vc-leading-tight focus:vc-outline-none focus:vc-shadow-outline',
   datePickerInputDrag:

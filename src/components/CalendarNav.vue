@@ -6,7 +6,7 @@
       <!--Move prev button-->
       <span
         role="button"
-        class="vc-flex vc-justify-center vc-items-center vc-mr-auto"
+        class="vc-nav-arrow vc-flex vc-justify-center vc-items-center vc-mr-auto"
         :class="theme.navArrows"
         tabindex="-1"
         @click="movePrev"
@@ -14,13 +14,13 @@
         ref="prevButton"
       >
         <slot name="nav-left-button">
-          <svg-icon name="left-arrow" />
+          <svg-icon name="left-arrow" width="20px" height="24px" />
         </slot>
       </span>
       <!--Mode switch button-->
       <span
         role="button"
-        class="vc-grid-focus"
+        class="vc-nav-title vc-grid-focus"
         :class="theme.navTitle"
         :style="{ whiteSpace: 'nowrap' }"
         tabindex="0"
@@ -33,7 +33,7 @@
       <!--Move next button-->
       <span
         role="button"
-        class="vc-flex vc-justify-center vc-items-center vc-ml-auto"
+        class="vc-nav-arrow vc-flex vc-justify-center vc-items-center vc-ml-auto"
         :class="theme.navArrows"
         tabindex="-1"
         @click="moveNext"
@@ -41,7 +41,7 @@
         ref="nextButton"
       >
         <slot name="nav-right-button">
-          <svg-icon name="right-arrow" />
+          <svg-icon name="right-arrow" width="20px" height="24px" />
         </slot>
       </span>
     </grid>
@@ -49,7 +49,7 @@
     <grid
       :rows="4"
       :columns="3"
-      gap="2px"
+      gap="2px 5px"
       ref="itemsGrid"
       @rollover="onItemsRollover"
     >
@@ -58,8 +58,8 @@
         :key="item.label"
         role="button"
         :aria-label="item.ariaLabel"
-        :class="item.classes"
-        :tabindex="item.isActive ? 0 : -1"
+        :class="getItemClasses(item)"
+        :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
         @click="item.click"
         @keydown="e => onSpaceOrEnter(e, item.click)"
         ref="items"
@@ -113,29 +113,12 @@ export default {
       const { month: thisMonth, year: thisYear } = pageForDate(new Date());
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
-        const label = this.locale.format(d, this.masks.navMonths);
-        const ariaLabel = this.locale.format(d, 'MMMM YYYY');
-        const isActive = month === this.month && this.yearIndex === this.year;
-        const isCurrent = month === thisMonth && this.yearIndex === thisYear;
-        const isDisabled = !this.validator({ month, year: this.yearIndex });
-        const classes = [this.theme.navCell];
-        if (isActive) {
-          classes.push(this.theme.navCellActive, 'vc-grid-focus');
-        } else if (isCurrent) {
-          classes.push(this.theme.navCellInactiveCurrent);
-        } else {
-          classes.push(this.theme.navCellInactive);
-        }
-        if (isDisabled) {
-          classes.push(this.theme.navCellDisabled);
-        }
         return {
-          label,
-          ariaLabel,
-          isActive,
-          isCurrent,
-          isDisabled,
-          classes,
+          label: this.locale.format(d, this.masks.navMonths),
+          ariaLabel: this.locale.format(d, 'MMMM YYYY'),
+          isActive: month === this.month && this.yearIndex === this.year,
+          isCurrent: month === thisMonth && this.yearIndex === thisYear,
+          isDisabled: !this.validator({ month, year: this.yearIndex }),
           click: () => this.monthClick(month),
         };
       });
@@ -146,28 +129,13 @@ export default {
       const endYear = startYear + _yearGroupCount;
       const items = [];
       for (let year = startYear; year < endYear; year += 1) {
-        const isActive = year === this.year;
-        const isCurrent = year === thisYear;
-        const isDisabled = !this.validator({ month: this.month, year });
-        const classes = [this.theme.navCell];
-        if (isActive) {
-          classes.push(this.theme.navCellActive, 'vc-grid-focus');
-        } else if (isCurrent) {
-          classes.push(this.theme.navCellInactiveCurrent);
-        } else {
-          classes.push(this.theme.navCellInactive);
-        }
-        if (isDisabled) {
-          classes.push('vc-opacity-25');
-        }
         items.push({
           year,
           label: year,
           ariaLabel: year,
-          isActive,
-          isCurrent,
-          isDisabled,
-          classes,
+          isActive: year === this.year,
+          isCurrent: year === thisYear,
+          isDisabled: !this.validator({ month: this.month, year }),
           click: () => this.yearClick(year),
         });
       }
@@ -198,6 +166,20 @@ export default {
     this.$refs.itemsGrid.tryFocus();
   },
   methods: {
+    getItemClasses({ isActive, isCurrent, isDisabled }) {
+      const classes = [this.theme.navCell];
+      if (isActive) {
+        classes.push(this.theme.navCellActive, 'vc-grid-focus');
+      } else if (isCurrent) {
+        classes.push(this.theme.navCellInactiveCurrent);
+      } else {
+        classes.push(this.theme.navCellInactive);
+      }
+      if (isDisabled) {
+        classes.push('vc-opacity-25 vc-pointer-events-none');
+      }
+      return classes;
+    },
     getYearGroupIndex(year) {
       return Math.floor(year / _yearGroupCount);
     },
@@ -268,9 +250,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss">
-.vc-nav-container {
-  width: var(--nav-container-width);
-}
-</style>
