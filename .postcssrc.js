@@ -25,12 +25,7 @@ module.exports = {
               extensions: ['vue', 'js'],
             },
           ],
-          whitelistPatterns: [
-            /^vc-bg/,
-            /^vc-text/,
-            /^vc-border/,
-            /^vc-rounded/,
-          ],
+          whitelistPatterns: [/vc-text/, /vc-bg/, /vc-border/, /^vc-rounded/],
         })
       : '',
   ],

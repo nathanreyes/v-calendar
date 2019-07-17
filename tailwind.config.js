@@ -41,9 +41,9 @@ module.exports = {
   },
   // Limit variants for sections whitelisted by PurgeCSS
   variants: {
-    backgroundColor: ['hover', 'focus'],
+    textColor: ['hover'],
+    backgroundColor: ['hover'],
     borderColor: ['hover', 'focus'],
-    textColor: ['hover', 'focus'],
     opacity: ['responsive', 'hover'],
   },
 };
