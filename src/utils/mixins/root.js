@@ -1,6 +1,6 @@
 import Theme from '@/utils/theme';
 import Locale from '@/utils/locale';
-import { isString, isObject, has, defaultsDeep } from '@/utils/_';
+import { isObject, defaultsDeep } from '@/utils/_';
 
 export const rootMixin = {
   props: {
@@ -26,30 +26,16 @@ export const rootMixin = {
     locale_() {
       // Return the locale prop if it is an instance of the Locale class
       if (this.locale instanceof Locale) return this.locale;
-      // Get the default locales
-      const locales = this.$vc.locales;
-      // Get the detected locale string
-      const detLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
-      let config = this.locale;
-      // Resolve the locale id
-      let id = isString(config)
-        ? config
-        : has(config, 'id')
-        ? config.id
-        : detLocale;
-      id = [id, id.substring(0, 2)].find(i => has(locales, i)) || detLocale;
-      // Spread the default locale to prevent repetitive update loops
-      const defLocale = { ...locales[id] };
-      // Let props override locale settings
-      defLocale.firstDayOfWeek = this.passedProp(
-        'firstDayOfWeek',
-        defLocale.firstDayOfWeek,
-      );
-      defLocale.masks = defaultsDeep(this.masks, defLocale.masks);
-      // Assign or merge defaults with provided config
-      config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
-      // Create a new locale
-      return new Locale(id, config);
+      // Build up a base config from component props
+      const config = isObject(this.locale)
+        ? this.locale
+        : {
+            id: this.locale,
+            firstDayOfWeek: this.firstDayOfWeek,
+            masks: this.masks,
+          };
+      // Return new locale
+      return new Locale(config, this.$vc.locales);
     },
     format() {
       return (date, mask) =>
