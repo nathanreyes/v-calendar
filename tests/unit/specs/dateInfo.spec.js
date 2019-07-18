@@ -1,6 +1,5 @@
 import DateInfo, { addDays } from '@/utils/dateInfo';
-import dayData from '../util/dayData.json';
-import Locale from '../../../src/utils/locale.js';
+import Locale from '../../../src/utils/locale';
 
 describe('addDays', () => {
   it('should add days correctly', () => {
@@ -14,25 +13,6 @@ describe('addDays', () => {
     expect(addDays(origin, -1).valueOf()).toEqual(
       new Date(2017, 11, 31).valueOf(),
     );
-  });
-});
-
-describe('getDayFromDate', () => {
-  it('should calculate day components correctly', () => {
-    const testComponent = c => {
-      const day = getDayFromDate(new Date(c.date));
-      if (c.day !== day.day) return false;
-      if (c.dayFromEnd !== day.dayFromEnd) return false;
-      if (c.weekday !== day.weekday) return false;
-      if (c.weekdayOrdinal !== day.weekdayOrdinal) return false;
-      if (c.weekdayOrdinalFromEnd !== day.weekdayOrdinalFromEnd) return false;
-      if (c.week !== day.week) return false;
-      if (c.weekFromEnd !== day.weekFromEnd) return false;
-      if (c.month !== day.month) return false;
-      if (c.year !== day.year) return false;
-      return true;
-    };
-    dayData.forEach(c => expect(testComponent(c)).toEqual(true));
   });
 });
 
