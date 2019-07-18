@@ -1,11 +1,41 @@
 import { format, parse } from '@/utils/fecha';
-import { isDate, isNumber, isString, isObject, clamp } from '@/utils/_';
+import {
+  isDate,
+  isNumber,
+  isString,
+  isObject,
+  has,
+  defaultsDeep,
+  clamp,
+} from '@/utils/_';
+import defaultLocales from '@/utils/defaults/locales';
 
 const daysInWeek = 7;
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
+export function resolveConfig(config, locales) {
+  // Get the detected locale string
+  const detLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
+  // Resolve the locale id
+  let id;
+  if (isString(config)) {
+    id = config;
+  } else if (has(config, 'id')) {
+    id = config.id;
+  }
+  id = id || detLocale;
+  id = [id, id.substring(0, 2)].find(i => has(locales, i)) || detLocale;
+  // Spread the default locale to prevent repetitive update loops
+  const defLocale = { ...locales[id] };
+  // Assign or merge defaults with provided config
+  config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
+  // Return resolved config
+  return config;
+}
+
 export default class Locale {
-  constructor(id, { firstDayOfWeek, masks }) {
+  constructor(config, locales = defaultLocales) {
+    const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
     this.id = id;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
@@ -137,6 +167,35 @@ export default class Locale {
   getNextMonthComps(month, year) {
     if (month === 12) return this.getMonthComps(1, year + 1);
     return this.getMonthComps(month + 1, year);
+  }
+
+  getDayFromDate(date) {
+    if (!date) return null;
+    const month = date.getMonth() + 1;
+    const year = date.getUTCFullYear();
+    const comps = this.getMonthComps(month, year);
+    const day = date.getDate();
+    const dayFromEnd = comps.days - day + 1;
+    const weekday = date.getDay() + 1;
+    const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
+    const weekdayOrdinalFromEnd = Math.floor((comps.days - day) / 7 + 1);
+    const week = Math.ceil(
+      (day + Math.abs(comps.firstWeekday - comps.firstDayOfWeek)) / 7,
+    );
+    const weekFromEnd = comps.weeks - week + 1;
+    return {
+      day,
+      dayFromEnd,
+      weekday,
+      weekdayOrdinal,
+      weekdayOrdinalFromEnd,
+      week,
+      weekFromEnd,
+      month,
+      year,
+      date,
+      dateTime: date.getTime(),
+    };
   }
 
   // Buils day components for a given page
