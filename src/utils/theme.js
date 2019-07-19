@@ -11,6 +11,7 @@ import {
   upperFirst,
 } from './_';
 
+const defConfig = { color: 'blue', isDark: false };
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'color', 'fillMode'];
 
@@ -21,7 +22,7 @@ function concatClass(obj, prop, className) {
 
 export default class Theme {
   constructor(config) {
-    this._config = { ...config };
+    this._config = defaults(config, defConfig);
     // Make properties of config appear as properties of theme
     toPairs(this._config).forEach(([prop]) => {
       Object.defineProperty(this, prop, {
@@ -136,10 +137,10 @@ export default class Theme {
       config,
       type: 'highlight',
     });
-    toPairs(highlight).map(([_, targetConfig]) => {
+    toPairs(highlight).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      let bgClass,
-contentClass;
+      let bgClass;
+      let contentClass;
       switch (targetConfig.fillMode) {
         case 'none':
           bgClass = this.getConfig('bgLow', targetConfig);
