@@ -10,8 +10,8 @@ import {
   defaults,
   upperFirst,
 } from './_';
+import defConfig from '@/utils/defaults/theme';
 
-const defConfig = { color: 'blue', isDark: false };
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'color', 'fillMode'];
 
@@ -45,7 +45,7 @@ export default class Theme {
       bar: { opts: ['class'] },
       content: { opts: ['class'] },
     };
-    toPairs(this.normalizedAttrs).map(([type, config]) => {
+    toPairs(this.normalizedAttrs).forEach(([type, config]) => {
       const attr = { base: {}, start: {}, end: {} };
       config.opts.forEach(opt => {
         const prefix = type;
