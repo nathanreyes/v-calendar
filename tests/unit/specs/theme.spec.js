@@ -1,30 +1,58 @@
 import Theme from '@/utils/theme';
 
+const themeColor = 'blue';
 const themeConfig = {
-  color: 'blue',
+  color: themeColor,
   isDark: false,
-  highlight: {
-    base: {
-      fillMode: 'light',
-    },
+  highlightBaseFillMode: 'light',
+  highlightStartEndFillMode: 'solid',
+  highlightStartEndClass: 'vc-rounded-full',
+  bgAccentLow: {
+    light: `vc-bg-${themeColor}-200`,
+    dark: `vc-bg-${themeColor}-800 vc-opacity-75`,
   },
+  bgAccentHigh: {
+    light: `vc-bg-${themeColor}-600`,
+    dark: `vc-bg-${themeColor}-500`,
+  },
+  contentAccent: {
+    light: `vc-font-bold vc-text-${themeColor}-900`,
+    dark: `vc-font-bold vc-text-${themeColor}-100`,
+  },
+  contentAccentContrast: 'vc-font-bold vc-text-white',
 };
 
 const theme = new Theme(themeConfig);
 
 describe.only('Theme', () => {
-  // it('should normalize highlight w/ true', () => {
-  //   const config = true;
-  //   const normConfig = theme.normalizeHighlight(config, themeConfig);
-  //   expect(normConfig).toEqual({
-  //     base: {
-  //       fillMode: 'light',
-  //       color: 'blue',
-  //     },
-  //     start: {},
-  //     end: {},
-  //   });
-  // });
+  it('should normalize highlight w/ true', () => {
+    const config = true;
+    const normConfig = theme.normalizeHighlight(config, themeConfig);
+    const { color, isDark } = themeConfig;
+    expect(normConfig).toEqual({
+      base: {
+        color,
+        isDark,
+        fillMode: theme.highlightBaseFillMode,
+        class: theme.bgAccentLow,
+        contentClass: theme.contentAccent,
+      },
+      start: {
+        color,
+        isDark,
+        fillMode: theme.highlightStartEndFillMode,
+        class: `${theme.highlightStartEndClass} ${theme.bgAccentHigh}`,
+        contentClass: theme.contentAccentContrast,
+      },
+      end: {
+        color,
+        isDark,
+        fillMode: theme.highlightStartEndFillMode,
+        class: `${theme.highlightStartEndClass} ${theme.bgAccentHigh}`,
+        contentClass: theme.contentAccentContrast,
+      },
+    });
+  });
   // it('should normalize highlight w/ false', () => {
   //   const config = false;
   //   const normConfig = theme.normalizeHighlight(config, themeConfig);
