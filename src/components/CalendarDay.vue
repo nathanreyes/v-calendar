@@ -199,7 +199,7 @@ export default {
       } ${this.theme.isDark ? 'vc-is-dark' : ''} ${contentClass}`;
     },
     dayContentProps() {
-      let tabindex = undefined;
+      let tabindex;
       if (this.day.isFocusable) {
         tabindex = '0';
       } else if (this.day.inMonth) {
