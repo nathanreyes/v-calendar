@@ -34,7 +34,10 @@
     "implicit-arrow-linebreak": "off",
     "operator-linebreak": "off",
     "class-methods-use-this": "off",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
     "default-case": "off"
   }
 }
