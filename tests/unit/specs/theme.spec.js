@@ -53,11 +53,12 @@ describe.only('Theme', () => {
       },
     });
   });
-  // it('should normalize highlight w/ false', () => {
-  //   const config = false;
-  //   const normConfig = theme.normalizeHighlight(config, themeConfig);
-  //   expect(normConfig).toEqual(null);
-  // });
+
+  it('should normalize highlight w/ false', () => {
+    const config = false;
+    const normConfig = theme.normalizeHighlight(config, themeConfig);
+    expect(normConfig).toEqual(null);
+  });
   // it('should normalize highlight w/ theme color', () => {
   //   const config = 'red';
   //   const normConfig = theme.normalizeHighlight(config, themeConfig);
