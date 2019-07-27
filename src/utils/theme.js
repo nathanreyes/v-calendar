@@ -106,6 +106,8 @@ export default class Theme {
           end: { ...config },
         };
       }
+    } else {
+      return null;
     }
     // Fill in missing targets
     defaults(root, { start: root.startEnd, end: root.startEnd }, normAttr);
