@@ -1,34 +1,31 @@
 import Theme from '@/utils/theme';
 
-const themeColor = 'blue';
-const themeConfig = {
-  color: themeColor,
+const defThemeConfig = {
+  color: 'blue',
   isDark: false,
   highlightBaseFillMode: 'light',
   highlightStartEndFillMode: 'solid',
   highlightStartEndClass: 'vc-rounded-full',
   bgAccentLow: {
-    light: `vc-bg-${themeColor}-200`,
-    dark: `vc-bg-${themeColor}-800 vc-opacity-75`,
+    light: `vc-bg-{color}-200`,
+    dark: `vc-bg-{color}-800 vc-opacity-75`,
   },
   bgAccentHigh: {
-    light: `vc-bg-${themeColor}-600`,
-    dark: `vc-bg-${themeColor}-500`,
+    light: `vc-bg-{color}-600`,
+    dark: `vc-bg-{color}-500`,
   },
   contentAccent: {
-    light: `vc-font-bold vc-text-${themeColor}-900`,
-    dark: `vc-font-bold vc-text-${themeColor}-100`,
+    light: `vc-font-bold vc-text-{color}-900`,
+    dark: `vc-font-bold vc-text-{color}-100`,
   },
   contentAccentContrast: 'vc-font-bold vc-text-white',
 };
 
-const theme = new Theme(themeConfig);
-
 describe.only('Theme', () => {
   it('should normalize highlight w/ true', () => {
-    const config = true;
-    const normConfig = theme.normalizeHighlight(config, themeConfig);
-    const { color, isDark } = themeConfig;
+    const theme = new Theme(defThemeConfig);
+    const normConfig = theme.normalizeHighlight(true);
+    const { color, isDark } = defThemeConfig;
     expect(normConfig).toEqual({
       base: {
         color,
@@ -55,17 +52,43 @@ describe.only('Theme', () => {
   });
 
   it('should normalize highlight w/ false', () => {
-    const config = false;
-    const normConfig = theme.normalizeHighlight(config, themeConfig);
+    const theme = new Theme({ ...defThemeConfig });
+    const normConfig = theme.normalizeHighlight(false);
     expect(normConfig).toEqual(null);
   });
-  // it('should normalize highlight w/ theme color', () => {
-  //   const config = 'red';
-  //   const normConfig = theme.normalizeHighlight(config, themeConfig);
-  //   expect(normConfig).toEqual({
-  //     base: { color: 'red', fillMode: 'light' },
-  //   });
-  // });
+
+  it('should normalize highlight w/ theme color', () => {
+    const color = 'red';
+    const theme = new Theme(defThemeConfig);
+    const normConfig = theme.normalizeHighlight(color);
+    expect(normConfig).toEqual({
+      base: {
+        color,
+        isDark: theme.isDark,
+        fillMode: theme.highlightBaseFillMode,
+        class: `${theme.getConfig('bgAccentLow', { color })}`,
+        contentClass: `${theme.getConfig('contentAccent', { color })}`,
+      },
+      start: {
+        color,
+        isDark: theme.isDark,
+        fillMode: theme.highlightStartEndFillMode,
+        class: `${theme.getConfig('highlightStartEndClass', {
+          color,
+        })} ${theme.getConfig('bgAccentHigh', { color })}`,
+        contentClass: `${theme.getConfig('contentAccentContrast', { color })}`,
+      },
+      end: {
+        color,
+        isDark: theme.isDark,
+        fillMode: theme.highlightStartEndFillMode,
+        class: `${theme.getConfig('highlightStartEndClass', {
+          color,
+        })} ${theme.getConfig('bgAccentHigh', { color })}`,
+        contentClass: `${theme.getConfig('contentAccentContrast', { color })}`,
+      },
+    });
+  });
   // it('should normalize highlight w/ target boolean', () => {
   //   const config = {
   //     base: true,
