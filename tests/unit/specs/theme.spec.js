@@ -89,15 +89,34 @@ describe.only('Theme', () => {
       },
     });
   });
-  // it('should normalize highlight w/ target boolean', () => {
-  //   const config = {
-  //     base: true,
-  //   };
-  //   const normConfig = theme.normalizeHighlight(config, themeConfig);
-  //   expect(normConfig).toEqual({
-  //     base: { color: 'blue', fillMode: 'light' },
-  //   });
-  // });
+
+  it('should normalize highlight w/ target boolean', () => {
+    const theme = new Theme(defThemeConfig);
+    const normConfig = theme.normalizeHighlight({ base: true });
+    expect(normConfig).toEqual({
+      base: {
+        color: theme.color,
+        isDark: theme.isDark,
+        fillMode: theme.highlightBaseFillMode,
+        class: `${theme.bgAccentLow}`,
+        contentClass: `${theme.contentAccent}`,
+      },
+      start: {
+        color: theme.color,
+        isDark: theme.isDark,
+        fillMode: theme.highlightStartEndFillMode,
+        class: `${theme.highlightStartEndClass} ${theme.bgAccentHigh}`,
+        contentClass: `${theme.contentAccentContrast}`,
+      },
+      end: {
+        color: theme.color,
+        isDark: theme.isDark,
+        fillMode: theme.highlightStartEndFillMode,
+        class: `${theme.highlightStartEndClass} ${theme.bgAccentHigh}`,
+        contentClass: `${theme.contentAccentContrast}`,
+      },
+    });
+  });
   // it('should normalize highlight w/ target theme name', () => {
   //   const config = {
   //     base: 'red',
