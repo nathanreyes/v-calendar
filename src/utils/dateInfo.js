@@ -1,5 +1,6 @@
 import { mixinOptionalProps } from './helpers';
 import { isDate, isObject, isArray, isFunction } from './_';
+import Locale from './locale';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
@@ -22,7 +23,7 @@ export function addYears(date, years) {
 }
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale }) {
+  constructor(config, { order = 0, locale = new Locale() } = {}) {
     this.isDateInfo = true;
     this.isRange = isObject(config) || isFunction(config);
     this.isDate = !this.isRange;
@@ -154,35 +155,6 @@ export default class DateInfo {
     return { start, end };
   }
 
-  getDayFromDate(date) {
-    if (!date) return null;
-    const month = date.getMonth() + 1;
-    const year = date.getUTCFullYear();
-    const comps = this.getMonthComps(month, year);
-    const day = date.getDate();
-    const dayFromEnd = comps.days - day + 1;
-    const weekday = date.getDay() + 1;
-    const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
-    const weekdayOrdinalFromEnd = Math.floor((comps.days - day) / 7 + 1);
-    const week = Math.ceil(
-      (day + Math.abs(comps.firstWeekday - comps.firstDayOfWeek)) / 7,
-    );
-    const weekFromEnd = comps.weeks - week + 1;
-    return {
-      day,
-      dayFromEnd,
-      weekday,
-      weekdayOrdinal,
-      weekdayOrdinalFromEnd,
-      week,
-      weekFromEnd,
-      month,
-      year,
-      date,
-      dateTime: date.getTime(),
-    };
-  }
-
   startOfWeek(date) {
     const day = date.getDay() + 1;
     const daysToAdd =
@@ -299,14 +271,14 @@ export default class DateInfo {
     const state = {
       i: 0,
       date: start,
-      day: this.getDayFromDate(start),
+      day: this.locale.getDayFromDate(start),
       finished: false,
     };
     let result = null;
     for (; !state.finished && state.date <= end; state.i++) {
       result = func(state);
       state.date = addDays(state.date, 1);
-      state.day = this.getDayFromDate(state.date);
+      state.day = this.locale.getDayFromDate(state.date);
     }
     return result;
   }

@@ -80,6 +80,7 @@ locales.zh = locales['zh-CN'];
 // Remap from abbr. to intuitive property names
 toPairs(locales).forEach(([id, { dow, L }]) => {
   locales[id] = {
+    id,
     firstDayOfWeek: dow,
     masks: { L },
   };

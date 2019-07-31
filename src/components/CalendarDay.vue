@@ -199,12 +199,14 @@ export default {
       } ${this.theme.isDark ? 'vc-is-dark' : ''} ${contentClass}`;
     },
     dayContentProps() {
+      let tabindex;
+      if (this.day.isFocusable) {
+        tabindex = '0';
+      } else if (this.day.inMonth) {
+        tabindex = '-1';
+      }
       return {
-        tabindex: this.day.isFocusable
-          ? '0'
-          : this.day.inMonth
-          ? '-1'
-          : undefined,
+        tabindex,
         'aria-label': this.day.ariaLabel,
       };
     },

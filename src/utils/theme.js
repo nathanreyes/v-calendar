@@ -10,6 +10,7 @@ import {
   defaults,
   upperFirst,
 } from './_';
+import defConfig from '@/utils/defaults/theme';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'color', 'fillMode'];
@@ -21,7 +22,7 @@ function concatClass(obj, prop, className) {
 
 export default class Theme {
   constructor(config) {
-    this._config = { ...config };
+    this._config = defaults(config, defConfig);
     // Make properties of config appear as properties of theme
     toPairs(this._config).forEach(([prop]) => {
       Object.defineProperty(this, prop, {
@@ -44,7 +45,7 @@ export default class Theme {
       bar: { opts: ['class'] },
       content: { opts: ['class'] },
     };
-    toPairs(this.normalizedAttrs).map(([type, config]) => {
+    toPairs(this.normalizedAttrs).forEach(([type, config]) => {
       const attr = { base: {}, start: {}, end: {} };
       config.opts.forEach(opt => {
         const prefix = type;
@@ -105,6 +106,8 @@ export default class Theme {
           end: { ...config },
         };
       }
+    } else {
+      return null;
     }
     // Fill in missing targets
     defaults(root, { start: root.startEnd, end: root.startEnd }, normAttr);
@@ -136,10 +139,10 @@ export default class Theme {
       config,
       type: 'highlight',
     });
-    toPairs(highlight).map(([_, targetConfig]) => {
+    toPairs(highlight).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      let bgClass,
-contentClass;
+      let bgClass;
+      let contentClass;
       switch (targetConfig.fillMode) {
         case 'none':
           bgClass = this.getConfig('bgLow', targetConfig);
