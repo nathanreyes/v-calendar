@@ -740,14 +740,14 @@ Vue.use(VCalendar, {
 
 ##### 2B. Components Method
 
-Or, you can just import and use the calendar if you don't need the `v-date-picker` or `v-popover` components. Keep in mind that `setupCalendar` still needs to be called (passing optional defaults) using this method.
+Or, you can just import and use the calendar if you don't need the `v-date-picker` or `v-popover` components. Keep in mind that `setupCalendar` still needs to be called (passing Vue instance and optional defaults) using this method.
 
 ```js
 import Vue from 'vue';
-import { setupCalendar, Calendar} from 'v-calendar'
+import { setupCalendar, Calendar } from 'v-calendar'
 
 // Remember to setup calendar (passing in defaults if needed)
-setupCalendar({
+setupCalendar(Vue, {
   componentPrefix: 'vc',
   ...,
 });
