@@ -64,8 +64,8 @@ export default {
   dayContent:
     'vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold vc-rounded-full',
   dayContentDisabled: {
-    light: 'vc-text-sm vc-text-gray-400 vc-font-medium vc-pointer-events-none',
-    dark: 'vc-text-sm vc-text-gray-600 vc-font-medium vc-pointer-events-none',
+    light: 'vc-text-gray-400',
+    dark: 'vc-text-gray-600',
   },
   dayPopoverContainer: {
     light:
