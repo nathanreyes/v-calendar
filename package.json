@@ -58,7 +58,9 @@
     "vue": "^2.5.18"
   },
   "browserslist": [
-    ">1%",
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
     "not ie 11",
     "not op_mini all"
   ]
