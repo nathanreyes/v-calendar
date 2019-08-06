@@ -63,5 +63,10 @@
     "number": 370,
     "component": "github-370-370",
     "title": "Locale change only changes weekday names but not month names"
+  },
+  {
+    "number": 379,
+    "component": "github-379-379",
+    "title": "Popover should still activate on disabled dates"
   }
 ]
