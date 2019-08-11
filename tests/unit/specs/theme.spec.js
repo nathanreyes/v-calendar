@@ -1,4 +1,5 @@
 import Theme from '@/utils/theme';
+import defaultsDeep from 'lodash/defaultsDeep';
 
 const defThemeConfig = {
   color: 'blue',
@@ -6,6 +7,10 @@ const defThemeConfig = {
   highlightBaseFillMode: 'light',
   highlightStartEndFillMode: 'solid',
   highlightStartEndClass: 'vc-rounded-full',
+  bgLow: {
+    light: 'vc-bg-white vc-border-2 vc-border-{color}-700',
+    dark: 'vc-bg-gray-900 vc-border-2 vc-border-{color}-200',
+  },
   bgAccentLow: {
     light: `vc-bg-{color}-200`,
     dark: `vc-bg-{color}-800 vc-opacity-75`,
@@ -27,22 +32,30 @@ function getDefaultHighlight(theme) {
       color: theme.color,
       isDark: theme.isDark,
       fillMode: theme.highlightBaseFillMode,
-      class: theme.bgAccentLow,
-      contentClass: theme.contentAccent,
+      class: theme.getHighlightBgClass(theme.highlightBaseFillMode),
+      contentClass: theme.getHighlightContentClass(theme.highlightBaseFillMode),
     },
     start: {
       color: theme.color,
       isDark: theme.isDark,
       fillMode: theme.highlightStartEndFillMode,
-      class: `${theme.highlightStartEndClass} ${theme.bgAccentHigh}`,
-      contentClass: theme.contentAccentContrast,
+      class: `${theme.highlightStartEndClass} ${theme.getHighlightBgClass(
+        theme.highlightStartEndFillMode,
+      )}`,
+      contentClass: theme.getHighlightContentClass(
+        theme.highlightStartEndFillMode,
+      ),
     },
     end: {
       color: theme.color,
       isDark: theme.isDark,
       fillMode: theme.highlightStartEndFillMode,
-      class: `${theme.highlightStartEndClass} ${theme.bgAccentHigh}`,
-      contentClass: theme.contentAccentContrast,
+      class: `${theme.highlightStartEndClass} ${theme.getHighlightBgClass(
+        theme.highlightStartEndFillMode,
+      )}`,
+      contentClass: theme.getHighlightContentClass(
+        theme.highlightStartEndFillMode,
+      ),
     },
   };
 }
@@ -84,7 +97,69 @@ describe.only('Theme', () => {
       base: getDefaultHighlight(redTheme).base,
     });
   });
-  // it('should normalize highlight w/ style-like properties', () => {
+
+  it('should normalize highlight w/ class', () => {
+    const theme = new Theme(defThemeConfig);
+    const className = 'class-1 class-2';
+    const normConfig = theme.normalizeHighlight({
+      class: className,
+    });
+    const defHighlight = getDefaultHighlight(theme);
+    expect(normConfig).toEqual(
+      defaultsDeep(
+        {
+          base: {
+            class: `${className} ${defHighlight.base.class}`,
+          },
+          start: {
+            class: `${className} ${defHighlight.start.class}`,
+          },
+          end: {
+            class: `${className} ${defHighlight.end.class}`,
+          },
+        },
+        defHighlight,
+      ),
+    );
+  });
+
+  it('should normalize highlight w/ mixed target configurations', () => {
+    const theme = new Theme({
+      ...defThemeConfig,
+      highlightStartEndFillMode: 'light',
+    });
+    const redTheme = new Theme({
+      ...defThemeConfig,
+      color: 'red',
+      highlightStartEndFillMode: 'light',
+    });
+    const normConfig = theme.normalizeHighlight({
+      base: true,
+      start: {
+        color: 'red',
+        fillMode: 'light',
+      },
+      end: {
+        class: 'class-1 class-2',
+        fillMode: 'light',
+      },
+    });
+    const defHighlight = getDefaultHighlight(theme);
+    const redHighlight = getDefaultHighlight(redTheme);
+    expect(normConfig).toEqual(
+      defaultsDeep(
+        {
+          start: redHighlight.start,
+          end: {
+            fillMode: 'light',
+            class: `class-1 class-2 ${defHighlight.end.class}`,
+          },
+        },
+        defHighlight,
+      ),
+    );
+  });
+  // it('should normalize highlight w/ style', () => {
   //   const config = {
   //     backgroundColor: 'red',
   //     borderWidth: '1px',
@@ -95,45 +170,6 @@ describe.only('Theme', () => {
   //       color: 'blue',
   //       fillMode: 'light',
   //       style: { ...config },
-  //     },
-  //   });
-  // });
-  // it('should normalize highlight w/ class and style', () => {
-  //   const config = {
-  //     class: 'style-1 style-2',
-  //     style: {
-  //       borderWidth: '1px',
-  //     },
-  //   };
-  //   const normConfig = theme.normalizeHighlight(config, themeConfig);
-  //   expect(normConfig).toEqual({
-  //     base: {
-  //       ...config,
-  //       color: 'blue',
-  //       fillMode: 'light',
-  //     },
-  //   });
-  // });
-  // it('should normalize highlight w/ mixed target configurations', () => {
-  //   const config = {
-  //     base: true,
-  //     start: 'red',
-  //     end: {
-  //       class: 'style-1 style-2',
-  //       style: {
-  //         borderWidth: '1px',
-  //       },
-  //       fillMode: 'light',
-  //     },
-  //   };
-  //   const normConfig = theme.normalizeHighlight(config);
-  //   expect(normConfig).toEqual({
-  //     base: { color: 'blue', fillMode: 'light' },
-  //     start: { color: 'red' },
-  //     end: {
-  //       ...config.end,
-  //       color: 'blue',
-  //       fillMode: 'light',
   //     },
   //   });
   // });
