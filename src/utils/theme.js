@@ -136,7 +136,10 @@ export default class Theme {
         }
       }
       // Fill in missing options
-      defaults(root[targetType], normAttr[targetType]);
+      root[targetType] = this.mergeTargets(
+        root[targetType],
+        normAttr[targetType],
+      );
       // Set the theme color if it is missing
       if (!has(root, `${targetType}.color`)) {
         set(root, `${targetType}.color`, targetColor);
