@@ -8,6 +8,7 @@ import {
   set,
   toPairs,
   defaults,
+  defaultsDeep,
   upperFirst,
 } from './_';
 import defConfig from '@/utils/defaults/theme';
@@ -83,6 +84,16 @@ export default class Theme {
     return propVal;
   }
 
+  mergeTargets(to, from) {
+    const config = {};
+    defaultsDeep(config, to, from);
+    // Combine target classes together
+    if (to.class && from.class && !to.class.includes(from.class)) {
+      config.class = `${to.class} ${from.class}`;
+    }
+    return config;
+  }
+
   // Normalizes attribute config to the structure defined by the properties
   normalizeAttr({ config, type }) {
     let rootColor = this.color;
@@ -134,32 +145,52 @@ export default class Theme {
     return root;
   }
 
+  getHighlightBgClass(fillMode, config = this._config) {
+    switch (fillMode) {
+      case 'none':
+        return this.getConfig('bgLow', config);
+      case 'light':
+        return this.getConfig('bgAccentLow', config);
+      case 'solid':
+        return this.getConfig('bgAccentHigh', config);
+      default:
+        return '';
+    }
+  }
+
+  getHighlightContentClass(fillMode, config = this._config) {
+    switch (fillMode) {
+      case 'none':
+        return this.getConfig('contentAccent', config);
+      case 'light':
+        return this.getConfig('contentAccent', config);
+      case 'solid':
+        return this.getConfig('contentAccentContrast', config);
+      default:
+        return '';
+    }
+  }
+
   normalizeHighlight(config) {
     const highlight = this.normalizeAttr({
       config,
       type: 'highlight',
     });
     toPairs(highlight).forEach(([_, targetConfig]) => {
-      defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      let bgClass;
-      let contentClass;
-      switch (targetConfig.fillMode) {
-        case 'none':
-          bgClass = this.getConfig('bgLow', targetConfig);
-          contentClass = this.getConfig('contentAccent', targetConfig);
-          break;
-        case 'light':
-          bgClass = this.getConfig('bgAccentLow', targetConfig);
-          contentClass = this.getConfig('contentAccent', targetConfig);
-          break;
-        // Solid by default
-        default:
-          bgClass = this.getConfig('bgAccentHigh', targetConfig);
-          contentClass = this.getConfig('contentAccentContrast', targetConfig);
-          break;
-      }
-      concatClass(targetConfig, 'class', bgClass);
-      concatClass(targetConfig, 'contentClass', contentClass);
+      const { fillMode } = defaults(targetConfig, {
+        isDark: this.isDark,
+        color: this.color,
+      });
+      concatClass(
+        targetConfig,
+        'class',
+        this.getHighlightBgClass(fillMode, targetConfig),
+      );
+      concatClass(
+        targetConfig,
+        'contentClass',
+        this.getHighlightContentClass(fillMode, targetConfig),
+      );
     });
     return highlight;
   }
