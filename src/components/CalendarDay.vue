@@ -193,10 +193,13 @@ export default {
       return !!arrayHasItems(this.popovers);
     },
     dayContentClass() {
-      const contentClass = get(last(this.content), 'class') || '';
-      return `vc-day-content vc-focusable ${
-        this.isDisabled ? this.theme.dayContentDisabled : this.theme.dayContent
-      } ${this.theme.isDark ? 'vc-is-dark' : ''} ${contentClass}`;
+      return [
+        'vc-day-content vc-focusable',
+        get(last(this.content), 'class') || '',
+        this.isDisabled ? this.theme.dayContentDisabled : '',
+        this.theme.isDark ? 'vc-is-dark' : '',
+        this.theme.dayContent,
+      ];
     },
     dayContentProps() {
       let tabindex;

@@ -441,12 +441,16 @@ Any of the previously mentioned singular date expressions may be combined using 
 In pre-v1 versions, dates could only be disabled for `v-date-picker`. Disabling dates are now supported for `v-calendar` as well.
 :::
 
-As mentioned earlier, date expressions are not only used to define attributes. They can also be used to "disable" calendar days. When a date is disabled, the following default behavior is applied:
+As mentioned earlier, date expressions are not only used to define attributes. They can also be used to "disable" calendar days. Disabled dates have the following effects:
 
-* Pointer events are disabled for the disabled calendar day cells
 * Day text color has less contrast than normal day cells
+* If using `min-date` navigation is disabled for months before specified date
+* If using `max-date` navigation is disabled for months after specified date
+* Hover, focus and click events are still active for disabled dates
 
-The classes that define this behavior are defined for via the active theme, specifically the `dayContentDisabled` and `dayDisabled` theme settings.
+::: tip
+Use the `dayContentDisabled` and `dayDisabled` theme settings to customize how disabled days look and behave. For example, a class applied with `pointer-events: none` could disable interaction with disabled dates.
+:::
 
 You can disable dates, date ranges and date patterns using the following methods:
 
@@ -530,7 +534,7 @@ Currently, there are four places where date expressions are used:
 * [`disabled-dates`](/api/datepicker.html#disabled-dates) Date(s) to disable for `v-calendar` & `v-date-picker`.
 * [`available-dates`](/api/datepicker.html#available-dates) Date(s) to enable for `v-calendar` & `v-date-picker`. All other dates are disabled.
 
-In all places where date expressions are used, you'll notice that they come in pairs. One expression is for the explicit form (`dates`, `disabled-dates`), and the other expression is for the implicit form (`exclude-dates`, `available-dates`).
+In all places where date expressions are used, you'll notice that they come in pairs. One expression is for the explicit form (`dates`, `disabled-dates`), and the other expression is for the implicit form (`excludeDates`, `available-dates`).
 
 The explicit form is the most direct form of expressing what dates to target.
 
