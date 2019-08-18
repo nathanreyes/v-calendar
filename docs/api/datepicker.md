@@ -124,6 +124,34 @@ Setting `value = null` still allowed through code.
 
 **Params:** `range: Object`
 
+### `popoverWillShow`
+
+**Description:** Called just before picker popover transitions into view
+
+**Params:** `Object`: Popover content root HTML element.
+
+### `popoverDidShow`
+
+**Description:** Called just after picker popover has transitioned into view
+
+**Params:** `Object`: Popover content root HTML element.
+
+### `popoverWillHide`
+
+**Description:** Called just before picker popover transitions out of view
+
+**Params:** `Object`: Popover content root HTML element.
+
+### `popoverDidHide`
+
+**Description:** Called just after picker popover has transitioned out of view
+
+**Params:** `Object`: Popover content root HTML element.
+
+:::warning
+Popover events are only emitted when `is-inline === false`.
+:::
+
 <!-- 
 ### 
 
