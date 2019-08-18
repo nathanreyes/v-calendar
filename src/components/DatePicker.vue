@@ -74,6 +74,12 @@ export default {
           placement: 'bottom-start',
           contentClass: this.theme_.container,
         },
+        on: {
+          beforeShow: e => this.$emit('popoverWillShow', e),
+          afterShow: e => this.$emit('popoverDidShow', e),
+          beforeHide: e => this.$emit('popoverWillHide', e),
+          afterHide: e => this.$emit('popoverDidHide', e),
+        },
         scopedSlots: {
           default() {
             return calendar();
