@@ -486,10 +486,8 @@ export default {
       // Assign the new pages
       this.pages = pages;
       // Emit page update events
-      this.$emit('update:frompage', fromPage);
-      this.$emit('update:fromPage', fromPage);
-      this.$emit('update:topage', toPage);
-      this.$emit('update:toPage', toPage);
+      this.$emit('update:from-page', fromPage);
+      this.$emit('update:to-page', toPage);
     },
     refreshDisabledDays(pages) {
       this.getPageDays(pages).forEach(
