@@ -24,6 +24,9 @@ export default {
               appear: true,
             },
             on: {
+              beforeEnter: this.beforeEnter,
+              afterEnter: this.afterEnter,
+              beforeLeave: this.beforeLeave,
               afterLeave: this.afterLeave,
             },
           },
@@ -254,8 +257,18 @@ export default {
         this.popper.scheduleUpdate();
       }
     },
-    afterLeave() {
+    beforeEnter(e) {
+      this.$emit('beforeShow', e);
+    },
+    afterEnter(e) {
+      this.$emit('afterShow', e);
+    },
+    beforeLeave(e) {
+      this.$emit('beforeHide', e);
+    },
+    afterLeave(e) {
       this.destroyPopper();
+      this.$emit('afterHide', e);
     },
     destroyPopper() {
       if (this.popper) {
