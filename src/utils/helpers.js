@@ -21,6 +21,13 @@ export const pageIsBetweenPages = (page, fromPage, toPage) =>
   !pageIsBeforePage(page, fromPage) &&
   !pageIsAfterPage(page, toPage);
 
+export const pageIsEqualToPage = (aPage, bPage) => {
+  if (!aPage && bPage) return false;
+  if (aPage && !bPage) return false;
+  if (!aPage && !bPage) return true;
+  return aPage.month === bPage.month && aPage.year === bPage.year;
+};
+
 export const pageForDate = date => {
   if (!date) return null;
   return {

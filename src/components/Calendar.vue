@@ -19,6 +19,7 @@ import {
   pageForThisMonth,
   addPages,
   pageIsValid,
+  pageIsEqualToPage,
   pageIsBeforePage,
   pageIsAfterPage,
   pageIsBetweenPages,
@@ -361,10 +362,14 @@ export default {
       this.refreshTheme();
       this.initStore();
     },
-    fromPage() {
+    fromPage(val) {
+      const firstPage = this.pages && this.pages[0];
+      if (pageIsEqualToPage(val, firstPage)) return;
       this.refreshPages();
     },
-    toPage() {
+    toPage(val) {
+      const lastPage = this.pages && this.pages[this.pages.length - 1];
+      if (pageIsEqualToPage(val, lastPage)) return;
       this.refreshPages();
     },
     count() {
