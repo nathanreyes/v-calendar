@@ -25,8 +25,9 @@ export function resolveConfig(config, locales) {
   }
   id = id || detLocale;
   id = [id, id.substring(0, 2)].find(i => has(locales, i)) || detLocale;
-  // Spread the default locale to prevent repetitive update loops
-  const defLocale = { ...locales[id] };
+  // Add fallback and
+  // spread the default locale to prevent repetitive update loops
+  const defLocale = { ...locales['en-IE'], ...locales[id], id };
   // Assign or merge defaults with provided config
   config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
   // Return resolved config
