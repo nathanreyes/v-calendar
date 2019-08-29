@@ -2,7 +2,7 @@
 <popover
   align='center'
   transition='fade'
-  class='c-day-popover'
+  :class='`c-day-popover ${pastDateClass ? "c-past-date" : ""} ${disabledDateClass ? "c-disabled-date" : ""} ${todayClass ? "c-today-date" : ""}`'
   :content-offset='popoverContentOffset'
   :visibility='popoverVisibility'
   :content-style='popoverContentStyle'
@@ -138,6 +138,10 @@ import {
 import { isFunction, isObject } from '@/utils/typeCheckers';
 import defaults from '@/utils/defaults';
 
+const isOneDigit = ( val ) => {
+  return val < 10 ? '0'+val : val
+}
+
 export default {
   components: {
     Popover,
@@ -158,6 +162,32 @@ export default {
     };
   },
   computed: {
+    pastDateClass() {
+      const curDate = new Date( new Date().toDateString() );
+      const theDate = new Date( this.getFullDate )
+      return theDate<=curDate;
+    },
+    disabledDateClass() {
+      let ret = false
+      this.attributesList && this.attributesList.map( row => {
+        if( row.key == "disabled" ) {
+          ret = true
+        }
+      })
+      return ret
+    },
+    todayClass() {
+      let ret = false
+      this.attributesList && this.attributesList.map( row => {
+        if( row.key == "today" ) {
+          ret = true
+        }
+      })
+      return ret
+    },
+    getFullDate() {
+      return this.day.year + "-" + isOneDigit(this.day.month) + "-" + isOneDigit(this.day.day);
+    },
     label() {
       return this.day.label;
     },
@@ -303,6 +333,9 @@ export default {
     },
     click(e) {
       this.$emit('dayclick', this.getDayEvent(e));
+      if( this.disabledDateClass ) {
+        this.$emit('disabledayclick', this.getDayEvent(e));
+      }
     },
     mouseenter(e) {
       this.$emit('daymouseenter', this.getDayEvent(e));

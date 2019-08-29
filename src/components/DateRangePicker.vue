@@ -108,6 +108,10 @@ export default {
           this.dragValue = null;
           // Signal new value selected
           this.$emit('input', newValue);
+        } else {
+          this.dragValue = null;
+          this.$emit('input', null)
+          this.$emit('invalidrange', this)
         }
       }
     },
