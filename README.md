@@ -534,3 +534,13 @@ Vue.use(VCalendar, {
 | `maxVerticalSwipeDistance` | Number | Maximum distance in pixels allowed for a horizontal swipe gesture | `80` |
 | `maxTapTolerance` | Number | Maximum distance in pixels allowed for a tap between `touchstart` and `touchend` events | `0` |
 | `maxTapDuration` | Number | Maximum time in milliseconds allowed for a tap between `touchstart` and `touchend` events | `200` |
+
+# Features Added
+
+- Adding class for todays dates ( classname: c-today-date )
+- Adding class for past dates ( classname: c-past-date )
+- Adding class for disabled dates ( classname: c-disabled-date )
+
+New Event Added:
+- invalidrange: selecting range between date-disabled ( the date value and hover will reset )
+- disabledayclick: event for clicking the disabled dates
