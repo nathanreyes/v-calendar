@@ -18,8 +18,8 @@
   "author": "Nathan Reyes <nathanreyes@me.com>",
   "main": "lib/v-calendar.min.js",
   "files": [
-    "src",
-    "lib"
+    "lib",
+    "src"
   ],
   "repository": {
     "type": "git",
