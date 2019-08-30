@@ -16,7 +16,14 @@
           ref="vuecal"
           @invalidrange="invalidRange"
           @disabledayclick="disabledayclick"
-          />
+          >
+            <template slot="header-left-button">
+                <span>Left</span>
+            </template>
+            <template slot="header-right-button">
+                <span>Right</span>
+            </template>
+          </v-date-picker>
     </div>
 </template>
 <script>
