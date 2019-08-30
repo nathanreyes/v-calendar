@@ -69,7 +69,7 @@ export default {
             style: this.dividerStyle,
           }),
           getPaneComponent(2),
-        ] ||[]),
+        ] || []),
       ],
     );
   },

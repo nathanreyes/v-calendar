@@ -18,8 +18,8 @@
   "author": "Nathan Reyes <nathanreyes@me.com>",
   "main": "lib/v-calendar.min.js",
   "files": [
-    "src",
-    "lib"
+    "lib",
+    "src"
   ],
   "repository": {
     "type": "git",
@@ -36,6 +36,7 @@
     "build": "node build/build-lib.js"
   },
   "dependencies": {
+    "node-sass": "^4.12.0",
     "vue": "^2.5.0"
   },
   "devDependencies": {
@@ -45,7 +46,7 @@
     "babel-eslint": "^7.1.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-jest": "21.0.2",
-    "babel-loader": "^7.1.1",
+    "babel-loader": "^7.1.5",
     "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
@@ -73,7 +74,6 @@
     "jest": "^21.2.0",
     "jest-serializer-vue": "^0.3.0",
     "node-notifier": "^5.1.2",
-    "node-sass": "^4.7.2",
     "opn": "^5.1.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "ora": "^1.2.0",
@@ -96,7 +96,7 @@
     "vue-template-compiler": "^2.5.0",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-server": "^2.9.1",
+    "webpack-dev-server": "^2.11.5",
     "webpack-merge": "^4.1.0"
   },
   "engines": {

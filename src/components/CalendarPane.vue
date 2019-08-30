@@ -7,16 +7,14 @@
   <slot name='header' v-bind='page_'>
     <div class='c-header' :style='headerStyle'>
       <!--Header prev button-->
-      <div class='c-arrow-layout'>
+      <div :class='["c-arrow-layout", { "c-disabled": !canMovePrevMonth }]' @click='movePrevMonth'>
         <slot
           name='header-left-button'
           v-bind='page_'
           v-if='!hideLeftButton'>
           <svg-icon
             name='leftArrow'
-            :class='["c-arrow", { "c-disabled": !canMovePrevMonth }]'
-            :style='arrowStyle'
-            @click='movePrevMonth'>
+            :style='arrowStyle'>
           </svg-icon>
         </slot>
       </div>
@@ -70,16 +68,14 @@
         </popover>
       </div>
       <!--Header next button-->
-      <div class='c-arrow-layout'>
+      <div :class='["c-arrow-layout", { "c-disabled": !canMoveNextMonth }]' @click='moveNextMonth'>
         <slot
           name='header-right-button'
           v-bind='page_'
           v-if='!hideRightButton'>
           <svg-icon
             name='rightArrow'
-            :class='["c-arrow", { "c-disabled": !canMoveNextMonth }]'
-            :style='arrowStyle'
-            @click='moveNextMonth'>
+            :style='arrowStyle'>
           </svg-icon>
         </slot>
       </div>
