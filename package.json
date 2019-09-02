@@ -27,6 +27,9 @@
   },
   "private": false,
   "license": "MIT",
+  "publishConfig": {
+    "tag": "next"
+  },
   "scripts": {
     "serve": "vue-cli-service serve src/lib.js",
     "build": "vue-cli-service build --target lib src/lib.js",
