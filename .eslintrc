@@ -1,6 +1,12 @@
 {
   "root": true,
   "extends": ["plugin:vue/essential", "@vue/airbnb"],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "sourceType": "module",
+    "ecmaVersion": 2018
+  },
   "rules": {
     "import/extensions": [
       "error",
@@ -38,6 +44,7 @@
       "error",
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
-    "default-case": "off"
+    "default-case": "off",
+    "comma-dangle": "off"
   }
 }

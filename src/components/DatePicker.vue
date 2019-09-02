@@ -1,6 +1,6 @@
 <script>
 import Calendar from './Calendar';
-import Popover from './Popover';
+import { Popover } from '@/lib';
 import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
@@ -68,25 +68,28 @@ export default {
         },
         [inputSlot],
       ),
-      h(Popover, {
-        props: {
-          id: this.datePickerPopoverId,
-          placement: 'bottom-start',
-          contentClass: this.theme_.container,
-        },
-        on: {
-          beforeShow: e => this.$emit('popoverWillShow', e),
-          afterShow: e => this.$emit('popoverDidShow', e),
-          beforeHide: e => this.$emit('popoverWillHide', e),
-          afterHide: e => this.$emit('popoverDidHide', e),
-        },
-        scopedSlots: {
-          default() {
-            return calendar();
+      // Picker popover
+      // Lazy-load (always passes after first-load)
+      this.$vc.popoverExists(this.datePickerPopoverId) &&
+        h(Popover, {
+          props: {
+            id: this.datePickerPopoverId,
+            placement: 'bottom-start',
+            contentClass: this.theme_.container,
           },
-        },
-        ref: 'popover',
-      }),
+          on: {
+            beforeShow: e => this.$emit('popoverWillShow', e),
+            afterShow: e => this.$emit('popoverDidShow', e),
+            beforeHide: e => this.$emit('popoverWillHide', e),
+            afterHide: e => this.$emit('popoverDidHide', e),
+          },
+          scopedSlots: {
+            default() {
+              return calendar();
+            },
+          },
+          ref: 'popover',
+        }),
     ]);
   },
   mixins: [rootMixin, propOrDefaultMixin, safeScopedSlotMixin],

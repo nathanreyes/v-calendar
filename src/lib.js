@@ -1,13 +1,36 @@
-import Calendar from '@/components/Calendar';
-import DatePicker from '@/components/DatePicker';
-import Popover from '@/components/Popover';
-import PopoverRef from '@/components/PopoverRef';
-import PopoverRow from '@/components/PopoverRow';
 import { setupCalendar } from '@/utils/setup';
+
+const Calendar = () =>
+  import(
+    /* webpackChunkName: "v-calendar" */
+    '@/components/Calendar'
+  );
+const DatePicker = () =>
+  import(
+    /* webpackChunkName: "v-date-picker" */
+    '@/components/DatePicker'
+  );
+const Popover = () =>
+  import(
+    /* webpackChunkName: "v-popover" */
+    '@/components/Popover'
+  );
+const PopoverRef = () =>
+  import(
+    /* webpackMode: "eager" */
+    /* webpackChunkName: "v-popover-ref" */
+    '@/components/PopoverRef'
+  );
+const PopoverRow = () =>
+  import(
+    /* webpackMode: "eager" */
+    /* webpackChunkName: "v-popover-row" */ '@/components/PopoverRow'
+  );
+
 import '@/styles/tailwind-lib.css';
 
 // Export components individually
-export { setupCalendar, Calendar, DatePicker, Popover, PopoverRef };
+export { setupCalendar, Calendar, DatePicker, Popover, PopoverRef, PopoverRow };
 
 // Installs the library as a plugin
 const components = {

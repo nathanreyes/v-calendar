@@ -1,6 +1,5 @@
 <script>
-import Popover from './Popover';
-import PopoverRow from './PopoverRow';
+import { Popover, PopoverRow } from '@/lib';
 import Grid from './Grid';
 import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
@@ -114,6 +113,8 @@ export default {
 
     // Renderer for popover
     const getDayPopover = () =>
+      // Lazy-load (always passes after first-load)
+      this.$vc.popoverExists(this.sharedState.dayPopoverId) &&
       h(Popover, {
         props: {
           id: this.sharedState.dayPopoverId,

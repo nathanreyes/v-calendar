@@ -1,5 +1,5 @@
 <script>
-import Popover from './Popover';
+import { Popover } from '@/lib';
 import PopoverRef from './PopoverRef';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
@@ -54,28 +54,30 @@ export default {
                   ],
                 ),
                 // Navigation popover
-                h(
-                  Popover,
-                  {
-                    props: {
-                      id: this.navPopoverId,
-                      contentClass: this.theme.navPopoverContainer,
-                    },
-                  },
-                  [
-                    // Navigation pane
-                    h(CalendarNav, {
+                // Lazy-load (always passes after first-load)
+                this.$vc.popoverExists(this.navPopoverId) &&
+                  h(
+                    Popover,
+                    {
                       props: {
-                        value: this.page,
-                        validator: this.canMove,
+                        id: this.navPopoverId,
+                        contentClass: this.theme.navPopoverContainer,
                       },
-                      on: {
-                        input: $event => this.move($event),
-                      },
-                      scopedSlots: this.$scopedSlots,
-                    }),
-                  ],
-                ),
+                    },
+                    [
+                      // Navigation pane
+                      h(CalendarNav, {
+                        props: {
+                          value: this.page,
+                          validator: this.canMove,
+                        },
+                        on: {
+                          input: $event => this.move($event),
+                        },
+                        scopedSlots: this.$scopedSlots,
+                      }),
+                    ],
+                  ),
               ]),
             ],
           ),
