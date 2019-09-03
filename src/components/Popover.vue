@@ -82,7 +82,7 @@ export default {
             alignment: this.alignment,
             args: this.args,
             updateLayout: this.scheduleUpdate,
-            hide: () => this.onHide({ ref: this.ref }),
+            hide: opts => this.hide(opts),
           })) ||
         this.$slots.default
       );
@@ -121,25 +121,24 @@ export default {
       }
       return isLeftRight ? 'middle' : 'center';
     },
-  },
-  watch: {
-    ref(val) {
-      this.setupPopper();
-      this.$vc.activeRefs = {
-        ...this.$vc.activeRefs,
-        [this.id]: val,
-      };
+    state(val) {
+      return this.$vc.popovers[this.id];
     },
   },
-  created() {
-    this.$vc.$on(`show:${this.id}`, this.onShow);
-    this.$vc.$on(`hide:${this.id}`, this.onHide);
-    this.$vc.$on(`update:${this.id}`, this.onUpdate);
-    this.$once('beforeDestroy', () => {
-      this.$vc.$off(`show:${this.id}`, this.onShow);
-      this.$vc.$off(`hide:${this.id}`, this.onHide);
-      this.$vc.$off(`update:${this.id}`, this.onUpdate);
-    });
+  watch: {
+    state: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.ref = val.ref;
+          this.args = val.args;
+          this.visibility = val.visibility;
+          this.placement = val.placement;
+          this.isInteractive = val.isInteractive;
+          this.setupPopper();
+        }
+      },
+    },
   },
   mounted() {
     this.popoverEl = this.$refs.popover;
@@ -173,26 +172,22 @@ export default {
     },
     onMouseOver() {
       if (this.isInteractive && this.visibility === 'hover') {
-        clearTimeout(this._timer);
+        this.show();
       }
     },
     onMouseLeave() {
       if (this.isInteractive && this.visibility === 'hover') {
-        this.onHide({
-          ref: this.ref,
-        });
+        this.hide();
       }
     },
     onFocusIn() {
       if (this.isInteractive && this.visibility === 'focus') {
-        clearTimeout(this._timer);
+        this.show();
       }
     },
     onBlur() {
       if (this.isInteractive && this.visibility === 'focus') {
-        this.onHide({
-          ref: this.ref,
-        });
+        this.hide();
       }
     },
     onDocumentClick(e) {
@@ -207,25 +202,17 @@ export default {
         return;
       }
       // Hide the popover
-      this.ref = null;
+      this.hide();
     },
-    onShow({ ref, args, visibility, placement, isInteractive }) {
-      clearTimeout(this._timer);
-      this.args = args;
-      this.visibility = visibility;
-      this.placement = placement;
-      this.isInteractive = isInteractive;
-      this.ref = ref;
+    show() {
+      this.$vc.showPopover({ id: this.id, ref: this.ref, delay: 0 });
     },
-    onHide({ ref, delay }) {
-      clearTimeout(this._timer);
-      this._timer = setTimeout(() => {
-        if (ref === this.ref) {
-          this.ref = null;
-          this.args = null;
-          this.visibility = '';
-        }
-      }, delay);
+    hide(opts) {
+      this.$vc.hidePopover({
+        ...opts,
+        id: this.id,
+        ref: this.ref,
+      });
     },
     onUpdate({ args }) {
       this.args = args;

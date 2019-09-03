@@ -28,9 +28,7 @@ export default {
   },
   computed: {
     isActive() {
-      return (
-        this.$vc.activeRefs && this.$vc.activeRefs[this.id] === this.reference
-      );
+      return this.$vc.popoverIsActive(this.id, this.reference);
     },
   },
   render() {
@@ -154,7 +152,8 @@ export default {
       }
     },
     show({ visibility } = {}) {
-      this.$vc.$emit(`show:${this.id}`, {
+      this.$vc.showPopover({
+        id: this.id,
         ref: this.reference,
         args: this.args,
         visibility: visibility || this.visibility,
@@ -164,13 +163,15 @@ export default {
       });
     },
     hide({ delay = this.hideDelay } = {}) {
-      this.$vc.$emit(`hide:${this.id}`, {
+      this.$vc.hidePopover({
+        id: this.id,
         ref: this.reference,
         delay,
       });
     },
     update() {
-      this.$vc.$emit(`update:${this.id}`, {
+      this.$vc.updatePopover({
+        id: this.id,
         ref: this.reference,
         args: this.args,
       });

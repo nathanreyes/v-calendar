@@ -404,10 +404,7 @@ export default {
     hidePopover() {
       const popover = this.$refs.popover;
       if (popover) {
-        popover.onHide({
-          ref: popover.ref,
-          delay: 400,
-        });
+        popover.hide({ priority: 10, delay: 400 });
       }
     },
     adjustPageRange() {
