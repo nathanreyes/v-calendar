@@ -65,7 +65,7 @@ sidebarDepth: 2
 
 **Type:** Object
 
-**Description:** The page for the first calendar pane located at row 0 and column 0. Use the `.sync` modifier for two-way binding.
+**Description:** The page (month, year) for the first calendar pane located at row 0 and column 0. Use the `.sync` modifier for two-way binding.
 
 **Default:** `undefined` *Resolves to current month if not provided.*
 
@@ -89,7 +89,7 @@ The `.sync` modifier does not work with this prop, unlike `from-page`.
 
 **Type:** Object
 
-**Description:** Page for the last calendar pane located at row *n* and column *n*, where *n* is the max dimension.
+**Description:** The page (month, year) for the last calendar pane located at row *n* and column *n*, where *n* is the max dimension.
 
 **Default:** `undefined` *Resolves to **n** month if not provided, where `n = rows * columns`.*
 
