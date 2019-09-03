@@ -121,7 +121,7 @@ export default {
       }
       return isLeftRight ? 'middle' : 'center';
     },
-    state(val) {
+    state() {
       return this.$vc.popovers[this.id];
     },
   },
