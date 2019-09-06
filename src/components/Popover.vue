@@ -148,7 +148,7 @@ export default {
     },
     focusout(e) {
       // Hide when outside element (e.relatedTarget) receives focus
-      if (!elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
+      if (!elementHasAncestor(e.relatedTarget, '.popover-container')) {
         this.$emit('lost-focus', e);
         this.focusVisible = false;
       }
@@ -159,8 +159,8 @@ export default {
       if (
         this.toggleVisibleOnClick &&
         !this.contentTransitioning &&
-        elementHasAncestor(e.target, this.$refs.popover) &&
-        !elementHasAncestor(e.target, this.$refs.popoverOrigin) &&
+        elementHasAncestor(e.target, '.popover-container') &&
+        !elementHasAncestor(e.target, '.popover-origin') &&
         !this.disableNextClick
       ) {
         this.focusVisible = !this.focusVisible;
@@ -176,13 +176,13 @@ export default {
     mouseleave(e) {
       if (
         !this.forceHidden &&
-        !elementHasAncestor(e.relatedTarget, this.$refs.popover)
+        !elementHasAncestor(e.relatedTarget, '.popover-container')
       ) {
         this.hoverVisible = false;
       }
     },
     windowTapOrClick(e) {
-      if (!elementHasAncestor(e.target, this.$refs.popover)) {
+      if (!elementHasAncestor(e.target, '.popover-container')) {
         this.hoverVisible = false;
         this.focusVisible = false;
       }

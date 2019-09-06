@@ -489,11 +489,11 @@ export default {
 
 ### Polyfill
 
-`v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` (<= IE11) or even `Intl` (Javascript's internationalization object, <= IE10) if you wish to target older browsers. Two options for accomplishing this are:
+`v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` and `Element.closest` (<= IE11) or even `Intl` (Javascript's internationalization object, <= IE10) if you wish to target older browsers. Two options for accomplishing this are:
 1. **Easy way:**
   Insert the following script into your html before loading `v-calendar`. The polyfill will get loaded automatically *only if* the browser needs it.
 
-  `<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl" />`
+  `<script src="https://polyfill.io/v3/polyfill.min.js?features=Array.prototype.find%2CElement.prototype.closest%2CIntl" />`
 
 2. In Node/Browserify/Webpack environments, use [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) to insert the polyfill for you.
 

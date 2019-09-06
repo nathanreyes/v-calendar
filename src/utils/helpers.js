@@ -210,14 +210,8 @@ export const getLastArrayItem = (array, fallbackValue) => {
 
 export const arrayHasItems = array => isArray(array) && array.length;
 
-export const findAncestor = (el, fn) => {
-  if (!el) return null;
-  if (fn(el)) return el;
-  return findAncestor(el.parentElement, fn);
-};
-
-export const elementHasAncestor = (el, ancestor) =>
-  !!findAncestor(el, e => e === ancestor);
+export const elementHasAncestor = (el, ancestorSelector) =>
+  el && !!el.closest(ancestorSelector);
 
 export const elementPositionInAncestor = (el, ancestor) => {
   let top = 0;
