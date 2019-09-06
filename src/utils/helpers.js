@@ -133,11 +133,11 @@ export const getExampleMonthComps = () => {
   };
 };
 
-function comparePages(firstPage, secondPage) {
+function comparePages(firstPage, secondPage, mode) {
   if (!firstPage || !secondPage) return 0;
   if (firstPage.year === secondPage.year) {
-    if (firstPage.month === secondPage.month) return 0;
-    return firstPage.month < secondPage.month ? -1 : 1;
+      if (mode === 'year' || firstPage.month === secondPage.month) return 0;
+      return firstPage.month < secondPage.month ? -1 : 1;
   }
   return firstPage.year < secondPage.year ? -1 : 1;
 }
@@ -145,11 +145,11 @@ function comparePages(firstPage, secondPage) {
 export const pageIsEqualToPage = (page, otherPage) =>
   comparePages(page, otherPage) === 0;
 
-export const pageIsBeforePage = (page, beforePage) =>
-  comparePages(page, beforePage) === -1;
+export const pageIsBeforePage = (page, beforePage, mode) =>
+  comparePages(page, beforePage, mode) === -1;
 
-export const pageIsAfterPage = (page, afterPage) =>
-  comparePages(page, afterPage) === 1;
+export const pageIsAfterPage = (page, afterPage, mode) =>
+  comparePages(page, afterPage, mode) === 1;
 
 export const pageIsBetweenPages = (page, fromPage, toPage) =>
   (page || false) &&

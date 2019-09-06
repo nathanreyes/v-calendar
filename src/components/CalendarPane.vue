@@ -58,7 +58,8 @@
             :validator='canMove'
             :styles='styles'
             :formats='formats'
-            @input='navPageSelected($event)'>
+            @input='navPageSelected($event)'
+            @update:mode='modeUpdated'>
             <!-- Pass through nav slots -->
             <template
               v-for='slot in navSlots'
@@ -195,6 +196,7 @@ export default {
       navForceHidden: false,
       weeksTransitioning: false,
       moveTimeout: null,
+      mode: 'month',
     };
   },
   computed: {
@@ -353,9 +355,9 @@ export default {
       }
     },
     canMove(pageInfo) {
-      if (this.minPage && pageIsBeforePage(pageInfo, this.minPage))
+      if (this.minPage && pageIsBeforePage(pageInfo, this.minPage, this.mode))
         return false;
-      if (this.maxPage && pageIsAfterPage(pageInfo, this.maxPage)) return false;
+      if (this.maxPage && pageIsAfterPage(pageInfo, this.maxPage, this.mode)) return false;
       return true;
     },
     movePrevYear() {
@@ -462,6 +464,9 @@ export default {
         return `${prefix}-${direction === 'next' ? 'slide-up' : 'slide-down'}`;
       }
       return `${prefix}-${type}`;
+    },
+    modeUpdated(mode) {
+      this.mode = mode;
     },
   },
 };
