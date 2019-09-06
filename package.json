@@ -28,6 +28,7 @@
   "private": false,
   "license": "MIT",
   "scripts": {
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
