@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="./docs/.vuepress/public/favicon.png" />
+    <title>Calendar Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="./lib/v-calendar.umd.js"></script>
+    <style>
+      section {
+        margin-top: 26px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .selectors {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .selectors label {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but v-calendar doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong
+      >
+    </noscript>
+    <div id="app">
+      <section>
+        <p>This uses the built version of the plugin</p>
+      </section>
+      <section>
+        <v-calendar />
+      </section>
+      <section>
+        <div class="selectors">
+          <label for="single">
+            <input id="single" type="radio" value="single" v-model="mode" />
+            Single
+          </label>
+          <label for="multiple">
+            <input id="multiple" type="radio" value="multiple" v-model="mode" />
+            Multiple
+          </label>
+          <label for="range">
+            <input id="range" type="radio" value="range" v-model="mode" />
+            Range
+          </label>
+        </div>
+        <v-date-picker :mode="mode" v-model="date" />
+      </section>
+    </div>
+    <!-- built files will be auto injected -->
+    <script type="text/javascript">
+    var app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          mode: 'single',
+          date: new Date()
+        }
+      }
+    })
+    </script>
+  </body>
+</html>
