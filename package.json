@@ -44,6 +44,7 @@
     "popper.js": "^1.14.7"
   },
   "devDependencies": {
+    "@babel/plugin-transform-arrow-functions": "^7.2.0",
     "@fullhuman/postcss-purgecss": "^1.1.0",
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.4.0",

@@ -1,3 +1,4 @@
 {
-  "presets": ["@vue/app"]
+  "presets": ["@vue/app"],
+  "plugins": ["@babel/plugin-transform-arrow-functions"]
 }
