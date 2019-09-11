@@ -1,6 +1,6 @@
 <script>
 import Calendar from './Calendar';
-import { Popover } from '@/lib';
+import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';

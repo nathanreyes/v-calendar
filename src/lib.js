@@ -1,44 +1,17 @@
-import { setupCalendar } from '@/utils/setup';
+import { setupCalendar } from './utils/setup';
 
-const Calendar = () =>
-  import(
-    /* webpackChunkName: "v-calendar" */
-    '@/components/Calendar'
-  );
-const DatePicker = () =>
-  import(
-    /* webpackChunkName: "v-date-picker" */
-    '@/components/DatePicker'
-  );
-const Popover = () =>
-  import(
-    /* webpackChunkName: "v-popover" */
-    '@/components/Popover'
-  );
-const PopoverRef = () =>
-  import(
-    /* webpackMode: "eager" */
-    /* webpackChunkName: "v-popover-ref" */
-    '@/components/PopoverRef'
-  );
-const PopoverRow = () =>
-  import(
-    /* webpackMode: "eager" */
-    /* webpackChunkName: "v-popover-row" */ '@/components/PopoverRow'
-  );
+import Calendar from '@/components/Calendar';
+import DatePicker from '@/components/DatePicker';
 
-import '@/styles/tailwind-lib.css';
+import './styles/tailwind-lib.css';
 
 // Export components individually
-export { setupCalendar, Calendar, DatePicker, Popover, PopoverRef, PopoverRow };
+export { setupCalendar, Calendar, DatePicker };
 
 // Installs the library as a plugin
 const components = {
   Calendar,
   DatePicker,
-  Popover,
-  PopoverRef,
-  PopoverRow,
 };
 
 // Declare install function executed by Vue.use()

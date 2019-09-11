@@ -1,5 +1,5 @@
 <script>
-import { Popover } from '@/lib';
+import Popover from './Popover';
 import PopoverRow from './PopoverRow';
 import Grid from './Grid';
 import CalendarPane from './CalendarPane';

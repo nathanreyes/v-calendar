@@ -1,5 +1,5 @@
 <script>
-import { Popover } from '@/lib';
+import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
