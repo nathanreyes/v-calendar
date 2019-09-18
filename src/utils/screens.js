@@ -1,44 +1,6 @@
-import {
-  isString,
-  isArray,
-  isUndefined,
-  map,
-  mapValues,
-  toPairs,
-  has,
-  get,
-} from '@/utils/_';
+import buildMediaQuery from '@/utils/buildMediaQuery';
+import { isUndefined, mapValues, toPairs, has } from '@/utils/_';
 
-// This function gratuitously borrowed from Tailwindcss
-// https://github.com/tailwindcss/tailwindcss/blob/master/src/util/buildMediaQuery.js
-const buildMediaQuery = screens => {
-  // Default min width
-  if (isString(screens)) {
-    screens = { min: screens };
-  }
-  // Wrap in array
-  if (!isArray(screens)) {
-    screens = [screens];
-  }
-  return screens
-    .map(screen => {
-      if (has(screen, 'raw')) {
-        return screen.raw;
-      }
-      return map(screen, (value, feature) => {
-        feature = get(
-          {
-            min: 'min-width',
-            max: 'max-width',
-          },
-          feature,
-          feature,
-        );
-        return `(${feature}: ${value})`;
-      }).join(' and ');
-    })
-    .join(', ');
-};
 
 export const setupScreens = (Vue, screens) => {
   if (!screens) return;
