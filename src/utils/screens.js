@@ -1,12 +1,22 @@
+// Vue won't get included in bundle as it is externalized
+// https://cli.vuejs.org/guide/build-targets.html#library
+import Vue from 'vue';
 import buildMediaQuery from '@/utils/buildMediaQuery';
+import defaultScreens from '@/utils/defaults/screens.json';
 import { isUndefined, mapValues, toPairs, has } from '@/utils/_';
 
+let isSettingUp = false;
+let shouldRefreshQueries = false;
+let screensComp = null;
 
-export const setupScreens = (Vue, screens) => {
-  if (!screens) return;
-  let setup = false;
+export function setupScreens(screens = defaultScreens, forceSetup) {
+  if ((screensComp && !forceSetup) || isSettingUp) {
+    return;
+  }
+  isSettingUp = true;
+  shouldRefreshQueries = true;
   // Use a private Vue component to store reactive screen matches
-  const screenComp = new Vue({
+  screensComp = new Vue({
     data() {
       return {
         matches: [],
@@ -29,23 +39,30 @@ export const setupScreens = (Vue, screens) => {
       },
     },
   });
+  isSettingUp = false;
+}
 
-  Vue.mixin({
-    mounted() {
-      if (!setup) {
-        screenComp.refreshQueries();
-        setup = true;
-      }
+// Global mixin that provides responsive '$screens' utility method
+// that refreshes any time the screen matches update
+Vue.mixin({
+  beforeCreate() {
+    if (!isSettingUp) {
+      setupScreens();
+    }
+  },
+  mounted() {
+    if (shouldRefreshQueries && screensComp) {
+      screensComp.refreshQueries();
+      shouldRefreshQueries = false;
+    }
+  },
+  computed: {
+    $screens() {
+      return (config, def) =>
+        screensComp.matches.reduce(
+          (prev, curr) => (has(config, curr) ? config[curr] : prev),
+          isUndefined(def) ? config.default : def,
+        );
     },
-    computed: {
-      $screens() {
-        // Return function that re-evaluates every time screen matches change
-        return (config, def) =>
-          screenComp.matches.reduce(
-            (prev, curr) => (has(config, curr) ? config[curr] : prev),
-            isUndefined(def) ? config.default : def,
-          );
-      },
-    },
-  });
-};
+  },
+});

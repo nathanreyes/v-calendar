@@ -23,8 +23,8 @@ export default {
         attrs: {
           ...this.$attrs,
           attributes: this.attributes_,
-          theme: this.theme_,
-          locale: this.locale_,
+          theme: this.$theme,
+          locale: this.$locale,
         },
         props: {},
         on: {
@@ -70,27 +70,25 @@ export default {
         [inputSlot],
       ),
       // Picker popover
-      // Lazy-load (always passes after first-load)
-      this.$vc.popoverExists(this.datePickerPopoverId) &&
-        h(Popover, {
-          props: {
-            id: this.datePickerPopoverId,
-            placement: 'bottom-start',
-            contentClass: this.theme_.container,
+      h(Popover, {
+        props: {
+          id: this.datePickerPopoverId,
+          placement: 'bottom-start',
+          contentClass: this.$theme.container,
+        },
+        on: {
+          beforeShow: e => this.$emit('popoverWillShow', e),
+          afterShow: e => this.$emit('popoverDidShow', e),
+          beforeHide: e => this.$emit('popoverWillHide', e),
+          afterHide: e => this.$emit('popoverDidHide', e),
+        },
+        scopedSlots: {
+          default() {
+            return calendar();
           },
-          on: {
-            beforeShow: e => this.$emit('popoverWillShow', e),
-            afterShow: e => this.$emit('popoverDidShow', e),
-            beforeHide: e => this.$emit('popoverWillHide', e),
-            afterHide: e => this.$emit('popoverDidHide', e),
-          },
-          scopedSlots: {
-            default() {
-              return calendar();
-            },
-          },
-          ref: 'popover',
-        }),
+        },
+        ref: 'popover',
+      }),
     ]);
   },
   mixins: [rootMixin, propOrDefaultMixin, safeScopedSlotMixin],
@@ -127,13 +125,13 @@ export default {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
     },
     inputMasks() {
-      const inputFormat = this.locale_.masks.input;
+      const inputFormat = this.$locale.masks.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
     inputClass() {
-      const inputClass = this.inputProps.class || this.theme_.datePickerInput;
+      const inputClass = this.inputProps.class || this.$theme.datePickerInput;
       const inputDragClass =
-        this.inputProps.dragClass || this.theme_.datePickerInputDrag;
+        this.inputProps.dragClass || this.$theme.datePickerInputDrag;
       return this.picker.hasValue(this.dragValue)
         ? inputDragClass || inputClass
         : inputClass;
@@ -211,9 +209,9 @@ export default {
     },
     picker() {
       const opts = {
-        locale: this.locale_,
-        format: d => this.locale_.format(d, this.inputMasks[0]),
-        parse: s => this.locale_.parse(s, this.inputMasks),
+        locale: this.$locale,
+        format: d => this.$locale.format(d, this.inputMasks[0]),
+        parse: s => this.$locale.parse(s, this.inputMasks),
       };
       switch (this.mode) {
         case 'multiple':

@@ -1,5 +1,4 @@
-import { setupCalendar } from './utils/setup';
-
+import setupCalendar from './utils/setup';
 import Calendar from '@/components/Calendar';
 import DatePicker from '@/components/DatePicker';
 
@@ -17,10 +16,11 @@ export default function install(Vue, opts) {
   // Don't install more than once
   if (install.installed) return;
   install.installed = true;
-  // Setup plugin with options
-  const $vc = setupCalendar(Vue, opts);
+  // Manually setup calendar with options
+  const defaults = setupCalendar(Vue, opts);
+  // Register components
   Object.keys(components).forEach(k =>
-    Vue.component(`${$vc.defaults.componentPrefix}${k}`, components[k]),
+    Vue.component(`${defaults.componentPrefix}${k}`, components[k]),
   );
 }
 

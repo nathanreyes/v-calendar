@@ -89,7 +89,7 @@ export default {
                 ? 'vc-opacity-25 vc-pointer-events-none vc-cursor-not-allowed'
                 : 'vc-pointer-events-auto'
             }`,
-            this.theme_.arrows,
+            this.$theme.arrows,
           ],
           attrs: {
             role: 'button',
@@ -113,21 +113,19 @@ export default {
       );
     };
 
-    // Renderer for popover
+    // Day popover
     const getDayPopover = () =>
-      // Lazy-load (always passes after first-load)
-      this.$vc.popoverExists(this.sharedState.dayPopoverId) &&
       h(Popover, {
         props: {
           id: this.sharedState.dayPopoverId,
-          contentClass: this.theme_.dayPopoverContainer,
+          contentClass: this.$theme.dayPopoverContainer,
         },
         scopedSlots: {
           default: ({ args: day, updateLayout, hide }) => {
             const attributes = Object.values(day.attributes).filter(
               a => a.popover,
             );
-            const masks = this.locale_.masks;
+            const masks = this.$locale.masks;
             const format = this.format;
             const dayTitle = format(day.date, masks.dayPopover);
             return (
@@ -146,7 +144,7 @@ export default {
                   h(
                     'div',
                     {
-                      class: ['vc-text-center', this.theme_.dayPopoverHeader],
+                      class: ['vc-text-center', this.$theme.dayPopoverHeader],
                     },
                     [dayTitle],
                   ),
@@ -180,7 +178,7 @@ export default {
             {
               'vc-min-w-full': this.isExpanded,
             },
-            this.theme_.container,
+            this.$theme.container,
           ],
           on: {
             keydown: this.handleKeydown,
@@ -300,10 +298,10 @@ export default {
       return this.propOrDefault('titlePosition', 'titlePosition');
     },
     minPage_() {
-      return this.minPage || pageForDate(this.locale_.toDate(this.minDate));
+      return this.minPage || pageForDate(this.$locale.toDate(this.minDate));
     },
     maxPage_() {
-      return this.maxPage || pageForDate(this.locale_.toDate(this.maxDate));
+      return this.maxPage || pageForDate(this.$locale.toDate(this.maxDate));
     },
     count() {
       return this.rows * this.columns;
@@ -333,8 +331,8 @@ export default {
           : [this.disabledDates];
       }
       // Add disabled dates for minDate and maxDate props
-      const minDate = this.locale_.toDate(this.minDate);
-      const maxDate = this.locale_.toDate(this.maxDate);
+      const minDate = this.$locale.toDate(this.minDate);
+      const maxDate = this.$locale.toDate(this.maxDate);
       if (minDate) {
         dates.push({ start: null, end: addDays(minDate, -1) });
       }
@@ -350,18 +348,18 @@ export default {
           excludeMode: 'includes',
           order: 100,
         },
-        this.theme_,
-        this.locale_,
+        this.$theme,
+        this.$locale,
       );
     },
   },
   watch: {
-    locale_() {
+    $locale() {
       this.refreshLocale();
       this.refreshPages({ page: head(this.pages), ignoreCache: true });
       this.initStore();
     },
-    theme_() {
+    $theme() {
       this.refreshTheme();
       this.initStore();
     },
@@ -413,7 +411,7 @@ export default {
             this.movePrev();
           }
         },
-        this.$vc.defaults.touch,
+        this.$defaults.touch,
       );
       // Clean up on destroy
       this.$once('beforeDestroy', () => removeHandlers());
@@ -421,11 +419,11 @@ export default {
   },
   methods: {
     refreshLocale() {
-      this.sharedState.locale = this.locale_;
-      this.sharedState.masks = this.locale_.masks;
+      this.sharedState.locale = this.$locale;
+      this.sharedState.masks = this.$locale.masks;
     },
     refreshTheme() {
-      this.sharedState.theme = this.theme_;
+      this.sharedState.theme = this.$theme;
     },
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
@@ -459,11 +457,11 @@ export default {
       } else {
         // 2. Try the fromPage prop
         fromPage =
-          this.fromPage || pageForDate(this.locale_.toDate(this.fromDate));
+          this.fromPage || pageForDate(this.$locale.toDate(this.fromDate));
         if (!pageIsValid(fromPage)) {
           // 3. Try the toPage prop
           const toPage =
-            this.toPage || pageForDate(this.locale_.toDate(this.toPage));
+            this.toPage || pageForDate(this.$locale.toDate(this.toPage));
           if (pageIsValid(toPage)) {
             fromPage = addPages(toPage, 1 - this.count);
           } else {
@@ -537,7 +535,7 @@ export default {
       if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;
-        page = pageForDate(this.locale_.toDate(date));
+        page = pageForDate(this.$locale.toDate(date));
       }
       return page;
     },
@@ -546,16 +544,16 @@ export default {
       let page = this.pages.find(p => p.key === key);
       if (!page || ignoreCache) {
         const date = new Date(year, month - 1, 15);
-        const monthComps = this.locale_.getMonthComps(month, year);
-        const prevMonthComps = this.locale_.getPrevMonthComps(month, year);
-        const nextMonthComps = this.locale_.getNextMonthComps(month, year);
+        const monthComps = this.$locale.getMonthComps(month, year);
+        const prevMonthComps = this.$locale.getPrevMonthComps(month, year);
+        const nextMonthComps = this.$locale.getNextMonthComps(month, year);
         page = {
           key,
           month,
           year,
-          title: this.locale_.format(date, this.locale_.masks.title),
-          shortMonthLabel: this.locale_.format(date, 'MMM'),
-          monthLabel: this.locale_.format(date, 'MMMM'),
+          title: this.$locale.format(date, this.$locale.masks.title),
+          shortMonthLabel: this.$locale.format(date, 'MMM'),
+          monthLabel: this.$locale.format(date, 'MMMM'),
           shortYearLabel: year.toString().substring(2),
           yearLabel: year.toString(),
           monthComps,
@@ -569,15 +567,15 @@ export default {
           refresh: true,
         };
         // Assign day info
-        page.days = this.locale_.getCalendarDays(page);
+        page.days = this.$locale.getCalendarDays(page);
       }
       return page;
     },
     initStore() {
       // Create a new attribute store
       this.store = new AttributeStore(
-        this.theme_,
-        this.locale_,
+        this.$theme,
+        this.$locale,
         this.attributes,
       );
       // Refresh attributes for existing pages
@@ -724,7 +722,7 @@ export default {
     },
     setFocusedDate(date) {
       if (!date || !arrayHasItems(this.pages)) return;
-      const dateInfo = new DateInfo(date, { locale: this.locale_ });
+      const dateInfo = new DateInfo(date, { locale: this.$locale });
 
       const day = this.getPageDays().find(
         d => d.inMonth && dateInfo.includesDay(d),
