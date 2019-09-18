@@ -3,8 +3,6 @@ import { setupCalendar } from './utils/setup';
 import Calendar from '@/components/Calendar';
 import DatePicker from '@/components/DatePicker';
 
-import './styles/tailwind-lib.css';
-
 // Export components individually
 export { setupCalendar, Calendar, DatePicker };
 

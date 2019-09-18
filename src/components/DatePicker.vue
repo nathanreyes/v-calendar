@@ -13,6 +13,7 @@ import {
 import { addTapOrClickHandler } from '@/utils/touch';
 import { createGuid, elementContains, on, off } from '@/utils/helpers';
 import { isString, isArray } from '@/utils/_';
+import '@/styles/tailwind-lib.css';
 
 export default {
   name: 'DatePicker',
