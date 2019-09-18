@@ -5,6 +5,7 @@ import { addTapOrClickHandler } from '@/utils/touch';
 import { isFunction } from '@/utils/_';
 
 export default {
+  name: 'Popover',
   render(h) {
     return h(
       'div',

@@ -15,7 +15,7 @@ import { createGuid, elementContains, on, off } from '@/utils/helpers';
 import { isString, isArray } from '@/utils/_';
 
 export default {
-  name: 'VDatePicker',
+  name: 'DatePicker',
   render(h) {
     const calendar = () =>
       h(Calendar, {

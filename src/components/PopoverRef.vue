@@ -2,6 +2,7 @@
 import { on, off, elementContains } from '@/utils/helpers';
 
 export default {
+  name: 'PopoverRef',
   props: {
     id: { type: String, default: 'default' },
     element: null,

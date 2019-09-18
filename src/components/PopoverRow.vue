@@ -18,7 +18,7 @@
 import { childMixin } from '@/utils/mixins';
 
 export default {
-  name: 'VPopoverRow',
+  name: 'PopoverRow',
   mixins: [childMixin],
   props: {
     attribute: Object,

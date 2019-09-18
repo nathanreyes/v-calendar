@@ -39,7 +39,7 @@ import {
 } from '@/utils/_';
 
 export default {
-  name: 'VCalendar',
+  name: 'Calendar',
   render(h) {
     // Renderer for calendar panes
     const panes = this.pages.map((page, i) =>

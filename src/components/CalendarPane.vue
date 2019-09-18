@@ -12,6 +12,7 @@ import {
 import { createGuid } from '@/utils/helpers';
 
 export default {
+  name: 'CalendarPane',
   mixins: [propOrDefaultMixin, childMixin, safeScopedSlotMixin],
   render(h) {
     // Header
