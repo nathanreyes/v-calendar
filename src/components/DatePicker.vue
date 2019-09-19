@@ -26,7 +26,12 @@ export default {
           theme: this.$theme,
           locale: this.$locale,
         },
-        props: {},
+        props: {
+          minDate: this.minDate,
+          maxDate: this.maxDate,
+          disabledDates: this.disabledDates,
+          availableDates: this.availableDates,
+        },
         on: {
           ...this.$listeners,
           dayclick: this.onDayClick,

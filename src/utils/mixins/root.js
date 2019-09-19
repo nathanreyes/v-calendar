@@ -1,9 +1,11 @@
 import Theme from '@/utils/theme';
 import Locale from '@/utils/locale';
-import { isObject, defaultsDeep } from '@/utils/_';
+import { isObject, isArray, defaultsDeep } from '@/utils/_';
 import { defaultsMixin } from '@/utils/defaults';
 import { popoversMixin } from '@/utils/popovers';
 import { setupScreens } from '@/utils/screens';
+import { addDays } from '@/utils/dateInfo';
+import Attribute from '@/utils/attribute';
 
 export const rootMixin = {
   mixins: [defaultsMixin, popoversMixin],
@@ -14,6 +16,10 @@ export const rootMixin = {
     firstDayOfWeek: Number,
     masks: Object,
     locale: [String, Object],
+    minDate: null,
+    maxDate: null,
+    disabledDates: null,
+    availableDates: null,
   },
   computed: {
     $theme() {
@@ -44,6 +50,37 @@ export const rootMixin = {
     format() {
       return (date, mask) =>
         this.$locale ? this.$locale.format(date, mask) : '';
+    },
+    disabledAttribute() {
+      // Build up a complete list of disabled dates
+      let dates = [];
+      // Initialize with disabled dates prop, if any
+      if (this.disabledDates) {
+        dates = isArray(this.disabledDates)
+          ? this.disabledDates
+          : [this.disabledDates];
+      }
+      // Add disabled dates for minDate and maxDate props
+      const minDate = this.$locale.toDate(this.minDate);
+      const maxDate = this.$locale.toDate(this.maxDate);
+      if (minDate) {
+        dates.push({ start: null, end: addDays(minDate, -1) });
+      }
+      if (maxDate) {
+        dates.push({ start: addDays(maxDate, 1), end: null });
+      }
+      // Return the new disabled attribute
+      return new Attribute(
+        {
+          key: 'disabled',
+          dates,
+          excludeDates: this.availableDates,
+          excludeMode: 'includes',
+          order: 100,
+        },
+        this.$theme,
+        this.$locale,
+      );
     },
   },
   created() {

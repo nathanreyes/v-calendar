@@ -267,12 +267,8 @@ export default {
     toDate: Date,
     fromPage: Object,
     toPage: Object,
-    minDate: null,
-    maxDate: null,
     minPage: Object,
     maxPage: Object,
-    disabledDates: null,
-    availableDates: null,
     transition: String,
     attributes: [Object, Array],
     disablePageSwipe: Boolean,
@@ -319,37 +315,6 @@ export default {
       return (
         !pageIsValid(this.maxPage_) ||
         pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
-      );
-    },
-    disabledAttribute() {
-      // Build up a complete list of disabled dates
-      let dates = [];
-      // Initialize with disabled dates prop, if any
-      if (this.disabledDates) {
-        dates = isArray(this.disabledDates)
-          ? this.disabledDates
-          : [this.disabledDates];
-      }
-      // Add disabled dates for minDate and maxDate props
-      const minDate = this.$locale.toDate(this.minDate);
-      const maxDate = this.$locale.toDate(this.maxDate);
-      if (minDate) {
-        dates.push({ start: null, end: addDays(minDate, -1) });
-      }
-      if (maxDate) {
-        dates.push({ start: addDays(maxDate, 1), end: null });
-      }
-      // Return the new disabled attribute
-      return new Attribute(
-        {
-          key: 'disabled',
-          dates,
-          excludeDates: this.availableDates,
-          excludeMode: 'includes',
-          order: 100,
-        },
-        this.$theme,
-        this.$locale,
       );
     },
   },
