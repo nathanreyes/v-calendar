@@ -68,5 +68,10 @@
     "number": 379,
     "component": "github-379-379",
     "title": "Popover should still activate on disabled dates"
+  },
+  {
+    "number": 400,
+    "component": "github-400-400",
+    "title": "Disable dates"
   }
 ]
