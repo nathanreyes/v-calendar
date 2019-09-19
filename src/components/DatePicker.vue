@@ -308,7 +308,6 @@ export default {
       // Re-emit event
       this.$emit('daykeydown', day);
     },
-
     inputInput(e) {
       this.inputValue = e.target.value;
       if (this.updateOnInput_) {
