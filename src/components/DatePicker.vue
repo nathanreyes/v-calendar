@@ -48,6 +48,7 @@ export default {
     const inputSlot =
       this.safeScopedSlot('default', {
         inputClass: this.inputClass,
+        inputValue: this.inputValue,
         inputProps: this.inputProps_,
         inputEvents: this.inputEvents,
         isDragging: !!this.dragValue,
@@ -57,6 +58,9 @@ export default {
       h('input', {
         class: this.inputClass,
         attrs: this.inputProps_,
+        domProps: {
+          value: this.inputValue,
+        },
         on: this.inputEvents,
       });
     const { visibility, placement } = this.popover_;
