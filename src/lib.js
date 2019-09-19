@@ -17,7 +17,7 @@ export default function install(Vue, opts) {
   if (install.installed) return;
   install.installed = true;
   // Manually setup calendar with options
-  const defaults = setupCalendar(Vue, opts);
+  const defaults = setupCalendar(opts);
   // Register components
   Object.keys(components).forEach(k =>
     Vue.component(`${defaults.componentPrefix}${k}`, components[k]),
