@@ -371,6 +371,7 @@ export default {
       // Filter out any disabled dates
       const validatedValue = this.picker.filterDisabled({
         value: this.picker.normalize(userValue),
+        disabled: this.disabledAttribute,
         fallbackValue: this.value_,
       });
       // Set state for handling value change
