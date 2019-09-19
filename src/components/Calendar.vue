@@ -6,7 +6,6 @@ import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
-import Attribute from '@/utils/attribute';
 import {
   propOrDefaultMixin,
   rootMixin,
@@ -30,7 +29,6 @@ import {
 import {
   isNumber,
   isDate,
-  isArray,
   isObject,
   hasAny,
   omit,
