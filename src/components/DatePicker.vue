@@ -1,6 +1,6 @@
 <script>
 import Calendar from './Calendar';
-import { Popover } from '@/lib';
+import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
@@ -13,19 +13,25 @@ import {
 import { addTapOrClickHandler } from '@/utils/touch';
 import { createGuid, elementContains, on, off } from '@/utils/helpers';
 import { isString, isArray } from '@/utils/_';
+import '@/styles/tailwind-lib.css';
 
 export default {
-  name: 'VDatePicker',
+  name: 'DatePicker',
   render(h) {
     const calendar = () =>
       h(Calendar, {
         attrs: {
           ...this.$attrs,
           attributes: this.attributes_,
-          theme: this.theme_,
-          locale: this.locale_,
+          theme: this.$theme,
+          locale: this.$locale,
         },
-        props: {},
+        props: {
+          minDate: this.minDate,
+          maxDate: this.maxDate,
+          disabledDates: this.disabledDates,
+          availableDates: this.availableDates,
+        },
         on: {
           ...this.$listeners,
           dayclick: this.onDayClick,
@@ -42,6 +48,7 @@ export default {
     const inputSlot =
       this.safeScopedSlot('default', {
         inputClass: this.inputClass,
+        inputValue: this.inputValue,
         inputProps: this.inputProps_,
         inputEvents: this.inputEvents,
         isDragging: !!this.dragValue,
@@ -51,6 +58,9 @@ export default {
       h('input', {
         class: this.inputClass,
         attrs: this.inputProps_,
+        domProps: {
+          value: this.inputValue,
+        },
         on: this.inputEvents,
       });
     const { visibility, placement } = this.popover_;
@@ -69,27 +79,25 @@ export default {
         [inputSlot],
       ),
       // Picker popover
-      // Lazy-load (always passes after first-load)
-      this.$vc.popoverExists(this.datePickerPopoverId) &&
-        h(Popover, {
-          props: {
-            id: this.datePickerPopoverId,
-            placement: 'bottom-start',
-            contentClass: this.theme_.container,
+      h(Popover, {
+        props: {
+          id: this.datePickerPopoverId,
+          placement: 'bottom-start',
+          contentClass: this.$theme.container,
+        },
+        on: {
+          beforeShow: e => this.$emit('popoverWillShow', e),
+          afterShow: e => this.$emit('popoverDidShow', e),
+          beforeHide: e => this.$emit('popoverWillHide', e),
+          afterHide: e => this.$emit('popoverDidHide', e),
+        },
+        scopedSlots: {
+          default() {
+            return calendar();
           },
-          on: {
-            beforeShow: e => this.$emit('popoverWillShow', e),
-            afterShow: e => this.$emit('popoverDidShow', e),
-            beforeHide: e => this.$emit('popoverWillHide', e),
-            afterHide: e => this.$emit('popoverDidHide', e),
-          },
-          scopedSlots: {
-            default() {
-              return calendar();
-            },
-          },
-          ref: 'popover',
-        }),
+        },
+        ref: 'popover',
+      }),
     ]);
   },
   mixins: [rootMixin, propOrDefaultMixin, safeScopedSlotMixin],
@@ -126,13 +134,13 @@ export default {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
     },
     inputMasks() {
-      const inputFormat = this.locale_.masks.input;
+      const inputFormat = this.$locale.masks.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
     inputClass() {
-      const inputClass = this.inputProps.class || this.theme_.datePickerInput;
+      const inputClass = this.inputProps.class || this.$theme.datePickerInput;
       const inputDragClass =
-        this.inputProps.dragClass || this.theme_.datePickerInputDrag;
+        this.inputProps.dragClass || this.$theme.datePickerInputDrag;
       return this.picker.hasValue(this.dragValue)
         ? inputDragClass || inputClass
         : inputClass;
@@ -210,9 +218,9 @@ export default {
     },
     picker() {
       const opts = {
-        locale: this.locale_,
-        format: d => this.locale_.format(d, this.inputMasks[0]),
-        parse: s => this.locale_.parse(s, this.inputMasks),
+        locale: this.$locale,
+        format: d => this.$locale.format(d, this.inputMasks[0]),
+        parse: s => this.$locale.parse(s, this.inputMasks),
       };
       switch (this.mode) {
         case 'multiple':
@@ -309,7 +317,6 @@ export default {
       // Re-emit event
       this.$emit('daykeydown', day);
     },
-
     inputInput(e) {
       this.inputValue = e.target.value;
       if (this.updateOnInput_) {
@@ -368,6 +375,7 @@ export default {
       // Filter out any disabled dates
       const validatedValue = this.picker.filterDisabled({
         value: this.picker.normalize(userValue),
+        disabled: this.disabledAttribute,
         fallbackValue: this.value_,
       });
       // Set state for handling value change

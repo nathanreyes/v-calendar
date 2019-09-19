@@ -1,50 +1,22 @@
-import {
-  isString,
-  isArray,
-  isUndefined,
-  map,
-  mapValues,
-  toPairs,
-  has,
-  get,
-} from '@/utils/_';
+// Vue won't get included in bundle as it is externalized
+// https://cli.vuejs.org/guide/build-targets.html#library
+import Vue from 'vue';
+import buildMediaQuery from '@/utils/buildMediaQuery';
+import defaultScreens from '@/utils/defaults/screens.json';
+import { isUndefined, mapValues, toPairs, has } from '@/utils/_';
 
-// This function gratuitously borrowed from Tailwindcss
-// https://github.com/tailwindcss/tailwindcss/blob/master/src/util/buildMediaQuery.js
-const buildMediaQuery = screens => {
-  // Default min width
-  if (isString(screens)) {
-    screens = { min: screens };
-  }
-  // Wrap in array
-  if (!isArray(screens)) {
-    screens = [screens];
-  }
-  return screens
-    .map(screen => {
-      if (has(screen, 'raw')) {
-        return screen.raw;
-      }
-      return map(screen, (value, feature) => {
-        feature = get(
-          {
-            min: 'min-width',
-            max: 'max-width',
-          },
-          feature,
-          feature,
-        );
-        return `(${feature}: ${value})`;
-      }).join(' and ');
-    })
-    .join(', ');
-};
+let isSettingUp = false;
+let shouldRefreshQueries = false;
+let screensComp = null;
 
-export const setupScreens = (Vue, screens) => {
-  if (!screens) return;
-  let setup = false;
+export function setupScreens(screens = defaultScreens, forceSetup) {
+  if ((screensComp && !forceSetup) || isSettingUp) {
+    return;
+  }
+  isSettingUp = true;
+  shouldRefreshQueries = true;
   // Use a private Vue component to store reactive screen matches
-  const screenComp = new Vue({
+  screensComp = new Vue({
     data() {
       return {
         matches: [],
@@ -67,23 +39,30 @@ export const setupScreens = (Vue, screens) => {
       },
     },
   });
+  isSettingUp = false;
+}
 
-  Vue.mixin({
-    mounted() {
-      if (!setup) {
-        screenComp.refreshQueries();
-        setup = true;
-      }
+// Global mixin that provides responsive '$screens' utility method
+// that refreshes any time the screen matches update
+Vue.mixin({
+  beforeCreate() {
+    if (!isSettingUp) {
+      setupScreens();
+    }
+  },
+  mounted() {
+    if (shouldRefreshQueries && screensComp) {
+      screensComp.refreshQueries();
+      shouldRefreshQueries = false;
+    }
+  },
+  computed: {
+    $screens() {
+      return (config, def) =>
+        screensComp.matches.reduce(
+          (prev, curr) => (has(config, curr) ? config[curr] : prev),
+          isUndefined(def) ? config.default : def,
+        );
     },
-    computed: {
-      $screens() {
-        // Return function that re-evaluates every time screen matches change
-        return (config, def) =>
-          screenComp.matches.reduce(
-            (prev, curr) => (has(config, curr) ? config[curr] : prev),
-            isUndefined(def) ? config.default : def,
-          );
-      },
-    },
-  });
-};
+  },
+});

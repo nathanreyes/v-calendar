@@ -6,6 +6,7 @@ const directions = {
   hTrailing: 'horizontal-trailing',
 };
 export default {
+  name: 'Grid',
   render(h) {
     // Grid cell renderer
     const getCell = ({ nodes, position, row, column }) => {

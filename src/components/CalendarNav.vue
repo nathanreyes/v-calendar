@@ -80,6 +80,7 @@ import { pageForDate, onSpaceOrEnter } from '@/utils/helpers';
 const _yearGroupCount = 12;
 
 export default {
+  name: 'CalendarNav',
   components: {
     Grid,
     SvgIcon,

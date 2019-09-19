@@ -1,5 +1,5 @@
 <script>
-import { Popover } from '@/lib';
+import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
@@ -12,6 +12,7 @@ import {
 import { createGuid } from '@/utils/helpers';
 
 export default {
+  name: 'CalendarPane',
   mixins: [propOrDefaultMixin, childMixin, safeScopedSlotMixin],
   render(h) {
     // Header
@@ -54,30 +55,28 @@ export default {
                   ],
                 ),
                 // Navigation popover
-                // Lazy-load (always passes after first-load)
-                this.$vc.popoverExists(this.navPopoverId) &&
-                  h(
-                    Popover,
-                    {
-                      props: {
-                        id: this.navPopoverId,
-                        contentClass: this.theme.navPopoverContainer,
-                      },
+                h(
+                  Popover,
+                  {
+                    props: {
+                      id: this.navPopoverId,
+                      contentClass: this.theme.navPopoverContainer,
                     },
-                    [
-                      // Navigation pane
-                      h(CalendarNav, {
-                        props: {
-                          value: this.page,
-                          validator: this.canMove,
-                        },
-                        on: {
-                          input: $event => this.move($event),
-                        },
-                        scopedSlots: this.$scopedSlots,
-                      }),
-                    ],
-                  ),
+                  },
+                  [
+                    // Navigation pane
+                    h(CalendarNav, {
+                      props: {
+                        value: this.page,
+                        validator: this.canMove,
+                      },
+                      on: {
+                        input: $event => this.move($event),
+                      },
+                      scopedSlots: this.$scopedSlots,
+                    }),
+                  ],
+                ),
               ]),
             ],
           ),

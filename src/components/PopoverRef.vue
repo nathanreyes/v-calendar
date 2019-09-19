@@ -1,7 +1,10 @@
 <script>
+import { popoversMixin } from '@/utils/popovers';
 import { on, off, elementContains } from '@/utils/helpers';
 
 export default {
+  name: 'PopoverRef',
+  mixins: [popoversMixin],
   props: {
     id: { type: String, default: 'default' },
     element: null,
@@ -28,7 +31,7 @@ export default {
   },
   computed: {
     isActive() {
-      return this.$vc.popoverIsActive(this.id, this.reference);
+      return this.$popoverIsActive(this.id, this.reference);
     },
   },
   render() {
@@ -152,7 +155,7 @@ export default {
       }
     },
     show({ visibility } = {}) {
-      this.$vc.showPopover({
+      this.$showPopover({
         id: this.id,
         ref: this.reference,
         args: this.args,
@@ -163,14 +166,14 @@ export default {
       });
     },
     hide({ delay = this.hideDelay } = {}) {
-      this.$vc.hidePopover({
+      this.$hidePopover({
         id: this.id,
         ref: this.reference,
         delay,
       });
     },
     update() {
-      this.$vc.updatePopover({
+      this.$updatePopover({
         id: this.id,
         ref: this.reference,
         args: this.args,

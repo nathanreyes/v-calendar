@@ -3,11 +3,7 @@ import { get, has, isObject, defaultsDeep } from '@/utils/_';
 export const propOrDefaultMixin = {
   methods: {
     propOrDefault(prop, defaultPath, strategy) {
-      return this.passedProp(
-        prop,
-        get(this.$vc.defaults, defaultPath),
-        strategy,
-      );
+      return this.passedProp(prop, get(this.$defaults, defaultPath), strategy);
     },
     passedProp(prop, fallback, strategy) {
       if (has(this.$options.propsData, prop)) {

@@ -1,10 +1,12 @@
 <script>
 import Popper from 'popper.js';
+import { popoversMixin } from '@/utils/popovers';
 import { on, off, elementContains } from '@/utils/helpers';
 import { addTapOrClickHandler } from '@/utils/touch';
 import { isFunction } from '@/utils/_';
 
 export default {
+  name: 'Popover',
   render(h) {
     return h(
       'div',
@@ -57,6 +59,7 @@ export default {
       ],
     );
   },
+  mixins: [popoversMixin],
   props: {
     id: { type: String, required: true },
     transition: { type: String, default: 'slide-fade' },
@@ -122,7 +125,7 @@ export default {
       return isLeftRight ? 'middle' : 'center';
     },
     state() {
-      return this.$vc.popovers[this.id];
+      return this.$popovers[this.id];
     },
   },
   watch: {
@@ -205,10 +208,10 @@ export default {
       this.hide();
     },
     show() {
-      this.$vc.showPopover({ id: this.id, ref: this.ref, delay: 0 });
+      this.$showPopover({ id: this.id, ref: this.ref, delay: 0 });
     },
     hide(opts) {
-      this.$vc.hidePopover({
+      this.$hidePopover({
         ...opts,
         id: this.id,
         ref: this.ref,
