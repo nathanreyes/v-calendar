@@ -31,7 +31,7 @@
               format(day.date, masks.dayPopover)
             }}</span>
             <!--Todo Rows-->
-            <v-popover-row
+            <popover-row
               v-for="{
                 key,
                 customData,
@@ -113,7 +113,7 @@
                   </svg>
                 </a>
               </div>
-            </v-popover-row>
+            </popover-row>
             <!--Add Todo Row-->
             <a
               @click="addTodo(day)"
@@ -128,6 +128,7 @@
 </template>
 
 <script>
+const PopoverRow = require('@/components/PopoverRow').default;
 const { pageForThisMonth, pageForNextMonth } = require('@/utils/helpers');
 let { month: thisMonth, year: thisMonthYear } = pageForThisMonth();
 let { month: nextMonth, year: nextMonthYear } = pageForNextMonth(
@@ -138,6 +139,9 @@ thisMonth--;
 nextMonth--;
 
 export default {
+  components: {
+    PopoverRow,
+  },
   data() {
     return {
       highlights: [
