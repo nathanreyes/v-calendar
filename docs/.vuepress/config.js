@@ -66,7 +66,6 @@ module.exports = {
             'day-object',
             'attribute',
             'datepicker',
-            'theme-styles',
             'date-patterns',
           ],
         },
