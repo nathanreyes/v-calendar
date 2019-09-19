@@ -701,10 +701,12 @@ export default {
       } else {
         const page = pageForDate(date);
         const position = pageIsBeforePage(page, this.pages[0]) ? -1 : 1;
-        this.move(page, {
-          completion: () => this.setFocusedDate(date),
-          position,
-        });
+        if (this.canMove(page)) {
+          this.move(page, {
+            completion: () => this.setFocusedDate(date),
+            position,
+          });
+        }
       }
     },
   },
