@@ -71,6 +71,7 @@ export default {
       args: null,
       visibility: '',
       placement: 'bottom',
+      modifiers: {},
       isInteractive: false,
       delay: 10,
       popperEl: null,
@@ -93,12 +94,13 @@ export default {
     popperOptions() {
       return {
         placement: this.placement,
-        onCreate: this.onPopperUpdate,
-        onUpdate: this.onPopperUpdate,
         modifiers: {
           hide: { enabled: false },
           preventOverflow: { enabled: false },
+          ...this.modifiers,
         },
+        onCreate: this.onPopperUpdate,
+        onUpdate: this.onPopperUpdate,
       };
     },
     isVisible() {
@@ -109,7 +111,7 @@ export default {
       );
     },
     direction() {
-      return this.placement.split('-')[0] || 'bottom';
+      return (this.placement && this.placement.split('-')[0]) || 'bottom';
     },
     alignment() {
       const isLeftRight =
@@ -137,6 +139,7 @@ export default {
           this.args = val.args;
           this.visibility = val.visibility;
           this.placement = val.placement;
+          this.modifiers = val.modifiers;
           this.isInteractive = val.isInteractive;
           this.setupPopper();
         }

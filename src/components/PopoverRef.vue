@@ -18,6 +18,7 @@ export default {
         ) !== -1,
     },
     placement: { type: String, default: 'bottom' },
+    modifiers: { type: Object, default: () => {} },
     isInteractive: Boolean,
     showDelay: { type: Number, default: 10 },
     hideDelay: { type: Number, default: 150 },
@@ -161,6 +162,7 @@ export default {
         args: this.args,
         visibility: visibility || this.visibility,
         placement: this.placement,
+        modifiers: this.modifiers,
         isInteractive: this.isInteractive,
         delay: this.showDelay,
       });
