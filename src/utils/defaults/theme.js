@@ -3,9 +3,9 @@ export default {
   isDark: false,
   container: {
     light:
-      'vc-border vc-border-gray-400 vc-rounded-lg vc-text-gray-900 vc-bg-white',
+      'vc-text-gray-900 vc-bg-white vc-border vc-border-gray-400 vc-rounded-lg',
     dark:
-      'vc-border vc-border-gray-900 vc-rounded-lg vc-text-gray-200 vc-bg-gray-900 vc-shadow',
+      'vc-text-gray-200 vc-bg-gray-900 vc-border vc-border-gray-700 vc-rounded-lg',
   },
   header: {
     light: 'vc-text-gray-900',
@@ -17,9 +17,9 @@ export default {
   },
   arrows: {
     light:
-      'vc-text-gray-600 vc-rounded vc-border-transparent hover:vc-opacity-50 focus:vc-border-gray-300',
+      'vc-text-gray-600 vc-rounded vc-border-2 vc-border-transparent hover:vc-opacity-50 hover:vc-bg-gray-300 focus:vc-border-gray-300',
     dark:
-      'vc-text-white vc-rounded vc-border-transparent hover:vc-opacity-50 focus:vc-border-gray-700',
+      'vc-text-white vc-rounded vc-border-2 vc-border-transparent hover:vc-opacity-50 focus:vc-border-gray-700',
   },
   weekdays: {
     light: 'vc-text-sm vc-font-bold vc-text-gray-500',
@@ -97,8 +97,16 @@ export default {
     dark: 'vc-font-bold vc-text-{color}-100',
   },
   contentAccentContrast: 'vc-font-bold vc-text-white',
-  datePickerInput:
-    'vc-shadow vc-appearance-none vc-border vc-rounded vc-w-full vc-py-2 vc-px-3 vc-text-gray-800 vc-bg-white vc-leading-tight focus:vc-outline-none focus:vc-shadow-outline',
-  datePickerInputDrag:
-    'vc-shadow vc-appearance-none vc-border vc-rounded vc-w-full vc-py-2 vc-px-3 vc-text-gray-400 vc-bg-white vc-leading-tight focus:vc-outline-none focus:vc-shadow-outline',
+  datePickerInput: {
+    light:
+      'vc-appearance-none vc-text-base vc-text-gray-800 vc-bg-white vc-border vc-border-gray-400 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-shadow',
+    dark:
+      'vc-appearance-none vc-text-base vc-text-gray-200 vc-bg-gray-900 vc-border vc-border-gray-700 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-border-gray-600',
+  },
+  datePickerInputDrag: {
+    light:
+      'vc-appearance-none vc-text-base vc-text-gray-500 vc-bg-white vc-border vc-border-gray-400 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-shadow',
+    dark:
+      'vc-appearance-none vc-text-base vc-text-gray-500 vc-bg-gray-900 vc-border vc-border-gray-700 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-border-gray-600',
+  },
 };
