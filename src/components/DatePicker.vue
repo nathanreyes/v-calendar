@@ -65,7 +65,7 @@ export default {
       });
     const { visibility, placement } = this.popover_;
     // Convert this span to a fragment when supported in Vue
-    return h('span', { class: 'vc-reset' }, [
+    return h('span', [
       h(
         PopoverRef,
         {
