@@ -5,6 +5,8 @@ layout: TestLayout
 
 <div class='text-center'>
 
+<tests-disabled />
+
 <tests-single />
 <!-- <tests-theme /> -->
 <!-- <github-179 /> -->
