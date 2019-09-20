@@ -721,12 +721,10 @@ export default {
 
   --header-padding: 10px 10px 0 10px;
   --title-padding: 0 8px;
-  --arrows-padding: 10px;
+  --arrows-padding: 8px 10px;
   --arrow-font-size: 26px;
   --weekday-padding: 5px 0;
   --weeks-padding: 5px 6px 7px 6px;
-  --arrow-horizontal-offset: 10px;
-  --arrow-vertical-offset: 11px;
 
   --nav-container-width: 170px;
 
