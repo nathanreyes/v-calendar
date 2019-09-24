@@ -106,7 +106,11 @@ export default {
       }
     },
     onFocusOut(e) {
-      if (this.isFocused && !elementContains(this.reference, e.relatedTarget)) {
+      if (
+        this.isFocused &&
+        e.relatedTarget &&
+        !elementContains(this.reference, e.relatedTarget)
+      ) {
         this.isFocused = false;
         if (this.visibility.includes('focus')) {
           this.refreshVisibility();

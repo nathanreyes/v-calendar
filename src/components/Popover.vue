@@ -37,6 +37,9 @@ export default {
               h(
                 'div',
                 {
+                  attrs: {
+                    tabindex: -1,
+                  },
                   class: [
                     'vc-popover-content',
                     `direction-${this.direction}`,
@@ -159,7 +162,7 @@ export default {
       on(this.popoverEl, 'mouseover', this.onMouseOver);
       on(this.popoverEl, 'mouseleave', this.onMouseLeave);
       on(this.popoverEl, 'focusin', this.onFocusIn);
-      on(this.popoverEl, 'blur', this.onBlur);
+      on(this.popoverEl, 'focusout', this.onFocusOut);
       this.removeDocHandler = addTapOrClickHandler(
         document,
         this.onDocumentClick,
@@ -170,7 +173,7 @@ export default {
       off(this.popoverEl, 'mouseover', this.onMouseOver);
       off(this.popoverEl, 'mouseleave', this.onMouseLeave);
       off(this.popoverEl, 'focusin', this.onFocusIn);
-      off(this.popoverEl, 'blur', this.onBlur);
+      off(this.popoverEl, 'focusout', this.onFocusOut);
       if (this.removeDocHandler) this.removeDocHandler();
     },
     onClick(e) {
@@ -191,8 +194,13 @@ export default {
         this.show();
       }
     },
-    onBlur() {
-      if (this.isInteractive && this.visibility === 'focus') {
+    onFocusOut(e) {
+      if (
+        this.isInteractive &&
+        this.visibility === 'focus' &&
+        e.relatedTarget &&
+        !elementContains(this.popoverEl, e.relatedTarget)
+      ) {
         this.hide();
       }
     },
@@ -293,6 +301,7 @@ export default {
 
 .vc-popover-content {
   position: relative;
+  outline: none;
   z-index: 10;
   &.direction-bottom {
     margin-top: var(--popover-vertical-content-offset);
