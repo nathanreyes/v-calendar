@@ -96,9 +96,11 @@ Setting `value = null` still allowed through code.
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `keepVisibleOnInput` | Boolean | Keep the popover visible after a date is selected, until the `visibility` determines. |
-| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. |
 | `visibility` | String | Visibility state for the input/slot popover (`"focus"`, `"hover"`, `"visible"`, `"hidden"`) |
+| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. |
+| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/popper-documentation.html#Popper.Defaults.positionFixed) for more details. |
+| `modifiers` | Boolean | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/popper-documentation.html#modifiers). |
+| `keepVisibleOnInput` | Boolean | Keep the popover visible after a date is selected, until the `visibility` determines. |
 
 <!-- 
 ### 
