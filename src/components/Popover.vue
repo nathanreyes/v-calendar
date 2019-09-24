@@ -74,6 +74,7 @@ export default {
       args: null,
       visibility: '',
       placement: 'bottom',
+      positionFixed: false,
       modifiers: {},
       isInteractive: false,
       delay: 10,
@@ -97,6 +98,7 @@ export default {
     popperOptions() {
       return {
         placement: this.placement,
+        positionFixed: this.positionFixed,
         modifiers: {
           hide: { enabled: false },
           preventOverflow: { enabled: false },
@@ -142,6 +144,7 @@ export default {
           this.args = val.args;
           this.visibility = val.visibility;
           this.placement = val.placement;
+          this.positionFixed = val.positionFixed;
           this.modifiers = val.modifiers;
           this.isInteractive = val.isInteractive;
           this.setupPopper();

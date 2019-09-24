@@ -63,16 +63,14 @@ export default {
         },
         on: this.inputEvents,
       });
-    const { visibility, placement } = this.popover_;
     // Convert this span to a fragment when supported in Vue
     return h('span', [
       h(
         PopoverRef,
         {
           props: {
+            ...this.popover_,
             id: this.datePickerPopoverId,
-            visibility,
-            placement,
             isInteractive: true,
           },
         },
