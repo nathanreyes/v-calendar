@@ -2,7 +2,7 @@
 import PopoverRef from './PopoverRef';
 import { childMixin, safeScopedSlotMixin } from '@/utils/mixins';
 import { arrayHasItems } from '@/utils/helpers';
-import { last, get } from '@/utils/_';
+import { last, get, defaults } from '@/utils/_';
 
 export default {
   name: 'CalendarDay',
@@ -449,28 +449,22 @@ export default {
       }
     },
     processPopover(attribute, { popovers }) {
-      if (!attribute.popover) return;
-      const {
-        label,
-        labelClass,
-        labelStyle,
-        hideIndicator,
-        visibility,
-        placement,
-        isInteractive,
-      } = attribute.popover;
-      popovers.splice(0, 0, {
-        key: attribute.key,
-        customData: attribute.customData,
-        attribute,
-        label,
-        labelClass,
-        labelStyle,
-        hideIndicator,
-        visibility: visibility || (label ? 'hover' : 'click'),
-        placement: placement || 'bottom',
-        isInteractive: isInteractive !== undefined ? isInteractive : !label,
-      });
+      const { key, customData, popover } = attribute;
+      if (!popover) return;
+      const resolvedPopover = defaults(
+        {
+          key,
+          customData,
+          attribute,
+        },
+        { ...popover },
+        {
+          visibility: popover.label ? 'hover' : 'click',
+          placement: 'bottom',
+          isInteractive: !popover.label,
+        },
+      );
+      popovers.splice(0, 0, resolvedPopover);
     },
   },
 };
