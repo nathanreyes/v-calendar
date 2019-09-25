@@ -1,32 +1,47 @@
 <template>
   <div class="example">
     <v-calendar :attributes="attributes">
-      <div slot="day-popover" slot-scope="{ day, format, masks, dayTitle, attributes }">
+      <div
+        slot="day-popover"
+        slot-scope="{ day, format, masks, dayTitle, attributes }"
+      >
         <span v-if="step === 1">Using my own content now</span>
         <div
           class="text-xs text-gray-300 font-semibold text-center"
           v-else-if="step === 2"
-        >{{ format(day.date, `${masks.dayPopover}`) }}</div>
+        >
+          {{ format(day.date, `${masks.dayPopover}`) }}
+        </div>
         <div
           class="text-xs text-gray-300 font-semibold text-center"
           v-else-if="step >= 3"
-        >{{ dayTitle }}</div>
+        >
+          {{ dayTitle }}
+        </div>
         <ul v-if="step === 3">
-          <li v-for="{key, customData} in attributes" :key="key">{{ customData.description }}</li>
+          <li v-for="{ key, customData } in attributes" :key="key">
+            {{ customData.description }}
+          </li>
         </ul>
-        <v-popover-row
+        <popover-row
           v-if="step === 4"
           v-for="attr in attributes"
           :key="attr.key"
           :attribute="attr"
-        >{{ attr.customData.description }}</v-popover-row>
+          >{{ attr.customData.description }}
+        </popover-row>
       </div>
     </v-calendar>
   </div>
 </template>
 
 <script>
+import PopoverRow from '@/components/PopoverRow';
+
 export default {
+  components: {
+    PopoverRow,
+  },
   props: {
     visibility: { type: String, default: 'hover' },
     hideIndicators: Boolean,

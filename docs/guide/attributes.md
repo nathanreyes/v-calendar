@@ -510,20 +510,6 @@ If you would like to hide the indicator, just set the `hideIndicator` property t
     ...
 ```
 
-These are the additional configuration options you may use for further popover customization:
-
-| Property | Type | Description |
-| --- | --- | --- |
-| `label` | String | Content to display in the popover. |
-| `labelClass` | String | Class to apply to the label. |
-| `labelStyle` | Object | Inline style to apply to the label. |
-| `hideIndicator` | Boolean | Hides the indicator that appears to the left of the label. |
-| `isInteractive` | Boolean | Allows user to interactive with the popover contents. For example, this keeps the popover open when user hovers over the popover when `visibility === "hover"`, instead of hiding it by default. |
-| `visibility` | String | Visibility mode for the popover (`"hover-focus"`, `"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`). |
-| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/popper-documentation.html#Popper.placements) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
-| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/popper-documentation.html#Popper.Defaults.positionFixed) for more details. |
-| `modifiers` | Boolean | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/popper-documentation.html#modifiers). |
-
 ### 2. Scoped Slot
 
 For a more customized approach you can insert your own `"day-popover"` custom scoped slot within `v-calendar`.
@@ -620,12 +606,40 @@ Finally, if you wish to display indicators with your custom content, you can use
     <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
-    <v-popover-row
+    <popover-row
       v-for="attr in attributes"
       :key="attr.key"
       :attribute="attr">
       {{ customData.description }}
-    </v-popover-row>
+    </popover-row>
   </div>
 </v-calendar>
 ```
+
+```js
+// Import popover row component from plugin
+import PopoverRow from 'v-calendar/lib/components/popover-row.umd.min'
+
+export default {
+  components: {
+    PopoverRow,
+  },
+  ...
+}
+```
+
+### Additional Options
+
+These are the additional configuration options you may use for further popover customization:
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `label` | String | Content to display in the popover. |
+| `labelClass` | String | Class to apply to the label. |
+| `labelStyle` | Object | Inline style to apply to the label. |
+| `hideIndicator` | Boolean | Hides the indicator that appears to the left of the label. |
+| `isInteractive` | Boolean | Allows user to interactive with the popover contents. For example, this keeps the popover open when user hovers over the popover when `visibility === "hover"`, instead of hiding it by default. |
+| `visibility` | String | Visibility mode for the popover (`"hover-focus"`, `"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`). |
+| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/popper-documentation.html#Popper.placements) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
+| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/popper-documentation.html#Popper.Defaults.positionFixed) for more details. |
+| `modifiers` | Boolean | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/popper-documentation.html#modifiers). |
