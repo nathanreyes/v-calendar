@@ -20,6 +20,15 @@
       <div>
         <input
           type="radio"
+          id="hover-focus"
+          value="hover-focus"
+          v-model="popover.visibility"
+        />
+        <label for="hover-focus">Hover Focus</label>
+      </div>
+      <div class="ml-2">
+        <input
+          type="radio"
           id="hover"
           value="hover"
           v-model="popover.visibility"
