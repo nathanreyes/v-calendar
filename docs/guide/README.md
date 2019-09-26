@@ -747,8 +747,8 @@ Vue.use(VCalendar, {
 You can also just import components separately.
 
 ```js
-import Calendar from 'v-calendar/components/calendar.umd'
-import DatePicker from 'v-calendar/components/date-picker.umd'
+import Calendar from 'v-calendar/lib/components/calendar.umd'
+import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
 // Register components in your 'main.js'
 Vue.component('calendar', Calendar)
