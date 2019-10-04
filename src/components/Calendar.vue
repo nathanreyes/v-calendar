@@ -442,9 +442,10 @@ export default {
         fromPage = addPages(this.maxPage_, 1 - this.count);
       }
       // Create the new pages
-      const pages = [...Array(this.count).keys()].map(i =>
-        this.buildPage(addPages(fromPage, i), ignoreCache),
-      );
+      let pages = [];
+      for (let i = 0; i < this.count; i++) {
+        pages.push(this.buildPage(addPages(fromPage, i), ignoreCache));
+      }
       // Refresh disabled days for new pages
       this.refreshDisabledDays(pages);
       // Refresh focusable days for new pages
