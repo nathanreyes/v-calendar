@@ -130,13 +130,6 @@
 <script>
 const PopoverRow = require('@/components/PopoverRow').default;
 const { pageForThisMonth, pageForNextMonth } = require('@/utils/helpers');
-let { month: thisMonth, year: thisMonthYear } = pageForThisMonth();
-let { month: nextMonth, year: nextMonthYear } = pageForNextMonth(
-  thisMonth,
-  thisMonthYear,
-);
-thisMonth--;
-nextMonth--;
 
 export default {
   components: {
@@ -144,7 +137,28 @@ export default {
   },
   data() {
     return {
-      highlights: [
+      pageForThisMonth: pageForThisMonth(),
+      pageForNextMonth: pageForNextMonth(),
+      incId: 5,
+      editId: 0,
+      todos: [],
+    };
+  },
+  computed: {
+    thisMonth() {
+      return this.pageForThisMonth.month - 1;
+    },
+    thisMonthYear() {
+      return this.pageForThisMonth.year;
+    },
+    nextMonth() {
+      return this.pageForNextMonth.month - 1;
+    },
+    nextMonthYear() {
+      return this.pageForNextMonth.year;
+    },
+    highlights() {
+      return [
         {
           highlight: 'red',
           contentStyle: {
@@ -152,16 +166,16 @@ export default {
           },
           dates: [
             // Use single dates
-            new Date(nextMonthYear, nextMonth, 6),
-            new Date(nextMonthYear, nextMonth, 23),
+            new Date(this.nextMonthYear, this.nextMonth, 6),
+            new Date(this.nextMonthYear, this.nextMonth, 23),
             // ...or date ranges
             {
-              start: new Date(thisMonthYear, thisMonth, 2),
-              end: new Date(thisMonthYear, thisMonth, 4),
+              start: new Date(this.thisMonthYear, this.thisMonth, 2),
+              end: new Date(this.thisMonthYear, this.thisMonth, 4),
             },
             // ...or complex date patterns
             {
-              start: new Date(thisMonthYear, thisMonth, 1),
+              start: new Date(this.thisMonthYear, this.thisMonth, 1),
               ordinalWeekdays: { [-1]: 7 }, // Last Saturday of the month
             },
           ],
@@ -172,14 +186,14 @@ export default {
             color: 'white',
           },
           dates: [
-            new Date(thisMonthYear, thisMonth, 1),
+            new Date(this.thisMonthYear, this.thisMonth, 1),
             {
-              start: new Date(thisMonthYear, thisMonth, 10),
-              end: new Date(thisMonthYear, thisMonth, 12),
+              start: new Date(this.thisMonthYear, this.thisMonth, 10),
+              end: new Date(this.thisMonthYear, this.thisMonth, 12),
             },
             {
-              start: new Date(nextMonthYear, nextMonth, 22),
-              end: new Date(nextMonthYear, nextMonth, 26),
+              start: new Date(this.nextMonthYear, this.nextMonth, 22),
+              end: new Date(this.nextMonthYear, this.nextMonth, 26),
             },
           ],
         },
@@ -189,140 +203,103 @@ export default {
             color: 'white',
           },
           dates: [
-            new Date(thisMonthYear, thisMonth, 14),
+            new Date(this.thisMonthYear, this.thisMonth, 14),
             {
-              start: new Date(thisMonthYear, thisMonth, 24),
-              end: new Date(thisMonthYear, thisMonth, 25),
+              start: new Date(this.thisMonthYear, this.thisMonth, 24),
+              end: new Date(this.thisMonthYear, this.thisMonth, 25),
             },
-            new Date(thisMonthYear, thisMonth, 28),
-            new Date(nextMonthYear, nextMonth, 4),
+            new Date(this.thisMonthYear, this.thisMonth, 28),
+            new Date(this.nextMonthYear, this.nextMonth, 4),
             {
-              start: new Date(nextMonthYear, nextMonth, 16),
-              end: new Date(nextMonthYear, nextMonth, 17),
+              start: new Date(this.nextMonthYear, this.nextMonth, 16),
+              end: new Date(this.nextMonthYear, this.nextMonth, 17),
             },
           ],
         },
-      ],
-      dots: [
+      ];
+    },
+    dots() {
+      return [
         {
           dot: 'red',
           dates: [
-            new Date(thisMonthYear, thisMonth, 1),
-            new Date(thisMonthYear, thisMonth, 10),
-            new Date(thisMonthYear, thisMonth, 22),
-            new Date(nextMonthYear, nextMonth, 6),
-            new Date(nextMonthYear, nextMonth, 16),
+            new Date(this.thisMonthYear, this.thisMonth, 1),
+            new Date(this.thisMonthYear, this.thisMonth, 10),
+            new Date(this.thisMonthYear, this.thisMonth, 22),
+            new Date(this.nextMonthYear, this.nextMonth, 6),
+            new Date(this.nextMonthYear, this.nextMonth, 16),
           ],
         },
         {
           dot: 'teal',
           dates: [
-            new Date(thisMonthYear, thisMonth, 4),
-            new Date(thisMonthYear, thisMonth, 10),
-            new Date(thisMonthYear, thisMonth, 15),
-            new Date(nextMonthYear, nextMonth, 1),
-            new Date(nextMonthYear, nextMonth, 12),
+            new Date(this.thisMonthYear, this.thisMonth, 4),
+            new Date(this.thisMonthYear, this.thisMonth, 10),
+            new Date(this.thisMonthYear, this.thisMonth, 15),
+            new Date(this.nextMonthYear, this.nextMonth, 1),
+            new Date(this.nextMonthYear, this.nextMonth, 12),
             {
-              start: new Date(nextMonthYear, nextMonth, 20),
-              end: new Date(nextMonthYear, nextMonth, 25),
+              start: new Date(this.nextMonthYear, this.nextMonth, 20),
+              end: new Date(this.nextMonthYear, this.nextMonth, 25),
             },
           ],
         },
         {
           dot: 'blue',
           dates: [
-            new Date(thisMonthYear, thisMonth, 12),
-            new Date(thisMonthYear, thisMonth, 26),
-            new Date(thisMonthYear, thisMonth, 15),
-            new Date(nextMonthYear, nextMonth, 9),
-            new Date(nextMonthYear, nextMonth, 5),
-            new Date(nextMonthYear, nextMonth, 6),
-            new Date(nextMonthYear, nextMonth, 20),
-            new Date(nextMonthYear, nextMonth, 25),
+            new Date(this.thisMonthYear, this.thisMonth, 12),
+            new Date(this.thisMonthYear, this.thisMonth, 26),
+            new Date(this.thisMonthYear, this.thisMonth, 15),
+            new Date(this.nextMonthYear, this.nextMonth, 9),
+            new Date(this.nextMonthYear, this.nextMonth, 5),
+            new Date(this.nextMonthYear, this.nextMonth, 6),
+            new Date(this.nextMonthYear, this.nextMonth, 20),
+            new Date(this.nextMonthYear, this.nextMonth, 25),
           ],
         },
-      ],
-      bars: [
+      ];
+    },
+    bars() {
+      return [
         {
           bar: 'red',
           dates: [
-            new Date(thisMonthYear, thisMonth, 1),
-            new Date(thisMonthYear, thisMonth, 10),
-            new Date(thisMonthYear, thisMonth, 22),
-            new Date(nextMonthYear, nextMonth, 6),
-            new Date(nextMonthYear, nextMonth, 16),
+            new Date(this.thisMonthYear, this.thisMonth, 1),
+            new Date(this.thisMonthYear, this.thisMonth, 10),
+            new Date(this.thisMonthYear, this.thisMonth, 22),
+            new Date(this.nextMonthYear, this.nextMonth, 6),
+            new Date(this.nextMonthYear, this.nextMonth, 16),
           ],
         },
         {
           bar: 'teal',
           dates: [
-            new Date(thisMonthYear, thisMonth, 4),
-            new Date(thisMonthYear, thisMonth, 10),
-            new Date(thisMonthYear, thisMonth, 15),
-            new Date(nextMonthYear, nextMonth, 1),
-            new Date(nextMonthYear, nextMonth, 12),
+            new Date(this.thisMonthYear, this.thisMonth, 4),
+            new Date(this.thisMonthYear, this.thisMonth, 10),
+            new Date(this.thisMonthYear, this.thisMonth, 15),
+            new Date(this.nextMonthYear, this.nextMonth, 1),
+            new Date(this.nextMonthYear, this.nextMonth, 12),
             {
-              start: new Date(nextMonthYear, nextMonth, 20),
-              end: new Date(nextMonthYear, nextMonth, 25),
+              start: new Date(this.nextMonthYear, this.nextMonth, 20),
+              end: new Date(this.nextMonthYear, this.nextMonth, 25),
             },
           ],
         },
         {
           bar: 'blue',
           dates: [
-            new Date(thisMonthYear, thisMonth, 12),
-            new Date(thisMonthYear, thisMonth, 26),
-            new Date(thisMonthYear, thisMonth, 15),
-            new Date(nextMonthYear, nextMonth, 9),
-            new Date(nextMonthYear, nextMonth, 5),
-            new Date(nextMonthYear, nextMonth, 6),
-            new Date(nextMonthYear, nextMonth, 20),
-            new Date(nextMonthYear, nextMonth, 25),
+            new Date(this.thisMonthYear, this.thisMonth, 12),
+            new Date(this.thisMonthYear, this.thisMonth, 26),
+            new Date(this.thisMonthYear, this.thisMonth, 15),
+            new Date(this.nextMonthYear, this.nextMonth, 9),
+            new Date(this.nextMonthYear, this.nextMonth, 5),
+            new Date(this.nextMonthYear, this.nextMonth, 6),
+            new Date(this.nextMonthYear, this.nextMonth, 20),
+            new Date(this.nextMonthYear, this.nextMonth, 25),
           ],
         },
-      ],
-      incId: 5,
-      editId: 0,
-      todos: [
-        {
-          id: 1,
-          description: 'Take Noah to basketball practice.',
-          isComplete: false,
-          dates: new Date(thisMonthYear, thisMonth, 1),
-          color: 'blue',
-        },
-        {
-          id: 2,
-          description: 'Get some milks.',
-          isComplete: false,
-          dates: new Date(thisMonthYear, thisMonth, 5),
-          color: 'red',
-        },
-        {
-          id: 3,
-          description: 'Pay the utility bill.',
-          isComplete: false,
-          dates: new Date(thisMonthYear, thisMonth, 19),
-          color: 'orange',
-        },
-        {
-          id: 4,
-          description: 'Pick up clothes from the cleaners.',
-          isComplete: false,
-          dates: new Date(thisMonthYear, thisMonth, 19),
-          color: 'purple',
-        },
-        {
-          id: 5,
-          description: 'Lunch with Leo.',
-          isComplete: false,
-          dates: new Date(thisMonthYear, thisMonth, 22),
-          color: 'green',
-        },
-      ],
-    };
-  },
-  computed: {
+      ];
+    },
     popovers() {
       return [
         // Todo attributes
@@ -348,7 +325,53 @@ export default {
       ];
     },
   },
+  mounted() {
+    this.refreshTodos();
+  },
   methods: {
+    refreshMonthData() {
+      this.pageForThisMonth = pageForThisMonth();
+      this.pageForNextMonth = pageForNextMonth();
+    },
+    refreshTodos() {
+      this.todos = [
+        {
+          id: 1,
+          description: 'Take Noah to basketball practice.',
+          isComplete: false,
+          dates: new Date(this.thisMonthYear, this.thisMonth, 1),
+          color: 'blue',
+        },
+        {
+          id: 2,
+          description: 'Get some milks.',
+          isComplete: false,
+          dates: new Date(this.thisMonthYear, this.thisMonth, 5),
+          color: 'red',
+        },
+        {
+          id: 3,
+          description: 'Pay the utility bill.',
+          isComplete: false,
+          dates: new Date(this.thisMonthYear, this.thisMonth, 19),
+          color: 'orange',
+        },
+        {
+          id: 4,
+          description: 'Pick up clothes from the cleaners.',
+          isComplete: false,
+          dates: new Date(this.thisMonthYear, this.thisMonth, 19),
+          color: 'purple',
+        },
+        {
+          id: 5,
+          description: 'Lunch with Leo.',
+          isComplete: false,
+          dates: new Date(this.thisMonthYear, this.thisMonth, 22),
+          color: 'green',
+        },
+      ];
+    },
     addTodo(day) {
       this.editId = ++this.incId;
       this.todos.push({
