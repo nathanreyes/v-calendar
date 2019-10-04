@@ -71,7 +71,7 @@ export default class Attribute {
         d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
       )
       .filter(d => d);
-    this.isComplex = some(dates, d => d.isComplex);
+    this.isComplex = some(this.dates, d => d.isComplex);
   }
 
   // Accepts: Date or date range object
