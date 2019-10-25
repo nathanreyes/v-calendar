@@ -1,5 +1,5 @@
 <template>
-  <div><v-date-picker v-model="date" is-dark /></div>
+  <div><v-date-picker v-model="date" mode="range" is-dark /></div>
 </template>
 
 <script>
