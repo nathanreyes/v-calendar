@@ -12,9 +12,12 @@
           id="issue"
           v-model="selectedIssue"
         >
-          <option v-for="issue in issues" :key="issue.number" :value="issue">{{
-            `${issue.number} - ${issue.title}`
-          }}</option>
+          <option
+            v-for="issue in issues"
+            :key="issue.componentName"
+            :value="issue"
+            >{{ `${issue.componentName}: ${issue.componentTitle}` }}</option
+          >
         </select>
         <div
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
@@ -32,22 +35,46 @@
       </div>
     </div>
     <div class="example">
-      <component :is="selectedIssue.component" />
+      <component
+        v-if="selectedIssue"
+        :is="`github-${selectedIssue.componentName}`"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import issues from './issues.json';
+// https://webpack.js.org/guides/dependency-management/#require-context
+const requireComponent = require.context(
+  // Look for files in the base components directory
+  '../github',
+  // Do not look in subdirectories
+  false,
+);
+// For each matching file name...
+const issues = requireComponent
+  .keys()
+  .filter(filename => /.vue$/.test(filename) && !filename.endsWith('index.vue'))
+  .map(filename => {
+    // Get the component
+    const component = requireComponent(filename);
+    // Get the PascalCase version of the component name
+    const componentName = filename
+      // Remove the "./" from the beginning
+      .replace(/^\.\//, '')
+      // Remove the file extension from the end
+      .replace(/\.\w+$/, '');
+    return {
+      componentName,
+      componentTitle: component.default.githubTitle,
+    };
+  });
 
 export default {
   data() {
-    const maxNumber = issues.map(i => i.number).sort((a, b) => a - b)[
-      issues.length - 1
-    ];
     return {
-      selectedIssue: issues.find(i => i.number === maxNumber),
       issues,
+      selectedIssue: issues[issues.length - 1],
     };
   },
 };
