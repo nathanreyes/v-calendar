@@ -18,6 +18,7 @@
 
 <script>
 export default {
+  githubTitle: 'Safari Issue on September 8, 2019',
   data() {
     return {
       value: null,

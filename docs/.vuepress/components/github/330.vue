@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  githubTitle: `Title mask doesn't work from config`,
   data() {
     return {
       value: null,

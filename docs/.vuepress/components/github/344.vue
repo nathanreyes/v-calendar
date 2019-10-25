@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  githubTitle: 'Why max-date is adding 1 month',
   data() {
     return {
       maxDate: new Date(),

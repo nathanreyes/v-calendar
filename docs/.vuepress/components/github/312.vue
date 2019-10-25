@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: 'hello',
+  githubTitle: `Calendar highlights won't be removed after attribute changes`,
   data() {
     return {
       locale: { id: 'de', firstDayOfWeek: 2, masks: { weekdays: 'WW' } },

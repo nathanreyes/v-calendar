@@ -13,6 +13,7 @@
 
   <script>
 export default {
+  githubTitle: 'Locale change only changes weekday names but not month names',
   data() {
     return {
       locale: {

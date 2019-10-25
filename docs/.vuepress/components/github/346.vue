@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  githubTitle: 'Accessibility audit',
   data() {
     return {
       date: null,

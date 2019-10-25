@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  githubTitle: `Conflict happening when availableDates and range mode.`,
   data() {
     return {
       date: null,

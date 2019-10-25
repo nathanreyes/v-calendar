@@ -7,6 +7,7 @@
 
 <script>
 export default {
+  githubTitle: 'showPageRange method not working yet?',
   data() {
     return {
       attributes: [],

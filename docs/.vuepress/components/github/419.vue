@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  githubTitle: '',
+  githubTitle: 'Selected dates in YYYY-MM-DD format?',
   data() {
     return {
       selectedDate: '2019-09-03',

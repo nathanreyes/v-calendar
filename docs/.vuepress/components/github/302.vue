@@ -13,6 +13,7 @@
 
 <script>
 export default {
+  githubTitle: `Date range picker only show once when using customize input`,
   data() {
     return {
       date: null,

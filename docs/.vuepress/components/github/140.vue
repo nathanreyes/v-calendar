@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  githubTitle: `Date picker can't select a range of dates between 2 range of available-dates`,
   data() {
     return {
       date: null,

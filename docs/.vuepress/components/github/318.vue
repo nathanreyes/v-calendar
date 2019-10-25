@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  githubTitle: 'Dragging over highlighted days in range mode',
   data() {
     return {
       date: null,

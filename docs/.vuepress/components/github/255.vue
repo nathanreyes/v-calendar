@@ -12,6 +12,7 @@
 
 <script>
 export default {
+  githubTitle: `v-date-picker and max-date, from-page, is-double-paned show selectData, not from-page`,
   data() {
     return {
       dates: {

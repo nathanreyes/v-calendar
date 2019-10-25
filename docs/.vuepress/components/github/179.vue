@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date" is-inline/>
+    <v-date-picker v-model="date" is-inline />
     <div>
       <span>toString:</span>
       <span class="ml-2">{{ dateString }}</span>
@@ -18,6 +18,7 @@
 
 <script>
 export default {
+  githubTitle: `Date format and internationalization`,
   data() {
     return {
       date: new Date(),

@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  githubTitle: `Edge case that hangs the browser on range select: null range, min-date, max-date, is-double-paned`,
   data() {
     return {
       range: { start: null, end: null },

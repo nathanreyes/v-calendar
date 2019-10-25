@@ -1,9 +1,14 @@
 <template>
-  <v-calendar i:from-date="new Date()" :attributes="attrs" @dayclick="handleClick"/>
+  <v-calendar
+    i:from-date="new Date()"
+    :attributes="attrs"
+    @dayclick="handleClick"
+  />
 </template>
 
 <script>
 export default {
+  githubTitle: `Question: Weekly view`,
   data() {
     return {
       attrs: [

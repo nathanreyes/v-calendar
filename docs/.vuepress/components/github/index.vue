@@ -54,7 +54,12 @@ const requireComponent = require.context(
 // For each matching file name...
 const issues = requireComponent
   .keys()
-  .filter(filename => /.vue$/.test(filename) && !filename.endsWith('index.vue'))
+  .filter(
+    filename =>
+      /.vue$/.test(filename) &&
+      !filename.endsWith('Template.vue') &&
+      !filename.endsWith('index.vue'),
+  )
   .map(filename => {
     // Get the component
     const component = requireComponent(filename);

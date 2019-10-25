@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  githubTitle: 'Popover should still activate on disabled dates',
   data() {
     return {
       attrs: [

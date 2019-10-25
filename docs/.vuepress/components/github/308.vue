@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  githubTitle: `Duplicate month when first load`,
   data() {
     const current = new Date();
     const first = new Date();

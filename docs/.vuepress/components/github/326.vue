@@ -11,6 +11,7 @@
 
 <script>
 export default {
+  githubTitle: 'Available-dates is not grayed out',
   data() {
     return {
       value: null,
