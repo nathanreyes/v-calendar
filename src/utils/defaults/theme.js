@@ -97,16 +97,8 @@ export default {
     dark: 'vc-font-bold vc-text-{color}-100',
   },
   contentAccentContrast: 'vc-font-bold vc-text-white',
-  datePickerInput: {
-    light:
-      'vc-appearance-none vc-text-base vc-text-gray-800 vc-bg-white vc-border vc-border-gray-400 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-shadow',
-    dark:
-      'vc-appearance-none vc-text-base vc-text-gray-200 vc-bg-gray-900 vc-border vc-border-gray-700 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-border-gray-600',
-  },
-  datePickerInputDrag: {
-    light:
-      'vc-appearance-none vc-text-base vc-text-gray-500 vc-bg-white vc-border vc-border-gray-400 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-shadow',
-    dark:
-      'vc-appearance-none vc-text-base vc-text-gray-500 vc-bg-gray-900 vc-border vc-border-gray-700 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-border-gray-600',
-  },
+  datePickerInput:
+    'vc-appearance-none vc-text-base vc-text-gray-800 vc-bg-white vc-border vc-border-gray-400 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-shadow',
+  datePickerInputDrag:
+    'vc-appearance-none vc-text-base vc-text-gray-500 vc-bg-white vc-border vc-border-gray-400 vc-rounded vc-w-full vc-py-2 vc-px-3 vc-leading-tight focus:vc-outline-none focus:vc-shadow',
 };
