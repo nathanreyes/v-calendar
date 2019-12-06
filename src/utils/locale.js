@@ -1,4 +1,6 @@
 import { format, parse } from '@/utils/fecha';
+import defaultLocales from '@/utils/defaults/locales';
+import { addPages, pageForDate } from '@/utils/helpers';
 import {
   isDate,
   isNumber,
@@ -8,7 +10,6 @@ import {
   defaultsDeep,
   clamp,
 } from '@/utils/_';
-import defaultLocales from '@/utils/defaults/locales';
 
 const daysInWeek = 7;
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -52,6 +53,7 @@ export default class Locale {
     this.parse = this.parse.bind(this);
     this.format = this.format.bind(this);
     this.toDate = this.toDate.bind(this);
+    this.toPage = this.toPage.bind(this);
   }
 
   parse(dateStr, mask) {
@@ -81,6 +83,22 @@ export default class Locale {
       );
     }
     return d;
+  }
+
+  toPage(arg, fromPage) {
+    if (isNumber(arg)) {
+      return addPages(fromPage, arg);
+    }
+    if (isString(arg)) {
+      return pageForDate(this.toDate(arg));
+    }
+    if (isDate(arg)) {
+      return pageForDate(arg);
+    }
+    if (isObject(arg)) {
+      return arg;
+    }
+    return null;
   }
 
   getMonthDates(year = 2000) {
