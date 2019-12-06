@@ -24,6 +24,10 @@ module.exports = {
         text: 'Changelog',
         link: '/changelog/v1.0',
       },
+      {
+        text: 'Sponsor',
+        link: 'https://github.com/sponsors/nathanreyes',
+      },
     ],
     sidebar: {
       '/api/': [
