@@ -422,7 +422,7 @@ export default {
       });
       return result;
     },
-    async focusDate(date, opts) {
+    async focusDate(date, opts = {}) {
       const page = pageForDate(date);
       const { fromPage, toPage } = this.getTargetPageRange(page, opts.position);
       if (!pageIsEqualToPage(fromPage, this.pages[0])) {
