@@ -166,6 +166,7 @@ export default {
       on(this.popoverEl, 'mouseleave', this.onMouseLeave);
       on(this.popoverEl, 'focusin', this.onFocusIn);
       on(this.popoverEl, 'focusout', this.onFocusOut);
+      on(document, 'keydown', this.onDocumentKeydown);
       this.removeDocHandler = addTapOrClickHandler(
         document,
         this.onDocumentClick,
@@ -177,6 +178,7 @@ export default {
       off(this.popoverEl, 'mouseleave', this.onMouseLeave);
       off(this.popoverEl, 'focusin', this.onFocusIn);
       off(this.popoverEl, 'focusout', this.onFocusOut);
+      off(document, 'keydown', this.onDocumentKeydown);
       if (this.removeDocHandler) this.removeDocHandler();
     },
     onClick(e) {
@@ -220,6 +222,11 @@ export default {
       }
       // Hide the popover
       this.hide();
+    },
+    onDocumentKeydown(e) {
+      if (e.key === 'Esc' || e.key === 'Escape') {
+        this.hide();
+      }
     },
     show() {
       this.$showPopover({ id: this.id, ref: this.ref, delay: 0 });
