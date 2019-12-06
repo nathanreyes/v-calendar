@@ -82,7 +82,7 @@ module.exports = {
         {
           title: 'Getting Started',
           collapsable: false,
-          children: ['quick-start', 'installation', 'custom-defaults'],
+          children: ['installation', 'custom-defaults'],
         },
         {
           title: 'Core Concepts',
