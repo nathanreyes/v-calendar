@@ -12,7 +12,7 @@ import {
   safeScopedSlotMixin,
 } from '@/utils/mixins';
 import { addHorizontalSwipeHandler } from '@/utils/touch';
-import DateInfo, { addDays, addMonths, addYears } from '@/utils/dateInfo';
+import { addDays, addMonths, addYears } from 'date-fns';
 import {
   pageForDate,
   pageForThisMonth,

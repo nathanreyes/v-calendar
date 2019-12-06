@@ -4,7 +4,7 @@ import { isObject, isArray, defaultsDeep } from '@/utils/_';
 import { defaultsMixin } from '@/utils/defaults';
 import { popoversMixin } from '@/utils/popovers';
 import { setupScreens } from '@/utils/screens';
-import { addDays } from '@/utils/dateInfo';
+import { addDays } from 'date-fns';
 import Attribute from '@/utils/attribute';
 
 export const rootMixin = {

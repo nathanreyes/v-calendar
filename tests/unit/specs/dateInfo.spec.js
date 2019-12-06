@@ -1,5 +1,6 @@
-import DateInfo, { addDays } from '@/utils/dateInfo';
+import DateInfo from '@/utils/dateInfo';
 import Locale from '../../../src/utils/locale';
+import { addDays } from 'date-fns';
 
 describe('addDays', () => {
   it('should add days correctly', () => {

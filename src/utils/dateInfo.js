@@ -1,26 +1,9 @@
+import { addDays } from 'date-fns';
 import { mixinOptionalProps } from './helpers';
 import { isDate, isObject, isArray, isFunction } from './_';
 import Locale from './locale';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
-
-export function addDays(date, days) {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
-export function addMonths(date, months) {
-  const result = new Date(date);
-  result.setMonth(date.getMonth() + months);
-  return result;
-}
-
-export function addYears(date, years) {
-  const result = new Date(date);
-  result.setFullYear(date.getFullYear() + years);
-  return result;
-}
 
 export default class DateInfo {
   constructor(config, { order = 0, locale = new Locale() } = {}) {
