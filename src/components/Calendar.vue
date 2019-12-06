@@ -75,7 +75,7 @@ export default {
 
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
-      const click = () => (isPrev ? this.movePrev() : this.moveNext());
+      const click = () => this.move(isPrev ? -this.step_ : this.step_);
       const keydown = e => onSpaceOrEnter(e, click);
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
       return h(
@@ -170,7 +170,6 @@ export default {
           },
           class: [
             'vc-container',
-            'vc-relative',
             'vc-reset',
             {
               'vc-min-w-full': this.isExpanded,
@@ -325,6 +324,9 @@ export default {
       this.refreshTheme();
       this.initStore();
     },
+    fromDate() {
+      this.refreshPages();
+    },
     fromPage(val) {
       const firstPage = this.pages && this.pages[0];
       if (pageIsEqualToPage(val, firstPage)) return;
@@ -352,6 +354,17 @@ export default {
       if (val) {
         this.focusableDay = val.day;
         this.refreshFocusableDays();
+      }
+    },
+    inTransition(val) {
+      if (val) {
+        this.$emit('transition-start');
+      } else {
+        this.$emit('transition-end');
+        if (this.transitionPromise) {
+          this.transitionPromise.resolve();
+          this.transitionPromise = null;
+        }
       }
     },
   },
@@ -390,25 +403,73 @@ export default {
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
     },
-    movePrev() {
-      this.move(-this.step_);
+    async movePrev(opts) {
+      const result = await this.move(-this.step_, opts);
+      return result;
     },
-    moveNext() {
-      this.move(this.step_);
+    async moveNext(opts) {
+      const result = this.move(this.step_, opts);
+      return result;
     },
-    move(monthsOrPage, { completion = null, position = 1 } = {}) {
-      const page = isNumber(monthsOrPage)
-        ? addPages(this.pages[0], monthsOrPage)
-        : monthsOrPage;
-      this.refreshPages({
+    async move(arg, opts) {
+      const page = this.$locale.toPage(arg, this.pages[0]);
+      if (!page) {
+        return null;
+      }
+      const result = await this.refreshPages({
+        ...opts,
         page,
-        position,
       });
-      if (completion) {
-        this.$nextTick(() => completion());
+      return result;
+    },
+    async focusDate(date, opts) {
+      const page = pageForDate(date);
+      const { fromPage, toPage } = this.getTargetPageRange(page, opts.position);
+      if (!pageIsEqualToPage(fromPage, this.pages[0])) {
+        // Move to the page for date if needed
+        await this.refreshPages({
+          ...opts,
+          page: pageForDate(date),
+        });
+      }
+      // Set focus on the element for the date
+      const focusableEl = this.$el.querySelector(
+        `.id-${this.$locale.format(date, 'YYYY-MM-DD')}.in-month .vc-focusable`,
+      );
+      if (focusableEl) {
+        focusableEl.focus();
       }
     },
-    refreshPages({ page, position = 1, ignoreCache } = {}) {
+    async showPageRange(range, opts) {
+      let fromPage;
+      let toPage;
+      if (isDate(range)) {
+        fromPage = pageForDate(range);
+      } else if (isObject(range)) {
+        const { month, year } = range;
+        const { from, to } = range;
+        if (isNumber(month) && isNumber(year)) {
+          fromPage = range;
+        } else if (from || to) {
+          fromPage = isDate(from) ? pageForDate(from) : from;
+          toPage = isDate(to) ? pageForDate(to) : to;
+        }
+      } else {
+        return;
+      }
+      const lastPage = last(this.pages);
+      let page = fromPage;
+      // Offset page from the desired `toPage`
+      if (pageIsAfterPage(toPage, lastPage)) {
+        page = addPages(toPage, -(this.pages.length - 1));
+      }
+      // But no earlier than the desired `fromPage`
+      if (pageIsBeforePage(fromPage, page)) {
+        page = fromPage;
+      }
+      await this.refreshPages({ ...opts, page });
+    },
+    getTargetPageRange(page, position) {
       // Calculate the page to start displaying from
       let fromPage = null;
       // 1. Try the page parameter
@@ -441,43 +502,60 @@ export default {
       } else if (pageIsAfterPage(toPage, this.maxPage_)) {
         fromPage = addPages(this.maxPage_, 1 - this.count);
       }
-      // Create the new pages
-      let pages = [];
-      for (let i = 0; i < this.count; i++) {
-        pages.push(this.buildPage(addPages(fromPage, i), ignoreCache));
-      }
-      // Refresh disabled days for new pages
-      this.refreshDisabledDays(pages);
-      // Refresh focusable days for new pages
-      this.refreshFocusableDays(pages);
-      // Assign the new transition
-      this.transitionName = this.getPageTransition(this.pages[0], pages[0]);
-      // Assign the new pages
-      this.pages = pages;
-      // Emit page update events
-      this.$emit('update:from-page', fromPage);
-      this.$emit('update:to-page', toPage);
+      return { fromPage, toPage };
+    },
+    async refreshPages({ page, position = 1, transition, ignoreCache } = {}) {
+      return new Promise((resolve, reject) => {
+        const { fromPage, toPage } = this.getTargetPageRange(page, position);
+        // Create the new pages
+        const pages = [];
+        for (let i = 0; i < this.count; i++) {
+          pages.push(this.buildPage(addPages(fromPage, i), ignoreCache));
+        }
+        // Refresh disabled days for new pages
+        this.refreshDisabledDays(pages);
+        // Refresh focusable days for new pages
+        this.refreshFocusableDays(pages);
+        // Assign the transition
+        this.transitionName = this.getPageTransition(
+          this.pages[0],
+          pages[0],
+          transition,
+        );
+        // Assign the new pages
+        this.pages = pages;
+        // Emit page update events
+        this.$emit('update:from-page', fromPage);
+        this.$emit('update:to-page', toPage);
+        if (this.transitionName && this.transitionName !== 'none') {
+          this.transitionPromise = {
+            resolve,
+            reject,
+          };
+        } else {
+          resolve();
+        }
+      });
     },
     refreshDisabledDays(pages) {
-      this.getPageDays(pages).forEach(
-        d =>
-          (d.isDisabled =
-            !!this.disabledAttribute && this.disabledAttribute.includesDay(d)),
-      );
+      this.getPageDays(pages).forEach(d => {
+        d.isDisabled =
+          !!this.disabledAttribute && this.disabledAttribute.includesDay(d);
+      });
     },
     refreshFocusableDays(pages) {
-      this.getPageDays(pages).forEach(
-        d => (d.isFocusable = d.inMonth && d.day === this.focusableDay),
-      );
+      this.getPageDays(pages).forEach(d => {
+        d.isFocusable = d.inMonth && d.day === this.focusableDay;
+      });
     },
     getPageDays(pages = this.pages) {
       return pages.reduce((prev, curr) => prev.concat(curr.days), []);
     },
-    getPageTransition(oldPage, newPage) {
-      if (this.transition === 'none') return this.transition;
+    getPageTransition(oldPage, newPage, transition = this.transition) {
+      if (transition === 'none') return transition;
       if (
-        this.transition === 'fade' ||
-        (!this.transition && this.count > 1) ||
+        transition === 'fade' ||
+        (!transition && this.count > 1) ||
         !pageIsValid(oldPage) ||
         !pageIsValid(newPage)
       ) {
@@ -486,7 +564,7 @@ export default {
       // Moving to a previous page
       const movePrev = pageIsBeforePage(newPage, oldPage);
       // Vertical slide
-      if (this.transition === 'slide-v') {
+      if (transition === 'slide-v') {
         return movePrev ? 'slide-down' : 'slide-up';
       }
       // Horizontal slide
@@ -589,33 +667,6 @@ export default {
         this.$refs.pages.forEach(p => p.refresh());
       });
     },
-    showPageRange(range) {
-      let fromPage;
-      let toPage;
-      if (isDate(range)) {
-        fromPage = pageForDate(range);
-      } else if (isObject(range)) {
-        const { month, year } = range;
-        const { from, to } = range;
-        if (isNumber(month) && isNumber(year)) {
-          fromPage = range;
-        } else if (from || to) {
-          fromPage = isDate(from) ? pageForDate(from) : from;
-          toPage = isDate(to) ? pageForDate(to) : to;
-        }
-      } else {
-        return;
-      }
-      const lastPage = last(this.pages);
-      let page = fromPage;
-      if (pageIsAfterPage(toPage, lastPage)) {
-        page = addPages(toPage, -(this.pages.length - 1));
-      }
-      if (pageIsBeforePage(fromPage, page)) {
-        page = fromPage;
-      }
-      this.refreshPages({ page });
-    },
     handleKeydown(e) {
       const day = this.lastFocusedDay;
       if (day != null) {
@@ -680,33 +731,7 @@ export default {
       }
       if (newDate) {
         event.preventDefault();
-        this.setFocusedDate(newDate);
-      }
-    },
-    setFocusedDate(date) {
-      if (!date || !arrayHasItems(this.pages)) return;
-      const dateInfo = new DateInfo(date, { locale: this.$locale });
-
-      const day = this.getPageDays().find(
-        d => d.inMonth && dateInfo.includesDay(d),
-      );
-      if (day) {
-        // Set focus on the element for the date
-        const focusableEl = this.$el.querySelector(
-          `.id-${day.id}.in-month .vc-focusable`,
-        );
-        if (focusableEl) {
-          focusableEl.focus();
-        }
-      } else {
-        const page = pageForDate(date);
-        const position = pageIsBeforePage(page, this.pages[0]) ? -1 : 1;
-        if (this.canMove(page)) {
-          this.move(page, {
-            completion: () => this.setFocusedDate(date),
-            position,
-          });
-        }
+        this.focusDate(newDate);
       }
     },
   },
@@ -752,6 +777,7 @@ export default {
     'Helvetica', 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
   width: max-content;
 }
 
@@ -763,6 +789,7 @@ export default {
   justify-content: space-between;
   padding: var(--arrows-padding);
   pointer-events: none;
+  z-index: 10;
   &.title-left {
     justify-content: flex-end;
   }
