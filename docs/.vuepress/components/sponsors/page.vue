@@ -26,7 +26,7 @@
         </p>
       </div>
     </div>
-    <div class="mt-10 text-center">
+    <div class="mt-10 text-center sm:text-left">
       <a
         class="bg-indigo-500 text-white font-semibold rounded-full py-3 px-4 no-underline cursor-pointer hover:bg-indigo-600"
         href="https://github.com/sponsors/nathanreyes"
