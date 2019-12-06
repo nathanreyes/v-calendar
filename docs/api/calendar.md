@@ -284,6 +284,14 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Params:** [`day`](./day-object.md)
 
+### `transition-start`
+
+**Description:** Transition to new page has started.
+
+### `transition-end`
+
+**Description:** Transition to new page has ended.
+
 ## Methods
 
 To call methods on a component, assign a ref and call the method any time on or after the `mounted` lifecycle hook.

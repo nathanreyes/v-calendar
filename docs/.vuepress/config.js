@@ -5,14 +5,16 @@ const tailwindcss = require('tailwindcss');
 module.exports = {
   title: 'V-Calendar',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
-  // Google analytics
-  ga: 'UA-113780759-1',
+  plugins: [
+    // Google analytics
+    ['@vuepress/google-analytics', { ga: 'UA-113780759-1' }],
+  ],
   head: [['link', { rel: 'icon', href: 'favicon.png' }]],
   themeConfig: {
     nav: [
       {
         text: 'Guide',
-        link: '/guide/',
+        link: '/',
       },
       {
         text: 'API',
@@ -24,11 +26,20 @@ module.exports = {
       },
     ],
     sidebar: {
-      '/guide/': [
+      '/api/': [
         {
-          title: 'Guide',
+          title: 'API',
           collapsable: false,
-          children: ['', 'attributes', 'datepicker', 'theming-guide'],
+          children: [
+            '',
+            'defaults',
+            'calendar',
+            'page-object',
+            'day-object',
+            'attribute',
+            'datepicker',
+            'date-patterns',
+          ],
         },
       ],
       '/changelog/': [
@@ -49,22 +60,6 @@ module.exports = {
           ],
         },
       ],
-      '/api/': [
-        {
-          title: 'API',
-          collapsable: false,
-          children: [
-            '',
-            'defaults',
-            'calendar',
-            'page-object',
-            'day-object',
-            'attribute',
-            'datepicker',
-            'date-patterns',
-          ],
-        },
-      ],
       '/tests/': [
         {
           title: 'Tests',
@@ -76,6 +71,32 @@ module.exports = {
           title: 'Showcase',
           collapsable: false,
           children: ['', 'github'],
+        },
+      ],
+      '/': [
+        {
+          title: '',
+          collapsable: false,
+          children: ['', 'sponsors'],
+        },
+        {
+          title: 'Getting Started',
+          collapsable: false,
+          children: ['quick-start', 'installation', 'custom-defaults'],
+        },
+        {
+          title: 'Core Concepts',
+          collapsable: false,
+          children: [
+            'colors-dark-mode',
+            'layouts',
+            'navigation',
+            'dates',
+            'i18n',
+            'attributes',
+            'datepicker',
+            'theming-guide',
+          ],
         },
       ],
     },

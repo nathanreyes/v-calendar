@@ -7,6 +7,10 @@
 <script>
 export default {
   githubTitle: ``,
-  date: new Date(),
+  data() {
+    return {
+      date: new Date(),
+    };
+  },
 };
 </script>

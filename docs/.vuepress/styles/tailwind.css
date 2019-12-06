@@ -8,7 +8,7 @@
 
 .example,
 .example-home {
-  @apply my-8 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
+  @apply my-4 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
   &.is-dark {
     @apply bg-gray-800;
   }
@@ -59,19 +59,34 @@ input[type='text'] {
   @apply max-w-2xl mx-auto px-4 my-10;
 }
 
-h1 {
-  @apply text-3xl text-gray-900;
+h1,
+.h1 {
+  @apply text-3xl text-gray-800 p-0 mt-0 mb-4 !important;
 }
 
+h2,
 .h2 {
-  @apply text-2xl text-gray-800 border-none p-0 mb-4;
+  @apply text-2xl text-gray-800 border-none p-0 mt-0 mb-2 !important;
+  &:not(:first-child) {
+    @apply mt-8 !important;
+  }
 }
+
+h3,
 .h3 {
-  @apply text-lg text-gray-700 font-medium mb-3;
+  @apply text-lg text-gray-600 font-medium p-0 mt-5 mb-2;
+}
+
+h4,
+.h4 {
+  @apply text-gray-800 font-semibold tracking-wide p-0 mt-3 mb-2;
 }
 
 ul {
-  @apply list-disc;
+  @apply list-disc text-indigo-500 font-semibold tracking-wide;
+  & li {
+    @apply mb-1;
+  }
 }
 
 ol {
@@ -79,8 +94,7 @@ ol {
 }
 
 p {
-  margin: 1rem 0;
-  line-height: 1.7rem;
+  @apply my-2 leading-relaxed;
 }
 
 .sidebar {

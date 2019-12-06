@@ -82,5 +82,18 @@ export default {
       selectedIssue: issues[issues.length - 1],
     };
   },
+  watch: {
+    selectedIssue(val) {
+      if (val) {
+        localStorage.githubIssue = this.selectedIssue.componentName;
+      }
+    },
+  },
+  mounted() {
+    const issue = localStorage.githubIssue;
+    if (issue) {
+      this.selectedIssue = issues.find(i => i.componentName === issue);
+    }
+  },
 };
 </script>

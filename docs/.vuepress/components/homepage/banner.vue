@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-600 text-white px-2 py-3 text-center" v-if="visible">
+  <div class="bg-gray-600 text-white px-2 py-3 text-center rounded">
     <p class="text font-bold mt-0 mb-0">
       This documentation applies for v1.0.0-beta.0
     </p>
@@ -16,18 +16,3 @@
     </p>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      visible: false,
-    };
-  },
-  mounted() {
-    const el = document.querySelector('.hero');
-    el.parentElement.insertBefore(this.$el, el);
-    this.visible = true;
-  },
-};
-</script>
