@@ -424,12 +424,21 @@ export default {
     },
     async focusDate(date, opts = {}) {
       const page = pageForDate(date);
-      const { fromPage, toPage } = this.getTargetPageRange(page, opts.position);
-      if (!pageIsEqualToPage(fromPage, this.pages[0])) {
+      let fromPage = null;
+      if (opts.position) {
+        fromPage = this.getTargetPageRange(page, opts.position).fromPage;
+      } else if (pageIsBeforePage(page, this.pages[0])) {
+        // debugger;
+        fromPage = this.getTargetPageRange(page, -1).fromPage;
+      } else if (pageIsAfterPage(page, last(this.pages))) {
+        fromPage = this.getTargetPageRange(page, 1).fromPage;
+      }
+      if (fromPage && !pageIsEqualToPage(fromPage, this.pages[0])) {
         // Move to the page for date if needed
         await this.refreshPages({
           ...opts,
-          page: pageForDate(date),
+          position: 1,
+          page: fromPage,
         });
       }
       // Set focus on the element for the date
