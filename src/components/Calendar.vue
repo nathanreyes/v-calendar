@@ -424,17 +424,17 @@ export default {
     },
     async focusDate(date, opts = {}) {
       const page = pageForDate(date);
+      // Calculate new fromPage
       let fromPage = null;
       if (opts.position) {
         fromPage = this.getTargetPageRange(page, opts.position).fromPage;
       } else if (pageIsBeforePage(page, this.pages[0])) {
-        // debugger;
         fromPage = this.getTargetPageRange(page, -1).fromPage;
       } else if (pageIsAfterPage(page, last(this.pages))) {
         fromPage = this.getTargetPageRange(page, 1).fromPage;
       }
+      // Move to new fromPage if it's different from the current one
       if (fromPage && !pageIsEqualToPage(fromPage, this.pages[0])) {
-        // Move to the page for date if needed
         await this.refreshPages({
           ...opts,
           position: 1,
