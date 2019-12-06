@@ -26,7 +26,7 @@
         </p>
       </div>
     </div>
-    <div class="mt-10">
+    <div class="mt-10 text-center">
       <a
         class="bg-indigo-500 text-white font-semibold rounded-full py-3 px-4 no-underline cursor-pointer hover:bg-indigo-600"
         href="https://github.com/sponsors/nathanreyes"
@@ -34,7 +34,7 @@
         Support this project
       </a>
     </div>
-    <div class="flex items-center mt-8">
+    <div class="flex flex-col-reverse sm:flex-row items-center mt-8">
       <p>
         Hi! &#128075; I'm <a href="https://nathanreyes.com">Nathan</a>, the
         creator and maintainer of V-Calendar. I started this project because I
@@ -42,7 +42,7 @@
         pickers in my web applications and I thought it could help others save
         some time too!
       </p>
-      <div class="flex-shrink-0 ml-6">
+      <div class="flex-shrink-0 sm:ml-6">
         <img
           class="custom block h-24 w-24 rounded-lg overflow-hidden object-cover shadow-md"
           src="profile.jpg"

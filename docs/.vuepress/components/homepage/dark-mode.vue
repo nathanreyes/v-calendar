@@ -1,22 +1,27 @@
 <template>
-  <div class="border-t border-b border-gray-900 my-10 shadow-inner" :style="bgStyle">
+  <div
+    class="border-t border-b border-gray-900 my-10 shadow-inner -mx-8 sm:mx-auto"
+    :style="bgStyle"
+  >
     <div class="section">
-      <h2 class="h2 text-gray-200 mb-4">Dark Mode</h2>
-      <p class="text-lg font-medium text-gray-500 mb-6">Darken all the things</p>
-      <div class="flex flex-col items-center md:flex-row md:justify-around">
+      <h2 class="text-gray-200">Dark Mode</h2>
+      <p class="text-lg font-medium text-gray-500 mb-6">
+        Darken all the things
+      </p>
+      <div class="flex flex-col items-center lg:flex-row lg:justify-around">
         <div class="mb-6">
-          <v-calendar color="blue" :attributes="attributes" is-dark/>
+          <v-calendar color="blue" :attributes="attributes" is-dark />
         </div>
         <div class="mb-6">
-          <v-calendar color="red" :attributes="attributes" is-dark/>
+          <v-calendar color="red" :attributes="attributes" is-dark />
         </div>
       </div>
-      <div class="flex flex-col items-center md:flex-row md:justify-around">
+      <div class="flex flex-col items-center lg:flex-row lg:justify-around">
         <div class="mb-6">
-          <v-calendar color="teal" :attributes="attributes" is-dark/>
+          <v-calendar color="teal" :attributes="attributes" is-dark />
         </div>
         <div class="mb-6">
-          <v-calendar color="purple" :attributes="attributes" is-dark/>
+          <v-calendar color="purple" :attributes="attributes" is-dark />
         </div>
       </div>
     </div>

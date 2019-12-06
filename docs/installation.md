@@ -1,6 +1,5 @@
 ---
 title: 'Installation'
-sidebarDepth: 2
 ---
 
 :::tip
@@ -9,15 +8,14 @@ sidebarDepth: 2
 
 ## NPM
 
-#### 1. Install via npm
+### 1. Install via npm
 
 ```bash
 npm install v-calendar@next
 ```
 
-#### 2. Import and use VCalendar
-
-##### 2A. Plugin Method (**Recommended**)
+### 2. Import and use VCalendar
+#### *2A. Plugin Method (Recommended)*
 
 This is the most common use case.
 
@@ -33,7 +31,7 @@ Vue.use(VCalendar, {
 
 ```
 
-##### 2B. Components Method
+#### *2B. Components Method*
 
 You can also just import components separately.
 

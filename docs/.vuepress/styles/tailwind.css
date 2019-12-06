@@ -8,7 +8,7 @@
 
 .example,
 .example-home {
-  @apply my-4 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
+  @apply -mx-2 my-4 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
   &.is-dark {
     @apply bg-gray-800;
   }
@@ -66,21 +66,34 @@ h1,
 
 h2,
 .h2 {
-  @apply text-2xl text-gray-800 border-none p-0 mt-0 mb-2 !important;
-  &:not(:first-child) {
-    @apply mt-8 !important;
-  }
+  @apply text-2xl text-gray-800 border-none mb-4;
 }
 
 h3,
 .h3 {
-  @apply text-lg text-gray-600 font-medium p-0 mt-5 mb-2;
+  @apply text-lg text-gray-600 font-medium tracking-wide mb-3;
 }
 
 h4,
 .h4 {
-  @apply text-gray-800 font-semibold tracking-wide p-0 mt-3 mb-2;
+  @apply text-gray-700 font-semibold tracking-wide p-0 mt-3 mb-2;
 }
+
+h1,
+h2,
+h3,
+h4 {
+  &:not(:first-child) {
+    @apply mt-6;
+  }
+}
+
+/* h3,
+h4 {
+  &:not(first-child) {
+    @apply mt-4;
+  }
+} */
 
 ul {
   @apply list-disc text-indigo-500 font-semibold tracking-wide;
