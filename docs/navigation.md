@@ -1,5 +1,5 @@
 ---
-title: 'Navigation'
+title: 'Navigation :tada:'
 sidebarDepth: 2
 ---
 
@@ -88,7 +88,7 @@ Both `v-calendar` and `v-date-picker` now support the following key commands for
 A calendar day must be in focus in order for commands to be recognized
 :::
 
-## *Move* Method
+## *Move* Method :tada:
 
 The base calendar component contains a `move` method that provides more flexible options not provided by the user interface or keyboard navigation. This method is asynchronous which can be `await`ed when a transition is specified.
 
@@ -102,7 +102,7 @@ async move(arg, opts) => Promise
 | **arg** | **Number*, *Date*, *String* or Page *Object* | Target month criteria |
 | **opts** | *Object* | Set of navigation options |
 | **opts.position** | *Number* | Target month position. Negative numbers allowed to offset from last position. |
-| **opts.transition** | *String* | Transition type ('slide-h', 'slide-v', 'fade', 'none') |
+| **opts.transition** | *String* | Transition type (`slide-h`, `slide-v`, `fade`, `none`) |
 | **opts.force** | *Boolean* | Force navigation even if the target months(s) are disabled |
 
 #### Returns
