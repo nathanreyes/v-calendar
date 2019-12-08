@@ -101,8 +101,8 @@ async move(arg, opts) => Promise
 | --- | --- | --- |
 | **arg** | **Number*, *Date*, *String* or Page *Object* | Target month criteria |
 | **opts** | *Object* | Set of navigation options |
-| **opts.position** | *Number* | Target month position. Negative numbers allowed to offset from last position. |
-| **opts.transition** | *String* | Transition type (`slide-h`, `slide-v`, `fade`, `none`) |
+| **opts.position** | *Number* | Target month position for multi-row or multi-column configurations. Negative numbers will offset from last position. |
+| **opts.transition** | *String* | Transition type (`slide-h`, `slide-v`, `fade`, `none`). Note that this will override the calendar `transition` prop. |
 | **opts.force** | *Boolean* | Force navigation even if the target months(s) are disabled |
 
 #### Returns
