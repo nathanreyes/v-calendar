@@ -311,6 +311,112 @@ mounted() {
 ...
 ```
 
+### `move(Number|String|Date|Object)`
+
+#### Description
+
+Asynchronously navigates by a given number of months, to a given month or to a given date.
+
+```js
+async move(arg, opts) => Promise
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| **arg** | **Number*, *Date*, *String* or Page *Object* | Target month criteria |
+| **opts** | *Object* | Set of navigation options |
+| **opts.position** | *Number* | Target month position for multi-row or multi-column configurations. Negative numbers will offset from last position. |
+| **opts.transition** | *String* | Transition type (`slide-h`, `slide-v`, `fade`, `none`). Note that this will override the calendar `transition` prop. |
+| **opts.force** | *Boolean* | Force navigation even if the target months(s) are disabled |
+
+#### Returns
+  
+A **Promise** that *resolves* when the transition to the new set of month(s) is complete or *rejects* if target month(s) are disabled.
+
+#### Move by number of months
+
+Moves a given number of months forwards or backwards.
+
+Calling `move(num)` with a **positive** number will move **forwards** by a given number of months.
+
+Calling `move(num)` with a **negative** number will move **backwards** by a given number of months.
+
+```html
+<v-calendar ref="calendar">
+```
+
+```js
+// Get the calendar ref
+const calendar = this.$refs.calendar
+
+// Move forwards 5 months (wait for transition)
+await calendar.move(5)
+
+// Move backwards 5 months (wait for transition)
+await calendar.move(-5)
+```
+
+#### Move to month
+
+Moves to a given month by calling `move(month)` with an object with `month` and `year` keys.
+
+```js
+// Get the calendar ref
+const calendar = this.$refs.calendar
+
+// Moves to January, 1983
+await calendar.move({ month: 1, year: 1983 })
+```
+
+#### Move to a date
+
+Moves to a specified date.
+
+Calling `move(date)` with a **Date** object will move to that date.
+
+Calling `move(date)` with a **String** will move to the converted date.
+
+```js
+// Get the calendar ref
+const calendar = this.$refs.calendar
+
+// Moves to today's date
+await calendar.move(new Date())
+
+// Moves to my birthday
+await calendar.move(`1983-01-21`)
+```
+
+::: warning
+Calling `move(date)` will move to the month associated with that date. It will not focus on the date after the transition has occurred. To focus on the date, call `focusDate(date)` instead.
+:::
+
+### `focusDate(String|Date)`
+
+#### Description
+
+Asynchronously navigates to the month for a given date and focuses on that day after transition is complete.
+
+```js
+async focusDate(date, opts) => Promise
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| **date** | *Date* | Target date |
+| **opts** | *Object* | Set of navigation options |
+| **opts.position** | *Number* | Target month position for multi-row or multi-column configurations. Negative numbers will offset from last position. |
+| **opts.transition** | *String* | Transition type (`slide-h`, `slide-v`, `fade`, `none`). Note that this will override the calendar `transition` prop. |
+
+#### Returns
+  
+A **Promise** that *resolves* when the transition is complete or *rejects* if target month(s) are disabled.
+
+
 ### `showPageRange(Date|Object)`
 
 **Description:** Navigates to the calendar page(s) that best displays a given date range.

@@ -95,6 +95,7 @@ The base calendar component contains a `move` method that provides more flexible
 ```js
 async move(arg, opts) => Promise
 ```
+
 #### Parameters
 
 | Parameter | Type | Description |
