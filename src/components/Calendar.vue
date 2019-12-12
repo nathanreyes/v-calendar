@@ -1,4 +1,5 @@
 <script>
+import { addDays, addMonths, addYears } from 'date-fns';
 import Popover from './Popover';
 import PopoverRow from './PopoverRow';
 import Grid from './Grid';
@@ -12,7 +13,6 @@ import {
   safeScopedSlotMixin,
 } from '@/utils/mixins';
 import { addHorizontalSwipeHandler } from '@/utils/touch';
-import { addDays, addMonths, addYears } from 'date-fns';
 import {
   pageForDate,
   pageForThisMonth,
