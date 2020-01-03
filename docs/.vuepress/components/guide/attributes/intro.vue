@@ -1,0 +1,109 @@
+<template>
+  <div class="example">
+    <v-calendar :attributes="attributes"/>
+  </div>
+</template>
+
+<script>
+const { pageForThisMonth, pageForNextMonth } = require('@/utils/helpers');
+let { month: thisMonth, year: thisMonthYear } = pageForThisMonth();
+let { month: nextMonth, year: nextMonthYear } = pageForNextMonth();
+thisMonth--;
+nextMonth--;
+
+const meetings = [
+  {
+    description: 'Bi-weekly staff meeting.',
+    // Every other Monday morning :(
+    dates: {
+      weeklyInterval: 2,
+      weekdays: 2,
+    },
+    color: 'blue',
+  },
+  {
+    description: 'Meeting to discuss the new project.',
+    dates: {
+      start: new Date(thisMonthYear, thisMonth, 9),
+      span: 3,
+    },
+    color: 'red',
+  },
+  {
+    description: 'Out of town on business.',
+    dates: {
+      start: new Date(thisMonthYear, thisMonth, 25),
+      span: 2,
+    },
+    color: 'green',
+  },
+];
+
+const todos = [
+  {
+    description: 'Take Noah to basketball practice.',
+    isComplete: false,
+    dates: { weekdays: 6 }, // Every Friday
+    color: 'gray',
+  },
+  {
+    description: 'Get some milks.',
+    isComplete: false,
+    dates: [
+      new Date(thisMonthYear, thisMonth, 19),
+      new Date(thisMonthYear, thisMonth, 23),
+      new Date(nextMonthYear, nextMonth, 9),
+    ],
+    color: 'purple',
+  },
+];
+
+export default {
+  data() {
+    return {
+      incId: todos.length,
+      meetings,
+      todos,
+    };
+  },
+  computed: {
+    attributes() {
+      return [
+        // Today attribute
+        {
+          highlight: {
+            fillMode: 'none',
+            color: 'purple',
+            class: 'rounded-none bg-transparent',
+          },
+          content: {
+            class: 'italic',
+            color: 'purple',
+          },
+          dates: new Date(),
+          order: 100,
+        },
+        // Attributes for meetings
+        ...this.meetings.map(({ description, dates, color }) => ({
+          dates,
+          highlight: color,
+          popover: {
+            label: description,
+          },
+        })),
+        // Attributes for todos
+        ...this.todos.map(todo => ({
+          dates: todo.dates,
+          dot: {
+            color: todo.color,
+            class: todo.isComplete ? 'opacity-25' : '',
+          },
+          popover: {
+            label: todo.description,
+          },
+        })),
+      ];
+    },
+  },
+};
+</script>

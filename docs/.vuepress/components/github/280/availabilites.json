@@ -1,0 +1,978 @@
+[
+    {
+        "Date": "2019-04-01T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-02T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-03T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-04T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-05T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-06T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-07T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-08T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-09T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-10T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-11T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-04-12T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-13T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-14T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-15T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-16T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-17T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-18T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-04-19T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-04-20T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-21T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-22T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-23T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-24T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-25T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-26T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-27T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-04-28T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-29T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-04-30T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-01T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-02T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-03T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-04T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-05T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-06T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-07T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-08T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-09T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-10T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-11T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-12T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-13T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-14T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-15T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-16T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-17T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-05-18T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-19T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-20T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-21T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-22T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-05-23T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-05-24T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-25T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-26T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-27T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-28T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-29T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-05-30T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-05-31T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-01T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-02T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-03T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-04T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-05T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-06T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-07T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-08T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-09T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-10T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-11T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-12T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-13T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-14T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-15T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-16T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-17T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-18T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-19T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-20T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-21T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-22T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-23T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-06-24T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-25T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-26T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-27T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-28T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-06-29T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-06-30T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-01T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-02T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-03T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-04T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-05T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-06T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-07T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-07-08T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-07-09T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-07-10T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-07-11T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-12T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-13T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-14T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-07-15T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-07-16T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-17T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-18T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-19T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-07-20T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-07-21T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-22T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-23T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-24T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-25T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-07-26T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-07-27T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-28T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-29T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-07-30T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-07-31T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-01T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-02T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-03T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-04T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-08-05T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-08-06T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-07T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-08T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-09T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-10T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-11T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-12T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-13T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-14T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-15T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-16T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-17T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-18T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-08-19T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-20T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-08-21T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-08-22T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-23T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-24T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-25T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-26T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-27T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-28T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-29T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-08-30T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-08-31T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-01T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-02T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-03T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-04T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-05T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-09-06T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-09-07T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-08T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-09T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-10T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-09-11T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-12T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-09-13T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-14T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-15T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-09-16T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-09-17T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-18T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-19T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-20T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-09-21T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-22T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-23T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-09-24T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-25T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-26T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-27T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-09-28T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-09-29T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-09-30T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-10-01T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-02T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-03T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-04T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-05T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-06T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-07T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-08T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-09T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-10T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-11T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-12T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-13T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-14T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-15T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-16T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-17T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-18T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-19T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-20T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-21T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-22T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-23T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-24T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-25T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-26T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-27T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-28T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-29T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-30T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-10-31T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-01T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-02T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-03T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-04T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-05T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-06T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-07T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-11-08T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-11-09T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-10T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-11T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-11-12T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-11-13T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-14T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-15T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-16T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-17T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-18T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-19T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-20T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-21T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-22T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-23T00:00:00",
+        "ColorCode": "red"
+    },
+    {
+        "Date": "2019-11-24T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-25T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-11-26T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-27T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-11-28T00:00:00",
+        "ColorCode": "green"
+    },
+    {
+        "Date": "2019-11-29T00:00:00",
+        "ColorCode": "blue"
+    },
+    {
+        "Date": "2019-11-30T00:00:00",
+        "ColorCode": "red"
+    }
+]

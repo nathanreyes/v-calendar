@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for components/DateRangePicker.vue</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">All files</a> / <a href="index.html">components</a> DateRangePicker.vue
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/72</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/48</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/59</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139</td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;<span class="cstat-no" title="statement not covered" >t<span class="fstat-no" title="function not covered" >em</span>plate&gt;</span>
+&lt;calendar
+  :attributes='attributes_'
+<span class="cstat-no" title="statement not covered" >  @dayselect='selectDay'</span>
+  @daymouseenter='enterDay'
+  v-bind='$attrs'
+  v-on='$listeners'&gt;
+&lt;/calendar&gt; <span class="cstat-no" title="statement not covered" ></span>
+&lt;/template&gt;
+<span class="cstat-no" title="statement not covered" ></span>
+&lt;script&gt;
+import Calendar <span class="cstat-no" title="statement not covered" >from './Calendar';</span>
+import DateInfo from '../utils/dateInfo';
+import defaults <span class="cstat-no" title="statement not covered" >from '../utils/defaults';</span>
+import { rangeHasValue } from '../utils/pickerProfiles';
+<span class="cstat-no" title="statement not covered" ></span>
+export default {
+  components: {<span class="cstat-no" title="statement not covered" ></span>
+    Calendar,
+  },<span class="cstat-no" title="statement not covered" ></span>
+  props: {
+    value: { type<span class="cstat-no" title="statement not covered" >: Object, default: () =&gt; {} },</span>
+    selectColor: { type: String, default: () =&gt; defaults.datePickerSelectColor },
+    dragColor: {<span class="cstat-no" title="statement not covered" > type: String, default: () =&gt;</span> defaults.datePickerDragColor },
+    showCaps: { type: Boolean, default: () =&gt; defaults.datePickerShowCaps },
+    dragAttribute<span class="cstat-no" title="statement not covered" >: Object,</span>
+    selectAttribute: Object,
+    disabledAttribute:<span class="cstat-no" title="statement not covered" > Object,</span>
+    dayContentHoverStyle: Object,
+    attri<span class="fstat-no" title="function not covered" >butes: Array,<span class="cstat-no" title="statement not covered" ></span></span>
+  },
+  data() {
+    return {
+      dragValue: null,
+    };
+  },
+  computed: {
+    dragAttribute_() {
+      const normValue = this.normalizeRange(this.dragValue);
+      if (!normValue) return null;
+      return {
+        ...defaults.datePickerDragAttribute(this.dragColor, this.showCaps),
+<span class="cstat-no" title="statement not covered" >        ...this.dragAttribute,</span>
+        dates: [this.dragValue],
+      };
+    },
+    selectAttribute_() {
+      const normValue = this.normalizeRange(t<span class="fstat-no" title="function not covered" >his.value</span>);
+      if (!normValue) return null;<span class="fstat-no" title="function not covered" ></span>
+      re<span class="cstat-no" title="statement not covered" >turn {</span>
+        ...defaults.datePickerSelectAttribute(this.selectColor, this.showCaps),
+        ...this.selectAttribute,<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >        dates: [normValue],</span>
+      };
+    },<span class="fstat-no" title="function not covered" ></span>
+    attr<span class="cstat-no" title="statement not covered" >ibutes_() {</span>
+      const attributes = [...(this.attributes || [])];
+      if (this.dragAttribute_) attributes.push(this.dragAttribute_);
+      else if (this.selectAttribute_) attributes.push(this.selectAttribute_);
+      if (this.disabledAttribute) attributes.push(this.disabledAttribute);
+      return attributes;
+    },
+  },
+  watch: {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    dragValue(val) {</span>
+      this.$emit('drag', this.normalizeRange(val));
+    },
+  },
+  created() {
+    // Clear drag on escape keydown
+    document.addEventListener<span class="fstat-no" title="function not covered" >('keydown', (e)</span> =&gt; {
+      if (this.dragVal<span class="cstat-no" title="statement not covered" >ue &amp;&amp; e.keyCode === 27) {</span>
+<span class="cstat-no" title="statement not covered" >        this.dragValue<span class="cstat-no" title="statement not covered" > = null;</span></span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+    });
+  },
+  methods: {
+    touchStartDay(day) {<span class="fstat-no" title="function not covered" ></span>
+      this.selectDay(d<span class="cstat-no" title="statement not covered" >ay);</span>
+<span class="cstat-no" title="statement not covered" >      this.$emit('dayt<span class="cstat-no" title="statement not covered" >ouchstart', d</span></span>ay);
+    },<span class="cstat-no" title="statement not covered" ></span>
+    selectDay(day) {
+      // Done if date selection is invalid
+      if (this.disabledAttribute &amp;&amp; this.disabledAttribute.includesDay(day)) return;
+      // Start new drag se<span class="fstat-no" title="function not covered" >lection if n</span>ot dragging
+      if (!this.dragVal<span class="cstat-no" title="statement not covered" >ue) {</span>
+<span class="cstat-no" title="statement not covered" >        // Make sure date selec<span class="cstat-no" title="statement not covered" >tion is valid<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span></span>
+<span class="cstat-no" title="statement not covered" >        const date = new Date(day.<span class="cstat-no" title="statement not covered" >dateTime);</span></span>
+<span class="cstat-no" title="statement not covered" >        // Start new drag</span> selection
+        this.dragValue = { start: date, end: date };
+      } else {
+        // Construct new value
+        const newValue =<span class="fstat-no" title="function not covered" > new DateI</span>nfo({
+<span class="cstat-no" title="statement not covered" >          start: new Date(this.dragValue.start.getTi</span>me()),
+          end: new Date(day.dateTime),
+        });
+        // Clear dra<span class="fstat-no" title="function not covered" >g select</span>ion
+        this.dra<span class="cstat-no" title="statement not covered" >gValu</span>e = null;
+        // Signal new value selected
+        this.$emit('input', newValue.toRange());
+<span class="cstat-no" title="statement not covered" >      }<span class="fstat-no" title="function not covered" ></span></span>
+    },<span class="cstat-no" title="statement not covered" ></span>
+    ente<span class="cstat-no" title="statement not covered" >rDay(day) {</span>
+      // Make sure drag has been initialized
+      if (this.dragValue) {
+        // Make sure dragged value is valid
+        if (this.disabledAttribute &amp;&amp; this.disabledAttribute.includesDay(day)) {
+          // Assign disabled content hover style
+          this.dayContentHov<span class="fstat-no" title="function not covered" >erStyle_ = thi</span>s.disabledAttribute.contentHoverStyle;
+<span class="cstat-no" title="statement not covered" >        } else {</span>
+<span class="cstat-no" title="statement not covered" >          // Update drag selection</span>
+          this.dragValue = {
+            start: new D<span class="fstat-no" title="function not covered" >ate(this.d</span>ragValue.start.getTime()),
+            end: new Date(day.dateTime),
+<span class="cstat-no" title="statement not covered" >          };<span class="cstat-no" title="statement not covered" ></span></span>
+          // Assign default content hover style
+<span class="cstat-no" title="statement not covered" >          this.dayContentHoverStyle_ = this.dayContentHoverStyle;</span>
+        }
+      }<span class="cstat-no" title="statement not covered" ></span>
+    },
+    // R<span class="cstat-no" title="statement not covered" >anges can privately have end date earlier tha</span>n start date
+    // This function will correct the order before exposing it to to other components
+    normalizeRange(range) {
+      if (!rangeHasValu<span class="cstat-no" title="statement not covered" >e(range)) return null;</span>
+      const { start, end } = range;
+      const startTime = start.getTime();
+      const endTime = end.getTime();
+      const isNormal = start &lt; end;
+      re<span class="cstat-no" title="statement not covered" >turn {</span>
+        start: isNormal ? start : end,
+<span class="cstat-no" title="statement not covered" >        startTime: isNormal ? startTime : endTime</span>,
+        end: isNormal ? end : start,
+        endTime: isNormal ? endTime : startTime,
+      };<span class="fstat-no" title="function not covered" ></span>
+    },
+  },<span class="cstat-no" title="statement not covered" ></span>
+};
+&lt;/script<span class="cstat-no" title="statement not covered" >&gt;</span>
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Jan 05 2018 11:32:47 GMT-0600 (CST)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

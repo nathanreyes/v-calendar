@@ -1,160 +1,155 @@
-<template>
-<popover
-  align='center'
-  transition='fade'
-  class='c-day-popover'
-  :content-offset='popoverContentOffset'
-  :visibility='popoverVisibility'
-  :content-style='popoverContentStyle'
-  :is-interactive='popoverIsInteractive'
-  @got-focus='isFocused = true'
-  @lost-focus='isFocused = false'
-  toggle-visible-on-click>
-  <div
-    class='c-day'
-    :style='dayCellStyle'>
-    <!-- Background layers -->
-    <transition-group
-      name='background'
-      tag='div'
-      class='c-day-backgrounds c-day-layer'>
-      <div
-        v-for='background in backgrounds'
-        :key='background.key'
-        :class='background.wrapperClass'>
-        <div
-          class='c-day-background'
-          :style='background.style'>
-        </div>
-      </div>
-    </transition-group>
-    <!-- Content layer -->
-    <div
-      class='c-day-content-wrapper'
-      @click='click'
-      @mouseenter='mouseenter'
-      @mouseover='mouseover'
-      @mouseleave='mouseleave'>
-      <slot
-        name='day-content' 
-        :day='day'
-        :content-style='contentStyle'
-        :attributes='attributesList'>
-        <div
-          class='c-day-content'
-          :style='contentStyle'>
-          <div>
-            {{ day.label }}
-          </div>
-        </div>
-      </slot>
-    </div>
-    <!-- Dots layer -->
-    <div
-      class='c-day-layer c-day-box-center-bottom'
-      v-if='hasDots'>
-      <div
-        class='c-day-dots'
-        :style='dotsStyle'>
-        <span
-          v-for='dot in dots'
-          :key='dot.key'
-          class='c-day-dot'
-          :style='dot.style'>
-        </span>
-      </div>
-    </div>
-    <!-- Bars layer -->
-    <div
-      class='c-day-layer c-day-box-center-bottom'
-      v-if='hasBars'>
-      <div
-        class='c-day-bars'
-        :style='barsStyle'>
-        <span
-          v-for='bar in bars'
-          :key='bar.key'
-          class='c-day-bar'
-          :style='bar.style'>
-        </span>
-      </div>
-    </div>
-  </div>
-  <!-- Popover content -->
-  <div
-    class='c-day-popover-content'
-    slot='popover-content'>
-    <!-- Day popover header slot -->
-    <slot
-      name='day-popover-header'
-      :day='day'
-      :attributes='attributesList'>
-    </slot>
-    <!-- Content row slots -->
-    <calendar-day-popover-row
-      v-for='popover in popovers'
-      :key='popover.key'
-      :attribute='popover.attribute'
-      :hide-indicator='popover.hideIndicator'>
-      <slot
-        :name='popover.slot'
-        :attribute='popover.attribute'
-        :custom-data='popover.attribute.customData'
-        :day='day'>
-        <span
-          v-if='popover.label'
-          class='popover-label'
-          :style='popover.labelStyle'
-          :key='popover.key'>
-          {{ popover.label }}
-        </span>
-        <component
-          v-if='popover.component'
-          :is='popover.component'
-          :attribute='popover.attribute'
-          :format='formats.dayPopover'
-          :day='day'>
-        </component>
-      </slot>
-    </calendar-day-popover-row>
-    <!-- Day popover footer slot -->
-    <slot
-      name='day-popover-footer'
-      :day='day'
-      :attributes='attributesList'>
-    </slot>
-  </div>
-</popover>
-</template>
-
 <script>
-import Popover from './Popover';
-import CalendarDayPopoverRow from './CalendarDayPopoverRow';
-import {
-  arrayHasItems,
-  objectFromArray,
-  mixinOptionalProps,
-} from '@/utils/helpers';
-import { isFunction, isObject } from '@/utils/typeCheckers';
-import defaults from '@/utils/defaults';
+import PopoverRef from './PopoverRef';
+import { childMixin, safeScopedSlotMixin } from '@/utils/mixins';
+import { arrayHasItems } from '@/utils/helpers';
+import { last, get, defaults } from '@/utils/_';
 
 export default {
-  components: {
-    Popover,
-    CalendarDayPopoverRow,
+  name: 'CalendarDay',
+  mixins: [childMixin, safeScopedSlotMixin],
+  render(h) {
+    // Backgrounds layer
+    const backgroundsLayer = () =>
+      this.hasBackgrounds &&
+      h(
+        'div',
+        {
+          class: 'vc-highlights vc-day-layer',
+        },
+        this.backgrounds.map(({ key, wrapperClass, class: bgClass }) =>
+          h(
+            'div',
+            {
+              key,
+              class: wrapperClass,
+            },
+            [
+              h('div', {
+                class: bgClass,
+              }),
+            ],
+          ),
+        ),
+      );
+
+    // Content layer
+    const contentLayer = () =>
+      this.safeScopedSlot('day-content', {
+        day: this.day,
+        attributes: this.day.attributes,
+        attributesMap: this.day.attributesMap,
+        dayProps: this.dayContentProps,
+        dayEvents: this.dayContentEvents,
+      }) ||
+      h(
+        'span',
+        {
+          class: this.dayContentClass,
+          attrs: { ...this.dayContentProps },
+          on: this.dayContentEvents,
+          ref: 'content',
+        },
+        [this.day.label],
+      );
+
+    // Popover content wrapper
+    const contentWrapperLayer = () => {
+      if (!this.hasPopovers) {
+        return contentLayer();
+      }
+      const { visibility, placement, isInteractive } = this.popoverState;
+      return h(
+        PopoverRef,
+        {
+          props: {
+            id: this.dayPopoverId,
+            args: this.dayEvent,
+            visibility,
+            placement,
+            isInteractive,
+          },
+        },
+        [contentLayer()],
+      );
+    };
+
+    // Dots layer
+    const dotsLayer = () =>
+      this.hasDots &&
+      h(
+        'div',
+        {
+          class: 'vc-day-layer vc-day-box-center-bottom',
+        },
+        [
+          h(
+            'div',
+            {
+              class: 'vc-dots',
+            },
+            this.dots.map(({ key, class: bgClass }) =>
+              h('span', {
+                class: bgClass,
+                key,
+              }),
+            ),
+          ),
+        ],
+      );
+
+    // Bars layer
+    const barsLayer = () =>
+      this.hasBars &&
+      h(
+        'div',
+        {
+          class: 'vc-day-layer vc-day-box-center-bottom',
+        },
+        [
+          h(
+            'div',
+            {
+              class: 'vc-bars',
+            },
+            this.bars.map(({ key, class: bgClass }) =>
+              h('span', {
+                class: bgClass,
+                key,
+              }),
+            ),
+          ),
+        ],
+      );
+
+    // Root layer
+    return h(
+      'div',
+      {
+        class: [
+          'vc-day',
+          ...this.day.classes,
+          { 'vc-day-box-center-center': !this.$scopedSlots['day-content'] },
+        ],
+      },
+      [
+        h(
+          'div',
+          {
+            class: ['vc-h-full', { [this.theme.dayNotInMonth]: !this.inMonth }],
+          },
+          [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
+        ),
+      ],
+    );
   },
+  inject: ['sharedState'],
   props: {
     day: { type: Object, required: true },
-    attributes: Object,
-    popoverContentOffset: { type: Number, default: 7 },
-    styles: Object,
-    formats: Object,
   },
   data() {
     return {
-      isHovered: false,
-      isFocused: false,
       glyphs: {},
+      popoverState: {},
     };
   },
   computed: {
@@ -167,41 +162,8 @@ export default {
     inMonth() {
       return this.day.inMonth;
     },
-    dayCellStyle() {
-      // Merge 'not in month' style if needed
-      return {
-        ...this.styles.dayCell,
-        ...(!this.inMonth && this.styles.dayCellNotInMonth),
-      };
-    },
-    attributesLength() {
-      return this.attributes.length;
-    },
-    attributesList() {
-      return this.attributes.find(this.day);
-    },
-    attributesMap() {
-      return objectFromArray(this.attributesList);
-    },
-    shouldCheckDirty() {
-      return (
-        this.attributesLength &&
-        !!this.attributesList.find(
-          a =>
-            isFunction(a.highlight) ||
-            isFunction(a.highlightCaps) ||
-            isFunction(a.dot) ||
-            isFunction(a.bar) ||
-            isFunction(a.popover) ||
-            isFunction(a.contentStyle),
-        )
-      );
-    },
-    isHoveredDirty() {
-      return this.shouldCheckDirty && this.isHovered;
-    },
-    isFocusedDirty() {
-      return this.shouldCheckDirty && this.isFocused;
+    isDisabled() {
+      return this.day.isDisabled;
     },
     backgrounds() {
       return this.glyphs.backgrounds;
@@ -209,14 +171,14 @@ export default {
     hasBackgrounds() {
       return !!arrayHasItems(this.backgrounds);
     },
+    content() {
+      return this.glyphs.content;
+    },
     dots() {
       return this.glyphs.dots;
     },
     hasDots() {
       return !!arrayHasItems(this.dots);
-    },
-    dotsStyle() {
-      return this.styles.dots;
     },
     bars() {
       return this.glyphs.bars;
@@ -224,80 +186,77 @@ export default {
     hasBars() {
       return !!arrayHasItems(this.bars);
     },
-    barsStyle() {
-      return this.styles.bars;
-    },
     popovers() {
       return this.glyphs.popovers;
     },
     hasPopovers() {
       return !!arrayHasItems(this.popovers);
     },
-    popoverContentStyle() {
-      return this.styles.dayPopoverContent;
+    dayContentClass() {
+      return [
+        'vc-day-content vc-focusable',
+        get(last(this.content), 'class') || '',
+        this.isDisabled ? this.theme.dayContentDisabled : '',
+        this.theme.isDark ? 'vc-is-dark' : '',
+        this.theme.dayContent,
+      ];
     },
-    popoverState() {
-      let visibility = '';
-      let isInteractive = false;
-      let content;
-      this.popovers.forEach(popover => {
-        if (!visibility && popover.visibility) visibility = popover.visibility;
-        isInteractive = isInteractive || popover.isInteractive;
-        content = content || popover.label || popover.component || popover.slot;
-      });
+    dayContentProps() {
+      let tabindex;
+      if (this.day.isFocusable) {
+        tabindex = '0';
+      } else if (this.day.inMonth) {
+        tabindex = '-1';
+      }
       return {
-        visibility: visibility || (content && 'hover') || 'hidden',
-        isInteractive,
+        tabindex,
+        'aria-label': this.day.ariaLabel,
       };
     },
-    popoverVisibility() {
-      return this.popoverState.visibility;
-    },
-    popoverIsInteractive() {
-      return this.popoverState.isInteractive;
-    },
-    contentStyle() {
-      const userStyle = this.styles.dayContent;
-      const disableEvents =
-        this.dayCellStyle &&
-        (parseFloat(this.dayCellStyle.opacity) === 0 ||
-          this.dayCellStyle.pointerEvents === 'none');
+    dayContentEvents() {
       return {
-        ...((isFunction(userStyle) &&
-          userStyle({
-            day: this.day,
-            isHovered: this.isHovered,
-            isFocused: this.isFocused,
-          })) ||
-          userStyle),
-        ...this.glyphs.contentStyle,
-        ...(disableEvents && { pointerEvents: 'none' }),
+        click: this.click,
+        mouseenter: this.mouseenter,
+        mouseleave: this.mouseleave,
+        focusin: this.focusin,
+        focusout: this.focusout,
+        keydown: this.keydown,
+      };
+    },
+    dayEvent() {
+      return {
+        ...this.day,
+        el: this.$refs.content,
+        popovers: this.popovers,
       };
     },
   },
   watch: {
-    isHoveredDirty() {
-      this.refreshGlyphs();
+    theme() {
+      this.refresh();
     },
-    isFocusedDirty() {
-      this.refreshGlyphs();
-    },
-    attributesList(newList, oldList) {
-      newList.forEach(n => {
-        n.isNew = !oldList.find(o => o.key === n.key);
+    popovers() {
+      const visibilities = ['click', 'focus', 'hover', 'visible'];
+      let placement = '';
+      let isInteractive = false;
+      let vIdx = -1;
+      this.popovers.forEach(p => {
+        const vNew = visibilities.indexOf(p.visibility);
+        vIdx = vNew > vIdx ? vNew : vIdx;
+        placement = placement || p.placement;
+        isInteractive = isInteractive || p.isInteractive;
       });
-      this.refreshGlyphs();
+      this.popoverState = {
+        visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
+        placement: placement || 'bottom',
+        isInteractive,
+      };
     },
-  },
-  created() {
-    this.refreshGlyphs();
   },
   methods: {
     getDayEvent(origEvent) {
       return {
-        ...this.day,
-        attributes: this.attributesList,
-        attributesMap: this.attributesMap,
+        ...this.dayEvent,
         event: origEvent,
       };
     },
@@ -307,422 +266,334 @@ export default {
     mouseenter(e) {
       this.$emit('daymouseenter', this.getDayEvent(e));
     },
-    mouseover(e) {
-      this.isHovered = true;
-      this.$emit('daymouseover', this.getDayEvent(e));
-    },
     mouseleave(e) {
-      this.isHovered = false;
       this.$emit('daymouseleave', this.getDayEvent(e));
     },
-    refreshGlyphs() {
-      // Get the day attributes
-      this.glyphs = (this.attributesList || [])
-        // Evaluate attribute functions if needed
-        .map(attr =>
-          this.evalAttribute(attr, this.isHoveredDirty, this.isFocusedDirty),
-        )
-        .reduce(
-          // Add glyphs for each attribute (prioritize from first to last)
-          (glyphs, attr) => {
-            const {
-              highlight,
-              highlightCaps,
-              onStart,
-              onEnd,
-              dot,
-              bar,
-              popover,
-            } = attr;
-            const { backgrounds, dots, bars, popovers, contentStyle } = glyphs;
-            // Add backgrounds for highlight if needed
-            if (highlight && !(onStart && onEnd && highlightCaps))
-              backgrounds.push(this.getBackground(attr));
-            if (highlightCaps && (onStart || onEnd))
-              backgrounds.push(this.getBackgroundCap(attr));
-            // Add dot if needed
-            if (dot) dots.push(this.getDot(attr));
-            // Add bar if needed
-            if (bar) bars.push(this.getBar(attr));
-            // Add popover if needed
-            if (popover) popovers.unshift(this.getPopover(attr));
-            // Add content style if needed
-            Object.assign(contentStyle, attr.contentStyle);
-            // Continue configuring glyphs
-            return glyphs;
-          },
-          // Initialize glyphs object
-          {
-            backgrounds: [],
-            dots: [],
-            bars: [],
-            popovers: [],
-            contentStyle: {},
-          },
-        );
+    focusin(e) {
+      this.$emit('dayfocusin', this.getDayEvent(e));
     },
-    evalAttribute(attribute, isHovered, isFocused) {
-      const { targetDate } = attribute;
-      const onStart = targetDate.startTime === this.dateTime;
-      const onEnd = targetDate.endTime === this.dateTime;
-      const inBetween = !onStart && !onEnd;
-      const validate = prop =>
-        (isFunction(prop) &&
-          prop({
-            day: this.day,
-            targetDate,
-            onStart,
-            onEnd,
-            inBetween,
-            isHovered,
-            isFocused,
-          })) ||
-        (isObject(prop) && prop);
-      return mixinOptionalProps(
-        attribute,
-        {
-          ...attribute,
+    focusout(e) {
+      this.$emit('dayfocusout', this.getDayEvent(e));
+    },
+    keydown(e) {
+      this.$emit('daykeydown', this.getDayEvent(e));
+    },
+    refresh() {
+      if (!this.day.refresh) return;
+      this.day.refresh = false;
+      const glyphs = {
+        backgrounds: [],
+        dots: [],
+        bars: [],
+        popovers: [],
+        content: [],
+      };
+      this.day.attributes = Object.values(this.day.attributesMap || {}).sort(
+        (a, b) => a.order - b.order,
+      );
+      this.day.attributes.forEach(attr => {
+        // Add glyphs for each attribute
+        const { targetDate } = attr;
+        const { isDate, isComplex, startTime, endTime } = targetDate;
+        const onStart = startTime === this.dateTime;
+        const onEnd = endTime === this.dateTime;
+        const onStartAndEnd = onStart && onEnd;
+        const onStartOrEnd = onStart || onEnd;
+        const dateInfo = {
+          isDate,
+          isComplex,
           onStart,
           onEnd,
-          inBetween,
-        },
-        [
-          { name: 'highlight', mixin: defaults.highlight, validate },
-          { name: 'highlightCaps', mixin: defaults.highlightCaps, validate },
-          { name: 'dot', mixin: defaults.dot, validate },
-          { name: 'bar', mixin: defaults.bar, validate },
-          { name: 'contentStyle', validate },
-          { name: 'popover', validate },
-          { name: 'customData' },
-        ],
-      ).target;
+          onStartAndEnd,
+          onStartOrEnd,
+        };
+        this.processHighlight(attr, dateInfo, glyphs);
+        this.processContent(attr, dateInfo, glyphs);
+        this.processDot(attr, dateInfo, glyphs);
+        this.processBar(attr, dateInfo, glyphs);
+        this.processPopover(attr, glyphs);
+      });
+      this.glyphs = glyphs;
     },
-    getBackground({ key, highlight, highlightCaps, targetDate }) {
-      // Initialize the background object
-      const {
-        animated,
-        width,
-        height,
-        backgroundColor,
-        borderColor,
-        borderWidth,
-        borderStyle,
-        opacity,
-      } = highlight;
-      const borderRadius =
-        highlight.borderRadius ||
-        (targetDate.isDate || targetDate.isComplex ? '50%' : '290486px');
-      const background = {
-        key,
-        style: {
-          width: width || height,
-          height,
-          backgroundColor,
-          borderColor,
-          borderWidth,
-          borderStyle,
-          borderRadius,
-          opacity,
-        },
-      };
-      if (targetDate.isDate || targetDate.isComplex) {
-        background.wrapperClass = `c-day-layer c-day-box-center-center ${
-          animated ? 'c-day-scale-enter c-day-scale-leave' : ''
-        }`;
+    processHighlight(
+      { key, highlight },
+      { isDate, isComplex, onStart, onEnd, onStartAndEnd },
+      { backgrounds, content },
+    ) {
+      if (!highlight) return;
+      const { base, start, end } = highlight;
+      if (isDate || isComplex) {
+        backgrounds.push({
+          key,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight ${start.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: start.contentClass,
+        });
+      } else if (onStartAndEnd) {
+        backgrounds.push({
+          key,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight ${start.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: start.contentClass,
+        });
+      } else if (onStart) {
+        backgrounds.push({
+          key: `${key}-base`,
+          wrapperClass: 'vc-day-layer vc-day-box-right-center',
+          class: `vc-highlight vc-highlight-base-start ${base.class}`,
+        });
+        backgrounds.push({
+          key,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight ${start.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: start.contentClass,
+        });
+      } else if (onEnd) {
+        backgrounds.push({
+          key: `${key}-base`,
+          wrapperClass: 'vc-day-layer vc-day-box-left-center',
+          class: `vc-highlight vc-highlight-base-end ${base.class}`,
+        });
+        backgrounds.push({
+          key,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight ${end.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: end.contentClass,
+        });
       } else {
-        const onStart = targetDate.startTime === this.dateTime;
-        const onEnd = targetDate.endTime === this.dateTime;
-        const endLongWidth = '95%';
-        const endShortWidth = '50%';
-        // Is the day date on the highlight start and end date
-        if (onStart && onEnd) {
-          const animation = animated
-            ? 'c-day-scale-enter c-day-scale-leave'
-            : '';
-          background.wrapperClass = `c-day-layer c-day-box-center-center ${animation}`;
-          background.style.width = endLongWidth;
-          background.style.borderWidth = borderWidth;
-          background.style.borderRadius = `${borderRadius} ${borderRadius} ${borderRadius} ${borderRadius}`;
-          // Is the day date on the highlight start date
-        } else if (onStart) {
-          const animation =
-            animated && !highlightCaps ? 'c-day-slide-left-scale-enter' : '';
-          background.wrapperClass = `c-day-layer c-day-box-right-center shift-right ${animation}`;
-          if (highlightCaps) {
-            background.style.width = endShortWidth;
-            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
-            background.style.borderRadius = 0;
-          } else {
-            background.style.width = endLongWidth;
-            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} ${borderWidth}`;
-            background.style.borderRadius = `${borderRadius} 0 0 ${borderRadius}`;
-          }
-          // Is the day date on the highlight end date
-        } else if (onEnd) {
-          const animation =
-            animated && !highlightCaps ? 'c-day-slide-right-scale-enter' : '';
-          background.wrapperClass = `c-day-layer c-day-box-left-center shift-left ${animation}`;
-          if (highlightCaps) {
-            background.style.width = endShortWidth;
-            background.style.borderWidth = `${borderWidth} 0 ${borderWidth} 0`;
-            background.style.borderRadius = 0;
-          } else {
-            background.style.width = endLongWidth;
-            background.style.borderWidth = `${borderWidth} ${borderWidth} ${borderWidth} 0`;
-            background.style.borderRadius = `0 ${borderRadius} ${borderRadius} 0`;
-          }
-          // Is the day date between the highlight start/end dates
-        } else {
-          background.wrapperClass =
-            'c-day-layer c-day-box-center-center shift-left-right';
-          background.style.width = '100%';
-          background.style.borderWidth = `${borderWidth} 0`;
-          background.style.borderRadius = '0';
-        }
+        backgrounds.push({
+          key: `${key}-middle`,
+          wrapperClass: 'vc-day-layer vc-day-box-center-center',
+          class: `vc-highlight vc-highlight-base-middle ${base.class}`,
+        });
+        content.push({
+          key: `${key}-content`,
+          class: base.contentClass,
+        });
       }
-      return background;
     },
-    getBackgroundCap(attribute) {
-      const { key, highlightCaps, targetDate, isNew } = attribute;
-      const { startTime, endTime } = targetDate;
-      const {
-        animated,
-        width,
-        height,
-        backgroundColor,
-        borderColor,
-        borderWidth,
-        borderStyle,
-        opacity,
-      } = highlightCaps;
-      const borderRadius = highlightCaps.borderRadius || '50%';
-      let animation = '';
-      if (animated) {
-        if (startTime === endTime) {
-          animation = 'c-day-scale-enter c-day-scale-leave';
-        } else if (startTime === this.dateTime) {
-          animation = isNew
-            ? 'c-day-slide-left-translate-enter'
-            : 'c-day-slide-right-translate-enter';
-        } else if (endTime === this.dateTime) {
-          animation = isNew
-            ? 'c-day-slide-right-translate-enter'
-            : 'c-day-slide-left-translate-enter';
-        }
+    processContent(
+      { key, content },
+      { isDate, onStart, onEnd },
+      { content: contents },
+    ) {
+      if (!content) return;
+      const { base, start, end } = content;
+      if (isDate || onStart) {
+        contents.push({
+          key,
+          class: start.class,
+        });
+      } else if (onEnd) {
+        contents.push({
+          key,
+          class: end.class,
+        });
+      } else {
+        contents.push({
+          key,
+          class: base.class,
+        });
       }
-      return {
-        key: `${key}-cap`,
-        wrapperClass: `c-day-layer c-day-box-center-center ${
-          animated ? animation : ''
-        }`,
-        style: {
-          width: width || height,
-          height,
-          backgroundColor,
-          borderColor,
-          borderWidth,
-          borderStyle,
-          borderRadius,
-          opacity,
-        },
-      };
     },
-    getDot({ key, dot }) {
-      return {
-        key,
-        style: {
-          width: dot.diameter,
-          height: dot.diameter,
-          backgroundColor: dot.backgroundColor,
-          borderColor: dot.borderColor,
-          borderWidth: dot.borderWidth,
-          borderStyle: dot.borderStyle,
-          borderRadius: dot.borderRadius,
-          opacity: dot.opacity,
-        },
-      };
+    processDot({ key, dot }, { isDate, onStart, onEnd }, { dots }) {
+      if (!dot) return;
+      const { base, start, end } = dot;
+      if (isDate || onStart) {
+        dots.push({
+          key,
+          class: `vc-dot ${start.class}`,
+        });
+      } else if (onEnd) {
+        dots.push({
+          key,
+          class: `vc-dot ${end.class}`,
+        });
+      } else {
+        dots.push({
+          key,
+          class: `vc-dot ${base.class}`,
+        });
+      }
     },
-    getBar({ key, bar }) {
-      return {
-        key,
-        style: {
-          height: bar.height,
-          backgroundColor: bar.backgroundColor,
-          borderColor: bar.borderColor,
-          borderWidth: bar.borderWidth,
-          borderStyle: bar.borderStyle,
-          opacity: bar.opacity,
-        },
-      };
+    processBar({ key, bar }, { isDate, onStart, onEnd }, { bars }) {
+      if (!bar) return;
+      const { base, start, end } = bar;
+      if (isDate || onStart) {
+        bars.push({
+          key,
+          class: `vc-bar ${start.class}`,
+        });
+      } else if (onEnd) {
+        bars.push({
+          key,
+          class: `vc-bar ${end.class}`,
+        });
+      } else {
+        bars.push({
+          key,
+          class: `vc-bar ${base.class}`,
+        });
+      }
     },
-    getPopover(attribute) {
-      const {
-        label,
-        labelStyle,
-        component,
-        slot,
-        hideIndicator,
-        visibility,
-        isInteractive,
-      } = attribute.popover;
-      return {
-        key: attribute.key,
-        customData: attribute.customData,
-        attribute,
-        label: isFunction(label) ? label(attribute, this.day) : label,
-        labelStyle: isFunction(labelStyle)
-          ? labelStyle(attribute, this.day)
-          : labelStyle,
-        component,
-        slot,
-        hideIndicator,
-        visibility,
-        isInteractive: isInteractive !== undefined ? isInteractive : !!slot,
-      };
+    processPopover(attribute, { popovers }) {
+      const { key, customData, popover } = attribute;
+      if (!popover) return;
+      const resolvedPopover = defaults(
+        {
+          key,
+          customData,
+          attribute,
+        },
+        { ...popover },
+        {
+          visibility: popover.label ? 'hover' : 'click',
+          placement: 'bottom',
+          isInteractive: !popover.label,
+        },
+      );
+      popovers.splice(0, 0, resolvedPopover);
     },
   },
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="postcss" scoped>
+.vc-day {
+  position: relative;
+  min-height: var(--day-min-height);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
 
-@import '../styles/vars.sass'
-@import '../styles/mixins.sass'
+.vc-day-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+}
 
-.c-day-popover
-  flex: 1
+.vc-day-box-center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  transform-origin: 50% 50%;
+}
 
-.c-day
-  position: relative
-  min-height: $day-min-height
-  z-index: 1
+.vc-day-box-left-center {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  transform-origin: 0% 50%;
+}
 
-.c-day-layer
-  position: absolute
-  left: 0
-  right: 0
-  top: 0
-  bottom: 0
-  pointer-events: none
+.vc-day-box-right-center {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  transform-origin: 100% 50%;
+}
 
-.c-day-box-center-center
-  +box()
-  height: 100%
-  transform-origin: 50% 50%
+.vc-day-box-center-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
 
-.c-day-box-left-center
-  +box(flex-start)
-  height: 100%
-  transform-origin: 0% 50%
+.vc-day-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--day-content-width);
+  height: var(--day-content-height);
+  margin: var(--day-content-margin);
+  user-select: none;
+  &:hover {
+    background-color: var(--day-content-bg-color-hover);
+    &.vc-is-dark {
+      background-color: var(--day-content-dark-bg-color-hover);
+    }
+  }
+  &:focus {
+    background-color: var(--day-content-bg-color-focus);
+    &.vc-is-dark {
+      background-color: var(--day-content-dark-bg-color-focus);
+    }
+  }
+}
 
-.c-day-box-right-center
-  +box(flex-end)
-  height: 100%
-  transform-origin: 100% 50%
+.vc-highlights {
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
 
-.c-day-box-center-bottom
-  +box(center, flex-end)
+.vc-highlight {
+  width: var(--highlight-height);
+  height: var(--highlight-height);
+  &.vc-highlight-base-start {
+    width: 50% !important;
+    border-radius: 0 !important;
+    border-right-width: 0 !important;
+  }
+  &.vc-highlight-base-end {
+    width: 50% !important;
+    border-radius: 0 !important;
+    border-left-width: 0 !important;
+  }
+  &.vc-highlight-base-middle {
+    width: 100%;
+    border-radius: 0 !important;
+    border-left-width: 0 !important;
+    border-right-width: 0 !important;
+    margin: 0 -1px;
+  }
+}
 
-.c-day-content-wrapper
-  display: flex
-  justify-content: center
-  align-items: center
-  pointer-events: all
-  user-select: none
-  cursor: default
+.vc-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.c-day-content
-  display: flex
-  justify-content: center
-  align-items: center
-  width: $day-content-width
-  height: $day-content-height
-  font-size: $day-content-font-size
-  font-weight: $day-content-font-weight
-  line-height: 1
-  border-radius: $day-content-border-radius
-  transition: all $day-content-transition-time
-  margin: .1rem .08rem
+.vc-dot {
+  width: var(--dot-diameter);
+  height: var(--dot-diameter);
+  border-radius: var(--dot-border-radius);
+  transition: all var(--day-content-transition-time);
+  &:not(:last-child) {
+    margin-right: var(--dot-spacing);
+  }
+}
 
-.c-day-backgrounds
-  overflow: hidden
-  pointer-events: none
-  z-index: -1
-  backface-visibility: hidden // Prevents glitches in Chrome by forcing hardware acceleration
+.vc-bars {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: var(--bars-width);
+}
 
-.c-day-background
-  transition: height $background-transition-time, background-color $background-transition-time
-
-.shift-left
-  margin-left: -1px
-
-.shift-right
-  margin-right: -1px
-
-.shift-left-right
-  margin: 0 -1px
-
-.c-day-dots
-  +box()
-
-.c-day-dot
-  width: $dot-diameter
-  height: $dot-diameter
-  border-radius: $dot-border-radius
-  background-color: $dot-background-color
-  transition: all $day-content-transition-time
-  &:not(:last-child)
-    margin-right: $dot-spacing
-
-.c-day-bars
-  +box(flex-start)
-  width: $bars-width
-
-.c-day-bar
-  flex-grow: 1
-  height: $bar-height
-  background-color: $bar-background-color
-  transition: all $day-content-transition-time
-
-.c-day-popover-content
-  font-size: $day-popover-font-size
-  font-weight: $day-popover-font-weight
-
-// TRANSITION ANIMATIONS
-
-.background-enter-active
-
-  &.c-day-fade-enter
-    transition: $fade-transition
-
-  &.c-day-slide-right-scale-enter
-    animation: $slide-right-scale-enter-animation
-
-  &.c-day-slide-right-translate-enter
-    animation: $slide-right-translate-enter-animation
-
-  &.c-day-slide-left-scale-enter
-    animation: $slide-left-scale-enter-animation
-
-  &.c-day-slide-left-translate-enter
-    animation: $slide-left-translate-enter-animation
-
-  &.c-day-scale-enter
-    animation: $scale-enter-animation
-
-.background-leave-active
-  &.c-day-fade-leave
-    transition: $fade-transition
-
-  &.c-day-scale-leave
-    animation: $scale-leave-animation
-
-.background-enter
-  &.c-day-fade-enter
-    opacity: 0
-
-.background-leave-to
-  &.c-day-fade-leave
-    opacity: 0
-
+.vc-bar {
+  flex-grow: 1;
+  height: var(--bar-height);
+  transition: all var(--day-content-transition-time);
+}
 </style>

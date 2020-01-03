@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for components/CalendarWeeks.vue</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">All files</a> / <a href="index.html">components</a> CalendarWeeks.vue
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/75</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/11</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/63</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143</td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;<span class="cstat-no" title="statement not covered" >t<span class="fstat-no" title="function not covered" >em</span>plate&gt;</span>
+&lt;div&gt; 
+  &lt;div
+<span class="cstat-no" title="statement not covered" >    class='c-week'</span>
+    v-for='(week, i) in weeks'
+    :key='i + 1'
+    @touchstart.passive='$emit("touchstart", $event)'
+    @touchmove.pass<span class="cstat-no" title="statement not covered" >ive='$emit("touchmove", $</span>event)'
+    @touchend.passive='$emit("touchend", $event)'&gt;
+    &lt;calendar-day<span class="cstat-no" title="statement not covered" ></span>
+      v-for='day in week'
+      :key='day<span class="cstat-no" title="statement not covered" >.id'</span>
+      :dayInfo='day'
+      v-b<span class="fstat-no" title="function not covered" >ind='$attrs'<span class="cstat-no" title="statement not covered" ></span></span>
+      v-on='$listeners'&gt;
+      &lt;template v-for='slot in Object.keys($scopedSlots)' :slot='slot' slot-scope='props'&gt;
+        &lt;slot :name='slot' v-bind='props'&gt;&lt;/slot&gt;
+      &lt;/template&gt;
+    &lt;/calendar-day&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/template&gt;
+&nbsp;
+&lt;script&gt;
+import CalendarDay from './CalendarDay';
+import { todayComps } from '../utils/helpers';
+&nbsp;
+export default {
+  components: {
+    CalendarDay,
+  },
+  props: {
+    monthComps: Object,
+    prevMonthComps: Object,
+    nextMonthComps: Object,
+    trimMaxWeek: Boolean,
+  },
+  computed: {
+    weeks() {
+<span class="cstat-no" title="statement not covered" >      const weeks = [];</span>
+      const { firstDayOfWeek, firstWeekday } = this.monthComps;
+      let prevMonth = true;
+      let thisMonth = false;
+      let nextMonth = false;
+      // Init counters with previous month's data
+      let day = (this.prevMonthComps.days - Math.abs(firstWeekday - firstDayOfWeek)) + 1;
+      let dayFromEnd = (this.prevMonthComps.days - day) + 1;
+      let weekdayOrdinal = Math.floor(((day - 1) / 7) + 1);
+      let weekdayOrdinalFromEnd = 1;
+      let week = this.prevMonthComps.weeks;
+      let weekFromEn<span class="fstat-no" title="function not covered" >d = 1;</span>
+      let month = <span class="cstat-no" title="statement not covered" >thi</span>s.prevMonthComps.month;
+      let year = this.pr<span class="cstat-no" title="statement not covered" >evMonthComps.yea</span>r;
+      // Cycle through 6 we<span class="cstat-no" title="statement not covered" >eks (max in month)</span>
+      for (let w = 1; w &lt;<span class="cstat-no" title="statement not covered" >= 6 &amp;&amp; (!nextMonth || !th</span>is.trimMaxWeek); w++) {
+        // Cycle through each weekday
+        const days = [<span class="cstat-no" title="statement not covered" >];</span>
+        // Cycle throu<span class="cstat-no" title="statement not covered" >gh 7 d</span>ays
+        for (let i = 1<span class="cstat-no" title="statement not covered" >, week</span>day = firstDayOfWeek; i &lt;= 7; i++, weekday += (weekday === 7) ? -6 : 1) {
+          // We need to know when to start counting actual month days
+          if (pr<span class="cstat-no" title="statement not covered" >evMonth &amp;&amp; weekday === firstWeekday) {</span>
+            // Reset co<span class="cstat-no" title="statement not covered" >unters for current month</span>
+            day = 1;<span class="cstat-no" title="statement not covered" ></span>
+            dayFromEnd = this.mont<span class="cstat-no" title="statement not covered" >hC</span>omps.days;
+            weekd<span class="cstat-no" title="statement not covered" >ayOrdinal = Math.floor(((d</span>ay - 1) / 7) + 1);
+            weekdayOrdin<span class="cstat-no" title="statement not covered" >al</span>FromEnd = Math.floor(((this.monthComps.days - day) / 7) + 1);
+            week =<span class="cstat-no" title="statement not covered" > 1;</span>
+            weekF<span class="cstat-no" title="statement not covered" >romEnd = this.monthComps.</span>weeks;
+            month = this.monthComps.month;
+<span class="cstat-no" title="statement not covered" >            year = this.monthComps.year;</span>
+            // ...and flag we're tracking actual month days
+            prevMon<span class="cstat-no" title="statement not covered" >th </span>= false;
+            thisMonth = true;
+<span class="cstat-no" title="statement not covered" >          }</span>
+          // Append day info for the current week
+<span class="cstat-no" title="statement not covered" >          // Note: this might or might not be an actual month day</span>
+          //  We don't know how the UI wants to display various days,
+          //<span class="cstat-no" title="statement not covered" >  so we'l</span>l supply all the data we can
+          co<span class="cstat-no" title="statement not covered" >nst date = new Date(year, month - 1</span>, day);
+          co<span class="cstat-no" title="statement not covered" >nst isToday = day === todayComps.day &amp;&amp; month ==</span>= todayComps.month &amp;&amp; year === todayComps.year;
+          co<span class="cstat-no" title="statement not covered" >nst dayInfo = {</span>
+<span class="cstat-no" title="statement not covered" >            id: `${mon</span>th}.${day}`,
+<span class="cstat-no" title="statement not covered" >            label: day.toString(),</span>
+<span class="cstat-no" title="statement not covered" >            day,</span>
+<span class="cstat-no" title="statement not covered" >            dayFromEnd,</span>
+            weekday,
+<span class="cstat-no" title="statement not covered" >            weekdayOrdinal,</span>
+<span class="cstat-no" title="statement not covered" >            weekdayOrdinalFrom</span>End,
+            week,
+            weekFromEnd,
+            month,
+            year,
+            date,
+            dateTime:<span class="cstat-no" title="statement not covered" > date.getTime(),</span>
+            isToday,<span class="cstat-no" title="statement not covered" ></span>
+            isFirstDay: <span class="cstat-no" title="statement not covered" >thisMonth &amp;&amp; day === 1,</span>
+            isLastDay: thisMonth &amp;&amp; day === this.monthComps.days,
+            inMonth: thisMonth,
+            inPrevMonth: prevMonth,
+            inNextMonth: nextMonth,
+          };
+          days.push(dayInfo);
+          // See if we've hit the last day of the month
+          if (thisMonth &amp;&amp; dayInfo.isLastDay) {
+            thisMonth = false;
+            nextMonth = true;
+            // Reset counters to next month's data
+            day = 1;
+            dayFromEnd = this.nextMonthComps.days;
+            weekdayOrdinal = 1;
+            weekdayOrdinalFromEnd = Math.floor(((this.nextMonthComps.days - day) / 7) + 1);
+            week = 1;
+            weekFromEnd = this.nextMonthComps.weeks;
+            month = this.nextMonthComps.month;
+            year = this.nextMonthComps.year;
+          // Still in the middle of the month (hasn't ended yet)
+<span class="cstat-no" title="statement not covered" >          } else {</span>
+            day++;
+<span class="cstat-no" title="statement not covered" >            dayFromEnd--;</span>
+<span class="cstat-no" title="statement not covered" >            weekdayOrdinal = Ma</span>th.floor(((day - 1) / 7) + 1);
+<span class="cstat-no" title="statement not covered" >            weekdayOrdinalFrom</span>End = Math.floor(((this.monthComps.days - day) / 7) + 1);
+          }
+        }<span class="cstat-no" title="statement not covered" ></span>
+        // A<span class="cstat-no" title="statement not covered" >ppend week days</span>
+        week<span class="cstat-no" title="statement not covered" >s.push(days);</span>
+        //<span class="cstat-no" title="statement not covered" ></span>
+        week<span class="cstat-no" title="statement not covered" >++;</span>
+        week<span class="cstat-no" title="statement not covered" >FromEnd--;</span>
+      }<span class="cstat-no" title="statement not covered" ></span>
+      return<span class="cstat-no" title="statement not covered" > weeks;</span>
+    },
+  },
+};<span class="cstat-no" title="statement not covered" ></span>
+&lt;/script&gt;<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" ></span>
+&lt;style lang=<span class="cstat-no" title="statement not covered" >'sass' scoped&gt;</span>
+&nbsp;
+.c-week
+  flex-grow: 1
+  displa<span class="cstat-no" title="statement not covered" >y: flex</span>
+&nbsp;
+&lt;/style&gt;<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" ></span></pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Jan 05 2018 11:32:47 GMT-0600 (CST)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

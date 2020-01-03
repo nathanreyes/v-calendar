@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/components/DatePicker.vue</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/components</a> DatePicker.vue
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/103</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/40</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/43</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/86</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241</td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;<span class="cstat-no" title="statement not covered" >t<span class="fstat-no" title="function not covered" >em</span>plate&gt;</span>
+&lt;component
+  :is='componentName'
+<span class="cstat-no" title="statement not covered" >  :value='value'</span>
+  :from-page.sync='fromPage_'
+  :to-page.sync='toPage_'
+  :theme-styles='themeStyles_'
+  :disabled-attr<span class="cstat-no" title="statement not covered" >ibute='disabledAttribute'</span>
+  :date-formatter='dateFormatter'
+  @drag='dragVal<span class="cstat-no" title="statement not covered" >ue = $event'</span>
+  v-bind='$attrs'
+  v-on='filtere<span class="cstat-no" title="statement not covered" >dListeners()'</span>
+  v-if='isInline'&gt;
+&lt;/component&gt;<span class="cstat-no" title="statement not covered" ></span>
+&lt;popover
+  :direction='popoverDir<span class="cstat-no" title="statement not covered" >ection'</span>
+  :align='popoverAlign'
+  :visibility='popoverVis<span class="cstat-no" title="statement not covered" >ibility'</span>
+  :is-expanded='popoverExpanded'
+  :content-style='popoverC<span class="cstat-no" title="statement not covered" >ontentStyle'</span>
+  :force-hidden.sync='popoverForceHidden'
+  @didDisappear='popoverDid<span class="cstat-no" title="statement not covered" >Disappear'</span>
+  is-interactive
+  v-else&gt;<span class="cstat-no" title="statement not covered" ></span>
+  &lt;slot
+    :input-value='inputV<span class="cstat-no" title="statement not covered" >alue'</span>
+    :update-value='updateValue'&gt;
+    &lt;input<span class="cstat-no" title="statement not covered" ></span>
+      ref='input'
+      type='text'<span class="cstat-no" title="statement not covered" ></span>
+      :class='[inputClass, { "c-input-drag": !value &amp;&amp; dragValue }]'
+      :style='inp<span class="cstat-no" title="statement not covered" >utStyle'</span>
+      :placeholder='inputPlaceholder_'
+      :value='inpu<span class="cstat-no" title="statement not covered" >tValue'</span>
+      :readonly='inputIsReadOnly'
+      @change='u<span class="cstat-no" title="statement not covered" >pdateValue($event.target.valu</span>e)' /&gt;
+  &lt;/slot&gt;
+  &lt;component<span class="cstat-no" title="statement not covered" ></span>
+    slot='popover-content'
+    :is='componentNa<span class="cstat-no" title="statement not covered" >me'</span>
+    :value='value'
+    :from<span class="fstat-no" title="function not covered" >-page.sync='fromPage_'<span class="cstat-no" title="statement not covered" ></span></span>
+    :to-page.sync='toPage_'
+    :theme-styles='themeStyles_'
+    :disabled-attribute='disabledAttribute'
+    :date-formatter='dateFormatter'
+    @drag='dragValue = $event'
+    v-bind='$attrs'
+    v-on='filteredListeners()'&gt;
+  &lt;/component&gt;
+&lt;/popover&gt;
+&lt;/template&gt;
+&nbsp;
+&lt;script&gt;
+import Popover from './Popover';
+import SingleDatePicker from './SingleDatePicker';
+import MultipleDatePicker from './MultipleDatePicker';
+import DateRangePicker from './DateRangePicker';
+import PickerProfile from '../utils/pickerProfiles';
+import Attribute from '../utils/attribute';
+import defaults from '../utils/defaults';
+import { isString } from '../utils/typeCheckers';
+&nbsp;
+export default {
+  components: {
+    Popover,
+    SingleDatePicker,
+    MultipleDatePicker,
+    DateRangePicker,
+  },
+  props: {
+    mode: { type: String, default: 'single' },
+    value: null,
+    isInline: Boolean,
+    fromPage: Object,
+    toPage: Object,
+    popoverExpanded: { type: Boolean, default: () =&gt; defaults.popoverExpanded },
+    popoverDirection: { type: String, default: () =&gt; defaults.popoverDirection },
+    popoverAlign: { type: String, default: () =&gt; defaults.popoverAlign },
+    popoverVisibility: { type: String, default: () =&gt; defaults.popoverVisibility },
+    popoverKeepVisibleOnInput: Boolean,
+    inputClass: { type: String, default: () =&gt; defaults.datePickerInputClass },
+    inputStyle: { type: Object, default: () =&gt; defaults.datePickerInputStyle },
+    inputPlaceholder: String,
+    dateFormatter: { type: Function, default: defaults.dateFormatter },
+    dateParser: { type: Function, default: defaults.dateParser },
+    themeStyles: { type: Object, default: () =&gt; ({}) },
+    availableDates: null,
+    disabledDates: null,
+  },
+  data() {
+    return {
+      fromPage_: null,
+      toPage_: null,
+      dragValue: null,
+      inputValue: '',
+      popoverForceHidden: false,
+<span class="cstat-no" title="statement not covered" >      disablePopoverForceHidden: false,</span>
+    };
+  },
+  computed: {
+    profile() {
+      return PickerProfile(this.mode, this.dateFormatter, this.dateParser);
+    },
+    componentName() {
+      return this.profile.componentName;
+    },
+    inputPlaceholder_() {
+      return this.inputPlaceholder || this.profile.inputPlaceholder;
+    },
+    inputIsReadOnly() {<span class="fstat-no" title="function not covered" ></span>
+      re<span class="cstat-no" title="statement not covered" >turn this.disabledAttribute &amp;&amp; this.disable</span>dAttribute.isComplex;
+    },
+    formattedValue() {<span class="fstat-no" title="function not covered" ></span>
+      re<span class="cstat-no" title="statement not covered" >turn this.profile.formatValue(this.value, th</span>is.dragValue);
+    },
+    themeStyles_() {<span class="fstat-no" title="function not covered" ></span>
+      co<span class="cstat-no" title="statement not covered" >nst styles = {</span>
+        dayContentHover: {
+          backgroundColor: '#dadada',<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >          border: '0',</span>
+          cursor: 'pointer',
+        },
+        ...this.themeStyles,<span class="fstat-no" title="function not covered" ></span>
+      };<span class="cstat-no" title="statement not covered" ></span>
+      // Strip border from the wrapper when used in a popover
+      // It will get applied to the popover conten<span class="fstat-no" title="function not covered" >t style i</span>nstead so that the caret inherits it
+      if<span class="cstat-no" title="statement not covered" > (!this.isInline) {</span>
+        styles.wrapper = {
+          ...styles.wrapper,
+          border: '0',
+        };
+      }<span class="fstat-no" title="function not covered" ></span>
+      re<span class="cstat-no" title="statement not covered" >turn styles</span>;
+    },
+    popoverContentStyle() {
+      return {
+        ...this.themeStyles.wrapper,
+        ...this.t<span class="fstat-no" title="function not covered" >hemeS</span>tyles.header,
+<span class="cstat-no" title="statement not covered" >        padding: '0',</span>
+        margin: '0',
+      };
+    },
+    disabledAttribute() {
+      if (!this.disabledDates &amp;&amp; !this.availableDates) return null;
+      return Attribute({
+        ...defaults.datePickerDisabledAttribute,
+        dates: this.disabledDates,
+        excludeDates: this.availableDates,
+      });
+    },<span class="fstat-no" title="function not covered" ></span>
+  },<span class="cstat-no" title="statement not covered" ></span>
+  watch: {
+    fromPage(val) {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      this.fromPage_ = val;</span>
+    },
+    toPage(val) {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      this.toPage_ = val;</span>
+    },
+    fromPage_(val) {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      this.$emit('update:frompage', val); // Support in-DOM templates (:f</span>rompage.sync)
+      this.$emit('update:fromPage', val); // Allow using :from-page.sync
+    },<span class="fstat-no" title="function not covered" ></span>
+    to<span class="cstat-no" title="statement not covered" >Page_(val) {</span>
+      this.$emit('update:topage', val);   // Support in-DOM templates (:topage.sync)
+      this.$emit('update:to<span class="fstat-no" title="function not covered" >Page', val); </span>  // Allow using :to-page.sync
+    },<span class="cstat-no" title="statement not covered" ></span>
+    mode() {
+      // Clear value on select mode change
+      this.$emit('input', null);
+    },
+    value() {
+      this.updateInputValue();
+      if (this.popoverKeepVisibleOnInput) return;
+      if (this.mode !== 'multiple' &amp;&amp; !this.disablePopoverForceHidden) {
+<span class="cstat-no" title="statement not covered" >        setTimeout(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >          this.popoverForceHidden = true;</span>
+        }, 300);
+      }
+      if (this.$refs.input) this.$refs.input.blur();
+<span class="cstat-no" title="statement not covered" >      this.disablePop</span>overForceHidden = false;
+    },
+    dragValue() {<span class="fstat-no" title="function not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      this.updateInputValue();</span>
+    },
+    disabledAttribute() {
+      this.updateValue(this.value);
+    },
+  },<span class="fstat-no" title="function not covered" ></span>
+  crea<span class="cstat-no" title="statement not covered" >ted() {<span class="cstat-no" title="statement not covered" ></span></span>
+    th<span class="cstat-no" title="statement not covered" >is.assignPageRange();</span>
+    this.updateInputValue();
+  },
+  methods: {
+    filteredListeners() {
+      // Remove parent listeners that we want to intercept and re-broadcast
+      const listeners = { ...this.$listeners };
+      delete listeners[<span class="fstat-no" title="function not covered" >'update:f</span>rompage'];
+<span class="cstat-no" title="statement not covered" >      delete listeners['upda</span>te:fromPage'];
+      delete listeners['update:topage'];
+      delete listener<span class="fstat-no" title="function not covered" >s['upda</span>te:toPage'];
+<span class="cstat-no" title="statement not covered" >      return listeners;</span>
+    },
+    popoverDidDisappear(<span class="fstat-no" title="function not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >      this.assignPageRange();</span>
+    },<span class="cstat-no" title="statement not covered" ></span>
+    assignPageRange() {
+      const range = th<span class="fstat-no" title="function not covered" >is.profi</span>le.getPageRange(this.value);
+<span class="cstat-no" title="statement not covered" >      if (range) {</span>
+<span class="cstat-no" title="statement not covered" >        this.fromPage_ = range.from;</span>
+        this.toPage_ = range.to;
+      }<span class="fstat-no" title="function not covered" ></span>
+    },
+    up<span class="cstat-no" title="statement not covered" >dateValue(value) {</span>
+      const parsedValue = isString(value) ? this.profile.parseValue(value) : value;
+      // Filter out <span class="fstat-no" title="function not covered" >any di</span>sabled dates
+      const filter<span class="cstat-no" title="statement not covered" >edVal</span>ue = this.profile.filterDisabled(parsedValue, this.disabledAttribute);
+      if (this.profile.valuesAreEqual(parsedValue, filteredValue)) {
+<span class="cstat-no" title="statement not covered" >        // Everything user ente</span>red was accepted so hide popover
+<span class="cstat-no" title="statement not covered" >        this.popoverForceHidden = true;<span class="cstat-no" title="statement not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >        if (this.$refs.input) this.$refs.input.blur();</span>
+      } <span class="cstat-no" title="statement not covered" >else {<span class="fstat-no" title="function not covered" ></span></span>
+        //<span class="cstat-no" title="statement not covered" > Keep the popover open because so</span>mething they entered was modified
+        this.disablePopoverForceHidden = true;
+      }
+<span class="cstat-no" title="statement not covered" >      this.$emit('input', fi<span class="cstat-no" title="statement not covered" >lteredValue);</span></span>
+<span class="cstat-no" title="statement not covered" >      // Update input text for good measure</span>
+      this.updateInputValue();
+    },<span class="fstat-no" title="function not covered" ></span>
+    up<span class="cstat-no" title="statement not covered" >dateInputValue() {</span>
+      this.$nextTick(() =&gt; { this.inputValue = this.profile.formatValue(this.value, this.dragValue); });
+    },<span class="fstat-no" title="function not covered" ></span>
+  },<span class="cstat-no" title="statement not covered" ></span>
+};
+&lt;/script&gt;
+<span class="fstat-no" title="function not covered" ></span>
+&lt;sty<span class="cstat-no" title="statement not covered" >le lang='sass' scoped&gt;</span>
+  .c<span class="cstat-no" title="statement not covered" >-input-drag</span>
+    color: rgba(0, 0, 0, 0.3)
+&lt;/style&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Jan 05 2018 09:47:39 GMT-0600 (CST)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+@tailwind base;
+
+@tailwind components;
+
+.distributed {
+  @apply my-8 flex justify-around items-start;
+}
+
+.example,
+.example-home {
+  @apply -mx-2 my-4 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
+  &.is-dark {
+    @apply bg-gray-800;
+  }
+}
+
+.example {
+  @media (max-width: 419px) {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
+}
+
+input[type='text'] {
+  @apply w-full shadow appearance-none border rounded py-2 px-3 text-gray-700;
+}
+
+.homepage .home {
+  max-width: initial;
+  padding: 3.6rem 0 2rem 0;
+}
+
+.site-name {
+  @apply text-indigo-700 !important;
+}
+
+.site-name:hover {
+  @apply text-indigo-500 !important;
+}
+
+.homepage .hero {
+  @apply px-4;
+}
+.homepage .hero img {
+  max-height: 190px !important;
+}
+
+.homepage .content {
+  & div[class*='language-'] {
+    @apply max-w-md mx-auto;
+  }
+}
+
+.homepage .hero .action-button {
+  @apply px-6 py-2 !important;
+}
+
+.section {
+  @apply max-w-2xl mx-auto px-4 my-10;
+}
+
+h1,
+.h1 {
+  @apply text-3xl text-gray-800 p-0 mt-0 mb-4 !important;
+}
+
+h2,
+.h2 {
+  @apply text-2xl text-gray-800 border-none mb-4;
+}
+
+h3,
+.h3 {
+  @apply text-lg text-gray-600 font-medium tracking-wide mb-3;
+}
+
+h4,
+.h4 {
+  @apply text-gray-700 font-semibold tracking-wide p-0 mt-3 mb-2;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  &:not(:first-child) {
+    @apply mt-6;
+  }
+}
+
+/* h3,
+h4 {
+  &:not(first-child) {
+    @apply mt-4;
+  }
+} */
+
+ul {
+  @apply list-disc text-indigo-500 font-semibold tracking-wide;
+  & li {
+    @apply mb-1;
+  }
+}
+
+ol {
+  @apply list-decimal;
+}
+
+p {
+  @apply my-2 leading-relaxed;
+}
+
+.sidebar {
+  @apply border-none !important;
+}
+
+.sidebar-heading {
+  @apply text-sm tracking-wide text-gray-500 uppercase pl-6 !important;
+}
+
+.sidebar-link {
+  @apply flex w-auto text-sm text-gray-600 font-medium ml-3 px-3 py-1 mt-1 !important;
+}
+
+.sidebar-link:hover {
+  @apply text-indigo-700 font-semibold !important;
+}
+
+.sidebar-link.active {
+  @apply text-indigo-700 font-semibold bg-indigo-100 border-l-4 border-indigo-500 rounded !important;
+}
+
+@tailwind utilities;

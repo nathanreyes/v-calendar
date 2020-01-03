@@ -1,39 +1,41 @@
-import Calendar from './components/Calendar';
-import DatePicker from './components/DatePicker';
-import Popover from './components/Popover';
-import getLocaleDefaults from './utils/locales';
-import defaults, { mergeDefaults } from './utils/defaults';
+import setupCalendar from './utils/setup';
+import Calendar from '@/components/Calendar';
+import DatePicker from '@/components/DatePicker';
 
+// Export components individually
+export { setupCalendar, Calendar, DatePicker };
+
+// Installs the library as a plugin
 const components = {
   Calendar,
   DatePicker,
-  Popover,
 };
 
-const setupCalendar = userDefaults => {
-  // Merge user and locale defaults with built-in defaults
-  const locale = userDefaults
-    ? userDefaults.locale
-    : new Intl.DateTimeFormat().resolvedOptions().locale;
-  return mergeDefaults(defaults, getLocaleDefaults(locale), userDefaults);
+// Declare install function executed by Vue.use()
+export default function install(Vue, opts) {
+  // Don't install more than once
+  if (install.installed) return;
+  install.installed = true;
+  // Manually setup calendar with options
+  const defaults = setupCalendar(opts);
+  // Register components
+  Object.keys(components).forEach(k =>
+    Vue.component(`${defaults.componentPrefix}${k}`, components[k]),
+  );
+}
+
+// Create module definition for Vue.use()
+const plugin = {
+  install,
 };
-
-const VCalendar = {
-  ...components,
-  install: (Vue, options) => {
-    // Setup plugin with options
-    const resolvedDefaults = setupCalendar(options);
-    Object.keys(components).forEach(k =>
-      Vue.component(`${resolvedDefaults.componentPrefix}${k}`, components[k]),
-    );
-  },
-};
-
-export default VCalendar;
-
-export { setupCalendar, Calendar, DatePicker, Popover };
 
 // Use automatically when global Vue instance detected
-if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(VCalendar);
+let GlobalVue = null;
+if (typeof window !== 'undefined') {
+  GlobalVue = window.Vue;
+} else if (typeof global !== 'undefined') {
+  GlobalVue = global.Vue;
+}
+if (GlobalVue) {
+  GlobalVue.use(plugin);
 }

@@ -1,0 +1,27 @@
+/* Resets usually supplied by Tailwind @base */
+.vc-reset {
+  &,
+  & * {
+    line-height: 1.5;
+    box-sizing: border-box;
+    &:focus {
+      outline: none;
+    }
+  }
+  & button,
+  & [role='button'] {
+    cursor: pointer;
+  }
+}
+
+.vc-box-center-center {
+  @apply vc-flex vc-justify-center vc-items-center;
+}
+
+.vc-border,
+.vc-border-2,
+.vc-border-3 {
+  border-style: solid;
+}
+
+@tailwind utilities;

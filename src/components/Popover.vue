@@ -1,361 +1,437 @@
-<template>
-<div
-  ref='popover'
-  :class='["popover-container", { expanded: isExpanded }]'
-  :tabindex='visibility === "focus" && -1 || undefined'
-  :style='containerStyle'
-  @focusin='focusin'
-  @focusout='focusout'
-  @mouseleave='mouseleave'
-  @mousemove='mousemove'
-  @click.stop='click'>
-  <transition
-    tag='div'
-    :name='transition'
-    @enter='contentEnter'
-    @before-enter='beforeContentEnter'
-    @after-enter='afterContentEnter'
-    @leave='contentLeave'
-    @before-leave='beforeContentLeave'
-    @after-leave='afterContentLeave'>
-    <div
-      ref='popoverOrigin'
-      :class='["popover-origin", "direction-" + direction, "align-" + align]'
-      v-if='visible'>
-      <div
-        ref='popoverContentWrapper'
-        :class='["popover-content-wrapper", "direction-" + direction, "align-" + align, { "interactive": isInteractive }]'
-        :style='contentWrapperStyle'>
-        <div
-          ref='popoverContent'
-          :class='["popover-content", "direction-" + direction, "align-" + align]'
-          :style='contentStyle'>
-          <slot name='popover-content'>
-            <div>Popover content goes here</div>
-          </slot>
-        </div>
-      </div>
-    </div>
-  </transition>
-  <slot>
-    <span>Popover trigger goes here</span>
-  </slot>
-</div>
-</template>
-
 <script>
-import defaults from '../utils/defaults';
-import { registerTapOrClick } from '../utils/touchHandlers';
-import { elementHasAncestor } from '../utils/helpers';
-import { POPOVER_VISIBILITIES as VISIBILITIES } from '../utils/constants';
+import Popper from 'popper.js';
+import { popoversMixin } from '@/utils/popovers';
+import { on, off, elementContains } from '@/utils/helpers';
+import { addTapOrClickHandler } from '@/utils/touch';
+import { isFunction } from '@/utils/_';
 
 export default {
+  name: 'Popover',
+  render(h) {
+    return h(
+      'div',
+      {
+        class: [
+          'vc-popover-content-wrapper',
+          { 'is-interactive': this.isInteractive },
+        ],
+        ref: 'popover',
+      },
+      [
+        h(
+          'transition',
+          {
+            props: {
+              name: this.transition,
+              appear: true,
+            },
+            on: {
+              beforeEnter: this.beforeEnter,
+              afterEnter: this.afterEnter,
+              beforeLeave: this.beforeLeave,
+              afterLeave: this.afterLeave,
+            },
+          },
+          [
+            this.isVisible &&
+              h(
+                'div',
+                {
+                  attrs: {
+                    tabindex: -1,
+                  },
+                  class: [
+                    'vc-popover-content',
+                    `direction-${this.direction}`,
+                    this.contentClass,
+                  ],
+                },
+                [
+                  this.content,
+                  h('span', {
+                    class: [
+                      'vc-popover-caret',
+                      `direction-${this.direction}`,
+                      `align-${this.alignment}`,
+                    ],
+                  }),
+                ],
+              ),
+          ],
+        ),
+      ],
+    );
+  },
+  mixins: [popoversMixin],
   props: {
-    isExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
-    direction: { type: String, default: () => defaults.popoverDirection },
-    align: { type: String, default: () => defaults.popoverAlign },
-    visibility: { type: String, default: () => defaults.popoverVisibility },
-    isInteractive: Boolean,
-    forceHidden: Boolean,
-    toggleVisibleOnClick: Boolean, // Only valid when visibility === "focus"
-    contentStyle: Object,
-    contentOffset: {
-      type: Number,
-      default: () => defaults.popoverContentOffset,
-    },
+    id: { type: String, required: true },
     transition: { type: String, default: 'slide-fade' },
-    showClearMargin: Boolean,
+    contentClass: String,
   },
   data() {
     return {
-      hoverVisible: false,
-      focusVisible: false,
-      clearMargin: 0,
-      contentTransitioning: false,
-      contentTransitioningCancelled: false,
-      disableNextClick: false,
-      windowTapClickRegistration: null,
+      ref: null,
+      args: null,
+      visibility: '',
+      placement: 'bottom',
+      positionFixed: false,
+      modifiers: {},
+      isInteractive: false,
+      delay: 10,
+      popperEl: null,
     };
   },
   computed: {
-    containerStyle() {
+    content() {
       return (
-        this.visible && {
-          [`margin-${this.direction}`]: `${this.clearMargin}px`,
-        }
+        (isFunction(this.$scopedSlots.default) &&
+          this.$scopedSlots.default({
+            direction: this.direction,
+            alignment: this.alignment,
+            args: this.args,
+            updateLayout: this.scheduleUpdate,
+            hide: opts => this.hide(opts),
+          })) ||
+        this.$slots.default
       );
     },
-    contentWrapperStyle() {
-      const style = {};
-      style[`padding${this.contentOffsetDirection}`] = `${
-        this.contentOffset
-      }px`;
-      return style;
+    popperOptions() {
+      return {
+        placement: this.placement,
+        positionFixed: this.positionFixed,
+        modifiers: {
+          hide: { enabled: false },
+          preventOverflow: { enabled: false },
+          ...this.modifiers,
+        },
+        onCreate: this.onPopperUpdate,
+        onUpdate: this.onPopperUpdate,
+      };
     },
-    contentOffsetDirection() {
-      switch (this.direction) {
-        case 'bottom':
-          return 'Top';
-        case 'top':
-          return 'Bottom';
-        case 'left':
-          return 'Right';
-        case 'right':
-          return 'Left';
-        default:
-          return '';
+    isVisible() {
+      return !!(
+        this.ref &&
+        (this.$scopedSlots.default || this.$slots.default) &&
+        this.visibility !== 'hidden'
+      );
+    },
+    direction() {
+      return (this.placement && this.placement.split('-')[0]) || 'bottom';
+    },
+    alignment() {
+      const isLeftRight =
+        this.direction === 'left' || this.direction === 'right';
+      let alignment = this.placement.split('-');
+      alignment = alignment.length > 1 ? alignment[1] : '';
+      if (['start', 'top', 'left'].includes(alignment)) {
+        return isLeftRight ? 'top' : 'left';
       }
+      if (['end', 'bottom', 'right'].includes(alignment)) {
+        return isLeftRight ? 'bottom' : 'right';
+      }
+      return isLeftRight ? 'middle' : 'center';
     },
-    visibilityIsManaged() {
-      return VISIBILITIES.isManaged(this.visibility);
-    },
-    visible() {
-      if (this.visibility === VISIBILITIES.HOVER) return this.hoverVisible;
-      if (this.visibility === VISIBILITIES.FOCUS) return this.focusVisible;
-      return this.visibility === VISIBILITIES.VISIBLE;
+    state() {
+      return this.$popovers[this.id];
     },
   },
   watch: {
-    forceHidden() {
-      if (this.hoverVisible || this.focusVisible) {
-        this.hoverVisible = false;
-        this.focusVisible = false;
-      } else {
-        this.$emit('update:forcehidden', false);
-        this.$emit('update:forceHidden', false);
-      }
+    state: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.ref = val.ref;
+          this.args = val.args;
+          this.visibility = val.visibility;
+          this.placement = val.placement;
+          this.positionFixed = val.positionFixed;
+          this.modifiers = val.modifiers;
+          this.isInteractive = val.isInteractive;
+          this.setupPopper();
+        }
+      },
     },
-  },
-  created() {
-    this.windowTapClickRegistration = registerTapOrClick(
-      window,
-      this.windowTapOrClick,
-    );
   },
   mounted() {
-    this.refreshClearMargin();
+    this.popoverEl = this.$refs.popover;
+    this.addEvents();
   },
   beforeDestroy() {
-    this.windowTapClickRegistration.cleanup();
+    this.removeEvents();
   },
   methods: {
-    focusin(e) {
-      if (!this.contentTransitioning) {
-        if (!this.focusVisible) this.$emit('got-focus', e);
-        this.focusVisible = true;
-        this.disableNextClick = true;
+    addEvents() {
+      on(this.popoverEl, 'click', this.onClick);
+      on(this.popoverEl, 'mouseover', this.onMouseOver);
+      on(this.popoverEl, 'mouseleave', this.onMouseLeave);
+      on(this.popoverEl, 'focusin', this.onFocusIn);
+      on(this.popoverEl, 'focusout', this.onFocusOut);
+      on(document, 'keydown', this.onDocumentKeydown);
+      this.removeDocHandler = addTapOrClickHandler(
+        document,
+        this.onDocumentClick,
+      );
+    },
+    removeEvents() {
+      off(this.popoverEl, 'click', this.onClick);
+      off(this.popoverEl, 'mouseover', this.onMouseOver);
+      off(this.popoverEl, 'mouseleave', this.onMouseLeave);
+      off(this.popoverEl, 'focusin', this.onFocusIn);
+      off(this.popoverEl, 'focusout', this.onFocusOut);
+      off(document, 'keydown', this.onDocumentKeydown);
+      if (this.removeDocHandler) this.removeDocHandler();
+    },
+    onClick(e) {
+      e.stopPropagation();
+    },
+    onMouseOver() {
+      if (this.isInteractive && this.visibility === 'hover') {
+        this.show();
       }
     },
-    focusout(e) {
-      // Hide when outside element (e.relatedTarget) receives focus
-      if (!elementHasAncestor(e.relatedTarget, this.$refs.popover)) {
-        this.$emit('lost-focus', e);
-        this.focusVisible = false;
+    onMouseLeave() {
+      if (this.isInteractive && this.visibility === 'hover') {
+        this.hide();
       }
     },
-    click(e) {
-      // Toggle focusVisible state on click if enabled
-      // Be sure to ignore clicks on the popover content though
+    onFocusIn() {
+      if (this.isInteractive && this.visibility === 'focus') {
+        this.show();
+      }
+    },
+    onFocusOut(e) {
       if (
-        this.toggleVisibleOnClick &&
-        !this.contentTransitioning &&
-        elementHasAncestor(e.target, this.$refs.popover) &&
-        !elementHasAncestor(e.target, this.$refs.popoverOrigin) &&
-        !this.disableNextClick
+        this.isInteractive &&
+        this.visibility === 'focus' &&
+        e.relatedTarget &&
+        !elementContains(this.popoverEl, e.relatedTarget)
       ) {
-        this.focusVisible = !this.focusVisible;
-      }
-      // Reset click ignore flag
-      this.disableNextClick = false;
-    },
-    mousemove() {
-      if (!this.forceHidden && !this.contentTransitioning) {
-        this.hoverVisible = true;
+        this.hide();
       }
     },
-    mouseleave(e) {
+    onDocumentClick(e) {
+      if (!this.$refs.popover || !this.ref) {
+        return;
+      }
+      // Don't hide if target element is contained within popover ref or content
       if (
-        !this.forceHidden &&
-        !elementHasAncestor(e.relatedTarget, this.$refs.popover)
+        elementContains(this.popoverEl, e.target) ||
+        elementContains(this.ref, e.target)
       ) {
-        this.hoverVisible = false;
+        return;
+      }
+      // Hide the popover
+      this.hide();
+    },
+    onDocumentKeydown(e) {
+      if (e.key === 'Esc' || e.key === 'Escape') {
+        this.hide();
       }
     },
-    windowTapOrClick(e) {
-      if (!elementHasAncestor(e.target, this.$refs.popover)) {
-        this.hoverVisible = false;
-        this.focusVisible = false;
+    show() {
+      this.$showPopover({ id: this.id, ref: this.ref, delay: 0 });
+    },
+    hide(opts) {
+      this.$hidePopover({
+        ...opts,
+        id: this.id,
+        ref: this.ref,
+      });
+    },
+    onUpdate({ args }) {
+      this.args = args;
+      this.setupPopper();
+    },
+    setupPopper() {
+      this.$nextTick(() => {
+        if (!this.ref || !this.$refs.popover) return;
+        if (this.popper && this.popper.reference !== this.ref) {
+          this.popper.destroy();
+          this.popper = null;
+        }
+        if (!this.popper) {
+          this.popper = new Popper(
+            this.ref,
+            this.popoverEl,
+            this.popperOptions,
+          );
+        } else {
+          this.popper.scheduleUpdate();
+        }
+      });
+    },
+    onPopperUpdate(data) {
+      this.placement = data.placement;
+    },
+    scheduleUpdate() {
+      if (this.popper) {
+        this.popper.scheduleUpdate();
       }
     },
-    refreshClearMargin() {
-      if (this.showClearMargin && this.visible && this.$refs.popoverContent) {
-        const {
-          width,
-          height,
-        } = this.$refs.popoverContent.getBoundingClientRect();
-        const span =
-          ((this.direction === 'left' || this.direction === 'right') &&
-            width) ||
-          height;
-        this.clearMargin = span + this.contentOffset;
-      } else {
-        this.clearMargin = 0;
-      }
+    beforeEnter(e) {
+      this.$emit('beforeShow', e);
     },
-    beforeContentEnter() {
-      this.contentTransitioning = true;
-      this.$emit('will-appear');
+    afterEnter(e) {
+      this.$emit('afterShow', e);
     },
-    contentEnter() {
-      this.refreshClearMargin();
+    beforeLeave(e) {
+      this.$emit('beforeHide', e);
     },
-    afterContentEnter() {
-      this.contentTransitioning = false;
-      this.$emit('did-appear');
+    afterLeave(e) {
+      this.destroyPopper();
+      this.$emit('afterHide', e);
     },
-    contentLeave() {
-      this.refreshClearMargin();
-    },
-    beforeContentLeave() {
-      this.contentTransitioningCancelled = this.contentTransitioning;
-      this.contentTransitioning = true;
-      this.$emit('will-disappear', this.contentTransitioningCancelled);
-    },
-    afterContentLeave() {
-      this.contentTransitioning = false;
-      this.$emit('did-disappear', this.contentTransitioningCancelled);
-      this.contentTransitioningCancelled = false;
-      // Reset forceHidden state if needed
-      if (this.forceHidden) {
-        this.$emit('update:forcehidden', false);
-        this.$emit('update:forceHidden', false);
+    destroyPopper() {
+      if (this.popper) {
+        this.popper.destroy();
+        this.popper = null;
       }
     },
   },
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="postcss" scoped>
+.vc-popover-content-wrapper {
+  --popover-horizontal-content-offset: 8px;
+  --popover-vertical-content-offset: 10px;
+  --popover-slide-translation: 15px;
+  --popover-transition-time: 0.14s ease-in-out;
+  --popover-caret-horizontal-offset: 18px;
+  --popover-caret-vertical-offset: 8px;
 
-@import '../styles/vars.sass'
+  position: absolute;
+  display: block;
+  outline: none;
+  z-index: 10;
+  &:not(.is-interactive) {
+    pointer-events: none;
+  }
+}
 
-.popover-container
-  position: relative
-  outline: none
-  &.expanded
-    display: block
-.popover-origin
-  position: absolute
-  transform-origin: top center
-  z-index: 10
-  pointer-events: none
-  &.direction-top
-    bottom: 100%
-  &.direction-bottom
-    top: 100%
-  &.direction-left
-    top: 0
-    right: 100%
-  &.direction-right
-    top: 0
-    left: 100%
-  &.direction-bottom.align-left, &.direction-top.align-left
-    left: 0
-  &.direction-bottom.align-center, &.direction-top.align-center
-    left: 50%
-    transform: translateX(-50%)
-  &.direction-bottom.align-right, &.direction-top.align-right
-    right: 0
-  &.direction-left.align-top, &.direction-right.align-top
-    top: 0
-  &.direction-left.align-middle, &.direction-right.align-middle
-    top: 50%
-    transform: translateY(-50%)
-  &.direction-left.align-bottom, &.direction-right.align-bottom
-    top: initial
-    bottom: 0
-  .popover-content-wrapper
-    position: relative
-    outline: none
-    &.interactive
-      pointer-events: all
-    .popover-content
-      position: relative
-      background-color: $popover-background-color
-      border: $popover-border
-      border-radius: $popover-border-radius
-      box-shadow: $popover-box-shadow
-      padding: $popover-padding
-      &:after
-        display: block
-        position: absolute
-        background: inherit
-        border: inherit
-        border-width: 1px 1px 0 0
-        width: 12px
-        height: 12px
-        content: ''
-      &.direction-bottom
-        &:after
-          top: 0
-          border-width: 1px 1px 0 0
-      &.direction-top
-        &:after
-          top: 100%
-          border-width: 0 0 1px 1px
-      &.direction-left
-        &:after
-          left: 100%
-          border-width: 0 1px 1px 0
-      &.direction-right
-        &:after
-          left: 0
-          border-width: 1px 0 0 1px
-      &.align-left
-        &:after
-          left: $popover-caret-horizontal-offset
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-right
-        &:after
-          right: $popover-caret-horizontal-offset
-          transform: translateY(-50%) translateX(50%) rotate(-45deg)
-      &.align-center
-        &:after
-          left: 50%
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-top
-        &:after
-          top: $popover-caret-vertical-offset
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-middle
-        &:after
-          top: 50%
-          transform: translateY(-50%) translateX(-50%) rotate(-45deg)
-      &.align-bottom
-        &:after
-          bottom: $popover-caret-vertical-offset
-          transform: translateY(50%) translateX(-50%) rotate(-45deg)
+.vc-popover-content {
+  position: relative;
+  outline: none;
+  z-index: 10;
+  &.direction-bottom {
+    margin-top: var(--popover-vertical-content-offset);
+  }
+  &.direction-top {
+    margin-bottom: var(--popover-vertical-content-offset);
+  }
+  &.direction-left {
+    margin-right: var(--popover-horizontal-content-offset);
+  }
+  &.direction-right {
+    margin-left: var(--popover-horizontal-content-offset);
+  }
+}
+
+.vc-popover-caret {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-top: inherit;
+  border-left: inherit;
+  background: inherit;
+  z-index: -1;
+  &.direction-bottom {
+    top: 0;
+    &.align-left {
+      transform: translateY(-50%) rotate(45deg);
+    }
+    &.align-center {
+      transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    }
+    &.align-right {
+      transform: translateY(-50%) rotate(45deg);
+    }
+  }
+  &.direction-top {
+    top: 100%;
+    &.align-left {
+      transform: translateY(-50%) rotate(-135deg);
+    }
+    &.align-center {
+      transform: translateX(-50%) translateY(-50%) rotate(-135deg);
+    }
+    &.align-right {
+      transform: translateY(-50%) rotate(-135deg);
+    }
+  }
+  &.direction-left {
+    left: 100%;
+    &.align-top {
+      transform: translateX(-50%) rotate(135deg);
+    }
+    &.align-middle {
+      transform: translateY(-50%) translateX(-50%) rotate(135deg);
+    }
+    &.align-bottom {
+      transform: translateX(-50%) rotate(135deg);
+    }
+  }
+  &.direction-right {
+    left: 0;
+    &.align-top {
+      transform: translateX(-50%) rotate(-45deg);
+    }
+    &.align-middle {
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg);
+    }
+    &.align-bottom {
+      transform: translateX(-50%) rotate(-45deg);
+    }
+  }
+  &.align-left {
+    left: var(--popover-caret-horizontal-offset);
+  }
+  &.align-center {
+    left: 50%;
+  }
+  &.align-right {
+    right: var(--popover-caret-horizontal-offset);
+  }
+  &.align-top {
+    top: var(--popover-caret-vertical-offset);
+  }
+  &.align-middle {
+    top: 50%;
+  }
+  &.align-bottom {
+    bottom: var(--popover-caret-vertical-offset);
+  }
+}
 
 .fade-enter-active,
 .fade-leave-active,
 .slide-fade-enter-active,
-.slide-fade-leave-active
-  transition: all $popover-transition-time
+.slide-fade-leave-active {
+  transition: all var(--popover-transition-time);
+  pointer-events: none;
+}
 
 .fade-enter,
-.fade-leave-to
-  opacity: 0
+.fade-leave-to {
+  opacity: 0;
+}
 
 .slide-fade-enter,
-.slide-fade-leave-to
-  opacity: 0
-  &.direction-bottom
-    transform: translateY(-$popover-slide-translation)
-  &.direction-top
-    transform: translateY($popover-slide-translation)
-  &.direction-left
-    transform: translateX($popover-slide-translation)
-  &.direction-right
-    transform: translateX(-$popover-slide-translation)
-
+.slide-fade-leave-to {
+  opacity: 0;
+  &.direction-bottom {
+    transform: translateY(calc(-1 * var(--popover-slide-translation)));
+  }
+  &.direction-top {
+    transform: translateY(var(--popover-slide-translation));
+  }
+  &.direction-left {
+    transform: translateX(var(--popover-slide-translation));
+  }
+  &.direction-right {
+    transform: translateX(calc(-1 * var(--popover-slide-translation)));
+  }
+}
 </style>

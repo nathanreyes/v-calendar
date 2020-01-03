@@ -1,0 +1,50 @@
+{
+  "root": true,
+  "extends": ["plugin:vue/essential", "@vue/airbnb"],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "sourceType": "module",
+    "ecmaVersion": 2018
+  },
+  "rules": {
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "js": "never",
+        "vue": "never"
+      }
+    ],
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off",
+    "max-len": "off",
+    "no-plusplus": "off",
+    "linebreak-style": "off",
+    "import/no-duplicates": "off",
+    "import/no-webpack-loader-syntax": "off",
+    "import/first": "off",
+    "import/prefer-default-export": "off",
+    "no-return-assign": "off",
+    "arrow-parens": "off",
+    "curly": "off",
+    "no-mixed-operators": "off",
+    "indent": "off",
+    "no-confusing-arrow": "off",
+    "eol-last": "off",
+    "object-curly-newline": "off",
+    "prefer-destructuring": "off",
+    "function-paren-newline": "off",
+    "no-restricted-globals": "off",
+    "vue/html-self-closing": "error",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off",
+    "class-methods-use-this": "off",
+    "no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "default-case": "off",
+    "comma-dangle": "off"
+  }
+}

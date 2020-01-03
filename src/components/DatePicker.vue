@@ -1,418 +1,329 @@
 <script>
+import Calendar from './Calendar';
 import Popover from './Popover';
-import SingleDatePicker from './SingleDatePicker';
-import MultipleDatePicker from './MultipleDatePicker';
-import DateRangePicker from './DateRangePicker';
-import DatePickerDayPopover from './DatePickerDayPopover';
-import PickerProfile from '@/utils/pickerProfiles';
-import Attribute from '@/utils/attribute';
-import defaults, { resolveDefault } from '@/utils/defaults';
-import { addDays } from '@/utils/dateInfo';
-import { pageIsBetweenPages } from '@/utils/helpers';
-import { isString, isFunction, isObject, isArray } from '@/utils/typeCheckers';
-import { format, parse } from '@/utils/fecha';
-import { mergeListeners } from '@/mixins';
+import PopoverRef from './PopoverRef';
+import SinglePicker from '@/utils/pickers/single';
+import MultiplePicker from '@/utils/pickers/multiple';
+import RangePicker from '@/utils/pickers/range';
+import {
+  rootMixin,
+  propOrDefaultMixin,
+  safeScopedSlotMixin,
+} from '@/utils/mixins';
+import { addTapOrClickHandler } from '@/utils/touch';
+import { createGuid, elementContains, on, off } from '@/utils/helpers';
+import { isString, isArray } from '@/utils/_';
+import '@/styles/tailwind-lib.css';
 
 export default {
-  mixins: [mergeListeners],
+  name: 'DatePicker',
   render(h) {
-    const getPickerComponent = asSlot =>
-      h(this.componentName, {
+    const calendar = () =>
+      h(Calendar, {
         attrs: {
           ...this.$attrs,
-          value: this.value,
-          isRequired: this.isRequired,
-          formats: this.formats_,
-          selectAttribute: this.selectAttribute_,
-          dragAttribute: this.dragAttribute_,
-          disabledAttribute: this.disabledAttribute_,
+          attributes: this.attributes_,
+          theme: this.$theme,
+          locale: this.$locale,
+        },
+        props: {
           minDate: this.minDate,
           maxDate: this.maxDate,
-          fromPage: this.fromPage_,
-          toPage: this.toPage_,
-          themeStyles: this.themeStyles_,
-        },
-        on: this.mergeListeners(
-          {
-            'update:fromPage': val => (this.fromPage_ = val),
-            'update:toPage': val => (this.toPage_ = val),
-            drag: val => (this.dragValue = val),
-          },
-          this.filteredListeners(),
-        ),
-        slots: this.$slots,
-        scopedSlots: this.$scopedSlots,
-        ...(asSlot && {
-          slot: asSlot,
-        }),
-      });
-    if (this.isInline) return getPickerComponent();
-    return h(
-      'popover',
-      {
-        attrs: {
-          isExpanded: this.popoverExpanded,
-          direction: this.popoverDirection,
-          align: this.popoverAlign,
-          visibility: this.popoverVisibility,
-          contentStyle: this.popoverContentStyle,
-          contentOffset: this.popoverContentOffset,
-          forceHidden: this.popoverForceHidden,
-          showClearMargin: this.popoverShowClearMargin,
-          isInteractive: true,
+          disabledDates: this.disabledDates,
+          availableDates: this.availableDates,
         },
         on: {
-          'will-appear': e => this.$emit('popover-will-appear', e),
-          'did-appear': e => this.$emit('popover-did-appear', e),
-          'will-disappear': e => this.$emit('popover-will-disappear', e),
-          'did-disappear': e => this.$emit('popover-did-disappear', e),
-          'update:forceHidden': val => (this.popoverForceHidden = val),
+          ...this.$listeners,
+          dayclick: this.onDayClick,
+          daymouseenter: this.onDayMouseEnter,
+          daykeydown: this.onDayKeydown,
+          dayfocusin: this.onDayFocusIn,
         },
-      },
-      [
-        (isFunction(this.$scopedSlots.default) &&
-          this.$scopedSlots.default({
-            inputValue: this.inputValue,
-            updateValue: this.updateValue,
-          })) || [
-          h('input', {
-            class: this.inputProps_.class,
-            style: this.inputProps_.style,
-            domProps: {
-              value: this.inputValue,
-            },
-            attrs: {
-              type: 'text',
-              ...this.inputAttrs,
-            },
-            on: {
-              input: this.inputInput,
-              change: this.inputChange,
-              keyup: this.inputKeyup,
-            },
-          }),
-        ],
-        getPickerComponent('popover-content'),
-      ],
-    );
+        scopedSlots: this.$scopedSlots,
+        ref: 'calendar',
+      });
+    // If inline just return the calendar
+    if (this.isInline) return calendar();
+    // Render the slot or ihput
+    const inputSlot =
+      this.safeScopedSlot('default', {
+        inputClass: this.inputClass,
+        inputValue: this.inputValue,
+        inputProps: this.inputProps_,
+        inputEvents: this.inputEvents,
+        isDragging: !!this.dragValue,
+        updateValue: this.updateValue,
+        hidePopover: this.hidePopover,
+      }) ||
+      h('input', {
+        class: this.inputClass,
+        attrs: this.inputProps_,
+        domProps: {
+          value: this.inputValue,
+        },
+        on: this.inputEvents,
+      });
+    // Convert this span to a fragment when supported in Vue
+    return h('span', [
+      h(
+        PopoverRef,
+        {
+          props: {
+            ...this.popover_,
+            id: this.datePickerPopoverId,
+            isInteractive: true,
+          },
+        },
+        [inputSlot],
+      ),
+      // Picker popover
+      h(Popover, {
+        props: {
+          id: this.datePickerPopoverId,
+          placement: 'bottom-start',
+          contentClass: this.$theme.container,
+        },
+        on: {
+          beforeShow: e => this.$emit('popoverWillShow', e),
+          afterShow: e => this.$emit('popoverDidShow', e),
+          beforeHide: e => this.$emit('popoverWillHide', e),
+          afterHide: e => this.$emit('popoverDidHide', e),
+        },
+        scopedSlots: {
+          default() {
+            return calendar();
+          },
+        },
+        ref: 'popover',
+      }),
+    ]);
   },
-  components: {
-    Popover,
-    SingleDatePicker,
-    MultipleDatePicker,
-    DateRangePicker,
-  },
+  mixins: [rootMixin, propOrDefaultMixin, safeScopedSlotMixin],
   props: {
     mode: { type: String, default: 'single' },
     value: { type: null, required: true },
     isRequired: Boolean,
     isInline: Boolean,
-    minDate: Date,
-    maxDate: Date,
-    disabledDates: null,
-    availableDates: null,
-    formats: Object, // Resolved by computed property
-    inputProps: { type: Object, default: () => ({}) }, // Resolved by computed property
-    updateOnInput: {
-      type: Boolean,
-      default: () => defaults.datePickerUpdateOnInput,
-    },
-    tintColor: { type: String, default: () => defaults.datePickerTintColor },
-    dragAttribute: Object, // Resolved by computed property
-    selectAttribute: Object, // Resolved by computed property
-    disabledAttribute: Object, // Resolved by computed property
-    showCaps: { type: Boolean, default: () => defaults.datePickerShowCaps },
-    showDayPopover: {
-      type: Boolean,
-      default: () => defaults.datePickerShowDayPopover,
-    },
-    popoverExpanded: { type: Boolean, default: () => defaults.popoverExpanded },
-    popoverDirection: {
-      type: String,
-      default: () => defaults.popoverDirection,
-    },
-    popoverAlign: { type: String, default: () => defaults.popoverAlign },
-    popoverVisibility: {
-      type: String,
-      default: () => defaults.popoverVisibility,
-    },
-    popoverContentOffset: {
-      type: Number,
-      default: () => defaults.popoverContentOffset,
-    },
-    popoverShowClearMargin: Boolean,
-    popoverKeepVisibleOnInput: {
-      type: Boolean,
-      default: () => defaults.popoverKeepVisibleOnInput,
-    },
-    fromPage: Object,
-    toPage: Object,
-    themeStyles: { type: Object, default: () => ({}) }, // Resolved by computed property
+    updateOnInput: Boolean,
+    inputDebounce: Number,
+    inputProps: { type: Object, default: () => ({}) },
+    popover: { type: Object, default: () => ({}) },
+    dragAttribute: Object,
+    selectAttribute: Object,
+    attributes: Array,
   },
   data() {
     return {
-      fromPage_: null,
-      toPage_: null,
+      value_: null,
       dragValue: null,
       inputValue: '',
-      popoverForceHidden: false,
-      disableFormatInput: false,
-      disablePopoverForceHidden: false,
+      doFormatInput: true,
+      doHidePopover: false,
+      doAdjustPageRange: false,
+      updateTimeout: null,
+      datePickerPopoverId: createGuid(),
     };
   },
   computed: {
-    formats_() {
-      return {
-        ...defaults.formats,
-        ...this.formats,
-      };
+    updateOnInput_() {
+      return this.propOrDefault('updateOnInput', 'datePicker.updateOnInput');
     },
-    inputFormats() {
-      const inputFormat = this.formats_.input;
+    inputDebounce_() {
+      return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
+    },
+    inputMasks() {
+      const inputFormat = this.$locale.masks.input;
       return (isArray(inputFormat) && inputFormat) || [inputFormat];
     },
-    profile() {
-      return PickerProfile(
-        this.mode,
-        d => format(d, this.inputFormats[0]),
-        s => parse(s, this.inputFormats),
-      );
-    },
-    componentName() {
-      return this.profile.componentName;
-    },
-    selectAttribute_() {
-      return this.buildSelectDragAttribute(this.selectAttribute);
-    },
-    dragAttribute_() {
-      return this.buildSelectDragAttribute(this.dragAttribute, true);
-    },
-    disabledDates_() {
-      const dates = [];
-      if (this.disabledDates) {
-        if (isArray(this.disabledDates)) dates.push(...this.disabledDates);
-        else dates.push(this.disabledDates);
-      }
-      if (this.minDate)
-        dates.push({ start: null, end: addDays(this.minDate, -1) });
-      if (this.maxDate)
-        dates.push({ start: addDays(this.maxDate, 1), end: null });
-      return dates;
-    },
-    disabledAttribute_() {
-      if (!this.disabledDates_ && !this.availableDates) return null;
-      return Attribute({
-        key: 'disabled',
-        order: 100,
-        ...(this.disabledAttribute ||
-          resolveDefault(defaults.datePickerDisabledAttribute, {
-            mode: this.mode,
-            color: this.tintColor,
-            showDayPopover: this.showDayPopover,
-          })),
-        dates: this.disabledDates_,
-        excludeDates: this.availableDates,
-        excludeMode: 'includes',
-      });
+    inputClass() {
+      const inputClass = this.inputProps.class || this.$theme.datePickerInput;
+      const inputDragClass =
+        this.inputProps.dragClass || this.$theme.datePickerInputDrag;
+      return this.picker.hasValue(this.dragValue)
+        ? inputDragClass || inputClass
+        : inputClass;
     },
     inputProps_() {
-      const defaultProps = defaults.datePickerInputProps;
-      if (isFunction(defaultProps)) {
-        return {
-          ...defaultProps({
-            mode: this.mode,
-            value: this.value,
-            dragValue: this.dragValue,
-            format:
-              defaults.masks[this.inputFormats[0]] || this.inputFormats[0],
-          }),
-          ...this.inputProps,
-        };
-      } else if (isObject(defaultProps)) {
-        return {
-          ...defaultProps,
-          ...this.inputProps,
-        };
-      }
-      return this.inputProps;
-    },
-    inputAttrs() {
+      // Merge the user props with local
       const props = {
-        ...this.inputProps_,
+        ...this.inputProps,
+        value: this.inputValue,
+        type: 'input',
       };
-      if (props) {
-        delete props.style;
-        delete props.class;
-      }
+      // Delete class properties
+      delete props.class;
+      delete props.dragClass;
       return props;
     },
-    themeStyles_() {
-      const userDayContent =
-        this.themeStyles.dayContent || defaults.themeStyles.dayContent;
-      // Strip the wrapper style when used in a popover
-      // It will get passed in as the content style
-      const styles = {
-        ...this.themeStyles,
-        dayContent: params => ({
-          ...(params.isHovered && {
-            backgroundColor: '#dadada',
-            border: '0',
-            cursor: 'pointer',
-          }),
-          ...((isFunction(userDayContent) && userDayContent(params)) ||
-            userDayContent),
-        }),
-        ...(!this.isInline && {
-          wrapper: null,
-        }),
-      };
-      return styles;
-    },
-    popoverContentStyle() {
+    inputEvents() {
       return {
-        ...this.themeStyles.wrapper,
-        padding: '0',
-        margin: '0',
+        input: this.inputInput,
+        change: this.inputChange,
+        // keydown: this.inputKeydown,
+        keyup: this.inputKeyup,
       };
+    },
+    popover_() {
+      return this.propOrDefault('popover', 'datePicker.popover', 'merge');
+    },
+    canHidePopover() {
+      return !(
+        this.popover.keepVisibleOnInput ||
+        this.popover_.visibility !== 'visible'
+      );
+    },
+    selectAttribute_() {
+      if (!this.picker.hasValue(this.value_)) return null;
+      const attribute = {
+        key: 'select-drag',
+        ...this.selectAttribute,
+        dates: this.value_,
+        pinPage: true,
+      };
+      const { dot, bar, highlight, content } = attribute;
+      if (!dot && !bar && !highlight && !content) {
+        attribute.highlight = true;
+      }
+      return attribute;
+    },
+    dragAttribute_() {
+      if (this.mode !== 'range' || !this.picker.hasValue(this.dragValue)) {
+        return null;
+      }
+      const attribute = {
+        key: 'select-drag',
+        ...this.dragAttribute,
+        dates: this.dragValue,
+      };
+      const { dot, bar, highlight, content } = attribute;
+      if (!dot && !bar && !highlight && !content) {
+        attribute.highlight = {
+          startEnd: {
+            fillMode: 'none',
+          },
+        };
+      }
+      return attribute;
+    },
+    attributes_() {
+      const attrs = isArray(this.attributes) ? [...this.attributes] : [];
+      if (this.dragAttribute_) {
+        attrs.push(this.dragAttribute_);
+      } else if (this.selectAttribute_) {
+        attrs.push(this.selectAttribute_);
+      }
+      return attrs;
+    },
+    picker() {
+      const opts = {
+        locale: this.$locale,
+        format: d => this.$locale.format(d, this.inputMasks[0]),
+        parse: s => this.$locale.parse(s, this.inputMasks),
+      };
+      switch (this.mode) {
+        case 'multiple':
+          return new MultiplePicker(opts);
+        case 'range':
+          return new RangePicker(opts);
+        default:
+          return new SinglePicker(opts);
+      }
     },
   },
   watch: {
-    fromPage(val) {
-      this.fromPage_ = val;
-    },
-    toPage(val) {
-      this.toPage_ = val;
-    },
-    fromPage_(val) {
-      this.$emit('update:frompage', val); // Support in-DOM templates (:frompage.sync)
-      this.$emit('update:fromPage', val); // Allow using :from-page.sync
-    },
-    toPage_(val) {
-      this.$emit('update:topage', val); // Support in-DOM templates (:topage.sync)
-      this.$emit('update:toPage', val); // Allow using :to-page.sync
-    },
     mode() {
       // Clear value on select mode change
-      this.$emit('input', null);
+      this.value_ = null;
     },
     value() {
-      this.assignPageRange();
-      if (!this.disableFormatInput) this.formatInput();
-      if (this.mode !== 'multiple' && !this.disablePopoverForceHidden)
-        this.hidePopover();
-      this.disableFormatInput = false;
-      this.disablePopoverForceHidden = false;
+      this.refreshValue();
     },
-    dragValue() {
+    value_(val) {
+      this.$emit('input', val);
+      this.handleValueChange();
+    },
+    dragValue(val) {
       this.formatInput();
-    },
-    disabledAttribute_() {
-      if (!this.dragValue) this.updateValue(this.value);
+      this.$emit('drag', this.picker.normalize(val));
     },
   },
   created() {
-    this.fromPage_ = this.fromPage;
-    this.toPage_ = this.toPage;
-    this.assignPageRange();
-    this.formatInput();
+    this.refreshValue();
+  },
+  mounted() {
+    // Handle escape key presses
+    on(document, 'keydown', this.onDocumentKeyDown);
+    // Clear drag on background click
+    const offTapOrClickHandler = addTapOrClickHandler(document, e => {
+      if (
+        document.body.contains(e.target) &&
+        !elementContains(this.$el, e.target) &&
+        this.dragValue
+      ) {
+        this.dragValue = null;
+      }
+    });
+    // Clean up handlers
+    this.$once('beforeDestroy', () => {
+      off(document, 'keydown', this.onDocumentKeyDown);
+      offTapOrClickHandler();
+    });
   },
   methods: {
-    buildSelectDragAttribute(propAttr, isDrag) {
-      let attr = {
-        key: 'drag-select',
-        ...propAttr,
-      };
-      const { highlight, highlightCaps, contentStyle, dot, bar } = attr;
-      // Don't need highlight or content style if using dot or bar
-      if (!dot && !bar) {
-        attr = {
-          ...attr,
-          highlight: params => ({
-            backgroundColor: this.tintColor,
-            ...(isDrag && {
-              height: '1.64rem',
-              opacity: 0.5,
-            }),
-            ...((isFunction(highlight) && highlight(params)) || highlight),
-          }),
-          highlightCaps:
-            highlightCaps ||
-            (this.showCaps &&
-              (params =>
-                !params.inBetween && {
-                  backgroundColor: '#fafafa',
-                  borderColor: this.tintColor,
-                  borderWidth: '2px',
-                })),
-          // Use function wrapper for content style
-          contentStyle: params => ({
-            // Light color for select attributes
-            ...(!isDrag && {
-              color: '#fafafa',
-            }),
-            // Don't show hover style for drag and select attributes
-            ...(params.isHovered && {
-              backgroundColor: 'transparent',
-              border: '0',
-            }),
-            // Mix in cap style
-            ...(this.showCaps &&
-              !params.inBetween && {
-                color: '#333333',
-              }),
-            // Mix in user style
-            ...((isFunction(contentStyle) && contentStyle(params)) ||
-              contentStyle),
-          }),
-        };
+    refreshValue() {
+      if (!this.picker.valuesAreEqual(this.value, this.value_)) {
+        this.value_ = this.value;
       }
-      if (attr.popover || this.showDayPopover) {
-        attr.popover = {
-          component: DatePickerDayPopover,
-          hideIndicator: true,
-          ...attr.popover,
-        };
+    },
+    dateIsValid(date) {
+      const disabledAttribute = this.$refs.calendar.disabledAttribute;
+      return !!disabledAttribute && !disabledAttribute.intersectsDate(date);
+    },
+    onDocumentKeyDown(e) {
+      // Clear drag on escape keydown
+      if (this.dragValue && e.keyCode === 27) {
+        this.dragValue = null;
       }
-      return attr;
     },
-    filteredListeners() {
-      // Remove parent listeners that we want to intercept and re-broadcast
-      const listeners = { ...this.$listeners };
-      delete listeners['update:frompage'];
-      delete listeners['update:fromPage'];
-      delete listeners['update:topage'];
-      delete listeners['update:toPage'];
-      return listeners;
+    onDayClick(day) {
+      this.picker.handleDayClick(day, this);
+      // Re-emit event
+      this.$emit('dayclick', day);
     },
-    assignPageRange() {
-      const range = this.profile.getPageRange(this.value);
-      if (range) {
-        const fromInRange = pageIsBetweenPages(
-          this.fromPage_,
-          range.from,
-          range.to,
-        );
-        const toInRange = pageIsBetweenPages(
-          this.toPage_,
-          range.from,
-          range.to,
-        );
-        if (this.mode === 'single') {
-          if (
-            !fromInRange &&
-            !Object.prototype.hasOwnProperty.call(
-              this.$attrs,
-              'is-double-paned',
-            )
-          ) {
-            this.fromPage_ = range.from;
-          } else if (!toInRange) {
-            this.fromPage_ = range.to;
-          }
-        } else {
-          if (!fromInRange) this.fromPage_ = range.from;
-          if (!toInRange) this.toPage_ = range.to;
+    onDayMouseEnter(day) {
+      this.picker.handleDayMouseEnter(day, this);
+      // Re-emit event
+      this.$emit('daymouseenter', day);
+    },
+    onDayFocusIn(day) {
+      this.picker.handleDayMouseEnter(day, this);
+      // Re-emit event
+      this.$emit('dayfocusin', day);
+    },
+    onDayKeydown(day) {
+      switch (day.event.key) {
+        case ' ':
+        case 'Enter': {
+          this.picker.handleDayClick(day, this);
+          day.event.preventDefault();
+          break;
         }
+        case 'Escape': {
+          this.hidePopover();
+        }
+      }
+      // Re-emit event
+      this.$emit('daykeydown', day);
+    },
+    inputInput(e) {
+      this.inputValue = e.target.value;
+      if (this.updateOnInput_) {
+        this.updateValue(this.inputValue, {
+          formatInput: false,
+          hidePopover: false,
+          adjustPageRange: true,
+          debounce: this.inputDebounce_,
+        });
       }
     },
     inputInput(e) {
@@ -425,67 +336,105 @@ export default {
       }
     },
     inputChange() {
-      // Enter key, blur or other change events
       this.updateValue(this.inputValue, {
         formatInput: true,
         hidePopover: false,
+        adjustPageRange: false,
       });
     },
     inputKeyup(e) {
       // Escape key
       if (e.keyCode === 27) {
-        this.updateValue(this.value, {
+        this.updateValue(this.value_, {
           formatInput: true,
           hidePopover: true,
+          adjustPageRange: false,
         });
       }
     },
     updateValue(
       value = this.inputValue,
-      {
-        formatInput = false,
-        hidePopover = !this.popoverKeepVisibleOnInput,
-      } = {},
+      { formatInput, hidePopover, adjustPageRange, debounce } = {},
     ) {
+      clearTimeout(this.updateTimeout);
+      if (debounce === undefined || debounce < 0) {
+        this.forceUpdateValue(value, {
+          formatInput,
+          hidePopover,
+          adjustPageRange,
+        });
+      } else {
+        this.updateTimeout = setTimeout(() => {
+          this.updateTimeout = null;
+          this.forceUpdateValue(value, {
+            formatInput,
+            hidePopover,
+            adjustPageRange,
+          });
+        }, debounce);
+      }
+    },
+    forceUpdateValue(value, { formatInput, hidePopover, adjustPageRange }) {
       // Reassign input value for good measure
       this.inputValue = isString(value) ? value : this.inputValue;
       // Parse value if needed
-      const parsedValue = isString(value)
-        ? this.profile.parseValue(value)
-        : value;
+      const userValue = isString(value) ? this.picker.parse(value) : value;
       // Filter out any disabled dates
-      const filteredValue = this.profile.filterDisabled({
-        value: this.profile.normalizeValue(parsedValue),
-        isRequired: this.isRequired,
-        disabled: this.disabledAttribute_,
-        fallbackValue: this.value,
+      const validatedValue = this.picker.filterDisabled({
+        value: this.picker.normalize(userValue),
+        disabled: this.disabledAttribute,
+        fallbackValue: this.value_,
       });
-      // Don't do anything if user input value is invalid - Just return
-      if (!this.profile.valuesAreEqual(parsedValue, filteredValue)) return;
-      // Check if new value is different from the current value
-      const valueHasChanged = !this.profile.valuesAreEqual(
-        this.value,
-        filteredValue,
-      );
-      if (valueHasChanged) {
-        this.disableFormatInput = !formatInput;
-        this.disablePopoverForceHidden = !hidePopover;
-        this.$emit('input', filteredValue);
+      // Set state for handling value change
+      this.doFormatInput = formatInput;
+      this.doHidePopover = hidePopover;
+      this.doAdjustPageRange = adjustPageRange;
+      // If final value is equal to the current value
+      if (this.picker.valuesAreEqual(this.value_, validatedValue)) {
+        // Just handle value change
+        this.handleValueChange();
       } else {
-        if (formatInput) this.formatInput();
-        if (hidePopover) this.hidePopover();
+        // Assign new value
+        this.value_ = validatedValue;
       }
+    },
+    handleValueChange() {
+      if (!this.isInline) {
+        if (this.doFormatInput) this.formatInput();
+        if (this.doHidePopover) this.hidePopover();
+        if (this.doAdjustPageRange) this.adjustPageRange();
+      }
+      this.doFormatInput = true;
+      this.doHidePopover = false;
+      this.doAdjustPageRange = false;
     },
     formatInput() {
       this.$nextTick(() => {
-        this.inputValue = this.profile.formatValue(this.value, this.dragValue);
+        const value = this.picker.hasValue(this.dragValue)
+          ? this.dragValue
+          : this.value_;
+        this.inputValue = this.picker.format(value);
       });
     },
     hidePopover() {
-      setTimeout(() => {
-        this.popoverForceHidden = true;
-      }, 200);
+      const popover = this.$refs.popover;
+      if (popover) {
+        popover.hide({ priority: 10, delay: 400 });
+      }
+    },
+    adjustPageRange() {
+      if (this.picker.hasValue(this.value_) && this.$refs.calendar) {
+        this.$refs.calendar.showPageRange(
+          this.picker.getPageRange(this.value_),
+        );
+      }
     },
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+/deep/ .vc-container {
+  border: none;
+}
+</style>

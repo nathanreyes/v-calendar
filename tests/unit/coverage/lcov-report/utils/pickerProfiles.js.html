@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for utils/pickerProfiles.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">All files</a> / <a href="index.html">utils</a> pickerProfiles.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/112</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/78</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/34</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/81</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { isDa<span class="cstat-no" title="statement not covered" >te } from './typeCheckers';<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span>
+import { getDat<span class="cstat-no" title="statement not covered" >eComps, getNextPage, </span>getMaxPage, getLastArrayItem, arrayHasItems } from './helpers';
+&nbsp;
+// #region Single Date Picker
+&nbsp;
+export const singleHa<span class="cstat-no" title="statement not covered" >sValue = value =&gt; isDate(value) &amp;&amp;<span class="fstat-no" title="function not covered" > !isNaN(value.g</span>etTime()<span class="cstat-no" title="statement not covered" >);</span></span>
+export const singleFor<span class="cstat-no" title="statement not covered" >matter = (value, formatter) =&gt; (sin<span class="fstat-no" title="function not covered" >gleHasValue(valu</span>e) ? formatter(valu<span class="cstat-no" title="statement not covered" >e) : '');</span></span>
+export const single<span class="cstat-no" title="statement not covered" >Parser = (text, parser) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+  const value <span class="cstat-no" title="statement not covered" >= parser(text.trim()</span>);
+<span class="cstat-no" title="statement not covered" >  return singleHasValue(value) ? value : null;</span>
+};
+export const singleFilterDi<span class="cstat-no" title="statement not covered" >sabled = (value, attr) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!singleHasValue(value) || !attr) <span class="cstat-no" title="statement not covered" >return value;</span></span>
+<span class="cstat-no" title="statement not covered" >  return attr.intersectsDate(value) ? null : value;</span>
+};
+export const singleValuesAr<span class="cstat-no" title="statement not covered" >eEqual = (a, b) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!singleHasValue(a) &amp;&amp; !singleHasValue(b)) <span class="cstat-no" title="statement not covered" >return true;</span></span>
+<span class="cstat-no" title="statement not covered" >  if (!singleHasValue(a) || !singleHasValue(b)) <span class="cstat-no" title="statement not covered" >return false;</span></span>
+<span class="cstat-no" title="statement not covered" >  return a.getTime() === b.getTime();</span>
+};
+export const singleGetPag<span class="cstat-no" title="statement not covered" >eRange = (value) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!singleHasValue(value)) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+  const from <span class="cstat-no" title="statement not covered" >= getDateComps(value);</span>
+  const to <span class="cstat-no" title="statement not covered" >= getNextPage(from);</span>
+<span class="cstat-no" title="statement not covered" >  return { from, to };</span>
+};
+&nbsp;
+export const SinglePickerP<span class="cstat-no" title="statement not covered" >rofile = (formatter, parser) =&gt; ({<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
+  componentName: 'single-date-picker',
+  inputPlaceholder: 'Enter Date',
+  hasValue: singleHasValue,
+  formatValue: value =&gt; si<span class="fstat-no" title="function not covered" >ngleFormatte</span>r(value,<span class="cstat-no" title="statement not covered" > formatter),</span>
+  parseValue: text =&gt; sin<span class="fstat-no" title="function not covered" >gleParser(t</span>ext, pa<span class="cstat-no" title="statement not covered" >rser),</span>
+  filterDisabled: singleFilterDisabled,
+  valuesAreEqual: singleValuesAreEqual,
+  getPageRange: singleGetPageRange,
+});
+&nbsp;
+// #endregion
+&nbsp;
+// #region Multiple Date Picker
+&nbsp;
+export const multipleHa<span class="cstat-no" title="statement not covered" >sValue = value =&gt; arrayHasItems(valu<span class="fstat-no" title="function not covered" >e);<span class="cstat-no" title="statement not covered" ></span></span></span>
+export const multipleFor<span class="cstat-no" title="statement not covered" >matter = (value, formatter) =&gt; (multi<span class="fstat-no" title="function not covered" >pleHasValue(value)</span> ? value.map(d =&gt; f<span class="cstat-no" title="statement not covered" >ormatter(d)).join(', ') : '');<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span>
+export const multiple<span class="cstat-no" title="statement not covered" >Parser = (text, parser) =&gt; text.sp<span class="fstat-no" title="function not covered" >lit(',').map(s </span>=&gt; singleParser<span class="cstat-no" title="statement not covered" >(s, parser)).filter(d =&gt; si<span class="fstat-no" title="function not covered" >ng</span>leHasValue(d<span class="cstat-no" title="statement not covered" >));<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span></span>
+export const multipleFilterDi<span class="cstat-no" title="statement not covered" >sabled = (value, attr) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!multipleHasValue(value) || !attr) <span class="cstat-no" title="statement not covered" >return value;</span></span>
+<span class="cstat-no" title="statement not covered" >  return value.filter(<span class="fstat-no" title="function not covered" >d </span>=&gt; !attr.int<span class="cstat-no" title="statement not covered" >ersectsDate(d));</span></span>
+};
+export const multipleValuesAr<span class="cstat-no" title="statement not covered" >eEqual = (a, b) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+  const aHasItems <span class="cstat-no" title="statement not covered" >= arrayHasItems(a);</span>
+  const bHasItems <span class="cstat-no" title="statement not covered" >= arrayHasItems(b);</span>
+<span class="cstat-no" title="statement not covered" >  if (!aHasItems &amp;&amp; !bHasItems) <span class="cstat-no" title="statement not covered" >return true;</span></span>
+<span class="cstat-no" title="statement not covered" >  if (!aHasItems || !bHasItems || aHasItems !== bHasItems) <span class="cstat-no" title="statement not covered" >return false;</span></span>
+<span class="cstat-no" title="statement not covered" >  return a.every(<span class="fstat-no" title="function not covered" >d </span>=&gt; b.include<span class="cstat-no" title="statement not covered" >s(d));</span></span>
+};
+export const multipleGetPag<span class="cstat-no" title="statement not covered" >eRange = (value) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!multipleHasValue(value)) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+  const from <span class="cstat-no" title="statement not covered" >= getDateComps(value[0]);</span>
+  const to <span class="cstat-no" title="statement not covered" >= getMaxPage(getDateComps(getLastArrayItem(this.value)), getNextPage(this.fromPage_));</span>
+<span class="cstat-no" title="statement not covered" >  return { from, to };</span>
+};
+export const MultiplePickerP<span class="cstat-no" title="statement not covered" >rofile = (formatter, parser) =&gt; ({<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
+  componentName: 'multiple-date-picker',
+  inputPlaceholder: 'Date 1, Date 2, ...',
+  hasValue: multipleHasValue,
+  formatValue: value =&gt; mu<span class="fstat-no" title="function not covered" >ltipleFormat</span>ter(valu<span class="cstat-no" title="statement not covered" >e, formatter),</span>
+  parseValue: value =&gt; mu<span class="fstat-no" title="function not covered" >ltipleParse</span>r(value,<span class="cstat-no" title="statement not covered" > parser),</span>
+  filterDisabled: multipleFilterDisabled,
+  valuesAreEqual: multipleValuesAreEqual,
+  getPageRange: multipleGetPageRange,
+});
+&nbsp;
+// #endregion
+&nbsp;
+// #region Date Range Picker
+&nbsp;
+export const rangeHa<span class="cstat-no" title="statement not covered" >sValue = value =&gt; value &amp;&amp; value.<span class="fstat-no" title="function not covered" >start &amp;&amp; value</span>.end;<span class="cstat-no" title="statement not covered" ></span></span>
+export const rangeFor<span class="cstat-no" title="statement not covered" >matter = (value, dragValue, format<span class="fstat-no" title="function not covered" >ter) =&gt; {</span></span>
+  let startText;<span class="cstat-no" title="statement not covered" ></span>
+  let endText;<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  if (dragValue) {</span>
+<span class="cstat-no" title="statement not covered" >    startText = singleFormatter(dragValue.start, formatter);</span>
+<span class="cstat-no" title="statement not covered" >    endText = singleFormatter(dragValue.end, formatter);</span>
+  } else <span class="cstat-no" title="statement not covered" >if (value) {</span>
+<span class="cstat-no" title="statement not covered" >    startText = singleFormatter(value.start, formatter);</span>
+<span class="cstat-no" title="statement not covered" >    endText = singleFormatter(value.end, formatter);</span>
+  }
+<span class="cstat-no" title="statement not covered" >  if (!startText &amp;&amp; !endText) <span class="cstat-no" title="statement not covered" >return '';</span></span>
+<span class="cstat-no" title="statement not covered" >  if (!endText) <span class="cstat-no" title="statement not covered" >return startText;</span></span>
+<span class="cstat-no" title="statement not covered" >  return `${startText} - ${endText}`;</span>
+};
+export const range<span class="cstat-no" title="statement not covered" >Parser = (text, parser) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+  const dateTexts <span class="cstat-no" title="statement not covered" >= text.split('-').ma<span class="fstat-no" title="function not covered" >p(</span>s =&gt; s.trim(<span class="cstat-no" title="statement not covered" >));</span></span>
+  const start <span class="cstat-no" title="statement not covered" >= dateTexts[0] ? singleParser(dateTexts[0], parser) : nul</span>l;
+  const end <span class="cstat-no" title="statement not covered" >= dateTexts[1] ? singleParser(dateTexts[1], parser) : nul</span>l;
+<span class="cstat-no" title="statement not covered" >  return { start, end };</span>
+};
+export const rangeFilterDi<span class="cstat-no" title="statement not covered" >sabled = (value, attr) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!rangeHasValue(value) || !attr) <span class="cstat-no" title="statement not covered" >return value;</span></span>
+<span class="cstat-no" title="statement not covered" >  return attr.intersectsDate(value) ? null : value;</span>
+};
+export const rangeValuesAr<span class="cstat-no" title="statement not covered" >eEqual = (a, b) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!rangeHasValue(a) &amp;&amp; !rangeHasValue(b)) <span class="cstat-no" title="statement not covered" >return true;</span></span>
+<span class="cstat-no" title="statement not covered" >  if (!rangeHasValue(a) || !rangeHasValue(b)) <span class="cstat-no" title="statement not covered" >return false;</span></span>
+<span class="cstat-no" title="statement not covered" >  return singleValuesAreEqual(a.start, b.start) &amp;&amp; singleValuesAreEqual(a.end, b.end);</span>
+};
+export const rangeGetPag<span class="cstat-no" title="statement not covered" >eRange = (value) =&gt; {<span class="fstat-no" title="function not covered" ></span></span>
+<span class="cstat-no" title="statement not covered" >  if (!rangeHasValue(value)) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+  const from <span class="cstat-no" title="statement not covered" >= getDateComps(value.start);</span>
+  const to <span class="cstat-no" title="statement not covered" >= getMaxPage(getDateComps(value.end), getNextPage(from));</span>
+<span class="cstat-no" title="statement not covered" >  return { from, to };</span>
+};
+export const RangePickerP<span class="cstat-no" title="statement not covered" >rofile = (formatter, parser) =&gt; ({<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
+  componentName: 'date-range-picker',
+  inputPlaceholder: 'Start Date - End Date',
+  hasValue: rangeHasValue,
+  formatValue: (value, dra<span class="fstat-no" title="function not covered" >gValue) =&gt; r</span>angeFormatter(value<span class="cstat-no" title="statement not covered" >, dragValue, formatter),</span>
+  parseValue: text =&gt; ran<span class="fstat-no" title="function not covered" >geParser(te</span>xt, par<span class="cstat-no" title="statement not covered" >ser),</span>
+  filterDisabled: rangeFilterDisabled,
+  valuesAreEqual: rangeValuesAreEqual,
+  getPageRange: rangeGetPageRange,
+});
+&nbsp;
+// #endregion
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="fstat-no" title="function not covered" >ex</span>port default (mode, formatter, parser) =&gt; {
+<span class="cstat-no" title="statement not covered" >  switch (mode) {</span>
+    case 'single':<span class="cstat-no" title="statement not covered" > return SinglePickerProfile(formatter, parser);</span>
+    case 'multiple':<span class="cstat-no" title="statement not covered" > return MultiplePickerProfile(formatter, parser);</span>
+    case 'range':<span class="cstat-no" title="statement not covered" > return RangePickerProfile(formatter, parser);</span>
+    default:<span class="cstat-no" title="statement not covered" > return null;</span>
+  }
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Fri Jan 05 2018 11:32:47 GMT-0600 (CST)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
