@@ -1,72 +1,113 @@
 <template>
   <!--Nav panel-->
   <div class="vc-nav-container">
-    <!--Nav header-->
-    <grid :columns="3" ref="headerGrid" @rollover="onHeaderRollover">
-      <!--Move prev button-->
+    <!--Nav items-->
+    <div class="vc-flex">
+      <ul class="vc-nav-list" ref="monthList">
+        <li
+          v-for="item in monthItems"
+          :key="item.id"
+          :id="item.id"
+          role="button"
+          :aria-label="item.ariaLabel"
+          :class="getItemClasses(item)"
+          :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
+          @click="item.click"
+          @keydown="e => onSpaceOrEnter(e, item.click)"
+          ref="months"
+        >
+          {{ item.label }}
+        </li>
+      </ul>
+      <ul class="vc-nav-list" ref="yearList">
+        <li
+          v-for="item in yearItems"
+          :key="item.id"
+          :id="item.id"
+          role="button"
+          :aria-label="item.ariaLabel"
+          :class="getItemClasses(item)"
+          :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
+          @click="item.click"
+          @keydown="e => onSpaceOrEnter(e, item.click)"
+          ref="years"
+        >
+          {{ item.label }}
+        </li>
+      </ul>
+    </div>
+    <!--Nav footer-->
+    <div class="vc-flex vc-justify-between" :class="theme.navFooter">
+      <!--Cancel button-->
       <span
         role="button"
-        class="vc-nav-arrow vc-flex vc-justify-center vc-items-center vc-mr-auto"
-        :class="theme.navArrows"
+        class="vc-nav-cancel vc-flex vc-justify-center vc-items-center"
+        :class="theme.navCancel"
         tabindex="-1"
-        @click="movePrev"
-        @keydown="e => onSpaceOrEnter(e, movePrev)"
-        ref="prevButton"
+        @click="onCancelClick"
+        @keydown="e => onSpaceOrEnter(e, onCancelClick)"
       >
-        <slot name="nav-left-button">
-          <svg-icon name="left-arrow" width="20px" height="24px" />
+        <slot name="nav-cancel-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="vc-fill-current vc-w-full vc-h-full"
+          >
+            <path
+              d="M15.78 14.36a1 1 0 0 1-1.42 1.42l-2.82-2.83-2.83 2.83a1 1 0 1 1-1.42-1.42l2.83-2.82L7.3 8.7a1 1 0 0 1 1.42-1.42l2.83 2.83 2.82-2.83a1 1 0 0 1 1.42 1.42l-2.83 2.83 2.83 2.82z"
+            />
+          </svg>
         </slot>
       </span>
-      <!--Mode switch button-->
+      <!--Shortcuts button-->
       <span
         role="button"
-        class="vc-nav-title vc-grid-focus"
-        :class="theme.navTitle"
-        :style="{ whiteSpace: 'nowrap' }"
-        tabindex="0"
-        @click="toggleMode"
-        @keydown="e => onSpaceOrEnter(e, toggleMode)"
-        ref="titleButton"
-      >
-        {{ title }}
-      </span>
-      <!--Move next button-->
-      <span
-        role="button"
-        class="vc-nav-arrow vc-flex vc-justify-center vc-items-center vc-ml-auto"
-        :class="theme.navArrows"
+        class="vc-nav-calendar vc-flex vc-justify-center vc-items-center"
+        :class="theme.navShortcuts"
         tabindex="-1"
-        @click="moveNext"
-        @keydown="e => onSpaceOrEnter(e, moveNext)"
-        ref="nextButton"
+        @click="onShortcutsClick"
+        @keydown="e => onSpaceOrEnter(e, onShortcutsClick)"
       >
-        <slot name="nav-right-button">
-          <svg-icon name="right-arrow" width="20px" height="24px" />
+        <slot name="nav-shortcuts-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="vc-fill-current vc-w-full vc-h-full"
+          >
+            <path
+              class="primary"
+              d="M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm0 5v10h14V9H5z"
+            />
+            <path
+              class="secondary"
+              d="M13 13h3v3h-3v-3zM7 2a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm10 0a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1z"
+            />
+          </svg>
         </slot>
       </span>
-    </grid>
-    <!--Navigation items-->
-    <grid
-      :rows="4"
-      :columns="3"
-      gap="2px 5px"
-      ref="itemsGrid"
-      @rollover="onItemsRollover"
-    >
+      <!--Submit button-->
       <span
-        v-for="item in activeItems"
-        :key="item.label"
         role="button"
-        :aria-label="item.ariaLabel"
-        :class="getItemClasses(item)"
-        :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
-        @click="item.click"
-        @keydown="e => onSpaceOrEnter(e, item.click)"
-        ref="items"
+        class="vc-nav-submit vc-flex vc-justify-center vc-items-center"
+        :class="theme.navSubmit"
+        tabindex="-1"
+        @click="onSubmitClick"
+        @keydown="e => onSpaceOrEnter(e, onSubmitClick)"
       >
-        {{ item.label }}
+        <slot name="nav-submit-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="vc-fill-current vc-w-full vc-h-full"
+          >
+            <path
+              class="secondary"
+              d="M10 14.59l6.3-6.3a1 1 0 0 1 1.4 1.42l-7 7a1 1 0 0 1-1.4 0l-3-3a1 1 0 0 1 1.4-1.42l2.3 2.3z"
+            />
+          </svg>
+        </slot>
       </span>
-    </grid>
+    </div>
   </div>
 </template>
 
@@ -74,10 +115,7 @@
 import Grid from './Grid';
 import SvgIcon from './SvgIcon';
 import { childMixin } from '@/utils/mixins';
-import { head, last } from '@/utils/_';
 import { pageForDate, onSpaceOrEnter } from '@/utils/helpers';
-
-const _yearGroupCount = 12;
 
 export default {
   name: 'CalendarNav',
@@ -92,162 +130,141 @@ export default {
   },
   data() {
     return {
-      monthMode: true,
-      yearIndex: 0,
-      yearGroupIndex: 0,
+      month: 0,
+      year: 0,
+      hasMounted: false,
       onSpaceOrEnter,
     };
   },
+  watch: {
+    value: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.month = val.month;
+          this.year = val.year;
+        }
+      },
+    },
+  },
   computed: {
-    month() {
-      return this.value ? this.value.month || 0 : 0;
-    },
-    year() {
-      return this.value ? this.value.year || 0 : 0;
-    },
     title() {
-      return this.monthMode
-        ? this.yearIndex
-        : `${this.firstYear} - ${this.lastYear}`;
+      return `${this.selectedMonthItem.label} ${this.selectedYearItem.label}`;
     },
     monthItems() {
-      const { month: thisMonth, year: thisYear } = pageForDate(new Date());
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
         return {
+          month,
+          index: i,
+          id: `month-${month}`,
           label: this.locale.format(d, this.masks.navMonths),
           ariaLabel: this.locale.format(d, 'MMMM YYYY'),
-          isActive: month === this.month && this.yearIndex === this.year,
-          isCurrent: month === thisMonth && this.yearIndex === thisYear,
+          isActive: month === this.month,
           isDisabled: !this.validator({ month, year: this.yearIndex }),
-          click: () => this.monthClick(month),
+          click: () => this.onMonthClick(month),
         };
       });
     },
     yearItems() {
-      const { _, year: thisYear } = pageForDate(new Date());
-      const startYear = this.yearGroupIndex * _yearGroupCount;
-      const endYear = startYear + _yearGroupCount;
+      const startYear = 1900;
+      const endYear = 2100;
       const items = [];
-      for (let year = startYear; year < endYear; year += 1) {
+      for (let year = startYear, i = 0; year < endYear; year += 1, i++) {
         items.push({
           year,
+          index: i,
+          id: `year-${year}`,
           label: year,
           ariaLabel: year,
           isActive: year === this.year,
-          isCurrent: year === thisYear,
           isDisabled: !this.validator({ month: this.month, year }),
-          click: () => this.yearClick(year),
+          click: () => this.onYearClick(year),
         });
       }
       return items;
     },
-    activeItems() {
-      return this.monthMode ? this.monthItems : this.yearItems;
+    selectedMonthItem() {
+      return this.monthItems.find(i => i.month === this.month);
     },
-    firstYear() {
-      return head(this.yearItems.map(i => i.year));
+    selectedYearItem() {
+      return this.yearItems.find(i => i.year === this.year);
     },
-    lastYear() {
-      return last(this.yearItems.map(i => i.year));
-    },
-  },
-  watch: {
-    year() {
-      this.yearIndex = this.year;
-    },
-    yearIndex(val) {
-      this.yearGroupIndex = this.getYearGroupIndex(val);
-    },
-  },
-  created() {
-    this.yearIndex = this.year;
   },
   mounted() {
-    this.$refs.itemsGrid.tryFocus();
+    this.scrollToSelected();
+    this.hasMounted = true;
   },
   methods: {
-    getItemClasses({ isActive, isCurrent, isDisabled }) {
-      const classes = [this.theme.navCell];
-      if (isActive) {
-        classes.push(this.theme.navCellActive, 'vc-grid-focus');
-      } else if (isCurrent) {
-        classes.push(this.theme.navCellInactiveCurrent);
-      } else {
-        classes.push(this.theme.navCellInactive);
+    getItemClasses({ isActive, isDisabled }) {
+      const classes = [
+        this.theme.navCell,
+        isActive ? this.theme.navCellActive : this.theme.navCellInactive,
+      ];
+      if (isActive && this.hasMounted) {
+        classes.push('vc-sticky vc-inset-y-0');
       }
       if (isDisabled) {
         classes.push('vc-opacity-25 vc-pointer-events-none');
       }
       return classes;
     },
-    getYearGroupIndex(year) {
-      return Math.floor(year / _yearGroupCount);
+    onTitleClick() {
+      this.scrollToSelected();
     },
-    monthClick(month) {
-      this.$emit('input', { month, year: this.yearIndex });
+    onTitleDblClick() {
+      const page = pageForDate(new Date());
+      this.month = page.month;
+      this.year = page.year;
+      this.scrollToSelected();
     },
-    yearClick(year) {
-      this.yearIndex = year;
-      this.monthMode = true;
-      this.$refs.itemsGrid.tryFocus();
+
+    onMonthClick(month) {
+      this.month = month;
     },
-    toggleMode() {
-      this.monthMode = !this.monthMode;
+    onYearClick(year) {
+      this.year = year;
     },
-    movePrev() {
-      if (this.monthMode) {
-        this.movePrevYear();
-      }
-      this.movePrevYearGroup();
+    onCancelClick() {},
+    onShortcutsClick() {},
+    onSubmitClick() {
+      this.submit();
     },
-    moveNext() {
-      if (this.monthMode) {
-        this.moveNextYear();
-      }
-      this.moveNextYearGroup();
+    submit() {
+      this.$emit('input', { month: this.month, year: this.year });
     },
-    movePrevYear() {
-      this.yearIndex--;
+    scrollToSelected() {
+      this.scrollToListItem(
+        this.$refs.monthList,
+        this.$refs.months[this.selectedMonthItem.index],
+      );
+      this.scrollToListItem(
+        this.$refs.yearList,
+        this.$refs.years[this.selectedYearItem.index],
+      );
     },
-    moveNextYear() {
-      this.yearIndex++;
-    },
-    movePrevYearGroup() {
-      this.yearGroupIndex--;
-    },
-    moveNextYearGroup() {
-      this.yearGroupIndex++;
-    },
-    onHeaderRollover(e) {
-      switch (e.direction) {
-        case 'vertical-trailing':
-          this.$refs.itemsGrid.tryFocus();
-          break;
-      }
-      e.handled = true;
-    },
-    onItemsRollover(e) {
-      switch (e.direction) {
-        case 'horizontal-leading': {
-          this.movePrev();
-          break;
-        }
-        case 'horizontal-trailing': {
-          this.moveNext();
-          break;
-        }
-        case 'vertical-leading': {
-          this.$refs.headerGrid.tryFocus();
-          e.handled = true;
-          break;
-        }
-        case 'vertical-trailing': {
-          e.handled = true;
-          break;
-        }
-      }
+    scrollToListItem(list, listItem) {
+      list.scrollTop =
+        listItem.offsetTop +
+        listItem.clientHeight / 2.0 -
+        list.clientHeight / 2.0;
     },
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.vc-nav-list {
+  position: relative;
+  flex-grow: 1;
+  height: 150px;
+  padding: 0 10px;
+  overflow-y: scroll;
+  list-style: none;
+  overscroll-behavior-y: none;
+}
+.vc-nav-calendar {
+  margin-right: 1px;
+  margin-left: 1px;
+}
+</style>

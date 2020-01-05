@@ -37,28 +37,44 @@ export default {
     dark:
       'vc-text-gray-900 vc-font-bold vc-leading-snug vc-px-2 vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
   },
-  navArrows: {
-    light:
-      'vc-leading-snug vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 focus:vc-border-{color}-600',
-    dark:
-      'vc-leading-snug vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 focus:vc-border-{color}-400',
-  },
   navCell: {
     light:
-      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-snug vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-border-{color}-600',
+      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent',
     dark:
-      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-snug vc-py-1 vc-rounded vc-border-2 vc-border-transparent hover:vc-bg-gray-200 hover:vc-text-gray-900 focus:vc-border-{color}-400',
+      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent',
   },
-  navCellInactive: 'vc-border-transparent',
-  navCellInactiveCurrent: {
-    light: 'vc-text-{color}-100 vc-font-bold vc-border-{color}-100',
-    dark: 'vc-text-{color}-600 vc-font-bold vc-border-{color}-500',
+  navCellInactive: {
+    light:
+      'vc-text-white hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-border-{color}-600',
+    dark: 'vc-text-gray-800 hover:vc-bg-gray-200 focus:vc-border-{color}-400',
   },
   navCellActive: {
     light:
       'vc-bg-{color}-100 vc-text-{color}-900 vc-border-transparent vc-font-bold vc-shadow',
     dark:
       'vc-bg-{color}-500 vc-text-white vc-border-transparent vc-font-bold vc-shadow',
+  },
+  navFooter: {
+    light: 'mt-1 vc-bg-gray-800 vc-rounded vc-overflow-hidden',
+    dark: 'mt-1 vc-bg-gray-200 vc-rounded vc-overflow-hidden',
+  },
+  navCancel: {
+    light:
+      'vc-flex-grow vc-h-8 vc-text-white vc-bg-gray-700 hover:vc-bg-gray-900 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-rounded-l vc-shadow-inner',
+    dark:
+      'vc-flex-grow vc-h-8 vc-text-gray-800 vc-bg-gray-300 hover:vc-bg-gray-400 vc-border vc-border-transparent focus:vc-border-{color}-400 vc-rounded-l vc-shadow-inner',
+  },
+  navShortcuts: {
+    light:
+      'vc-flex-grow vc-h-8 vc-py-1 vc-text-white vc-bg-gray-700 hover:vc-bg-gray-900 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-shadow-inner',
+    dark:
+      'vc-flex-grow vc-h-8 vc-py-1 vc-text-gray-800 vc-bg-gray-300 hover:vc-bg-gray-400 vc-border vc-border-transparent focus:vc-border-{color}-400 vc-shadow-inner',
+  },
+  navSubmit: {
+    light:
+      'vc-flex-grow vc-h-8 vc-text-{color}-900 vc-bg-{color}-100 hover:vc-bg-{color}-200 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-rounded-r vc-shadow-inner',
+    dark:
+      'vc-flex-grow vc-h-8 vc-text-white vc-bg-{color}-500 hover:vc-bg-{color}-600 vc-border vc-border-transparent focus:vc-border-{color}-700 vc-rounded-r vc-shadow-inner',
   },
   dayNotInMonth: 'vc-opacity-0 vc-pointer-events-none',
   dayContent:
