@@ -326,15 +326,6 @@ export default {
         });
       }
     },
-    inputInput(e) {
-      this.inputValue = e.target.value;
-      if (this.updateOnInput) {
-        this.updateValue(this.inputValue, {
-          formatInput: false,
-          hidePopover: false,
-        });
-      }
-    },
     inputChange() {
       this.updateValue(this.inputValue, {
         formatInput: true,
