@@ -27,9 +27,9 @@ export default {
   },
   navPopoverContainer: {
     light:
-      'vc-rounded-lg vc-text-sm vc-font-semibold vc-text-white vc-bg-gray-800 vc-border vc-border-gray-700 vc-p-1 vc-shadow',
+      'vc-w-40 vc-rounded-lg vc-text-sm vc-font-semibold vc-text-white vc-bg-gray-800 vc-border vc-border-gray-700 vc-p-1 vc-shadow',
     dark:
-      'vc-rounded-lg vc-text-sm vc-font-semibold vc-text-gray-800 vc-bg-white vc-border vc-border-gray-100 vc-p-1 vc-shadow',
+      'vc-w-40 vc-rounded-lg vc-text-sm vc-font-semibold vc-text-gray-800 vc-bg-white vc-border vc-border-gray-100 vc-p-1 vc-shadow',
   },
   navTitle: {
     light:
@@ -39,42 +39,34 @@ export default {
   },
   navCell: {
     light:
-      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent',
+      'vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-px-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent focus:vc-border-{color}-600',
     dark:
-      'vc-w-12 vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent',
+      'vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-px-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent focus:vc-border-{color}-400',
   },
   navCellInactive: {
     light:
-      'vc-text-white hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white focus:vc-border-{color}-600',
-    dark: 'vc-text-gray-800 hover:vc-bg-gray-200 focus:vc-border-{color}-400',
+      'vc-text-white hover:vc-bg-gray-900 hover:vc-shadow-inner hover:vc-text-white',
+    dark: 'vc-text-gray-800 hover:vc-bg-gray-200',
   },
   navCellActive: {
-    light:
-      'vc-bg-{color}-100 vc-text-{color}-900 vc-border-transparent vc-font-bold vc-shadow',
-    dark:
-      'vc-bg-{color}-500 vc-text-white vc-border-transparent vc-font-bold vc-shadow',
+    light: 'vc-bg-{color}-100 vc-text-{color}-900 vc-font-bold vc-shadow',
+    dark: 'vc-bg-{color}-500 vc-text-white vc-font-bold vc-shadow',
   },
   navFooter: {
-    light: 'mt-1 vc-bg-gray-800 vc-rounded vc-overflow-hidden',
-    dark: 'mt-1 vc-bg-gray-200 vc-rounded vc-overflow-hidden',
-  },
-  navCancel: {
-    light:
-      'vc-flex-grow vc-h-8 vc-text-white vc-bg-gray-700 hover:vc-bg-gray-900 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-rounded-l vc-shadow-inner',
-    dark:
-      'vc-flex-grow vc-h-8 vc-text-gray-800 vc-bg-gray-300 hover:vc-bg-gray-400 vc-border vc-border-transparent focus:vc-border-{color}-400 vc-rounded-l vc-shadow-inner',
+    light: 'vc-flex vc-bg-gray-800 vc-rounded vc-overflow-hidden vc-mt-1',
+    dark: 'vc-flex vc-bg-gray-200 vc-rounded vc-overflow-hidden vc-mt-1',
   },
   navShortcuts: {
     light:
-      'vc-flex-grow vc-h-8 vc-py-1 vc-text-white vc-bg-gray-700 hover:vc-bg-gray-900 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-shadow-inner',
+      'vc-flex vc-justify-center vc-items-center vc-h-8 vc-px-2 vc-py-1 vc-text-white vc-bg-gray-700 hover:vc-bg-gray-900 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-rounded-l vc-shadow-inner',
     dark:
-      'vc-flex-grow vc-h-8 vc-py-1 vc-text-gray-800 vc-bg-gray-300 hover:vc-bg-gray-400 vc-border vc-border-transparent focus:vc-border-{color}-400 vc-shadow-inner',
+      'vc-flex vc-justify-center vc-items-center vc-h-8 vc-px-2 vc-py-1 vc-text-gray-800 vc-bg-gray-300 hover:vc-bg-gray-400 vc-border vc-border-transparent focus:vc-border-{color}-400 vc-rounded-l vc-shadow-inner',
   },
   navSubmit: {
     light:
-      'vc-flex-grow vc-h-8 vc-text-{color}-900 vc-bg-{color}-100 hover:vc-bg-{color}-200 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-rounded-r vc-shadow-inner',
+      'vc-flex vc-justify-center vc-items-center vc-h-8 vc-px-2 vc-text-{color}-900 vc-bg-{color}-100 hover:vc-bg-{color}-200 vc-border vc-border-transparent focus:vc-border-{color}-600 vc-rounded-r vc-shadow-inner',
     dark:
-      'vc-flex-grow vc-h-8 vc-text-white vc-bg-{color}-500 hover:vc-bg-{color}-600 vc-border vc-border-transparent focus:vc-border-{color}-700 vc-rounded-r vc-shadow-inner',
+      'vc-flex vc-justify-center vc-items-center vc-h-8 vc-px-2 vc-text-white vc-bg-{color}-500 hover:vc-bg-{color}-600 vc-border vc-border-transparent focus:vc-border-{color}-700 vc-rounded-r vc-shadow-inner',
   },
   dayNotInMonth: 'vc-opacity-0 vc-pointer-events-none',
   dayContent:

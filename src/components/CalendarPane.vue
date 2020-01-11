@@ -63,6 +63,7 @@ export default {
                       id: this.navPopoverId,
                       contentClass: this.theme.navPopoverContainer,
                     },
+                    ref: 'popover',
                   },
                   [
                     // Navigation pane
@@ -70,9 +71,11 @@ export default {
                       props: {
                         value: this.page,
                         validator: this.canMove,
+                        shortcuts: this.navShortcuts,
                       },
                       on: {
-                        input: $event => this.move($event),
+                        move: $event => this.move($event),
+                        focus: $event => this.focus($event),
                       },
                       scopedSlots: this.$scopedSlots,
                     }),
@@ -138,6 +141,7 @@ export default {
     page: Object,
     titlePosition: String,
     navVisibility: String,
+    navShortcuts: { type: Array, default: () => [] },
     canMove: {
       type: Function,
       default: () => true,
@@ -171,9 +175,20 @@ export default {
   methods: {
     move(page) {
       this.$emit('update:page', page);
+      this.hidePopover();
+    },
+    focus(date) {
+      this.$emit('focus', date);
+      this.hidePopover();
     },
     refresh() {
       this.$refs.days.forEach(d => d.refresh());
+    },
+    hidePopover() {
+      const popover = this.$refs.popover;
+      if (popover) {
+        popover.hide({ priority: 10, delay: 400 });
+      }
     },
   },
 };

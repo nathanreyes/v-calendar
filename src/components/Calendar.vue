@@ -57,6 +57,7 @@ export default {
         on: {
           ...this.$listeners,
           'update:page': e => this.refreshPages({ page: e, position: i + 1 }),
+          focus: e => this.focusDate(e),
           dayfocusin: e => {
             this.lastFocusedDay = e;
             this.$emit('dayfocusin', e);
