@@ -242,13 +242,13 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 ## Events
 
-### `update:frompage`
+### `update:from-page`
 
 **Description:** Calendar left/single pane moved to a different page.
 
 **Params:** [`page`](./page-object.md)
 
-### `update:topage`
+### `update:to-page`
 
 **Description:** Calendar right pane moved to a different page.
 
