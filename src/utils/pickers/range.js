@@ -99,7 +99,7 @@ export default class RangePicker {
       // Assign new value if it is valid
       if (picker.dateIsValid(newValue)) {
         picker.doFormatInput = true;
-        picker.doHidePopover = true;
+        picker.doHidePopover = picker.canHidePopover;
         // Clear drag selection
         picker.dragValue = null;
         picker.value_ = newValue;

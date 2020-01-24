@@ -59,7 +59,7 @@ export default class SinglePicker {
       }
     } else {
       picker.doFormatInput = true;
-      picker.doHidePopover = true;
+      picker.doHidePopover = picker.canHidePopover;
       // Set value to selected date
       picker.value_ = day.date;
     }
