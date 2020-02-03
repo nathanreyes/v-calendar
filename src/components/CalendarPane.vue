@@ -63,7 +63,7 @@ export default {
                       id: this.navPopoverId,
                       contentClass: this.theme.navPopoverContainer,
                     },
-                    ref: 'popover',
+                    ref: 'navPopover',
                   },
                   [
                     // Navigation pane
@@ -141,7 +141,6 @@ export default {
     page: Object,
     titlePosition: String,
     navVisibility: String,
-    navShortcuts: { type: Array, default: () => [] },
     canMove: {
       type: Function,
       default: () => true,
@@ -175,19 +174,19 @@ export default {
   methods: {
     move(page) {
       this.$emit('update:page', page);
-      this.hidePopover();
+      this.hideNavPopover();
     },
     focus(date) {
       this.$emit('focus', date);
-      this.hidePopover();
+      this.hideNavPopover();
     },
     refresh() {
       this.$refs.days.forEach(d => d.refresh());
     },
-    hidePopover() {
-      const popover = this.$refs.popover;
-      if (popover) {
-        popover.hide({ priority: 10, delay: 400 });
+    hideNavPopover() {
+      const navPopover = this.$refs.navPopover;
+      if (navPopover) {
+        navPopover.hide({ priority: 10, delay: 200 });
       }
     },
   },
