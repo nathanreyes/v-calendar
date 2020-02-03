@@ -123,8 +123,8 @@ export default {
         alt: false,
         handled: false,
       };
-      // Increment row/column based on key
-      switch (event.key) {
+      // Increment row/column based on key code
+      switch (event.code) {
         case 'ArrowUp': {
           state.row--;
           break;
