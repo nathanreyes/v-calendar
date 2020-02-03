@@ -30,8 +30,13 @@
       <div v-else class="vc-flex">
         <template v-if="!shortcutsVisible">
           <!--Month list-->
-          <ul class="vc-nav-list" ref="monthList">
-            <li
+          <grid
+            class="vc-month-list"
+            :rows="monthItems.length"
+            @select="onMonthSelect"
+            ref="monthList"
+          >
+            <div
               v-for="item in monthItems"
               :key="item.id"
               :id="item.id"
@@ -39,45 +44,53 @@
               :aria-label="item.ariaLabel"
               :class="getItemClasses(item)"
               :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
-              @click="item.onClick"
-              @keydown="e => onSpaceOrEnter(e, item.click)"
               ref="months"
             >
               {{ item.label }}
-            </li>
-          </ul>
+            </div>
+          </grid>
           <!--Year list-->
-          <ul class="vc-nav-list" ref="yearList">
-            <li
+          <grid
+            class="vc-year-list"
+            :rows="yearItems.length"
+            @select="onYearSelect"
+            ref="yearList"
+          >
+            <div
               v-for="item in yearItems"
               :key="item.id"
               :id="item.id"
               role="button"
               :aria-label="item.ariaLabel"
-              :class="getItemClasses(item, false)"
+              :class="getItemClasses(item)"
               :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
-              @click="item.onClick"
-              @keydown="e => onSpaceOrEnter(e, item.click)"
               ref="years"
             >
               {{ item.label }}
-            </li>
-          </ul>
+            </div>
+          </grid>
         </template>
-        <!--Shortcut items-->
-        <ul v-else class="vc-nav-list">
-          <li
-            v-for="item in shortcutItems"
-            :key="item.label"
-            :id="item.label"
-            role="button"
-            :class="getItemClasses(item)"
-            :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
-            @click="item.onClick"
+        <!--Shortcut list-->
+        <div v-else class="vc-shortcut-list">
+          <grid
+            :rows="shortcutItems.length"
+            @select="onShortcutSelect"
+            ref="shortcutList"
           >
-            {{ item.label }}
-          </li>
-        </ul>
+            <div
+              v-for="item in shortcutItems"
+              :key="item.id"
+              :id="item.id"
+              role="button"
+              :aria-label="item.ariaLabel"
+              :class="getItemClasses(item)"
+              :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
+              ref="shortcuts"
+            >
+              {{ item.label }}
+            </div>
+          </grid>
+        </div>
       </div>
     </div>
     <!--Nav footer-->
@@ -91,7 +104,7 @@
           :class="[theme.navShortcuts, { 'is-mobile': isMobile }]"
           tabindex="0"
           @click="onShortcutsClick"
-          @keydown="e => onSpaceOrEnter(e, onShortcutsClick)"
+          @keydown.enter="onShortcutsClick"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +130,7 @@
           :class="[theme.navSubmit, { 'is-mobile': isMobile }]"
           tabindex="0"
           @click="onSubmitClick"
-          @keydown="e => onSpaceOrEnter(e, onSubmitClick)"
+          @keydown.enter="onSubmitClick"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -143,7 +156,6 @@ import Grid from './Grid';
 import SvgIcon from './SvgIcon';
 import SelectButton from './SelectButton';
 import { childMixin } from '@/utils/mixins';
-import { onSpaceOrEnter } from '@/utils/helpers';
 import { isDate, isObject } from '@/utils/_';
 
 export default {
@@ -163,33 +175,21 @@ export default {
     return {
       month: 0,
       year: 0,
-      hasMounted: false,
       shortcutsVisible: false,
-      onSpaceOrEnter,
       isMobile: false,
     };
-  },
-  watch: {
-    value: {
-      immediate: true,
-      handler(val) {
-        if (val) {
-          this.month = val.month;
-          this.year = val.year;
-        }
-      },
-    },
   },
   computed: {
     monthItems() {
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
+        const label = this.locale.format(d, this.masks.navMonths);
         return {
           index: i,
           value: month,
           id: `month-${month}`,
-          label: this.locale.format(d, this.masks.navMonths),
-          ariaLabel: this.locale.format(d, 'MMMM YYYY'),
+          label,
+          ariaLabel: label,
           isActive: month === this.month,
           isDisabled: !this.validator({ month, year: this.yearIndex }),
           onClick: () => this.onMonthClick(month),
@@ -223,22 +223,26 @@ export default {
           let onClick = null;
           if (isDate(shortcut)) {
             date = shortcut;
-            label = label || this.locale.format(date, 'YYYY-MM-DD');
           } else if (isObject(shortcut)) {
             label = shortcut.label;
             if (shortcut.date) {
               date = shortcut.date;
-              label = label || this.locale.format(date, 'YYYY-MM-DD');
             } else if (shortcut.month && shortcut.year) {
               page = { month: shortcut.month, year: shortcut.year };
-              label =
-                label ||
-                this.locale.format(new Date(page.year, page.month - 1, 15));
             }
           }
+          const { locale, masks } = this;
           if (date) {
+            label = label || locale.format(date, masks.navDateShortcuts);
             onClick = () => this.focus(date);
           } else if (page) {
+            const { month, year } = page;
+            label =
+              label ||
+              locale.format(
+                new Date(year, month - 1, 15),
+                masks.navMonthShortcuts,
+              );
             onClick = () => this.move(page);
           } else {
             return null;
@@ -266,11 +270,28 @@ export default {
       return `${this.selectedMonthItem.label} ${this.selectedYearItem.label}`;
     },
   },
+  watch: {
+    value: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.month = val.month;
+          this.year = val.year;
+        }
+      },
+    },
+    shortcutsVisible: {
+      immediate: true,
+      handler() {
+        this.$nextTick(() => {
+          this.scrollToSelectedItems();
+        });
+      },
+    },
+  },
   mounted() {
-    if (!this.isMobile) {
-      this.scrollToSelectedItems();
-    }
-    this.hasMounted = true;
+    // Focus on the month list
+    this.$refs.monthList.tryFocus();
   },
   methods: {
     getItemClasses(item, selectFocus) {
@@ -292,8 +313,25 @@ export default {
     onYearClick(year) {
       this.year = year;
     },
+    onMonthSelect({ position }) {
+      this.monthItems[position - 1].onClick();
+    },
+    onYearSelect({ position }) {
+      this.yearItems[position - 1].onClick();
+    },
+    onShortcutSelect({ position }) {
+      this.shortcutItems[position - 1].onClick();
+    },
     onShortcutsClick() {
       this.shortcutsVisible = !this.shortcutsVisible;
+      this.$nextTick(() => {
+        const focusEl = this.shortcutsVisible
+          ? this.$refs.shortcutList
+          : this.$refs.monthList;
+        if (focusEl) {
+          focusEl.tryFocus();
+        }
+      });
     },
     onSubmitClick() {
       this.move({ month: this.month, year: this.year });
@@ -305,8 +343,10 @@ export default {
       this.$emit('focus', date);
     },
     scrollToSelectedItems() {
-      this.scrollToSelectedMonthItem();
-      this.scrollToSelectedYearItem();
+      if (!this.shortcutsVisible) {
+        this.scrollToSelectedMonthItem();
+        this.scrollToSelectedYearItem();
+      }
     },
     scrollToSelectedMonthItem() {
       if (!this.$refs.monthList) return;
@@ -324,6 +364,7 @@ export default {
     },
     scrollToListItem(list, listItem) {
       if (!list || !listItem) return;
+      list = list.$el || list;
       const scrollTop =
         listItem.offsetTop +
         listItem.clientHeight / 2.0 -
@@ -335,13 +376,28 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.vc-nav-list {
-  flex-grow: 1;
-  height: 130px;
+.vc-month-list,
+.vc-year-list,
+.vc-shortcut-list {
+  width: 50%;
+  height: 135px;
   padding: 0 12px;
   list-style: none;
+  overflow-x: hidden;
   overflow-y: scroll;
-  overscroll-behavior-y: none;
+  /* overscroll-behavior-y: none; */
+  &.vc-shortcut-list {
+    width: 100%;
+  }
+  /* &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #edf2f7;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: red;
+  } */
 }
 .vc-nav-shortcuts {
   margin-right: 1px;

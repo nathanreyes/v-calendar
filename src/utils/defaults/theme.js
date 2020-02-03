@@ -39,9 +39,9 @@ export default {
   },
   navCell: {
     light:
-      'vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-px-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent focus:vc-border-{color}-600',
+      'vc-w-full vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-px-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent focus:vc-border-{color}-600',
     dark:
-      'vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-px-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent focus:vc-border-{color}-400',
+      'vc-w-full vc-font-semibold vc-cursor-pointer vc-text-center vc-leading-none vc-py-1 vc-px-1 vc-mx-1 vc-mb-1 vc-rounded vc-border-2 vc-border-transparent focus:vc-border-{color}-400',
   },
   navCellInactive: {
     light:

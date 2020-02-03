@@ -19,6 +19,7 @@
 export default {
   props: {
     value: null,
+    // Each item has 'id', 'value' and 'label' keys
     items: Array,
     focus: Boolean,
   },
@@ -28,6 +29,9 @@ export default {
     },
     value_(val) {
       this.$emit('input', val);
+    },
+    hasFocus(val) {
+      console.log('hasFocus', val);
     },
   },
   data() {
@@ -43,3 +47,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+select > option[value=''] {
+  display: none;
+}
+</style>
