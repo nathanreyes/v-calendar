@@ -11,8 +11,8 @@ export default {
     // Grid cell renderer
     const getCell = ({ nodes, position, row, column }) => {
       // Get the default slot first
-      if (nodes.length >= position) {
-        return nodes[position - 1];
+      if (nodes.length > position) {
+        return nodes[position];
       }
       // Get the scoped slot second
       if (this.$scopedSlots.default) {
@@ -34,8 +34,8 @@ export default {
           this.$slots.default.filter(n => n.tag !== undefined)) ||
         [];
       // Build cells
-      for (let r = 1, p = 1; r <= this.rows; r++) {
-        for (let c = 1; c <= this.columns; c++) {
+      for (let r = 1, p = 0; r <= this.rows; r++) {
+        for (let c = 1; c <= this.columns; c++, p++) {
           const rFromEnd = r - this.rows - 1;
           const cFromEnd = c - this.columns - 1;
           // Add the cell for current row & column
@@ -55,11 +55,18 @@ export default {
                   'grid-column': c,
                 },
                 on: {
+                  click: e =>
+                    this.onClick({ position: p, row: r, column: c, event: e }),
                   keydown: e =>
-                    this.handleCellKeydown({ row: r, column: c, event: e }),
+                    this.onKeydown({
+                      position: p,
+                      row: r,
+                      column: c,
+                      event: e,
+                    }),
                 },
               },
-              [getCell({ nodes, position: p++, row: r, column: c })],
+              [getCell({ nodes, position: p, row: r, column: c })],
             ),
           );
         }
@@ -114,7 +121,15 @@ export default {
     },
   },
   methods: {
-    handleCellKeydown({ row, column, event }) {
+    onClick(e) {
+      this.$emit('click', e);
+      this.$emit('select', e);
+    },
+    onKeydown({ position, row, column, event }) {
+      if (event.code === 'Enter') {
+        this.$emit('select', { position, row, column, event });
+        return;
+      }
       // Return if focus management is disabled
       if (this.disableFocus) return;
       const state = {
