@@ -1,7 +1,4 @@
 <script>
-import Calendar from './Calendar';
-import Popover from './Popover';
-import PopoverRef from './PopoverRef';
 import SinglePicker from '@/utils/pickers/single';
 import MultiplePicker from '@/utils/pickers/multiple';
 import RangePicker from '@/utils/pickers/range';
@@ -13,6 +10,9 @@ import {
 import { addTapOrClickHandler } from '@/utils/touch';
 import { createGuid, elementContains, on, off } from '@/utils/helpers';
 import { isString, isArray } from '@/utils/_';
+import PopoverRef from './PopoverRef';
+import Popover from './Popover';
+import Calendar from './Calendar';
 import '@/styles/tailwind-lib.css';
 
 export default {

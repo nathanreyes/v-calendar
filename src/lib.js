@@ -1,6 +1,6 @@
-import setupCalendar from './utils/setup';
 import Calendar from '@/components/Calendar';
 import DatePicker from '@/components/DatePicker';
+import setupCalendar from './utils/setup';
 
 // Export components individually
 export { setupCalendar, Calendar, DatePicker };

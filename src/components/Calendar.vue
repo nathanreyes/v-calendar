@@ -1,11 +1,5 @@
 <script>
 import { addDays, addMonths, addYears } from 'date-fns';
-import Popover from './Popover';
-import PopoverRow from './PopoverRow';
-import Grid from './Grid';
-import CalendarPane from './CalendarPane';
-import CustomTransition from './CustomTransition';
-import SvgIcon from './SvgIcon';
 import AttributeStore from '@/utils/attributeStore';
 import {
   propOrDefaultMixin,
@@ -35,6 +29,12 @@ import {
   head,
   last,
 } from '@/utils/_';
+import Popover from './Popover';
+import PopoverRow from './PopoverRow';
+import Grid from './Grid';
+import CalendarPane from './CalendarPane';
+import CustomTransition from './CustomTransition';
+import SvgIcon from './SvgIcon';
 import '@/styles/tailwind-lib.css';
 
 export default {
