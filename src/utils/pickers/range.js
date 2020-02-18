@@ -43,7 +43,7 @@ export default class RangePicker {
   parse(text) {
     let start;
     let end;
-    const dateTexts = text.split('-').map(s => s.trim());
+    const dateTexts = text.split(' - ').map(s => s.trim());
     if (dateTexts.length >= 2) {
       start = this._parse(dateTexts[0]);
       end = this._parse(dateTexts[1]);
