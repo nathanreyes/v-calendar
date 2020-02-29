@@ -39,7 +39,7 @@ For the simple example above, we used the following properties to build the attr
 
 | Property | Description |
 | --- | --- |
-| **`key`** | Uniquely identifies the attribute. This will come in handly later. |
+| **`key`** | Uniquely identifies the attribute. This will come in handy later. |
 | **`highlight`** | Config for the highlighted region displayed on each date. |
 | **`dates`** | Dates used to display the attribute. |
 
