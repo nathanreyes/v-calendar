@@ -168,7 +168,7 @@ Please reference the [formatting & parsing section](/guide/#formatting-parsing) 
 
 ## Disable Dates
 
-Refer to the [disabling dates section](./README.md#disabling-dates).
+Refer to the [disabling dates section](./datepicker.html#disable-dates).
 
 ## Require Selected Date
 
