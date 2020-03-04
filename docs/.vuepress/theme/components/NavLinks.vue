@@ -1,16 +1,25 @@
 <template>
-  <nav class="nav-links" v-if="userLinks.length || repoLink">
-    <!-- user links -->
-    <div class="nav-item" v-for="item in userLinks" :key="item.link">
+  <nav
+    :class="[isVertical ? 'py-2 border-b' : '']"
+    v-if="userLinks.length || repoLink"
+  >
+    <!--User links-->
+    <div
+      class="font-medium"
+      :class="[
+        isVertical ? 'block px-6 py-2' : 'inline-block text-sm px-3 py-0',
+      ]"
+      v-for="item in userLinks"
+      :key="item.link"
+    >
       <DropdownLink v-if="item.type === 'links'" :item="item" />
       <NavLink v-else :item="item" />
     </div>
-
-    <!-- repo link -->
+    <!--Repo link-->
     <a
       v-if="repoLink"
       :href="repoLink"
-      class="repo-link"
+      class="inline-block md:text-sm font-medium px-6 md:px-3 py-2 md:py-0"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -27,12 +36,13 @@ import NavLink from '@theme/components/NavLink.vue';
 
 export default {
   components: { NavLink, DropdownLink },
-
+  props: {
+    isVertical: Boolean,
+  },
   computed: {
     userNav() {
       return this.$themeLocaleConfig.nav || this.$site.themeConfig.nav || [];
     },
-
     nav() {
       const { locales } = this.$site;
       if (locales && Object.keys(locales).length > 1) {
@@ -65,7 +75,6 @@ export default {
       }
       return this.userNav;
     },
-
     userLinks() {
       return (this.nav || []).map(link => {
         return Object.assign(resolveNavLinkItem(link), {
@@ -73,7 +82,6 @@ export default {
         });
       });
     },
-
     repoLink() {
       const { repo } = this.$site.themeConfig;
       if (repo) {
@@ -81,7 +89,6 @@ export default {
       }
       return null;
     },
-
     repoLabel() {
       if (!this.repoLink) return;
       if (this.$site.themeConfig.repoLabel) {
@@ -102,55 +109,3 @@ export default {
   },
 };
 </script>
-
-<style lang="stylus">
-.nav-links {
-  display: inline-block;
-
-  // a {
-  // line-height: 1.4rem;
-
-  // // color inherit
-  // &:hover, &.router-link-active {
-  // color: $accentColor;
-  // }
-  // }
-  .nav-item {
-    position: relative;
-    display: inline-block;
-    margin-left: 1.5rem;
-    line-height: 2rem;
-
-    &:first-child {
-      margin-left: 0;
-    }
-  }
-
-  .repo-link {
-    margin-left: 1.5rem;
-  }
-}
-
-@media (max-width: $MQMobile) {
-  .nav-links {
-    .nav-item, .repo-link {
-      margin-left: 0;
-    }
-  }
-}
-
-@media (min-width: $MQMobile) {
-  .nav-links a {
-    &:hover, &.router-link-active {
-      color: $textColor;
-    }
-  }
-
-  .nav-item > a:not(.external) {
-    &:hover, &.router-link-active {
-      margin-bottom: -2px;
-      border-bottom: 2px solid lighten($accentColor, 8%);
-    }
-  }
-}
-</style>

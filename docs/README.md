@@ -7,7 +7,7 @@ footer: MIT Licensed | Copyright © 2017-Present Nathan Reyes
 pageClass: 'homepage'
 ---
 
-<div class='text-center'>
+<div class='text-center pt-12'>
 
 <img src="hero.png" alt="Banner image" width="200" style="margin:auto">
 

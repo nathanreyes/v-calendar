@@ -8,16 +8,9 @@
 
 .example,
 .example-home {
-  @apply -mx-2 my-4 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
+  @apply -mx-4 my-4 p-8 flex flex-col items-center justify-center bg-gray-100 border-t border-b;
   &.is-dark {
     @apply bg-gray-800;
-  }
-}
-
-.example {
-  @media (max-width: 419px) {
-    margin-left: -1.5rem;
-    margin-right: -1.5rem;
   }
 }
 
@@ -56,7 +49,7 @@ input[type='text'] {
 }
 
 .section {
-  @apply max-w-2xl mx-auto px-4 my-10;
+  @apply my-10;
 }
 
 h1,
@@ -88,18 +81,15 @@ h4 {
   }
 }
 
-/* h3,
-h4 {
-  &:not(first-child) {
-    @apply mt-4;
+a {
+  @apply text-indigo-700 no-underline;
+  &:hover {
+    @apply text-indigo-600;
   }
-} */
+}
 
 ul {
   @apply list-disc text-indigo-500 font-semibold tracking-wide;
-  & li {
-    @apply mb-1;
-  }
 }
 
 ol {
@@ -108,26 +98,6 @@ ol {
 
 p {
   @apply my-2 leading-relaxed;
-}
-
-.sidebar {
-  @apply border-none !important;
-}
-
-.sidebar-heading {
-  @apply text-sm tracking-wide text-gray-500 uppercase pl-6 !important;
-}
-
-.sidebar-link {
-  @apply flex w-auto text-sm text-gray-600 font-medium ml-3 px-3 py-1 mt-1 !important;
-}
-
-.sidebar-link:hover {
-  @apply text-indigo-700 font-semibold !important;
-}
-
-.sidebar-link.active {
-  @apply text-indigo-700 font-semibold bg-indigo-100 border-l-4 border-indigo-500 rounded !important;
 }
 
 @tailwind utilities;
