@@ -34,7 +34,7 @@ const locales = {
   // Esperanto
   eo: { dow: 2, L: 'YYYY-MM-DD' },
   // Finnish
-  fi: { dow: 2, L: 'Do MMMM[ta] YYYY' },
+  fi: { dow: 2, L: 'DD.MM.YYYY' },
   // French
   fr: { dow: 2, L: 'DD/MM/YYYY' },
   // French (Canada)
