@@ -61,10 +61,10 @@
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/test-utils": "1.0.0-beta.30",
     "@vuepress/plugin-google-analytics": "^1.2.0",
-    "babel-eslint": "^10.0.3",
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-vue": "^6.1.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-vue": "^6.2.2",
     "postcss-preset-env": "^6.7.0",
     "tailwindcss": "1.1.4",
     "vuepress": "1.2.0"
