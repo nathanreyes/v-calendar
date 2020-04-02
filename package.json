@@ -27,9 +27,6 @@
   },
   "private": false,
   "license": "MIT",
-  "publishConfig": {
-    "tag": "next"
-  },
   "scripts": {
     "serve": "vue-cli-service serve src/lib.js",
     "build": "yarn build:lib && yarn build:calendar && yarn build:date-picker && yarn build:popover && yarn build:popover-ref && yarn build:popover-row",
