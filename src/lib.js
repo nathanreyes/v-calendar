@@ -5,8 +5,8 @@ import Locale from '@/utils/locale';
 import DateInfo from '@/utils/dateInfo';
 import Attribute from '@/utils/attribute';
 import AttributeStore from '@/utils/attributeStore';
-import helpers from '@/utils/helpers';
-import touch from '@/utils/touch';
+import * as helpers from '@/utils/helpers';
+import * as touch from '@/utils/touch';
 
 // Export components individually
 export {
