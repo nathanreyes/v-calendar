@@ -1,4 +1,12 @@
 {
   "presets": ["@vue/app"],
-  "plugins": ["@babel/plugin-transform-arrow-functions"]
+  "plugins": [
+    "@babel/plugin-transform-arrow-functions",
+    "@babel/plugin-transform-classes",
+    "@babel/plugin-transform-computed-properties",
+    "@babel/plugin-transform-shorthand-properties",
+    "@babel/plugin-transform-spread",
+    "@babel/plugin-transform-template-literals",
+    "babel-plugin-transform-async-to-promises"
+  ]
 }
