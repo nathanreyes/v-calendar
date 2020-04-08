@@ -108,6 +108,7 @@ export default {
     inputDebounce: Number,
     inputProps: { type: Object, default: () => ({}) },
     popover: { type: Object, default: () => ({}) },
+    popoverHideDelay: { type: Number, default: 400 },
     dragAttribute: Object,
     selectAttribute: Object,
     attributes: Array,
@@ -410,7 +411,7 @@ export default {
     hidePopover() {
       const popover = this.$refs.popover;
       if (popover) {
-        popover.hide({ priority: 10, delay: 400 });
+        popover.hide({ priority: 10, delay: this.popoverHideDelay });
       }
     },
     adjustPageRange() {
