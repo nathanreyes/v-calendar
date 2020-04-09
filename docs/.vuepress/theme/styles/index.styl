@@ -1,52 +1,11 @@
-@require './config'
 @require './code'
 @require './custom-blocks'
 @require './arrow'
 @require './wrapper'
 @require './toc'
 
-.page
-  padding-top @navbarHeight
-  padding-left $sidebarWidth
-
-.navbar
-  position fixed
-  z-index 20
-  top 0
-  left 0
-  right 0
-  height $navbarHeight
-  background-color #fff
-  box-sizing border-box
-  border-bottom 1px solid $borderColor
-
-.sidebar-mask
-  position fixed
-  z-index 9
-  top 0
-  left 0
-  width 100vw
-  height 100vh
-  display none
-
-.sidebar
-  font-size 16px
-  background-color #fff
-  width $sidebarWidth
-  position fixed
-  z-index 10
-  margin 0
-  top $navbarHeight
-  left 0
-  bottom 0
-  box-sizing border-box
-  border-right 1px solid $borderColor
-  overflow-y auto
-
 {$contentClass}:not(.custom)
   @extend $wrapper
-  // > *:first-child
-  //   margin-top $navbarHeight
 
   a:hover
     text-decoration underline
@@ -65,11 +24,6 @@
 
   img
     max-width 100%
-
-a
-  font-weight 500
-  color $accentColor
-  text-decoration none
 
 p a code
   font-weight 400
@@ -134,27 +88,3 @@ tr
 th, td
   border 1px solid #dfe2e5
   padding .6em 1em
-
-.theme-container
-  &.sidebar-open
-    .sidebar-mask
-      display: block
-
-  &.no-navbar
-    {$contentClass}:not(.custom) > h1, h2, h3, h4, h5, h6
-      margin-top 1.5rem
-      padding-top 0
-
-    .sidebar
-      top 0
-
-
-@media (min-width: ($MQMobile + 1px))
-  .theme-container.no-sidebar
-    .sidebar
-      display none
-
-    .page
-      padding-left 0
-
-@require 'mobile.styl'

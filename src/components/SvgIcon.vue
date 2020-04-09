@@ -6,7 +6,7 @@
     :viewBox="viewBox"
     v-on="$listeners"
   >
-    <path :d="path"/>
+    <path :d="path" />
   </svg>
 </template>
 

@@ -16,7 +16,7 @@
 ------
 
 ```bash
-npm i --save v-calendar@next
+npm i --save v-calendar
 ```
 
 ## Documentation

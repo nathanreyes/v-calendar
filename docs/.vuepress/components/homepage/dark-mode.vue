@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border-t border-b border-gray-900 my-10 shadow-inner -mx-8 sm:mx-auto"
+    class="border-t border-b border-gray-900 -mx-4 my-10 shadow-inner"
     :style="bgStyle"
   >
     <div class="section">

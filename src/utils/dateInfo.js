@@ -99,43 +99,8 @@ export default class DateInfo {
     return this.locale.toDate(date, mask);
   }
 
-  // Returns a date range that intersects two DateInfo objects
-  // NOTE: This is a shallow calculation (does not take patterns into account),
-  //   so this method should only really be called for special conditions
-  //   where absolute accuracy is not necessarily needed
-  findShallowIntersectingRange(date1, date2) {
-    const thisRange = date1.toRange();
-    const otherRange = date2.toRange();
-    // Start with infinite start and end dates
-    let start = null;
-    let end = null;
-    // This start date exists
-    if (thisRange.start) {
-      // Use this definite start date if other start date is infinite
-      if (!otherRange.start) {
-        start = thisRange.start;
-      } else {
-        // Otherwise, use the earliest start date
-        start =
-          thisRange.start < otherRange.start
-            ? thisRange.start
-            : otherRange.start;
-      }
-      // Other start date exists
-    } else if (otherRange.start) {
-      // Use other definite start date as this one is infinite
-      start = otherRange.start;
-    }
-    // Assign end date to this one if it is valid
-    if (thisRange.end && (!start || thisRange.end >= start)) {
-      end = thisRange.end;
-    }
-    // Assign end date to other one if it is valid and before this one
-    if (otherRange.end && (!start || otherRange.end >= start)) {
-      if (!end || otherRange.end < end) end = otherRange.end;
-    }
-    // Return calculated range
-    return { start, end };
+  toDateInfo(date) {
+    return date.isDateInfo ? date : new DateInfo(date, this.opts);
   }
 
   startOfWeek(date) {
@@ -266,14 +231,68 @@ export default class DateInfo {
     return result;
   }
 
+  shallowIntersectingRange(other) {
+    return this.rangeShallowIntersectingRange(this, other);
+  }
+
+  // Returns a date range that intersects two DateInfo objects
+  // NOTE: This is a shallow calculation (does not take patterns into account),
+  //   so this method should only really be called for special conditions
+  //   where absolute accuracy is not necessarily needed
+  rangeShallowIntersectingRange(date1, date2) {
+    date1 = this.toDateInfo(date1);
+    date2 = this.toDateInfo(date2);
+    if (!this.dateShallowIntersectsDate(date1, date2)) {
+      return null;
+    }
+    const thisRange = date1.toRange();
+    const otherRange = date2.toRange();
+    // Start with infinite start and end dates
+    let start = null;
+    let end = null;
+    // This start date exists
+    if (thisRange.start) {
+      // Use this definite start date if other start date is infinite
+      if (!otherRange.start) {
+        start = thisRange.start;
+      } else {
+        // Otherwise, use the latest start date
+        start =
+          thisRange.start > otherRange.start
+            ? thisRange.start
+            : otherRange.start;
+      }
+      // Other start date exists
+    } else if (otherRange.start) {
+      // Use other definite start date as this one is infinite
+      start = otherRange.start;
+    }
+    // This end date exists
+    if (thisRange.end) {
+      // Use this definite end date if other end date is infinite
+      if (!otherRange.end) {
+        end = thisRange.end;
+      } else {
+        // Otherwise, use the earliest end date
+        end = thisRange.end < otherRange.end ? thisRange.end : otherRange.end;
+      }
+      // Other end date exists
+    } else if (otherRange.end) {
+      // Use other definite end date as this one is infinite
+      end = otherRange.end;
+    }
+    // Return calculated range
+    return { start, end };
+  }
+
   // ========================================================
   // Determines if this date partially intersects another date
   // NOTE: This is a deep test (patterns tested)
   intersectsDate(other) {
-    const date = other.isDateInfo ? other : new DateInfo(other, this.opts);
+    const date = this.toDateInfo(other);
     if (!this.shallowIntersectsDate(date)) return null;
     if (!this.on) return this;
-    const range = this.findShallowIntersectingRange(this, date);
+    const range = this.rangeShallowIntersectingRange(this, date);
     let result = false;
     this.iterateDatesInRange(range, state => {
       if (this.matchesDay(state.day)) {
@@ -288,10 +307,7 @@ export default class DateInfo {
   // Determines if this date partially intersects another date
   // NOTE: This is a shallow test (no patterns tested)
   shallowIntersectsDate(other) {
-    return this.dateShallowIntersectsDate(
-      this,
-      other.isDate ? other : new DateInfo(other, this.opts),
-    );
+    return this.dateShallowIntersectsDate(this, this.toDateInfo(other));
   }
 
   // ========================================================
@@ -320,14 +336,14 @@ export default class DateInfo {
   // Determines if this date completely includes another date
   // NOTE: This is a deep test (patterns tested)
   includesDate(other) {
-    const date = other.isDateInfo ? other : new DateInfo(other, this.opts);
+    const date = this.toDateInfo(other);
     if (!this.shallowIncludesDate(date)) {
       return false;
     }
     if (!this.on) {
       return true;
     }
-    const range = this.findShallowIntersectingRange(this, date);
+    const range = this.rangeShallowIntersectingRange(this, date);
     let result = true;
     this.iterateDatesInRange(range, state => {
       if (this.matchesDay(state.day)) {

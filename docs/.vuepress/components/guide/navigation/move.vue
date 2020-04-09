@@ -42,7 +42,7 @@
           </div>
           <label
             for="position"
-            class="inline-flex items-center font-semibold text-gray-600 mb-1"
+            class="flex sm:inline-flex items-center font-semibold text-gray-600 mb-1"
             >Position:
             <div class="flex-grow relative">
               <select
@@ -74,7 +74,7 @@
           </label>
           <label
             for="transition"
-            class="inline-flex items-center font-semibold text-gray-600 mb-1 ml-4"
+            class="flex sm:inline-flex items-center font-semibold text-gray-600 mb-1 ml-0 sm:ml-4"
             >Transition:
             <div class="flex-grow relative">
               <select
@@ -113,8 +113,8 @@
       </div>
       <div class="mt-3"></div>
     </div>
-    <div class="flex w-full">
-      <div class="w-64">
+    <div class="flex flex-col sm:flex-row w-full">
+      <div class="w-64 flex sm:flex-col flex-wrap">
         <!--Move by number of months-->
         <template v-if="moveBy === 'numMonths'">
           <button

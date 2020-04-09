@@ -1,9 +1,25 @@
 import Calendar from '@/components/Calendar';
 import DatePicker from '@/components/DatePicker';
+import Locale from '@/utils/locale';
+import DateInfo from '@/utils/dateInfo';
+import Attribute from '@/utils/attribute';
+import AttributeStore from '@/utils/attributeStore';
+import * as helpers from '@/utils/helpers';
+import * as touch from '@/utils/touch';
 import setupCalendar from './utils/setup';
 
 // Export components individually
-export { setupCalendar, Calendar, DatePicker };
+export {
+  setupCalendar,
+  Calendar,
+  DatePicker,
+  Locale,
+  DateInfo,
+  Attribute,
+  AttributeStore,
+  helpers,
+  touch,
+};
 
 // Installs the library as a plugin
 const components = {

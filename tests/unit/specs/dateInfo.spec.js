@@ -56,6 +56,59 @@ describe('DateInfo date range', () => {
     start: new Date(2018, 0, 1),
     end: new Date(2018, 0, 15),
   });
+  it('should find shallow intersecting ranges', () => {
+    const ranges = [
+      {
+        range: { start: null, end: null },
+        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 15) },
+      },
+      {
+        range: { start: null, end: new Date(2018, 0, 1) },
+        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 1) },
+      },
+      {
+        range: { start: new Date(2017, 11, 31), end: new Date(2018, 0, 1) },
+        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 1) },
+      },
+      {
+        range: { start: new Date(2017, 11, 31), end: new Date(2018, 0, 16) },
+        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 15) },
+      },
+      {
+        range: { start: new Date(2018, 0, 15), end: null },
+        result: { start: new Date(2018, 0, 15), end: new Date(2018, 0, 15) },
+      },
+      {
+        range: { start: null, end: new Date(2017, 11, 31) },
+        result: null,
+      },
+      {
+        range: { start: new Date(2018, 0, 16), end: null },
+        result: null,
+      },
+    ];
+    ranges.forEach(r =>
+      expect(date.shallowIntersectingRange(r.range)).toEqual(r.result),
+    );
+  });
+  it('should intersect date ranges', () => {
+    const ranges = [
+      { start: null, end: null },
+      { start: null, end: new Date(2018, 0, 1) },
+      { start: new Date(2017, 11, 31), end: new Date(2018, 0, 1) },
+      { start: new Date(2018, 0, 2), end: new Date(2018, 0, 14) },
+      { start: new Date(2018, 0, 15), end: new Date(2018, 0, 16) },
+      { start: new Date(2018, 0, 15), end: null },
+    ];
+    ranges.forEach(r => expect(!!date.intersectsDate(r)).toEqual(true));
+  });
+  it('should not intersect date ranges', () => {
+    const ranges = [
+      { start: null, end: new Date(2017, 11, 31) },
+      { start: new Date(2018, 0, 16), end: null },
+    ];
+    ranges.forEach(r => expect(!!date.intersectsDate(r)).toEqual(false));
+  });
   it('should include simple dates', () => {
     const dates = [
       new Date(2018, 0, 1),
@@ -69,23 +122,23 @@ describe('DateInfo date range', () => {
     dates.forEach(d => expect(date.includesDate(d)).toEqual(false));
   });
   it('should include date ranges', () => {
-    const dates = [
+    const ranges = [
       { start: new Date(2018, 0, 1), end: new Date(2018, 0, 1) },
       { start: new Date(2018, 0, 1), end: new Date(2018, 0, 2) },
       { start: new Date(2018, 0, 2), end: new Date(2018, 0, 14) },
       { start: new Date(2018, 0, 14), end: new Date(2018, 0, 15) },
       { start: new Date(2018, 0, 15), end: new Date(2018, 0, 15) },
     ];
-    dates.forEach(d => expect(date.includesDate(d)).toEqual(true));
+    ranges.forEach(r => expect(date.includesDate(r)).toEqual(true));
   });
   it('should not include date ranges', () => {
-    const dates = [
+    const ranges = [
       { start: new Date(2017, 11, 1), end: new Date(2017, 11, 31) },
       { start: new Date(2017, 11, 31), end: new Date(2018, 0, 1) },
+      { start: new Date(2017, 11, 31), end: new Date(2018, 0, 16) },
       { start: new Date(2018, 0, 15), end: new Date(2018, 0, 16) },
       { start: new Date(2018, 0, 16), end: new Date(2018, 0, 31) },
-      { start: new Date(2017, 11, 31), end: new Date(2018, 0, 16) },
     ];
-    dates.forEach(d => expect(date.includesDate(d)).toEqual(false));
+    ranges.forEach(r => expect(date.includesDate(r)).toEqual(false));
   });
 });
