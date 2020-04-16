@@ -43,6 +43,8 @@ const locales = {
   'fr-CH': { dow: 2, L: 'DD.MM.YYYY' },
   // German
   de: { dow: 2, L: 'DD.MM.YYYY' },
+  // Hebrew
+  he: { dow: 1, L: 'DD.MM.YYYY' },
   // Indonesian
   id: { dow: 2, L: 'DD/MM/YYYY' },
   // Italian
