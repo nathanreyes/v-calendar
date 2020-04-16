@@ -55,6 +55,9 @@ const locales = {
   ko: { dow: 1, L: 'YYYY.MM.DD' },
   // Macedonian
   mk: { dow: 2, L: 'D.MM.YYYY' },
+  // Norwegian
+  nb: { dow: 2, L: 'D. MMMM YYYY' },
+  nn: { dow: 2, L: 'D. MMMM YYYY' },
   // Polish
   pl: { dow: 2, L: 'DD.MM.YYYY' },
   // Portuguese
@@ -65,8 +68,10 @@ const locales = {
   ru: { dow: 2, L: 'DD.MM.YYYY' },
   // Slovak
   sk: { dow: 2, L: 'DD.MM.YYYY' },
-  // Spanish
-  es: { dow: 1, L: 'DD/MM/YYYY' },
+  // Spanish (Spain)
+  'es-ES': { dow: 2, L: 'DD/MM/YYYY' },
+  // Spanish (Mexico)
+  'es-MX': { L: 'DD/MM/YYYY' },
   // Swedish
   sv: { dow: 2, L: 'YYYY-MM-DD' },
   // Thai
@@ -79,6 +84,8 @@ const locales = {
   vi: { dow: 2, L: 'DD/MM/YYYY' },
 };
 locales.en = locales['en-US'];
+locales.es = locales['es-ES'];
+locales.no = locales.nb;
 locales.zh = locales['zh-CN'];
 
 // Remap from abbr. to intuitive property names
