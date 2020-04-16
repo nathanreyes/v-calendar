@@ -16,7 +16,7 @@ pageClass: 'homepage'
 ### An elegant calendar and datepicker plugin for Vuejs.
 
 ```bash
-npm i --save v-calendar
+npm i v-calendar
 ```
 
 <homepage-simple-calendar />
