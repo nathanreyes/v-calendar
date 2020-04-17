@@ -178,6 +178,7 @@ export default {
           ],
           on: {
             keydown: this.handleKeydown,
+            mousedown: e => e.preventDefault(),
           },
           ref: 'container',
         },
@@ -788,6 +789,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   position: relative;
   width: max-content;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .vc-arrows-container {
