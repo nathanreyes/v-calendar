@@ -168,7 +168,7 @@ Please reference the [formatting & parsing section](/guide/#formatting-parsing) 
 
 ## Disable Dates
 
-Refer to the [disabling dates section](./README.md#disabling-dates).
+Refer to the [disabling dates section](./dates.md#disabling-dates).
 
 ## Require Selected Date
 
@@ -416,7 +416,7 @@ We'll first try to display the dragged range, then fall back to the selected ran
   is-inline
   @drag="dragValue = $event"
 >
-  <div slot="day-popover" slot-scope="{ format}">
+  <div slot="day-popover" slot-scope="{ format }">
     {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
     -
     {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}

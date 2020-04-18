@@ -72,7 +72,7 @@ setupCalendar({
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
     <meta http-equiv='x-ua-compatible' content='ie=edge'>
-    <!-- IMPORTANT: No CSS link needed as of v1 Beta (@next) - It's all inlined -->
+    <!-- IMPORTANT: No CSS link needed as of v1 - It's all inlined -->
     <!-- Pre v1.0.0 versions need the minified css -->
     <!-- <link rel='stylesheet' href='https://unpkg.com/v-calendar/lib/v-calendar.min.css'> -->
   </head>
@@ -86,12 +86,7 @@ setupCalendar({
     <script src='https://unpkg.com/vue/dist/vue.js'></script>
 
     <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
-    <!-- @next v1 Beta  -->
-    <script src='https://unpkg.com/v-calendar@next'></script>
-    <!-- Latest stable (Right now, this is very different from the v1 Beta)-->
-    <!-- <script src='https://unpkg.com/v-calendar'></script> -->
-    <!-- Hardcoded version -->
-    <!-- <script src='https://unpkg.com/v-calendar@1.0.0-beta.14/lib/v-calendar.umd.min.js'></script> -->
+    <script src='https://unpkg.com/v-calendar'></script>
 
     <!--3. Create the Vue instance-->
     <script>
