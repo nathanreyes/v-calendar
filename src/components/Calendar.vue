@@ -178,7 +178,7 @@ export default {
           ],
           on: {
             keydown: this.handleKeydown,
-            mousedown: e => e.preventDefault(),
+            mouseup: e => e.preventDefault(),
           },
           ref: 'container',
         },
