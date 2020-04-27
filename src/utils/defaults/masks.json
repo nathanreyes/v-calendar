@@ -2,6 +2,8 @@
   "title": "MMMM YYYY",
   "weekdays": "W",
   "navMonths": "MMM",
+  "navDateShortcuts": "L",
+  "navMonthShortcuts": "MMM YYYY",
   "input": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
   "dayPopover": "WWW, MMM D, YYYY",
   "data": ["L", "YYYY-MM-DD", "YYYY/MM/DD"]

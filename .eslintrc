@@ -45,6 +45,7 @@
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
     "default-case": "off",
-    "comma-dangle": "off"
+    "comma-dangle": "off",
+    "no-loop-func": "off"
   }
 }
