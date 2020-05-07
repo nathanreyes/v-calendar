@@ -1,4 +1,4 @@
-import { toPairs } from '@/utils/_';
+import { toPairs } from '../_';
 
 const locales = {
   // Arabic

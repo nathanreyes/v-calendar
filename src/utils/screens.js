@@ -1,9 +1,9 @@
 // Vue won't get included in bundle as it is externalized
 // https://cli.vuejs.org/guide/build-targets.html#library
 import Vue from 'vue';
-import buildMediaQuery from '@/utils/buildMediaQuery';
-import defaultScreens from '@/utils/defaults/screens.json';
-import { isUndefined, mapValues, toPairs, has } from '@/utils/_';
+import buildMediaQuery from './buildMediaQuery';
+import defaultScreens from './defaults/screens.json';
+import { isUndefined, mapValues, toPairs, has } from './_';
 
 let isSettingUp = false;
 let shouldRefreshQueries = false;

@@ -1,4 +1,4 @@
-import { get, has, isObject, defaultsDeep } from '@/utils/_';
+import { get, has, isObject, defaultsDeep } from '../_';
 
 export const propOrDefaultMixin = {
   methods: {

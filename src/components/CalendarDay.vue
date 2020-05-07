@@ -1,8 +1,8 @@
 <script>
 import PopoverRef from './PopoverRef';
-import { childMixin, safeScopedSlotMixin } from '@/utils/mixins';
-import { arrayHasItems } from '@/utils/helpers';
-import { last, get, defaults } from '@/utils/_';
+import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
+import { arrayHasItems } from '../utils/helpers';
+import { last, get, defaults } from '../utils/_';
 
 export default {
   name: 'CalendarDay',

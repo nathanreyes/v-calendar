@@ -1,19 +1,19 @@
 <script>
-import Calendar from './Calendar';
-import Popover from './Popover';
-import PopoverRef from './PopoverRef';
-import SinglePicker from '@/utils/pickers/single';
-import MultiplePicker from '@/utils/pickers/multiple';
-import RangePicker from '@/utils/pickers/range';
+import Calendar from './Calendar.vue';
+import Popover from './Popover.vue';
+import PopoverRef from './PopoverRef.vue';
+import SinglePicker from '../utils/pickers/single';
+import MultiplePicker from '../utils/pickers/multiple';
+import RangePicker from '../utils/pickers/range';
 import {
   rootMixin,
   propOrDefaultMixin,
   safeScopedSlotMixin,
-} from '@/utils/mixins';
-import { addTapOrClickHandler } from '@/utils/touch';
-import { createGuid, elementContains, on, off } from '@/utils/helpers';
-import { isString, isArray } from '@/utils/_';
-import '@/styles/tailwind-lib.css';
+} from '../utils/mixins';
+import { addTapOrClickHandler } from '../utils/touch';
+import { createGuid, elementContains, on, off } from '../utils/helpers';
+import { isString, isArray } from '../utils/_';
+import '../styles/tailwind-lib.css';
 
 export default {
   name: 'DatePicker',
@@ -425,7 +425,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-/deep/ .vc-container {
+::deep .vc-container {
   border: none;
 }
 </style>

@@ -8,8 +8,8 @@ import {
   propOrDefaultMixin,
   childMixin,
   safeScopedSlotMixin,
-} from '@/utils/mixins';
-import { createGuid } from '@/utils/helpers';
+} from '../utils/mixins';
+import { createGuid } from '../utils/helpers';
 
 export default {
   name: 'CalendarPane',

@@ -1,4 +1,4 @@
-import { on, off } from '@/utils/helpers';
+import { on, off } from './helpers';
 import { isFunction } from './_';
 
 // This function detects taps or clicks

@@ -1,5 +1,5 @@
-import { defaultsMixin } from '@/utils/defaults';
-import { popoversMixin } from '@/utils/popovers';
+import { defaultsMixin } from '../defaults';
+import { popoversMixin } from '../popovers';
 
 export const childMixin = {
   inject: ['sharedState'],

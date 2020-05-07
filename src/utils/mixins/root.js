@@ -1,11 +1,11 @@
-import Theme from '@/utils/theme';
-import Locale from '@/utils/locale';
-import { isObject, isArray, defaultsDeep } from '@/utils/_';
-import { defaultsMixin } from '@/utils/defaults';
-import { popoversMixin } from '@/utils/popovers';
-import { setupScreens } from '@/utils/screens';
 import { addDays } from 'date-fns';
-import Attribute from '@/utils/attribute';
+import Theme from '../theme';
+import Locale from '../locale';
+import { isObject, isArray, defaultsDeep } from '../_';
+import { defaultsMixin } from '../defaults';
+import { popoversMixin } from '../popovers';
+import { setupScreens } from '../screens';
+import Attribute from '../attribute';
 
 export const rootMixin = {
   mixins: [defaultsMixin, popoversMixin],
