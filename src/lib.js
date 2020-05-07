@@ -1,25 +1,14 @@
 import setupCalendar from './utils/setup';
 import Calendar from './components/Calendar';
 import DatePicker from './components/DatePicker';
+import Popover from './components/Popover';
+import PopoverRef from './components/PopoverRef';
 import Locale from './utils/locale';
 import DateInfo from './utils/dateInfo';
 import Attribute from './utils/attribute';
 import AttributeStore from './utils/attributeStore';
 import * as helpers from './utils/helpers';
 import * as touch from './utils/touch';
-
-// Export components individually
-export {
-  setupCalendar,
-  Calendar,
-  DatePicker,
-  Locale,
-  DateInfo,
-  Attribute,
-  AttributeStore,
-  helpers,
-  touch,
-};
 
 // Installs the library as a plugin
 const components = {
@@ -28,7 +17,7 @@ const components = {
 };
 
 // Declare install function executed by Vue.use()
-export default function install(Vue, opts) {
+function install(Vue, opts) {
   // Don't install more than once
   if (install.installed) return;
   install.installed = true;
@@ -43,6 +32,17 @@ export default function install(Vue, opts) {
 // Create module definition for Vue.use()
 const plugin = {
   install,
+  setupCalendar,
+  Calendar,
+  DatePicker,
+  Popover,
+  PopoverRef,
+  Locale,
+  DateInfo,
+  Attribute,
+  AttributeStore,
+  helpers,
+  touch,
 };
 
 // Use automatically when global Vue instance detected
@@ -55,3 +55,20 @@ if (typeof window !== 'undefined') {
 if (GlobalVue) {
   GlobalVue.use(plugin);
 }
+
+// Export components/helpers individually
+export {
+  setupCalendar,
+  Calendar,
+  DatePicker,
+  Popover,
+  PopoverRef,
+  Locale,
+  DateInfo,
+  Attribute,
+  AttributeStore,
+  helpers,
+  touch,
+};
+
+export default plugin;
