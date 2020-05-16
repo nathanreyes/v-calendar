@@ -796,7 +796,15 @@ setupCalendar({
     <!-- 1. Link Vue Javascript -->
     <script src='https://unpkg.com/vue/dist/vue.js'></script>
 
-    <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
+    <!-- 2. Set default options -->
+    <script type="javascript">
+        window.VCalendarOptions = {
+            componentPrefix: 'vc',
+            ...,
+        }
+    </script>
+
+    <!-- 3. Link VCalendar Javascript (Plugin automatically installed) -->
     <!-- @next v1 Beta  -->
     <script src='https://unpkg.com/v-calendar@next'></script>
     <!-- Latest stable (Right now, this is very different from the v1 Beta)-->
@@ -804,7 +812,7 @@ setupCalendar({
     <!-- Hardcoded version -->
     <!-- <script src='https://unpkg.com/v-calendar@1.0.0-beta.14/lib/v-calendar.umd.min.js'></script> -->
 
-    <!--3. Create the Vue instance-->
+    <!-- 4. Create the Vue instance-->
     <script>
       new Vue({
         el: '#app',

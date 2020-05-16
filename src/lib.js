@@ -47,13 +47,17 @@ const plugin = {
 
 // Use automatically when global Vue instance detected
 let GlobalVue = null;
+let GlobalOptions = null;
+
 if (typeof window !== 'undefined') {
   GlobalVue = window.Vue;
+  GlobalOptions = window.VCalendarOptions;
 } else if (typeof global !== 'undefined') {
   GlobalVue = global.Vue;
+  GlobalOptions = global.VCalendarOptions;
 }
 if (GlobalVue) {
-  GlobalVue.use(plugin);
+  GlobalVue.use(plugin, GlobalOptions);
 }
 
 // Export components/helpers individually
