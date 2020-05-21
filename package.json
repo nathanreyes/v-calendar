@@ -43,7 +43,7 @@
     "deploy:docs": "vuepress build docs && netlify deploy"
   },
   "dependencies": {
-    "core-js": "^3.6.1",
+    "core-js": "^3.6.5",
     "date-fns": "^2.8.1",
     "lodash": "^4.17.15",
     "popper.js": "^1.16.0"
@@ -56,7 +56,7 @@
     "@vue/cli-plugin-unit-jest": "~4.3.1",
     "@vue/cli-service": "~4.3.1",
     "@vue/eslint-config-airbnb": "^5.0.2",
-    "@vue/test-utils": "1.0.0-beta.30",
+    "@vue/test-utils": "1.0.3",
     "@vuepress/plugin-google-analytics": "^1.2.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
