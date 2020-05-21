@@ -1,12 +1,18 @@
 <script>
 import { addDays, addMonths, addYears } from 'date-fns';
-import AttributeStore from '@/utils/attributeStore';
+import Popover from './Popover';
+import PopoverRow from './PopoverRow';
+import Grid from './Grid';
+import CalendarPane from './CalendarPane';
+import CustomTransition from './CustomTransition';
+import SvgIcon from './SvgIcon';
+import AttributeStore from '../utils/attributeStore';
 import {
   propOrDefaultMixin,
   rootMixin,
   safeScopedSlotMixin,
-} from '@/utils/mixins';
-import { addHorizontalSwipeHandler } from '@/utils/touch';
+} from '../utils/mixins';
+import { addHorizontalSwipeHandler } from '../utils/touch';
 import {
   pageForDate,
   pageForThisMonth,
@@ -19,7 +25,7 @@ import {
   createGuid,
   arrayHasItems,
   onSpaceOrEnter,
-} from '@/utils/helpers';
+} from '../utils/helpers';
 import {
   isNumber,
   isDate,
@@ -28,14 +34,8 @@ import {
   omit,
   head,
   last,
-} from '@/utils/_';
-import Popover from './Popover';
-import PopoverRow from './PopoverRow';
-import Grid from './Grid';
-import CalendarPane from './CalendarPane';
-import CustomTransition from './CustomTransition';
-import SvgIcon from './SvgIcon';
-import '@/styles/tailwind-lib.css';
+} from '../utils/_';
+import '../styles/tailwind-lib.css';
 
 export default {
   name: 'Calendar',
@@ -178,7 +178,7 @@ export default {
           ],
           on: {
             keydown: this.handleKeydown,
-            mousedown: e => e.preventDefault(),
+            mouseup: e => e.preventDefault(),
           },
           ref: 'container',
         },
@@ -748,7 +748,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style>
 .vc-container {
   --slide-translate: 22px;
   --slide-duration: 0.15s;

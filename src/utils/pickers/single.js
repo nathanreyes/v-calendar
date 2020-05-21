@@ -1,5 +1,5 @@
-import { pageForDate, datesAreEqual } from '@/utils/helpers';
-import { isDate } from '@/utils/_';
+import { pageForDate, datesAreEqual } from '../helpers';
+import { isDate } from '../_';
 
 export default class SinglePicker {
   constructor({ format, parse }) {

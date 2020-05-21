@@ -1,5 +1,5 @@
-import { setupDefaults } from '@/utils/defaults';
-import { setupScreens } from '@/utils/screens';
+import { setupDefaults } from './defaults';
+import { setupScreens } from './screens';
 
 export default opts => {
   // Register plugin defaults

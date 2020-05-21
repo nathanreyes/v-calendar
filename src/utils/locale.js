@@ -1,6 +1,6 @@
-import { format, parse } from '@/utils/fecha';
-import defaultLocales from '@/utils/defaults/locales';
-import { addPages, pageForDate } from '@/utils/helpers';
+import { format, parse } from './fecha';
+import defaultLocales from './defaults/locales';
+import { addPages, pageForDate } from './helpers';
 import {
   isDate,
   isNumber,
@@ -9,7 +9,7 @@ import {
   has,
   defaultsDeep,
   clamp,
-} from '@/utils/_';
+} from './_';
 
 const daysInWeek = 7;
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];

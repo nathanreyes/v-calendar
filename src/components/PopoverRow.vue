@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { childMixin } from '@/utils/mixins';
+import { childMixin } from '../utils/mixins';
 
 export default {
   name: 'PopoverRow',

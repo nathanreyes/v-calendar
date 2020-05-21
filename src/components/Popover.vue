@@ -1,9 +1,9 @@
 <script>
 import Popper from 'popper.js';
-import { popoversMixin } from '@/utils/popovers';
-import { on, off, elementContains } from '@/utils/helpers';
-import { addTapOrClickHandler } from '@/utils/touch';
-import { isFunction } from '@/utils/_';
+import { popoversMixin } from '../utils/popovers';
+import { on, off, elementContains } from '../utils/helpers';
+import { addTapOrClickHandler } from '../utils/touch';
+import { isFunction } from '../utils/_';
 
 export default {
   name: 'Popover',

@@ -1,6 +1,6 @@
 <script>
-import { popoversMixin } from '@/utils/popovers';
-import { on, off, elementContains } from '@/utils/helpers';
+import { popoversMixin } from '../utils/popovers';
+import { on, off, elementContains } from '../utils/helpers';
 
 export default {
   name: 'PopoverRef',

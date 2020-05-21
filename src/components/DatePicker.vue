@@ -1,19 +1,19 @@
 <script>
-import SinglePicker from '@/utils/pickers/single';
-import MultiplePicker from '@/utils/pickers/multiple';
-import RangePicker from '@/utils/pickers/range';
+import Calendar from './Calendar';
+import Popover from './Popover';
+import PopoverRef from './PopoverRef';
+import SinglePicker from '../utils/pickers/single';
+import MultiplePicker from '../utils/pickers/multiple';
+import RangePicker from '../utils/pickers/range';
 import {
   rootMixin,
   propOrDefaultMixin,
   safeScopedSlotMixin,
-} from '@/utils/mixins';
-import { addTapOrClickHandler } from '@/utils/touch';
-import { createGuid, elementContains, on, off } from '@/utils/helpers';
-import { isString, isArray } from '@/utils/_';
-import PopoverRef from './PopoverRef';
-import Popover from './Popover';
-import Calendar from './Calendar';
-import '@/styles/tailwind-lib.css';
+} from '../utils/mixins';
+import { addTapOrClickHandler } from '../utils/touch';
+import { createGuid, elementContains, on, off } from '../utils/helpers';
+import { isString, isArray } from '../utils/_';
+import '../styles/tailwind-lib.css';
 
 export default {
   name: 'DatePicker',
@@ -235,20 +235,42 @@ export default {
       // Clear value on select mode change
       this.value_ = null;
     },
-    value() {
-      this.refreshValue();
+    value: {
+      handler() {
+        this.value_ = this.picker.filterDisabled({
+          value: this.value,
+          isRequired: this.isRequired,
+          disabled: this.disabledAttribute,
+          fallbackValue: null,
+        });
+        if (this.value && !this.value_) {
+          this.$emit('input', null);
+        }
+      },
+      immediate: true,
     },
-    value_(val) {
-      this.$emit('input', val);
-      this.handleValueChange();
+    value_: {
+      handler(val) {
+        // Only emit events for internal updates and value changes
+        if (!this.picker.valuesAreEqual(val, this.value)) {
+          this.$emit('input', val);
+        }
+        // Execute side-effects for non-inline pickers
+        if (!this.isInline) {
+          if (this.doFormatInput) this.formatInput();
+          if (this.doHidePopover) this.hidePopover();
+          if (this.doAdjustPageRange) this.adjustPageRange();
+        }
+        this.doFormatInput = true;
+        this.doHidePopover = false;
+        this.doAdjustPageRange = false;
+      },
+      immediate: true,
     },
     dragValue(val) {
       this.formatInput();
       this.$emit('drag', this.picker.normalize(val));
     },
-  },
-  created() {
-    this.refreshValue();
   },
   mounted() {
     // Handle escape key presses
@@ -270,14 +292,11 @@ export default {
     });
   },
   methods: {
-    refreshValue() {
-      if (!this.picker.valuesAreEqual(this.value, this.value_)) {
-        this.value_ = this.value;
-      }
-    },
     dateIsValid(date) {
-      const disabledAttribute = this.$refs.calendar.disabledAttribute;
-      return !!disabledAttribute && !disabledAttribute.intersectsDate(date);
+      if (!date) return true;
+      return (
+        !!this.disabledAttribute && !this.disabledAttribute.intersectsDate(date)
+      );
     },
     onDocumentKeyDown(e) {
       // Clear drag on escape keydown
@@ -370,34 +389,16 @@ export default {
       this.inputValue = isString(value) ? value : this.inputValue;
       // Parse value if needed
       const userValue = isString(value) ? this.picker.parse(value) : value;
-      // Filter out any disabled dates
-      const validatedValue = this.picker.filterDisabled({
-        value: this.picker.normalize(userValue),
-        disabled: this.disabledAttribute,
-        fallbackValue: this.value_,
-      });
       // Set state for handling value change
       this.doFormatInput = formatInput;
       this.doHidePopover = hidePopover;
       this.doAdjustPageRange = adjustPageRange;
-      // If final value is equal to the current value
-      if (this.picker.valuesAreEqual(this.value_, validatedValue)) {
-        // Just handle value change
-        this.handleValueChange();
-      } else {
-        // Assign new value
-        this.value_ = validatedValue;
-      }
-    },
-    handleValueChange() {
-      if (!this.isInline) {
-        if (this.doFormatInput) this.formatInput();
-        if (this.doHidePopover) this.hidePopover();
-        if (this.doAdjustPageRange) this.adjustPageRange();
-      }
-      this.doFormatInput = true;
-      this.doHidePopover = false;
-      this.doAdjustPageRange = false;
+      // Sanitize and assign new value
+      this.value_ = this.picker.filterDisabled({
+        value: this.picker.normalize(userValue),
+        disabled: this.disabledAttribute,
+        fallbackValue: this.value_,
+      });
     },
     formatInput() {
       this.$nextTick(() => {
@@ -410,7 +411,7 @@ export default {
     hidePopover() {
       const popover = this.$refs.popover;
       if (popover) {
-        popover.hide({ priority: 10, delay: 400 });
+        popover.hide({ priority: 10, delay: 250 });
       }
     },
     adjustPageRange() {
@@ -425,7 +426,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-/deep/ .vc-container {
+::v-deep .vc-container {
   border: none;
 }
 </style>

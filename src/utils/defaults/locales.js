@@ -1,4 +1,4 @@
-import { toPairs } from '@/utils/_';
+import { toPairs } from '../_';
 
 const locales = {
   // Arabic
@@ -71,7 +71,7 @@ const locales = {
   // Spanish (Spain)
   'es-ES': { dow: 2, L: 'DD/MM/YYYY' },
   // Spanish (Mexico)
-  'es-MX': { L: 'DD/MM/YYYY' },
+  'es-MX': { dow: 2, L: 'DD/MM/YYYY' },
   // Swedish
   sv: { dow: 2, L: 'YYYY-MM-DD' },
   // Thai

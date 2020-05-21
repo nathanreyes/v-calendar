@@ -1,4 +1,3 @@
-import defConfig from '@/utils/defaults/theme';
 import {
   isObject,
   isString,
@@ -12,6 +11,7 @@ import {
   defaultsDeep,
   upperFirst,
 } from './_';
+import defConfig from './defaults/theme';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'color', 'fillMode'];

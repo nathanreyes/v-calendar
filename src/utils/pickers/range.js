@@ -1,11 +1,6 @@
-import {
-  pageForDate,
-  getMaxPage,
-  addPages,
-  datesAreEqual,
-} from '@/utils/helpers';
-import DateInfo from '@/utils/dateInfo';
-import { isDate, isObject } from '@/utils/_';
+import { pageForDate, getMaxPage, addPages, datesAreEqual } from '../helpers';
+import DateInfo from '../dateInfo';
+import { isDate, isObject } from '../_';
 
 export default class RangePicker {
   constructor({ locale, format, parse }) {

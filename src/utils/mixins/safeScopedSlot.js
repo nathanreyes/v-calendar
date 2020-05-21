@@ -1,4 +1,4 @@
-import { isFunction } from '@/utils/_';
+import { isFunction } from '../_';
 
 export const safeScopedSlotMixin = {
   methods: {

@@ -1,4 +1,4 @@
-import { defaults } from '@/utils/_';
+import { defaults } from './_';
 
 const popovers = {};
 

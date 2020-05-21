@@ -71,11 +71,11 @@
 </template>
 
 <script>
-import { childMixin } from '@/utils/mixins';
-import { head, last } from '@/utils/_';
-import { pageForDate, onSpaceOrEnter } from '@/utils/helpers';
-import SvgIcon from './SvgIcon';
 import Grid from './Grid';
+import SvgIcon from './SvgIcon';
+import { childMixin } from '../utils/mixins';
+import { head, last } from '../utils/_';
+import { pageForDate, onSpaceOrEnter } from '../utils/helpers';
 
 const _yearGroupCount = 12;
 

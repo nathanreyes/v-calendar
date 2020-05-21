@@ -1,15 +1,15 @@
 <script>
-import {
-  propOrDefaultMixin,
-  childMixin,
-  safeScopedSlotMixin,
-} from '@/utils/mixins';
-import { createGuid } from '@/utils/helpers';
 import Popover from './Popover';
 import PopoverRef from './PopoverRef';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
 import Grid from './Grid';
+import {
+  propOrDefaultMixin,
+  childMixin,
+  safeScopedSlotMixin,
+} from '../utils/mixins';
+import { createGuid } from '../utils/helpers';
 
 export default {
   name: 'CalendarPane',
