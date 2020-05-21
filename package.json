@@ -45,7 +45,7 @@
   "dependencies": {
     "date-fns": "^2.6.0",
     "lodash": "^4.17.11",
-    "popper.js": "^1.14.7"
+    "@popperjs/core": "^2.4.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-arrow-functions": "^7.2.0",

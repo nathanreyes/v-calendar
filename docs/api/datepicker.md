@@ -97,9 +97,9 @@ Setting `value = null` still allowed through code.
 | Property | Type | Description |
 | --- | --- | --- |
 | `visibility` | String | Visibility mode for the input/slot popover (`"hover-focus"`, `"hover"`, `"focus"`, `"visible"`, `"hidden"`) |
-| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/popper-documentation.html#Popper.placements) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
-| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/popper-documentation.html#Popper.Defaults.positionFixed) for more details. |
-| `modifiers` | Boolean | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/popper-documentation.html#modifiers). |
+| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/docs/v2/constructors/#placement) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
+| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/docs/v2/constructors/#strategy) for more details. |
+| `modifiers` | Array | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers). |
 | `keepVisibleOnInput` | Boolean | Keep the popover visible after a date is selected, until the `visibility` determines. |
 
 <!-- 

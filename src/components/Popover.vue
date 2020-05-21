@@ -1,5 +1,5 @@
 <script>
-import Popper from 'popper.js';
+import { createPopper } from '@popperjs/core';
 import { popoversMixin } from '../utils/popovers';
 import { on, off, elementContains } from '../utils/helpers';
 import { addTapOrClickHandler } from '../utils/touch';
@@ -75,7 +75,7 @@ export default {
       visibility: '',
       placement: 'bottom',
       positionFixed: false,
-      modifiers: {},
+      modifiers: [],
       isInteractive: false,
       delay: 10,
       popperEl: null,
@@ -98,14 +98,16 @@ export default {
     popperOptions() {
       return {
         placement: this.placement,
-        positionFixed: this.positionFixed,
-        modifiers: {
-          hide: { enabled: false },
-          preventOverflow: { enabled: false },
+        strategy: this.positionFixed ? 'fixed' : 'absolute',
+        modifiers: [
+          {
+            name: 'onUpdate',
+            phase: 'afterWrite',
+            fn: this.onPopperUpdate
+          },
           ...this.modifiers,
-        },
-        onCreate: this.onPopperUpdate,
-        onUpdate: this.onPopperUpdate,
+        ],
+        onFirstUpdate: this.onPopperUpdate,
       };
     },
     isVisible() {
@@ -250,7 +252,7 @@ export default {
           this.popper = null;
         }
         if (!this.popper) {
-          this.popper = new Popper(
+          this.popper = createPopper(
             this.ref,
             this.popoverEl,
             this.popperOptions,
