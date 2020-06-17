@@ -7,6 +7,10 @@
 <script>
 export default {
   githubTitle: `disable date-picker is not using readonly now`,
-  date: new Date(),
+  data() {
+    return {
+      date: new Date(),
+    };
+  },
 };
 </script>
