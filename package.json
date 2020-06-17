@@ -62,7 +62,8 @@
     "babel-jest": "^22.0.4",
     "postcss-preset-env": "^6.6.0",
     "tailwindcss": "1.1.4",
-    "vuepress": "1.2.0"
+    "vuepress": "1.2.0",
+    "webpack-bundle-analyzer": "^3.8.0"
   },
   "peerDependencies": {
     "vue": "^2.5.18"
