@@ -31,6 +31,8 @@ const locales = {
   'en-IE': { dow: 2, L: 'DD-MM-YYYY' },
   // English (New Zealand)
   'en-NZ': { dow: 2, L: 'DD/MM/YYYY' },
+  // English (South Africa)
+  'en-ZA': { dow: 1, L: 'YYYY/MM/DD' },
   // Esperanto
   eo: { dow: 2, L: 'YYYY-MM-DD' },
   // Estonian
