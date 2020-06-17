@@ -56,7 +56,7 @@ Using the default slot, you can replace the input element with your own trigger 
 
 ### Inline
 
-Alternatively, the calendar can be displayed inline (not as a popover) by setting the`is-inline` prop.
+Alternatively, the calendar can be displayed inline (not as a popover) by setting the `is-inline` prop.
 
 <guide-datepicker-intro-inline />
 
