@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "date-fns": "^2.6.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "popper.js": "^1.14.7"
   },
   "devDependencies": {
