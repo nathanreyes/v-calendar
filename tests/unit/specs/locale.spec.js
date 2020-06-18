@@ -33,6 +33,28 @@ describe('Locale', () => {
   it('should initialize with undefined config', () => {
     testLocaleKeys(new Locale());
   });
+  it('should initialize with string config', () => {
+    const config = 'en-ZA';
+    const locale = new Locale(config);
+    matchLocaleWithConfig(locale, {
+      id: 'en-ZA',
+      firstDayOfWeek: 1,
+      masks: { L: 'YYYY/MM/DD' },
+    });
+  });
+  it('should initialize with lower-cased string config', () => {
+    const config = 'en-za';
+    const locale = new Locale(config);
+    matchLocaleWithConfig(locale, {
+      id: 'en-ZA',
+      firstDayOfWeek: 1,
+      masks: { L: 'YYYY/MM/DD' },
+    });
+  });
+  it('should initialize with empty string config', () => {
+    const config = '';
+    testLocaleKeys(new Locale(config));
+  });
   it('should initialize with undefined config data', () => {
     const config = {
       id: undefined,

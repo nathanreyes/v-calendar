@@ -610,7 +610,7 @@ Finally, if you wish to display indicators with your custom content, you can use
       v-for="attr in attributes"
       :key="attr.key"
       :attribute="attr">
-      {{ customData.description }}
+      {{ attr.customData.description }}
     </popover-row>
   </div>
 </v-calendar>

@@ -1,6 +1,6 @@
 {
   "name": "v-calendar",
-  "version": "1.0.7-beta.0",
+  "version": "1.0.8",
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "keywords": [
     "vue",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "date-fns": "^2.6.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "@popperjs/core": "^2.4.0"
   },
   "devDependencies": {
@@ -62,7 +62,8 @@
     "babel-jest": "^22.0.4",
     "postcss-preset-env": "^6.6.0",
     "tailwindcss": "1.1.4",
-    "vuepress": "1.2.0"
+    "vuepress": "1.2.0",
+    "webpack-bundle-analyzer": "^3.8.0"
   },
   "peerDependencies": {
     "vue": "^2.5.18"
