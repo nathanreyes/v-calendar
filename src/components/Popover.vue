@@ -102,6 +102,7 @@ export default {
         modifiers: [
           {
             name: 'onUpdate',
+            enabled: true,
             phase: 'afterWrite',
             fn: this.onPopperUpdate,
           },
@@ -262,8 +263,12 @@ export default {
         }
       });
     },
-    onPopperUpdate({ placement }) {
-      this.placement = placement;
+    onPopperUpdate(args) {
+      if (args.placement) {
+        this.placement = args.placement;
+      } else if (args.state) {
+        this.placement = args.state.placement;
+      }
     },
     update() {
       if (this.popper) {
