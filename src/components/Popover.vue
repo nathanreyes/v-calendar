@@ -89,7 +89,7 @@ export default {
             direction: this.direction,
             alignment: this.alignment,
             args: this.args,
-            updateLayout: this.scheduleUpdate,
+            updateLayout: this.update,
             hide: opts => this.hide(opts),
           })) ||
         this.$slots.default
@@ -103,7 +103,7 @@ export default {
           {
             name: 'onUpdate',
             phase: 'afterWrite',
-            fn: this.onPopperUpdate
+            fn: this.onPopperUpdate,
           },
           ...this.modifiers,
         ],
@@ -258,16 +258,16 @@ export default {
             this.popperOptions,
           );
         } else {
-          this.popper.scheduleUpdate();
+          this.popper.update();
         }
       });
     },
-    onPopperUpdate(data) {
-      this.placement = data.placement;
+    onPopperUpdate({ placement }) {
+      this.placement = placement;
     },
-    scheduleUpdate() {
+    update() {
       if (this.popper) {
-        this.popper.scheduleUpdate();
+        this.popper.update();
       }
     },
     beforeEnter(e) {
