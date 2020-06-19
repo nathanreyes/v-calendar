@@ -57,16 +57,13 @@ export default {
       if (!this.hasPopovers) {
         return contentLayer();
       }
-      const { visibility, placement, isInteractive } = this.popoverState;
       return h(
         PopoverRef,
         {
           props: {
             id: this.dayPopoverId,
             args: this.dayEvent,
-            visibility,
-            placement,
-            isInteractive,
+            ...this.popoverState,
           },
         },
         [contentLayer()],
@@ -238,17 +235,20 @@ export default {
     popovers() {
       const visibilities = ['click', 'focus', 'hover', 'visible'];
       let placement = '';
+      let modifiers = null;
       let isInteractive = false;
       let vIdx = -1;
       this.popovers.forEach(p => {
         const vNew = visibilities.indexOf(p.visibility);
         vIdx = vNew > vIdx ? vNew : vIdx;
         placement = placement || p.placement;
+        modifiers = modifiers || p.modifiers;
         isInteractive = isInteractive || p.isInteractive;
       });
       this.popoverState = {
         visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
         placement: placement || 'bottom',
+        modifiers,
         isInteractive,
       };
     },
