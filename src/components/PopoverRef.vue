@@ -19,7 +19,7 @@ export default {
     },
     placement: { type: String, default: 'bottom' },
     positionFixed: Boolean,
-    modifiers: { type: Object, default: () => {} },
+    modifiers: { type: Array, default: () => [] },
     isInteractive: Boolean,
     showDelay: { type: Number, default: 10 },
     hideDelay: { type: Number, default: 150 },

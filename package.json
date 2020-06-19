@@ -44,8 +44,7 @@
   },
   "dependencies": {
     "date-fns": "^2.6.0",
-    "lodash": "^4.17.15",
-    "popper.js": "^1.14.7"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@babel/plugin-transform-arrow-functions": "^7.2.0",
@@ -66,6 +65,7 @@
     "webpack-bundle-analyzer": "^3.8.0"
   },
   "peerDependencies": {
+    "@popperjs/core": "^2.4.0",
     "vue": "^2.5.18"
   },
   "browserslist": [

@@ -640,6 +640,6 @@ These are the additional configuration options you may use for further popover c
 | `hideIndicator` | Boolean | Hides the indicator that appears to the left of the label. |
 | `isInteractive` | Boolean | Allows user to interactive with the popover contents. For example, this keeps the popover open when user hovers over the popover when `visibility === "hover"`, instead of hiding it by default. |
 | `visibility` | String | Visibility mode for the popover (`"hover-focus"`, `"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`). |
-| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/popper-documentation.html#Popper.placements) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
-| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/popper-documentation.html#Popper.Defaults.positionFixed) for more details. |
-| `modifiers` | Boolean | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/popper-documentation.html#modifiers). |
+| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/docs/v2/constructors/#placement) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
+| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/docs/v2/constructors/#strategy) for more details. |
+| `modifiers` | Array | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers). |
