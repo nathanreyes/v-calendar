@@ -187,11 +187,17 @@ sidebarDepth: 2
 
 **Default:** `false`
 
+### `popover.modifiers`
+
+**Type:** Array
+
+**Description:** Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers/).
+
 ### `popover.placement`
 
 **Type:** String
 
-**Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change. Valid placements include auto, top, right, bottom, left. Each placement can have suffixed variations -start or -end.
+**Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change. Valid placements include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`.
 
 **Default:** `"bottom-start"`
 
