@@ -530,6 +530,31 @@ If you are not familiar with the convention of using scoped slots in Vue.js, you
 </v-calendar>
 ```
 
+```js
+// ...Continued from previous example
+export default {
+  ...
+  computed: {
+    attributes() {
+      return [
+        // Attributes for todos
+        ...this.todos.map(todo => ({
+          dates: todo.dates,
+          dot: {
+            color: todo.color,
+            class: todo.isComplete ? 'opacity-75' : '',
+          },
+          // We need to at least pass a truthy value for the popover to appear
+          // Pass an object to customize popover settings like visibility, placement, etc.
+          popover: true,
+          customData: todo,
+        })),
+      ];
+    },
+  },
+}
+```
+
 Notice that displaying static content here probably isn't going to help you much.
 
 Now that you are providing your own popover, you need to display the attributes on your own. Fortunately, the following `slot-scope` props should provide you with everything you need to help you display content for your custom data.
