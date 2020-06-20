@@ -386,11 +386,10 @@ export default {
     },
     toggleTodoEdit(todo, updateLayout) {
       this.editId = this.editId === todo.id ? 0 : todo.id;
-      updateLayout();
+      this.$nextTick(() => updateLayout());
     },
     deleteTodo(todo, updateLayout) {
       this.todos = this.todos.filter(t => t !== todo);
-      // updateLayout();
     },
   },
   directives: {
