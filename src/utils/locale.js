@@ -24,10 +24,11 @@ export function resolveConfig(config, locales) {
   } else if (has(config, 'id')) {
     id = config.id;
   }
-  id = id || detLocale;
-  id = [id, id.substring(0, 2)].find(i => has(locales, i)) || detLocale;
-  // Add fallback and
-  // spread the default locale to prevent repetitive update loops
+  id = (id || detLocale).toLowerCase();
+  const localeKeys = Object.keys(locales);
+  const validKey = (k) => localeKeys.find((lk) => lk.toLowerCase() === k);
+  id = validKey(id) || validKey(id.substring(0, 2)) || detLocale;
+  // Add fallback and spread default locale to prevent repetitive update loops
   const defLocale = { ...locales['en-IE'], ...locales[id], id };
   // Assign or merge defaults with provided config
   config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
@@ -43,7 +44,7 @@ export default class Locale {
     this.masks = masks;
     this.dayNames = this.getDayNames('long');
     this.dayNamesShort = this.getDayNames('short');
-    this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
+    this.dayNamesShorter = this.dayNamesShort.map((s) => s.substring(0, 2));
     this.dayNamesNarrow = this.getDayNames('narrow');
     this.monthNames = this.getMonthNames('long');
     this.monthNamesShort = this.getMonthNames('short');
@@ -114,7 +115,7 @@ export default class Locale {
       month: length,
       timezome: 'UTC',
     });
-    return this.getMonthDates().map(d => dtf.format(d));
+    return this.getMonthDates().map((d) => dtf.format(d));
   }
 
   getWeekdayDates({
@@ -139,7 +140,7 @@ export default class Locale {
       weekday: length,
       timeZone: 'UTC',
     });
-    return this.getWeekdayDates({ firstDayOfWeek: 1, utc: true }).map(d =>
+    return this.getWeekdayDates({ firstDayOfWeek: 1, utc: true }).map((d) =>
       dtf.format(d),
     );
   }

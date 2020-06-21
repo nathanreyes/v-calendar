@@ -31,8 +31,12 @@ const locales = {
   'en-IE': { dow: 2, L: 'DD-MM-YYYY' },
   // English (New Zealand)
   'en-NZ': { dow: 2, L: 'DD/MM/YYYY' },
+  // English (South Africa)
+  'en-ZA': { dow: 1, L: 'YYYY/MM/DD' },
   // Esperanto
   eo: { dow: 2, L: 'YYYY-MM-DD' },
+  // Estonian
+  et: { dow: 2, L: 'DD.MM.YYYY' },
   // Finnish
   fi: { dow: 2, L: 'DD.MM.YYYY' },
   // French
@@ -53,6 +57,10 @@ const locales = {
   ja: { dow: 1, L: 'YYYY年M月D日' },
   // Korean
   ko: { dow: 1, L: 'YYYY.MM.DD' },
+  // Latvian
+  lv: { dow: 2, L: 'DD.MM.YYYY' },
+  // Lithuanian
+  lt: { dow: 2, L: 'DD.MM.YYYY' },
   // Macedonian
   mk: { dow: 2, L: 'D.MM.YYYY' },
   // Norwegian
