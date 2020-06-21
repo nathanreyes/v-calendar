@@ -26,7 +26,7 @@ export function resolveConfig(config, locales) {
   }
   id = (id || detLocale).toLowerCase();
   const localeKeys = Object.keys(locales);
-  const validKey = (k) => localeKeys.find((lk) => lk.toLowerCase() === k);
+  const validKey = k => localeKeys.find(lk => lk.toLowerCase() === k);
   id = validKey(id) || validKey(id.substring(0, 2)) || detLocale;
   // Add fallback and spread default locale to prevent repetitive update loops
   const defLocale = { ...locales['en-IE'], ...locales[id], id };
@@ -44,7 +44,7 @@ export default class Locale {
     this.masks = masks;
     this.dayNames = this.getDayNames('long');
     this.dayNamesShort = this.getDayNames('short');
-    this.dayNamesShorter = this.dayNamesShort.map((s) => s.substring(0, 2));
+    this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
     this.dayNamesNarrow = this.getDayNames('narrow');
     this.monthNames = this.getMonthNames('long');
     this.monthNamesShort = this.getMonthNames('short');
@@ -115,7 +115,7 @@ export default class Locale {
       month: length,
       timezome: 'UTC',
     });
-    return this.getMonthDates().map((d) => dtf.format(d));
+    return this.getMonthDates().map(d => dtf.format(d));
   }
 
   getWeekdayDates({
@@ -140,7 +140,7 @@ export default class Locale {
       weekday: length,
       timeZone: 'UTC',
     });
-    return this.getWeekdayDates({ firstDayOfWeek: 1, utc: true }).map((d) =>
+    return this.getWeekdayDates({ firstDayOfWeek: 1, utc: true }).map(d =>
       dtf.format(d),
     );
   }
@@ -218,7 +218,7 @@ export default class Locale {
     };
   }
 
-  // Buils day components for a given page
+  // Builds day components for a given page
   getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
