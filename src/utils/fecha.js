@@ -2,6 +2,7 @@
 /* DATE FORMATTING & PARSING USING A SLIGHTLY MODIFIED VERSION OF FECHA (https://github.com/taylorhakes/fecha) */
 /* ADDS A NARROW WEEKDAY FORMAT 'dd' */
 import { isNumber, isString, isArray, isDate } from './_';
+import { pad } from './helpers';
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
@@ -20,15 +21,6 @@ function monthUpdate(arrName) {
       d.month = index;
     }
   };
-}
-
-function pad(val, len) {
-  val = String(val);
-  len = len || 2;
-  while (val.length < len) {
-    val = `0${val}`;
-  }
-  return val;
 }
 
 const formatFlags = {

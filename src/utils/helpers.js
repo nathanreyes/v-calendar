@@ -1,5 +1,14 @@
 import { isArray, isObject, isFunction, isDate } from './_';
 
+export const pad = (val, len, char = '0') => {
+  val = String(val);
+  len = len || 2;
+  while (val.length < len) {
+    val = `${char}${val}`;
+  }
+  return val;
+};
+
 export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
 
 export const pageIsValid = page => !!(page && page.month && page.year);
