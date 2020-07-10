@@ -575,11 +575,8 @@ export default {
       if (!this.hasValue(value)) return null;
       const patchKeys = PATCH_KEYS[patch];
       if (this.isRange) {
-        const start = this.$locale.normalizeDate(
-          value.start,
-          config.start || config,
-        );
-        const end = this.$locale.normalizeDate(value.end, config.end || config);
+        const start = this.normalizeDate(value.start, config.start || config);
+        const end = this.normalizeDate(value.end, config.end || config);
         const result = this.sortRange({ start, end });
         if (patch !== PATCH_DATE_TIME) {
           const startParts = {
@@ -595,7 +592,7 @@ export default {
         }
         return this.isDragging ? result : this.sortRange(result);
       }
-      let result = this.$locale.normalizeDate(value, config);
+      let result = this.normalizeDate(value, config);
       if (patch === PATCH_DATE_TIME) return result;
       result = {
         ...this.dateParts[0],
