@@ -4,5 +4,7 @@
   "navMonths": "MMM",
   "input": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
   "dayPopover": "WWW, MMM D, YYYY",
-  "data": ["L", "YYYY-MM-DD", "YYYY/MM/DD"]
+  "data": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
+  "model": "iso",
+  "iso": "YYYY-MM-DDTHH:mm:ssXXX"
 }

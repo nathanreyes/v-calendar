@@ -123,7 +123,7 @@ export default {
               a => a.popover,
             );
             const masks = this.$locale.masks;
-            const format = this.format;
+            const format = this.formatDate;
             const dayTitle = format(day.date, masks.dayPopover);
             return (
               this.safeScopedSlot('day-popover', {
@@ -234,6 +234,7 @@ export default {
                 },
                 [getArrowButton(true), getArrowButton(false)],
               ),
+              this.$scopedSlots.footer && this.$scopedSlots.footer(),
             ],
           ),
           getDayPopover(),
@@ -291,10 +292,10 @@ export default {
       return this.propOrDefault('titlePosition', 'titlePosition');
     },
     minPage_() {
-      return this.minPage || pageForDate(this.$locale.toDate(this.minDate));
+      return this.minPage || pageForDate(this.normalizeDate(this.minDate));
     },
     maxPage_() {
-      return this.maxPage || pageForDate(this.$locale.toDate(this.maxDate));
+      return this.maxPage || pageForDate(this.normalizeDate(this.maxDate));
     },
     count() {
       return this.rows * this.columns;
@@ -324,6 +325,9 @@ export default {
     $theme() {
       this.refreshTheme();
       this.initStore();
+    },
+    timezone() {
+      // TODO: Refresh attributes cleverly here
     },
     fromDate() {
       this.refreshPages();
@@ -490,11 +494,11 @@ export default {
       } else {
         // 2. Try the fromPage prop
         fromPage =
-          this.fromPage || pageForDate(this.$locale.toDate(this.fromDate));
+          this.fromPage || pageForDate(this.normalizeDate(this.fromDate));
         if (!pageIsValid(fromPage)) {
           // 3. Try the toPage prop
           const toPage =
-            this.toPage || pageForDate(this.$locale.toDate(this.toPage));
+            this.toPage || pageForDate(this.normalizeDate(this.toPage));
           if (pageIsValid(toPage)) {
             fromPage = addPages(toPage, 1 - this.count);
           } else {
@@ -550,7 +554,7 @@ export default {
     refreshDisabledDays(pages) {
       this.getPageDays(pages).forEach(d => {
         d.isDisabled =
-          !!this.disabledAttribute && this.disabledAttribute.includesDay(d);
+          !!this.disabledAttribute && this.disabledAttribute.intersectsDay(d);
       });
     },
     refreshFocusableDays(pages) {
@@ -586,7 +590,7 @@ export default {
       if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;
-        page = pageForDate(this.$locale.toDate(date));
+        page = pageForDate(this.normalizeDate(date));
       }
       return page;
     },
@@ -618,7 +622,7 @@ export default {
           refresh: true,
         };
         // Assign day info
-        page.days = this.$locale.getCalendarDays(page);
+        page.days = this.$locale.getCalendarDays(page, this.timezone);
       }
       return page;
     },
@@ -655,7 +659,7 @@ export default {
           // For each attribute to add...
           adds.forEach(attr => {
             // Add it if it includes the current day
-            const targetDate = attr.includesDay(d);
+            const targetDate = attr.intersectsDay(d);
             if (targetDate) {
               const newAttr = {
                 ...attr,

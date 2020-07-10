@@ -107,16 +107,17 @@ export default class Attribute {
 
   // Accepts: Day object
   // Returns: First attribute date info that occurs on given day.
-  includesDay(day) {
+  intersectsDay(day) {
     return (
       !this.excludesDay(day) &&
-      (this.dates.find(d => d.includesDay(day)) || false)
+      (this.dates.find(d => d.intersectsDay(day)) || false)
     );
   }
 
   excludesDay(day) {
     return (
-      this.hasExcludeDates && this.excludeDates.find(ed => ed.includesDay(day))
+      this.hasExcludeDates &&
+      this.excludeDates.find(ed => ed.intersectsDay(day))
     );
   }
 }

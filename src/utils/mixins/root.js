@@ -1,7 +1,7 @@
 import { addDays } from 'date-fns';
 import Theme from '../theme';
 import Locale from '../locale';
-import { isObject, isArray, defaultsDeep } from '../_';
+import { isObject, isArray, isDate, defaultsDeep } from '../_';
 import { defaultsMixin } from '../defaults';
 import { popoversMixin } from '../popovers';
 import { setupScreens } from '../screens';
@@ -16,6 +16,7 @@ export const rootMixin = {
     firstDayOfWeek: Number,
     masks: Object,
     locale: [String, Object],
+    timezone: String,
     minDate: null,
     maxDate: null,
     disabledDates: null,
@@ -47,10 +48,6 @@ export const rootMixin = {
       // Return new locale
       return new Locale(config, this.$locales);
     },
-    format() {
-      return (date, mask) =>
-        this.$locale ? this.$locale.format(date, mask) : '';
-    },
     disabledAttribute() {
       // Build up a complete list of disabled dates
       let dates = [];
@@ -61,8 +58,8 @@ export const rootMixin = {
           : [this.disabledDates];
       }
       // Add disabled dates for minDate and maxDate props
-      const minDate = this.$locale.toDate(this.minDate);
-      const maxDate = this.$locale.toDate(this.maxDate);
+      const minDate = this.normalizeDate(this.minDate);
+      const maxDate = this.normalizeDate(this.maxDate);
       if (minDate) {
         dates.push({ start: null, end: addDays(minDate, -1) });
       }
@@ -85,5 +82,18 @@ export const rootMixin = {
   },
   created() {
     setupScreens(this.$defaults.screens);
+  },
+  methods: {
+    formatDate(date, mask) {
+      return this.$locale ? this.$locale.format(date, mask) : '';
+    },
+    parseDate(text, mask) {
+      if (!this.$locale) return null;
+      const value = this.$locale.parse(text, mask);
+      return isDate(value) ? value : null;
+    },
+    normalizeDate(date, config) {
+      return this.$locale ? this.$locale.normalizeDate(date, config) : date;
+    },
   },
 };

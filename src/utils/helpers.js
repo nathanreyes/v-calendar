@@ -1,7 +1,7 @@
 import { isArray, isObject, isFunction, isDate } from './_';
 
 export const pad = (val, len, char = '0') => {
-  val = String(val);
+  val = val !== null && val !== undefined ? String(val) : '';
   len = len || 2;
   while (val.length < len) {
     val = `${char}${val}`;

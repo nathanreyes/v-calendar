@@ -4,7 +4,7 @@
 import { isNumber, isString, isArray, isDate } from './_';
 import { pad } from './helpers';
 
-const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|X{1,3}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
 const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
@@ -110,12 +110,23 @@ const formatFlags = {
       ? i18n.amPm[0].toUpperCase()
       : i18n.amPm[1].toUpperCase();
   },
-  ZZ(dateObj) {
+  X(dateObj) {
     const o = dateObj.getTimezoneOffset();
-    return (
-      (o > 0 ? '-' : '+') +
-      pad(Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60), 4)
-    );
+    return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}`;
+  },
+  XX(dateObj) {
+    const o = dateObj.getTimezoneOffset();
+    return `${o > 0 ? '-' : '+'}${pad(
+      Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60),
+      4,
+    )}`;
+  },
+  XXX(dateObj) {
+    const o = dateObj.getTimezoneOffset();
+    return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}:${pad(
+      Math.abs(o) % 60,
+      2,
+    )}`;
   },
 };
 
@@ -206,8 +217,8 @@ const parseFlags = {
       }
     },
   ],
-  ZZ: [
-    /([\+\-]\d\d:?\d\d|Z)/,
+  X: [
+    /[^\s]*?[\+\-]\d\d:?\d\d|[^\s]*?Z?/,
     (d, v) => {
       if (v === 'Z') v = '+00:00';
       const parts = `${v}`.match(/([+-]|\d\d)/gi);
@@ -226,8 +237,11 @@ parseFlags.mm = parseFlags.m;
 parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
 parseFlags.ss = parseFlags.s;
 parseFlags.A = parseFlags.a;
+parseFlags.XXX = parseFlags.XX = parseFlags.X;
 
 export const format = (dateObj, mask, locale) => {
+  mask = (isArray(mask) && mask) || (isString(mask) && mask) || 'YYYY-MM-DD';
+
   if (isNumber) {
     dateObj = new Date(dateObj);
   }

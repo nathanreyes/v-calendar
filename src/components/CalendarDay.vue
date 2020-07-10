@@ -156,8 +156,11 @@ export default {
     label() {
       return this.day.label;
     },
-    dateTime() {
-      return this.day.dateTime;
+    startTime() {
+      return this.day.range.start.getTime();
+    },
+    endTime() {
+      return this.day.range.end.getTime();
     },
     inMonth() {
       return this.day.inMonth;
@@ -295,8 +298,8 @@ export default {
         // Add glyphs for each attribute
         const { targetDate } = attr;
         const { isDate, isComplex, startTime, endTime } = targetDate;
-        const onStart = startTime === this.dateTime;
-        const onEnd = endTime === this.dateTime;
+        const onStart = this.startTime <= startTime;
+        const onEnd = this.endTime >= endTime;
         const onStartAndEnd = onStart && onEnd;
         const onStartOrEnd = onStart || onEnd;
         const dateInfo = {

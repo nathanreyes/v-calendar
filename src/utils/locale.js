@@ -48,12 +48,12 @@ export default class Locale {
     this.dayNamesNarrow = this.getDayNames('narrow');
     this.monthNames = this.getMonthNames('long');
     this.monthNamesShort = this.getMonthNames('short');
+    this.amPm = ['am', 'pm'];
     this.monthData = {};
     // Bind methods
     this.getMonthComps = this.getMonthComps.bind(this);
     this.parse = this.parse.bind(this);
     this.format = this.format.bind(this);
-    this.toDate = this.toDate.bind(this);
     this.toPage = this.toPage.bind(this);
   }
 
@@ -65,25 +65,123 @@ export default class Locale {
     return format(date, mask || this.masks.L, this);
   }
 
-  toDate(d, mask) {
-    if (isDate(d)) {
-      return new Date(d.getTime());
-    }
+  normalizeDate(d, config = {}) {
+    let result = null;
+    let type = config.type;
+    const auto = type === 'auto' || !type;
     if (isNumber(d)) {
-      return new Date(d);
+      type = 'number';
+      result = new Date(+d);
+    } else if (isString(d)) {
+      type = 'string';
+      const mask = config.mask || 'iso';
+      result = d ? this.parse(d, mask) : null;
+    } else if (isObject(d)) {
+      type = 'object';
+      result = this.getDateFromParts(d, config.timezone);
+    } else {
+      type = 'date';
+      result = isDate(d) ? new Date(d.getTime()) : null;
     }
-    if (isString(d)) {
-      return this.parse(d, mask);
+    if (auto) config.type = type;
+    return result && !isNaN(result.getTime()) ? result : null;
+  }
+
+  denormalizeDate(date, config) {
+    switch (config.type) {
+      case 'number':
+        return date ? date.getTime() : NaN;
+      case 'string':
+        return date ? this.format(date, config.mask || 'iso') : '';
+      default:
+        return date ? new Date(date) : null;
     }
-    if (isObject(d)) {
-      const date = new Date();
-      return new Date(
-        d.year || date.getFullYear(),
-        d.month || date.getMonth(),
-        d.day || date.getDate(),
-      );
-    }
-    return d;
+  }
+
+  getDateParts(date, timezone) {
+    if (!date) return null;
+    const opts = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      weekday: 'short',
+      fractionalSecondDigits: 3,
+      hour12: false,
+      timeZone: timezone || undefined,
+      timeZoneName: 'short',
+    };
+    const intl = new Intl.DateTimeFormat(this.id, opts);
+    const parts = intl.formatToParts(date);
+    const getPart = t => +parts.find(p => p.type === t).value;
+    const seconds = getPart('second');
+    const minutes = getPart('minute');
+    // Chrome reports start of day as hour 24?
+    const hours = getPart('hour') === 24 ? 0 : getPart('hour');
+    const month = getPart('month');
+    const year = getPart('year');
+    const comps = this.getMonthComps(month, year);
+    const day = getPart('day');
+    const dayFromEnd = comps.days - day + 1;
+    const weekday =
+      this.dayNamesShort.findIndex(
+        d => d.toLowerCase() === getPart('weekday'),
+      ) + 1;
+    const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
+    const weekdayOrdinalFromEnd = Math.floor((comps.days - day) / 7 + 1);
+    const week = Math.ceil(
+      (day + Math.abs(comps.firstWeekday - comps.firstDayOfWeek)) / 7,
+    );
+    const weekFromEnd = comps.weeks - week + 1;
+    return {
+      seconds,
+      minutes,
+      hours,
+      day,
+      dayFromEnd,
+      weekday,
+      weekdayOrdinal,
+      weekdayOrdinalFromEnd,
+      week,
+      weekFromEnd,
+      month,
+      year,
+      date,
+      isValid: true,
+    };
+  }
+
+  getDateFromParts(parts, timezone) {
+    if (!parts) return null;
+    const {
+      year: y,
+      month: m,
+      day: d,
+      hours: hrs,
+      minutes: min,
+      seconds: sec,
+      milliseconds: ms,
+    } = parts;
+    if (y === undefined || m === undefined || d === undefined) return null;
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      hour12: false,
+      hourCycle: 'h24',
+      timeZone: timezone || undefined,
+    });
+    const utcNoon = new Date(
+      Date.UTC(y || 0, m - 1, d || 0, 12, min || 0, sec || 0, ms || 0),
+    );
+    const utcDate = new Date(
+      Date.UTC(y || 0, m - 1, d || 0, hrs || 0, min || 0, sec || 0, ms || 0),
+    );
+    const tzHours = +formatter.format(utcNoon);
+    const tzOffset = 12 - tzHours;
+    const msInHour = 3600000;
+    const date = new Date(utcDate.getTime() + tzOffset * msInHour);
+    return date;
   }
 
   toPage(arg, fromPage) {
@@ -91,7 +189,7 @@ export default class Locale {
       return addPages(fromPage, arg);
     }
     if (isString(arg)) {
-      return pageForDate(this.toDate(arg));
+      return pageForDate(this.normalizeDate(arg));
     }
     if (isDate(arg)) {
       return pageForDate(arg);
@@ -189,37 +287,8 @@ export default class Locale {
     return this.getMonthComps(month + 1, year);
   }
 
-  getDayFromDate(date) {
-    if (!date) return null;
-    const month = date.getMonth() + 1;
-    const year = date.getUTCFullYear();
-    const comps = this.getMonthComps(month, year);
-    const day = date.getDate();
-    const dayFromEnd = comps.days - day + 1;
-    const weekday = date.getDay() + 1;
-    const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
-    const weekdayOrdinalFromEnd = Math.floor((comps.days - day) / 7 + 1);
-    const week = Math.ceil(
-      (day + Math.abs(comps.firstWeekday - comps.firstDayOfWeek)) / 7,
-    );
-    const weekFromEnd = comps.weeks - week + 1;
-    return {
-      day,
-      dayFromEnd,
-      weekday,
-      weekdayOrdinal,
-      weekdayOrdinalFromEnd,
-      week,
-      weekFromEnd,
-      month,
-      year,
-      date,
-      dateTime: date.getTime(),
-    };
-  }
-
   // Builds day components for a given page
-  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }) {
+  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }, timezone) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
@@ -250,6 +319,11 @@ export default class Locale {
     const todayDay = today.getDate();
     const todayMonth = today.getMonth() + 1;
     const todayYear = today.getFullYear();
+    const dft = (y, m, d) => (hours, minutes, seconds, milliseconds) =>
+      this.normalizeDate(
+        { year: y, month: m, day: d, hours, minutes, seconds, milliseconds },
+        { timezone },
+      );
     // Cycle through 6 weeks (max in month)
     for (let w = 1; w <= 6; w++) {
       // Cycle through days in week
@@ -279,8 +353,8 @@ export default class Locale {
         // Note: this might or might not be an actual month day
         //  We don't know how the UI wants to display various days,
         //  so we'll supply all the data we can
-        const date = new Date(year, month - 1, day);
-        const id = this.format(date, 'YYYY-MM-DD');
+
+        const id = `${year}-${month}-${day}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
         const isToday =
@@ -291,10 +365,16 @@ export default class Locale {
         const onBottom = w === 6;
         const onLeft = i === 1;
         const onRight = i === daysInWeek;
+        const dateFromTime = dft(year, month, day);
+        const date = dateFromTime(12, 0, 0, 0);
+        const range = {
+          start: dateFromTime(0, 0, 0),
+          end: dateFromTime(23, 59, 59, 999),
+        };
         days.push({
           id,
           label: day.toString(),
-          ariaLabel: formatter.format(date),
+          ariaLabel: formatter.format(new Date(year, month, day)),
           day,
           dayFromEnd,
           weekday,
@@ -306,8 +386,9 @@ export default class Locale {
           weekFromEnd,
           month,
           year,
+          dateFromTime,
           date,
-          dateTime: date.getTime(),
+          range,
           isToday,
           isFirstDay,
           isLastDay,
