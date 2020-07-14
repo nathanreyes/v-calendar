@@ -1,5 +1,7 @@
 <script>
-import { addDays, addMonths, addYears } from 'date-fns';
+import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
+import addYears from 'date-fns/addYears';
 import Popover from './Popover';
 import PopoverRow from './PopoverRow';
 import Grid from './Grid';
