@@ -193,25 +193,17 @@ export default {
             end: this.inputValues[1],
           }
         : this.inputValues[0];
+      const events = [true, false].map(b => ({
+        input: this.onInputInput(inputConfig, b),
+        change: this.onInputChange(inputConfig, b),
+        keyup: this.onInputKeyup,
+      }));
       const inputEvents = isRange
         ? {
-            start: {
-              input: this.onInputInput(inputConfig, true),
-              change: this.onInputChange(inputConfig, true),
-              keyup: this.onInputKeyup,
-            },
-            end: {
-              input: this.onInputInput(inputConfig, false),
-              change: this.onInputChange(inputConfig, false),
-              keyup: this.onInputKeyup,
-            },
+            start: events[0],
+            end: events[1],
           }
-        : {
-            input: this.onInputInput(inputConfig, true),
-            change: this.onInputChange(inputConfig, true),
-            keyup: this.onInputKeyup,
-          };
-
+        : events[0];
       return {
         inputValue,
         inputEvents,
