@@ -1,6 +1,5 @@
 <script>
 import Popper from 'popper.js';
-import { popoversMixin } from '../utils/popovers';
 import { on, off, elementContains } from '../utils/helpers';
 import { addTapOrClickHandler } from '../utils/touch';
 import { isFunction } from '../utils/_';
@@ -62,7 +61,6 @@ export default {
       ],
     );
   },
-  mixins: [popoversMixin],
   props: {
     id: { type: String, required: true },
     transition: { type: String, default: 'slide-fade' },
@@ -72,12 +70,14 @@ export default {
     return {
       ref: null,
       args: null,
-      visibility: '',
       placement: 'bottom',
       positionFixed: false,
       modifiers: {},
       isInteractive: false,
-      delay: 10,
+      isHovered: false,
+      isFocused: false,
+      showDelay: 10,
+      hideDelay: 150,
       popperEl: null,
     };
   },
@@ -109,11 +109,7 @@ export default {
       };
     },
     isVisible() {
-      return !!(
-        this.ref &&
-        (this.$scopedSlots.default || this.$slots.default) &&
-        this.visibility !== 'hidden'
-      );
+      return !!(this.ref && this.content);
     },
     direction() {
       return (this.placement && this.placement.split('-')[0]) || 'bottom';
@@ -135,23 +131,6 @@ export default {
       return this.$popovers[this.id];
     },
   },
-  watch: {
-    state: {
-      immediate: true,
-      handler(val) {
-        if (val) {
-          this.ref = val.ref;
-          this.args = val.args;
-          this.visibility = val.visibility;
-          this.placement = val.placement;
-          this.positionFixed = val.positionFixed;
-          this.modifiers = val.modifiers;
-          this.isInteractive = val.isInteractive;
-          this.setupPopper();
-        }
-      },
-    },
-  },
   mounted() {
     this.popoverEl = this.$refs.popover;
     this.addEvents();
@@ -171,6 +150,9 @@ export default {
         document,
         this.onDocumentClick,
       );
+      on(document, 'show-popover', this.onDocumentShowPopover);
+      on(document, 'hide-popover', this.onDocumentHidePopover);
+      on(document, 'update-popover', this.onDocumentUpdatePopover);
     },
     removeEvents() {
       off(this.popoverEl, 'click', this.onClick);
@@ -180,33 +162,32 @@ export default {
       off(this.popoverEl, 'focusout', this.onFocusOut);
       off(document, 'keydown', this.onDocumentKeydown);
       if (this.removeDocHandler) this.removeDocHandler();
+      off(document, 'show-popover', this.onDocumentShowPopover);
+      off(document, 'hide-popover', this.onDocumentHidePopover);
+      off(document, 'update-popover', this.onDocumentUpdatePopover);
     },
     onClick(e) {
       e.stopPropagation();
     },
     onMouseOver() {
-      if (this.isInteractive && this.visibility === 'hover') {
-        this.show();
-      }
+      this.isHovered = true;
+      if (this.isInteractive) this.show();
     },
     onMouseLeave() {
-      if (this.isInteractive && this.visibility === 'hover') {
-        this.hide();
-      }
+      this.isHovered = false;
+      if (!this.isFocused) this.hide();
     },
     onFocusIn() {
-      if (this.isInteractive && this.visibility === 'focus') {
-        this.show();
-      }
+      this.isFocused = true;
+      if (this.isInteractive) this.show();
     },
     onFocusOut(e) {
       if (
-        this.isInteractive &&
-        this.visibility === 'focus' &&
-        e.relatedTarget &&
+        !e.relatedTarget ||
         !elementContains(this.popoverEl, e.relatedTarget)
       ) {
-        this.hide();
+        this.isFocused = false;
+        if (!this.isHovered) this.hide();
       }
     },
     onDocumentClick(e) {
@@ -228,15 +209,45 @@ export default {
         this.hide();
       }
     },
-    show() {
-      this.$showPopover({ id: this.id, ref: this.ref, delay: 0 });
+    onDocumentShowPopover({ detail }) {
+      if (!detail.id || detail.id !== this.id) return;
+      this.show(detail);
     },
-    hide(opts) {
-      this.$hidePopover({
-        ...opts,
-        id: this.id,
-        ref: this.ref,
-      });
+    onDocumentHidePopover({ detail }) {
+      this.hide(detail);
+    },
+    onDocumentUpdatePopover({ detail }) {
+      this.update(detail);
+    },
+    show(opts = {}) {
+      const ref = opts.ref || this.ref;
+      const delay = opts.delay || this.showDelay;
+      if (!ref) return;
+      const fn = () => {
+        Object.assign(this, opts);
+        this.setupPopper();
+      };
+      clearTimeout(this.timeout);
+      if (delay > 0) {
+        this.timeout = setTimeout(() => fn(), delay);
+      } else {
+        fn();
+      }
+    },
+    hide(opts = {}) {
+      const ref = opts.ref || this.ref;
+      const delay = opts.delay || this.hideDelay;
+      if (ref && ref !== this.ref) return;
+      const fn = () => {
+        if (ref && ref !== this.ref) return;
+        this.ref = null;
+      };
+      clearTimeout(this.timeout);
+      if (delay > 0) {
+        this.timeout = setTimeout(fn, delay);
+      } else {
+        fn();
+      }
     },
     onUpdate({ args }) {
       this.args = args;
@@ -246,8 +257,7 @@ export default {
       this.$nextTick(() => {
         if (!this.ref || !this.$refs.popover) return;
         if (this.popper && this.popper.reference !== this.ref) {
-          this.popper.destroy();
-          this.popper = null;
+          this.destroyPopper();
         }
         if (!this.popper) {
           this.popper = new Popper(
