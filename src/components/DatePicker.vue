@@ -54,6 +54,7 @@ const PATCH_TIME = 3;
 export default {
   name: 'DatePicker',
   render(h) {
+    // Calendar renderer
     const calendar = () =>
       h(Calendar, {
         attrs: {
@@ -119,7 +120,7 @@ export default {
           isInteractive: true,
         },
       }),
-      // Popover
+      // Popover content
       h(Popover, {
         props: {
           id: this.datePickerPopoverId,
