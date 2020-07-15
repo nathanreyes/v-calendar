@@ -196,20 +196,20 @@ export default {
       const inputEvents = isRange
         ? {
             start: {
-              input: this.genInputInput(true, inputConfig),
-              change: this.genInputChange(true, inputConfig),
-              keyup: this.inputKeyup,
+              input: this.onInputInput(inputConfig, true),
+              change: this.onInputChange(inputConfig, true),
+              keyup: this.onInputKeyup,
             },
             end: {
-              input: this.genInputInput(false, inputConfig),
-              change: this.genInputChange(false, inputConfig),
-              keyup: this.inputKeyup,
+              input: this.onInputInput(inputConfig, false),
+              change: this.onInputChange(inputConfig, false),
+              keyup: this.onInputKeyup,
             },
           }
         : {
-            input: this.genInputInput(true, inputConfig),
-            change: this.genInputChange(true, inputConfig),
-            keyup: this.inputKeyup,
+            input: this.onInputInput(inputConfig, true),
+            change: this.onInputChange(inputConfig, true),
+            keyup: this.onInputKeyup,
           };
 
       return {
@@ -446,7 +446,7 @@ export default {
         this.updateValue(parts, opts);
       }
     },
-    genInputInput(isStart, config) {
+    onInputInput(config, isStart) {
       const opts = {
         config,
         patch: PATCH_DATE_TIME,
@@ -467,7 +467,7 @@ export default {
         }
       };
     },
-    genInputChange(isStart, config) {
+    onInputChange(config, isStart) {
       const opts = {
         config,
         formatInput: true,
@@ -485,7 +485,7 @@ export default {
         }
       };
     },
-    inputKeyup(e) {
+    onInputKeyup(e) {
       // Escape key only
       if (e.key !== 'Escape') return;
       this.updateValue(this.value_, {
