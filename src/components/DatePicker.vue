@@ -19,7 +19,7 @@ import {
   on,
   off,
 } from '../utils/helpers';
-import { isObject, isArray, has, head, pick } from '../utils/_';
+import { isObject, isArray, has, pick } from '../utils/_';
 import '../styles/tailwind-lib.css';
 
 const _dateConfig = {
@@ -105,8 +105,8 @@ export default {
     // Convert this span to a fragment when supported in Vue
     return h('span', [
       this.safeScopedSlot('default', {
-        inputValue: this.inputValue,
-        inputEvents: this.inputEvents,
+        // inputValue: this.inputValue,
+        // inputEvents: this.inputEvents,
         isDragging: !!this.dragValue,
         updateValue: this.updateValue,
         hidePopover: this.hidePopover,
@@ -121,7 +121,7 @@ export default {
             isInteractive: true,
           },
           on: {
-            'popover-show': () => i.popoverActive(),
+            // 'popover-show': () => i.popoverActive(),
           },
         }),
       ),
@@ -154,6 +154,9 @@ export default {
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
     isRequired: Boolean,
     updateOnInput: Boolean,
+    inputRef: HTMLInputElement,
+    startInputRef: HTMLInputElement,
+    endInputRef: HTMLInputElement,
     inputDebounce: Number,
     inputProps: { type: Object, default: () => ({}) },
     popover: { type: Object, default: () => ({}) },
@@ -170,7 +173,6 @@ export default {
       dragValue: null,
       isDragging: false,
       inputValue: '',
-      inputs: [],
       inline: false,
       updateTimeout: null,
       watchValue: true,
@@ -186,6 +188,24 @@ export default {
     },
     inputDebounce_() {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
+    },
+    inputs() {
+      const inputs = [];
+      if (this.isRange) {
+        if (this.startInputRef) inputs.push(this.startInputRef);
+        if (this.endInputRef) inputs.push(this.endInputRef);
+      } else if (this.inputRef) {
+        inputs.push(this.inputRef);
+      }
+      return inputs;
+    },
+    inputConfig() {
+      return {
+        type: 'string',
+        mask: this.$locale.masks.input,
+        patch: PATCH_DATE_TIME,
+        timezone: this.timezone,
+      };
     },
     inputEvents() {
       return {
@@ -279,6 +299,17 @@ export default {
     dragValue() {
       this.refreshDateParts();
     },
+    inputs(val, oldVal) {
+      if (oldVal) {
+        oldVal.forEach(i => i.__cleanup__ && i.__cleanup__());
+      }
+      if (val) {
+        val.forEach((i, idx) => {
+          i.__ctx__ = idx;
+          this.setupInput(i);
+        });
+      }
+    },
     timezone() {
       this.refreshDateParts();
     },
@@ -287,33 +318,7 @@ export default {
     },
   },
   mounted() {
-    const inputs = [];
     this.inline = !this.$slots.default && !this.$scopedSlots.default;
-    if (!this.inline) {
-      if (this.isRange) {
-        const start = this.resolveEl([
-          'input[vdp-start]',
-          'input:not([vdp-end])',
-        ]);
-        const end = this.resolveEl(
-          ['input[vdp-end]', 'input:not([vdp-start])'],
-          start,
-        );
-        if (start) {
-          start.popoverActive = () => (this.activeDate = 'start');
-          inputs.push(start);
-        }
-        if (end) {
-          end.popoverActive = () => (this.activeDate = 'end');
-          inputs.push(end);
-        }
-      } else {
-        const date = this.resolveEl(['input[vdp]', 'input']);
-        date.popoverActive = () => (this.activeDate = '');
-        if (date) inputs.push(date);
-      }
-      this.inputs = inputs;
-    }
     // Handle escape key presses
     on(document, 'keydown', this.onDocumentKeyDown);
     // Clear drag on background click
@@ -332,16 +337,6 @@ export default {
     });
   },
   methods: {
-    resolveEl(selectors, exclude) {
-      return head(
-        selectors
-          .map(s => {
-            const nodes = this.$el.querySelectorAll(s);
-            return Array.from(nodes).find(n => n !== exclude);
-          })
-          .filter(n => n),
-      );
-    },
     initDateConfig() {
       let config;
       const timezone = this.timezone;
@@ -416,34 +411,6 @@ export default {
       // Re-emit event
       this.$emit('daykeydown', day);
     },
-    onTimeInput(parts, idx) {
-      const opts = {
-        config: { timezone: this.timezone, type: 'object' },
-        patch: PATCH_TIME,
-        adjustPageRange: false,
-      };
-      if (this.isRange) {
-        if (idx === 0) {
-          this.updateValue(
-            {
-              start: parts,
-              end: this.dateParts[1],
-            },
-            opts,
-          );
-        } else {
-          this.updateValue(
-            {
-              start: this.dateParts[0],
-              end: parts,
-            },
-            opts,
-          );
-        }
-      } else {
-        this.updateValue(parts, opts);
-      }
-    },
     handleDayClick(day) {
       const opts = {
         patch: PATCH_DATE,
@@ -471,33 +438,77 @@ export default {
         adjustPageRange: false,
       });
     },
-    inputInput(e) {
-      this.inputValue = e.target.value;
-      if (this.updateOnInput_) {
-        this.updateValue(this.inputValue, {
-          formatInput: false,
-          hidePopover: false,
-          adjustPageRange: true,
-          debounce: this.inputDebounce_,
-        });
+    onTimeInput(parts, idx) {
+      const opts = {
+        config: { timezone: this.timezone, type: 'object' },
+        patch: PATCH_TIME,
+        adjustPageRange: false,
+      };
+      if (this.isRange) {
+        const start = idx === 0 ? parts : this.dateParts[1];
+        const end = idx === 0 ? this.dateParts[0] : parts;
+        this.updateValue({ start, end }, opts);
+      } else {
+        this.updateValue(parts, opts);
       }
     },
-    inputChange() {
-      this.updateValue(this.inputValue, {
+    setupInput(input) {
+      if (!input) return;
+      input.value = '';
+      on(input, 'input', this.inputInput);
+      on(input, 'change', this.inputChange);
+      on(input, 'keyup', this.inputKeyup);
+      input.__cleanup__ = () => {
+        off(input, 'input', this.inputInput);
+        off(input, 'change', this.inputChange);
+        off(input, 'keyup', this.inputKeyup);
+      };
+    },
+    inputInput(e) {
+      if (!this.updateOnInput_) return;
+      const inputValue = e.target.value;
+      const opts = {
+        config: this.inputConfig,
+        patch: PATCH_DATE_TIME,
+        formatInput: false,
+        hidePopover: false,
+        adjustPageRange: true,
+        debounce: this.inputDebounce_,
+      };
+      if (this.isRange) {
+        const isStart = !e.target.__idx__;
+        const start = isStart ? inputValue : this.value_.end;
+        const end = isStart ? this.value_.end : inputValue;
+        this.updateValue({ start, end }, opts);
+      } else {
+        this.updateValue(inputValue, opts);
+      }
+    },
+    inputChange(e) {
+      const inputValue = e.target.value;
+      const opts = {
+        config: this.inputConfig,
         formatInput: true,
         hidePopover: false,
         adjustPageRange: false,
-      });
+      };
+      if (this.isRange) {
+        const isStart = !e.target.__idx__;
+        const start = isStart ? inputValue : this.value_.end;
+        const end = isStart ? this.value_.end : inputValue;
+        this.updateValue({ start, end }, opts);
+      } else {
+        this.updateValue(inputValue, opts);
+      }
     },
     inputKeyup(e) {
-      // Escape key
-      if (e.keyCode === 27) {
-        this.updateValue(this.value_, {
-          formatInput: true,
-          hidePopover: true,
-          adjustPageRange: false,
-        });
-      }
+      // Escape key only
+      if (e.key !== 'Escape') return;
+      this.updateValue(this.value_, {
+        formatInput: true,
+        hidePopover: true,
+        adjustPageRange: false,
+      });
     },
     updateValue(value, opts = {}) {
       clearTimeout(this.updateTimeout);
@@ -632,10 +643,22 @@ export default {
     },
     formatInput() {
       this.$nextTick(() => {
-        const value = this.hasValue(this.dragValue)
-          ? this.dragValue
-          : this.value_;
-        // this.inputValue = this.formatDate(value, this.$locale.masks.input);
+        if (!this.inputs || !this.inputs.length) return;
+        const opts = {
+          type: 'string',
+          mask: this.$locale.masks.input,
+          timezone: this.timezone,
+        };
+        if (this.isRange) {
+          const value = this.denormalizeValue(
+            this.isDragging ? this.dragValue : this.value_,
+            opts,
+          );
+          this.inputs[0].value = value && value.start;
+          this.inputs[1].value = value && value.end;
+        } else {
+          this.inputs[0].value = this.denormalizeValue(this.value_, opts);
+        }
       });
     },
     hidePopover() {
