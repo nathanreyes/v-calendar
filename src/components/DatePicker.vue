@@ -108,7 +108,7 @@ export default {
         ref: 'calendar',
       });
     // If inline just return the calendar
-    if (this.inline) return calendar();
+    if (this.isInline) return calendar();
     // Convert this span to a fragment when supported in Vue
     return h('span', [
       // Slot content
@@ -141,6 +141,7 @@ export default {
     value: { type: null, required: true },
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
     isRequired: Boolean,
+    isInline: Boolean,
     updateOnInput: Boolean,
     inputDebounce: Number,
     popover: { type: Object, default: () => ({}) },
@@ -156,7 +157,6 @@ export default {
       dragValue: null,
       isDragging: false,
       inputValues: ['', ''],
-      inline: false,
       updateTimeout: null,
       watchValue: true,
       datePickerPopoverId: createGuid(),
@@ -310,7 +310,6 @@ export default {
     },
   },
   mounted() {
-    this.inline = !this.$slots.default && !this.$scopedSlots.default;
     // Handle escape key presses
     on(document, 'keydown', this.onDocumentKeyDown);
     // Clear drag on background click
@@ -552,7 +551,7 @@ export default {
       }
 
       // 5. Side effects for non-inline pickers
-      if (!this.inline) {
+      if (!this.isInline) {
         if (formatInput) this.formatInput();
         if (hidePopover) this.hidePopover();
         if (adjustPageRange) this.adjustPageRange();
