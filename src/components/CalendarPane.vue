@@ -37,15 +37,7 @@ export default {
                   'div',
                   {
                     class: ['vc-title', this.theme.title],
-                    on: {
-                      ...getPopoverTriggerEvents({
-                        id: this.navPopoverId,
-                        visibility: this.navVisibility_,
-                        placement: this.navPlacement,
-                        modifiers: { flip: { behavior: ['bottom'] } },
-                        isInteractive: true,
-                      }),
-                    },
+                    on: this.navPopoverEvents,
                   },
                   [
                     this.safeScopedSlot(
@@ -161,6 +153,15 @@ export default {
         default:
           return 'bottom';
       }
+    },
+    navPopoverEvents() {
+      return getPopoverTriggerEvents({
+        id: this.navPopoverId,
+        visibility: this.navVisibility_,
+        placement: this.navPlacement,
+        modifiers: { flip: { behavior: ['bottom'] } },
+        isInteractive: true,
+      });
     },
     weekdayLabels() {
       return this.locale
