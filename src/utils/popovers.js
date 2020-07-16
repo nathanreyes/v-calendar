@@ -26,111 +26,59 @@ export function togglePopover(opts) {
 }
 
 export function getPopoverTriggerEvents(opts) {
-  const events = {};
-  const { visibility, onCompleted } = opts;
-  const isClick = visibility === 'click';
-  const isHover = visibility === 'hover';
-  const isHoverFocus = visibility === 'hover-focus';
-  const isFocus = visibility === 'focus';
-  let isActive = false;
-  let isHovered = false;
-  let isFocused = false;
+  const { visibility } = opts;
+  const click = visibility === 'click';
+  const hover = visibility === 'hover';
+  const hoverFocus = visibility === 'hover-focus';
+  const focus = visibility === 'focus';
+  opts.autoHide = !click;
 
-  function show() {
-    showPopover(opts);
-    isActive = true;
-  }
+  let hovered = false;
+  let focused = false;
 
-  function hide() {
-    opts.onCompletion = hidePopover(opts);
-    isActive = false;
-  }
-
-  function refresh() {
-    switch (visibility) {
-      case 'hover':
-        if (isHovered) {
-          show();
-        } else if (isActive) {
-          hide();
+  return {
+    click(e) {
+      if (click) {
+        opts.ref = e.target;
+        togglePopover(opts);
+        e.stopPropagation();
+      }
+    },
+    mouseover(e) {
+      opts.ref = e.currentTarget;
+      if (!hovered) {
+        hovered = true;
+        if (hover || hoverFocus) {
+          showPopover(opts);
         }
-        break;
-      case 'focus':
-        if (isFocused) {
-          show();
-        } else if (isActive) {
-          hide();
-        }
-        break;
-      case 'hover-focus':
-        if (isHovered || isFocused) {
-          show();
-        } else if (isActive) {
-          hide();
-        }
-        break;
-      case 'visible':
-        show();
-        break;
-      case 'hidden':
-        if (isActive) {
-          hide();
-        }
-        break;
-    }
-  }
-
-  events.click = e => {
-    if (isClick) {
+      }
+    },
+    mouseleave(e) {
       opts.ref = e.target;
-      if (isActive) {
-        hide();
-      } else {
-        show();
+      if (hovered) {
+        hovered = false;
+        if (hover || (hoverFocus && !focused)) {
+          hidePopover(opts);
+        }
       }
-      e.stopPropagation();
-    }
-  };
-
-  events.mouseover = e => {
-    opts.ref = e.currentTarget;
-    if (!isHovered) {
-      isHovered = true;
-      if (isHover || isHoverFocus) {
-        refresh();
+    },
+    focusin(e) {
+      opts.ref = e.currentTarget;
+      if (!focused) {
+        focused = true;
+        if (focus) {
+          showPopover(opts);
+        }
       }
-    }
-  };
-
-  events.mouseleave = e => {
-    opts.ref = e.target;
-    if (isHovered) {
-      isHovered = false;
-      if (isHover || (isHoverFocus && !isFocused)) {
-        refresh();
+    },
+    focusout(e) {
+      opts.ref = e.currentTarget;
+      if (focused && !elementContains(opts.ref, e.relatedTarget)) {
+        focused = false;
+        if (focus || (hoverFocus && !hovered)) {
+          hidePopover(opts);
+        }
       }
-    }
+    },
   };
-
-  events.focusin = e => {
-    opts.ref = e.currentTarget;
-    if (!isFocused) {
-      isFocused = true;
-      if (isFocus) {
-        refresh();
-      }
-    }
-  };
-
-  events.focusout = e => {
-    opts.ref = e.currentTarget;
-    if (isFocused && !elementContains(opts.ref, e.relatedTarget)) {
-      isFocused = false;
-      if (isHoverFocus || isFocus) {
-        refresh();
-      }
-    }
-  };
-
-  return events;
 }
