@@ -211,12 +211,12 @@ export default {
         isInteractive,
       });
       return {
-        click: [click, this.click],
+        click: [this.click, click],
         mouseenter: this.mouseenter,
         mouseover,
-        mouseleave: [mouseleave, this.mouseleave],
-        focusin: [focusin, this.focusin],
-        focusout: [focusout, this.focusout],
+        mouseleave: [this.mouseleave, mouseleave],
+        focusin: [this.focusin, focusin],
+        focusout: [this.focusout, focusout],
         keydown: this.keydown,
       };
     },

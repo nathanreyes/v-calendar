@@ -46,16 +46,6 @@ export function getPopoverTriggerEvents(opts) {
     isActive = false;
   }
 
-  function toggle(e) {
-    opts.ref = e.target;
-    if (isActive) {
-      hide();
-    } else {
-      show();
-    }
-    e.stopPropagation();
-  }
-
   function refresh() {
     switch (visibility) {
       case 'hover':
@@ -90,9 +80,17 @@ export function getPopoverTriggerEvents(opts) {
     }
   }
 
-  if (isClick) {
-    events.click = toggle;
-  }
+  events.click = e => {
+    if (isClick) {
+      opts.ref = e.target;
+      if (isActive) {
+        hide();
+      } else {
+        show();
+      }
+      e.stopPropagation();
+    }
+  };
 
   events.mouseover = e => {
     opts.ref = e.currentTarget;
