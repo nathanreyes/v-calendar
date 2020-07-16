@@ -25,6 +25,7 @@ const pluginDefaults = {
       visibility: 'hover-focus',
       placement: 'bottom-start',
       keepVisibleOnInput: false,
+      isInteractive: true,
     },
   },
 };

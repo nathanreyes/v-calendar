@@ -1,6 +1,5 @@
 <script>
 import Popover from './Popover';
-import PopoverRef from './PopoverRef';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
 import Grid from './Grid';
@@ -9,6 +8,7 @@ import {
   childMixin,
   safeScopedSlotMixin,
 } from '../utils/mixins';
+import { getPopoverTriggerEvents } from '../utils/popovers';
 import { createGuid } from '../utils/helpers';
 
 export default {
@@ -32,27 +32,27 @@ export default {
             },
             [
               h('div', { class: 'vc-title-wrapper' }, [
-                // Navigation popover ref with title
+                // Title content
                 h(
-                  PopoverRef,
+                  'div',
                   {
-                    props: {
-                      id: this.navPopoverId,
-                      visibility: this.navVisibility_,
-                      placement: this.navPlacement,
-                      modifiers: { flip: { behavior: ['bottom'] } },
-                      isInteractive: true,
+                    class: ['vc-title', this.theme.title],
+                    on: {
+                      ...getPopoverTriggerEvents({
+                        id: this.navPopoverId,
+                        visibility: this.navVisibility_,
+                        placement: this.navPlacement,
+                        modifiers: { flip: { behavior: ['bottom'] } },
+                        isInteractive: true,
+                      }),
                     },
                   },
                   [
-                    // Title content
-                    h('div', { class: ['vc-title', this.theme.title] }, [
-                      this.safeScopedSlot(
-                        'header-title',
-                        this.page,
-                        this.page.title,
-                      ),
-                    ]),
+                    this.safeScopedSlot(
+                      'header-title',
+                      this.page,
+                      this.page.title,
+                    ),
                   ],
                 ),
                 // Navigation popover

@@ -2,7 +2,6 @@
 <script>
 import Calendar from './Calendar';
 import Popover from './Popover';
-import PopoverRef from './PopoverRef';
 import TimePicker from './TimePicker';
 import {
   rootMixin,
@@ -21,6 +20,12 @@ import {
   off,
 } from '../utils/helpers';
 import { isObject, isArray, has, pick } from '../utils/_';
+import {
+  showPopover as sp,
+  hidePopover as hp,
+  togglePopover as tp,
+  getPopoverTriggerEvents,
+} from '../utils/popovers';
 import '../styles/tailwind-lib.css';
 
 const _dateConfig = {
@@ -108,18 +113,6 @@ export default {
     return h('span', [
       // Slot content
       this.safeScopedSlot('default', this.slotArgs),
-      // Popover ref
-      h(PopoverRef, {
-        props: {
-          ...this.popover_,
-          element:
-            this.popoverRefEl || this.$slots.default
-              ? this.$slots.default[0]
-              : null,
-          id: this.datePickerPopoverId,
-          isInteractive: true,
-        },
-      }),
       // Popover content
       h(Popover, {
         props: {
@@ -166,7 +159,6 @@ export default {
       inline: false,
       updateTimeout: null,
       watchValue: true,
-      popoverRefEl: null,
       datePickerPopoverId: createGuid(),
     };
   },
@@ -187,7 +179,14 @@ export default {
         patch: PATCH_DATE_TIME,
         timezone: this.timezone,
       };
-      const { isRange, isDragging, updateValue, hidePopover } = this;
+      const {
+        isRange,
+        isDragging,
+        updateValue,
+        showPopover,
+        hidePopover,
+        togglePopover,
+      } = this;
       const inputValue = isRange
         ? {
             start: this.inputValues[0],
@@ -198,6 +197,10 @@ export default {
         input: this.onInputInput(inputConfig, b),
         change: this.onInputChange(inputConfig, b),
         keyup: this.onInputKeyup,
+        ...getPopoverTriggerEvents({
+          ...this.popover_,
+          id: this.datePickerPopoverId,
+        }),
       }));
       const inputEvents = isRange
         ? {
@@ -210,7 +213,9 @@ export default {
         inputEvents,
         isDragging,
         updateValue,
+        showPopover,
         hidePopover,
+        togglePopover,
       };
     },
     popover_() {
@@ -639,11 +644,14 @@ export default {
         this.inputValues = inputValues;
       });
     },
-    hidePopover() {
-      const popover = this.$refs.popover;
-      if (popover) {
-        popover.hide({ priority: 10, delay: 250 });
-      }
+    showPopover(opts = {}) {
+      sp({ ...opts, id: this.datePickerPopoverId });
+    },
+    hidePopover(opts = {}) {
+      hp({ ...opts, id: this.datePickerPopoverId });
+    },
+    togglePopover(opts = {}) {
+      tp({ ...opts, id: this.datePickerPopoverId });
     },
     adjustPageRange() {
       if (this.hasValue(this.value_) && this.$refs.calendar) {

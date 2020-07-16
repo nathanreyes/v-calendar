@@ -1,7 +1,7 @@
 <script>
-import PopoverRef from './PopoverRef';
 import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { arrayHasItems } from '../utils/helpers';
+import { getPopoverTriggerEvents } from '../utils/popovers';
 import { last, get, defaults } from '../utils/_';
 
 export default {
@@ -51,27 +51,6 @@ export default {
         },
         [this.day.label],
       );
-
-    // Popover content wrapper
-    const contentWrapperLayer = () => {
-      if (!this.hasPopovers) {
-        return contentLayer();
-      }
-      const { visibility, placement, isInteractive } = this.popoverState;
-      return h(
-        PopoverRef,
-        {
-          props: {
-            id: this.dayPopoverId,
-            args: this.dayEvent,
-            visibility,
-            placement,
-            isInteractive,
-          },
-        },
-        [contentLayer()],
-      );
-    };
 
     // Dots layer
     const dotsLayer = () =>
@@ -137,7 +116,7 @@ export default {
           {
             class: ['vc-h-full', { [this.theme.dayNotInMonth]: !this.inMonth }],
           },
-          [backgroundsLayer(), contentWrapperLayer(), dotsLayer(), barsLayer()],
+          [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
         ),
       ],
     );
@@ -217,12 +196,27 @@ export default {
       };
     },
     dayContentEvents() {
+      const { visibility, placement, isInteractive } = this.popoverState;
+      const {
+        click,
+        mouseover,
+        mouseleave,
+        focusin,
+        focusout,
+      } = getPopoverTriggerEvents({
+        id: this.dayPopoverId,
+        args: this.dayEvent,
+        visibility,
+        placement,
+        isInteractive,
+      });
       return {
-        click: this.click,
+        click: [click, this.click],
         mouseenter: this.mouseenter,
-        mouseleave: this.mouseleave,
-        focusin: this.focusin,
-        focusout: this.focusout,
+        mouseover,
+        mouseleave: [mouseleave, this.mouseleave],
+        focusin: [focusin, this.focusin],
+        focusout: [focusout, this.focusout],
         keydown: this.keydown,
       };
     },

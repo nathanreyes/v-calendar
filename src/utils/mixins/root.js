@@ -3,12 +3,11 @@ import Theme from '../theme';
 import Locale from '../locale';
 import { isObject, isArray, isDate, defaultsDeep } from '../_';
 import { defaultsMixin } from '../defaults';
-import { popoversMixin } from '../popovers';
 import { setupScreens } from '../screens';
 import Attribute from '../attribute';
 
 export const rootMixin = {
-  mixins: [defaultsMixin, popoversMixin],
+  mixins: [defaultsMixin],
   props: {
     color: String,
     isDark: Boolean,

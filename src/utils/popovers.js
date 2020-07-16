@@ -1,78 +1,138 @@
-import { defaults } from './_';
+import { elementContains } from './helpers';
 
-const popovers = {};
+export function showPopover(opts) {
+  if (!(opts.ref instanceof HTMLElement)) return;
+  document.dispatchEvent(
+    new CustomEvent('show-popover', {
+      detail: opts,
+    }),
+  );
+}
 
-export const popoversMixin = {
-  data() {
-    return {
-      popovers$: popovers,
-    };
-  },
-  computed: {
-    $popovers() {
-      return this.popovers$;
-    },
-  },
-  methods: {
-    $popoverExists(id) {
-      return this.$popovers && this.$popovers[id];
-    },
-    $popoverIsActive(id, ref) {
-      const activeRef =
-        this.$popovers && this.$popovers[id] && this.$popovers[id].ref;
-      return !!(activeRef && (!ref || ref === activeRef));
-    },
-    $popoverHasPriority(popover) {
-      const existingPopover = this.$popovers[popover.id];
-      if (!existingPopover || !existingPopover.priority) return true;
-      return popover.priority > existingPopover.priority;
-    },
-    $showPopover(popover) {
-      if (!this.$popoverHasPriority(popover)) return;
-      const { id, ref } = popover;
-      const existingPopover = this.$popovers[id];
-      defaults(popover, existingPopover);
-      popover.next = () => {
-        if (!existingPopover || ref !== existingPopover.ref) {
-          this.$set(this.$popovers, id, {
-            ...popover,
-            priority: 0,
-          });
+export function hidePopover(opts) {
+  document.dispatchEvent(
+    new CustomEvent('hide-popover', {
+      detail: opts,
+    }),
+  );
+}
+
+export function togglePopover(opts) {
+  document.dispatchEvent(
+    new CustomEvent('toggle-popover', {
+      detail: opts,
+    }),
+  );
+}
+
+export function getPopoverTriggerEvents(opts) {
+  const events = {};
+  const { visibility, onCompleted } = opts;
+  const isClick = visibility === 'click';
+  const isHover = visibility === 'hover';
+  const isHoverFocus = visibility === 'hover-focus';
+  const isFocus = visibility === 'focus';
+  let isActive = false;
+  let isHovered = false;
+  let isFocused = false;
+
+  function show() {
+    showPopover(opts);
+    isActive = true;
+  }
+
+  function hide() {
+    opts.onCompletion = hidePopover(opts);
+    isActive = false;
+  }
+
+  function toggle(e) {
+    opts.ref = e.target;
+    if (isActive) {
+      hide();
+    } else {
+      show();
+    }
+    e.stopPropagation();
+  }
+
+  function refresh() {
+    switch (visibility) {
+      case 'hover':
+        if (isHovered) {
+          show();
+        } else if (isActive) {
+          hide();
         }
-      };
-      this.handleStateTimer(popover, 'show');
-    },
-    $hidePopover(popover) {
-      if (!this.$popoverHasPriority(popover)) return;
-      const { id, ref } = popover;
-      defaults(popover, this.$popovers[id]);
-      popover.next = () => {
-        if (!ref || ref === this.$popovers[id].ref) {
-          this.$set(this.$popovers, id, {});
+        break;
+      case 'focus':
+        if (isFocused) {
+          show();
+        } else if (isActive) {
+          hide();
         }
-      };
-      this.handleStateTimer(popover, 'hide');
-    },
-    $updatePopover(popover) {
-      const { id, ref } = popover;
-      defaults(popover, this.$popovers[id]);
-      if (!ref || ref === this.$popovers[id].ref) {
-        this.$set(this.$popovers, id, popover);
+        break;
+      case 'hover-focus':
+        if (isHovered || isFocused) {
+          show();
+        } else if (isActive) {
+          hide();
+        }
+        break;
+      case 'visible':
+        show();
+        break;
+      case 'hidden':
+        if (isActive) {
+          hide();
+        }
+        break;
+    }
+  }
+
+  if (isClick) {
+    events.click = toggle;
+  }
+
+  events.mouseover = e => {
+    opts.ref = e.currentTarget;
+    if (!isHovered) {
+      isHovered = true;
+      if (isHover || isHoverFocus) {
+        refresh();
       }
-    },
-    handleStateTimer(state) {
-      if (state.timer) {
-        clearTimeout(state.timer);
-        state.timer = undefined;
+    }
+  };
+
+  events.mouseleave = e => {
+    opts.ref = e.target;
+    if (isHovered) {
+      isHovered = false;
+      if (isHover || (isHoverFocus && !isFocused)) {
+        refresh();
       }
-      if (!state.delay) {
-        state.next();
-      } else {
-        this.$set(this.$popovers, state.id, {
-          ...state,
-          timer: setTimeout(state.next, state.delay),
-        });
+    }
+  };
+
+  events.focusin = e => {
+    opts.ref = e.currentTarget;
+    if (!isFocused) {
+      isFocused = true;
+      if (isFocus) {
+        refresh();
       }
-    },
-  },
-};
+    }
+  };
+
+  events.focusout = e => {
+    opts.ref = e.currentTarget;
+    if (isFocused && !elementContains(opts.ref, e.relatedTarget)) {
+      isFocused = false;
+      if (isHoverFocus || isFocus) {
+        refresh();
+      }
+    }
+  };
+
+  return events;
+}
