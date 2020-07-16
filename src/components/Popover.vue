@@ -78,6 +78,7 @@ export default {
       isFocused: false,
       showDelay: 10,
       hideDelay: 150,
+      autoHide: false,
       popperEl: null,
     };
   },
@@ -90,7 +91,9 @@ export default {
             alignment: this.alignment,
             args: this.args,
             updateLayout: this.scheduleUpdate,
-            hide: opts => this.hide(opts),
+            show: this.show,
+            hide: this.hide,
+            toggle: this.toggle,
           })) ||
         this.$slots.default
       );
@@ -152,6 +155,7 @@ export default {
       );
       on(document, 'show-popover', this.onDocumentShowPopover);
       on(document, 'hide-popover', this.onDocumentHidePopover);
+      on(document, 'toggle-popover', this.onDocumentTogglePopover);
       on(document, 'update-popover', this.onDocumentUpdatePopover);
     },
     removeEvents() {
@@ -164,6 +168,7 @@ export default {
       if (this.removeDocHandler) this.removeDocHandler();
       off(document, 'show-popover', this.onDocumentShowPopover);
       off(document, 'hide-popover', this.onDocumentHidePopover);
+      off(document, 'toggle-popover', this.onDocumentTogglePopover);
       off(document, 'update-popover', this.onDocumentUpdatePopover);
     },
     onClick(e) {
@@ -175,7 +180,7 @@ export default {
     },
     onMouseLeave() {
       this.isHovered = false;
-      if (!this.isFocused) this.hide();
+      if (!this.isFocused && this.autoHide) this.hide();
     },
     onFocusIn() {
       this.isFocused = true;
@@ -187,7 +192,7 @@ export default {
         !elementContains(this.popoverEl, e.relatedTarget)
       ) {
         this.isFocused = false;
-        if (!this.isHovered) this.hide();
+        if (!this.isHovered && this.autoHide) this.hide();
       }
     },
     onDocumentClick(e) {
@@ -215,6 +220,10 @@ export default {
     },
     onDocumentHidePopover({ detail }) {
       this.hide(detail);
+    },
+    onDocumentTogglePopover({ detail }) {
+      if (!detail.id || detail.id !== this.id) return;
+      this.toggle(detail);
     },
     onDocumentUpdatePopover({ detail }) {
       this.update(detail);
@@ -247,6 +256,13 @@ export default {
         this.timeout = setTimeout(fn, delay);
       } else {
         fn();
+      }
+    },
+    toggle(opts = {}) {
+      if (this.isVisible) {
+        this.hide(opts);
+      } else {
+        this.show(opts);
       }
     },
     onUpdate({ args }) {
