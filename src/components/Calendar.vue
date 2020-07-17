@@ -120,7 +120,7 @@ export default {
           contentClass: this.$theme.dayPopoverContainer,
         },
         scopedSlots: {
-          default: ({ args: day, updateLayout, hide }) => {
+          default: ({ data: day, updateLayout, hide }) => {
             const attributes = Object.values(day.attributes).filter(
               a => a.popover,
             );
@@ -692,7 +692,6 @@ export default {
     },
     handleDayKeydown(day) {
       const { date, event } = day;
-      console.log('keydown', date);
       let newDate = null;
       switch (event.key) {
         case 'ArrowLeft': {
@@ -749,7 +748,6 @@ export default {
       if (newDate) {
         event.preventDefault();
         this.focusDate(newDate);
-        console.log(event.key, 'focusDate', newDate);
       }
     },
   },
