@@ -287,6 +287,10 @@ export default class Locale {
     return this.getMonthComps(month + 1, year);
   }
 
+  getDayId(date) {
+    return this.format(date, 'YYYY-MM-DD');
+  }
+
   // Builds day components for a given page
   getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }, timezone) {
     const days = [];
@@ -353,8 +357,13 @@ export default class Locale {
         // Note: this might or might not be an actual month day
         //  We don't know how the UI wants to display various days,
         //  so we'll supply all the data we can
-
-        const id = `${year}-${month}-${day}`;
+        const dateFromTime = dft(year, month, day);
+        const date = dateFromTime(12, 0, 0, 0);
+        const range = {
+          start: dateFromTime(0, 0, 0),
+          end: dateFromTime(23, 59, 59, 999),
+        };
+        const id = this.getDayId(date);
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
         const isToday =
@@ -365,12 +374,6 @@ export default class Locale {
         const onBottom = w === 6;
         const onLeft = i === 1;
         const onRight = i === daysInWeek;
-        const dateFromTime = dft(year, month, day);
-        const date = dateFromTime(12, 0, 0, 0);
-        const range = {
-          start: dateFromTime(0, 0, 0),
-          end: dateFromTime(23, 59, 59, 999),
-        };
         days.push({
           id,
           label: day.toString(),

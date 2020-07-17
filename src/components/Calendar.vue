@@ -450,7 +450,7 @@ export default {
       }
       // Set focus on the element for the date
       const focusableEl = this.$el.querySelector(
-        `.id-${this.$locale.format(date, 'YYYY-MM-DD')}.in-month .vc-focusable`,
+        `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
       );
       if (focusableEl) {
         focusableEl.focus();
@@ -692,6 +692,7 @@ export default {
     },
     handleDayKeydown(day) {
       const { date, event } = day;
+      console.log('keydown', date);
       let newDate = null;
       switch (event.key) {
         case 'ArrowLeft': {
@@ -748,6 +749,7 @@ export default {
       if (newDate) {
         event.preventDefault();
         this.focusDate(newDate);
+        console.log(event.key, 'focusDate', newDate);
       }
     },
   },
