@@ -259,7 +259,7 @@ export default {
       }
     },
     toggle(opts = {}) {
-      if (this.isVisible) {
+      if (this.isVisible && opts.ref === this.ref) {
         this.hide(opts);
       } else {
         this.show(opts);
