@@ -25,6 +25,14 @@ export function togglePopover(opts) {
   );
 }
 
+export function updatePopover(opts) {
+  document.dispatchEvent(
+    new CustomEvent('update-popover', {
+      detail: opts,
+    }),
+  );
+}
+
 export function getPopoverTriggerEvents(opts) {
   const { visibility } = opts;
   const click = visibility === 'click';
@@ -32,10 +40,8 @@ export function getPopoverTriggerEvents(opts) {
   const hoverFocus = visibility === 'hover-focus';
   const focus = visibility === 'focus';
   opts.autoHide = !click;
-
   let hovered = false;
   let focused = false;
-
   return {
     click(e) {
       if (click) {
