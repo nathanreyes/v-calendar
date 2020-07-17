@@ -180,7 +180,13 @@ export default {
     },
     onMouseLeave() {
       this.isHovered = false;
-      if (!this.isFocused && this.autoHide) this.hide();
+      if (
+        this.autoHide &&
+        !this.isFocused &&
+        (!this.ref || this.ref !== document.activeElement)
+      ) {
+        this.hide();
+      }
     },
     onFocusIn() {
       this.isFocused = true;
