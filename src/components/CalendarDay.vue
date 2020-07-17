@@ -196,7 +196,6 @@ export default {
       };
     },
     dayContentEvents() {
-      const { visibility, placement, isInteractive } = this.popoverState;
       const {
         click,
         mouseover,
@@ -204,11 +203,8 @@ export default {
         focusin,
         focusout,
       } = getPopoverTriggerEvents({
-        id: this.dayPopoverId,
         args: this.dayEvent,
-        visibility,
-        placement,
-        isInteractive,
+        ...this.popoverState,
       });
       return {
         click: [this.click, click],
@@ -244,6 +240,7 @@ export default {
         isInteractive = isInteractive || p.isInteractive;
       });
       this.popoverState = {
+        id: this.dayPopoverId,
         visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
         placement: placement || 'bottom',
         isInteractive,
