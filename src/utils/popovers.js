@@ -66,7 +66,7 @@ export function getPopoverTriggerEvents(opts) {
       opts.ref = e.currentTarget;
       if (!focused) {
         focused = true;
-        if (focus) {
+        if (focus || hoverFocus) {
           showPopover(opts);
         }
       }
