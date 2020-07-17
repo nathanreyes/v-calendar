@@ -12,7 +12,10 @@ export default {
       {
         class: [
           'vc-popover-content-wrapper',
-          { 'is-interactive': this.isInteractive },
+          {
+            'is-interactive': this.isInteractive,
+            'is-entering': this.isEntering,
+          },
         ],
         ref: 'popover',
       },
@@ -69,7 +72,7 @@ export default {
   data() {
     return {
       ref: null,
-      args: null,
+      data: null,
       placement: 'bottom',
       positionFixed: false,
       modifiers: {},
@@ -77,8 +80,9 @@ export default {
       isHovered: false,
       isFocused: false,
       showDelay: 10,
-      hideDelay: 150,
+      hideDelay: 110,
       autoHide: false,
+      isEntering: false,
       popperEl: null,
     };
   },
@@ -89,7 +93,7 @@ export default {
           this.$scopedSlots.default({
             direction: this.direction,
             alignment: this.alignment,
-            args: this.args,
+            data: this.data,
             updateLayout: this.scheduleUpdate,
             show: this.show,
             hide: this.hide,
@@ -271,8 +275,8 @@ export default {
         this.show(opts);
       }
     },
-    onUpdate({ args }) {
-      this.args = args;
+    update({ data }) {
+      this.data = data;
       this.setupPopper();
     },
     setupPopper() {
@@ -301,9 +305,11 @@ export default {
       }
     },
     beforeEnter(e) {
+      this.isEntering = true;
       this.$emit('beforeShow', e);
     },
     afterEnter(e) {
+      this.isEntering = false;
       this.$emit('afterShow', e);
     },
     beforeLeave(e) {
@@ -338,6 +344,9 @@ export default {
   z-index: 10;
   &:not(.is-interactive) {
     pointer-events: none;
+  }
+  &:not(.is-entering) {
+    transition: transform 0.1s ease-in-out;
   }
 }
 
