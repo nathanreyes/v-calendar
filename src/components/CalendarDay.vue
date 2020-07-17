@@ -1,6 +1,6 @@
 <script>
 import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
-import { arrayHasItems } from '../utils/helpers';
+import { arrayHasItems, mergeEvents } from '../utils/helpers';
 import { getPopoverTriggerEvents } from '../utils/popovers';
 import { last, get, defaults } from '../utils/_';
 
@@ -128,7 +128,7 @@ export default {
   data() {
     return {
       glyphs: {},
-      popoverState: {},
+      dayContentEvents: {},
     };
   },
   computed: {
@@ -195,27 +195,6 @@ export default {
         'aria-label': this.day.ariaLabel,
       };
     },
-    dayContentEvents() {
-      const {
-        click,
-        mouseover,
-        mouseleave,
-        focusin,
-        focusout,
-      } = getPopoverTriggerEvents({
-        args: this.dayEvent,
-        ...this.popoverState,
-      });
-      return {
-        click: [this.click, click],
-        mouseenter: this.mouseenter,
-        mouseover,
-        mouseleave: [this.mouseleave, mouseleave],
-        focusin: [this.focusin, focusin],
-        focusout: [this.focusout, focusout],
-        keydown: this.keydown,
-      };
-    },
     dayEvent() {
       return {
         ...this.day,
@@ -228,23 +207,41 @@ export default {
     theme() {
       this.refresh();
     },
-    popovers() {
-      const visibilities = ['click', 'focus', 'hover', 'visible'];
-      let placement = '';
-      let isInteractive = false;
-      let vIdx = -1;
-      this.popovers.forEach(p => {
-        const vNew = visibilities.indexOf(p.visibility);
-        vIdx = vNew > vIdx ? vNew : vIdx;
-        placement = placement || p.placement;
-        isInteractive = isInteractive || p.isInteractive;
-      });
-      this.popoverState = {
-        id: this.dayPopoverId,
-        visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
-        placement: placement || 'bottom',
-        isInteractive,
-      };
+    popovers: {
+      immediate: true,
+      handler() {
+        let popoverEvents = {};
+        if (this.popovers) {
+          const visibilities = ['click', 'focus', 'hover', 'visible'];
+          let placement = '';
+          let isInteractive = false;
+          let vIdx = -1;
+          this.popovers.forEach(p => {
+            const vNew = visibilities.indexOf(p.visibility);
+            vIdx = vNew > vIdx ? vNew : vIdx;
+            placement = placement || p.placement;
+            isInteractive = isInteractive || p.isInteractive;
+          });
+          popoverEvents = getPopoverTriggerEvents({
+            id: this.dayPopoverId,
+            data: this.day,
+            visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
+            placement: placement || 'bottom',
+            isInteractive,
+          });
+        }
+        this.dayContentEvents = mergeEvents(
+          {
+            click: this.click,
+            mouseenter: this.mouseenter,
+            mouseleave: this.mouseleave,
+            focusin: this.focusin,
+            focusout: this.focusout,
+            keydown: this.keydown,
+          },
+          popoverEvents,
+        );
+      },
     },
   },
   methods: {

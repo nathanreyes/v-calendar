@@ -13,6 +13,22 @@ export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
 
 export const pageIsValid = page => !!(page && page.month && page.year);
 
+export const mergeEvents = (...args) => {
+  const result = {};
+  args.forEach(e =>
+    Object.entries(e).forEach(([key, value]) => {
+      if (!result[key]) {
+        result[key] = value;
+      } else if (isArray(result[key])) {
+        result[key].push(value);
+      } else {
+        result[key] = [result[key], value];
+      }
+    }),
+  );
+  return result;
+};
+
 export const pageIsBeforePage = (page, comparePage) => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
   if (page.year === comparePage.year) return page.month < comparePage.month;
