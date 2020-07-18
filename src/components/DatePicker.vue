@@ -1,4 +1,3 @@
-
 <script>
 import Calendar from './Calendar';
 import Popover from './Popover';
@@ -26,7 +25,6 @@ import {
   togglePopover as tp,
   getPopoverTriggerEvents,
 } from '../utils/popovers';
-import '../styles/tailwind-lib.css';
 
 const _dateConfig = {
   type: 'auto',

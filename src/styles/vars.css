@@ -1,0 +1,100 @@
+.vc-container {
+  --white: #ffffff;
+  --black: #000000;
+
+  --accent-100: #ebf4ff;
+  --accent-200: #c3dafe;
+  --accent-300: #a3bffa;
+  --accent-400: #7f9cf5;
+  --accent-500: #667eea;
+  --accent-600: #5a67d8;
+  --accent-700: #4c51bf;
+  --accent-800: #434190;
+  --accent-900: #3c366b;
+
+  &.vc-blue {
+    --accent-100: #ebf8ff;
+    --accent-200: #bee3f8;
+    --accent-300: #90cdf4;
+    --accent-400: #63b3ed;
+    --accent-500: #4299e1;
+    --accent-600: #3182ce;
+    --accent-700: #2b6cb0;
+    --accent-800: #2c5282;
+    --accent-900: #2a4365;
+  }
+
+  &.vc-red {
+    --accent-100: #ebf8ff;
+    --accent-200: #bee3f8;
+    --accent-300: #90cdf4;
+    --accent-400: #63b3ed;
+    --accent-500: #4299e1;
+    --accent-600: #3182ce;
+    --accent-700: #2b6cb0;
+    --accent-800: #2c5282;
+    --accent-900: #2a4365;
+  }
+
+  --gray-100: #f7fafc;
+  --gray-200: #edf2f7;
+  --gray-300: #e2e8f0;
+  --gray-400: #cbd5e0;
+  --gray-500: #a0aec0;
+  --gray-600: #718096;
+  --gray-700: #4a5568;
+  --gray-800: #2d3748;
+  --gray-900: #1a202c;
+
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+
+  --leading-snug: 1.375;
+
+  --border-2: 2px;
+
+  --rounded: 0.25rem;
+  --rounded-lg: 0.5rem;
+  --rounded-full: 9999px;
+
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  --slide-translate: 22px;
+  --slide-duration: 0.15s;
+  --slide-timing: ease;
+
+  --header-padding: 10px 10px 0 10px;
+  --title-padding: 0 8px;
+  --arrows-padding: 8px 10px;
+  --arrow-font-size: 26px;
+  --weekday-padding: 5px 0;
+  --weeks-padding: 5px 6px 7px 6px;
+
+  --nav-container-width: 170px;
+
+  --day-min-height: 28px;
+  --day-content-width: 28px;
+  --day-content-height: 28px;
+  --day-content-margin: 1.6px auto;
+  --day-content-transition-time: 0.13s ease-in;
+  --day-content-bg-color-hover: hsla(211, 25%, 84%, 0.3);
+  --day-content-dark-bg-color-hover: hsla(216, 15%, 52%, 0.3);
+  --day-content-bg-color-focus: hsla(211, 25%, 84%, 0.4);
+  --day-content-dark-bg-color-focus: hsla(216, 15%, 52%, 0.4);
+
+  --highlight-height: 28px;
+
+  --dot-diameter: 5px;
+  --dot-border-radius: 50%;
+  --dot-spacing: 3px;
+
+  --bar-height: 3px;
+  --bars-width: 75%;
+}
