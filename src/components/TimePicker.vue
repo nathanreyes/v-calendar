@@ -208,7 +208,7 @@ export default {
   display: flex;
   align-items: center;
   background: var(--white);
-  padding: 0 0.75rem 0.5rem 0.75rem;
+  padding: 0 12px 8px 12px;
   border-top: 1px solid var(--gray-300);
   &.vc-invalid {
     pointer-events: none;
@@ -217,12 +217,12 @@ export default {
 }
 
 .vc-dt {
-  margin-left: 0.5rem;
+  margin-left: 8px;
 }
 
 .vc-dt-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 16px;
+  height: 16px;
   color: var(--gray-600);
 }
 
@@ -232,22 +232,22 @@ export default {
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   text-transform: uppercase;
-  padding: 0.25em 0rem 0.25rem 0.25rem;
+  padding: 4px 0 4px 4px;
   & .vc-weekday {
     color: var(--gray-700);
     letter-spacing: var(--tracking-wide);
   }
   & .vc-month {
     color: var(--accent-600);
-    margin-left: 0.5rem;
+    margin-left: 8px;
   }
   & .vc-day {
     color: var(--accent-600);
-    margin-left: 0.25rem;
+    margin-left: 4px;
   }
   & .vc-year {
     color: var(--gray-500);
-    margin-left: 0.5rem;
+    margin-left: 8px;
   }
 }
 
@@ -262,9 +262,9 @@ export default {
   color: var(--gray-800);
   font-weight: var(--font-medium);
   border: 1px solid var(--gray-300);
-  padding: 0.25rem 0 0.25rem 0.25rem;
+  padding: 4px 0 4px 4px;
   border-radius: var(--rounded);
-  height: 1.9rem;
+  height: 30px;
   cursor: pointer;
   &:focus {
     border-color: var(--accent-400);
@@ -276,15 +276,15 @@ export default {
   align-items: center;
   background: var(--gray-100);
   color: var(--gray-800);
-  margin-left: 0.5rem;
-  padding: 0.25rem;
+  margin-left: 8px;
+  padding: 4px;
   border: 1px solid var(--gray-300);
   border-radius: var(--rounded);
-  height: 1.9rem;
+  height: 30px;
   & button {
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);
-    padding: 0 0.25rem;
+    padding: 0 4px;
     border: 1px solid transparent;
     border-radius: var(--rounded);
     &:hover {

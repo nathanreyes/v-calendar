@@ -749,6 +749,21 @@ export default {
 </script>
 
 <style lang="postcss">
+.vc-reset {
+  &,
+  & * {
+    /* line-height: 1.5; */
+    box-sizing: border-box;
+    &:focus {
+      outline: none;
+    }
+  }
+  & button,
+  & [role='button'] {
+    cursor: pointer;
+  }
+}
+
 .vc-container {
   font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -811,7 +826,7 @@ export default {
   border-radius: var(--rounded-lg);
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
-  padding: 0.5rem;
+  padding: 8px;
   box-shadow: var(--shadow);
 }
 
@@ -828,7 +843,7 @@ export default {
   top: 0;
   display: flex;
   justify-content: space-between;
-  padding: var(--arrows-padding);
+  padding: 8px 10px;
   pointer-events: none;
   &.title-left {
     justify-content: flex-end;
@@ -839,23 +854,23 @@ export default {
 }
 
 .vc-is-dark {
-  .vc-container {
+  &.vc-container {
     color: var(--gray-200);
     background-color: var(--gray-900);
     border-color: var(--gray-700);
   }
-  .vc-arrow {
+  & .vc-arrow {
     color: var(--white);
     &:focus {
       border-color: var(--gray-700);
     }
   }
-  .vc-day-popover-container {
+  & .vc-day-popover-container {
     color: var(--gray-800);
     background-color: var(--white);
     border-color: var(--gray-100);
   }
-  .vc-day-popover-header {
+  & .vc-day-popover-header {
     color: var(--gray-700);
   }
 }

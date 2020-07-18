@@ -18,63 +18,57 @@ export default {
     // Header
     const header =
       this.safeScopedSlot('header', this.page) ||
-      h(
-        'div',
-        {
-          class: ['vc-header', this.theme.header],
-        },
-        [
-          // Header title
-          h(
-            'div',
-            {
-              class: `vc-title-layout align-${this.titlePosition}`,
-            },
-            [
-              h('div', { class: 'vc-title-wrapper' }, [
-                // Title content
-                h(
-                  'div',
-                  {
-                    class: ['vc-title', this.theme.title],
-                    on: this.navPopoverEvents,
+      h('div', { class: 'vc-header' }, [
+        // Header title
+        h(
+          'div',
+          {
+            class: `vc-title-layout align-${this.titlePosition}`,
+          },
+          [
+            h('div', { class: 'vc-title-wrapper' }, [
+              // Title content
+              h(
+                'div',
+                {
+                  class: 'vc-title',
+                  on: this.navPopoverEvents,
+                },
+                [
+                  this.safeScopedSlot(
+                    'header-title',
+                    this.page,
+                    this.page.title,
+                  ),
+                ],
+              ),
+              // Navigation popover
+              h(
+                Popover,
+                {
+                  props: {
+                    id: this.navPopoverId,
+                    contentClass: 'vc-nav-popover-container',
                   },
-                  [
-                    this.safeScopedSlot(
-                      'header-title',
-                      this.page,
-                      this.page.title,
-                    ),
-                  ],
-                ),
-                // Navigation popover
-                h(
-                  Popover,
-                  {
+                },
+                [
+                  // Navigation pane
+                  h(CalendarNav, {
                     props: {
-                      id: this.navPopoverId,
-                      contentClass: this.theme.navPopoverContainer,
+                      value: this.page,
+                      validator: this.canMove,
                     },
-                  },
-                  [
-                    // Navigation pane
-                    h(CalendarNav, {
-                      props: {
-                        value: this.page,
-                        validator: this.canMove,
-                      },
-                      on: {
-                        input: $event => this.move($event),
-                      },
-                      scopedSlots: this.$scopedSlots,
-                    }),
-                  ],
-                ),
-              ]),
-            ],
-          ),
-        ],
-      );
+                    on: {
+                      input: $event => this.move($event),
+                    },
+                    scopedSlots: this.$scopedSlots,
+                  }),
+                ],
+              ),
+            ]),
+          ],
+        ),
+      ]);
 
     // Weeks
     const weeks = h(
@@ -94,7 +88,7 @@ export default {
             'div',
             {
               key: i + 1,
-              class: ['vc-weekday', this.theme.weekdays],
+              class: 'vc-weekday',
             },
             [wl],
           ),
@@ -198,8 +192,9 @@ export default {
   flex-shrink: 0;
   display: flex;
   align-items: stretch;
+  color: var(--gray-900);
   user-select: none;
-  padding: var(--header-padding);
+  padding: 10px 10px 0 10px;
   &.align-left {
     order: -1;
     justify-content: flex-start;
@@ -228,10 +223,16 @@ export default {
 }
 
 .vc-title {
+  font-size: var(--text-lg);
+  color: var(--gray-800);
+  font-weight: var(--font-semibold);
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  padding: var(--title-padding);
+  padding: 0 8px;
+  &:hover {
+    opacity: 0.75;
+  }
 }
 
 .vc-weekday {
@@ -239,7 +240,10 @@ export default {
   justify-content: center;
   align-items: center;
   flex: 1;
-  padding: var(--weekday-padding);
+  color: var(--gray-500);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  padding: 5px 0;
   cursor: default;
   user-select: none;
 }
@@ -247,6 +251,35 @@ export default {
 .vc-weeks {
   flex-shrink: 1;
   flex-grow: 1;
-  padding: var(--weeks-padding);
+  padding: 5px 6px 7px 6px;
+}
+
+::v-deep .vc-nav-popover-container {
+  color: var(--white);
+  font-size: var(--text-sm);
+  font-weight: var(-font-semibold);
+  background-color: var(--gray-800);
+  border: 1px solid;
+  border-color: var(--gray-700);
+  border-radius: var(--rounded-lg);
+  padding: 4px;
+  box-shadow: var(--shadow);
+}
+
+.vc-is-dark {
+  & .vc-header {
+    color: var(--gray-200);
+  }
+  & .vc-title {
+    color: var(--gray-100);
+  }
+  & .vc-weekday {
+    color: var(--accent-200);
+  }
+  & .vc-nav-popover-container {
+    color: var(--gray-800);
+    background-color: var(--white);
+    border-color: var(--gray-100);
+  }
 }
 </style>

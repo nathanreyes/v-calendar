@@ -2,15 +2,17 @@
   --white: #ffffff;
   --black: #000000;
 
-  --accent-100: #ebf4ff;
-  --accent-200: #c3dafe;
-  --accent-300: #a3bffa;
-  --accent-400: #7f9cf5;
-  --accent-500: #667eea;
-  --accent-600: #5a67d8;
-  --accent-700: #4c51bf;
-  --accent-800: #434190;
-  --accent-900: #3c366b;
+  &.vc-indigo {
+    --accent-100: #ebf4ff;
+    --accent-200: #c3dafe;
+    --accent-300: #a3bffa;
+    --accent-400: #7f9cf5;
+    --accent-500: #667eea;
+    --accent-600: #5a67d8;
+    --accent-700: #4c51bf;
+    --accent-800: #434190;
+    --accent-900: #3c366b;
+  }
 
   &.vc-blue {
     --accent-100: #ebf8ff;
@@ -46,6 +48,26 @@
   --gray-800: #2d3748;
   --gray-900: #1a202c;
 
+  /* --s-px: 1px;
+  --s-0: 0;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+  --s-24: 96px;
+  --s-32: 128px;
+  --s-40: 160px;
+  --s-48: 192px;
+  --s-56: 224px;
+  --s-64: 256px; */
+
   --font-normal: 400;
   --font-medium: 500;
   --font-semibold: 600;
@@ -69,13 +91,6 @@
   --slide-translate: 22px;
   --slide-duration: 0.15s;
   --slide-timing: ease;
-
-  --header-padding: 10px 10px 0 10px;
-  --title-padding: 0 8px;
-  --arrows-padding: 8px 10px;
-  --arrow-font-size: 26px;
-  --weekday-padding: 5px 0;
-  --weeks-padding: 5px 6px 7px 6px;
 
   --nav-container-width: 170px;
 

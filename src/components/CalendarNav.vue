@@ -6,7 +6,7 @@
       <!--Move prev button-->
       <span
         role="button"
-        class="vc-nav-arrow"
+        class="vc-nav-arrow is-left"
         tabindex="-1"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
@@ -258,7 +258,9 @@ export default {
   border-width: var(--border-2);
   border-color: transparent;
   border-radius: var(--rounded);
-  margin-right: auto;
+  &.is-left {
+    margin-right: auto;
+  }
   &.is-right {
     margin-left: auto;
   }
@@ -274,7 +276,7 @@ export default {
   color: var(--accent-100);
   font-weight: var(--font-bold);
   line-height: var(--leading-snug);
-  padding: 0.5rem 0.25rem;
+  padding: 4px 8px;
   border-radius: var(--rounded);
   border-width: var(--border-2);
   border-color: transparent;
@@ -287,11 +289,11 @@ export default {
 }
 
 .vc-nav-item {
-  width: 3rem;
+  width: 48px;
   text-align: center;
   line-height: 1.375;
   font-weight: var(--font-semibold);
-  padding: 0.25rem 0;
+  padding: 4px 0;
   cursor: pointer;
   border-color: transparent;
   border-width: var(--border-2);
@@ -326,7 +328,7 @@ export default {
 }
 
 .is-dark {
-  .vc-nav-title {
+  & .vc-nav-title {
     color: var(--gray-900);
     &:hover {
       background-color: var(--gray-200);
@@ -335,7 +337,7 @@ export default {
       border-color: var(--accent-400);
     }
   }
-  .vc-nav-arrow {
+  & .vc-nav-arrow {
     &:hover {
       background-color: var(--gray-200);
     }
@@ -343,7 +345,7 @@ export default {
       border-color: var(--accent-400);
     }
   }
-  .vc-nav-item {
+  & .vc-nav-item {
     &:hover {
       color: var(--gray-900);
       background-color: var(--gray-200);
