@@ -855,7 +855,7 @@ export default {
 
 .vc-is-dark {
   &.vc-container {
-    color: var(--gray-200);
+    color: var(--gray-100);
     background-color: var(--gray-900);
     border-color: var(--gray-700);
   }
