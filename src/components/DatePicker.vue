@@ -296,7 +296,9 @@ export default {
     value_: {
       immediate: true,
       handler() {
-        this.refreshDateParts();
+        this.$nextTick(() => {
+          this.refreshDateParts();
+        });
       },
     },
     dragValue() {
