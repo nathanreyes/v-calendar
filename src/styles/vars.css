@@ -143,13 +143,4 @@
   --slide-timing: ease;
 
   --day-content-transition-time: 0.13s ease-in;
-
-  --highlight-height: 28px;
-
-  --dot-diameter: 5px;
-  --dot-border-radius: 50%;
-  --dot-spacing: 3px;
-
-  --bar-height: 3px;
-  --bars-width: 75%;
 }

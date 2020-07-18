@@ -550,8 +550,8 @@ export default {
 }
 
 .vc-highlight {
-  width: var(--highlight-height);
-  height: var(--highlight-height);
+  width: 28px;
+  height: 28px;
   &.vc-highlight-base-start {
     width: 50% !important;
     border-radius: 0 !important;
@@ -578,12 +578,12 @@ export default {
 }
 
 .vc-dot {
-  width: var(--dot-diameter);
-  height: var(--dot-diameter);
-  border-radius: var(--dot-border-radius);
+  width: 5px;
+  height: 5px;
+  border-radius: var(--rounded-full);
   transition: all var(--day-content-transition-time);
   &:not(:last-child) {
-    margin-right: var(--dot-spacing);
+    margin-right: 3px;
   }
 }
 
@@ -591,12 +591,12 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  width: var(--bars-width);
+  width: 75%;
 }
 
 .vc-bar {
   flex-grow: 1;
-  height: var(--bar-height);
+  height: 3px;
   transition: all var(--day-content-transition-time);
 }
 </style>
