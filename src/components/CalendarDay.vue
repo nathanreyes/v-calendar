@@ -108,17 +108,10 @@ export default {
           'vc-day',
           ...this.day.classes,
           { 'vc-day-box-center-center': !this.$scopedSlots['day-content'] },
+          { 'is-not-in-month': !this.inMonth },
         ],
       },
-      [
-        h(
-          'div',
-          {
-            class: ['vc-h-full', { [this.theme.dayNotInMonth]: !this.inMonth }],
-          },
-          [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
-        ),
-      ],
+      [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
     );
   },
   inject: ['sharedState'],
@@ -467,6 +460,10 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 1;
+  &.is-not-in-month {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .vc-day-layer {

@@ -1,7 +1,6 @@
 export default {
   color: 'blue',
   isDark: false,
-  dayNotInMonth: 'vc-opacity-0 vc-pointer-events-none',
   highlightBaseFillMode: 'light',
   highlightStartEndFillMode: 'solid',
   highlightStartEndClass: 'vc-rounded-full',
