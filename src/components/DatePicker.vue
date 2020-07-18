@@ -84,23 +84,15 @@ export default {
         scopedSlots: {
           ...this.$scopedSlots,
           footer: () => {
+            if (!this.dateParts) return null;
             const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
             return h(
               'div',
               parts.map((dp, idx) =>
-                h(
-                  TimePicker,
-                  {
-                    props: { value: dp, locale: this.$locale },
-                    on: { input: p => this.onTimeInput(p, idx) },
-                  },
-                  [
-                    h('div', {
-                      class:
-                        'text-sm vc-text-gray-600 uppercase tracking-wide font-bold mb-1 ml-6',
-                    }),
-                  ],
-                ),
+                h(TimePicker, {
+                  props: { value: dp, locale: this.$locale },
+                  on: { input: p => this.onTimeInput(p, idx) },
+                }),
               ),
             );
           },
@@ -296,9 +288,7 @@ export default {
     value_: {
       immediate: true,
       handler() {
-        this.$nextTick(() => {
-          this.refreshDateParts();
-        });
+        this.refreshDateParts();
       },
     },
     dragValue() {
@@ -376,7 +366,7 @@ export default {
       } else {
         dateParts.push({});
       }
-      this.dateParts = dateParts;
+      this.$nextTick(() => (this.dateParts = dateParts));
     },
     onDocumentKeyDown(e) {
       // Clear drag on escape keydown
