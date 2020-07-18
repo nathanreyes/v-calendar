@@ -378,7 +378,7 @@ export default {
     },
     onDocumentKeyDown(e) {
       // Clear drag on escape keydown
-      if (this.dragValue && e.keyCode === 27) {
+      if (this.dragValue && e.key === 'Escape') {
         this.isDragging = false;
       }
     },
@@ -436,8 +436,8 @@ export default {
         adjustPageRange: false,
       };
       if (this.isRange) {
-        const start = idx === 0 ? parts : this.dateParts[1];
-        const end = idx === 0 ? this.dateParts[0] : parts;
+        const start = idx === 0 ? parts : this.dateParts[0];
+        const end = idx === 0 ? this.dateParts[1] : parts;
         this.updateValue({ start, end }, opts);
       } else {
         this.updateValue(parts, opts);
