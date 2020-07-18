@@ -1,8 +1,8 @@
 /* eslint-disable no-bitwise, no-mixed-operators, no-useless-escape, no-multi-assign */
 /* DATE FORMATTING & PARSING USING A SLIGHTLY MODIFIED VERSION OF FECHA (https://github.com/taylorhakes/fecha) */
 /* ADDS A NARROW WEEKDAY FORMAT 'dd' */
-import { isNumber, isString, isArray, isDate } from './_';
-import { pad } from './helpers';
+import { isNumber, isString, isDate } from './_';
+import { pad, arrayHasItems } from './helpers';
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|X{1,3}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
@@ -240,7 +240,10 @@ parseFlags.A = parseFlags.a;
 parseFlags.XXX = parseFlags.XX = parseFlags.X;
 
 export const format = (dateObj, mask, locale) => {
-  mask = (isArray(mask) && mask) || (isString(mask) && mask) || 'YYYY-MM-DD';
+  mask =
+    (arrayHasItems(mask) && mask[0]) ||
+    (isString(mask) && mask) ||
+    'YYYY-MM-DD';
 
   if (isNumber) {
     dateObj = new Date(dateObj);
@@ -340,7 +343,7 @@ const parseString = (dateStr, mask, locale) => {
 };
 
 export const parse = (dateStr, mask, locale) => {
-  const masks = (isArray(mask) && mask) || [
+  const masks = (arrayHasItems(mask) && mask) || [
     (isString(mask) && mask) || 'YYYY-MM-DD',
   ];
   return (
