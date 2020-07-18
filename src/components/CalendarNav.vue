@@ -255,7 +255,7 @@ export default {
   justify-content: center;
   align-items: center;
   line-height: var(--leading-snug);
-  border-width: var(--border-2);
+  border-width: 2px;
   border-color: transparent;
   border-radius: var(--rounded);
   &.is-left {
@@ -278,7 +278,7 @@ export default {
   line-height: var(--leading-snug);
   padding: 4px 8px;
   border-radius: var(--rounded);
-  border-width: var(--border-2);
+  border-width: 2px;
   border-color: transparent;
   &:hover {
     background-color: var(--gray-900);
@@ -291,12 +291,12 @@ export default {
 .vc-nav-item {
   width: 48px;
   text-align: center;
-  line-height: 1.375;
+  line-height: var(--leading-snug);
   font-weight: var(--font-semibold);
   padding: 4px 0;
   cursor: pointer;
   border-color: transparent;
-  border-width: var(--border-2);
+  border-width: 2px;
   border-radius: var(--rounded);
   &:hover {
     color: var(--white);

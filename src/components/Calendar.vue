@@ -800,7 +800,7 @@ export default {
   user-select: none;
   pointer-events: auto;
   color: var(--gray-600);
-  border-width: var(--border-2);
+  border-width: 2px;
   border-radius: var(--rounded);
   border-color: transparent;
   &:hover {

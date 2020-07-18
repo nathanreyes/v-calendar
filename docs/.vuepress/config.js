@@ -139,18 +139,18 @@ module.exports = {
             },
           ],
         },
-        {
-          test: /tailwind-lib\.css$/,
-          use: [
-            {
-              loader: 'postcss-loader',
-              options: {
-                indent: 'postcss',
-                plugins: [tailwindcss('./tailwind.config.js')],
-              },
-            },
-          ],
-        },
+        // {
+        //   test: /tailwind-lib\.css$/,
+        //   use: [
+        //     {
+        //       loader: 'postcss-loader',
+        //       options: {
+        //         indent: 'postcss',
+        //         plugins: [tailwindcss('./tailwind.config.js')],
+        //       },
+        //     },
+        //   ],
+        // },
       ],
     },
     resolve: {

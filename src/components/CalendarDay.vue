@@ -178,9 +178,8 @@ export default {
       return [
         'vc-day-content vc-focusable',
         get(last(this.content), 'class') || '',
-        this.isDisabled ? this.theme.dayContentDisabled : '',
+        { 'is-disabled': this.isDisabled },
         this.theme.isDark ? 'vc-is-dark' : '',
-        this.theme.dayContent,
       ];
     },
     dayContentProps() {
@@ -464,7 +463,7 @@ export default {
 <style lang="postcss" scoped>
 .vc-day {
   position: relative;
-  min-height: var(--day-min-height);
+  min-height: 28px;
   width: 100%;
   height: 100%;
   z-index: 1;
@@ -513,20 +512,36 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: var(--day-content-width);
-  height: var(--day-content-height);
-  margin: var(--day-content-margin);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  width: 28px;
+  height: 28px;
+  margin: 1.6px auto;
+  border-radius: var(--rounded-full);
   user-select: none;
+  cursor: pointer;
   &:hover {
-    background-color: var(--day-content-bg-color-hover);
-    &.vc-is-dark {
-      background-color: var(--day-content-dark-bg-color-hover);
-    }
+    background-color: hsla(211, 25%, 84%, 0.3);
   }
   &:focus {
-    background-color: var(--day-content-bg-color-focus);
-    &.vc-is-dark {
-      background-color: var(--day-content-dark-bg-color-focus);
+    font-weight: var(--font-bold);
+    background-color: hsla(211, 25%, 84%, 0.4);
+  }
+  &.is-disabled {
+    color: var(--gray-400);
+  }
+}
+
+.vc-is-dark {
+  & .vc-day-content {
+    &:hover {
+      background-color: hsla(216, 15%, 52%, 0.3);
+    }
+    &:focus {
+      background-color: hsla(216, 15%, 52%, 0.4);
+    }
+    &.is-disabled {
+      color: var(--gray-600);
     }
   }
 }

@@ -2,16 +2,74 @@
   --white: #ffffff;
   --black: #000000;
 
-  &.vc-indigo {
-    --accent-100: #ebf4ff;
-    --accent-200: #c3dafe;
-    --accent-300: #a3bffa;
-    --accent-400: #7f9cf5;
-    --accent-500: #667eea;
-    --accent-600: #5a67d8;
-    --accent-700: #4c51bf;
-    --accent-800: #434190;
-    --accent-900: #3c366b;
+  --gray-100: #f7fafc;
+  --gray-200: #edf2f7;
+  --gray-300: #e2e8f0;
+  --gray-400: #cbd5e0;
+  --gray-500: #a0aec0;
+  --gray-600: #718096;
+  --gray-700: #4a5568;
+  --gray-800: #2d3748;
+  --gray-900: #1a202c;
+
+  &.vc-red {
+    --accent-100: #fff5f5;
+    --accent-200: #fed7d7;
+    --accent-300: #feb2b2;
+    --accent-400: #fc8181;
+    --accent-500: #f56565;
+    --accent-600: #e53e3e;
+    --accent-700: #c53030;
+    --accent-800: #9b2c2c;
+    --accent-900: #742a2a;
+  }
+
+  &.vc-orange {
+    --accent-100: #fffaf0;
+    --accent-200: #feebc8;
+    --accent-300: #fbd38d;
+    --accent-400: #f6ad55;
+    --accent-500: #ed8936;
+    --accent-600: #dd6b20;
+    --accent-700: #c05621;
+    --accent-800: #9c4221;
+    --accent-900: #7b341e;
+  }
+
+  &.vc-yellow {
+    --accent-100: #fffff0;
+    --accent-200: #fefcbf;
+    --accent-300: #faf089;
+    --accent-400: #f6e05e;
+    --accent-500: #ecc94b;
+    --accent-600: #d69e2e;
+    --accent-700: #b7791f;
+    --accent-800: #975a16;
+    --accent-900: #744210;
+  }
+
+  &.vc-green {
+    --accent-100: #f0fff4;
+    --accent-200: #c6f6d5;
+    --accent-300: #9ae6b4;
+    --accent-400: #68d391;
+    --accent-500: #48bb78;
+    --accent-600: #38a169;
+    --accent-700: #2f855a;
+    --accent-800: #276749;
+    --accent-900: #22543d;
+  }
+
+  &.vc-teal {
+    --accent-100: #e6fffa;
+    --accent-200: #b2f5ea;
+    --accent-300: #81e6d9;
+    --accent-400: #4fd1c5;
+    --accent-500: #38b2ac;
+    --accent-600: #319795;
+    --accent-700: #2c7a7b;
+    --accent-800: #285e61;
+    --accent-900: #234e52;
   }
 
   &.vc-blue {
@@ -26,47 +84,41 @@
     --accent-900: #2a4365;
   }
 
-  &.vc-red {
-    --accent-100: #ebf8ff;
-    --accent-200: #bee3f8;
-    --accent-300: #90cdf4;
-    --accent-400: #63b3ed;
-    --accent-500: #4299e1;
-    --accent-600: #3182ce;
-    --accent-700: #2b6cb0;
-    --accent-800: #2c5282;
-    --accent-900: #2a4365;
+  &.vc-indigo {
+    --accent-100: #ebf4ff;
+    --accent-200: #c3dafe;
+    --accent-300: #a3bffa;
+    --accent-400: #7f9cf5;
+    --accent-500: #667eea;
+    --accent-600: #5a67d8;
+    --accent-700: #4c51bf;
+    --accent-800: #434190;
+    --accent-900: #3c366b;
   }
 
-  --gray-100: #f7fafc;
-  --gray-200: #edf2f7;
-  --gray-300: #e2e8f0;
-  --gray-400: #cbd5e0;
-  --gray-500: #a0aec0;
-  --gray-600: #718096;
-  --gray-700: #4a5568;
-  --gray-800: #2d3748;
-  --gray-900: #1a202c;
+  &.vc-purple {
+    --accent-100: #faf5ff;
+    --accent-200: #e9d8fd;
+    --accent-300: #d6bcfa;
+    --accent-400: #b794f4;
+    --accent-500: #9f7aea;
+    --accent-600: #805ad5;
+    --accent-700: #6b46c1;
+    --accent-800: #553c9a;
+    --accent-900: #44337a;
+  }
 
-  /* --s-px: 1px;
-  --s-0: 0;
-  --s-1: 4px;
-  --s-2: 8px;
-  --s-3: 12px;
-  --s-4: 16px;
-  --s-5: 20px;
-  --s-6: 24px;
-  --s-8: 32px;
-  --s-10: 40px;
-  --s-12: 48px;
-  --s-16: 64px;
-  --s-20: 80px;
-  --s-24: 96px;
-  --s-32: 128px;
-  --s-40: 160px;
-  --s-48: 192px;
-  --s-56: 224px;
-  --s-64: 256px; */
+  &.vc-pink {
+    --accent-100: #fff5f7;
+    --accent-200: #fed7e2;
+    --accent-300: #fbb6ce;
+    --accent-400: #f687b3;
+    --accent-500: #ed64a6;
+    --accent-600: #d53f8c;
+    --accent-700: #b83280;
+    --accent-800: #97266d;
+    --accent-900: #702459;
+  }
 
   --font-normal: 400;
   --font-medium: 500;
@@ -79,8 +131,6 @@
 
   --leading-snug: 1.375;
 
-  --border-2: 2px;
-
   --rounded: 0.25rem;
   --rounded-lg: 0.5rem;
   --rounded-full: 9999px;
@@ -92,17 +142,7 @@
   --slide-duration: 0.15s;
   --slide-timing: ease;
 
-  --nav-container-width: 170px;
-
-  --day-min-height: 28px;
-  --day-content-width: 28px;
-  --day-content-height: 28px;
-  --day-content-margin: 1.6px auto;
   --day-content-transition-time: 0.13s ease-in;
-  --day-content-bg-color-hover: hsla(211, 25%, 84%, 0.3);
-  --day-content-dark-bg-color-hover: hsla(216, 15%, 52%, 0.3);
-  --day-content-bg-color-focus: hsla(211, 25%, 84%, 0.4);
-  --day-content-dark-bg-color-focus: hsla(216, 15%, 52%, 0.4);
 
   --highlight-height: 28px;
 

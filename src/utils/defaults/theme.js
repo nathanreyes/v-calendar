@@ -2,12 +2,6 @@ export default {
   color: 'blue',
   isDark: false,
   dayNotInMonth: 'vc-opacity-0 vc-pointer-events-none',
-  dayContent:
-    'vc-font-medium vc-text-sm vc-cursor-pointer focus:vc-font-bold vc-rounded-full',
-  dayContentDisabled: {
-    light: 'vc-text-gray-400',
-    dark: 'vc-text-gray-600',
-  },
   highlightBaseFillMode: 'light',
   highlightStartEndFillMode: 'solid',
   highlightStartEndClass: 'vc-rounded-full',
