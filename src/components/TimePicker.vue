@@ -203,7 +203,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .vc-dt-container {
   display: flex;
   align-items: center;
