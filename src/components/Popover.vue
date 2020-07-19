@@ -354,6 +354,7 @@ export default {
   position: relative;
   outline: none;
   z-index: 10;
+  box-shadow: var(--shadow-lg);
   &.direction-bottom {
     margin-top: var(--popover-vertical-content-offset);
   }
