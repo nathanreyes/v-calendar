@@ -376,7 +376,7 @@ export default {
   height: 12px;
   border-top: inherit;
   border-left: inherit;
-  background: inherit;
+  background-color: inherit;
   z-index: -1;
   &.direction-bottom {
     top: 0;

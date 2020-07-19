@@ -775,12 +775,15 @@ export default {
   border-radius: var(--rounded-lg);
   position: relative;
   width: max-content;
-  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
   &.is-expanded {
     min-width: 100%;
+  }
+  /* Hides double border within popovers */
+  & .vc-container {
+    border: none;
   }
 }
 

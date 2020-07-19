@@ -199,7 +199,6 @@ export default {
 .vc-dt-container {
   display: flex;
   align-items: center;
-  background: var(--white);
   padding: 0 8px 8px 8px;
   border-top: 1px solid var(--gray-300);
   &.vc-invalid {
@@ -286,7 +285,6 @@ export default {
 .vc-is-dark {
   & .vc-dt-container {
     color: var(--gray-100);
-    background: var(--gray-900);
     border-top: 1px solid var(--gray-700);
   }
   & .vc-dt-icon {
