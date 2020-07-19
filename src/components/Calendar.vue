@@ -825,15 +825,15 @@ export default {
   background-color: var(--gray-800);
   border: 1px solid;
   border-color: var(--gray-700);
-  border-radius: var(--rounded-lg);
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-  padding: 8px;
+  border-radius: var(--rounded);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  padding: 4px 8px;
   box-shadow: var(--shadow);
 }
 
 .vc-day-popover-header {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--gray-300);
   font-weight: var(--font-semibold);
   text-align: center;
