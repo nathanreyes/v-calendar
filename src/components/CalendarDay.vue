@@ -16,7 +16,7 @@ export default {
         {
           class: 'vc-highlights vc-day-layer',
         },
-        this.backgrounds.map(({ key, wrapperClass, class: bgClass }) =>
+        this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) =>
           h(
             'div',
             {
@@ -26,6 +26,7 @@ export default {
             [
               h('div', {
                 class: bgClass,
+                style,
               }),
             ],
           ),
@@ -45,6 +46,7 @@ export default {
         'span',
         {
           class: this.dayContentClass,
+          style: this.dayContentStyle,
           attrs: { ...this.dayContentProps },
           on: this.dayContentEvents,
           ref: 'content',
@@ -66,10 +68,11 @@ export default {
             {
               class: 'vc-dots',
             },
-            this.dots.map(({ key, class: bgClass }) =>
+            this.dots.map(({ key, class: bgClass, style }) =>
               h('span', {
-                class: bgClass,
                 key,
+                class: bgClass,
+                style,
               }),
             ),
           ),
@@ -90,10 +93,11 @@ export default {
             {
               class: 'vc-bars',
             },
-            this.bars.map(({ key, class: bgClass }) =>
+            this.bars.map(({ key, class: bgClass, style }) =>
               h('span', {
-                class: bgClass,
                 key,
+                class: bgClass,
+                style,
               }),
             ),
           ),
@@ -170,10 +174,12 @@ export default {
     dayContentClass() {
       return [
         'vc-day-content vc-focusable',
-        get(last(this.content), 'class') || '',
         { 'is-disabled': this.isDisabled },
-        this.theme.isDark ? 'vc-is-dark' : '',
+        get(last(this.content), 'class') || '',
       ];
+    },
+    dayContentStyle() {
+      return get(last(this.content), 'style');
     },
     dayContentProps() {
       let tabindex;
@@ -291,9 +297,9 @@ export default {
           onStartOrEnd,
         };
         this.processHighlight(attr, dateInfo, glyphs);
-        this.processContent(attr, dateInfo, glyphs);
-        this.processDot(attr, dateInfo, glyphs);
-        this.processBar(attr, dateInfo, glyphs);
+        this.processNonHighlight(attr, 'content', dateInfo, glyphs.content);
+        this.processNonHighlight(attr, 'dot', dateInfo, glyphs.dots);
+        this.processNonHighlight(attr, 'bar', dateInfo, glyphs.bars);
         this.processPopover(attr, glyphs);
       });
       this.glyphs = glyphs;
@@ -309,125 +315,98 @@ export default {
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${start.class}`,
+          class: ['vc-highlight', start.class],
+          style: start.style,
         });
         content.push({
           key: `${key}-content`,
           class: start.contentClass,
+          style: start.contentStyle,
         });
       } else if (onStartAndEnd) {
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${start.class}`,
+          class: ['vc-highlight', start.class],
+          style: start.style,
         });
         content.push({
           key: `${key}-content`,
           class: start.contentClass,
+          style: start.contentStyle,
         });
       } else if (onStart) {
         backgrounds.push({
           key: `${key}-base`,
           wrapperClass: 'vc-day-layer vc-day-box-right-center',
-          class: `vc-highlight vc-highlight-base-start ${base.class}`,
+          class: ['vc-highlight vc-highlight-base-start', base.class],
+          style: base.style,
         });
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${start.class}`,
+          class: ['vc-highlight', start.class],
+          style: start.style,
         });
         content.push({
           key: `${key}-content`,
           class: start.contentClass,
+          style: start.contentStyle,
         });
       } else if (onEnd) {
         backgrounds.push({
           key: `${key}-base`,
           wrapperClass: 'vc-day-layer vc-day-box-left-center',
-          class: `vc-highlight vc-highlight-base-end ${base.class}`,
+          class: ['vc-highlight vc-highlight-base-end', base.class],
+          style: base.style,
         });
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${end.class}`,
+          class: ['vc-highlight', end.class],
+          style: end.style,
         });
         content.push({
           key: `${key}-content`,
           class: end.contentClass,
+          style: end.contentStyle,
         });
       } else {
         backgrounds.push({
           key: `${key}-middle`,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight vc-highlight-base-middle ${base.class}`,
+          class: ['vc-highlight vc-highlight-base-middle', base.class],
+          style: base.style,
         });
         content.push({
           key: `${key}-content`,
           class: base.contentClass,
+          style: base.contentStyle,
         });
       }
     },
-    processContent(
-      { key, content },
-      { isDate, onStart, onEnd },
-      { content: contents },
-    ) {
-      if (!content) return;
-      const { base, start, end } = content;
+    processNonHighlight(attr, itemKey, { isDate, onStart, onEnd }, list) {
+      if (!attr[itemKey]) return;
+      const { key } = attr;
+      const className = `vc-${itemKey}`;
+      const { base, start, end } = attr[itemKey];
       if (isDate || onStart) {
-        contents.push({
+        list.push({
           key,
-          class: start.class,
+          class: [className, start.class],
+          style: start.style,
         });
       } else if (onEnd) {
-        contents.push({
+        list.push({
           key,
-          class: end.class,
+          class: [className, end.class],
+          style: end.style,
         });
       } else {
-        contents.push({
+        list.push({
           key,
-          class: base.class,
-        });
-      }
-    },
-    processDot({ key, dot }, { isDate, onStart, onEnd }, { dots }) {
-      if (!dot) return;
-      const { base, start, end } = dot;
-      if (isDate || onStart) {
-        dots.push({
-          key,
-          class: `vc-dot ${start.class}`,
-        });
-      } else if (onEnd) {
-        dots.push({
-          key,
-          class: `vc-dot ${end.class}`,
-        });
-      } else {
-        dots.push({
-          key,
-          class: `vc-dot ${base.class}`,
-        });
-      }
-    },
-    processBar({ key, bar }, { isDate, onStart, onEnd }, { bars }) {
-      if (!bar) return;
-      const { base, start, end } = bar;
-      if (isDate || onStart) {
-        bars.push({
-          key,
-          class: `vc-bar ${start.class}`,
-        });
-      } else if (onEnd) {
-        bars.push({
-          key,
-          class: `vc-bar ${end.class}`,
-        });
-      } else {
-        bars.push({
-          key,
-          class: `vc-bar ${base.class}`,
+          class: [className, base.class],
+          style: base.style,
         });
       }
     },
@@ -580,7 +559,7 @@ export default {
 .vc-dot {
   width: 5px;
   height: 5px;
-  border-radius: var(--rounded-full);
+  border-radius: 50%;
   transition: all var(--day-content-transition-time);
   &:not(:last-child) {
     margin-right: 3px;

@@ -16,11 +16,6 @@ import defConfig from './defaults/theme';
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'color', 'fillMode'];
 
-function concatClass(obj, prop, className) {
-  if (!obj || !prop || !className) return;
-  obj[prop] = `${obj[prop] ? `${obj[prop]} ` : ''}${className}`;
-}
-
 export default class Theme {
   constructor(config) {
     this._config = defaults(config, defConfig);
@@ -148,101 +143,110 @@ export default class Theme {
     return root;
   }
 
-  getHighlightBgClass(fillMode, config = this._config) {
-    switch (fillMode) {
-      case 'none':
-        return this.getConfig('bgLow', config);
-      case 'light':
-        return this.getConfig('bgAccentLow', config);
-      case 'solid':
-        return this.getConfig('bgAccentHigh', config);
-      default:
-        return '';
-    }
-  }
-
-  getHighlightContentClass(fillMode, config = this._config) {
-    switch (fillMode) {
-      case 'none':
-        return this.getConfig('contentAccent', config);
-      case 'light':
-        return this.getConfig('contentAccent', config);
-      case 'solid':
-        return this.getConfig('contentAccentContrast', config);
-      default:
-        return '';
-    }
-  }
-
   normalizeHighlight(config) {
     const highlight = this.normalizeAttr({
       config,
       type: 'highlight',
     });
     toPairs(highlight).forEach(([_, targetConfig]) => {
-      const { fillMode } = defaults(targetConfig, {
+      const c = defaults(targetConfig, {
         isDark: this.isDark,
         color: this.color,
       });
-      concatClass(
-        targetConfig,
-        'class',
-        this.getHighlightBgClass(fillMode, targetConfig),
-      );
-      concatClass(
-        targetConfig,
-        'contentClass',
-        this.getHighlightContentClass(fillMode, targetConfig),
-      );
+      if (!c.class) {
+        targetConfig.style = this.getHighlightBgStyle(c);
+      }
+      if (!c.contentClass) {
+        targetConfig.contentStyle = this.getHighlightContentStyle(c);
+      }
     });
     return highlight;
   }
 
+  getHighlightBgStyle({ fillMode, color, isDark }) {
+    switch (fillMode) {
+      case 'none':
+        return {
+          backgroundColor: isDark ? 'var(--gray-900)' : 'var(--white)',
+          border: '2px solid',
+          borderColor: isDark ? `var(--${color}-200)` : `var(--${color}-700)`,
+          borderRadius: 'var(--rounded-full)',
+        };
+      case 'light':
+        return {
+          backgroundColor: isDark
+            ? `var(--${color}-800`
+            : `var(--${color}-200)`,
+          opacity: isDark ? 0.75 : 1,
+          borderRadius: 'var(--rounded-full)',
+        };
+      case 'solid':
+        return {
+          backgroundColor: isDark
+            ? `var(--${color}-500)`
+            : `var(--${color}-600)`,
+          borderRadius: 'var(--rounded-full)',
+        };
+      default:
+        return null;
+    }
+  }
+
+  getHighlightContentStyle({ fillMode, color, isDark }) {
+    switch (fillMode) {
+      case 'none':
+        return {
+          fontWeight: 'var(--font-bold)',
+          color: isDark ? `var(--${color}-100)` : `var(--${color}-900)`,
+        };
+      case 'light':
+        return {
+          fontWeight: 'var(--font-bold)',
+          color: isDark ? `var(--${color}-100)` : `var(--${color}-900)`,
+        };
+      case 'solid':
+        return {
+          fontWeight: 'var(--font-bold)',
+          color: 'var(--white)',
+        };
+      default:
+        return '';
+    }
+  }
+
+  bgAccentHigh({ color, isDark }) {
+    return {
+      backgroundColor: isDark ? `var(--${color}-500)` : `var(--${color}-600)`,
+    };
+  }
+
+  contentAccent({ color, isDark }) {
+    return {
+      fontWeight: 'var(--font-bold)',
+      color: isDark ? `var(--${color}-100)` : `var(--${color}-900)`,
+    };
+  }
+
   normalizeDot(config) {
-    const dot = this.normalizeAttr({
-      config,
-      type: 'dot',
-    });
-    toPairs(dot).forEach(([_, targetConfig]) => {
-      defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      concatClass(
-        targetConfig,
-        'class',
-        this.getConfig('bgAccentHigh', targetConfig),
-      );
-    });
-    return dot;
+    return this.normalizeNonHighlight('dot', config, this.bgAccentHigh);
   }
 
   normalizeBar(config) {
-    const bar = this.normalizeAttr({
-      config,
-      type: 'bar',
-    });
-    toPairs(bar).forEach(([_, targetConfig]) => {
-      defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      concatClass(
-        targetConfig,
-        'class',
-        this.getConfig('bgAccentHigh', targetConfig),
-      );
-    });
-    return bar;
+    return this.normalizeNonHighlight('bar', config, this.bgAccentHigh);
   }
 
   normalizeContent(config) {
-    const content = this.normalizeAttr({
-      config,
-      type: 'content',
-    });
-    toPairs(content).forEach(([_, targetConfig]) => {
+    return this.normalizeNonHighlight('content', config, this.contentAccent);
+  }
+
+  normalizeNonHighlight(type, config, styleFn) {
+    const attr = this.normalizeAttr({ type, config });
+    toPairs(attr).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      concatClass(
-        targetConfig,
-        'class',
-        this.getConfig('contentAccent', targetConfig),
-      );
+      if (!targetConfig.class) {
+        targetConfig.style = styleFn(targetConfig);
+      }
     });
-    return content;
+    return attr;
   }
 }
