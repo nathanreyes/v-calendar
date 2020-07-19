@@ -29,27 +29,9 @@
         </div>
       </div>
       <div class="vc-time">
-        <div>
-          <select class="vc-select" v-model="hours">
-            <option
-              v-for="{ value, label } in hourOptions"
-              :key="value"
-              :value="value"
-            >
-              {{ label }}
-            </option>
-          </select>
-          <span>:</span>
-          <select class="vc-select" v-model="minutes">
-            <option
-              v-for="{ value, label } in minuteOptions"
-              :key="value"
-              :value="value"
-            >
-              {{ label }}
-            </option>
-          </select>
-        </div>
+        <time-select :options="hourOptions" />
+        <span style="margin: 0 4px">:</span>
+        <time-select :options="minuteOptions" />
         <div class="vc-am-pm">
           <button :class="{ active: isAM }" @click="isAM = true">
             AM
@@ -64,10 +46,12 @@
 </template>
 
 <script>
+import TimeSelect from './TimeSelect';
 import { pad } from '../utils/helpers';
 
 export default {
   name: 'TimePicker',
+  components: { TimeSelect },
   props: {
     value: { type: Object, required: true },
     locale: { type: Object, required: true },
@@ -253,45 +237,30 @@ export default {
 
 .vc-time {
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-.vc-select {
-  background: var(--gray-100);
-  color: var(--gray-800);
-  font-weight: var(--font-medium);
-  border: 1px solid var(--gray-300);
-  padding: 4px 0 4px 4px;
-  border-radius: var(--rounded);
-  height: 30px;
-  cursor: pointer;
-  &:focus {
-    border-color: var(--accent-400);
-  }
 }
 
 .vc-am-pm {
   display: flex;
   align-items: center;
-  background: var(--gray-100);
+  background: var(--gray-200);
   color: var(--gray-800);
   margin-left: 8px;
   padding: 4px;
-  border: 1px solid var(--gray-300);
   border-radius: var(--rounded);
   height: 30px;
   & button {
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);
     padding: 0 4px;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     border-radius: var(--rounded);
+    line-height: var(--leading-snug);
     &:hover {
       color: var(--gray-600);
     }
     &:focus {
-      border: 1px solid var(--accent-400);
+      border-color: var(--accent-400);
     }
     &.active {
       background: var(--accent-600);
@@ -300,7 +269,7 @@ export default {
         background: var(--accent-500);
       }
       &:focus {
-        background: var(--accent-600);
+        border-color: var(--accent-400);
       }
     }
   }
@@ -327,11 +296,9 @@ export default {
   & .vc-year {
     color: var(--gray-500);
   }
-  & .vc-select,
   & .vc-am-pm {
     background: var(--gray-700);
     color: var(--gray-100);
-    border: 1px solid var(--gray-600);
     &:focus {
       border-color: var(--accent-500);
     }
@@ -340,7 +307,7 @@ export default {
         color: var(--gray-400);
       }
       &:focus {
-        border: 1px solid var(--accent-500);
+        border-color: var(--accent-500);
       }
       &.active {
         background: var(--accent-500);
