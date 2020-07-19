@@ -300,7 +300,7 @@ export default {
   border-radius: var(--rounded);
   &:hover {
     color: var(--white);
-    background: var(--gray-900);
+    background-color: var(--gray-900);
     box-shadow: var(--shadow-inner);
   }
   &:focus {
@@ -327,7 +327,7 @@ export default {
   }
 }
 
-.is-dark {
+.vc-is-dark {
   & .vc-nav-title {
     color: var(--gray-900);
     &:hover {
@@ -349,6 +349,7 @@ export default {
     &:hover {
       color: var(--gray-900);
       background-color: var(--gray-200);
+      box-shadow: none;
     }
     &:focus {
       border-color: var(--accent-400);
