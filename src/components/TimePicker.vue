@@ -200,7 +200,7 @@ export default {
   display: flex;
   align-items: center;
   background: var(--white);
-  padding: 0 12px 8px 12px;
+  padding: 0 8px 8px 8px;
   border-top: 1px solid var(--gray-300);
   &.vc-invalid {
     pointer-events: none;
