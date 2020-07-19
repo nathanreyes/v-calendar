@@ -1,10 +1,10 @@
 <template>
   <div class="vc-select">
-    <select>
+    <select v-bind="$attrs" v-on="$listeners">
       <option
         v-for="option in options"
-        :value="option.value"
         :key="option.value"
+        :value="option.value"
         >{{ option.label }}</option
       >
     </select>
@@ -20,6 +20,7 @@
 
 <script>
 export default {
+  inheritAttrs: false,
   props: {
     options: Array,
   },
