@@ -254,18 +254,6 @@ export default {
   padding: 5px 6px 7px 6px;
 }
 
-::v-deep .vc-nav-popover-container {
-  color: var(--white);
-  font-size: var(--text-sm);
-  font-weight: var(-font-semibold);
-  background-color: var(--gray-800);
-  border: 1px solid;
-  border-color: var(--gray-700);
-  border-radius: var(--rounded-lg);
-  padding: 4px;
-  box-shadow: var(--shadow);
-}
-
 .vc-is-dark {
   & .vc-header {
     color: var(--gray-200);
@@ -276,10 +264,24 @@ export default {
   & .vc-weekday {
     color: var(--accent-200);
   }
-  & .vc-nav-popover-container {
-    color: var(--gray-800);
-    background-color: var(--white);
-    border-color: var(--gray-100);
-  }
+}
+</style>
+
+<style>
+.vc-nav-popover-container {
+  color: var(--white);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  background-color: var(--gray-800);
+  border: 1px solid;
+  border-color: var(--gray-700);
+  border-radius: var(--rounded-lg);
+  padding: 4px;
+  box-shadow: var(--shadow);
+}
+.vc-is-dark .vc-nav-popover-container {
+  color: var(--gray-800);
+  background-color: var(--white);
+  border-color: var(--gray-100);
 }
 </style>
