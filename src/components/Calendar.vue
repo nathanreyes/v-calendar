@@ -804,8 +804,7 @@ export default {
   border-radius: var(--rounded);
   border-color: transparent;
   &:hover {
-    opacity: 0.5;
-    background: var(--gray-300);
+    background: var(--gray-200);
   }
   &:focus {
     border-color: var(--gray-300);
@@ -861,6 +860,9 @@ export default {
   }
   & .vc-arrow {
     color: var(--white);
+    &:hover {
+      background: var(--gray-800);
+    }
     &:focus {
       border-color: var(--gray-700);
     }
