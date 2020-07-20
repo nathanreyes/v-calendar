@@ -5,7 +5,6 @@ import { defaultsDeep, mapValues } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';
-import theme from './theme';
 import locales from './locales';
 
 const pluginDefaults = {
@@ -16,7 +15,6 @@ const pluginDefaults = {
   touch,
   masks,
   screens,
-  theme,
   locales,
   datePicker: {
     updateOnInput: true,

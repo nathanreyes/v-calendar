@@ -4,30 +4,25 @@ import {
   isUndefined,
   has,
   hasAny,
-  get,
   set,
   toPairs,
   defaults,
   defaultsDeep,
   upperFirst,
 } from './_';
-import defConfig from './defaults/theme';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'color', 'fillMode'];
+const defConfig = {
+  color: 'blue',
+  isDark: false,
+  highlightBaseFillMode: 'light',
+  highlightStartEndFillMode: 'solid',
+};
 
 export default class Theme {
   constructor(config) {
-    this._config = defaults(config, defConfig);
-    // Make properties of config appear as properties of theme
-    toPairs(this._config).forEach(([prop]) => {
-      Object.defineProperty(this, prop, {
-        enumerable: true,
-        get() {
-          return this.getConfig(prop, {});
-        },
-      });
-    });
+    Object.assign(this, defConfig, config);
     // Build and cache normalized attributes
     this.buildNormalizedAttrs();
   }
@@ -62,21 +57,6 @@ export default class Theme {
       });
       config.attr = attr;
     });
-  }
-
-  getConfig(
-    prop,
-    { color = this._config.color, isDark = this._config.isDark },
-  ) {
-    if (!has(this._config, prop)) return undefined;
-    let propVal = get(this._config, prop);
-    if (isObject(propVal) && hasAny(propVal, ['light', 'dark'])) {
-      propVal = isDark ? propVal.dark : propVal.light;
-    }
-    if (isString(propVal)) {
-      return propVal.replace(/{color}/g, color);
-    }
-    return propVal;
   }
 
   mergeTargets(to, from) {

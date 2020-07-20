@@ -1,7 +1,7 @@
 import { addDays } from 'date-fns';
 import Theme from '../theme';
 import Locale from '../locale';
-import { isObject, isArray, isDate, defaultsDeep } from '../_';
+import { isObject, isArray, isDate } from '../_';
 import { defaultsMixin } from '../defaults';
 import { setupScreens } from '../screens';
 import Attribute from '../attribute';
@@ -11,7 +11,6 @@ export const rootMixin = {
   props: {
     color: String,
     isDark: Boolean,
-    theme: Object,
     firstDayOfWeek: Number,
     masks: Object,
     locale: [String, Object],
@@ -25,13 +24,11 @@ export const rootMixin = {
     $theme() {
       // Return the theme prop if it is an instance of the Theme class
       if (this.theme instanceof Theme) return this.theme;
-      // Merge the default theme with the provided theme
-      const config = defaultsDeep(this.theme, this.$defaults.theme);
-      // Merge in the color and isDark props if they were specifically provided
-      config.color = this.passedProp('color', config.color);
-      config.isDark = this.passedProp('isDark', config.isDark);
       // Create the theme
-      return new Theme(config);
+      return new Theme({
+        color: this.passedProp('color', 'blue'),
+        isDark: this.passedProp('isDark', false),
+      });
     },
     $locale() {
       // Return the locale prop if it is an instance of the Locale class
