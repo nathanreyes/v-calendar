@@ -439,7 +439,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 1;
-  &.is-not-in-month {
+  &.is-not-in-month * {
     opacity: 0;
     pointer-events: none;
   }
