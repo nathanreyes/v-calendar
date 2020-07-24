@@ -1,62 +1,44 @@
 import {
   isObject,
   isString,
-  isUndefined,
   has,
   hasAny,
   set,
   toPairs,
   defaults,
   defaultsDeep,
-  upperFirst,
 } from './_';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
-const displayProps = ['class', 'color', 'fillMode'];
+const displayProps = ['class', 'style', 'color', 'fillMode'];
 const defConfig = {
   color: 'blue',
   isDark: false,
-  highlightBaseFillMode: 'light',
-  highlightStartEndFillMode: 'solid',
+  highlight: {
+    base: { fillMode: 'light' },
+    start: { fillMode: 'solid' },
+    end: { fillMode: 'light' },
+  },
+  dot: {
+    base: { fillMode: 'solid' },
+    start: { fillMode: 'solid' },
+    end: { fillMode: 'solid' },
+  },
+  bar: {
+    base: { fillMode: 'solid' },
+    start: { fillMode: 'solid' },
+    end: { fillMode: 'solid' },
+  },
+  content: {
+    base: {},
+    start: {},
+    end: {},
+  },
 };
 
 export default class Theme {
   constructor(config) {
     Object.assign(this, defConfig, config);
-    // Build and cache normalized attributes
-    this.buildNormalizedAttrs();
-  }
-
-  buildNormalizedAttrs() {
-    this.normalizedAttrs = {
-      highlight: {
-        opts: ['fillMode', 'class', 'contentClass'],
-      },
-      dot: { opts: ['class'] },
-      bar: { opts: ['class'] },
-      content: { opts: ['class'] },
-    };
-    toPairs(this.normalizedAttrs).forEach(([type, config]) => {
-      const attr = { base: {}, start: {}, end: {} };
-      config.opts.forEach(opt => {
-        const prefix = type;
-        const suffix = upperFirst(opt);
-        const base = this[`${prefix}Base${suffix}`];
-        const startEnd = this[`${prefix}StartEnd${suffix}`] || base;
-        const start = this[`${prefix}Start${suffix}`] || startEnd;
-        const end = this[`${prefix}End${suffix}`] || start;
-        if (!isUndefined(base)) {
-          attr.base[opt] = base;
-        }
-        if (!isUndefined(start)) {
-          attr.start[opt] = start;
-        }
-        if (!isUndefined(end)) {
-          attr.end[opt] = end;
-        }
-      });
-      config.attr = attr;
-    });
   }
 
   mergeTargets(to, from) {
@@ -74,7 +56,7 @@ export default class Theme {
     let rootColor = this.color;
     let root = {};
     // Get the normalized root config
-    const normAttr = this.normalizedAttrs[type].attr;
+    const normAttr = this[type];
     if (config === true || isString(config)) {
       // Assign default color for booleans or strings
       rootColor = isString(config) ? config : rootColor;
@@ -133,12 +115,8 @@ export default class Theme {
         isDark: this.isDark,
         color: this.color,
       });
-      if (!c.class) {
-        targetConfig.style = this.getHighlightBgStyle(c);
-      }
-      if (!c.contentClass) {
-        targetConfig.contentStyle = this.getHighlightContentStyle(c);
-      }
+      targetConfig.style = this.getHighlightBgStyle(c);
+      targetConfig.contentStyle = this.getHighlightContentStyle(c);
     });
     return highlight;
   }
@@ -223,9 +201,10 @@ export default class Theme {
     const attr = this.normalizeAttr({ type, config });
     toPairs(attr).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
-      if (!targetConfig.class) {
-        targetConfig.style = styleFn(targetConfig);
-      }
+      targetConfig.style = {
+        ...styleFn(targetConfig),
+        ...targetConfig.style,
+      };
     });
     return attr;
   }
