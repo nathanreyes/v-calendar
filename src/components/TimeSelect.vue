@@ -46,7 +46,11 @@ export default {
     border-radius: var(--rounded);
     line-height: var(--leading-tight);
     text-indent: 0px;
+    cursor: pointer;
     -moz-padding-start: 3px;
+    &:hover {
+      color: var(--gray-600);
+    }
     &:focus {
       outline: 0;
       border-color: var(--accent-400);
@@ -75,6 +79,9 @@ export default {
     background: var(--gray-700);
     color: var(--gray-100);
     border-color: var(--gray-700);
+    &:hover {
+      color: var(--gray-400);
+    }
     &:focus {
       border-color: var(--accent-500);
       background-color: var(--gray-800);
