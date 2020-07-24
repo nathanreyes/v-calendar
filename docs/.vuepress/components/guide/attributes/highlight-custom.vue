@@ -1,35 +1,39 @@
 <template>
   <div class="example">
-    <v-calendar :attributes="attrs"/>
+    <v-calendar :attributes="attrs" />
   </div>
 </template>
 
 <script>
-const { pageForThisMonth } = require('@/utils/helpers');
-const { month, year } = pageForThisMonth();
-
 export default {
   data() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
     return {
       attrs: [
         {
           key: 'today',
           highlight: {
             color: 'purple',
-            fillMode: 'light',
+            fillMode: 'solid',
             contentClass: 'italic',
           },
-          dates: new Date(year, month - 1, 12),
+          dates: new Date(year, month, 12),
         },
         {
-          highlight: 'purple',
-          fillMode: 'solid',
-          dates: new Date(year, month - 1, 13),
+          highlight: {
+            color: 'purple',
+            fillMode: 'light',
+          },
+          dates: new Date(year, month, 13),
         },
         {
-          highlight: 'purple',
-          fillMode: 'none',
-          dates: new Date(year, month - 1, 14),
+          highlight: {
+            color: 'purple',
+            fillMode: 'none',
+          },
+          dates: new Date(year, month, 14),
         },
       ],
     };

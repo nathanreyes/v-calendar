@@ -1,29 +1,24 @@
 <template>
   <div class="example">
-    <v-calendar :from-page="{ month: 1, year: 2019}" :attributes="attrs"/>
+    <v-calendar :from-page="{ month: 1, year: 2019 }" :attributes="attrs" />
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    base: { type: Object, default: () => ({ fillMode: 'light' }) },
-    start: { type: Object, default: () => ({ fillMode: 'solid' }) },
-    end: { type: Object, default: () => ({ fillMode: 'solid' }) },
-  },
-  computed: {
-    attrs() {
-      return [
+  data() {
+    return {
+      attrs: [
         {
           highlight: {
-            base: this.base,
-            start: this.start,
-            end: this.end,
+            start: { fillMode: 'none' },
+            base: { fillMode: 'light' },
+            end: { fillMode: 'none' },
           },
           dates: { start: new Date(2019, 0, 14), end: new Date(2019, 0, 18) },
         },
-      ];
-    },
+      ],
+    };
   },
 };
 </script>

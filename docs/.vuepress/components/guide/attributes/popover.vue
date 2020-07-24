@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-calendar :attributes="attrs"/>
+    <v-calendar :attributes="attrs" />
   </div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
       attrs: [
         {
           key: 'today',
-          highlight: true,
+          highlight: 'red',
           popover: {
             label: "You just hovered over today's date!",
           },
