@@ -19,6 +19,7 @@ export const rootMixin = {
     maxDate: null,
     disabledDates: null,
     availableDates: null,
+    theme: null,
   },
   computed: {
     $theme() {
