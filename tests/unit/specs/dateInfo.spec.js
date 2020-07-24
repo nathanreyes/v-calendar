@@ -18,8 +18,7 @@ describe('addDays', () => {
 });
 
 describe('DateInfo simple date', () => {
-  const locale = new Locale();
-  const date = new DateInfo(new Date(2018, 0, 1), locale);
+  const date = new DateInfo(new Date(2018, 0, 1));
   it('should include simple date', () => {
     expect(date.includesDate(new Date(2018, 0, 1))).toEqual(true);
   });
