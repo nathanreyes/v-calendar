@@ -97,7 +97,7 @@ export default class Theme {
       };
       targetConfig.contentStyle = {
         ...this.getHighlightContentStyle(c),
-        ...targetConfig.style,
+        ...targetConfig.contentStyle,
       };
     });
     return highlight;
@@ -115,7 +115,7 @@ export default class Theme {
       case 'light':
         return {
           backgroundColor: isDark
-            ? `var(--${color}-800`
+            ? `var(--${color}-800)`
             : `var(--${color}-200)`,
           opacity: isDark ? 0.75 : 1,
           borderRadius: 'var(--rounded-full)',
