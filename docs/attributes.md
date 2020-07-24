@@ -122,14 +122,6 @@ export default {
 
 ## Attribute Types
 
-The following attribute types are currently supported.
-
-* Highlights (Highlighted Background Regions)
-* Dot Indicators
-* Bar Indicators
-* Content Classes
-* Popovers
-
 Attributes are defined as an array of objects (each object is a separate attribute). Any one or more of these types may be included in a single attribute object.
 
 Furthermore, a single attribute may be displayed for single dates, date ranges and even complex date patterns. Some examples of complex patterns include:
@@ -651,13 +643,13 @@ Now, we just need to display the attributes for the day as well. We can do so by
     <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
-        <ul>
-          <li
-            v-for="{key, customData} in attributes"
-            :key="key">
-            {{ customData.description }}
-          </li>
-        </ul>
+    <ul>
+      <li
+        v-for="{key, customData} in attributes"
+        :key="key">
+        {{ customData.description }}
+      </li>
+    </ul>
   </div>
 </v-calendar>
 ```
