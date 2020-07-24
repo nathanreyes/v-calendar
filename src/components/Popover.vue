@@ -14,7 +14,6 @@ export default {
           'vc-popover-content-wrapper',
           {
             'is-interactive': this.isInteractive,
-            'is-entering': this.isEntering,
           },
         ],
         ref: 'popover',
@@ -82,7 +81,6 @@ export default {
       showDelay: 10,
       hideDelay: 110,
       autoHide: false,
-      isEntering: false,
       popperEl: null,
     };
   },
@@ -305,11 +303,9 @@ export default {
       }
     },
     beforeEnter(e) {
-      this.isEntering = true;
       this.$emit('beforeShow', e);
     },
     afterEnter(e) {
-      this.isEntering = false;
       this.$emit('afterShow', e);
     },
     beforeLeave(e) {
@@ -344,9 +340,6 @@ export default {
   z-index: 10;
   &:not(.is-interactive) {
     pointer-events: none;
-  }
-  &:not(.is-entering) {
-    transition: transform 0.1s ease-in-out;
   }
 }
 
