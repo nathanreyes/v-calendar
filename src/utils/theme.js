@@ -41,16 +41,6 @@ export default class Theme {
     Object.assign(this, defConfig, config);
   }
 
-  mergeTargets(to, from) {
-    const config = {};
-    defaultsDeep(config, to, from);
-    // Combine target classes together
-    if (to.class && from.class && !to.class.includes(from.class)) {
-      config.class = `${to.class} ${from.class}`;
-    }
-    return config;
-  }
-
   // Normalizes attribute config to the structure defined by the properties
   normalizeAttr({ config, type }) {
     let rootColor = this.color;
@@ -92,11 +82,6 @@ export default class Theme {
           root[targetType] = {};
         }
       }
-      // Fill in missing options
-      root[targetType] = this.mergeTargets(
-        root[targetType],
-        normAttr[targetType],
-      );
       // Set the theme color if it is missing
       if (!has(root, `${targetType}.color`)) {
         set(root, `${targetType}.color`, targetColor);
@@ -115,8 +100,14 @@ export default class Theme {
         isDark: this.isDark,
         color: this.color,
       });
-      targetConfig.style = this.getHighlightBgStyle(c);
-      targetConfig.contentStyle = this.getHighlightContentStyle(c);
+      targetConfig.style = {
+        ...this.getHighlightBgStyle(c),
+        ...targetConfig.style,
+      };
+      targetConfig.contentStyle = {
+        ...this.getHighlightContentStyle(c),
+        ...targetConfig.style,
+      };
     });
     return highlight;
   }
