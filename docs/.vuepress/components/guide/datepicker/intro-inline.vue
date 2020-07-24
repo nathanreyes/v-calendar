@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="dates" mode="multiple" is-inline/>
+    <v-date-picker v-model="date" is-inline />
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
   data() {
     return {
-      dates: [new Date(2018, 0, 9), new Date(2018, 0, 25)],
+      date: new Date(),
     };
   },
 };
