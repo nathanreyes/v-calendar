@@ -1,13 +1,4 @@
-import {
-  isObject,
-  isString,
-  has,
-  hasAny,
-  set,
-  toPairs,
-  defaults,
-  defaultsDeep,
-} from './_';
+import { isObject, isString, has, hasAny, set, toPairs, defaults } from './_';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
 const displayProps = ['class', 'style', 'color', 'fillMode'];
@@ -17,7 +8,7 @@ const defConfig = {
   highlight: {
     base: { fillMode: 'light' },
     start: { fillMode: 'solid' },
-    end: { fillMode: 'light' },
+    end: { fillMode: 'solid' },
   },
   dot: {
     base: { fillMode: 'solid' },
