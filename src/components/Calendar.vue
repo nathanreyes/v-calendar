@@ -752,7 +752,6 @@ export default {
 .vc-reset {
   &,
   & * {
-    /* line-height: 1.5; */
     box-sizing: border-box;
     &:focus {
       outline: none;
