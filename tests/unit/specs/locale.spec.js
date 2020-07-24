@@ -24,7 +24,6 @@ function testLocaleKeys(locale) {
     'getMonthComps',
     'parse',
     'format',
-    'toDate',
   ];
   expect(keys.every(k => lodash.has(locale, k))).toEqual(true);
 }
@@ -95,17 +94,18 @@ describe('Locale', () => {
   it('should calculate day components correctly', () => {
     const testComponent = c => {
       const locale = new Locale();
-      const day = locale.getDayFromDate(new Date(c.date));
-      if (c.day !== day.day) return false;
-      if (c.dayFromEnd !== day.dayFromEnd) return false;
-      if (c.weekday !== day.weekday) return false;
-      if (c.weekdayOrdinal !== day.weekdayOrdinal) return false;
-      if (c.weekdayOrdinalFromEnd !== day.weekdayOrdinalFromEnd) return false;
-      if (c.week !== day.week) return false;
-      if (c.weekFromEnd !== day.weekFromEnd) return false;
-      if (c.month !== day.month) return false;
-      if (c.year !== day.year) return false;
-      return true;
+      const day = locale.getDateParts(new Date(c.date), c.timezone);
+      return [
+        'day',
+        'dayFromEnd',
+        'weekday',
+        'weekdayOrdinal',
+        'weekdayOrdinalFromEnd',
+        'week',
+        'weekFromEnd',
+        'month',
+        'year',
+      ].every(k => c[k] === day[k]);
     };
     dayData.forEach(c => expect(testComponent(c)).toEqual(true));
   });

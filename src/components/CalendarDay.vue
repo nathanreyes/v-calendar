@@ -16,7 +16,7 @@ export default {
         {
           class: 'vc-highlights vc-day-layer',
         },
-        this.backgrounds.map(({ key, wrapperClass, class: bgClass }) =>
+        this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) =>
           h(
             'div',
             {
@@ -26,6 +26,7 @@ export default {
             [
               h('div', {
                 class: bgClass,
+                style,
               }),
             ],
           ),
@@ -45,6 +46,7 @@ export default {
         'span',
         {
           class: this.dayContentClass,
+          style: this.dayContentStyle,
           attrs: { ...this.dayContentProps },
           on: this.dayContentEvents,
           ref: 'content',
@@ -66,10 +68,11 @@ export default {
             {
               class: 'vc-dots',
             },
-            this.dots.map(({ key, class: bgClass }) =>
+            this.dots.map(({ key, class: bgClass, style }) =>
               h('span', {
-                class: bgClass,
                 key,
+                class: bgClass,
+                style,
               }),
             ),
           ),
@@ -90,10 +93,11 @@ export default {
             {
               class: 'vc-bars',
             },
-            this.bars.map(({ key, class: bgClass }) =>
+            this.bars.map(({ key, class: bgClass, style }) =>
               h('span', {
-                class: bgClass,
                 key,
+                class: bgClass,
+                style,
               }),
             ),
           ),
@@ -108,17 +112,10 @@ export default {
           'vc-day',
           ...this.day.classes,
           { 'vc-day-box-center-center': !this.$scopedSlots['day-content'] },
+          { 'is-not-in-month': !this.inMonth },
         ],
       },
-      [
-        h(
-          'div',
-          {
-            class: ['vc-h-full', { [this.theme.dayNotInMonth]: !this.inMonth }],
-          },
-          [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
-        ),
-      ],
+      [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
     );
   },
   inject: ['sharedState'],
@@ -177,11 +174,12 @@ export default {
     dayContentClass() {
       return [
         'vc-day-content vc-focusable',
+        { 'is-disabled': this.isDisabled },
         get(last(this.content), 'class') || '',
-        this.isDisabled ? this.theme.dayContentDisabled : '',
-        this.theme.isDark ? 'vc-is-dark' : '',
-        this.theme.dayContent,
       ];
+    },
+    dayContentStyle() {
+      return get(last(this.content), 'style');
     },
     dayContentProps() {
       let tabindex;
@@ -299,9 +297,9 @@ export default {
           onStartOrEnd,
         };
         this.processHighlight(attr, dateInfo, glyphs);
-        this.processContent(attr, dateInfo, glyphs);
-        this.processDot(attr, dateInfo, glyphs);
-        this.processBar(attr, dateInfo, glyphs);
+        this.processNonHighlight(attr, 'content', dateInfo, glyphs.content);
+        this.processNonHighlight(attr, 'dot', dateInfo, glyphs.dots);
+        this.processNonHighlight(attr, 'bar', dateInfo, glyphs.bars);
         this.processPopover(attr, glyphs);
       });
       this.glyphs = glyphs;
@@ -317,125 +315,98 @@ export default {
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${start.class}`,
+          class: ['vc-highlight', start.class],
+          style: start.style,
         });
         content.push({
           key: `${key}-content`,
           class: start.contentClass,
+          style: start.contentStyle,
         });
       } else if (onStartAndEnd) {
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${start.class}`,
+          class: ['vc-highlight', start.class],
+          style: start.style,
         });
         content.push({
           key: `${key}-content`,
           class: start.contentClass,
+          style: start.contentStyle,
         });
       } else if (onStart) {
         backgrounds.push({
           key: `${key}-base`,
           wrapperClass: 'vc-day-layer vc-day-box-right-center',
-          class: `vc-highlight vc-highlight-base-start ${base.class}`,
+          class: ['vc-highlight vc-highlight-base-start', base.class],
+          style: base.style,
         });
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${start.class}`,
+          class: ['vc-highlight', start.class],
+          style: start.style,
         });
         content.push({
           key: `${key}-content`,
           class: start.contentClass,
+          style: start.contentStyle,
         });
       } else if (onEnd) {
         backgrounds.push({
           key: `${key}-base`,
           wrapperClass: 'vc-day-layer vc-day-box-left-center',
-          class: `vc-highlight vc-highlight-base-end ${base.class}`,
+          class: ['vc-highlight vc-highlight-base-end', base.class],
+          style: base.style,
         });
         backgrounds.push({
           key,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight ${end.class}`,
+          class: ['vc-highlight', end.class],
+          style: end.style,
         });
         content.push({
           key: `${key}-content`,
           class: end.contentClass,
+          style: end.contentStyle,
         });
       } else {
         backgrounds.push({
           key: `${key}-middle`,
           wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: `vc-highlight vc-highlight-base-middle ${base.class}`,
+          class: ['vc-highlight vc-highlight-base-middle', base.class],
+          style: base.style,
         });
         content.push({
           key: `${key}-content`,
           class: base.contentClass,
+          style: base.contentStyle,
         });
       }
     },
-    processContent(
-      { key, content },
-      { isDate, onStart, onEnd },
-      { content: contents },
-    ) {
-      if (!content) return;
-      const { base, start, end } = content;
+    processNonHighlight(attr, itemKey, { isDate, onStart, onEnd }, list) {
+      if (!attr[itemKey]) return;
+      const { key } = attr;
+      const className = `vc-${itemKey}`;
+      const { base, start, end } = attr[itemKey];
       if (isDate || onStart) {
-        contents.push({
+        list.push({
           key,
-          class: start.class,
+          class: [className, start.class],
+          style: start.style,
         });
       } else if (onEnd) {
-        contents.push({
+        list.push({
           key,
-          class: end.class,
+          class: [className, end.class],
+          style: end.style,
         });
       } else {
-        contents.push({
+        list.push({
           key,
-          class: base.class,
-        });
-      }
-    },
-    processDot({ key, dot }, { isDate, onStart, onEnd }, { dots }) {
-      if (!dot) return;
-      const { base, start, end } = dot;
-      if (isDate || onStart) {
-        dots.push({
-          key,
-          class: `vc-dot ${start.class}`,
-        });
-      } else if (onEnd) {
-        dots.push({
-          key,
-          class: `vc-dot ${end.class}`,
-        });
-      } else {
-        dots.push({
-          key,
-          class: `vc-dot ${base.class}`,
-        });
-      }
-    },
-    processBar({ key, bar }, { isDate, onStart, onEnd }, { bars }) {
-      if (!bar) return;
-      const { base, start, end } = bar;
-      if (isDate || onStart) {
-        bars.push({
-          key,
-          class: `vc-bar ${start.class}`,
-        });
-      } else if (onEnd) {
-        bars.push({
-          key,
-          class: `vc-bar ${end.class}`,
-        });
-      } else {
-        bars.push({
-          key,
-          class: `vc-bar ${base.class}`,
+          class: [className, base.class],
+          style: base.style,
         });
       }
     },
@@ -464,10 +435,14 @@ export default {
 <style lang="postcss" scoped>
 .vc-day {
   position: relative;
-  min-height: var(--day-min-height);
+  min-height: 28px;
   width: 100%;
   height: 100%;
   z-index: 1;
+  &.is-not-in-month * {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .vc-day-layer {
@@ -513,20 +488,36 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: var(--day-content-width);
-  height: var(--day-content-height);
-  margin: var(--day-content-margin);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  width: 28px;
+  height: 28px;
+  margin: 1.6px auto;
+  border-radius: var(--rounded-full);
   user-select: none;
+  cursor: pointer;
   &:hover {
-    background-color: var(--day-content-bg-color-hover);
-    &.vc-is-dark {
-      background-color: var(--day-content-dark-bg-color-hover);
-    }
+    background-color: hsla(211, 25%, 84%, 0.3);
   }
   &:focus {
-    background-color: var(--day-content-bg-color-focus);
-    &.vc-is-dark {
-      background-color: var(--day-content-dark-bg-color-focus);
+    font-weight: var(--font-bold);
+    background-color: hsla(211, 25%, 84%, 0.4);
+  }
+  &.is-disabled {
+    color: var(--gray-400);
+  }
+}
+
+.vc-is-dark {
+  & .vc-day-content {
+    &:hover {
+      background-color: hsla(216, 15%, 52%, 0.3);
+    }
+    &:focus {
+      background-color: hsla(216, 15%, 52%, 0.4);
+    }
+    &.is-disabled {
+      color: var(--gray-600);
     }
   }
 }
@@ -538,8 +529,8 @@ export default {
 }
 
 .vc-highlight {
-  width: var(--highlight-height);
-  height: var(--highlight-height);
+  width: 28px;
+  height: 28px;
   &.vc-highlight-base-start {
     width: 50% !important;
     border-radius: 0 !important;
@@ -566,12 +557,12 @@ export default {
 }
 
 .vc-dot {
-  width: var(--dot-diameter);
-  height: var(--dot-diameter);
-  border-radius: var(--dot-border-radius);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
   transition: all var(--day-content-transition-time);
   &:not(:last-child) {
-    margin-right: var(--dot-spacing);
+    margin-right: 3px;
   }
 }
 
@@ -579,12 +570,12 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  width: var(--bars-width);
+  width: 75%;
 }
 
 .vc-bar {
   flex-grow: 1;
-  height: var(--bar-height);
+  height: 3px;
   transition: all var(--day-content-transition-time);
 }
 </style>

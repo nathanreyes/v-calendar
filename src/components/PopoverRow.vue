@@ -25,16 +25,16 @@ export default {
   },
   computed: {
     indicator() {
-      const { highlight, dot, bar, content, popover } = this.attribute;
+      const { highlight, dot, bar, popover } = this.attribute;
       if (popover && popover.hideIndicator) return null;
       if (highlight) {
         const { color, isDark } = highlight.start;
         return {
-          class: this.theme.getConfig('bgAccentHigh', {
-            color,
-            isDark: !isDark,
-          }),
           style: {
+            ...this.theme.bgAccentHigh({
+              color,
+              isDark: !isDark,
+            }),
             width: '10px',
             height: '5px',
             borderRadius: '3px',
@@ -44,11 +44,11 @@ export default {
       if (dot) {
         const { color, isDark } = dot.start;
         return {
-          class: this.theme.getConfig('bgAccentHigh', {
-            color,
-            isDark: !isDark,
-          }),
           style: {
+            ...this.theme.bgAccentHigh({
+              color,
+              isDark: !isDark,
+            }),
             width: '5px',
             height: '5px',
             borderRadius: '50%',
@@ -58,23 +58,14 @@ export default {
       if (bar) {
         const { color, isDark } = bar.start;
         return {
-          class: this.theme.getConfig('bgAccentHigh', {
-            color,
-            isDark: !isDark,
-          }),
           style: {
+            ...this.theme.bgAccentHigh({
+              color,
+              isDark: !isDark,
+            }),
             width: '10px',
             height: '3px',
           },
-        };
-      }
-      if (content) {
-        const { color, isDark } = content.start;
-        return {
-          class: this.theme.getConfig('contentContrast', {
-            color,
-            isDark: !isDark,
-          }),
         };
       }
       return null;

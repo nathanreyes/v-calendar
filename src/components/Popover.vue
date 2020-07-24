@@ -14,7 +14,6 @@ export default {
           'vc-popover-content-wrapper',
           {
             'is-interactive': this.isInteractive,
-            'is-entering': this.isEntering,
           },
         ],
         ref: 'popover',
@@ -82,7 +81,6 @@ export default {
       showDelay: 10,
       hideDelay: 110,
       autoHide: false,
-      isEntering: false,
       popperEl: null,
     };
   },
@@ -305,11 +303,9 @@ export default {
       }
     },
     beforeEnter(e) {
-      this.isEntering = true;
       this.$emit('beforeShow', e);
     },
     afterEnter(e) {
-      this.isEntering = false;
       this.$emit('afterShow', e);
     },
     beforeLeave(e) {
@@ -345,15 +341,13 @@ export default {
   &:not(.is-interactive) {
     pointer-events: none;
   }
-  &:not(.is-entering) {
-    transition: transform 0.1s ease-in-out;
-  }
 }
 
 .vc-popover-content {
   position: relative;
   outline: none;
   z-index: 10;
+  box-shadow: var(--shadow-lg);
   &.direction-bottom {
     margin-top: var(--popover-vertical-content-offset);
   }
@@ -376,7 +370,7 @@ export default {
   height: 12px;
   border-top: inherit;
   border-left: inherit;
-  background: inherit;
+  background-color: inherit;
   z-index: -1;
   &.direction-bottom {
     top: 0;

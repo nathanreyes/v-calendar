@@ -43,7 +43,9 @@ For the simple example above, we used the following properties to build the attr
 | **`highlight`** | Config for the highlighted region displayed on each date. |
 | **`dates`** | Dates used to display the attribute. |
 
-When simply assigning `true` to the highlight config (or any other attribute type except popovers), the currently active **theme** is used to display it. In this example, the theme is responsible to defining the default color (blue), fill mode, and content class for the highlight.
+:::tip
+When simply assigning `true` to the highlight config (or any other attribute except popovers), the currently active [`color`](/api/calendar#color) is used to display it. In this example, the `color` prop is not specified, so the default `color` (`"blue"`) and `fillMode` (`"solid"`) are used.
+:::
 
 Here is how the default dot config would appear.
 
@@ -65,7 +67,13 @@ export default {
 };
 ```
 
-If you would like to use the active theme to display the attribute, just with a different color, pass a string with the desired color. Only included theme colors are supported (no hex values). Reference the theming guide for instructions on configuring your own theme.
+## Colors
+
+There are 8 pre-defined color sets available (gray, red, orange, yellow, green, teal, blue, indigo, purple, pink).
+
+As mentioned above, if a color is not specifically assigned to an attribute, the `color` prop passed to the component is used. If this color is not provided, the default `blue` color is used.
+
+All attributes, except popovers, may be assigned directly to a color.
 
 <guide-attributes-highlight-color/>
 
@@ -85,7 +93,7 @@ export default {
 };
 ```
 
-All attribute types (except popovers) allow using `true` or a theme color for its config value. Additionally, each attribute type supports its own unique configuration options using an object.
+Additionally, when an object is used to configure an attribute, the `color` property may be assigned as part of that configuration.
 
 Click to learn more about the custom properties for [highlights](#highlights), [dots](#dots), [bars](#bars) and [popovers](#popovers).
 
@@ -100,7 +108,7 @@ export default {
       attrs: [
         {
           key: 'today',
-          highlight: true,
+          highlight: 'red',
           popover: {
             label: 'You just hovered over today\'s date!',
           },
@@ -113,14 +121,6 @@ export default {
 ```
 
 ## Attribute Types
-
-The following attribute types are currently supported.
-
-* Highlights (Highlighted Background Regions)
-* Dot Indicators
-* Bar Indicators
-* Content Classes
-* Popovers
 
 Attributes are defined as an array of objects (each object is a separate attribute). Any one or more of these types may be included in a single attribute object.
 
@@ -172,7 +172,7 @@ data() {
 
 ### Using `customData`
 
-The `customData` property is used to link your own custom data object to the attribute. The reason you might want to use this property becomes obvious as you begin to use the plugin. For example, if a user clicks on a calendar day that is displaying the attribute, you might want to react to that that click, so you will need to know that data associated with that attribute.
+The `customData` property is used to link your own custom data object to the attribute. This is useful when handling events or providing custom slot content. For example, if a user clicks on a calendar day that is displaying the attribute, you might want to have some data associated with that attribute.
 
 ### Using `order`
 
@@ -184,43 +184,98 @@ By default, attributes are ordered to display the most information possible. For
 
 If you would like to force an attribute to display above (or before) all others and override these rules, assign an order value greater than 0.
 
-<!-- ### Using functions
+## Highlights
 
-Attributes are usually defined as objects (as shown above), but may also be defined as functions that accept an object parameter with the following properties and return a configured object.
+As mentioned before, highlights may be assigned a boolean, string or object value.
 
-| Property Name | Type    | Description |
-| ------------- | ------- | ----------- |
-| [`day`](/api/day-object.md) | Object | Object with specific information about the day displaying the attribute. |
-| [`targetDate`](data.md#dateinfo--attributes-lifecycle) | Object | Date info object currently used to display attribute. |
-| `isHovered` | Boolean | Day element is currently hovered over. |
-| `isFocused` | Boolean | Day element is currently focused. Only applies when a popover is configured. |
-| `onStart` | Boolean | Day lies on the first day of the attribute's `targetDate`. |
-| `onEnd` | Boolean | Day lies on the last day of the attributes's `targetDate`. |
-| `inBetween` | Boolean | Day is after the first day and before the last day of the attribute's `targetDate`. |
+```js
+// Uses the active color (default blue)
+highlight: true   
 
-This allows for creating attributes that are more dynamic and responsive to the user's actions. For example, when the user hovers over the attribute, the function is re-evaluated and the attribute is automatically reconfigured.
+// Uses the red color
+highlight: 'red'
 
-Consider this example where an opacity is applied to a bar attribute when it is hovered. Notice that functions are used to define the bar instead of the attribute itself.
+// Configuration object
+highlight: {
+  color: 'orange',
+  fillMode: 'light',
+}
+```
+
+These are all the configuration options you may use for further highlight customization:
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `color` | String | Color. |
+| `fillMode` | String | Color fill option: `solid` (default), `light`, `none`. |
+| `class` | String | Class to apply to the highlight background element. |
+| `style` | Object | Style to apply to the highlight background element. |
+| `contentClass` | String | Class to apply to the highlight content element. |
+| `contentStyle` | Object | Style to apply to the highlight content element. |
+
+Here is an example using each of the three fill mode types (`solid`, `light` and `none`, respectively).
+
+<guide-attributes-highlight-custom />
 
 ```html
-<v-calendar
-  :attributes='attributes'>
-</v-calendar>
+<v-calendar :attributes="attrs" />
+```
+
+```js
+data() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  return {
+    attrs: [
+      {
+        key: 'today',
+        highlight: {
+          color: 'purple',
+          fillMode: 'solid',
+          contentClass: 'italic',
+        },
+        dates: new Date(year, month, 12),
+      },
+      {
+        highlight: {
+          color: 'purple',
+          fillMode: 'light',
+        },
+        dates: new Date(year, month, 13),
+      },
+      {
+        highlight: {
+          color: 'purple',
+          fillMode: 'none',
+        },
+        dates: new Date(year, month, 14),
+      },
+    ],
+  };
+},
+```
+
+You may also target the `start`, `base` and `end` sections of the highlight with different configurations.
+
+<guide-attributes-highlight-range />
+
+```html
+<v-calendar :from-page="{ month: 1, year: 2019 }" :attributes="attrs" />
 ```
 
 ```js
 export default {
   data() {
     return {
-      attributes: [
+      attrs: [
         {
-          bar({ isHovered }) {
-            return {
-              backgroundColor: 'black',
-              opacity: isHovered ? 0.5 : 1,
-            };
+          highlight: {
+            start: { fillMode: 'none' },
+            base: { fillMode: 'light' },
+            end: { fillMode: 'none' },
           },
-          dates: new Date(),
+          dates: { start: new Date(2019, 0, 14), end: new Date(2019, 0, 18) },
         },
       ],
     };
@@ -228,62 +283,32 @@ export default {
 };
 ```
 
-<ClientOnly>
-  <guide-attributes-as-functions />
-</ClientOnly> -->
-
-## Highlights
-
-As mentioned before, highlights may be configured using a simple boolean or string value.
-
-```js
-// 1A. Uses the default blue theme
-highlight: true   
-
-// Uses the red theme
-highlight: 'red'
-```
-
-These are the additional configuration options you may use for further highlight customization:
-
-| Property | Type | Description |
-| --- | --- | --- |
-| `color` | String | Theme color. |
-| `fillMode` | String | Color fill option: `solid` (default), `light`, `none`. |
-| `class` | String | Any generic class you wish to apply to the background element of the highlight |
-| `contentClass` | String | Any generic class you wish to apply to the content element of the highlight |
-
-Here is an example of using a more customized highlight to get a specific desired look.
-
-<guide-attributes-highlight-custom />
-
-```js
-  // Customized highlight
-  highlight: {
-    color: 'purple',
-    fillMode: 'light',
-    contentClass: 'italic', // Class provided by TailwindCSS
-  },
-```
-
 ## Dots
 
-Dots may be configured using a simple boolean or string value.
+Dots may be assigned a boolean, string or object value.
 
 ```js
-// 1A. Uses the default blue theme
+// Uses the active color (default blue)
 dot: true   
 
-// Uses the red theme
+// Uses the red color
 dot: 'red'
+
+// Configuration object
+dot: {
+  style: {
+    backgroundColor: 'brown',
+  }
+}
 ```
 
 These are the additional configuration options you may use for further dot customization:
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `color` | String | Theme color. |
-| `class` | String | Any generic class you wish to apply to the dot dom element. |
+| `color` | String | Color. |
+| `class` | String | Class to apply to the dot element. |
+| `style` | Object | Style to apply to the dot element. |
 
 <guide-attributes-dots />
 
@@ -301,10 +326,7 @@ export default {
     return {
       attributes: [
         {
-          dot: {
-            color: 'red',
-            class: 'my-dot-class',
-          },
+          dot: true,
           dates: [
             new Date(2018, 0, 1), // Jan 1st
             new Date(2018, 0, 10), // Jan 10th
@@ -312,7 +334,7 @@ export default {
           ],
         },
         {
-          dot: 'green',
+          dot: 'red',
           dates: [
             new Date(2018, 0, 4), // Jan 4th
             new Date(2018, 0, 10), // Jan 10th
@@ -320,7 +342,11 @@ export default {
           ],
         },
         {
-          dot: 'purple',
+          dot: {
+            style: {
+              background-color: 'brown',
+            },
+          },
           dates: [
             new Date(2018, 0, 12), // Jan 12th
             new Date(2018, 0, 26), // Jan 26th
@@ -335,22 +361,30 @@ export default {
 
 ## Bars
 
-Bars may be configured using a simple boolean or string value. When more than one bar is dislayed per calendar day, they are equally spaced amongst each other. As a result, it might be a good idea to limit displaying up to 2 to 3 bars per day cell, as legibility can suffer.
+Bars may be assigned a boolean, string or object value. When more than one bar is dislayed per calendar day, they are equally spaced amongst each other. As a result, it might be a good idea to limit displaying up to 2 to 3 bars per day cell, as legibility can suffer.
 
 ```js
-// 1A. Uses the default blue theme
+// Uses the active color (default blue)
 bar: true   
 
-// Uses the red theme
+// Uses the red color
 bar: 'red'
+
+// Configuration object
+bar: {
+  style: {
+    backgroundColor: 'brown',
+  }
+}
 ```
 
 These are the additional configuration options you may use for further bar customization:
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `color` | String | Theme color. |
-| `class` | String | Any generic class you wish to apply to the bar dom element. |
+| `color` | String | Color. |
+| `class` | String | Class to apply to the bar element. |
+| `style` | Object | Style to apply to the bar element. |
 
 <guide-attributes-bars />
 
@@ -368,10 +402,7 @@ export default {
     return {
       attributes: [
         {
-          bar: {
-            color: 'red',
-            class: 'my-dot-class',
-          },
+          bar: true,
           dates: [
             new Date(2018, 0, 1), // Jan 1st
             new Date(2018, 0, 10), // Jan 10th
@@ -379,7 +410,7 @@ export default {
           ],
         },
         {
-          bar: 'green',
+          bar: 'red',
           dates: [
             new Date(2018, 0, 4), // Jan 4th
             new Date(2018, 0, 10), // Jan 10th
@@ -387,7 +418,11 @@ export default {
           ],
         },
         {
-          bar: 'purple',
+          bar: {
+            style: {
+              backgroundColor: 'brown',
+            },
+          },
           dates: [
             new Date(2018, 0, 12), // Jan 12th
             new Date(2018, 0, 26), // Jan 26th
@@ -608,13 +643,13 @@ Now, we just need to display the attributes for the day as well. We can do so by
     <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
-        <ul>
-          <li
-            v-for="{key, customData} in attributes"
-            :key="key">
-            {{ customData.description }}
-          </li>
-        </ul>
+    <ul>
+      <li
+        v-for="{key, customData} in attributes"
+        :key="key">
+        {{ customData.description }}
+      </li>
+    </ul>
   </div>
 </v-calendar>
 ```

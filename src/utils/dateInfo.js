@@ -12,7 +12,7 @@ export default class DateInfo {
     this.isDate = !this.isRange;
     this.order = order;
     this.locale = locale instanceof Locale ? locale : new Locale(locale);
-    this.firstDayOfWeek = locale.firstDayOfWeek;
+    this.firstDayOfWeek = this.locale.firstDayOfWeek;
     // Process date
     if (this.isDate) {
       this.type = 'date';

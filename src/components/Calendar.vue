@@ -37,7 +37,7 @@ import {
   head,
   last,
 } from '../utils/_';
-import '../styles/tailwind-lib.css';
+import '../styles/vars.css';
 
 export default {
   name: 'Calendar',
@@ -83,14 +83,7 @@ export default {
       return h(
         'div',
         {
-          class: [
-            `vc-flex vc-justify-center vc-items-center vc-cursor-pointer vc-select-none ${
-              isDisabled
-                ? 'vc-opacity-25 vc-pointer-events-none vc-cursor-not-allowed'
-                : 'vc-pointer-events-auto'
-            }`,
-            this.$theme.arrows,
-          ],
+          class: ['vc-arrow', { 'is-disabled': isDisabled }],
           attrs: {
             role: 'button',
           },
@@ -117,7 +110,7 @@ export default {
       h(Popover, {
         props: {
           id: this.sharedState.dayPopoverId,
-          contentClass: this.$theme.dayPopoverContainer,
+          contentClass: 'vc-day-popover-container',
         },
         scopedSlots: {
           default: ({ data: day, updateLayout, hide }) => {
@@ -143,7 +136,7 @@ export default {
                   h(
                     'div',
                     {
-                      class: ['vc-text-center', this.$theme.dayPopoverHeader],
+                      class: ['vc-day-popover-header'],
                     },
                     [dayTitle],
                   ),
@@ -173,10 +166,11 @@ export default {
           class: [
             'vc-container',
             'vc-reset',
+            `vc-${this.$theme.color}`,
             {
-              'vc-min-w-full': this.isExpanded,
+              'vc-is-expanded': this.isExpanded,
+              'vc-is-dark': this.$theme.isDark,
             },
-            this.$theme.container,
           ],
           on: {
             keydown: this.handleKeydown,
@@ -189,8 +183,8 @@ export default {
             'div',
             {
               class: [
-                'vc-w-full vc-relative',
-                { 'vc-overflow-hidden': this.inTransition },
+                'vc-pane-container',
+                { 'in-transition': this.inTransition },
               ],
             },
             [
@@ -754,48 +748,94 @@ export default {
 };
 </script>
 
-<style>
+<style lang="postcss">
+.vc-reset {
+  &,
+  & * {
+    box-sizing: border-box;
+    &:focus {
+      outline: none;
+    }
+  }
+  & button,
+  & [role='button'] {
+    cursor: pointer;
+  }
+}
+
 .vc-container {
-  --slide-translate: 22px;
-  --slide-duration: 0.15s;
-  --slide-timing: ease;
-
-  --header-padding: 10px 10px 0 10px;
-  --title-padding: 0 8px;
-  --arrows-padding: 8px 10px;
-  --arrow-font-size: 26px;
-  --weekday-padding: 5px 0;
-  --weeks-padding: 5px 6px 7px 6px;
-
-  --nav-container-width: 170px;
-
-  --day-min-height: 28px;
-  --day-content-width: 28px;
-  --day-content-height: 28px;
-  --day-content-margin: 1.6px auto;
-  --day-content-transition-time: 0.13s ease-in;
-  --day-content-bg-color-hover: hsla(211, 25%, 84%, 0.3);
-  --day-content-dark-bg-color-hover: hsla(216, 15%, 52%, 0.3);
-  --day-content-bg-color-focus: hsla(211, 25%, 84%, 0.4);
-  --day-content-dark-bg-color-focus: hsla(216, 15%, 52%, 0.4);
-
-  --highlight-height: 28px;
-
-  --dot-diameter: 5px;
-  --dot-border-radius: 50%;
-  --dot-spacing: 3px;
-
-  --bar-height: 3px;
-  --bars-width: 75%;
-
   font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     'Helvetica', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: var(--gray-900);
+  background-color: var(--white);
+  border: 1px solid;
+  border-color: var(--gray-400);
+  border-radius: var(--rounded-lg);
   position: relative;
   width: max-content;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  &.is-expanded {
+    min-width: 100%;
+  }
+  /* Hides double border within popovers */
+  & .vc-container {
+    border: none;
+  }
+}
+
+.vc-pane-container {
+  width: 100%;
+  position: relative;
+  &.in-transition {
+    overflow: hidden;
+  }
+}
+
+.vc-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+  color: var(--gray-600);
+  border-width: 2px;
+  border-radius: var(--rounded);
+  border-color: transparent;
+  &:hover {
+    background: var(--gray-200);
+  }
+  &:focus {
+    border-color: var(--gray-300);
+  }
+
+  &.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+}
+
+.vc-day-popover-container {
+  color: var(--white);
+  background-color: var(--gray-800);
+  border: 1px solid;
+  border-color: var(--gray-700);
+  border-radius: var(--rounded);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  padding: 4px 8px;
+  box-shadow: var(--shadow);
+}
+
+.vc-day-popover-header {
+  font-size: var(--text-xs);
+  color: var(--gray-300);
+  font-weight: var(--font-semibold);
+  text-align: center;
 }
 
 .vc-arrows-container {
@@ -804,13 +844,38 @@ export default {
   top: 0;
   display: flex;
   justify-content: space-between;
-  padding: var(--arrows-padding);
+  padding: 8px 10px;
   pointer-events: none;
   &.title-left {
     justify-content: flex-end;
   }
   &.title-right {
     justify-content: flex-start;
+  }
+}
+
+.vc-is-dark {
+  &.vc-container {
+    color: var(--gray-100);
+    background-color: var(--gray-900);
+    border-color: var(--gray-700);
+  }
+  & .vc-arrow {
+    color: var(--white);
+    &:hover {
+      background: var(--gray-800);
+    }
+    &:focus {
+      border-color: var(--gray-700);
+    }
+  }
+  & .vc-day-popover-container {
+    color: var(--gray-800);
+    background-color: var(--white);
+    border-color: var(--gray-100);
+  }
+  & .vc-day-popover-header {
+    color: var(--gray-700);
   }
 }
 </style>

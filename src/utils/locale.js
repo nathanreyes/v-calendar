@@ -100,35 +100,20 @@ export default class Locale {
 
   getDateParts(date, timezone) {
     if (!date) return null;
-    const opts = {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      weekday: 'short',
-      fractionalSecondDigits: 3,
-      hour12: false,
-      timeZone: timezone || undefined,
-      timeZoneName: 'short',
-    };
-    const intl = new Intl.DateTimeFormat(this.id, opts);
-    const parts = intl.formatToParts(date);
-    const getPart = t => +parts.find(p => p.type === t).value;
-    const seconds = getPart('second');
-    const minutes = getPart('minute');
-    // Chrome reports start of day as hour 24?
-    const hours = getPart('hour') === 24 ? 0 : getPart('hour');
-    const month = getPart('month');
-    const year = getPart('year');
+    timezone = timezone || undefined;
+    const tzString = date.toLocaleString(this.id, {
+      timeZone: timezone,
+    });
+    const tzDate = new Date(tzString);
+    const seconds = tzDate.getSeconds();
+    const minutes = tzDate.getMinutes();
+    const hours = tzDate.getHours();
+    const month = tzDate.getMonth() + 1;
+    const year = tzDate.getFullYear();
     const comps = this.getMonthComps(month, year);
-    const day = getPart('day');
+    const day = tzDate.getDate();
     const dayFromEnd = comps.days - day + 1;
-    const weekday =
-      this.dayNamesShort.findIndex(
-        d => d.toLowerCase() === getPart('weekday'),
-      ) + 1;
+    const weekday = tzDate.getDay() + 1;
     const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
     const weekdayOrdinalFromEnd = Math.floor((comps.days - day) / 7 + 1);
     const week = Math.ceil(

@@ -6,8 +6,7 @@
       <!--Move prev button-->
       <span
         role="button"
-        class="vc-nav-arrow vc-flex vc-justify-center vc-items-center vc-mr-auto"
-        :class="theme.navArrows"
+        class="vc-nav-arrow is-left"
         tabindex="-1"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
@@ -21,7 +20,6 @@
       <span
         role="button"
         class="vc-nav-title vc-grid-focus"
-        :class="theme.navTitle"
         :style="{ whiteSpace: 'nowrap' }"
         tabindex="0"
         @click="toggleMode"
@@ -33,8 +31,7 @@
       <!--Move next button-->
       <span
         role="button"
-        class="vc-nav-arrow vc-flex vc-justify-center vc-items-center vc-ml-auto"
-        :class="theme.navArrows"
+        class="vc-nav-arrow is-right"
         tabindex="-1"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
@@ -168,16 +165,16 @@ export default {
   },
   methods: {
     getItemClasses({ isActive, isCurrent, isDisabled }) {
-      const classes = [this.theme.navCell];
+      const classes = ['vc-nav-item'];
       if (isActive) {
-        classes.push(this.theme.navCellActive, 'vc-grid-focus');
+        classes.push('is-active', 'vc-grid-focus');
       } else if (isCurrent) {
-        classes.push(this.theme.navCellInactiveCurrent);
+        classes.push('is-inactive-current');
       } else {
-        classes.push(this.theme.navCellInactive);
+        classes.push('is-inactive');
       }
       if (isDisabled) {
-        classes.push('vc-opacity-25 vc-pointer-events-none');
+        classes.push('is-disabled');
       }
       return classes;
     },
@@ -251,3 +248,120 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss">
+.vc-nav-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: var(--leading-snug);
+  border-width: 2px;
+  border-color: transparent;
+  border-radius: var(--rounded);
+  &.is-left {
+    margin-right: auto;
+  }
+  &.is-right {
+    margin-left: auto;
+  }
+  &:hover {
+    background-color: var(--gray-900);
+  }
+  &:focus {
+    border-color: var(--accent-600);
+  }
+}
+
+.vc-nav-title {
+  color: var(--accent-100);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-snug);
+  padding: 4px 8px;
+  border-radius: var(--rounded);
+  border-width: 2px;
+  border-color: transparent;
+  &:hover {
+    background-color: var(--gray-900);
+  }
+  &:focus {
+    border-color: var(--accent-600);
+  }
+}
+
+.vc-nav-item {
+  width: 48px;
+  text-align: center;
+  line-height: var(--leading-snug);
+  font-weight: var(--font-semibold);
+  padding: 4px 0;
+  cursor: pointer;
+  border-color: transparent;
+  border-width: 2px;
+  border-radius: var(--rounded);
+  &:hover {
+    color: var(--white);
+    background-color: var(--gray-900);
+    box-shadow: var(--shadow-inner);
+  }
+  &:focus {
+    border-color: var(--accent-600);
+  }
+  &.is-active {
+    color: var(--accent-900);
+    background: var(--accent-100);
+    border-color: transparent;
+    font-weight: var(--font-bold);
+    box-shadow: var(--shadow);
+  }
+  &.is-inactive {
+    border-color: transparent;
+  }
+  &:is-inactive-current {
+    color: var(--accent-100);
+    font-weight: var(--bold);
+    border-color: var(--accent-100);
+  }
+  &.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+.vc-is-dark {
+  & .vc-nav-title {
+    color: var(--gray-900);
+    &:hover {
+      background-color: var(--gray-200);
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+  }
+  & .vc-nav-arrow {
+    &:hover {
+      background-color: var(--gray-200);
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+  }
+  & .vc-nav-item {
+    &:hover {
+      color: var(--gray-900);
+      background-color: var(--gray-200);
+      box-shadow: none;
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+    &.is-active {
+      color: var(--white);
+      background: var(--accent-500);
+    }
+    &.is-inactive-current {
+      color: var(--accent-600);
+      border-color: var(--accent-500);
+    }
+  }
+}
+</style>

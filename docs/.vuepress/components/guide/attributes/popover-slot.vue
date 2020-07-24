@@ -19,7 +19,11 @@
           {{ dayTitle }}
         </div>
         <ul v-if="step === 3">
-          <li v-for="{ key, customData } in attributes" :key="key">
+          <li
+            v-for="{ key, customData } in attributes"
+            :key="key"
+            class="text-gray-100"
+          >
             {{ customData.description }}
           </li>
         </ul>

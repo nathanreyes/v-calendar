@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="vc-flex vc-items-center vc-px-3 vc-pb-2 vc-bg-white vc-border-t"
-    :class="{ 'vc-pointer-events-none vc-opacity-50': !value.isValid }"
-  >
+  <div class="vc-dt-container" :class="{ 'vc-invalid': !value.isValid }">
     <div>
       <svg
         fill="none"
@@ -10,80 +7,44 @@
         stroke-linejoin="round"
         stroke-width="2"
         viewBox="0 0 24 24"
-        class="vc-w-4 vc-h-4 vc-text-gray-600"
+        class="vc-dt-icon"
         stroke="currentColor"
       >
         <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     </div>
-    <div class="ml-2">
-      <div class="vc-flex vc-justify-start vc-items-center vc-py-1 vc-ml-1">
-        <div
-          class="vc-text-sm text-gray-700 font-semibold uppercase tracking-wide"
-        >
+    <div class="vc-dt">
+      <div class="vc-date">
+        <div class="vc-weekday">
           {{ locale.format(date, 'WWW') }}
         </div>
-        <div class="vc-text-sm text-blue-600 font-semibold uppercase ml-2">
+        <div class="vc-month">
           {{ locale.format(date, 'MMM') }}
         </div>
-        <div class="vc-text-sm text-blue-600 font-semibold ml-1">
+        <div class="vc-day">
           {{ locale.format(date, 'DD') }}
         </div>
-        <div class="vc-text-sm text-gray-500 font-semibold ml-2">
+        <div class="vc-year">
           {{ locale.format(date, 'YYYY') }}
         </div>
       </div>
-      <div class="vc-flex vc-justify-center vc-items-center">
-        <div>
-          <select
-            class="bg-gray-100 text-gray-800 font-medium border pl-1 py-1 rounded"
-            v-model="hours"
-          >
-            <option
-              v-for="{ value, label } in hourOptions"
-              :key="value"
-              :value="value"
-            >
-              {{ label }}
-            </option>
-          </select>
-          <span>:</span>
-          <select
-            class="vc-bg-gray-100 vc-text-gray-800 vc-font-medium vc-border vc-pl-1 vc-py-1 vc-rounded"
-            v-model="minutes"
-          >
-            <option
-              v-for="{ value, label } in minuteOptions"
-              :key="value"
-              :value="value"
-            >
-              {{ label }}
-            </option>
-          </select>
-        </div>
-        <div
-          class="vc-bg-gray-100 vc-ml-2 vc-flex vc-items-center vc-bg-white vc-p-1 vc-border vc-rounded"
-        >
-          <button
-            class="vc-text-sm vc-font-semibold vc-px-1 vc-rounded"
-            :class="
-              isAM
-                ? 'vc-bg-blue-600 vc-text-white hover:vc-bg-blue-500'
-                : 'vc-text-gray-800 hover:vc-text-gray-600'
-            "
-            @click="isAM = true"
-          >
+      <div class="vc-time">
+        <time-select
+          :value="hours"
+          @input="hours = $event.target.value"
+          :options="hourOptions"
+        />
+        <span style="margin: 0 4px">:</span>
+        <time-select
+          :value="minutes"
+          @input="minutes = $event.target.value"
+          :options="minuteOptions"
+        />
+        <div class="vc-am-pm">
+          <button :class="{ active: isAM }" @click="isAM = true">
             AM
           </button>
-          <button
-            class="vc-text-sm vc-font-semibold vc-px-1 vc-rounded vc-ml-1"
-            :class="
-              !isAM
-                ? 'vc-bg-blue-600 vc-text-white hover:vc-bg-blue-500'
-                : 'vc-text-gray-800 hover:vc-text-gray-600'
-            "
-            @click="isAM = false"
-          >
+          <button :class="{ active: !isAM }" @click="isAM = false">
             PM
           </button>
         </div>
@@ -93,10 +54,12 @@
 </template>
 
 <script>
+import TimeSelect from './TimeSelect';
 import { pad } from '../utils/helpers';
 
 export default {
   name: 'TimePicker',
+  components: { TimeSelect },
   props: {
     value: { type: Object, required: true },
     locale: { type: Object, required: true },
@@ -231,3 +194,138 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.vc-dt-container {
+  display: flex;
+  align-items: center;
+  padding: 0 8px 8px 8px;
+  border-top: 1px solid var(--gray-300);
+  &.vc-invalid {
+    pointer-events: none;
+    opacity: 50%;
+  }
+}
+
+.vc-dt {
+  margin-left: 8px;
+}
+
+.vc-dt-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--gray-600);
+}
+
+.vc-date {
+  display: flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  padding: 4px 0 4px 4px;
+  & .vc-weekday {
+    color: var(--gray-700);
+    letter-spacing: var(--tracking-wide);
+  }
+  & .vc-month {
+    color: var(--accent-600);
+    margin-left: 8px;
+  }
+  & .vc-day {
+    color: var(--accent-600);
+    margin-left: 4px;
+  }
+  & .vc-year {
+    color: var(--gray-500);
+    margin-left: 8px;
+  }
+}
+
+.vc-time {
+  display: flex;
+  align-items: center;
+}
+
+.vc-am-pm {
+  display: flex;
+  align-items: center;
+  background: var(--gray-200);
+  color: var(--gray-800);
+  margin-left: 8px;
+  padding: 4px;
+  border-radius: var(--rounded);
+  height: 30px;
+  & button {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    padding: 0 4px;
+    border: 2px solid transparent;
+    border-radius: var(--rounded);
+    line-height: var(--leading-snug);
+    &:hover {
+      color: var(--gray-600);
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+    &.active {
+      background: var(--accent-600);
+      color: var(--white);
+      &:hover {
+        background: var(--accent-500);
+      }
+      &:focus {
+        border-color: var(--accent-400);
+      }
+    }
+  }
+}
+
+.vc-is-dark {
+  & .vc-dt-container {
+    color: var(--gray-100);
+    border-top: 1px solid var(--gray-700);
+  }
+  & .vc-dt-icon {
+    color: var(--gray-400);
+  }
+  & .vc-weekday {
+    color: var(--gray-400);
+  }
+  & .vc-month {
+    color: var(--accent-400);
+  }
+  & .vc-day {
+    color: var(--accent-400);
+  }
+  & .vc-year {
+    color: var(--gray-500);
+  }
+  & .vc-am-pm {
+    background: var(--gray-700);
+    color: var(--gray-100);
+    &:focus {
+      border-color: var(--accent-500);
+    }
+    & button {
+      &:hover {
+        color: var(--gray-400);
+      }
+      &:focus {
+        border-color: var(--accent-500);
+      }
+      &.active {
+        background: var(--accent-500);
+        color: var(--white);
+        &:hover {
+          background: var(--accent-600);
+        }
+        &:focus {
+          border-color: var(--accent-500);
+        }
+      }
+    }
+  }
+}
+</style>

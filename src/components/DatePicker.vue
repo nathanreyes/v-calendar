@@ -1,4 +1,3 @@
-
 <script>
 import Calendar from './Calendar';
 import Popover from './Popover';
@@ -26,7 +25,6 @@ import {
   togglePopover as tp,
   getPopoverTriggerEvents,
 } from '../utils/popovers';
-import '../styles/tailwind-lib.css';
 
 const _dateConfig = {
   type: 'auto',
@@ -110,7 +108,7 @@ export default {
         props: {
           id: this.datePickerPopoverId,
           placement: 'bottom-start',
-          contentClass: this.$theme.container,
+          contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
         },
         on: {
           beforeShow: e => this.$emit('popoverWillShow', e),
@@ -664,9 +662,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss" scoped>
-::v-deep .vc-container {
-  border: none;
-}
-</style>
