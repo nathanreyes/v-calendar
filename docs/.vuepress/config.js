@@ -99,7 +99,6 @@ module.exports = {
             'i18n',
             'attributes',
             'datepicker',
-            'theming-guide',
           ],
         },
       ],
