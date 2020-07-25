@@ -9,11 +9,7 @@ import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '../utils/attributeStore';
-import {
-  propOrDefaultMixin,
-  rootMixin,
-  safeScopedSlotMixin,
-} from '../utils/mixins';
+import { rootMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import {
   pageForDate,
@@ -239,7 +235,7 @@ export default {
 
     return getContainerGrid();
   },
-  mixins: [propOrDefaultMixin, rootMixin, safeScopedSlotMixin],
+  mixins: [rootMixin, safeScopedSlotMixin],
   provide() {
     return {
       sharedState: this.sharedState,

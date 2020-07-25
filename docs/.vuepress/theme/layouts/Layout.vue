@@ -1,7 +1,7 @@
 <template>
   <div :class="pageClasses" @touchstart="onTouchStart" @touchend="onTouchEnd">
     <Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
-    <div class="relative flex w-full max-w-5xl mx-auto text-gray-900">
+    <div class="relative flex w-full max-w-5xl mx-auto text-gray-700">
       <!--Sidebar mask-->
       <div
         v-if="isSidebarOpen"

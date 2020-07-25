@@ -64,7 +64,7 @@ h2,
 
 h3,
 .h3 {
-  @apply text-lg text-gray-600 font-medium tracking-wide mb-3;
+  @apply text-lg text-gray-700 font-medium tracking-wide mb-3;
 }
 
 h4,
@@ -89,8 +89,12 @@ a {
 }
 
 ul {
-  @apply list-disc text-gray-700 font-medium tracking-wide;
+  @apply list-disc;
 }
+
+/* ul li {
+  @apply space-y-4;
+} */
 
 ol {
   @apply list-decimal;

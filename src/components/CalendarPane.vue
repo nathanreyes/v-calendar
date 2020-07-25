@@ -3,17 +3,13 @@ import Popover from './Popover';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
 import Grid from './Grid';
-import {
-  propOrDefaultMixin,
-  childMixin,
-  safeScopedSlotMixin,
-} from '../utils/mixins';
+import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { getPopoverTriggerEvents } from '../utils/popovers';
 import { createGuid } from '../utils/helpers';
 
 export default {
   name: 'CalendarPane',
-  mixins: [propOrDefaultMixin, childMixin, safeScopedSlotMixin],
+  mixins: [childMixin, safeScopedSlotMixin],
   render(h) {
     // Header
     const header =

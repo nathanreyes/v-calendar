@@ -2,11 +2,7 @@
 import Calendar from './Calendar';
 import Popover from './Popover';
 import TimePicker from './TimePicker';
-import {
-  rootMixin,
-  propOrDefaultMixin,
-  safeScopedSlotMixin,
-} from '../utils/mixins';
+import { rootMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { addTapOrClickHandler } from '../utils/touch';
 import {
   pageForDate,
@@ -125,7 +121,7 @@ export default {
       }),
     ]);
   },
-  mixins: [rootMixin, propOrDefaultMixin, safeScopedSlotMixin],
+  mixins: [rootMixin, safeScopedSlotMixin],
   props: {
     mode: { type: String, default: 'single' },
     value: { type: null, required: true },

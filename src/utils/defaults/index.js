@@ -1,7 +1,7 @@
 // Vue won't get included in bundle as it is externalized
 // https://cli.vuejs.org/guide/build-targets.html#library
 import Vue from 'vue';
-import { defaultsDeep, mapValues } from '../_';
+import { isObject, defaultsDeep, mapValues, get, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';
@@ -61,6 +61,21 @@ export const defaultsMixin = {
     },
     $locales() {
       return defaults_.locales;
+    },
+  },
+  methods: {
+    propOrDefault(prop, defaultPath, strategy) {
+      return this.passedProp(prop, get(this.$defaults, defaultPath), strategy);
+    },
+    passedProp(prop, fallback, strategy) {
+      if (has(this.$options.propsData, prop)) {
+        const propValue = this[prop];
+        if (isObject(propValue) && strategy === 'merge') {
+          return defaultsDeep(propValue, fallback);
+        }
+        return propValue;
+      }
+      return fallback;
     },
   },
 };
