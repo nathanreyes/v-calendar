@@ -33,7 +33,7 @@ import {
   head,
   last,
 } from '../utils/_';
-import '../styles/vars.css';
+import '../styles/base.css';
 
 export default {
   name: 'Calendar',
@@ -745,43 +745,6 @@ export default {
 </script>
 
 <style lang="postcss">
-.vc-reset {
-  &,
-  & * {
-    box-sizing: border-box;
-    &:focus {
-      outline: none;
-    }
-  }
-  & button,
-  & [role='button'] {
-    cursor: pointer;
-  }
-}
-
-.vc-container {
-  font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    'Helvetica', 'Arial', sans-serif;
-  color: var(--gray-900);
-  background-color: var(--white);
-  border: 1px solid;
-  border-color: var(--gray-400);
-  border-radius: var(--rounded-lg);
-  position: relative;
-  width: max-content;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: transparent;
-  &.is-expanded {
-    min-width: 100%;
-  }
-  /* Hides double border within popovers */
-  & .vc-container {
-    border: none;
-  }
-}
-
 .vc-pane-container {
   width: 100%;
   position: relative;
@@ -851,11 +814,6 @@ export default {
 }
 
 .vc-is-dark {
-  &.vc-container {
-    color: var(--gray-100);
-    background-color: var(--gray-900);
-    border-color: var(--gray-700);
-  }
   & .vc-arrow {
     color: var(--white);
     &:hover {
