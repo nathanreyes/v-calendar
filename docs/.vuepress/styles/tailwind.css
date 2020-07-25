@@ -89,7 +89,7 @@ a {
 }
 
 ul {
-  @apply list-disc text-indigo-500 font-semibold tracking-wide;
+  @apply list-disc text-gray-700 font-medium tracking-wide;
 }
 
 ol {
