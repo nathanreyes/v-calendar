@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-dt-container" :class="{ 'vc-invalid': !value.isValid }">
+  <div class="vc-time-container" :class="[{ 'vc-invalid': !value.isValid }]">
     <div>
       <svg
         fill="none"
@@ -7,13 +7,13 @@
         stroke-linejoin="round"
         stroke-width="2"
         viewBox="0 0 24 24"
-        class="vc-dt-icon"
+        class="vc-time-icon"
         stroke="currentColor"
       >
         <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     </div>
-    <div class="vc-dt">
+    <div class="vc-date-time">
       <div class="vc-date">
         <div class="vc-weekday">
           {{ locale.format(date, 'WWW') }}
@@ -63,6 +63,7 @@ export default {
   props: {
     value: { type: Object, required: true },
     locale: { type: Object, required: true },
+    theme: { type: Object, required: true },
   },
   data() {
     return {
@@ -196,22 +197,24 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.vc-dt-container {
+.vc-time-container {
   display: flex;
   align-items: center;
   padding: 0 8px 8px 8px;
-  border-top: 1px solid var(--gray-300);
   &.vc-invalid {
     pointer-events: none;
     opacity: 50%;
   }
+  &:not(:first-child) {
+    border-top: 1px solid var(--gray-400);
+  }
 }
 
-.vc-dt {
+.vc-date-time {
   margin-left: 8px;
 }
 
-.vc-dt-icon {
+.vc-time-icon {
   width: 16px;
   height: 16px;
   color: var(--gray-600);
@@ -283,11 +286,10 @@ export default {
 }
 
 .vc-is-dark {
-  & .vc-dt-container {
-    color: var(--gray-100);
-    border-top: 1px solid var(--gray-700);
+  & .vc-time-container {
+    border-color: var(--gray-700);
   }
-  & .vc-dt-icon {
+  & .vc-time-icon {
     color: var(--gray-400);
   }
   & .vc-weekday {

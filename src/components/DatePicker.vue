@@ -46,6 +46,10 @@ const PATCH_KEYS = {
   3: ['hours', 'minutes', 'seconds'],
 };
 
+const MODE_DATE = 'date';
+const MODE_DATE_TIME = 'datetime';
+const MODE_TIME = 'time';
+
 const PATCH_DATE_TIME = 1;
 const PATCH_DATE = 2;
 const PATCH_TIME = 3;
@@ -53,6 +57,17 @@ const PATCH_TIME = 3;
 export default {
   name: 'DatePicker',
   render(h) {
+    // Timepicker renderer
+    const timePicker = () => {
+      if (!this.dateParts) return null;
+      const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
+      return parts.map((dp, idx) =>
+        h(TimePicker, {
+          props: { value: dp, locale: this.$locale, theme: this.$theme },
+          on: { input: p => this.onTimeInput(p, idx) },
+        }),
+      );
+    };
     // Calendar renderer
     const calendar = () =>
       h(Calendar, {
@@ -77,24 +92,29 @@ export default {
         },
         scopedSlots: {
           ...this.$scopedSlots,
-          footer: () => {
-            if (!this.dateParts) return null;
-            const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
-            return h(
-              'div',
-              parts.map((dp, idx) =>
-                h(TimePicker, {
-                  props: { value: dp, locale: this.$locale },
-                  on: { input: p => this.onTimeInput(p, idx) },
-                }),
-              ),
-            );
-          },
+          footer: this.mode.toLowerCase() === MODE_DATE_TIME && timePicker,
         },
         ref: 'calendar',
       });
-    // If inline just return the calendar
-    if (this.isInline) return calendar();
+    // Content renderer
+    const content = () => {
+      if (this.mode.toLowerCase() === MODE_TIME) {
+        return h(
+          'div',
+          {
+            class: [
+              'vc-container',
+              `vc-${this.$theme.color}`,
+              { 'vc-is-dark': this.$theme.isDark },
+            ],
+          },
+          [timePicker()],
+        );
+      }
+      return calendar();
+    };
+    // If inline just return the content
+    if (this.isInline) return content();
     // Convert this span to a fragment when supported in Vue
     return h('span', [
       // Slot content
@@ -114,7 +134,7 @@ export default {
         },
         scopedSlots: {
           default() {
-            return calendar();
+            return content();
           },
         },
         ref: 'popover',
@@ -123,11 +143,12 @@ export default {
   },
   mixins: [rootMixin, safeScopedSlotMixin],
   props: {
-    mode: { type: String, default: 'single' },
+    mode: { type: String, default: MODE_DATE },
     value: { type: null, required: true },
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
     isRequired: Boolean,
     isInline: Boolean,
+    isRange: Boolean,
     updateOnInput: Boolean,
     inputDebounce: Number,
     popover: { type: Object, default: () => ({}) },
@@ -149,9 +170,6 @@ export default {
     };
   },
   computed: {
-    isRange() {
-      return this.mode === 'range';
-    },
     updateOnInput_() {
       return this.propOrDefault('updateOnInput', 'datePicker.updateOnInput');
     },
@@ -228,7 +246,7 @@ export default {
       return attribute;
     },
     dragAttribute_() {
-      if (this.mode !== 'range' || !this.hasValue(this.dragValue)) {
+      if (!this.isRange || !this.hasValue(this.dragValue)) {
         return null;
       }
       const attribute = {
@@ -257,10 +275,6 @@ export default {
     },
   },
   watch: {
-    mode() {
-      // Clear value on select mode change
-      this.value_ = null;
-    },
     isRange: {
       immediate: true,
       handler() {
@@ -389,10 +403,12 @@ export default {
       this.$emit('daykeydown', day);
     },
     handleDayClick(day) {
+      const hidePopover =
+        this.mode.toLowerCase() === MODE_DATE && !this.isRange;
       const opts = {
         patch: PATCH_DATE,
         formatInput: true,
-        hidePopover: false,
+        hidePopover,
         adjustPageRange: false,
       };
       if (this.isRange) {
@@ -630,13 +646,23 @@ export default {
       });
     },
     showPopover(opts = {}) {
-      sp({ ...opts, id: this.datePickerPopoverId });
+      sp({
+        ref: this.$el,
+        ...opts,
+        isInteractive: true,
+        id: this.datePickerPopoverId,
+      });
     },
     hidePopover(opts = {}) {
       hp({ ...opts, id: this.datePickerPopoverId });
     },
-    togglePopover(opts = {}) {
-      tp({ ...opts, id: this.datePickerPopoverId });
+    togglePopover(opts) {
+      tp({
+        ref: this.$el,
+        ...opts,
+        isInteractive: true,
+        id: this.datePickerPopoverId,
+      });
     },
     adjustPageRange() {
       if (this.hasValue(this.value_) && this.$refs.calendar) {

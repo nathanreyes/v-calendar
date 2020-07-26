@@ -227,6 +227,7 @@ export default {
       this.show(detail);
     },
     onDocumentHidePopover({ detail }) {
+      if (!detail.id || detail.id !== this.id) return;
       this.hide(detail);
     },
     onDocumentTogglePopover({ detail }) {

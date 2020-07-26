@@ -161,7 +161,6 @@ export default {
           },
           class: [
             'vc-container',
-            'vc-reset',
             `vc-${this.$theme.color}`,
             {
               'vc-is-expanded': this.isExpanded,
