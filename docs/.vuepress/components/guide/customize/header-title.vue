@@ -1,9 +1,9 @@
 <template>
-  <div class='center'>
+  <div class="center">
     <v-calendar>
-      <span slot='header-title' slot-scope='{ shortMonthLabel, shortYearLabel }'>
-        {{ shortMonthLabel }} '{{ shortYearLabel }}
-      </span>
+      <template v-slot:header-title="{ shortMonthLabel, shortYearLabel }">
+        <span> {{ shortMonthLabel }} '{{ shortYearLabel }}</span>
+      </template>
     </v-calendar>
   </div>
 </template>
