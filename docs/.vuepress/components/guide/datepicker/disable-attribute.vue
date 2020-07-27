@@ -1,11 +1,11 @@
 <template>
   <div class="example">
     <v-date-picker
-      mode="range"
       v-model="date"
       :disabled-dates="{ weekdays: [1, 7] }"
       :disabled-attribute="disabledAttribute"
       is-inline
+      is-range
     />
   </div>
 </template>

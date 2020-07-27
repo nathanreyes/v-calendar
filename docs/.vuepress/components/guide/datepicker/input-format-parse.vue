@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date">
+    <v-date-picker v-model="date" locale="en-ZA">
       <template v-slot="{ inputValue, inputEvents }">
         <input
           class="bg-white border px-2 py-1 rounded"

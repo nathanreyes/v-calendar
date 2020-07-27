@@ -1,11 +1,6 @@
 <template>
-  <div class='example'>
-    <v-date-picker
-      :style='{ minWidth: "220px" }'
-      mode='range'
-      v-model='range'
-      show-caps>
-    </v-date-picker>
+  <div class="example">
+    <v-date-picker v-model="range" is-range is-inline />
   </div>
 </template>
 
@@ -21,4 +16,3 @@ export default {
   },
 };
 </script>
-

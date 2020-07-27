@@ -279,10 +279,10 @@ When using `disabled-dates`, you can use a full date expression to specify a set
 ```html
 <!--Disable weekend selection-->
 <v-date-picker
-  mode='range'
   v-model='date'
   :disabled-dates='{ weekdays: [1, 7] }'
   is-inline
+  is-range
   />
 ```
 

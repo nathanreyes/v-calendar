@@ -10,20 +10,20 @@ The following colors are provided out of the box: **gray**, **red**, **orange**,
 
 <div class="example is-dark">
   <v-date-picker
-    mode="range"
     :value="null"
     color="red"
     is-dark
     is-inline
+    is-range
     />
 </div>
 
 ```html
 <v-date-picker
-  mode="range"
   :value="null"
   color="red"
   is-dark
   is-inline
+  is-range
   />
 ```
