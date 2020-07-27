@@ -1,11 +1,11 @@
 <template>
   <v-date-picker
-    mode="range"
     v-model="date"
     :select-attribute="selectAttribute"
     :drag-attribute="dragAttribute"
     is-inline
-  ></v-date-picker>
+    is-range
+  />
 </template>
 
 <script>
