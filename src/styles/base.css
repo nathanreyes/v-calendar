@@ -261,7 +261,7 @@
   & [role='button'] {
     cursor: pointer;
   }
-  &.is-expanded {
+  &.vc-is-expanded {
     min-width: 100%;
   }
   /* Hides double border within popovers */
