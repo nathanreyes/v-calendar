@@ -1,5 +1,5 @@
 ---
-title: 'Navigation :tada:'
+title: 'Navigation'
 sidebarDepth: 2
 ---
 
