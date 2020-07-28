@@ -7,7 +7,7 @@
     </div>
     <p class="text-lg font-medium text-gray-600 mb-2">Date Ranges</p>
     <div class="flex flex-col items-center mb-6">
-      <v-date-picker mode="range" v-model="range" is-inline />
+      <v-date-picker v-model="range" is-inline is-range />
     </div>
     <p class="text-lg font-medium text-gray-600">Popover Mode</p>
     <div class="example-home mt-0">
@@ -17,7 +17,7 @@
             <span class="block text-gray-700 text-sm text-left font-bold mb-2"
               >Select Range</span
             >
-            <v-date-picker mode="range" v-model="range2">
+            <v-date-picker v-model="range2" is-range>
               <template v-slot="{ inputValue, inputEvents, isDragging }">
                 <div class="flex justify-start items-center">
                   <input
@@ -69,4 +69,3 @@ export default {
   },
 };
 </script>
-
