@@ -21,6 +21,8 @@ export default {
   methods: {
     load() {
       const s = document.createElement('script');
+      s.setAttribute('async', '');
+      s.type = 'text/javascript';
       s.id = '_carbonads_js';
       s.src = `//cdn.carbonads.com/carbon.js?serve=CE7IK53U&placement=vcalendario`;
       this.$el.appendChild(s);
@@ -35,9 +37,8 @@ export default {
 <style lang="stylus">
 .carbon-ads {
   min-height: 102px;
-  padding: 1.5rem 1.5rem 0;
-  margin-bottom: -0.5rem;
   font-size: 0.75rem;
+  margin: 0.5rem 0;
 
   a {
     color: #444;

@@ -4,7 +4,7 @@
   >
     <div class="sticky top-0">
       <NavLinks v-if="showNavLinks" is-vertical />
-      <carbon-ads />
+      <carbon-ads v-if="showAds" />
       <slot name="top" />
       <SidebarLinks :depth="0" :items="items" />
       <slot name="bottom" />
@@ -23,6 +23,7 @@ export default {
   props: {
     items: Array,
     showNavLinks: Boolean,
+    showAds: Boolean,
   },
 };
 </script>
