@@ -163,7 +163,6 @@ export default {
       dateParts: null,
       activeDate: '',
       dragValue: null,
-      isDragging: false,
       inputValues: ['', ''],
       updateTimeout: null,
       watchValue: true,
@@ -176,6 +175,9 @@ export default {
     },
     inputDebounce_() {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
+    },
+    isDragging() {
+      return !!this.dragValue;
     },
     slotArgs() {
       const inputConfig = {
@@ -300,9 +302,6 @@ export default {
     timezone() {
       this.refreshDateParts();
     },
-    isDragging(val) {
-      if (!val) this.dragValue = null;
-    },
   },
   created() {
     this.forceUpdateValue(this.value, {
@@ -322,7 +321,7 @@ export default {
         document.body.contains(e.target) &&
         !elementContains(this.$el, e.target)
       ) {
-        this.isDragging = false;
+        this.dragValue = null;
       }
     });
     // Clean up handlers
@@ -360,7 +359,7 @@ export default {
       return this.$locale.getDateFromParts(parts, this.timezone);
     },
     refreshDateParts() {
-      const value = this.isDragging ? this.dragValue : this.value_;
+      const value = this.dragValue || this.value_;
       const dateParts = [];
       if (this.isRange) {
         if (value && value.start) {
@@ -383,7 +382,7 @@ export default {
     onDocumentKeyDown(e) {
       // Clear drag on escape keydown
       if (this.dragValue && e.key === 'Escape') {
-        this.isDragging = false;
+        this.dragValue = null;
       }
     },
     onDayClick(day) {
@@ -407,12 +406,10 @@ export default {
       this.$emit('daykeydown', day);
     },
     handleDayClick(day) {
-      const hidePopover =
-        this.mode.toLowerCase() === MODE_DATE && !this.isRange;
       const opts = {
         patch: PATCH_DATE,
         formatInput: true,
-        hidePopover,
+        hidePopover: this.mode.toLowerCase() === MODE_DATE,
         adjustPageRange: false,
       };
       if (this.isRange) {
@@ -421,7 +418,8 @@ export default {
         } else {
           this.dragTrackingValue.end = day.range.start;
         }
-        this.isDragging = !this.isDragging;
+        opts.isDragging = !this.isDragging;
+        opts.hidePopover = opts.hidePopover && !opts.isDragging;
         this.updateValue(this.dragTrackingValue, opts);
       } else {
         this.updateValue(day.range.start, opts);
@@ -518,10 +516,16 @@ export default {
         formatInput = true,
         hidePopover = false,
         adjustPageRange = true,
+        isDragging = this.isDragging,
       } = {},
     ) {
       // 1. Normalization
-      let normalizedValue = this.normalizeValue(value, config, patch);
+      let normalizedValue = this.normalizeValue(
+        value,
+        config,
+        patch,
+        isDragging,
+      );
 
       // 2. Validation (date or range)
       if (
@@ -529,17 +533,20 @@ export default {
         this.disabledAttribute &&
         this.disabledAttribute.intersectsDate(normalizedValue)
       ) {
-        normalizedValue = null;
+        if (isDragging) return;
+        normalizedValue = this.value_;
       }
 
       // 3. Assignment
-      const valueKey = this.isDragging ? 'dragValue' : 'value_';
+      const valueKey = isDragging ? 'dragValue' : 'value_';
       const valueChanged = !this.valuesAreEqual(
         this[valueKey],
         normalizedValue,
       );
       if (valueChanged) {
         this.$set(this, valueKey, normalizedValue);
+        // Clear drag value if needed
+        if (!isDragging) this.dragValue = null;
       }
 
       // 4. Denormalization/Notification
@@ -567,7 +574,7 @@ export default {
       }
       return !!value;
     },
-    normalizeValue(value, config, patch) {
+    normalizeValue(value, config, patch, isDragging) {
       if (!this.hasValue(value)) return null;
       const patchKeys = PATCH_KEYS[patch];
       if (this.isRange) {
@@ -586,7 +593,7 @@ export default {
           };
           result.end = this.getDateFromParts(endParts);
         }
-        return this.isDragging ? result : this.sortRange(result);
+        return isDragging ? result : this.sortRange(result);
       }
       let result = this.normalizeDate(value, config);
       if (patch === PATCH_DATE_TIME) return result;
@@ -636,7 +643,7 @@ export default {
         const inputValues = ['', ''];
         if (this.isRange) {
           const value = this.denormalizeValue(
-            this.isDragging ? this.dragValue : this.value_,
+            this.dragValue || this.value_,
             opts,
           );
           inputValues[0] = value && value.start;
