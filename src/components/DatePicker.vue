@@ -223,6 +223,7 @@ export default {
         showPopover,
         hidePopover,
         togglePopover,
+        getPopoverTriggerEvents,
       };
     },
     popover_() {
