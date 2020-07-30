@@ -2,7 +2,7 @@
 import Calendar from './Calendar';
 import Popover from './Popover';
 import TimePicker from './TimePicker';
-import { rootMixin, safeScopedSlotMixin } from '../utils/mixins';
+import { rootMixin } from '../utils/mixins';
 import { addTapOrClickHandler } from '../utils/touch';
 import {
   pageForDate,
@@ -113,41 +113,42 @@ export default {
       }
       return calendar();
     };
-    // If inline just return the content
-    if (this.isInline) return content();
-    // Convert this span to a fragment when supported in Vue
-    return h('span', [
-      // Slot content
-      this.safeScopedSlot('default', this.slotArgs),
-      // Popover content
-      h(Popover, {
-        props: {
-          id: this.datePickerPopoverId,
-          placement: 'bottom-start',
-          contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
-        },
-        on: {
-          beforeShow: e => this.$emit('popoverWillShow', e),
-          afterShow: e => this.$emit('popoverDidShow', e),
-          beforeHide: e => this.$emit('popoverWillHide', e),
-          afterHide: e => this.$emit('popoverDidHide', e),
-        },
-        scopedSlots: {
-          default() {
-            return content();
-          },
-        },
-        ref: 'popover',
-      }),
-    ]);
+    return (
+      (this.$scopedSlots.default &&
+        // Convert this span to a fragment when supported in Vue
+        h('span', [
+          // Slot content
+          this.$scopedSlots.default(this.slotArgs),
+          // Popover content
+          h(Popover, {
+            props: {
+              id: this.datePickerPopoverId,
+              placement: 'bottom-start',
+              contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
+            },
+            on: {
+              beforeShow: e => this.$emit('popoverWillShow', e),
+              afterShow: e => this.$emit('popoverDidShow', e),
+              beforeHide: e => this.$emit('popoverWillHide', e),
+              afterHide: e => this.$emit('popoverDidHide', e),
+            },
+            scopedSlots: {
+              default() {
+                return content();
+              },
+            },
+            ref: 'popover',
+          }),
+        ])) ||
+      content()
+    );
   },
-  mixins: [rootMixin, safeScopedSlotMixin],
+  mixins: [rootMixin],
   props: {
     mode: { type: String, default: MODE_DATE },
     value: { type: null, required: true },
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
     isRequired: Boolean,
-    isInline: Boolean,
     isRange: Boolean,
     updateOnInput: Boolean,
     inputDebounce: Number,
@@ -281,23 +282,17 @@ export default {
         this.initDateConfig();
       },
     },
-    value: {
-      immediate: true,
-      handler() {
-        if (!this.watchValue) return;
-        this.forceUpdateValue(this.value, {
-          config: this.modelConfig,
-          notify: false,
-          formatInput: true,
-          hidePopover: false,
-        });
-      },
+    value() {
+      if (!this.watchValue) return;
+      this.forceUpdateValue(this.value, {
+        config: this.modelConfig,
+        notify: false,
+        formatInput: true,
+        hidePopover: false,
+      });
     },
-    value_: {
-      immediate: true,
-      handler() {
-        this.refreshDateParts();
-      },
+    value_() {
+      this.refreshDateParts();
     },
     dragValue() {
       this.refreshDateParts();
@@ -308,6 +303,15 @@ export default {
     isDragging(val) {
       if (!val) this.dragValue = null;
     },
+  },
+  created() {
+    this.forceUpdateValue(this.value, {
+      config: this.modelConfig,
+      notify: false,
+      formatInput: true,
+      hidePopover: false,
+    });
+    this.refreshDateParts();
   },
   mounted() {
     // Handle escape key presses
@@ -553,11 +557,9 @@ export default {
       }
 
       // 5. Side effects for non-inline pickers
-      if (!this.isInline) {
-        if (formatInput) this.formatInput();
-        if (hidePopover) this.hidePopover();
-        if (adjustPageRange) this.adjustPageRange();
-      }
+      if (formatInput) this.formatInput();
+      if (hidePopover) this.hidePopover();
+      if (adjustPageRange) this.adjustPageRange();
     },
     hasValue(value) {
       if (this.isRange) {
