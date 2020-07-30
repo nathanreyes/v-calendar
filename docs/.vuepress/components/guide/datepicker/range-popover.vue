@@ -4,7 +4,6 @@
       v-model="range"
       :select-attribute="selectDragAttribute"
       :drag-attribute="selectDragAttribute"
-      is-inline
       is-range
       @drag="dragValue = $event"
     >

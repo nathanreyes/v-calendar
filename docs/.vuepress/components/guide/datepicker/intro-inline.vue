@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date" is-inline />
+    <v-date-picker v-model="date" />
   </div>
 </template>
 
@@ -13,4 +13,3 @@ export default {
   },
 };
 </script>
-

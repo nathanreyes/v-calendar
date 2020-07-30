@@ -242,7 +242,6 @@ You can disable dates, date ranges and date patterns using the following methods
 <v-date-picker
   v-model='date'
   :min-date='new Date()'
-  is-inline
   />
 ```
 
@@ -255,11 +254,7 @@ When using `min-date`, this also prevents the user from navigating to pages befo
 <guide-readme-dp-min-max-dates />
 
 ```html
-<v-date-picker
-  v-model='date'
-  :max-date='new Date()'
-  is-inline
-  />
+<v-date-picker v-model='date' :max-date='new Date()' />
 ```
 
 :::tip
@@ -281,7 +276,6 @@ When using `disabled-dates`, you can use a full date expression to specify a set
 <v-date-picker
   v-model='date'
   :disabled-dates='{ weekdays: [1, 7] }'
-  is-inline
   is-range
   />
 ```
@@ -296,7 +290,6 @@ Any dates not included in `available-dates` are disabled.
 <v-date-picker
   :available-dates='{ start: new Date(), end: null }'
   v-model='date'
-  is-inline
   />
 ```
 

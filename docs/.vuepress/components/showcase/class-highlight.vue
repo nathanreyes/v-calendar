@@ -3,7 +3,6 @@
     v-model="date"
     :select-attribute="selectAttribute"
     :drag-attribute="dragAttribute"
-    is-inline
     is-range
   />
 </template>

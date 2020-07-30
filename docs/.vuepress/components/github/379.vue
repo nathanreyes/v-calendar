@@ -4,7 +4,6 @@
     mode="range"
     :attributes="attrs"
     :disabled-dates="disabledDates"
-    is-inline
   />
 </template>
 

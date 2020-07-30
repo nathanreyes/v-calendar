@@ -22,12 +22,12 @@ Also, it uses [customizable](#customize-attributes) attributes under the hood to
 
 ## Inline
 
-A calendar picker can be displayed inline by setting the `is-inline` prop.
+The calendar picker will be displayed inline when no default slot is provided.
 
 <guide-datepicker-intro-inline />
 
 ```html
-<v-date-picker v-model="date" is-inline />
+<v-date-picker v-model="date" />
 ```
 
 ```js
@@ -335,7 +335,7 @@ Values passed to `updateValue()` are validated against `disabled-dates`, `availa
 `v-date-picker` can bind to single dates and date ranges using the `v-model` directive. Single date binding is the default configuration.
 
 ```html
-<v-date-picker value="date" is-inline />
+<v-date-picker value="date" />
 ```
 
 ```js
@@ -351,7 +351,7 @@ data() {
 To bind to date range values, set the `is-range` prop.
 
 ```html
-<v-date-picker value="range" is-range is-inline />
+<v-date-picker value="range" is-range />
 ```
 
 ```js
@@ -429,7 +429,6 @@ For example, say we want to use a `dot` instead of a `highlight` to denote the s
 <v-date-picker
   v-model="date"
   :select-attribute="selectAttribute"
-  is-inline
 />
 ```
 
@@ -459,7 +458,6 @@ We'll first try to display the dragged range, then fall back to the selected ran
   v-model="range"
   :select-attribute="selectDragAttribute"
   :drag-attribute="selectDragAttribute"
-  is-inline
   is-range
   @drag="dragValue = $event"
 >

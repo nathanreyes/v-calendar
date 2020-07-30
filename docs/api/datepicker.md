@@ -38,19 +38,11 @@ sidebarDepth: 2
 Setting `value = null` still allowed through code.
 :::
 
-### `is-inline`
-
-**Type:** Boolean
-
-**Description:** Displays calendar inline instead of as a popover.
-
-**Default Value:** `false`
-
 ### `input-props`
 
 **Type:** Object
 
-**Description:** Props to apply to the input DOM element.  Not applicable when `is-inline === true`.
+**Description:** Props to apply to the input DOM element.
 
 **Default Value:** [Reference code]()
 
@@ -90,7 +82,7 @@ Setting `value = null` still allowed through code.
 
 **Type:** Object
 
-**Description:** Properties of the popover to apply for the calendar component. Not applicable when `is-inline === true`.
+**Description:** Properties of the popover to apply for the calendar component.
 
 **Default Value:** [Reference code](./defaults.md)
 
@@ -149,10 +141,6 @@ Setting `value = null` still allowed through code.
 **Description:** Called just after picker popover has transitioned out of view
 
 **Params:** `Object`: Popover content root HTML element.
-
-:::warning
-Popover events are only emitted when `is-inline === false`.
-:::
 
 <!-- 
 ### 

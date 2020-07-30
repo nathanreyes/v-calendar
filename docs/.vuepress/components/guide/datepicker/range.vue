@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="range" is-range is-inline />
+    <v-date-picker v-model="range" is-range />
   </div>
 </template>
 

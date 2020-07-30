@@ -3,7 +3,6 @@
     <v-date-picker
       v-model="date"
       :disabled-dates="{ weekdays: [1, 7] }"
-      is-inline
       is-range
     />
   </div>

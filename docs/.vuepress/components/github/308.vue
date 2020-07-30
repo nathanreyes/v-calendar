@@ -3,7 +3,6 @@
     color="red"
     is-dark
     is-expanded
-    is-inline
     :rows="$screens({ md: 2 }, 1)"
     :columns="$screens({ md: 2 }, 1)"
     :max-date="new Date()"

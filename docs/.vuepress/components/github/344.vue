@@ -1,5 +1,5 @@
 <template>
-  <v-date-picker :max-date="maxDate" v-model="value" is-inline />
+  <v-date-picker :max-date="maxDate" v-model="value" />
 </template>
 
 <script>

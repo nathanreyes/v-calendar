@@ -13,7 +13,6 @@ The following colors are provided out of the box: **gray**, **red**, **orange**,
     :value="null"
     color="red"
     is-dark
-    is-inline
     is-range
     />
 </div>
@@ -23,7 +22,6 @@ The following colors are provided out of the box: **gray**, **red**, **orange**,
   :value="null"
   color="red"
   is-dark
-  is-inline
   is-range
   />
 ```

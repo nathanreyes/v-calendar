@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date" :min-date="minDate" :max-date="maxDate" is-inline/>
+    <v-date-picker v-model="date" :min-date="minDate" :max-date="maxDate" />
   </div>
 </template>
 

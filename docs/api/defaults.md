@@ -123,7 +123,7 @@ pageClass: docs-page
 
 **Type:** Object
 
-**Description:** Properties of the popover to apply for the calendar component. Not applicable when `is-inline === true`.
+**Description:** Properties of the popover to apply for the calendar component. Not applicable for inline pickers.
 
 **Default Value:** *Reference below for default values.*
 

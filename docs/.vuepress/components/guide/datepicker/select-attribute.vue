@@ -1,10 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker
-      v-model="date"
-      :select-attribute="selectAttribute"
-      is-inline
-    />
+    <v-date-picker v-model="date" :select-attribute="selectAttribute" />
   </div>
 </template>
 

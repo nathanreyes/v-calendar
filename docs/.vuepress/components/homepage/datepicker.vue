@@ -3,11 +3,11 @@
     <h2 class="h2">Date Picker</h2>
     <p class="text-lg font-medium text-gray-600 mb-2">Single Dates</p>
     <div class="flex flex-col items-center mb-6">
-      <v-date-picker v-model="date" is-inline />
+      <v-date-picker v-model="date" />
     </div>
     <p class="text-lg font-medium text-gray-600 mb-2">Date Ranges</p>
     <div class="flex flex-col items-center mb-6">
-      <v-date-picker v-model="range" is-inline is-range />
+      <v-date-picker v-model="range" is-range />
     </div>
     <p class="text-lg font-medium text-gray-600">Popover Mode</p>
     <div class="example-home mt-0">

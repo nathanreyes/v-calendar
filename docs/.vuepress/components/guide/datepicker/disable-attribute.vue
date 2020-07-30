@@ -4,7 +4,6 @@
       v-model="date"
       :disabled-dates="{ weekdays: [1, 7] }"
       :disabled-attribute="disabledAttribute"
-      is-inline
       is-range
     />
   </div>
