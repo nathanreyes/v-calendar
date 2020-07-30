@@ -6,23 +6,16 @@ sidebarDepth: 2
 # Date Picker
 
 :::warning
-As of `v1.1.0`, the following **breaking** changes have been made to `v-date-picker`
+`v1.1.0` has introduced a significant number of breaking changes.
 
-- `mode` prop now accepts the following `String` values
-  - `"date"`: Date selection
-  - `"dateTime"`: Date & time selection
-  - `"time"`: Time selection
-- `is-range` should be used for date range values, replacing the use of `mode = "range"` for previous versions.
-- Multiple date selection is deprecated for alternative patterns
-  :::
+[Read the upgrade guide for details.](/changelog/v1.1.html)
+:::
 
-`v-date-picker` is a powerful date picker delivered with `v-calendar`. It is simply a wrapper for `v-calendar` so it comes with a lot of flexibility out of the box. For example, it accepts all props supported by `v-calendar` and emits all of the same events.
+`v-date-picker` is a feature-rich date picker implemented as a wrapper for `v-calendar`. That means that, out of the box, it accepts all props and emits all of the same events.
 
-Also, it uses [customizable](#customize-attributes) attributes under the hood to represent selected dates. For example, you could change the date selection from a highlight to dots if that makes more sense for your application.
+## Single Dates
 
-## Inline
-
-The calendar picker will be displayed inline when no default slot is provided.
+`v-date-picker` can bind to single dates using the `v-model` directive.
 
 <guide-datepicker-intro-inline />
 
@@ -31,16 +24,114 @@ The calendar picker will be displayed inline when no default slot is provided.
 ```
 
 ```js
+data() {
+  return {
+    date: new Date(),
+  }
+}
+```
+
+#### Time adjustments
+
+Future selected dates retain the same time as the initial date value. To auto-adjust the time for new dates selected, provide a `model-config` with the desired time setting.
+
+```js
+data() {
+  return {
+    date: new Date(),
+    modelConfig: {
+      time: 'startOfDay' // Assigns 00:00:00 for new dates
+    }
+  }
+}
+```
+
+| Time Setting | Description |
+| --- | --- |
+| `initial` | Use time from the initial date value, or `noon` if `null` (*default*) |
+| `startOfDay` | |
+| `endOfDay` | |
+| `now` | |
+| *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
+
+### Strings :tada:
+
+*Introduced in **`v1.1.0`***
+
+To bind to a string value, provide a `model-config` with the binding parameters.
+
+<!-- <guide-datepicker-format-parse-model /> -->
+
+```html
+<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+```
+
+```js
 export default {
+  props: {
+    // Customer model with birthday in 'YYYY-MM-DD' format
+    customer: Object,
+  },
   data() {
     return {
-      date: new Date(),
-    };
-  },
+      modelConfig: {
+        type: 'string',
+        mask: 'YYYY-MM-DD',
+        time: 'initial'
+      }
+    }
+  }
 };
 ```
 
-## Popover
+### Numbers
+
+## Date Ranges
+
+To bind to date range values, set the `is-range` prop.
+
+```html
+<v-date-picker value="range" is-range />
+```
+
+```js
+data() {
+  return {
+    range: {
+      start: new Date(2020, 0, 1),
+      end: new Date(2020, 0, 5)
+    }
+  }
+}
+```
+
+## Selection Modes :tada:
+
+### Date
+
+<guide-datepicker-with-value mode="date" />
+
+### Date & Time
+
+<guide-datepicker-with-value mode="dateTime" />
+
+```html
+<v-date-picker v-model="date" mode="dateTime" >
+```
+
+```js
+data() {
+  return {
+    date: new Date()
+  }
+}
+```
+
+### Time
+
+<guide-datepicker-with-value mode="time" />
+
+## Popovers
 
 :::warning
 As of `v1.1.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
@@ -317,76 +408,6 @@ Values passed to `updateValue()` are validated against `disabled-dates`, `availa
 | `opts.hidePopover` | `Boolean` | Hide the popover. | `false` |
 | `opts.debounce` | `Number` | Debounce rate (ms) for which the value is assigned. | `undefined` |
 | `opts.adjustPageRange` | `Boolean` | Adjust the `from-page` in order to properly display the value. | `undefined` |
-
-## Date Ranges
-
-## Selection Modes :tada:
-
-### Date
-
-### Date & Time
-
-### Time
-
-## Model Binding
-
-### Single Dates
-
-`v-date-picker` can bind to single dates and date ranges using the `v-model` directive. Single date binding is the default configuration.
-
-```html
-<v-date-picker value="date" />
-```
-
-```js
-data() {
-  return {
-    date: new Date(),
-  }
-}
-```
-
-### Date Ranges
-
-To bind to date range values, set the `is-range` prop.
-
-```html
-<v-date-picker value="range" is-range />
-```
-
-```js
-data() {
-  return {
-    range: {
-      start: new Date(2020, 0, 1),
-      end: new Date(2020, 0, 5)
-    }
-  }
-}
-```
-
-### Strings :tada:
-
-Previous to `v1.1.0`, binding was strictly limited to Javascript `Date` values.
-
-Binding to a string is now available.
-
-<!-- <guide-datepicker-format-parse-model /> -->
-
-```html
-<v-date-picker v-model="customer.birthday" />
-```
-
-```js
-export default {
-  props: {
-    // Customer model with birthday in 'YYYY-MM-DD' format
-    customer: Object,
-  },
-};
-```
-
-### Numbers
 
 ## Disable Dates
 
