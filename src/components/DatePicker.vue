@@ -92,13 +92,13 @@ export default {
         },
         scopedSlots: {
           ...this.$scopedSlots,
-          footer: this.mode.toLowerCase() === MODE_DATE_TIME && timePicker,
+          footer: this.isDateTime && timePicker,
         },
         ref: 'calendar',
       });
     // Content renderer
     const content = () => {
-      if (this.mode.toLowerCase() === MODE_TIME) {
+      if (this.isTime) {
         return h(
           'div',
           {
@@ -175,6 +175,15 @@ export default {
     },
     inputDebounce_() {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
+    },
+    isDate() {
+      return this.mode.toLowerCase() === MODE_DATE;
+    },
+    isDateTime() {
+      return this.mode.toLowerCase() === MODE_DATE_TIME;
+    },
+    isTime() {
+      return this.mode.toLowerCase() === MODE_TIME;
     },
     isDragging() {
       return !!this.dragValue;
@@ -410,7 +419,7 @@ export default {
       const opts = {
         patch: PATCH_DATE,
         formatInput: true,
-        hidePopover: this.mode.toLowerCase() === MODE_DATE,
+        hidePopover: this.isDate,
         adjustPageRange: false,
       };
       if (this.isRange) {
