@@ -470,10 +470,13 @@ export default {
         if (!this.updateOnInput_) return;
         const inputValue = e.target.value;
         if (this.isRange) {
-          const start = isStart ? inputValue : this.value_.end;
-          const end = isStart ? this.value_.end : inputValue;
-          this.updateValue({ start, end }, opts);
+          this.inputValues[isStart ? 0 : 1] = inputValue;
+          this.updateValue(
+            { start: this.inputValues[0], end: this.inputValues[1] },
+            opts,
+          );
         } else {
+          this.inputValues[0] = inputValue;
           this.updateValue(inputValue, opts);
         }
       };
@@ -488,10 +491,13 @@ export default {
       return e => {
         const inputValue = e.target.value;
         if (this.isRange) {
-          const start = isStart ? inputValue : this.value_.end;
-          const end = isStart ? this.value_.end : inputValue;
-          this.updateValue({ start, end }, opts);
+          this.inputValues[isStart ? 0 : 1] = inputValue;
+          this.updateValue(
+            { start: this.inputValues[0], end: this.inputValues[1] },
+            opts,
+          );
         } else {
+          this.inputValues[0] = inputValue;
           this.updateValue(inputValue, opts);
         }
       };
@@ -651,15 +657,15 @@ export default {
           timezone: this.timezone,
         };
         const inputValues = ['', ''];
+        const value = this.denormalizeValue(
+          this.dragValue || this.value_,
+          opts,
+        );
         if (this.isRange) {
-          const value = this.denormalizeValue(
-            this.dragValue || this.value_,
-            opts,
-          );
           inputValues[0] = value && value.start;
           inputValues[1] = value && value.end;
         } else {
-          inputValues[0] = this.denormalizeValue(this.value_, opts);
+          inputValues[0] = value;
         }
         this.inputValues = inputValues;
       });
