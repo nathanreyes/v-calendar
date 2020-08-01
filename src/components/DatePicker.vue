@@ -586,7 +586,7 @@ export default {
     },
     hasValue(value) {
       if (this.isRange) {
-        return isObject(value) && has(value, 'start') && has(value, 'end');
+        return isObject(value) && value.start && value.end;
       }
       return !!value;
     },
