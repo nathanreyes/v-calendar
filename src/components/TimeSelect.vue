@@ -1,6 +1,6 @@
 <template>
   <div class="vc-select">
-    <select v-bind="$attrs" v-on="$listeners">
+    <select v-bind="$attrs" @change="$emit('input', $event.target.value)">
       <option
         v-for="option in options"
         :key="option.value"

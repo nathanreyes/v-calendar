@@ -29,17 +29,9 @@
         </div>
       </div>
       <div class="vc-time">
-        <time-select
-          :value="hours"
-          @input="hours = $event.target.value"
-          :options="hourOptions"
-        />
-        <span style="margin: 0 4px">:</span>
-        <time-select
-          :value="minutes"
-          @input="minutes = $event.target.value"
-          :options="minuteOptions"
-        />
+        <time-select v-model.number="hours" :options="hourOptions" />
+        <span style="margin: 0 4px;">:</span>
+        <time-select v-model.number="minutes" :options="minuteOptions" />
         <div class="vc-am-pm">
           <button :class="{ active: isAM }" @click="isAM = true">
             AM
