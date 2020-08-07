@@ -76,9 +76,8 @@ h1,
 h2,
 h3,
 h4 {
-  &:not(:first-child) {
-    @apply mt-6;
-  }
+  padding-top: 64px;
+  margin-top: -64px;
 }
 
 a {

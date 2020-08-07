@@ -1,7 +1,11 @@
 <template>
-  <div :class="pageClasses" @touchstart="onTouchStart" @touchend="onTouchEnd">
+  <div class="flex flex-col overflow-hidden">
     <Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
-    <div class="relative flex w-full max-w-5xl mx-auto text-gray-700">
+    <div
+      class="flex-grow relative flex w-full max-w-5xl mx-auto text-gray-700 mt-12 md:mt-16 overflow-hidden"
+      @touchstart="onTouchStart"
+      @touchend="onTouchEnd"
+    >
       <!--Sidebar mask-->
       <div
         v-if="isSidebarOpen"
@@ -28,7 +32,9 @@
         </Sidebar>
       </div>
       <!--Desktop sidebar-->
-      <div class="flex-shrink-0 hidden md:block md:relative z-10 w-72">
+      <div
+        class="flex-shrink-0 hidden md:block md:relative z-10 w-72 overflow-y-scroll"
+      >
         <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar" show-ads>
           <template name="sidebar-top">
             <slot name="sidebar-top" />
@@ -39,7 +45,7 @@
         </Sidebar>
       </div>
       <!--Main page-->
-      <div :class="['flex-grow', 'overflow-y-auto']">
+      <div class="flex-grow overflow-y-scroll">
         <!--Home page-->
         <Home v-if="$page.frontmatter.home" />
         <!--Other pages-->
@@ -104,17 +110,6 @@ export default {
         this.$localePath,
       );
     },
-    pageClasses() {
-      const userPageClass = this.$page.frontmatter.pageClass;
-      return [
-        {
-          'no-navbar': !this.shouldShowNavbar,
-          'sidebar-open': this.isSidebarOpen,
-          'no-sidebar': !this.shouldShowSidebar,
-        },
-        userPageClass,
-      ];
-    },
   },
   watch: {
     isSidebarOpen(val) {
@@ -154,7 +149,7 @@ export default {
 </script>
 
 <style lang="stylus">
-body, html, .app {
+body, html, #app {
   height: 100%;
 }
 </style>

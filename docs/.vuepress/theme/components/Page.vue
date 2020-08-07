@@ -1,5 +1,5 @@
 <template>
-  <main class="px-4 pt-8 mt-12 md:mt-16 mx-auto">
+  <main class="px-4 mx-auto">
     <slot name="top" />
     <Content />
     <PageEdit />
