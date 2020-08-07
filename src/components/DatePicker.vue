@@ -9,12 +9,11 @@ import {
   datesAreEqual,
   createGuid,
   elementContains,
-  getMaxPage,
-  addPages,
+  pageIsBetweenPages,
   on,
   off,
 } from '../utils/helpers';
-import { isObject, isArray, has, pick } from '../utils/_';
+import { isObject, isArray, pick } from '../utils/_';
 import {
   showPopover as sp,
   hidePopover as hp,
@@ -209,13 +208,18 @@ export default {
             end: this.inputValues[1],
           }
         : this.inputValues[0];
-      const events = [true, false].map(b => ({
-        input: this.onInputInput(inputConfig, b),
-        change: this.onInputChange(inputConfig, b),
+      const events = [true, false].map(isStart => ({
+        input: this.onInputInput(inputConfig, isStart),
+        change: this.onInputChange(inputConfig, isStart),
         keyup: this.onInputKeyup,
         ...getPopoverTriggerEvents({
           ...this.popover_,
           id: this.datePickerPopoverId,
+          callback: e => {
+            if (e.action === 'show' && e.completed) {
+              this.onInputShow(isStart);
+            }
+          },
         }),
       }));
       const inputEvents = isRange
@@ -420,7 +424,6 @@ export default {
         patch: PATCH_DATE,
         formatInput: true,
         hidePopover: this.isDate,
-        adjustPageRange: false,
       };
       if (this.isRange) {
         if (!this.isDragging) {
@@ -440,14 +443,12 @@ export default {
       this.dragTrackingValue.end = day.range.start;
       this.updateValue(this.dragTrackingValue, {
         patch: PATCH_DATE,
-        adjustPageRange: false,
       });
     },
     onTimeInput(parts, idx) {
       const opts = {
         config: { timezone: this.timezone, type: 'object' },
         patch: PATCH_TIME,
-        adjustPageRange: false,
       };
       if (this.isRange) {
         const start = idx === 0 ? parts : this.dateParts[0];
@@ -486,7 +487,6 @@ export default {
         config,
         formatInput: true,
         hidePopover: false,
-        adjustPageRange: false,
       };
       return e => {
         const inputValue = e.target.value;
@@ -502,13 +502,17 @@ export default {
         }
       };
     },
+    onInputShow(isStart) {
+      const page = this.getPageForValue(isStart);
+      const position = isStart ? 1 : -1;
+      this.adjustPageRange(page, position);
+    },
     onInputKeyup(e) {
       // Escape key only
       if (e.key !== 'Escape') return;
       this.updateValue(this.value_, {
         formatInput: true,
         hidePopover: true,
-        adjustPageRange: false,
       });
     },
     updateValue(value, opts = {}) {
@@ -531,7 +535,6 @@ export default {
         notify = true,
         formatInput = true,
         hidePopover = false,
-        adjustPageRange = true,
         isDragging = this.isDragging,
       } = {},
     ) {
@@ -689,22 +692,29 @@ export default {
         id: this.datePickerPopoverId,
       });
     },
-    adjustPageRange() {
-      if (this.hasValue(this.value_) && this.$refs.calendar) {
-        this.$refs.calendar.showPageRange(this.getPageRange(this.value_));
-      }
+    adjustPageRange(page, position = 1) {
+      this.$nextTick(() => {
+        const calendar = this.$refs.calendar;
+        page = page || this.getPageForValue(true);
+        if (
+          page &&
+          calendar &&
+          !pageIsBetweenPages(page, calendar.firstPage, calendar.lastPage)
+        ) {
+          calendar.move(page, {
+            position,
+          });
+        }
+      });
     },
-    getPageRange(value) {
-      if (!this.hasValue(value)) {
-        return null;
-      }
-      if (this.isRange) {
-        const from = pageForDate(value.start);
-        const to = getMaxPage(pageForDate(value.end), addPages(from, 1));
         return { from, to };
+    getPageForValue(isStart) {
+      if (this.hasValue(this.value_)) {
+        return pageForDate(
+          this.isRange ? this.value_[isStart ? 'start' : 'end'] : this.value_,
+        );
       }
-      const from = pageForDate(value);
-      return { from, to: from };
+      return null;
     },
   },
 };

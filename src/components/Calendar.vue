@@ -70,7 +70,6 @@ export default {
         refInFor: true,
       }),
     );
-
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const click = () => this.move(isPrev ? -this.step_ : this.step_);
@@ -100,7 +99,6 @@ export default {
         ],
       );
     };
-
     // Day popover
     const getDayPopover = () =>
       h(Popover, {
@@ -282,6 +280,12 @@ export default {
     titlePosition_() {
       return this.propOrDefault('titlePosition', 'titlePosition');
     },
+    firstPage() {
+      return head(this.pages);
+    },
+    lastPage() {
+      return last(this.pages);
+    },
     minPage_() {
       return this.minPage || pageForDate(this.normalizeDate(this.minDate));
     },
@@ -310,7 +314,7 @@ export default {
   watch: {
     $locale() {
       this.refreshLocale();
-      this.refreshPages({ page: head(this.pages), ignoreCache: true });
+      this.refreshPages({ page: this.firstPage, ignoreCache: true });
       this.initStore();
     },
     $theme() {
@@ -424,9 +428,9 @@ export default {
       let fromPage = null;
       if (opts.position) {
         fromPage = this.getTargetPageRange(page, opts.position).fromPage;
-      } else if (pageIsBeforePage(page, this.pages[0])) {
+      } else if (pageIsBeforePage(page, this.firstPage)) {
         fromPage = this.getTargetPageRange(page, -1).fromPage;
-      } else if (pageIsAfterPage(page, last(this.pages))) {
+      } else if (pageIsAfterPage(page, this.lastPage)) {
         fromPage = this.getTargetPageRange(page, 1).fromPage;
       }
       // Move to new fromPage if it's different from the current one
@@ -462,14 +466,14 @@ export default {
       } else {
         return;
       }
-      const lastPage = last(this.pages);
+      const lastPage = this.lastPage;
       let page = fromPage;
       // Offset page from the desired `toPage`
       if (pageIsAfterPage(toPage, lastPage)) {
         page = addPages(toPage, -(this.pages.length - 1));
       }
       // But no earlier than the desired `fromPage`
-      if (pageIsBeforePage(fromPage, page)) {
+      if (pageIsBeforePage(page, fromPage)) {
         page = fromPage;
       }
       await this.refreshPages({ ...opts, page });

@@ -1,7 +1,6 @@
 import { elementContains } from './helpers';
 
 export function showPopover(opts) {
-  if (!(opts.ref instanceof HTMLElement)) return;
   document.dispatchEvent(
     new CustomEvent('show-popover', {
       detail: opts,

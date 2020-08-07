@@ -71,6 +71,7 @@ export default {
   data() {
     return {
       ref: null,
+      opts: null,
       data: null,
       placement: 'bottom',
       positionFixed: false,
@@ -134,6 +135,17 @@ export default {
     },
     state() {
       return this.$popovers[this.id];
+    },
+  },
+  watch: {
+    opts(val, oldVal) {
+      if (oldVal && oldVal.callback) {
+        oldVal.callback({
+          ...oldVal,
+          completed: !val,
+          reason: val ? 'Overridden by action' : null,
+        });
+      }
     },
   },
   mounted() {
@@ -238,14 +250,26 @@ export default {
       this.update(detail);
     },
     show(opts = {}) {
+      opts.action = 'show';
       const ref = opts.ref || this.ref;
       const delay = opts.delay || this.showDelay;
-      if (!ref) return;
+      // Validate options
+      if (!ref) {
+        if (opts.callback) {
+          opts.callback({
+            completed: false,
+            reason: 'Invalid reference element provided',
+          });
+        }
+        return;
+      }
+      clearTimeout(this.timeout);
+      this.opts = opts;
       const fn = () => {
         Object.assign(this, opts);
         this.setupPopper();
+        this.opts = null;
       };
-      clearTimeout(this.timeout);
       if (delay > 0) {
         this.timeout = setTimeout(() => fn(), delay);
       } else {
@@ -253,14 +277,27 @@ export default {
       }
     },
     hide(opts = {}) {
+      opts.action = 'hide';
       const ref = opts.ref || this.ref;
       const delay = opts.delay || this.hideDelay;
-      if (ref && ref !== this.ref) return;
+      if (!this.ref || ref !== this.ref) {
+        if (opts.callback) {
+          opts.callback({
+            ...opts,
+            completed: false,
+            reason: this.ref
+              ? 'Invalid reference element provided'
+              : 'Popover already hidden',
+          });
+        }
+        return;
+      }
       const fn = () => {
-        if (ref && ref !== this.ref) return;
         this.ref = null;
+        this.opts = null;
       };
       clearTimeout(this.timeout);
+      this.opts = opts;
       if (delay > 0) {
         this.timeout = setTimeout(fn, delay);
       } else {
