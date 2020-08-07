@@ -535,6 +535,7 @@ export default {
         notify = true,
         formatInput = true,
         hidePopover = false,
+        adjustPageRange = false,
         isDragging = this.isDragging,
       } = {},
     ) {
@@ -707,7 +708,6 @@ export default {
         }
       });
     },
-        return { from, to };
     getPageForValue(isStart) {
       if (this.hasValue(this.value_)) {
         return pageForDate(
