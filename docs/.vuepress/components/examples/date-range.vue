@@ -11,7 +11,7 @@
               <div class="flex justify-start items-center">
                 <div class="relative w-40">
                   <svg
-                    class="text-gray-600 w-4 h-4 m-2 absolute pointer-events-none"
+                    class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
                     fill="none"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -33,7 +33,7 @@
                 <span class="flex-shrink-0 mx-2">&#8594;</span>
                 <div class="relative w-40">
                   <svg
-                    class="text-gray-600 w-4 h-4 m-2 absolute pointer-events-none"
+                    class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
                     fill="none"
                     stroke-linecap="round"
                     stroke-linejoin="round"
