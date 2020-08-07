@@ -459,27 +459,21 @@ export default {
       }
     },
     onInputInput(config, isStart) {
-      const opts = {
-        config,
-        patch: PATCH_DATE_TIME,
-        formatInput: false,
-        hidePopover: false,
-        adjustPageRange: true,
-        debounce: this.inputDebounce_,
-      };
-      return e => {
+      return async e => {
         if (!this.updateOnInput_) return;
-        const inputValue = e.target.value;
+        let inputValue = e.target.value;
+        this.inputValues[isStart ? 0 : 1] = inputValue;
         if (this.isRange) {
-          this.inputValues[isStart ? 0 : 1] = inputValue;
-          this.updateValue(
-            { start: this.inputValues[0], end: this.inputValues[1] },
-            opts,
-          );
-        } else {
-          this.inputValues[0] = inputValue;
-          this.updateValue(inputValue, opts);
+          inputValue = { start: this.inputValues[0], end: this.inputValues[1] };
         }
+        await this.updateValue(inputValue, {
+          config,
+          patch: PATCH_DATE_TIME,
+          formatInput: false,
+          hidePopover: false,
+          debounce: this.inputDebounce_,
+        });
+        this.adjustPageRange(isStart);
       };
     },
     onInputChange(config, isStart) {
@@ -503,9 +497,7 @@ export default {
       };
     },
     onInputShow(isStart) {
-      const page = this.getPageForValue(isStart);
-      const position = isStart ? 1 : -1;
-      this.adjustPageRange(page, position);
+      this.adjustPageRange(isStart);
     },
     onInputKeyup(e) {
       // Escape key only
@@ -517,15 +509,18 @@ export default {
     },
     updateValue(value, opts = {}) {
       clearTimeout(this.updateTimeout);
-      const { debounce, ...args } = opts;
-      if (debounce > 0) {
-        this.updateTimeout = setTimeout(
-          () => this.forceUpdateValue(value, args),
-          debounce,
-        );
-      } else {
-        this.forceUpdateValue(value, args);
-      }
+      return new Promise(resolve => {
+        const { debounce, ...args } = opts;
+        if (debounce > 0) {
+          this.updateTimeout = setTimeout(() => {
+            this.forceUpdateValue(value, args);
+            resolve(this.value_);
+          }, debounce);
+        } else {
+          this.forceUpdateValue(value, args);
+          resolve(this.value_);
+        }
+      });
     },
     forceUpdateValue(
       value,
@@ -535,7 +530,6 @@ export default {
         notify = true,
         formatInput = true,
         hidePopover = false,
-        adjustPageRange = false,
         isDragging = this.isDragging,
       } = {},
     ) {
@@ -586,7 +580,6 @@ export default {
       // 5. Side effects for non-inline pickers
       if (formatInput) this.formatInput();
       if (hidePopover) this.hidePopover();
-      if (adjustPageRange) this.adjustPageRange();
     },
     hasValue(value) {
       if (this.isRange) {
@@ -693,10 +686,11 @@ export default {
         id: this.datePickerPopoverId,
       });
     },
-    adjustPageRange(page, position = 1) {
+    adjustPageRange(isStart) {
       this.$nextTick(() => {
         const calendar = this.$refs.calendar;
-        page = page || this.getPageForValue(true);
+        const page = this.getPageForValue(isStart);
+        const position = isStart ? 1 : -1;
         if (
           page &&
           calendar &&
@@ -704,6 +698,7 @@ export default {
         ) {
           calendar.move(page, {
             position,
+            transition: 'fade',
           });
         }
       });
