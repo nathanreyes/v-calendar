@@ -9,6 +9,68 @@ Attributes are what bring `v-calendar` to life. They are simply visual decorator
 
 <guide-attributes-intro />
 
+Attributes are defined as an array of objects (each object is a separate attribute).
+
+A single attribute may be displayed for single dates, date ranges and even complex date patterns. Some examples of complex patterns include:
+* Every other Friday
+* 15th of every month
+* Last Friday of every other month.
+
+Here is the basic structure of attributes:
+
+```html
+<v-calendar
+  :attributes='attributes'
+  />
+```
+
+```js
+...
+data() {
+  return {
+    // Attributes are supplied as an array
+    attributes: [
+      // This is a single attribute
+      {
+        // An optional key can be used for retrieving this attribute later,
+        // and will most likely be derived from your data object
+        key: Any,
+        // Attribute type definitions
+        highlight: true,  // Boolean, String, Object
+        dot: true,        // Boolean, String, Object
+        bar: true,        // Boolean, String, Object
+        content: 'red',   // Boolean, String, Object
+        popover: { ... }, // Only objects allowed
+        // Your custom data object for later access, if needed
+        customData: { ... },
+        // We also need some dates to know where to display the attribute
+        // We use a single date here, but it could also be an array of dates,
+        //  a date range or a complex date pattern.
+        dates: new Date(),
+        // You can optionally provide dates to exclude
+        excludeDates: null,
+        // Think of `order` like `z-index`
+        order: 0
+      }
+    ];
+  }
+}
+```
+
+### Using `customData`
+
+The `customData` property is used to link your own custom data object to the attribute. This is useful when handling events or providing custom slot content. For example, if a user clicks on a calendar day that is displaying the attribute, you might want to have some data associated with that attribute.
+
+### Using `order`
+
+By default, attributes are ordered to display the most information possible. For example, when attributes with highlighted regions overlap, single date regions appear above date range regions, and date ranges with a later start date appear above those with an earlier start date. 
+
+<p align='center'>
+  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524511198/v-calendar/attributes-order.png' title='Ordering with highlights' width='200'>
+</p>
+
+If you would like to force an attribute to display above (or before) all others and override these rules, assign an order value greater than 0.
+
 ## Quick Guide
 
 Let's start by displaying a simple **highlight** on today's date.
@@ -69,7 +131,7 @@ export default {
 
 ## Colors
 
-There are 8 pre-defined color sets available (gray, red, orange, yellow, green, teal, blue, indigo, purple, pink).
+There are 8 pre-defined color sets available (`gray`, `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`).
 
 As mentioned above, if a color is not specifically assigned to an attribute, the `color` prop passed to the component is used. If this color is not provided, the default `blue` color is used.
 
@@ -96,93 +158,6 @@ export default {
 Additionally, when an object is used to configure an attribute, the `color` property may be assigned as part of that configuration.
 
 Click to learn more about the custom properties for [highlights](#highlights), [dots](#dots), [bars](#bars) and [popovers](#popovers).
-
-Finally, let's quickly see how simple it is to add a popover label (or tooltip) to the previous example. All we need to do is add a popover object to our attribute.
-
-<guide-attributes-popover />
-
-```js{8-10}
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          key: 'today',
-          highlight: 'red',
-          popover: {
-            label: 'You just hovered over today\'s date!',
-          },
-          dates: new Date(),
-        },
-      ],
-    };
-  },
-};
-```
-
-## Attribute Types
-
-Attributes are defined as an array of objects (each object is a separate attribute). Any one or more of these types may be included in a single attribute object.
-
-Furthermore, a single attribute may be displayed for single dates, date ranges and even complex date patterns. Some examples of complex patterns include:
-* Every other Friday
-* 15th of every month
-* Last Friday of every other month.
-
-Here is the basic structure of attributes:
-
-```html
-<v-calendar
-  :attributes='attributes'
-  />
-```
-
-```js
-...
-data() {
-  return {
-    // Attributes are supplied as an array
-    attributes: [
-      // This is a single attribute
-      {
-        // An optional key can be used for retrieving this attribute later,
-        // and will most likely be derived from your data object
-        key: Any,
-        // Attribute type definitions
-        highlight: true,  // Boolean, String, Object
-        dot: true,        // Boolean, String, Object
-        bar: true,        // Boolean, String, Object
-        content: 'red',   // Boolean, String, Object
-        popover: { ... }, // Only objects allowed
-        // Your custom data object for later access, if needed
-        customData: { ... },
-        // We also need some dates to know where to display the attribute
-        // We use a single date here, but it could also be an array of dates,
-        //  a date range or a complex date pattern.
-        dates: new Date(),
-        // You can optionally provide dates to exclude
-        excludeDates: null,
-        // Think of `order` like `z-index`
-        order: 0
-      }
-    ];
-  }
-}
-```
-
-### Using `customData`
-
-The `customData` property is used to link your own custom data object to the attribute. This is useful when handling events or providing custom slot content. For example, if a user clicks on a calendar day that is displaying the attribute, you might want to have some data associated with that attribute.
-
-### Using `order`
-
-By default, attributes are ordered to display the most information possible. For example, when attributes with highlighted regions overlap, single date regions appear above date range regions, and date ranges with a later start date appear above those with an earlier start date. 
-
-<p align='center'>
-  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524511198/v-calendar/attributes-order.png' title='Ordering with highlights' width='200'>
-</p>
-
-If you would like to force an attribute to display above (or before) all others and override these rules, assign an order value greater than 0.
 
 ## Highlights
 
