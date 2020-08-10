@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise, no-mixed-operators, no-useless-escape, no-multi-assign */
 /* DATE FORMATTING & PARSING USING A SLIGHTLY MODIFIED VERSION OF FECHA (https://github.com/taylorhakes/fecha) */
 /* ADDS A NARROW WEEKDAY FORMAT 'dd' */
-import { isNumber, isString, isDate } from './_';
+import { isString } from './_';
 import { pad, arrayHasItems } from './helpers';
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|X{1,3}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
@@ -25,104 +25,104 @@ function monthUpdate(arrName) {
 
 const formatFlags = {
   D(dateObj) {
-    return dateObj.getDate();
+    return dateObj.day;
   },
   DD(dateObj) {
-    return pad(dateObj.getDate());
+    return pad(dateObj.day);
   },
   Do(dateObj, i18n) {
-    return i18n.DoFn(dateObj.getDate());
+    return i18n.DoFn(dateObj.day);
   },
   d(dateObj) {
-    return dateObj.getDay();
+    return dateObj.weekday - 1;
   },
   dd(dateObj) {
-    return pad(dateObj.getDay());
+    return pad(dateObj.weekday - 1);
   },
   W(dateObj, i18n) {
-    return i18n.dayNamesNarrow[dateObj.getDay()];
+    return i18n.dayNamesNarrow[dateObj.weekday - 1];
   },
   WW(dateObj, i18n) {
-    return i18n.dayNamesShorter[dateObj.getDay()];
+    return i18n.dayNamesShorter[dateObj.weekday - 1];
   },
   WWW(dateObj, i18n) {
-    return i18n.dayNamesShort[dateObj.getDay()];
+    return i18n.dayNamesShort[dateObj.weekday - 1];
   },
   WWWW(dateObj, i18n) {
-    return i18n.dayNames[dateObj.getDay()];
+    return i18n.dayNames[dateObj.weekday - 1];
   },
   M(dateObj) {
-    return dateObj.getMonth() + 1;
+    return dateObj.month;
   },
   MM(dateObj) {
-    return pad(dateObj.getMonth() + 1);
+    return pad(dateObj.month);
   },
   MMM(dateObj, i18n) {
-    return i18n.monthNamesShort[dateObj.getMonth()];
+    return i18n.monthNamesShort[dateObj.month - 1];
   },
   MMMM(dateObj, i18n) {
-    return i18n.monthNames[dateObj.getMonth()];
+    return i18n.monthNames[dateObj.month - 1];
   },
   YY(dateObj) {
-    return String(dateObj.getFullYear()).substr(2);
+    return String(dateObj.year).substr(2);
   },
   YYYY(dateObj) {
-    return pad(dateObj.getFullYear(), 4);
+    return pad(dateObj.year, 4);
   },
   h(dateObj) {
-    return dateObj.getHours() % 12 || 12;
+    return dateObj.hours % 12 || 12;
   },
   hh(dateObj) {
-    return pad(dateObj.getHours() % 12 || 12);
+    return pad(dateObj.hours % 12 || 12);
   },
   H(dateObj) {
-    return dateObj.getHours();
+    return dateObj.hours;
   },
   HH(dateObj) {
-    return pad(dateObj.getHours());
+    return pad(dateObj.hours);
   },
   m(dateObj) {
-    return dateObj.getMinutes();
+    return dateObj.minutes;
   },
   mm(dateObj) {
-    return pad(dateObj.getMinutes());
+    return pad(dateObj.minutes);
   },
   s(dateObj) {
-    return dateObj.getSeconds();
+    return dateObj.seconds;
   },
   ss(dateObj) {
-    return pad(dateObj.getSeconds());
+    return pad(dateObj.seconds);
   },
   S(dateObj) {
-    return Math.round(dateObj.getMilliseconds() / 100);
+    return Math.round(dateObj.milliseconds / 100);
   },
   SS(dateObj) {
-    return pad(Math.round(dateObj.getMilliseconds() / 10), 2);
+    return pad(Math.round(dateObj.milliseconds / 10), 2);
   },
   SSS(dateObj) {
-    return pad(dateObj.getMilliseconds(), 3);
+    return pad(dateObj.milliseconds, 3);
   },
   a(dateObj, i18n) {
-    return dateObj.getHours() < 12 ? i18n.amPm[0] : i18n.amPm[1];
+    return dateObj.hours < 12 ? i18n.amPm[0] : i18n.amPm[1];
   },
   A(dateObj, i18n) {
-    return dateObj.getHours() < 12
+    return dateObj.hours < 12
       ? i18n.amPm[0].toUpperCase()
       : i18n.amPm[1].toUpperCase();
   },
   X(dateObj) {
-    const o = dateObj.getTimezoneOffset();
+    const o = dateObj.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}`;
   },
   XX(dateObj) {
-    const o = dateObj.getTimezoneOffset();
+    const o = dateObj.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(
       Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60),
       4,
     )}`;
   },
   XXX(dateObj) {
-    const o = dateObj.getTimezoneOffset();
+    const o = dateObj.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}:${pad(
       Math.abs(o) % 60,
       2,
@@ -239,18 +239,14 @@ parseFlags.ss = parseFlags.s;
 parseFlags.A = parseFlags.a;
 parseFlags.XXX = parseFlags.XX = parseFlags.X;
 
-export const format = (dateObj, mask, locale) => {
+export const format = (dateObj, mask, locale, timezone) => {
   mask =
     (arrayHasItems(mask) && mask[0]) ||
     (isString(mask) && mask) ||
     'YYYY-MM-DD';
 
-  if (isNumber) {
-    dateObj = new Date(dateObj);
-  }
-  if (!isDate(dateObj)) {
-    throw new Error('Invalid Date in fecha.format');
-  }
+  dateObj = locale.getDateParts(locale.normalizeDate(dateObj), timezone);
+
   mask = locale.masks[mask] || mask;
   const literals = [];
   // Make literals inactive by replacing them with ??
@@ -268,7 +264,7 @@ export const format = (dateObj, mask, locale) => {
   return mask.replace(/\?\?/g, () => literals.shift());
 };
 
-const parseString = (dateStr, mask, locale) => {
+const parseString = (dateStr, mask, locale, timezone) => {
   if (typeof mask !== 'string') {
     throw new Error('Invalid mask in fecha.parse');
   }
@@ -329,25 +325,28 @@ const parseString = (dateStr, mask, locale) => {
       ),
     );
   } else {
-    date = new Date(
-      dateInfo.year || today.getFullYear(),
-      dateInfo.month || 0,
-      dateInfo.day || 1,
-      dateInfo.hour || 0,
-      dateInfo.minute || 0,
-      dateInfo.second || 0,
-      dateInfo.millisecond || 0,
+    date = locale.getDateFromParts(
+      {
+        year: dateInfo.year || today.getFullYear(),
+        month: (dateInfo.month || 0) + 1,
+        day: dateInfo.day || 1,
+        hours: dateInfo.hour || 0,
+        minutes: dateInfo.minute || 0,
+        seconds: dateInfo.second || 0,
+        milliseconds: dateInfo.millisecond || 0,
+      },
+      timezone,
     );
   }
   return date;
 };
 
-export const parse = (dateStr, mask, locale) => {
+export const parse = (dateStr, mask, locale, timezone) => {
   const masks = (arrayHasItems(mask) && mask) || [
     (isString(mask) && mask) || 'YYYY-MM-DD',
   ];
   return (
-    masks.map(m => parseString(dateStr, m, locale)).find(d => d) ||
+    masks.map(m => parseString(dateStr, m, locale, timezone)).find(d => d) ||
     new Date(dateStr)
   );
 };

@@ -57,12 +57,12 @@ export default class Locale {
     this.toPage = this.toPage.bind(this);
   }
 
-  parse(dateStr, mask) {
-    return parse(dateStr, mask || this.masks.L, this);
+  parse(dateStr, mask, timezone) {
+    return parse(dateStr, mask || this.masks.L, this, timezone);
   }
 
-  format(date, mask) {
-    return format(date, mask || this.masks.L, this);
+  format(date, mask, timezone) {
+    return format(date, mask || this.masks.L, this, timezone);
   }
 
   normalizeDate(d, config = {}) {
@@ -75,7 +75,7 @@ export default class Locale {
     } else if (isString(d)) {
       type = 'string';
       const mask = config.mask || 'iso';
-      result = d ? this.parse(d, mask) : null;
+      result = d ? this.parse(d, mask, config.timezone) : null;
     } else if (isObject(d)) {
       type = 'object';
       result = this.getDateFromParts(d, config.timezone);
@@ -92,7 +92,9 @@ export default class Locale {
       case 'number':
         return date ? date.getTime() : NaN;
       case 'string':
-        return date ? this.format(date, config.mask || 'iso') : '';
+        return date
+          ? this.format(date, config.mask || 'iso', config.timezone)
+          : '';
       default:
         return date ? new Date(date) : null;
     }
@@ -120,7 +122,7 @@ export default class Locale {
       (day + Math.abs(comps.firstWeekday - comps.firstDayOfWeek)) / 7,
     );
     const weekFromEnd = comps.weeks - week + 1;
-    return {
+    const parts = {
       seconds,
       minutes,
       hours,
@@ -136,6 +138,8 @@ export default class Locale {
       date,
       isValid: true,
     };
+    parts.timezoneOffset = this.getTimezoneOffset(parts, timezone) / 60000;
+    return parts;
   }
 
   getDateFromParts(parts, timezone) {
@@ -167,6 +171,30 @@ export default class Locale {
     const msInHour = 3600000;
     const date = new Date(utcDate.getTime() + tzOffset * msInHour);
     return date;
+  }
+
+  getTimezoneOffset(parts, timezone) {
+    const {
+      year: y,
+      month: m,
+      day: d,
+      minutes: min,
+      seconds: sec,
+      milliseconds: ms,
+    } = parts;
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      hour12: false,
+      hourCycle: 'h24',
+      timeZone: timezone || undefined,
+    });
+    const utcNoon = new Date(
+      Date.UTC(y || 0, m - 1, d || 0, 12, min || 0, sec || 0, ms || 0),
+    );
+    const tzHours = +formatter.format(utcNoon);
+    const tzOffset = 12 - tzHours;
+    const msInHour = 3600000;
+    return tzOffset * msInHour;
   }
 
   toPage(arg, fromPage) {

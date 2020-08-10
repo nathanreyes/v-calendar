@@ -314,7 +314,9 @@ export default {
       this.refreshDateParts();
     },
     timezone() {
+      this.initDateConfig();
       this.refreshDateParts();
+      this.forceUpdateValue(this.value_, { notify: true, formatInput: true });
     },
   },
   created() {
