@@ -1,6 +1,6 @@
-import { format, parse } from './fecha';
+/* eslint-disable no-bitwise, no-multi-assign */
 import defaultLocales from './defaults/locales';
-import { addPages, pageForDate } from './helpers';
+import { pad, addPages, pageForDate, arrayHasItems } from './helpers';
 import {
   isDate,
   isNumber,
@@ -11,8 +11,236 @@ import {
   clamp,
 } from './_';
 
+const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|X{1,3}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+const twoDigits = /\d\d?/;
+const threeDigits = /\d{3}/;
+const fourDigits = /\d{4}/;
+const word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+const literal = /\[([^]*?)\]/gm;
+const noop = () => {};
+const monthUpdate = arrName => (d, v, l) => {
+  const index = l[arrName].indexOf(
+    v.charAt(0).toUpperCase() + v.substr(1).toLowerCase(),
+  );
+  if (~index) {
+    d.month = index;
+  }
+};
+
 const daysInWeek = 7;
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const formatFlags = {
+  D(d) {
+    return d.day;
+  },
+  DD(d) {
+    return pad(d.day);
+  },
+  Do(d, l) {
+    return l.DoFn(d.day);
+  },
+  d(d) {
+    return d.weekday - 1;
+  },
+  dd(d) {
+    return pad(d.weekday - 1);
+  },
+  W(d, l) {
+    return l.dayNamesNarrow[d.weekday - 1];
+  },
+  WW(d, l) {
+    return l.dayNamesShorter[d.weekday - 1];
+  },
+  WWW(d, l) {
+    return l.dayNamesShort[d.weekday - 1];
+  },
+  WWWW(d, l) {
+    return l.dayNames[d.weekday - 1];
+  },
+  M(d) {
+    return d.month;
+  },
+  MM(d) {
+    return pad(d.month);
+  },
+  MMM(d, l) {
+    return l.monthNamesShort[d.month - 1];
+  },
+  MMMM(d, l) {
+    return l.monthNames[d.month - 1];
+  },
+  YY(d) {
+    return String(d.year).substr(2);
+  },
+  YYYY(d) {
+    return pad(d.year, 4);
+  },
+  h(d) {
+    return d.hours % 12 || 12;
+  },
+  hh(d) {
+    return pad(d.hours % 12 || 12);
+  },
+  H(d) {
+    return d.hours;
+  },
+  HH(d) {
+    return pad(d.hours);
+  },
+  m(d) {
+    return d.minutes;
+  },
+  mm(d) {
+    return pad(d.minutes);
+  },
+  s(d) {
+    return d.seconds;
+  },
+  ss(d) {
+    return pad(d.seconds);
+  },
+  S(d) {
+    return Math.round(d.milliseconds / 100);
+  },
+  SS(d) {
+    return pad(Math.round(d.milliseconds / 10), 2);
+  },
+  SSS(d) {
+    return pad(d.milliseconds, 3);
+  },
+  a(d, l) {
+    return d.hours < 12 ? l.amPm[0] : l.amPm[1];
+  },
+  A(d, l) {
+    return d.hours < 12 ? l.amPm[0].toUpperCase() : l.amPm[1].toUpperCase();
+  },
+  X(d) {
+    const o = d.timezoneOffset;
+    return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}`;
+  },
+  XX(d) {
+    const o = d.timezoneOffset;
+    return `${o > 0 ? '-' : '+'}${pad(
+      Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60),
+      4,
+    )}`;
+  },
+  XXX(d) {
+    const o = d.timezoneOffset;
+    return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}:${pad(
+      Math.abs(o) % 60,
+      2,
+    )}`;
+  },
+};
+const parseFlags = {
+  D: [
+    twoDigits,
+    (d, v) => {
+      d.day = v;
+    },
+  ],
+  Do: [
+    new RegExp(twoDigits.source + word.source),
+    (d, v) => {
+      d.day = parseInt(v, 10);
+    },
+  ],
+  d: [twoDigits, noop],
+  W: [word, noop],
+  M: [
+    twoDigits,
+    (d, v) => {
+      d.month = v - 1;
+    },
+  ],
+  MMM: [word, monthUpdate('monthNamesShort')],
+  MMMM: [word, monthUpdate('monthNames')],
+  YY: [
+    twoDigits,
+    (d, v) => {
+      const da = new Date();
+      const cent = +da
+        .getFullYear()
+        .toString()
+        .substr(0, 2);
+      d.year = `${v > 68 ? cent - 1 : cent}${v}`;
+    },
+  ],
+  YYYY: [
+    fourDigits,
+    (d, v) => {
+      d.year = v;
+    },
+  ],
+  S: [
+    /\d/,
+    (d, v) => {
+      d.millisecond = v * 100;
+    },
+  ],
+  SS: [
+    /\d{2}/,
+    (d, v) => {
+      d.millisecond = v * 10;
+    },
+  ],
+  SSS: [
+    threeDigits,
+    (d, v) => {
+      d.millisecond = v;
+    },
+  ],
+  h: [
+    twoDigits,
+    (d, v) => {
+      d.hour = v;
+    },
+  ],
+  m: [
+    twoDigits,
+    (d, v) => {
+      d.minute = v;
+    },
+  ],
+  s: [
+    twoDigits,
+    (d, v) => {
+      d.second = v;
+    },
+  ],
+  a: [
+    word,
+    (d, v, l) => {
+      const val = v.toLowerCase();
+      if (val === l.amPm[0]) {
+        d.isPm = false;
+      } else if (val === l.amPm[1]) {
+        d.isPm = true;
+      }
+    },
+  ],
+  X: [
+    /[^\s]*?[+-]\d\d:?\d\d|[^\s]*?Z?/,
+    (d, v) => {
+      if (v === 'Z') v = '+00:00';
+      const parts = `${v}`.match(/([+-]|\d\d)/gi);
+      if (parts) {
+        const minutes = +(parts[1] * 60) + parseInt(parts[2], 10);
+        d.timezoneOffset = parts[0] === '+' ? minutes : -minutes;
+      }
+    },
+  ],
+};
+parseFlags.DD = parseFlags.D;
+parseFlags.dd = parseFlags.d;
+parseFlags.WWWW = parseFlags.WWW = parseFlags.WW = parseFlags.W;
+parseFlags.MM = parseFlags.M;
+parseFlags.mm = parseFlags.m;
+parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
+parseFlags.ss = parseFlags.s;
+parseFlags.A = parseFlags.a;
+parseFlags.XXX = parseFlags.XX = parseFlags.X;
 
 export function resolveConfig(config, locales) {
   // Get the detected locale string
@@ -57,12 +285,114 @@ export default class Locale {
     this.toPage = this.toPage.bind(this);
   }
 
-  parse(dateStr, mask, timezone) {
-    return parse(dateStr, mask || this.masks.L, this, timezone);
+  format(date, mask, timezone) {
+    mask =
+      (arrayHasItems(mask) && mask[0]) ||
+      (isString(mask) && mask) ||
+      'YYYY-MM-DD';
+    date = this.getDateParts(this.normalizeDate(date), timezone);
+    mask = this.masks[mask] || mask;
+    const literals = [];
+    // Make literals inactive by replacing them with ??
+    mask = mask.replace(literal, ($0, $1) => {
+      literals.push($1);
+      return '??';
+    });
+    // Apply formatting rules
+    mask = mask.replace(token, $0 =>
+      $0 in formatFlags
+        ? formatFlags[$0](date, this)
+        : $0.slice(1, $0.length - 1),
+    );
+    // Inline literal values back into the formatted value
+    return mask.replace(/\?\?/g, () => literals.shift());
   }
 
-  format(date, mask, timezone) {
-    return format(date, mask || this.masks.L, this, timezone);
+  parse(dateStr, mask, timezone) {
+    const masks = (arrayHasItems(mask) && mask) || [
+      (isString(mask) && mask) || 'YYYY-MM-DD',
+    ];
+    return (
+      masks
+        .map(m => {
+          if (typeof m !== 'string') {
+            throw new Error('Invalid mask in fecha.parse');
+          }
+          m = this.masks[m] || m;
+          // Avoid regular expression denial of service, fail early for really long strings
+          // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
+          if (dateStr.length > 1000) {
+            return false;
+          }
+
+          let isValid = true;
+          const dateInfo = {};
+          mask.replace(token, $0 => {
+            if (parseFlags[$0]) {
+              const info = parseFlags[$0];
+              const index = dateStr.search(info[0]);
+              if (!~index) {
+                isValid = false;
+              } else {
+                dateStr.replace(info[0], result => {
+                  info[1](dateInfo, result, this);
+                  dateStr = dateStr.substr(index + result.length);
+                  return result;
+                });
+              }
+            }
+
+            return parseFlags[$0] ? '' : $0.slice(1, $0.length - 1);
+          });
+
+          if (!isValid) {
+            return false;
+          }
+
+          const today = new Date();
+          if (
+            dateInfo.isPm === true &&
+            dateInfo.hour != null &&
+            +dateInfo.hour !== 12
+          ) {
+            dateInfo.hour = +dateInfo.hour + 12;
+          } else if (dateInfo.isPm === false && +dateInfo.hour === 12) {
+            dateInfo.hour = 0;
+          }
+
+          let date;
+          if (dateInfo.timezoneOffset != null) {
+            dateInfo.minute =
+              +(dateInfo.minute || 0) - +dateInfo.timezoneOffset;
+            date = new Date(
+              Date.UTC(
+                dateInfo.year || today.getFullYear(),
+                dateInfo.month || 0,
+                dateInfo.day || 1,
+                dateInfo.hour || 0,
+                dateInfo.minute || 0,
+                dateInfo.second || 0,
+                dateInfo.millisecond || 0,
+              ),
+            );
+          } else {
+            date = this.getDateFromParts(
+              {
+                year: dateInfo.year || today.getFullYear(),
+                month: (dateInfo.month || 0) + 1,
+                day: dateInfo.day || 1,
+                hours: dateInfo.hour || 0,
+                minutes: dateInfo.minute || 0,
+                seconds: dateInfo.second || 0,
+                milliseconds: dateInfo.millisecond || 0,
+              },
+              timezone,
+            );
+          }
+          return date;
+        })
+        .find(d => d) || new Date(dateStr)
+    );
   }
 
   normalizeDate(d, config = {}) {
