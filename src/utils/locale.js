@@ -327,7 +327,7 @@ export default class Locale {
 
           let isValid = true;
           const dateInfo = {};
-          mask.replace(token, $0 => {
+          m.replace(token, $0 => {
             if (parseFlags[$0]) {
               const info = parseFlags[$0];
               const index = dateStr.search(info[0]);
