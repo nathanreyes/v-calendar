@@ -51,6 +51,23 @@
         </button>
       </div>
     </div>
+    <!--Date values-->
+    <template v-if="!range">
+      <div class="flex mt-2">
+        <span class="font-semibold text-gray-600 w-12">Date:</span
+        ><span class="ml-2">{{ date }}</span>
+      </div>
+    </template>
+    <template v-else>
+      <div class="flex mt-2">
+        <span class="font-semibold text-gray-600 w-12">Start:</span
+        ><span class="ml-2">{{ dateRange && dateRange.start }}</span>
+      </div>
+      <div class="flex mt-2">
+        <span class="font-semibold text-gray-600 w-12">End:</span
+        ><span class="ml-2">{{ dateRange && dateRange.end }}</span>
+      </div>
+    </template>
     <div class="flex mt-2">
       <!--Date picker-->
       <div v-if="!range">
@@ -105,23 +122,6 @@
         <!-- <div class="w-10 bg-blue-300" style="height:500px"></div> -->
       </div>
     </div>
-    <!--Date values-->
-    <template v-if="!range">
-      <div class="flex mt-2">
-        <span class="font-semibold text-gray-600 w-12">Date:</span
-        ><span class="ml-2">{{ date }}</span>
-      </div>
-    </template>
-    <template v-else>
-      <div class="flex mt-2">
-        <span class="font-semibold text-gray-600 w-12">Start:</span
-        ><span class="ml-2">{{ dateRange && dateRange.start }}</span>
-      </div>
-      <div class="flex mt-2">
-        <span class="font-semibold text-gray-600 w-12">End:</span
-        ><span class="ml-2">{{ dateRange && dateRange.end }}</span>
-      </div>
-    </template>
   </div>
 </template>
 
