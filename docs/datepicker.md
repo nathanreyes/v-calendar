@@ -31,64 +31,9 @@ data() {
 }
 ```
 
-#### Time adjustments
-
-Future selected dates retain the same time as the initial date value. To auto-adjust the time for new dates selected, provide a `model-config` with the desired time setting.
-
-```js
-data() {
-  return {
-    date: new Date(),
-    modelConfig: {
-      time: 'startOfDay' // Assigns 00:00:00 for new dates
-    }
-  }
-}
-```
-
-| Time Setting | Description |
-| --- | --- |
-| `initial` | Use time from the initial date value, or `noon` if `null` (*default*) |
-| `startOfDay` | |
-| `endOfDay` | |
-| `now` | |
-| *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
-
-### Strings :tada:
-
-*Introduced in **`v1.1.0`***
-
-To bind to a string value, provide a `model-config` with the binding parameters.
-
-<!-- <guide-datepicker-format-parse-model /> -->
-
-```html
-<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
-```
-
-```js
-export default {
-  props: {
-    // Customer model with birthday in 'YYYY-MM-DD' format
-    customer: Object,
-  },
-  data() {
-    return {
-      modelConfig: {
-        type: 'string',
-        mask: 'YYYY-MM-DD',
-        time: 'initial'
-      }
-    }
-  }
-};
-```
-
-### Numbers
-
 ## Date Ranges
 
-To bind to date range values, set the `is-range` prop.
+Binding to date ranges is also supported by setting the `is-range` prop.
 
 ```html
 <v-date-picker value="range" is-range />
@@ -107,9 +52,21 @@ data() {
 
 ## Selection Modes :tada:
 
+*Introduced in **`v1.1.0`***
+
+Use the `mode` prop to switch between 3 different date selection modes: `date`, `dateTime` and `time`.
+
+:::warning
+Previous to `v1.1.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. Use the `is-range` prop to as mentioned above to bind to date ranges.
+:::
+
 ### Date
 
 <guide-datepicker-with-value mode="date" />
+
+```html
+<v-date-picker mode="date" v-model="date" />
+```
 
 ### Date & Time
 
@@ -131,15 +88,76 @@ data() {
 
 <guide-datepicker-with-value mode="time" />
 
-## Popovers
+## Model Config :tada:
 
-:::warning
-As of `v1.1.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
-:::
+*Introduced in **`v1.1.0`***
+
+### Time Adjustment
+
+Future selected dates retain the same time as the initial date value. To auto-adjust the time for new dates selected, provide a `model-config` with the desired time setting. All times use the `timezone` prop, or local timezone if none is provided.
+
+```html
+<v-date-picker v-model="date" :model-config="modelConfig">
+```
+
+```js
+data() {
+  return {
+    date: new Date(),
+    modelConfig: {
+      time: 'startOfDay' // Assigns 00:00:00 in local timezone
+    }
+  }
+}
+```
+
+| Time Setting | Description |
+| --- | --- |
+| `initial` | Use time from the initial date value, or `noon` if `null` (*default*) |
+| `startOfDay` | Assign to last second of the day, `23:59:59` |
+| `endOfDay` | Assign to first second of the day, `00:00:00` |
+| `now` | Assign to the instant of date selection. |
+| *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
+
+### Strings
+
+To bind to a string value, provide a `model-config` with the binding parameters.
+
+<!-- <guide-datepicker-format-parse-model /> -->
+
+```html
+<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+```
+
+```js
+export default {
+  props: {
+    // Customer model with birthday in 'YYYY-MM-DD' format
+    customer: Object,
+  },
+  data() {
+    return {
+      modelConfig: {
+        type: 'string',
+        mask: 'YYYY-MM-DD',
+        // time: 'initial'
+      }
+    }
+  }
+};
+```
+
+### Numbers
+
+## Popovers
 
 To display the picker as a popover, provide your own content as the default slot. Most often this will be an `input` element.
 
 ## Input
+
+:::warning
+As of `v1.1.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
+:::
 
 To allow for user date text entry, provide a custom `input` element as the default slot. `v-date-picker` provides formatting, parsing and event handling out of the box via the following slot props:
 
