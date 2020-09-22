@@ -84,7 +84,7 @@ export default {
           contentClass: this.$theme.container,
         },
         on: {
-          beforeShow: e => this.$emit('popoverWillShow', e),
+          beforeShow: e => this.$emit('popover-will-show', e),
           afterShow: e => this.$emit('popoverDidShow', e),
           beforeHide: e => this.$emit('popoverWillHide', e),
           afterHide: e => this.$emit('popoverDidHide', e),
