@@ -24,18 +24,17 @@ import {
 const _dateConfig = {
   type: 'auto',
   mask: 'iso', // String mask when `type === 'string'`
-  timeOption: 'noon', // 'initial', 'now', 'startOfDay', 'endOfDay', 'custom'
-  time: '', // Time when `timeOption === 'custom'`
+  timeAdjust: '', // 'HH:MM:SS', 'now'
 };
 
 const _rangeConfig = {
   start: {
     ..._dateConfig,
-    timeOption: 'startOfDay',
+    timeAdjust: '00:00:00',
   },
   end: {
     ..._dateConfig,
-    timeOption: 'endOfDay',
+    timeAdjust: '23:59:59',
   },
 };
 
