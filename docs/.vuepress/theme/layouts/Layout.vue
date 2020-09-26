@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col overflow-hidden">
+  <div class="flex flex-col overflow-hidden h-full">
     <Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
     <div
       class="flex-grow relative flex w-full max-w-5xl mx-auto text-gray-700 mt-12 md:mt-16 overflow-hidden"
@@ -150,6 +150,6 @@ export default {
 
 <style lang="stylus">
 body, html, #app {
-  height: 100%;
+	height: 100%;
 }
 </style>

@@ -17,7 +17,7 @@ sidebarDepth: 2
 
 `v-date-picker` can bind to single dates using the `v-model` directive.
 
-<guide-datepicker-intro-inline />
+<guide-datepicker-simple-date />
 
 ```html
 <v-date-picker v-model="date" />
@@ -34,6 +34,8 @@ data() {
 ## Date Ranges
 
 Binding to date ranges is also supported by setting the `is-range` prop.
+
+<guide-datepicker-simple-range />
 
 ```html
 <v-date-picker value="range" is-range />
@@ -57,10 +59,12 @@ data() {
 Use the `mode` prop to switch between 3 different date selection modes: `date`, `dateTime` and `time`.
 
 :::warning
-Previous to `v1.1.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. Use the `is-range` prop to as mentioned above to bind to date ranges.
+Previous to `v1.1.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. As of `v1.1.0`, the `mode` prop has been repurposed for the date and time options. To get the previous `range` mode behavior, use the new `is-range` prop.
 :::
 
 ### Date
+
+To limit user selection to only date components (month, day, year), use `mode: 'date'`. This is the default prop value, so it isn't explicitly required.
 
 <guide-datepicker-with-value mode="date" />
 
@@ -69,6 +73,8 @@ Previous to `v1.1.0`, the `mode` prop was used to switch between `date`, `range`
 ```
 
 ### Date & Time
+
+To allow user selection of date and time components, use `mode: 'dateTime'`. A time picker now appears below the calendar.
 
 <guide-datepicker-with-value mode="dateTime" />
 
@@ -86,15 +92,76 @@ data() {
 
 ### Time
 
+To limit user selction to only time components (hours, minutes, seconds), use `mode: 'time'`.
+
 <guide-datepicker-with-value mode="time" />
 
 ## Model Config :tada:
 
 *Introduced in **`v1.1.0`***
 
-### Time Adjustment
+The `model-config` prop is used to provide information about the date bound to `v-date-picker`. For example, if the date you provide is stored in a database as a string, this string value can be bound to `v-date-picker` directly, without any extra conversion logic required by your application.
 
-Future selected dates retain the same time as the initial date value. To auto-adjust the time for new dates selected, provide a `model-config` with the desired time setting. All times use the `timezone` prop, or local timezone if none is provided.
+In short, the `model-config` and `timezone` props help provide a no-hassle approach to working with your data.
+
+### Strings
+
+To bind to a string value, provide a `model-config` with the necessary `type: 'string'` and `mask` properties.
+
+<guide-datepicker-model-string />
+
+```html
+<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+```
+
+```js
+export default {
+  data() {
+    return {
+      customer: {
+        name: 'Nathan Reyes',
+        birthday: '1983-01-21',
+      },
+      modelConfig: {
+        type: 'string',
+        mask: 'YYYY-MM-DD', // Uses 'iso' if missing
+      },
+    }
+  }
+};
+```
+
+### Numbers
+
+To bind to a number value, provide a `model-config` with the necessary `type: 'number'` property.
+
+<guide-datepicker-model-number />
+
+```html
+<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+```
+
+```js
+export default {
+  data() {
+    return {
+      customer: {
+        name: 'Nathan Reyes',
+        birthday: 411976800000, // Milliseconds since 1 January 1970 
+      },
+      modelConfig: {
+        type: 'number',
+      },
+    }
+  }
+};
+```
+
+### Time Adjust
+
+By default, when the user selects a new date, it leaves the existing time value. To auto-adjust the time for selected dates, provide a `model-config` with the desired `timeAdjust` setting in `HH:mm:ss` format. All times use the specified `timezone`, or local timezone if none is provided.
+
+<guide-datepicker-time-adjust />
 
 ```html
 <v-date-picker v-model="date" :model-config="modelConfig">
@@ -103,51 +170,52 @@ Future selected dates retain the same time as the initial date value. To auto-ad
 ```js
 data() {
   return {
-    date: new Date(),
+    customer: {
+      name: 'Nathan Reyes',
+      birthday: '1983-01-21T02:30:00-5:00',
+    },
     modelConfig: {
-      time: 'startOfDay' // Assigns 00:00:00 in local timezone
-    }
+      type: 'string',
+      mask: 'YYYY-MM-DDTHH:mm:ssXXX',
+      timeAdjust: '12:00:00',
+    },
   }
 }
 ```
 
 | Time Setting | Description |
 | --- | --- |
-| `initial` | Use time from the initial date value, or `noon` if `null` (*default*) |
-| `startOfDay` | Assign to last second of the day, `23:59:59` |
-| `endOfDay` | Assign to first second of the day, `00:00:00` |
-| `now` | Assign to the instant of date selection. |
 | *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
+| `now` | Assign to the instant of date selection. |
 
-### Strings
+#### Adjust Date Range Times
 
-To bind to a string value, provide a `model-config` with the binding parameters.
+When used with date ranges, the `modelConfig` may be specified as an object with `start` and `end` properties. For example, when the users selects a date range, we might want to set the selected range to start at the very beginning of the first day until the end of the last day.
 
-<!-- <guide-datepicker-format-parse-model /> -->
+<guide-datepicker-time-adjust-range />
 
 ```html
-<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+<v-date-picker v-model="range" :model-config="modelConfig">
 ```
 
 ```js
-export default {
-  props: {
-    // Customer model with birthday in 'YYYY-MM-DD' format
-    customer: Object,
-  },
-  data() {
-    return {
-      modelConfig: {
-        type: 'string',
-        mask: 'YYYY-MM-DD',
-        // time: 'initial'
-      }
-    }
+data() {
+  return {
+    range: {
+      start: new Date(2020, 0, 6),
+      end: new Date(2020, 0, 9),
+    },
+    modelConfig: {
+      start: {
+        timeAdjust: '00:00:00',
+      },
+      end: {
+        timeAdjust: '23:59:59',
+      },
+    },
   }
-};
+}
 ```
-
-### Numbers
 
 ## Popovers
 
