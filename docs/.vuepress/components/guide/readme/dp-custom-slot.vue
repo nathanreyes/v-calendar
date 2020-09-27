@@ -2,22 +2,21 @@
   <div class="example">
     <div class="w-full max-w-sm">
       <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="date"
+        <label class="block text-gray-600 text-sm font-bold mb-2" for="date"
           >Select Date</label
         >
         <div class="flex w-full">
           <v-date-picker v-model="date" class="flex-grow">
-            <template v-slot="{ inputValue, inputEvents, isDragging }">
-              <input
-                id="date"
-                class="bg-white w-full py-2 px-3 appearance-none border rounded-l focus:outline-none focus:border-blue-500"
-                :class="[
-                  isDragging ? 'text-gray-400' : 'text-gray-700',
-                  { 'border-red-600': errorMessage },
-                ]"
-                :value="inputValue"
-                v-on="inputEvents"
-              />
+            <template v-slot="{ inputValue, inputEvents }">
+              <span>
+                <input
+                  id="date"
+                  class="bg-white text-gray-700 w-full py-2 px-3 appearance-none border rounded-l focus:outline-none focus:border-blue-500"
+                  :class="{ 'border-red-600': errorMessage }"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                />
+              </span>
             </template>
           </v-date-picker>
           <button
