@@ -103,4 +103,8 @@ p {
   @apply my-2 leading-relaxed;
 }
 
+* {
+  border-radius: 0;
+}
+
 @tailwind utilities;
