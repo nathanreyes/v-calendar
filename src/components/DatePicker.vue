@@ -463,7 +463,7 @@ export default {
       return async e => {
         if (!this.updateOnInput_) return;
         let inputValue = e.target.value;
-        this.inputValues[isStart ? 0 : 1] = inputValue;
+        this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
         if (this.isRange) {
           inputValue = { start: this.inputValues[0], end: this.inputValues[1] };
         }
@@ -486,13 +486,13 @@ export default {
       return e => {
         const inputValue = e.target.value;
         if (this.isRange) {
-          this.inputValues[isStart ? 0 : 1] = inputValue;
+          this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
           this.updateValue(
             { start: this.inputValues[0], end: this.inputValues[1] },
             opts,
           );
         } else {
-          this.inputValues[0] = inputValue;
+          this.inputValues.splice(0, 1, inputValue);
           this.updateValue(inputValue, opts);
         }
       };
@@ -654,18 +654,15 @@ export default {
           mask: this.$locale.masks.input,
           timezone: this.timezone,
         };
-        const inputValues = ['', ''];
         const value = this.denormalizeValue(
           this.dragValue || this.value_,
           opts,
         );
         if (this.isRange) {
-          inputValues[0] = value && value.start;
-          inputValues[1] = value && value.end;
+          this.inputValues = [value && value.start, value && value.end];
         } else {
-          inputValues[0] = value;
+          this.inputValues = [value, ''];
         }
-        this.inputValues = inputValues;
       });
     },
     showPopover(opts = {}) {
