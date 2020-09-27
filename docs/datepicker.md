@@ -221,11 +221,11 @@ data() {
 
 To display the picker as a popover, provide your own content as the default slot. Most often this will be an `input` element.
 
-## Input
-
 :::warning
 As of `v1.1.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
 :::
+
+### Input
 
 To allow for user date text entry, provide a custom `input` element as the default slot. `v-date-picker` provides formatting, parsing and event handling out of the box via the following slot props:
 
@@ -383,19 +383,16 @@ Here is a more complex example using a custom input with a validation message an
 ```html
 <div class="w-full max-w-sm">
   <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
-    <label class="block text-gray-700 text-sm font-bold mb-2" for="date"
+    <label class="block text-gray-600 text-sm font-bold mb-2" for="date"
       >Select Date</label
     >
     <div class="flex w-full">
       <v-date-picker v-model="date" class="flex-grow">
-        <template v-slot="{ inputValue, inputEvents, isDragging }">
+        <template v-slot="{ inputValue, inputEvents }">
           <input
             id="date"
-            class="bg-white w-full py-2 px-3 appearance-none border rounded-l focus:outline-none"
-            :class="[
-                  isDragging ? 'text-gray-400' : 'text-gray-700',
-                  { 'border-red-600': errorMessage },
-                ]"
+            class="bg-white text-gray-700 w-full py-2 px-3 appearance-none border rounded-l focus:outline-none"
+            :class="{ 'border-red-600': errorMessage }"
             :value="inputValue"
             v-on="inputEvents"
           />
