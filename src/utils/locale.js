@@ -446,10 +446,14 @@ export default class Locale {
   getDateParts(date, timezone) {
     if (!date) return null;
     timezone = timezone || undefined;
-    const tzString = date.toLocaleString(this.id, {
-      timeZone: timezone,
-    });
-    const tzDate = new Date(tzString);
+    let tzDate = date;
+    if (timezone) {
+      const normDate = new Date(
+        date.toLocaleString('en-US', { timeZone: timezone }),
+      );
+      const diff = normDate.getTime() - date.getTime();
+      tzDate = new Date(date.getTime() + diff);
+    }
     const seconds = tzDate.getSeconds();
     const minutes = tzDate.getMinutes();
     const hours = tzDate.getHours();
