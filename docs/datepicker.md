@@ -161,6 +161,8 @@ export default {
 
 By default, when the user selects a new date, it leaves the existing time value. To auto-adjust the time for selected dates, provide a `model-config` with the desired `timeAdjust` setting in `HH:mm:ss` format. All times use the specified `timezone`, or local timezone if none is provided.
 
+This example assigns the time of selected dates to noon in the browser's local timezone.
+
 <guide-datepicker-time-adjust />
 
 ```html
