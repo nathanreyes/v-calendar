@@ -445,7 +445,6 @@ export default class Locale {
 
   getDateParts(date, timezone) {
     if (!date) return null;
-    timezone = timezone || undefined;
     let tzDate = date;
     if (timezone) {
       const normDate = new Date(
@@ -501,23 +500,11 @@ export default class Locale {
       milliseconds: ms,
     } = parts;
     if (y === undefined || m === undefined || d === undefined) return null;
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      hour12: false,
-      hourCycle: 'h24',
-      timeZone: timezone || undefined,
-    });
-    const utcNoon = new Date(
-      Date.UTC(y || 0, m - 1, d || 0, 12, min || 0, sec || 0, ms || 0),
-    );
     const utcDate = new Date(
       Date.UTC(y || 0, m - 1, d || 0, hrs || 0, min || 0, sec || 0, ms || 0),
     );
-    const tzHours = +formatter.format(utcNoon);
-    const tzOffset = 12 - tzHours;
-    const msInHour = 3600000;
-    const date = new Date(utcDate.getTime() + tzOffset * msInHour);
-    return date;
+    const tzOffsetMs = this.getTimezoneOffset(parts, timezone);
+    return new Date(utcDate.getTime() + tzOffsetMs);
   }
 
   getTimezoneOffset(parts, timezone) {
