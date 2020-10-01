@@ -95,17 +95,12 @@ describe('Locale', () => {
     const testComponent = c => {
       const locale = new Locale();
       const day = locale.getDateParts(new Date(c.date), c.timezone);
-      return [
-        'day',
-        'dayFromEnd',
-        'weekday',
-        'weekdayOrdinal',
-        'weekdayOrdinalFromEnd',
-        'week',
-        'weekFromEnd',
-        'month',
-        'year',
-      ].every(k => c[k] === day[k]);
+      const omitKeys = ['date', 'timezone'];
+      return Object.keys(c)
+        .filter(k => !omitKeys.includes(k))
+        .every(k => {
+          return c[k] === day[k];
+        });
     };
     dayData.forEach(c => expect(testComponent(c)).toEqual(true));
   });
