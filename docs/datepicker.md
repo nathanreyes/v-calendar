@@ -440,7 +440,9 @@ export default {
 
 Besides `input`s, other elements may be effectively used as the default slot. When doing so, there are other slot variables that you may use to further customize date selection behavior.
 
+:::tip
 See the [date picker examples](/examples/datepickers.html) for more guidance on using these slot variables.
+:::
 
 Here is a comprehensive list of the available slot props.
 
