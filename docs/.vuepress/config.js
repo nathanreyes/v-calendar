@@ -100,6 +100,7 @@ module.exports = {
             'i18n',
             'attributes',
             'datepicker',
+            'timezones'
           ],
         },
         {
