@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col overflow-hidden h-full">
+  <div class="flex flex-col overflow-y-auto">
     <Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
     <div
       class="flex-grow relative flex w-full max-w-5xl mx-auto text-gray-700 mt-12 md:mt-16 overflow-hidden"
@@ -33,9 +33,9 @@
       </div>
       <!--Desktop sidebar-->
       <div
-        class="flex-shrink-0 hidden md:block md:relative z-10 w-72 overflow-y-scroll"
+        class="flex-shrink-0 hidden md:block md:relative z-10 w-72 overflow-y-auto"
       >
-        <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar" show-ads>
+        <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar">
           <template name="sidebar-top">
             <slot name="sidebar-top" />
           </template>
@@ -45,7 +45,7 @@
         </Sidebar>
       </div>
       <!--Main page-->
-      <div class="flex-grow overflow-y-scroll">
+      <div class="flex-grow">
         <!--Home page-->
         <Home v-if="$page.frontmatter.home" />
         <!--Other pages-->
