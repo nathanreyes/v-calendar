@@ -322,7 +322,10 @@ export default {
       this.initStore();
     },
     timezone() {
-      // TODO: Refresh attributes cleverly here
+      // Refresh pages to reset the time boundaries
+      this.refreshPages({ ignoreCache: true });
+      // Refresh attributes
+      this.refreshAttrs(this.pages, this.store.list, null, true);
     },
     fromDate() {
       this.refreshPages();
@@ -640,8 +643,7 @@ export default {
           let map = {};
           // If resetting...
           if (reset) {
-            // Flag day for refresh if it has attributes
-            d.refresh = arrayHasItems(d.attributes);
+            d.refresh = true;
           } else if (hasAny(d.attributesMap, deletes)) {
             // Delete attributes from the delete list
             map = omit(d.attributesMap, deletes);
