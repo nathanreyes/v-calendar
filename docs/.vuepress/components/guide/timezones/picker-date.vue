@@ -1,6 +1,21 @@
 <template>
   <div class="example">
-    <v-calendar :timezone="timezone" :attributes="attrs" />
+    <v-date-picker
+      v-model="dateRange"
+      :model-config="modelConfig"
+      :timezone="timezone"
+      is-range
+    />
+    <div class="flex mt-2">
+      <span class="font-semibold text-gray-600 w-12">Start:</span
+      ><span class="ml-2">{{
+        dateRange && dateRange.start.toISOString()
+      }}</span>
+    </div>
+    <div class="flex mt-2">
+      <span class="font-semibold text-gray-600 w-12">End:</span
+      ><span class="ml-2">{{ dateRange && dateRange.end.toISOString() }}</span>
+    </div>
     <div class="w-full mt-4">
       <div class="flex justify-between w-full">
         <span class="text-sm font-bold text-gray-800">-11:00</span>
@@ -25,7 +40,16 @@
 <script>
 export default {
   data() {
+    const start = new Date(2020, 0, 6);
+    const end = new Date(2020, 0, 10);
     return {
+      dateRange: {
+        start,
+        end,
+      },
+      modelConfig: {
+        timeAdjust: '12:00:00',
+      },
       timezoneIndex: 0,
       timezones: [
         'Pacific/Niue', // -11
@@ -51,36 +75,6 @@ export default {
         'Asia/Pyongyang', // +9
         'Australia/Sydney', // +10
         'Asia/Magadan', // +11
-      ],
-      attrs: [
-        {
-          highlight: true,
-          dates: { start: '2020-10-05T10:00:00Z', end: '2020-10-09T09:00:00Z' },
-        },
-        {
-          dot: 'pink',
-          dates: '2020-10-01T18:00:00Z',
-        },
-        {
-          dot: 'indigo',
-          dates: '2020-10-11T19:00:00Z',
-        },
-        {
-          dot: 'indigo',
-          dates: '2020-10-15T01:00:00Z',
-        },
-        {
-          dot: 'red',
-          dates: '2020-10-21T05:00:00Z',
-        },
-        {
-          dot: 'green',
-          dates: '2020-10-21T00:00:00Z',
-        },
-        {
-          dot: 'blue',
-          dates: '2020-10-29T03:00:00Z',
-        },
       ],
     };
   },
