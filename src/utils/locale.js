@@ -417,7 +417,18 @@ export default class Locale {
     return result && !isNaN(result.getTime()) ? result : null;
   }
 
-  denormalizeDate(date, { timeAdjust, type, mask, timezone } = {}) {
+  denormalizeDate(date, { type, mask, timezone } = {}) {
+    switch (type) {
+      case 'number':
+        return date ? date.getTime() : NaN;
+      case 'string':
+        return date ? this.format(date, mask || 'iso', timezone) : '';
+      default:
+        return date ? new Date(date) : null;
+    }
+  }
+
+  adjustTimeForDate(date, { timeAdjust, timezone }) {
     if (timeAdjust) {
       const dateParts = this.getDateParts(date, timezone);
       if (timeAdjust === 'now') {
@@ -433,14 +444,7 @@ export default class Locale {
       }
       date = this.getDateFromParts(dateParts, timezone);
     }
-    switch (type) {
-      case 'number':
-        return date ? date.getTime() : NaN;
-      case 'string':
-        return date ? this.format(date, mask || 'iso', timezone) : '';
-      default:
-        return date ? new Date(date) : null;
-    }
+    return date;
   }
 
   getDateParts(date, timezone) {

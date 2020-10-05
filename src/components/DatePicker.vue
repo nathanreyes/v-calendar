@@ -423,6 +423,7 @@ export default {
     handleDayClick(day) {
       const opts = {
         patch: PATCH_DATE,
+        adjustTime: true,
         formatInput: true,
         hidePopover: this.isDate,
       };
@@ -444,6 +445,7 @@ export default {
       this.dragTrackingValue.end = day.range.start;
       this.updateValue(this.dragTrackingValue, {
         patch: PATCH_DATE,
+        adjustTime: true,
       });
     },
     onTimeInput(parts, idx) {
@@ -531,6 +533,7 @@ export default {
         notify = true,
         formatInput = true,
         hidePopover = false,
+        adjustTime = false,
         isDragging = this.isDragging,
       } = {},
     ) {
@@ -541,6 +544,11 @@ export default {
         patch,
         isDragging,
       );
+
+      // Time Adjustment
+      if (adjustTime) {
+        normalizedValue = this.adjustTimeForValue(value, config);
+      }
 
       // 2. Validation (date or range)
       if (
@@ -616,6 +624,19 @@ export default {
         ...pick(this.getDateParts(result), patchKeys),
       };
       return this.getDateFromParts(result);
+    },
+    adjustTimeForValue(value, config) {
+      if (this.isRange) {
+        if (!this.hasValue(value)) return null;
+        return {
+          start: this.$locale.adjustTimeForDate(
+            value.start,
+            config.start || config,
+          ),
+          end: this.$locale.adjustTimeForDate(value.end, config.end || config),
+        };
+      }
+      return this.$locale.adjustTimeForDate(value, config);
     },
     sortRange(range) {
       const { start, end } = range;
