@@ -19,6 +19,10 @@ module.exports = {
       {
         text: 'API',
         link: '/api/',
+        items: [
+          { text: 'v1.0', link: '/api/v1.0/' },
+          { text: 'v1.1', link: '/api/v1.1/' },
+        ],
       },
       {
         text: 'Changelog',
@@ -30,7 +34,23 @@ module.exports = {
       },
     ],
     sidebar: {
-      '/api/': [
+      '/api/v1.0/': [
+        {
+          title: 'API',
+          collapsable: false,
+          children: [
+            '',
+            'defaults',
+            'calendar',
+            'page-object',
+            'day-object',
+            'attribute',
+            'datepicker',
+            'date-patterns',
+          ],
+        },
+      ],
+      '/api/v1.1/': [
         {
           title: 'API',
           collapsable: false,
@@ -97,10 +117,10 @@ module.exports = {
             'layouts',
             'navigation',
             'dates',
-            'i18n',
             'attributes',
             'datepicker',
-            'timezones'
+            'timezones',
+            'i18n',
           ],
         },
         {

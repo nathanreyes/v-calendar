@@ -9,6 +9,10 @@
     <div class="flex flex-col items-center mb-6">
       <v-date-picker v-model="range" is-range />
     </div>
+    <h4>Time Selection & Timezones</h4>
+    <div class="flex flex-col items-center mb-6">
+      <v-date-picker mode="dateTime" v-model="range2" is-range />
+    </div>
   </div>
 </template>
 
@@ -26,6 +30,10 @@ export default {
         new Date(year, month, 25),
       ],
       range: {
+        start: new Date(year, month, 6),
+        end: new Date(year, month, 23),
+      },
+      range2: {
         start: new Date(year, month, 6),
         end: new Date(year, month, 23),
       },

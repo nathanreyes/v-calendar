@@ -14,17 +14,25 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Selection mode: `"single"`, `"multiple"`, `"range"`
+**Description:** Selection mode: `"date"`, `"dateTime"`, `"time"`
 
 **Default Value:** `"single"`
 
 ### `value`
 
-**Type:** Date, Array[Date], Object
+**Type:** Date, Object
 
-**Description:** Selected date, dates or date range.
+**Description:** Selected date or date range.
 
 **Default Value:** `null`
+
+### `is-range`
+
+**Type:** Boolean
+
+**Description:** Date value is a date range object.
+
+**Default Value:** `false`
 
 ### `is-required`
 
@@ -37,14 +45,6 @@ sidebarDepth: 2
 ::: tip
 Setting `value = null` still allowed through code.
 :::
-
-### `input-props`
-
-**Type:** Object
-
-**Description:** Props to apply to the input DOM element.
-
-**Default Value:** [Reference code]()
 
 ### `update-on-input`
 
