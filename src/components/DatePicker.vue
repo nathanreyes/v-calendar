@@ -547,7 +547,7 @@ export default {
 
       // Time Adjustment
       if (adjustTime) {
-        normalizedValue = this.adjustTimeForValue(value, config);
+        normalizedValue = this.adjustTimeForValue(normalizedValue, config);
       }
 
       // 2. Validation (date or range)
