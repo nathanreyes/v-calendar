@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date" :masks="masks">
+    <v-date-picker v-model="date" mode="dateTime" :masks="masks">
       <template v-slot="{ inputValue, inputEvents }">
         <input
           class="bg-white border px-2 py-1 rounded"
@@ -18,7 +18,7 @@ export default {
     return {
       date: new Date(),
       masks: {
-        input: 'YYYY-MM-DD HH:mm',
+        input: 'YYYY-MM-DD h:mm A',
       },
     };
   },
