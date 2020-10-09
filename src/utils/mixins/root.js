@@ -1,37 +1,35 @@
 import { addDays } from 'date-fns';
 import Theme from '../theme';
 import Locale from '../locale';
-import { isObject, isArray, defaultsDeep } from '../_';
+import { isObject, isArray, isDate } from '../_';
 import { defaultsMixin } from '../defaults';
-import { popoversMixin } from '../popovers';
 import { setupScreens } from '../screens';
 import Attribute from '../attribute';
 
 export const rootMixin = {
-  mixins: [defaultsMixin, popoversMixin],
+  mixins: [defaultsMixin],
   props: {
     color: String,
     isDark: Boolean,
-    theme: Object,
     firstDayOfWeek: Number,
     masks: Object,
     locale: [String, Object],
+    timezone: String,
     minDate: null,
     maxDate: null,
     disabledDates: null,
     availableDates: null,
+    theme: null,
   },
   computed: {
     $theme() {
       // Return the theme prop if it is an instance of the Theme class
       if (this.theme instanceof Theme) return this.theme;
-      // Merge the default theme with the provided theme
-      const config = defaultsDeep(this.theme, this.$defaults.theme);
-      // Merge in the color and isDark props if they were specifically provided
-      config.color = this.passedProp('color', config.color);
-      config.isDark = this.passedProp('isDark', config.isDark);
       // Create the theme
-      return new Theme(config);
+      return new Theme({
+        color: this.passedProp('color', 'blue'),
+        isDark: this.passedProp('isDark', false),
+      });
     },
     $locale() {
       // Return the locale prop if it is an instance of the Locale class
@@ -47,10 +45,6 @@ export const rootMixin = {
       // Return new locale
       return new Locale(config, this.$locales);
     },
-    format() {
-      return (date, mask) =>
-        this.$locale ? this.$locale.format(date, mask) : '';
-    },
     disabledAttribute() {
       // Build up a complete list of disabled dates
       let dates = [];
@@ -61,8 +55,8 @@ export const rootMixin = {
           : [this.disabledDates];
       }
       // Add disabled dates for minDate and maxDate props
-      const minDate = this.$locale.toDate(this.minDate);
-      const maxDate = this.$locale.toDate(this.maxDate);
+      const minDate = this.normalizeDate(this.minDate);
+      const maxDate = this.normalizeDate(this.maxDate);
       if (minDate) {
         dates.push({ start: null, end: addDays(minDate, -1) });
       }
@@ -85,5 +79,18 @@ export const rootMixin = {
   },
   created() {
     setupScreens(this.$defaults.screens);
+  },
+  methods: {
+    formatDate(date, mask) {
+      return this.$locale ? this.$locale.format(date, mask) : '';
+    },
+    parseDate(text, mask) {
+      if (!this.$locale) return null;
+      const value = this.$locale.parse(text, mask);
+      return isDate(value) ? value : null;
+    },
+    normalizeDate(date, config) {
+      return this.$locale ? this.$locale.normalizeDate(date, config) : date;
+    },
   },
 };

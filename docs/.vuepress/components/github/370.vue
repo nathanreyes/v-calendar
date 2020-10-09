@@ -1,17 +1,16 @@
-	<template>
+<template>
   <div>
     <button @click="toggleLocale">Toggle locale</button>
     <v-date-picker
       ref="calendar"
       v-model="range"
       mode="range"
-      is-inline
       :locale="locale"
     />
   </div>
 </template>
 
-  <script>
+<script>
 export default {
   githubTitle: 'Locale change only changes weekday names but not month names',
   data() {
@@ -31,4 +30,3 @@ export default {
   },
 };
 </script>
-  

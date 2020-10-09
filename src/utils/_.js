@@ -5,16 +5,10 @@ export { default as isString } from 'lodash/isString';
 export { default as isArray } from 'lodash/isArrayLikeObject';
 export { default as isFunction } from 'lodash/isFunction';
 export { default as isUndefined } from 'lodash/isUndefined';
-export { default as isNil } from 'lodash/isNil';
 import _isDate from 'lodash/isDate';
 
 // Number utils
 export { default as clamp } from 'lodash/clamp';
-
-// String utils
-export { default as kebabCase } from 'lodash/kebabCase';
-export { default as capitalize } from 'lodash/capitalize';
-export { default as upperFirst } from 'lodash/upperFirst';
 
 // Object utils
 export { default as get } from 'lodash/get';
@@ -31,7 +25,6 @@ import _has from 'lodash/has';
 export { default as map } from 'lodash/map';
 export { default as head } from 'lodash/head';
 export { default as last } from 'lodash/last';
-export { default as uniq } from 'lodash/uniq';
 import _some from 'lodash/some';
 
 // Type checkers

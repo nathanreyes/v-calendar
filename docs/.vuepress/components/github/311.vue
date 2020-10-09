@@ -1,10 +1,5 @@
 <template>
-  <v-date-picker
-    v-model="date"
-    is-inline
-    mode="range"
-    :availableDates="availableDates"
-  />
+  <v-date-picker v-model="date" mode="range" :availableDates="availableDates" />
 </template>
 
 <script>

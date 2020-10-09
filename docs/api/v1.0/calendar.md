@@ -177,7 +177,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Type:** Object
 
-**Description:** Masks to use when display and parsing dates for various calendar sections.
+**Description:** Masks to use when formatting and parsing dates for various calendar sections.
 
 **Default:** `undefined` [Resolved by defaults if not specified](./defaults.md#masks)
 
@@ -185,25 +185,17 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Type:** String
 
-**Description:** Shortcut for specifying the theme color.
+**Description:** Color used for accents and attribute defaults.
 
-**Default:** `undefined` [Resolved by theme if not specified](#theme)
+**Default:** `"blue"`
 
 ### `is-dark`
 
 **Type:** Boolean
 
-**Description:** Shortcut for activating theme dark mode.
+**Description:** Dark mode setting.
 
-**Default:** `undefed` [Resolved by theme if not specified](#theme)
-
-### `theme`
-
-**Type:** Object
-
-**Description:** Theme settings used to customize the tint color, dark mode and classes for various calendar sections.
-
-**Default:** `undefined` [Resolved by defaults if not completely specified](./defaults.md#theme)
+**Default:** `false`
 
 ### `first-day-of-week`
 

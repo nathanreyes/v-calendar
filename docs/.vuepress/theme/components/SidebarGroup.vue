@@ -26,7 +26,7 @@
 
     <p
       v-else
-      class="text-sm text-gray-500 uppercase ml-4"
+      class="text-sm text-gray-500 font-semibold tracking-wide uppercase select-none ml-4"
       :class="{ open }"
       @click="$emit('toggle')"
     >

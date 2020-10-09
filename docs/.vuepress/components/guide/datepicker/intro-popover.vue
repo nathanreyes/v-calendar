@@ -1,6 +1,14 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date"></v-date-picker>
+    <v-date-picker v-model="date">
+      <template v-slot="{ inputValue, inputEvents }">
+        <input
+          class="bg-white border px-2 py-1 rounded"
+          :value="inputValue"
+          v-on="inputEvents"
+        />
+      </template>
+    </v-date-picker>
   </div>
 </template>
 
@@ -13,4 +21,3 @@ export default {
   },
 };
 </script>
-

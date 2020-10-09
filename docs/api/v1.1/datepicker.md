@@ -14,17 +14,25 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Selection mode: `"single"`, `"multiple"`, `"range"`
+**Description:** Selection mode: `"date"`, `"dateTime"`, `"time"`
 
 **Default Value:** `"single"`
 
 ### `value`
 
-**Type:** Date, Array[Date], Object
+**Type:** Date, Object
 
-**Description:** Selected date, dates or date range.
+**Description:** Selected date or date range.
 
 **Default Value:** `null`
+
+### `is-range`
+
+**Type:** Boolean
+
+**Description:** Date value is a date range object.
+
+**Default Value:** `false`
 
 ### `is-required`
 
@@ -37,22 +45,6 @@ sidebarDepth: 2
 ::: tip
 Setting `value = null` still allowed through code.
 :::
-
-### `is-inline`
-
-**Type:** Boolean
-
-**Description:** Displays calendar inline instead of as a popover.
-
-**Default Value:** `false`
-
-### `input-props`
-
-**Type:** Object
-
-**Description:** Props to apply to the input DOM element.  Not applicable when `is-inline === true`.
-
-**Default Value:** [Reference code]()
 
 ### `update-on-input`
 
@@ -90,16 +82,16 @@ Setting `value = null` still allowed through code.
 
 **Type:** Object
 
-**Description:** Properties of the popover to apply for the calendar component. Not applicable when `is-inline === true`.
+**Description:** Properties of the popover to apply for the calendar component.
 
 **Default Value:** [Reference code](./defaults.md)
 
 | Property | Type | Description |
 | --- | --- | --- |
 | `visibility` | String | Visibility mode for the input/slot popover (`"hover-focus"`, `"hover"`, `"focus"`, `"visible"`, `"hidden"`) |
-| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/docs/v2/constructors/#placement) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
-| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/docs/v2/constructors/#strategy) for more details. |
-| `modifiers` | Array | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers). |
+| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/popper-documentation.html#Popper.placements) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
+| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/popper-documentation.html#Popper.Defaults.positionFixed) for more details. |
+| `modifiers` | Boolean | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/popper-documentation.html#modifiers). |
 | `keepVisibleOnInput` | Boolean | Keep the popover visible after a date is selected, until the `visibility` determines. |
 
 <!-- 
@@ -149,10 +141,6 @@ Setting `value = null` still allowed through code.
 **Description:** Called just after picker popover has transitioned out of view
 
 **Params:** `Object`: Popover content root HTML element.
-
-:::warning
-Popover events are only emitted when `is-inline === false`.
-:::
 
 <!-- 
 ### 

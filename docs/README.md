@@ -27,6 +27,10 @@ npm i v-calendar
 
 <homepage-datepicker />
 
+#### Popovers w/ Custom Slots
+
+<examples-date-range />
+
 <homepage-custom-calendar />
 
 </div>

@@ -1,5 +1,5 @@
 <template>
-  <v-date-picker v-model="value" locale="hu" is-inline />
+  <v-date-picker v-model="value" locale="hu" />
 </template>
 
 <script>

@@ -59,7 +59,7 @@ sidebarDepth: 2
 
 **Type:** Boolean, String, Object
 
-**Description:** Configuration of higlight. If boolean, displays the highlight using the current theme color. If string, displays the highlight using the specified theme. If object, uses the properties below.
+**Description:** Configuration of higlight. If boolean, displays the highlight using the current color. If string, displays the highlight using the specified color. If object, uses the properties below.
 
 **Default:** `undefined`
 
@@ -67,7 +67,7 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Theme color.
+**Description:** Color.
 
 **Default:** `undefined`
 
@@ -83,23 +83,47 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Any generic class you wish to apply to the background element of the highlight.
+**Description:** Class to apply to the highlight background element. |
 
 **Default:** `''`
+
+### `highlight.style`
+
+**Type:** Object
+
+**Description:** Style to apply to the highlight background element. |
+
+**Default:** `undefined`
 
 ### `highlight.contentClass`
 
 **Type:** String
 
-**Description:** Any generic class you wish to apply to the content element of the highlight.
+**Description:** Class to apply to the highlight content element.
 
 **Default:** `''`
+
+### `highlight.style`
+
+**Type:** Object
+
+**Description:** Style to apply to the highlight content element. |
+
+**Default:** `undefined`
+
+### `highlight.contentStyle`
+
+**Type:** Object
+
+**Description:** Style to apply to the highlight content element. |
+
+**Default:** `undefined`
 
 ### `dot`
 
 **Type:** Boolean, String, Object
 
-**Description:** Configuration of dot. If boolean, displays the dot using the current theme color. If string, displays the dot using the specified theme. If object, uses the properties below.
+**Description:** Configuration of dot. If boolean, displays the dot using the current color. If string, displays the dot using the specified color. If object, uses the properties below.
 
 **Default:** `undefined`
 
@@ -107,7 +131,7 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Theme color.
+**Description:** Color.
 
 **Default:** `undefined`
 
@@ -115,7 +139,15 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Any generic class you wish to apply to the dot element.
+**Description:** Class to apply to the dot element.
+
+**Default:** `undefined`
+
+### `dot.style`
+
+**Type:** Object
+
+**Description:** Style to apply to the dot element.
 
 **Default:** `undefined`
 
@@ -123,7 +155,7 @@ sidebarDepth: 2
 
 **Type:** Boolean, String, Object
 
-**Description:** Configuration of bar. If boolean, displays the bar using the current theme color. If string, displays the bar using the specified theme. If object, uses the properties below.
+**Description:** Configuration of bar. If boolean, displays the bar using the current color. If string, displays the bar using the specified color. If object, uses the properties below.
 
 **Default:** `undefined`
 
@@ -131,7 +163,7 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Theme color.
+**Description:** Color.
 
 **Default:** `undefined`
 
@@ -139,7 +171,15 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Any generic class you wish to apply to the bar element.
+**Description:** Class to apply to the bar element.
+
+**Default:** `undefined`
+
+### `bar.style`
+
+**Type:** Object
+
+**Description:** Style to apply to the bar element.
 
 **Default:** `undefined`
 

@@ -73,14 +73,6 @@ pageClass: docs-page
 }
 ```
 
-### `theme`
-
-**Type:** Object
-
-**Description:** Theme settings used to customize the tint color, dark mode and classes for various calendar sections.
-
-**Default:** Reference the [theming guide](../guide/theming-guide.md) for providing default theme settings
-
 ### `locale`
 
 **Type:** String, Object
@@ -131,7 +123,7 @@ pageClass: docs-page
 
 **Type:** Object
 
-**Description:** Properties of the popover to apply for the calendar component. Not applicable when `is-inline === true`.
+**Description:** Properties of the popover to apply for the calendar component. Not applicable for inline pickers.
 
 **Default Value:** *Reference below for default values.*
 

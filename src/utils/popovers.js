@@ -1,78 +1,89 @@
-import { defaults } from './_';
+import { elementContains } from './helpers';
 
-const popovers = {};
+export function showPopover(opts) {
+  document.dispatchEvent(
+    new CustomEvent('show-popover', {
+      detail: opts,
+    }),
+  );
+}
 
-export const popoversMixin = {
-  data() {
-    return {
-      popovers$: popovers,
-    };
-  },
-  computed: {
-    $popovers() {
-      return this.popovers$;
+export function hidePopover(opts) {
+  document.dispatchEvent(
+    new CustomEvent('hide-popover', {
+      detail: opts,
+    }),
+  );
+}
+
+export function togglePopover(opts) {
+  document.dispatchEvent(
+    new CustomEvent('toggle-popover', {
+      detail: opts,
+    }),
+  );
+}
+
+export function updatePopover(opts) {
+  document.dispatchEvent(
+    new CustomEvent('update-popover', {
+      detail: opts,
+    }),
+  );
+}
+
+export function getPopoverTriggerEvents(opts) {
+  const { visibility } = opts;
+  const click = visibility === 'click';
+  const hover = visibility === 'hover';
+  const hoverFocus = visibility === 'hover-focus';
+  const focus = visibility === 'focus';
+  opts.autoHide = !click;
+  let hovered = false;
+  let focused = false;
+  return {
+    click(e) {
+      if (click) {
+        opts.ref = e.target;
+        togglePopover(opts);
+        e.stopPropagation();
+      }
     },
-  },
-  methods: {
-    $popoverExists(id) {
-      return this.$popovers && this.$popovers[id];
-    },
-    $popoverIsActive(id, ref) {
-      const activeRef =
-        this.$popovers && this.$popovers[id] && this.$popovers[id].ref;
-      return !!(activeRef && (!ref || ref === activeRef));
-    },
-    $popoverHasPriority(popover) {
-      const existingPopover = this.$popovers[popover.id];
-      if (!existingPopover || !existingPopover.priority) return true;
-      return popover.priority > existingPopover.priority;
-    },
-    $showPopover(popover) {
-      if (!this.$popoverHasPriority(popover)) return;
-      const { id, ref } = popover;
-      const existingPopover = this.$popovers[id];
-      defaults(popover, existingPopover);
-      popover.next = () => {
-        if (!existingPopover || ref !== existingPopover.ref) {
-          this.$set(this.$popovers, id, {
-            ...popover,
-            priority: 0,
-          });
+    mouseover(e) {
+      opts.ref = e.currentTarget;
+      if (!hovered) {
+        hovered = true;
+        if (hover || hoverFocus) {
+          showPopover(opts);
         }
-      };
-      this.handleStateTimer(popover, 'show');
+      }
     },
-    $hidePopover(popover) {
-      if (!this.$popoverHasPriority(popover)) return;
-      const { id, ref } = popover;
-      defaults(popover, this.$popovers[id]);
-      popover.next = () => {
-        if (!ref || ref === this.$popovers[id].ref) {
-          this.$set(this.$popovers, id, {});
+    mouseleave(e) {
+      opts.ref = e.target;
+      if (hovered) {
+        hovered = false;
+        if (hover || (hoverFocus && !focused)) {
+          hidePopover(opts);
         }
-      };
-      this.handleStateTimer(popover, 'hide');
-    },
-    $updatePopover(popover) {
-      const { id, ref } = popover;
-      defaults(popover, this.$popovers[id]);
-      if (!ref || ref === this.$popovers[id].ref) {
-        this.$set(this.$popovers, id, popover);
       }
     },
-    handleStateTimer(state) {
-      if (state.timer) {
-        clearTimeout(state.timer);
-        state.timer = undefined;
-      }
-      if (!state.delay) {
-        state.next();
-      } else {
-        this.$set(this.$popovers, state.id, {
-          ...state,
-          timer: setTimeout(state.next, state.delay),
-        });
+    focusin(e) {
+      opts.ref = e.currentTarget;
+      if (!focused) {
+        focused = true;
+        if (focus || hoverFocus) {
+          showPopover(opts);
+        }
       }
     },
-  },
-};
+    focusout(e) {
+      opts.ref = e.currentTarget;
+      if (focused && !elementContains(opts.ref, e.relatedTarget)) {
+        focused = false;
+        if (focus || (hoverFocus && !hovered)) {
+          hidePopover(opts);
+        }
+      }
+    },
+  };
+}

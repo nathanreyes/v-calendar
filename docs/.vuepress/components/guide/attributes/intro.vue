@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-calendar :attributes="attributes"/>
+    <v-calendar :attributes="attributes" />
   </div>
 </template>
 
@@ -44,7 +44,7 @@ const todos = [
     description: 'Take Noah to basketball practice.',
     isComplete: false,
     dates: { weekdays: 6 }, // Every Friday
-    color: 'gray',
+    color: 'orange',
   },
   {
     description: 'Get some milks.',
@@ -78,7 +78,6 @@ export default {
           },
           content: {
             class: 'italic',
-            color: 'purple',
           },
           dates: new Date(),
           order: 100,

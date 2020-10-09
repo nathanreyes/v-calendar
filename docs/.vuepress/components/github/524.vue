@@ -1,11 +1,6 @@
 <template>
   <div>
-    <v-date-picker
-      :mode="mode"
-      v-model="selectedDate"
-      is-inline
-      nav-visibility="hover"
-    />
+    <v-date-picker :mode="mode" v-model="selectedDate" nav-visibility="hover" />
   </div>
 </template>
 

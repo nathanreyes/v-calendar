@@ -1,7 +1,7 @@
 <template>
   <div class="dropdown-wrapper" :class="{ open }">
     <button
-      class="dropdown-title"
+      class="dropdown-title text-gray-700 hover:text-indigo-700"
       type="button"
       :aria-label="dropdownAriaLabel"
       @click="toggle"
@@ -13,7 +13,7 @@
     <DropdownTransition>
       <ul class="nav-dropdown" v-show="open">
         <li
-          class="dropdown-item"
+          class="dropdown-item text-gray-700 hover:text-indigo-700"
           :key="subItem.link || index"
           v-for="(subItem, index) in item.items"
         >
@@ -21,7 +21,7 @@
 
           <ul class="dropdown-subitem-wrapper" v-if="subItem.type === 'links'">
             <li
-              class="dropdown-subitem"
+              class="dropdown-subitem text-gray-700 hover:text-indigo-700"
               :key="childSubItem.link"
               v-for="childSubItem in subItem.items"
             >
@@ -93,6 +93,7 @@ export default {
 
 <style lang="stylus">
 .dropdown-wrapper {
+  position: relative;
   cursor: pointer;
 
   .dropdown-title {
@@ -105,10 +106,13 @@ export default {
     background: transparent;
     border: none;
     font-weight: 500;
-    color: $textColor;
 
     &:hover {
       border-color: transparent;
+    }
+
+    &:focus {
+      outline: none;
     }
 
     .arrow {
@@ -147,10 +151,6 @@ export default {
         margin-bottom: 0;
         padding: 0 1.5rem 0 1.25rem;
 
-        &:hover {
-          color: $accentColor;
-        }
-
         &.router-link-active {
           color: $accentColor;
 
@@ -186,10 +186,6 @@ export default {
     .dropdown-title {
       font-weight: 600;
       font-size: inherit;
-
-      &:hover {
-        color: $accentColor;
-      }
     }
 
     .nav-dropdown {
@@ -230,12 +226,14 @@ export default {
       display: none;
     }
 
-    .dropdown-title .arrow {
-      // make the arrow always down at desktop
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 6px solid $arrowBgColor;
-      border-bottom: 0;
+    .dropdown-title {
+      .arrow {
+        // make the arrow always down at desktop
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 6px solid $arrowBgColor;
+        border-bottom: 0;
+      }
     }
 
     .nav-dropdown {

@@ -64,7 +64,7 @@ h2,
 
 h3,
 .h3 {
-  @apply text-lg text-gray-600 font-medium tracking-wide mb-3;
+  @apply text-lg text-gray-700 font-medium tracking-wide mb-3;
 }
 
 h4,
@@ -76,9 +76,8 @@ h1,
 h2,
 h3,
 h4 {
-  &:not(:first-child) {
-    @apply mt-6;
-  }
+  padding-top: 64px;
+  margin-top: -64px;
 }
 
 a {
@@ -89,8 +88,12 @@ a {
 }
 
 ul {
-  @apply list-disc text-indigo-500 font-semibold tracking-wide;
+  @apply list-disc;
 }
+
+/* ul li {
+  @apply space-y-4;
+} */
 
 ol {
   @apply list-decimal;
@@ -98,6 +101,10 @@ ol {
 
 p {
   @apply my-2 leading-relaxed;
+}
+
+* {
+  border-radius: 0;
 }
 
 @tailwind utilities;

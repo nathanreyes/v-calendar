@@ -4,8 +4,7 @@
       v-model="date"
       :min-date="new Date(2018, 0, 1)"
       :max-date="new Date(2018, 0, 31)"
-      is-inline
-    ></v-date-picker>
+    />
   </div>
 </template>
 
@@ -18,4 +17,3 @@ export default {
   },
 };
 </script>
-
