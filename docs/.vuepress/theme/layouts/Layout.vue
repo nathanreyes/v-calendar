@@ -19,15 +19,23 @@
           @toggle-sidebar="toggleSidebar"
           show-nav-links
         >
-          <slot name="sidebar-top" #top />
-          <slot name="sidebar-bottom" #bottom />
+          <template name="sidebar-top" #top>
+            <slot name="sidebar-top" />
+          </template>
+          <template #bottom>
+            <slot name="sidebar-bottom" />
+          </template>
         </Sidebar>
       </div>
       <!--Desktop sidebar-->
       <div class="flex-shrink-0 hidden md:block md:relative z-10 w-72">
-        <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar">
-          <slot name="sidebar-top" #top />
-          <slot name="sidebar-bottom" #bottom />
+        <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar" show-ads>
+          <template name="sidebar-top">
+            <slot name="sidebar-top" />
+          </template>
+          <template name="sidebar-bottom">
+            <slot name="sidebar-bottom" />
+          </template>
         </Sidebar>
       </div>
       <!--Main page-->
@@ -36,8 +44,12 @@
         <Home v-if="$page.frontmatter.home" />
         <!--Other pages-->
         <Page v-else :sidebar-items="sidebarItems">
-          <slot name="page-top" #top />
-          <slot name="page-bottom" #bottom />
+          <template #top>
+            <slot name="page-top" />
+          </template>
+          <template #bottom>
+            <slot name="page-bottom" />
+          </template>
         </Page>
         <!--Bottom page navigation-->
         <PageNav v-bind="{ sidebarItems }" />

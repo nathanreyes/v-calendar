@@ -3,10 +3,6 @@ title: Attribute
 sidebarDepth: 2
 ---
 
-:::warning
-This page is currently being updated.
-:::
-
 ## Properties
 
 ### `key`
@@ -16,52 +12,6 @@ This page is currently being updated.
 **Description:** Keys uniquely identify an attribute and may determine how animations are applied.
 
 **Default:** `index`
-
-### `highlight`
-
-**Type:** Object, Function
-
-**Description:** Highlight to associate with an attribute that may be defined as an [object](#highlight-object) or a [function](../guide/attributes.md#using-functions) that returns an object.
-
-**Default:** `undefined`
-
-### `dot`
-
-**Type:** Object, Function
-
-**Description:** Dot to associate with an attribute that may be defined as an [object](#dot-object) or a [function](../guide/attributes.md#using-functions) that returns an object.
-
-**Default:** `undefined`
-
-### `bar`
-
-**Type:** Object, Function
-
-**Description:** Bar to associate with an attribute that may be defined as an [object](#bar-object) or a [function](../guide/attributes.md#using-functions) that returns an object.
-
-**Default:** `undefined`
-
-### `popover`
-
-**Type:** Object, Function
-
-**Description:** Popover to associate with an attribute that may be defined as an [object](#popover-object) or a [function](../guide/attributes.md#using-functions) that returns an object.
-
-**Default:** `undefined`
-
-### `contentClass`
-
-**Type:** String
-
-**Description:** Class to apply to day content that may be defined as a string or a [function](../guide/attributes.md#using-functions) that returns a string.
-
-### `contentStyle`
-
-**Type:** Object, Function
-
-**Description:** Style to apply to day content that may be defined as an [object](#content-style-object) or a [function](../guide/attributes.md#using-functions) that returns an object.
-
-**Default:** `undefined`
 
 ### `dates`
 
@@ -79,7 +29,7 @@ This page is currently being updated.
 
 **Default:** `undefined`
 
-### `customObject`
+### `customData`
 
 **Type:** Any
 
@@ -105,229 +55,123 @@ This page is currently being updated.
 **Default:** 
 -->
 
-## Highlight Object
+### `highlight`
 
-### `animated`
+**Type:** Boolean, String, Object
 
-**Type:** Boolean
-
-**Description:** Highlight is animated on appearing, disappearing or range change.
-
-**Default:** `true`
-
-### `height`
-
-**Type:** String
-
-**Description:** Height of highlighted region.
-
-**Default:** `"1.8rem"`
-
-### `backgroundColor`
-
-**Type:** String
-
-**Description:** Background color of highlighted region.
-
-**Default:** `"rgba(0, 0, 0, 0.5)"`
-
-### `borderColor`
-
-**Type:** String
-
-**Description:** Border color of highlighted region.
+**Description:** Configuration of higlight. If boolean, displays the highlight using the current theme color. If string, displays the highlight using the specified theme. If object, uses the properties below.
 
 **Default:** `undefined`
 
-### `borderWidth`
+### `highlight.color`
 
 **Type:** String
 
-**Description:** Border width of highlighted region.
-
-**Default:** `"0"`
-
-### `borderStyle`
-
-**Type:** String
-
-**Description:** Border style of highlighted region.
-
-**Default:** `"solid"`
-
-### `borderRadius`
-
-**Type:** String
-
-**Description:** Border radius of highlighted region.
-
-**Default:** `"1.8rem"`
-
-### `opacity`
-
-**Type:** Number
-
-**Description:** Opacity of highlighted region.
-
-**Default:** `1`
-
-<!-- 
-### 
-
-**Type:** 
-
-**Description:** 
-
-**Default:** 
--->
-
-## Dot Object
-
-### `diameter`
-
-**Type:** String
-
-**Description:** Diameter of dot.
-
-**Default:** `"5px"`
-
-### `backgroundColor`
-
-**Type:** String
-
-**Description:** Background color of dot.
-
-**Default:** `"rgba(0, 0, 0, 0.5)"`
-
-### `borderColor`
-
-**Type:** String
-
-**Description:** Border color of dot.
+**Description:** Theme color.
 
 **Default:** `undefined`
 
-### `borderWidth`
+### `highlight.fillMode`
 
 **Type:** String
 
-**Description:** Border width of dot.
+**Description:** Color fill option (`solid`, `light`, `none`)
 
-**Default:** `0`
+**Default:** `solid`
 
-### `borderStyle`
-
-**Type:** String
-
-**Description:** Border style of dot.
-
-**Default:** `"solid"`
-
-### `borderRadius`
+### `highlight.class`
 
 **Type:** String
 
-**Description:** Border radius of dot.
+**Description:** Any generic class you wish to apply to the background element of the highlight.
 
-**Default:** `"50%"`
+**Default:** `''`
 
-### `opacity`
-
-**Type:** Number
-
-**Description:** Opacity of dot.
-
-**Default:** `1`
-
-<!-- 
-### 
-
-**Type:** 
-
-**Description:** 
-
-**Default:** 
--->
-
-## Bar Object
-
-### `height`
+### `highlight.contentClass`
 
 **Type:** String
 
-**Description:** Height of bar.
+**Description:** Any generic class you wish to apply to the content element of the highlight.
 
-**Default:** `"5px"`
+**Default:** `''`
 
-### `backgroundColor`
+### `dot`
 
-**Type:** String
+**Type:** Boolean, String, Object
 
-**Description:** Background color of bar.
-
-**Default:** `"rgba(0, 0, 0, 0.5)"`
-
-### `borderColor`
-
-**Type:** String
-
-**Description:** Border color of bar.
+**Description:** Configuration of dot. If boolean, displays the dot using the current theme color. If string, displays the dot using the specified theme. If object, uses the properties below.
 
 **Default:** `undefined`
 
-### `borderWidth`
+### `dot.color`
 
 **Type:** String
 
-**Description:** Border width of bar.
-
-**Default:** `0`
-
-### `backgroundColor`
-
-**Type:** String
-
-**Description:** Background color of bar.
+**Description:** Theme color.
 
 **Default:** `undefined`
 
-### `opacity`
+### `dot.class`
 
-**Type:** Number
+**Type:** String
 
-**Description:** Opacity of bar.
+**Description:** Any generic class you wish to apply to the dot element.
 
-**Default:** `1`
+**Default:** `undefined`
 
-<!-- 
-### 
+### `bar`
 
-**Type:** 
+**Type:** Boolean, String, Object
 
-**Description:** 
+**Description:** Configuration of bar. If boolean, displays the bar using the current theme color. If string, displays the bar using the specified theme. If object, uses the properties below.
 
-**Default:** 
--->
+**Default:** `undefined`
 
-## Popover Object
+### `bar.color`
 
-### `label`
+**Type:** String
 
-**Type:** String, Function
+**Description:** Theme color.
+
+**Default:** `undefined`
+
+### `bar.class`
+
+**Type:** String
+
+**Description:** Any generic class you wish to apply to the bar element.
+
+**Default:** `undefined`
+
+### `popover`
+
+**Type:** Object
+
+### `popover.label`
+
+**Type:** String
 
 **Description:** Text string to display in the popover content row.
 
 **Default:** `undefined`
 
-### `labelStyle`
+### `popover.labelClass`
 
-**Type:** Object, Function
+**Type:** String
 
-**Description:** Style to apply for label.
+**Description:** Class to apply to the label.
 
 **Default:** `undefined`
 
-### `hideIndicator`
+### `popover.labelStyle`
+
+**Type:** Object
+
+**Description:** Style to apply to the label.
+
+**Default:** `undefined`
+
+### `popover.hideIndicator`
 
 **Type:** Boolean
 
@@ -335,29 +179,43 @@ This page is currently being updated.
 
 **Default:** `false`
 
-### `slot`
-
-**Type:** String
-
-**Description:** Name of slot to use to display the popover content row.
-
-**Default:** `undefined`
-
-### `visibility`
-
-**Type:** String
-
-**Description:** Visibility of the popover when this label or slot is displayed (`"hover`, `"focus"`, `"visible"`, `"hidden"`).
-
-**Default:** `"hover"`
-
-### `isInteractive`
+### `popover.isInteractive`
 
 **Type:** Boolean
 
 **Description:** Determines if the user can interract with the popover content. Logically 'OR'ed with other popovers on the same day.
 
 **Default:** `false`
+
+### `popover.modifiers`
+
+**Type:** Array
+
+**Description:** Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers/).
+
+### `popover.placement`
+
+**Type:** String
+
+**Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change. Valid placements include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`.
+
+**Default:** `"bottom-start"`
+
+### `popover.positionFixed`
+
+**Type:** Boolean
+
+**Description:** Uses a `fixed` position when displaying the popover. Use this open when the calendar is placed within a container that has `overflow: hidden` style applied. Reference popper.js for more details.
+
+**Default:** `"bottom-start"`
+
+### `popover.visibility`
+
+**Type:** String
+
+**Description:** Visibility of the popover when this label or slot is displayed (`"hover-focus`, `"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`).
+
+**Default:** `"hover"`
 
 <!-- 
 ### 
@@ -368,14 +226,3 @@ This page is currently being updated.
 
 **Default:** 
 -->
-
-## Content Style Object
-
-Content style is just a style object. All normal style properties apply.
-
-
-## Content Hover Style (Deprecated)
-
-::: warning
-As of *v0.8.0*, the `contentHoverStyle` property has been deprecated in favor of using a function to define the `contentStyle` property. This functions accepts an object parameter with the following properties (`isHovered`, `isFocused`, [`day`](./day-object.md)). This function should return the configured style.
-:::

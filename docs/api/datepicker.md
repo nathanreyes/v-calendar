@@ -170,4 +170,4 @@ Popover events are only emitted when `is-inline === false`.
 
 **Props:**
 
-Reference the section on using [custom slots](../guide/datepicker.md#use-custom-slot) for available props.
+Reference the section on using [custom slots](../datepicker.md#use-custom-slot) for available props.

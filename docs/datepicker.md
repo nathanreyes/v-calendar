@@ -164,7 +164,7 @@ export default {
 
 ## Format & Parse Dates
 
-Please reference the [formatting & parsing section](/guide/#formatting-parsing) for steps to customizing the input element's formatting and parsing behavior.
+Please reference the [formatting & parsing section](./i18n.md#formatting-parsing-dates) for steps to customizing the input element's formatting and parsing behavior.
 
 ## Disable Dates
 

@@ -11,7 +11,7 @@ title: 'Installation'
 ### 1. Install via npm
 
 ```bash
-npm install v-calendar@next
+npm install v-calendar
 ```
 
 ### 2. Import and use VCalendar
@@ -79,7 +79,7 @@ setupCalendar({
   <body>
     <div id='app'>
       <v-calendar></v-calendar>
-      <v-date-picker :mode='mode' v-model='selectedDate' />
+      <v-date-picker v-model='selectedDate' />
     </div>
 
     <!-- 1. Link Vue Javascript -->
@@ -93,8 +93,6 @@ setupCalendar({
       new Vue({
         el: '#app',
         data: {
-          // Data used by the date picker
-          mode: 'single',
           selectedDate: null,
         }
       })
@@ -102,13 +100,3 @@ setupCalendar({
   </body>
 </html>
 ```
-
-<!-- ### Polyfills
-
-`v-calendar` is transpiled for ES5, but it still needs a polyfill for `Array.prototype.find` (<= IE11) or even `Intl` (Javascript's internationalization object, <= IE10) if you wish to target older browsers. Two options for accomplishing this are:
-1. **Easy way:**
-  Insert the following script into your html before loading `v-calendar`. The polyfill will get loaded automatically *only if* the browser needs it.
-
-  `<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Intl" />`
-
-2. In Node/Browserify/Webpack environments, use [babel-polyfill](https://babeljs.io/docs/usage/polyfill/) to insert the polyfill for you. -->
