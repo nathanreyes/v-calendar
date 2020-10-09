@@ -8,7 +8,7 @@
         <span class="text-sm font-bold text-gray-800">+11:00</span>
       </div>
       <input
-        class="w-full"
+        class="w-full focus:outline-none"
         type="range"
         min="0"
         :max="timezones.length - 1"
