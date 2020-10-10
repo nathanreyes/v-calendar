@@ -7,13 +7,13 @@
       is-range
     />
     <div class="flex mt-2">
-      <span class="font-semibold text-gray-600 w-12">Start:</span
+      <span class="font-semibold text-gray-600 w-12">Start (ISO):</span
       ><span class="ml-2">{{
         dateRange && dateRange.start.toISOString()
       }}</span>
     </div>
     <div class="flex mt-2">
-      <span class="font-semibold text-gray-600 w-12">End:</span
+      <span class="font-semibold text-gray-600 w-12">End (ISO):</span
       ><span class="ml-2">{{ dateRange && dateRange.end.toISOString() }}</span>
     </div>
     <div class="w-full mt-4">
