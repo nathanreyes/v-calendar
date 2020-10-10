@@ -93,7 +93,7 @@ export default {
           this.$scopedSlots.default({
             direction: this.direction,
             alignment: this.alignment,
-            args: this.args,
+            data: this.data,
             updateLayout: this.update,
             hide: opts => this.hide(opts),
           })) ||
