@@ -111,7 +111,7 @@ export default {
             phase: 'afterWrite',
             fn: this.onPopperUpdate,
           },
-          ...this.modifiers,
+          ...(this.modifiers || []),
         ],
         onFirstUpdate: this.onPopperUpdate,
       };
