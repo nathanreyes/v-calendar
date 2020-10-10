@@ -135,6 +135,7 @@ export default {
   --weekday-border: 1px solid #eaeaea;
 
   border-radius: 0;
+  width: 100%;
 
   & .vc-header {
     background-color: #f1f5f8;

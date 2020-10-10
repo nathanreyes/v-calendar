@@ -33,4 +33,6 @@ npm i v-calendar
 
 <homepage-custom-calendar />
 
+[View example in GitHub](https://github.com/nathanreyes/v-calendar/blob/master/docs/.vuepress/components/homepage/custom-calendar.vue)
+
 </div>

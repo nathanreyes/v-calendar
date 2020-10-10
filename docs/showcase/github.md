@@ -1,5 +1,5 @@
 ---
-title: Github Issues
+title: GitHub Issues
 sidebarDepth: 2
 pageClass: docs-page
 ---

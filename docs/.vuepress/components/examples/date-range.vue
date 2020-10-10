@@ -30,7 +30,11 @@
                     v-on="inputEvents.start"
                   />
                 </div>
-                <span class="flex-shrink-0 mx-2">&#8594;</span>
+                <span class="flex-shrink-0 mx-2">
+                  <svg class="w-4 h-4 stroke-current text-gray-600" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
                 <div class="relative w-40">
                   <svg
                     class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
