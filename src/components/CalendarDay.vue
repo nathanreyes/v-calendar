@@ -280,8 +280,13 @@ export default {
         popovers: [],
         content: [],
       };
-      this.day.attributes = Object.values(this.day.attributesMap || {}).sort(
-        (a, b) => a.order - b.order,
+      // Use $set to trigger reactivity in popovers, if needed
+      this.$set(
+        this.day,
+        'attributes',
+        Object.values(this.day.attributesMap || {}).sort(
+          (a, b) => a.order - b.order,
+        ),
       );
       this.day.attributes.forEach(attr => {
         // Add glyphs for each attribute

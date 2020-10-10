@@ -49,7 +49,7 @@ export function getPopoverTriggerEvents(opts) {
         e.stopPropagation();
       }
     },
-    mouseover(e) {
+    mousemove(e) {
       opts.ref = e.currentTarget;
       if (!hovered) {
         hovered = true;
