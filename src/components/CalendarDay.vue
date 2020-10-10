@@ -1,7 +1,7 @@
 <script>
 import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { arrayHasItems, mergeEvents } from '../utils/helpers';
-import { getPopoverTriggerEvents } from '../utils/popovers';
+import { getPopoverTriggerEvents, updatePopover } from '../utils/popovers';
 import { last, get, defaults } from '../utils/_';
 
 export default {
@@ -242,6 +242,10 @@ export default {
           },
           popoverEvents,
         );
+        updatePopover({
+          id: this.dayPopoverId,
+          data: this.day,
+        })
       },
     },
   },
