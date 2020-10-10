@@ -1,5 +1,7 @@
 <script>
-import { addDays, addMonths, addYears } from 'date-fns';
+import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
+import addYears from 'date-fns/addYears';
 import Popover from './Popover';
 import PopoverRow from './PopoverRow';
 import Grid from './Grid';
@@ -7,11 +9,7 @@ import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
 import AttributeStore from '../utils/attributeStore';
-import {
-  propOrDefaultMixin,
-  rootMixin,
-  safeScopedSlotMixin,
-} from '../utils/mixins';
+import { rootMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import {
   pageForDate,
@@ -35,7 +33,7 @@ import {
   head,
   last,
 } from '../utils/_';
-import '../styles/tailwind-lib.css';
+import '../styles/base.css';
 
 export default {
   name: 'Calendar',
@@ -72,7 +70,6 @@ export default {
         refInFor: true,
       }),
     );
-
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const click = () => this.move(isPrev ? -this.step_ : this.step_);
@@ -81,14 +78,7 @@ export default {
       return h(
         'div',
         {
-          class: [
-            `vc-flex vc-justify-center vc-items-center vc-cursor-pointer vc-select-none ${
-              isDisabled
-                ? 'vc-opacity-25 vc-pointer-events-none vc-cursor-not-allowed'
-                : 'vc-pointer-events-auto'
-            }`,
-            this.$theme.arrows,
-          ],
+          class: ['vc-arrow', { 'is-disabled': isDisabled }],
           attrs: {
             role: 'button',
           },
@@ -109,21 +99,20 @@ export default {
         ],
       );
     };
-
     // Day popover
     const getDayPopover = () =>
       h(Popover, {
         props: {
           id: this.sharedState.dayPopoverId,
-          contentClass: this.$theme.dayPopoverContainer,
+          contentClass: 'vc-day-popover-container',
         },
         scopedSlots: {
-          default: ({ args: day, updateLayout, hide }) => {
+          default: ({ data: day, updateLayout, hide }) => {
             const attributes = Object.values(day.attributes).filter(
               a => a.popover,
             );
             const masks = this.$locale.masks;
-            const format = this.format;
+            const format = this.formatDate;
             const dayTitle = format(day.date, masks.dayPopover);
             return (
               this.safeScopedSlot('day-popover', {
@@ -141,7 +130,7 @@ export default {
                   h(
                     'div',
                     {
-                      class: ['vc-text-center', this.$theme.dayPopoverHeader],
+                      class: ['vc-day-popover-header'],
                     },
                     [dayTitle],
                   ),
@@ -170,11 +159,11 @@ export default {
           },
           class: [
             'vc-container',
-            'vc-reset',
+            `vc-${this.$theme.color}`,
             {
-              'vc-min-w-full': this.isExpanded,
+              'vc-is-expanded': this.isExpanded,
+              'vc-is-dark': this.$theme.isDark,
             },
-            this.$theme.container,
           ],
           on: {
             keydown: this.handleKeydown,
@@ -187,8 +176,8 @@ export default {
             'div',
             {
               class: [
-                'vc-w-full vc-relative',
-                { 'vc-overflow-hidden': this.inTransition },
+                'vc-pane-container',
+                { 'in-transition': this.inTransition },
               ],
             },
             [
@@ -234,6 +223,7 @@ export default {
                 },
                 [getArrowButton(true), getArrowButton(false)],
               ),
+              this.$scopedSlots.footer && this.$scopedSlots.footer(),
             ],
           ),
           getDayPopover(),
@@ -242,7 +232,7 @@ export default {
 
     return getContainerGrid();
   },
-  mixins: [propOrDefaultMixin, rootMixin, safeScopedSlotMixin],
+  mixins: [rootMixin, safeScopedSlotMixin],
   provide() {
     return {
       sharedState: this.sharedState,
@@ -290,11 +280,17 @@ export default {
     titlePosition_() {
       return this.propOrDefault('titlePosition', 'titlePosition');
     },
+    firstPage() {
+      return head(this.pages);
+    },
+    lastPage() {
+      return last(this.pages);
+    },
     minPage_() {
-      return this.minPage || pageForDate(this.$locale.toDate(this.minDate));
+      return this.minPage || pageForDate(this.normalizeDate(this.minDate));
     },
     maxPage_() {
-      return this.maxPage || pageForDate(this.$locale.toDate(this.maxDate));
+      return this.maxPage || pageForDate(this.normalizeDate(this.maxDate));
     },
     count() {
       return this.rows * this.columns;
@@ -318,12 +314,18 @@ export default {
   watch: {
     $locale() {
       this.refreshLocale();
-      this.refreshPages({ page: head(this.pages), ignoreCache: true });
+      this.refreshPages({ page: this.firstPage, ignoreCache: true });
       this.initStore();
     },
     $theme() {
       this.refreshTheme();
       this.initStore();
+    },
+    timezone() {
+      // Refresh pages to reset the time boundaries
+      this.refreshPages({ ignoreCache: true });
+      // Refresh attributes
+      this.refreshAttrs(this.pages, this.store.list, null, true);
     },
     fromDate() {
       this.refreshPages();
@@ -429,9 +431,9 @@ export default {
       let fromPage = null;
       if (opts.position) {
         fromPage = this.getTargetPageRange(page, opts.position).fromPage;
-      } else if (pageIsBeforePage(page, this.pages[0])) {
+      } else if (pageIsBeforePage(page, this.firstPage)) {
         fromPage = this.getTargetPageRange(page, -1).fromPage;
-      } else if (pageIsAfterPage(page, last(this.pages))) {
+      } else if (pageIsAfterPage(page, this.lastPage)) {
         fromPage = this.getTargetPageRange(page, 1).fromPage;
       }
       // Move to new fromPage if it's different from the current one
@@ -444,7 +446,7 @@ export default {
       }
       // Set focus on the element for the date
       const focusableEl = this.$el.querySelector(
-        `.id-${this.$locale.format(date, 'YYYY-MM-DD')}.in-month .vc-focusable`,
+        `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
       );
       if (focusableEl) {
         focusableEl.focus();
@@ -467,14 +469,14 @@ export default {
       } else {
         return;
       }
-      const lastPage = last(this.pages);
+      const lastPage = this.lastPage;
       let page = fromPage;
       // Offset page from the desired `toPage`
       if (pageIsAfterPage(toPage, lastPage)) {
         page = addPages(toPage, -(this.pages.length - 1));
       }
       // But no earlier than the desired `fromPage`
-      if (pageIsBeforePage(fromPage, page)) {
+      if (pageIsBeforePage(page, fromPage)) {
         page = fromPage;
       }
       await this.refreshPages({ ...opts, page });
@@ -490,11 +492,11 @@ export default {
       } else {
         // 2. Try the fromPage prop
         fromPage =
-          this.fromPage || pageForDate(this.$locale.toDate(this.fromDate));
+          this.fromPage || pageForDate(this.normalizeDate(this.fromDate));
         if (!pageIsValid(fromPage)) {
           // 3. Try the toPage prop
           const toPage =
-            this.toPage || pageForDate(this.$locale.toDate(this.toPage));
+            this.toPage || pageForDate(this.normalizeDate(this.toPage));
           if (pageIsValid(toPage)) {
             fromPage = addPages(toPage, 1 - this.count);
           } else {
@@ -550,7 +552,7 @@ export default {
     refreshDisabledDays(pages) {
       this.getPageDays(pages).forEach(d => {
         d.isDisabled =
-          !!this.disabledAttribute && this.disabledAttribute.includesDay(d);
+          !!this.disabledAttribute && this.disabledAttribute.intersectsDay(d);
       });
     },
     refreshFocusableDays(pages) {
@@ -586,7 +588,7 @@ export default {
       if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;
-        page = pageForDate(this.$locale.toDate(date));
+        page = pageForDate(this.normalizeDate(date));
       }
       return page;
     },
@@ -618,7 +620,7 @@ export default {
           refresh: true,
         };
         // Assign day info
-        page.days = this.$locale.getCalendarDays(page);
+        page.days = this.$locale.getCalendarDays(page, this.timezone);
       }
       return page;
     },
@@ -641,8 +643,7 @@ export default {
           let map = {};
           // If resetting...
           if (reset) {
-            // Flag day for refresh if it has attributes
-            d.refresh = arrayHasItems(d.attributes);
+            d.refresh = true;
           } else if (hasAny(d.attributesMap, deletes)) {
             // Delete attributes from the delete list
             map = omit(d.attributesMap, deletes);
@@ -655,7 +656,7 @@ export default {
           // For each attribute to add...
           adds.forEach(attr => {
             // Add it if it includes the current day
-            const targetDate = attr.includesDay(d);
+            const targetDate = attr.intersectsDay(d);
             if (targetDate) {
               const newAttr = {
                 ...attr,
@@ -748,48 +749,57 @@ export default {
 };
 </script>
 
-<style>
-.vc-container {
-  --slide-translate: 22px;
-  --slide-duration: 0.15s;
-  --slide-timing: ease;
-
-  --header-padding: 10px 10px 0 10px;
-  --title-padding: 0 8px;
-  --arrows-padding: 8px 10px;
-  --arrow-font-size: 26px;
-  --weekday-padding: 5px 0;
-  --weeks-padding: 5px 6px 7px 6px;
-
-  --nav-container-width: 170px;
-
-  --day-min-height: 28px;
-  --day-content-width: 28px;
-  --day-content-height: 28px;
-  --day-content-margin: 1.6px auto;
-  --day-content-transition-time: 0.13s ease-in;
-  --day-content-bg-color-hover: hsla(211, 25%, 84%, 0.3);
-  --day-content-dark-bg-color-hover: hsla(216, 15%, 52%, 0.3);
-  --day-content-bg-color-focus: hsla(211, 25%, 84%, 0.4);
-  --day-content-dark-bg-color-focus: hsla(216, 15%, 52%, 0.4);
-
-  --highlight-height: 28px;
-
-  --dot-diameter: 5px;
-  --dot-border-radius: 50%;
-  --dot-spacing: 3px;
-
-  --bar-height: 3px;
-  --bars-width: 75%;
-
-  font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    'Helvetica', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<style lang="postcss">
+.vc-pane-container {
+  width: 100%;
   position: relative;
-  width: max-content;
-  -webkit-tap-highlight-color: transparent;
+  &.in-transition {
+    overflow: hidden;
+  }
+}
+
+.vc-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+  color: var(--gray-600);
+  border-width: 2px;
+  border-radius: var(--rounded);
+  border-color: transparent;
+  &:hover {
+    background: var(--gray-200);
+  }
+  &:focus {
+    border-color: var(--gray-300);
+  }
+
+  &.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+}
+
+.vc-day-popover-container {
+  color: var(--white);
+  background-color: var(--gray-800);
+  border: 1px solid;
+  border-color: var(--gray-700);
+  border-radius: var(--rounded);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  padding: 4px 8px;
+  box-shadow: var(--shadow);
+}
+
+.vc-day-popover-header {
+  font-size: var(--text-xs);
+  color: var(--gray-300);
+  font-weight: var(--font-semibold);
+  text-align: center;
 }
 
 .vc-arrows-container {
@@ -798,13 +808,33 @@ export default {
   top: 0;
   display: flex;
   justify-content: space-between;
-  padding: var(--arrows-padding);
+  padding: 8px 10px;
   pointer-events: none;
   &.title-left {
     justify-content: flex-end;
   }
   &.title-right {
     justify-content: flex-start;
+  }
+}
+
+.vc-is-dark {
+  & .vc-arrow {
+    color: var(--white);
+    &:hover {
+      background: var(--gray-800);
+    }
+    &:focus {
+      border-color: var(--gray-700);
+    }
+  }
+  & .vc-day-popover-container {
+    color: var(--gray-800);
+    background-color: var(--white);
+    border-color: var(--gray-100);
+  }
+  & .vc-day-popover-header {
+    color: var(--gray-700);
   }
 }
 </style>

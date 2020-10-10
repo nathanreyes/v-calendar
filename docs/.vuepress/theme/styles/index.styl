@@ -3,8 +3,9 @@
 @require './arrow'
 @require './wrapper'
 @require './toc'
+@require './palette.styl'
 
-{$contentClass}:not(.custom)
+.{$contentClass}:not(.custom)
   @extend $wrapper
 
   a:hover
@@ -18,7 +19,7 @@
   img
     max-width 100%
 
-{$contentClass}.custom
+.{$contentClass}.custom
   padding 0
   margin 0
 
@@ -62,12 +63,6 @@ a.header-anchor
 
   &:hover
     text-decoration none
-
-code, kbd, .line-number
-  font-family source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace
-
-p, ul, ol
-  line-height 1.7
 
 hr
   border 0

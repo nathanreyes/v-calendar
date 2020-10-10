@@ -1,9 +1,5 @@
 <template>
-  <v-date-picker
-    :theme-styles='themeStyles'
-    v-model='date'
-    is-inline>
-  </v-date-picker>
+  <v-date-picker :theme-styles="themeStyles" v-model="date" />
 </template>
 
 <script>
@@ -24,7 +20,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 /deep/ .c-day:not(.in-month) {

@@ -6,97 +6,79 @@ import Locale from './locale';
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale = new Locale() } = {}) {
+  constructor(config, { order = 0, locale } = {}) {
     this.isDateInfo = true;
-    this.isRange = isObject(config) || isFunction(config);
+    this.isRange = isObject(config);
     this.isDate = !this.isRange;
     this.order = order;
-    this.locale = locale;
-    this.mask = locale.masks.data;
-    this.getMonthComps = locale.getMonthComps;
-    this.firstDayOfWeek = locale.firstDayOfWeek;
-    this.opts = { order, locale };
+    this.locale = locale instanceof Locale ? locale : new Locale(locale);
+    this.firstDayOfWeek = this.locale.firstDayOfWeek;
     // Process date
     if (this.isDate) {
       this.type = 'date';
       // Initialize date from config
-      let date = this.toDate(config);
-      // Can't accept invalid dates
-      date = isDate(date) ? date : new Date();
-      // Strip date time
-      date.setHours(0, 0, 0, 0);
-      // date.setUTCHours(0, 0, 0, 0);
-      // Assign date
-      this.date = date;
-      this.dateTime = date.getTime();
+      this.date = this.locale.normalizeDate(config);
+      this.dateTime = this.date && this.date.getTime();
     }
     // Process date range
     if (this.isRange) {
       this.type = 'range';
-      // Date config is a function
-      if (isFunction(config)) {
-        this.on = { and: config };
-        // Date config is an object
-      } else {
-        // Initialize start and end dates (null means infinity)
-        let start = this.toDate(config.start);
-        let end = this.toDate(config.end);
-        // Reconfigure start and end dates if needed
-        if (start && end && start > end) {
-          const temp = start;
-          start = end;
-          end = temp;
-        } else if (start && config.span >= 1) {
-          end = addDays(start, config.span - 1);
-        }
-        // Reset invalid dates to null and strip times for valid dates
-        if (start) {
-          if (!isDate(start)) start = null;
-          else start.setHours(0, 0, 0, 0);
-          // else start.setUTCHours(0, 0, 0, 0);
-        }
-        if (end) {
-          if (!isDate(end)) end = null;
-          else end.setHours(0, 0, 0, 0);
-          // else end.setUTCHours(0, 0, 0, 0);
-        }
-        // Assign start and end dates
-        this.start = start;
-        this.end = end;
-        this.startTime = start && start.getTime();
-        this.endTime = end && end.getTime();
-        // Assign spans
-        if (start && end) {
-          this.daySpan = this.diffInDays(start, end);
-          this.weekSpan = this.diffInWeeks(start, end);
-          this.monthSpan = this.diffInMonths(start, end);
-          this.yearSpan = this.diffInYears(start, end);
-        }
-        // Assign 'and' condition
-        const andOpt = mixinOptionalProps(config, {}, DateInfo.patternProps);
-        if (andOpt.assigned) {
-          this.on = { and: andOpt.target };
-        }
-        // Assign 'or' conditions
-        if (config.on) {
-          const or = (isArray(config.on) ? config.on : [config.on])
-            .map(o => {
-              if (isFunction(o)) return o;
-              const opt = mixinOptionalProps(o, {}, DateInfo.patternProps);
-              return opt.assigned ? opt.target : null;
-            })
-            .filter(o => o);
-          if (or.length) this.on = { ...this.on, or };
-        }
+      // Initialize start and end dates from config (null means infinity)
+      let start = this.locale.normalizeDate(config.start);
+      let end = this.locale.normalizeDate(config.end);
+      // Reconfigure start and end dates if needed
+      if (start && end && start > end) {
+        const temp = start;
+        start = end;
+        end = temp;
+      } else if (start && config.span >= 1) {
+        end = addDays(start, config.span - 1);
+      }
+      // Reset invalid dates to null and strip times for valid dates
+      if (start) {
+        if (!isDate(start)) start = null;
+      }
+      if (end) {
+        if (!isDate(end)) end = null;
+      }
+      // Assign start and end dates
+      this.start = start;
+      this.startTime = start ? start.getTime() : NaN;
+      this.end = end;
+      this.endTime = end ? end.getTime() : NaN;
+      // Assign spans
+      if (start && end) {
+        this.daySpan = this.diffInDays(start, end);
+        this.weekSpan = this.diffInWeeks(start, end);
+        this.monthSpan = this.diffInMonths(start, end);
+        this.yearSpan = this.diffInYears(start, end);
+      }
+      // Assign 'and' condition
+      const andOpt = mixinOptionalProps(config, {}, DateInfo.patternProps);
+      if (andOpt.assigned) {
+        this.on = { and: andOpt.target };
+      }
+      // Assign 'or' conditions
+      if (config.on) {
+        const or = (isArray(config.on) ? config.on : [config.on])
+          .map(o => {
+            if (isFunction(o)) return o;
+            const opt = mixinOptionalProps(o, {}, DateInfo.patternProps);
+            return opt.assigned ? opt.target : null;
+          })
+          .filter(o => o);
+        if (or.length) this.on = { ...this.on, or };
       }
       // Assign flag if date is complex
       this.isComplex = !!this.on;
     }
   }
 
-  toDate(date) {
-    const mask = this.locale.masks.data;
-    return this.locale.toDate(date, mask);
+  get opts() {
+    return {
+      order: this.order,
+      locale: this.locale,
+    };
   }
 
   toDateInfo(date) {
@@ -214,19 +196,19 @@ export default class DateInfo {
     return null;
   }
 
-  iterateDatesInRange({ start, end }, func) {
-    if (!start || !end || !isFunction(func)) return null;
+  iterateDatesInRange({ start, end }, fn) {
+    if (!start || !end || !isFunction(fn)) return null;
     const state = {
       i: 0,
       date: start,
-      day: this.locale.getDayFromDate(start),
+      day: this.locale.getDateParts(start),
       finished: false,
     };
     let result = null;
     for (; !state.finished && state.date <= end; state.i++) {
-      result = func(state);
+      result = fn(state);
       state.date = addDays(state.date, 1);
-      state.day = this.locale.getDayFromDate(state.date);
+      state.day = this.locale.getDateParts(state.date);
     }
     return result;
   }
@@ -400,9 +382,9 @@ export default class DateInfo {
     return true;
   }
 
-  includesDay(day) {
+  intersectsDay(day) {
     // Date is outside general range - return null
-    if (!this.shallowIncludesDate(day.date)) return null;
+    if (!this.shallowIntersectsDate(day.range)) return null;
     // Return this date if patterns match
     return this.matchesDay(day) ? this : null;
   }

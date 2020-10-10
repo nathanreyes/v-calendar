@@ -1,5 +1,6 @@
 <template>
   <router-link
+    class="text-gray-700 hover:text-indigo-600"
     :to="link"
     @focusout.native="focusoutAction"
     v-if="!isExternal(link)"
@@ -8,6 +9,7 @@
   >
   <a
     v-else
+    class="text-gray-700 hover:text-indigo-600"
     :href="link"
     @focusout="focusoutAction"
     :target="isMailto(link) || isTel(link) ? null : '_blank'"

@@ -66,7 +66,7 @@ function renderLink(h, to, text, active) {
         exactActiveClass: 'text-indigo-700 bg-indigo-100 border-indigo-500',
       },
       class: [
-        'block text-sm text-gray-600 hover:text-indigo-700 font-medium hover:font-semibold px-3 py-1 w-full border-l-4 border-transparent rounded',
+        'block text-sm text-gray-700 hover:text-indigo-700 font-medium px-3 py-1 w-full border-l-4 border-transparent rounded',
         { active },
       ],
     },

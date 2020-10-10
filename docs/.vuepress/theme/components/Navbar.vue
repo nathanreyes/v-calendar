@@ -1,5 +1,5 @@
 <template>
-  <header class="fixed w-full bg-white border-b px-4 z-20">
+  <header class="fixed top-0 w-full bg-white border-b px-4 z-20">
     <div
       class="w-full h-12 md:h-16 flex justify-between items-center max-w-6xl mx-auto"
     >
@@ -37,7 +37,7 @@
         <SearchBox
           v-else-if="
             $site.themeConfig.search !== false &&
-              $page.frontmatter.search !== false
+            $page.frontmatter.search !== false
           "
         />
         <NavLinks class="hidden md:block" />

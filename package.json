@@ -29,12 +29,11 @@
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve src/lib.js",
-    "build": "yarn build:lib && yarn build:calendar && yarn build:date-picker && yarn build:popover && yarn build:popover-ref && yarn build:popover-row",
+    "build": "yarn build:lib && yarn build:calendar && yarn build:date-picker && yarn build:popover && yarn build:popover-row",
     "build:lib": "vue-cli-service build --target lib src/lib.js --mode production",
     "build:calendar": "vue-cli-service build --target lib --dest lib/components --name calendar src/components/Calendar.vue",
     "build:date-picker": "vue-cli-service build --no-clean --target lib --dest lib/components --name date-picker src/components/DatePicker.vue",
     "build:popover": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover src/components/Popover.vue",
-    "build:popover-ref": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover-ref src/components/PopoverRef.vue",
     "build:popover-row": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover-row src/components/PopoverRow.vue",
     "test": "vue-cli-service test:unit --watch",
     "lint": "vue-cli-service lint",
@@ -49,6 +48,7 @@
   "devDependencies": {
     "@babel/plugin-transform-arrow-functions": "^7.2.0",
     "@fullhuman/postcss-purgecss": "^1.3.0",
+    "@popperjs/core": "^2.4.0",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-plugin-unit-jest": "^3.11.0",
@@ -60,7 +60,7 @@
     "babel-eslint": "^10.0.3",
     "babel-jest": "^22.0.4",
     "postcss-preset-env": "^6.6.0",
-    "tailwindcss": "1.1.4",
+    "tailwindcss": "^1.5.1",
     "vuepress": "1.2.0",
     "webpack-bundle-analyzer": "^3.8.0"
   },

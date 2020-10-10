@@ -1,26 +1,251 @@
 ---
-title: 'Date Picker'
+title: 'Date & Time Picker :tada:'
 sidebarDepth: 2
 ---
 
 # Date Picker
 
-`v-date-picker` is a powerful date picker delivered with `v-calendar`. It is simply a wrapper for `v-calendar` so it comes with a lot of flexibility out of the box. For example, it accepts all props supported by `v-calendar` and emits all of the same events.
+:::warning
+`v1.1.0` has introduced a significant number of breaking changes.
 
-Also, it uses [customizable](#customize-attributes) attributes under the hood to represent selected dates. For example, you could change the date selection from a highlight to dots if that makes more sense for your application.
+[Read the upgrade guide for details.](/changelog/v1.1.html)
+:::
 
-## Display Options
+`v-date-picker` is a feature-rich date picker implemented as a wrapper for `v-calendar`. That means that, out of the box, it accepts all props and emits all of the same events.
 
-### Popover
+## Single Dates
 
-By default, `v-date-picker` displays a calendar picker within a popover for an input element. This is the default display option.
+`v-date-picker` can bind to single dates using the `v-model` directive.
+
+<guide-datepicker-simple-date />
+
+```html
+<v-date-picker v-model="date" />
+```
+
+```js
+data() {
+  return {
+    date: new Date(),
+  }
+}
+```
+
+## Date Ranges
+
+Binding to date ranges is also supported by setting the `is-range` prop.
+
+<guide-datepicker-simple-range />
+
+```html
+<v-date-picker value="range" is-range />
+```
+
+```js
+data() {
+  return {
+    range: {
+      start: new Date(2020, 0, 1),
+      end: new Date(2020, 0, 5)
+    }
+  }
+}
+```
+
+## Selection Modes :tada:
+
+*Introduced in **`v1.1.0`***
+
+Use the `mode` prop to switch between 3 different date selection modes: `date`, `dateTime` and `time`.
+
+:::warning
+Previous to `v1.1.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. As of `v1.1.0`, the `mode` prop has been repurposed for the date and time options. To get the previous `range` mode behavior, use the new `is-range` prop.
+:::
+
+### Date
+
+To limit user selection to only date components (month, day, year), use `mode: 'date'`. This is the default prop value, so it isn't explicitly required.
+
+<guide-datepicker-with-value mode="date" />
+
+```html
+<v-date-picker mode="date" v-model="date" />
+```
+
+### Date & Time
+
+To allow user selection of date and time components, use `mode: 'dateTime'`. A time picker now appears below the calendar.
+
+<guide-datepicker-with-value mode="dateTime" />
+
+```html
+<v-date-picker v-model="date" mode="dateTime" >
+```
+
+```js
+data() {
+  return {
+    date: new Date()
+  }
+}
+```
+
+### Time
+
+To limit user selction to only time components (hours, minutes, seconds), use `mode: 'time'`.
+
+<guide-datepicker-with-value mode="time" />
+
+## Model Config :tada:
+
+*Introduced in **`v1.1.0`***
+
+The `model-config` prop is used to provide information about the date bound to `v-date-picker`. For example, if the date you provide is stored in a database as a string, this string value can be bound to `v-date-picker` directly, without any extra conversion logic required by your application.
+
+In short, the `model-config` and `timezone` props help provide a no-hassle approach to working with your data.
+
+### Strings
+
+To bind to a string value, provide a `model-config` with the necessary `type: 'string'` and `mask` properties.
+
+<guide-datepicker-model-string />
+
+```html
+<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+```
+
+```js
+export default {
+  data() {
+    return {
+      customer: {
+        name: 'Nathan Reyes',
+        birthday: '1983-01-21',
+      },
+      modelConfig: {
+        type: 'string',
+        mask: 'YYYY-MM-DD', // Uses 'iso' if missing
+      },
+    }
+  }
+};
+```
+
+### Numbers
+
+To bind to a number value, provide a `model-config` with the necessary `type: 'number'` property.
+
+<guide-datepicker-model-number />
+
+```html
+<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+```
+
+```js
+export default {
+  data() {
+    return {
+      customer: {
+        name: 'Nathan Reyes',
+        birthday: 411976800000, // Milliseconds since 1 January 1970 
+      },
+      modelConfig: {
+        type: 'number',
+      },
+    }
+  }
+};
+```
+
+### Time Adjust
+
+By default, when the user selects a new date, it leaves the existing time value. To auto-adjust the time for selected dates, provide a `model-config` with the desired `timeAdjust` setting in `HH:mm:ss` format. All times use the specified `timezone`, or local timezone if none is provided.
+
+This example assigns the time of selected dates to noon in the browser's local timezone.
+
+<guide-datepicker-time-adjust />
+
+```html
+<v-date-picker v-model="date" :model-config="modelConfig">
+```
+
+```js
+data() {
+  return {
+    customer: {
+      name: 'Nathan Reyes',
+      birthday: '1983-01-21T02:30:00-5:00',
+    },
+    modelConfig: {
+      type: 'string',
+      mask: 'YYYY-MM-DDTHH:mm:ssXXX',
+      timeAdjust: '12:00:00',
+    },
+  }
+}
+```
+
+| Time Setting | Description |
+| --- | --- |
+| *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
+| `now` | Assign to the instant of date selection. |
+
+#### Adjust Date Range Times
+
+When used with date ranges, the `modelConfig` may be specified as an object with `start` and `end` properties. For example, when the users selects a date range, we might want to set the selected range to start at the very beginning of the first day until the end of the last day.
+
+<guide-datepicker-time-adjust-range />
+
+```html
+<v-date-picker v-model="range" :model-config="modelConfig">
+```
+
+```js
+data() {
+  return {
+    range: {
+      start: new Date(2020, 0, 6),
+      end: new Date(2020, 0, 9),
+    },
+    modelConfig: {
+      start: {
+        timeAdjust: '00:00:00',
+      },
+      end: {
+        timeAdjust: '23:59:59',
+      },
+    },
+  }
+}
+```
+
+## Popovers
+
+To display the picker as a popover, provide your own content as the default slot. Most often this will be an `input` element.
+
+:::warning
+As of `v1.1.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
+:::
+
+### Input
+
+To allow for user date text entry, provide a custom `input` element as the default slot. `v-date-picker` provides formatting, parsing and event handling out of the box via the following slot props:
+
+- `inputValue`: The is the value you should bind to your input. This value will update as new dates are assigned and validated by the component.
+- `inputEvents`: These events include handlers for events that ultimately assign new dates and manage the appearance of the popover (as specified via the `popover` prop).
 
 <guide-datepicker-intro-popover />
 
 ```html
-<v-date-picker
-  v-model="date"
-  />
+<v-date-picker v-model="date">
+  <template v-slot="{ inputValue, inputEvents }">
+    <input
+      class="bg-white border px-2 py-1 rounded"
+      :value="inputValue"
+      v-on="inputEvents"
+    />
+  </template>
+</v-date-picker>
 ```
 
 ```js
@@ -33,253 +258,157 @@ export default {
 };
 ```
 
-### Custom Slot
+### Debounce
 
-Using the default slot, you can replace the input element with your own trigger element.
+Use the `input-debounce` prop (in milliseconds) to set a custom debounce duration. This example makes the input a little more responsive to text input by using a debounce of `500ms` rather than the default `1000ms`.
 
-<guide-datepicker-custom-slot />
+<guide-datepicker-input-debounce />
 
 ```html
-<v-date-picker
-  v-model="date"
-  :popover="{ placement: 'bottom', visibility: 'click' }">
-  <button class="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded focus:outline-none">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      class="w-4 h-4 fill-current">
-      <path d="M1 4c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4zm2 2v12h14V6H3zm2-6h2v2H5V0zm8 0h2v2h-2V0zM5 9h2v2H5V9zm0 4h2v2H5v-2zm4-4h2v2H9V9zm0 4h2v2H9v-2zm4-4h2v2h-2V9zm0 4h2v2h-2v-2z" />
-    </svg>
-  </button>
+<v-date-picker v-model="date" :input-debounce="500">
+  <template v-slot="{ inputValue, inputEvents }">
+    <input
+      class="bg-white border px-2 py-1 rounded"
+      :value="inputValue"
+      v-on="inputEvents"
+    />
+  </template>
 </v-date-picker>
 ```
 
-### Inline
-
-Alternatively, the calendar can be displayed inline (not as a popover) by setting the `is-inline` prop.
-
-<guide-datepicker-intro-inline />
-
-```html
-<v-date-picker
-  v-model="dates"
-  mode="multiple"
-  is-inline
-  />
-```
-
-```js
+```javascript
 export default {
   data() {
     return {
-      dates: [new Date(2018, 0, 9), new Date(2018, 0, 25)],
+      date: new Date(),
     };
   },
 };
 ```
 
-## Selection Modes
+### Disable Update On Input
 
-`v-date-picker` can be configured to operate in 3 different selection modes via the `mode` prop.
-  * Single Date (`"single"`)
-  * Multiple Dates (`"multiple"`)
-  * Date Range (`"range"`)
+To completely disable value updates as the user types, set the `update-on-input` prop to false. This will defer updates until the input's `change` event occurs.
 
-### Single Date
-
-The first mode is single date selection. It uses a native Javascript `Date` object for its internal `value`, and the value can be cleared by setting the value to `null`. This is the default mode, so the `mode` prop declaration can be omitted if desired:
-
-<guide-datepicker-single />
+<guide-datepicker-disable-update />
 
 ```html
-<v-date-picker
-  v-model='date'
-  />
+<v-date-picker v-model="date" :update-on-input="false">
+  <template v-slot="{ inputValue, inputEvents }">
+    <input
+      class="bg-white border px-2 py-1 rounded"
+      :value="inputValue"
+      v-on="inputEvents"
+    />
+  </template>
+</v-date-picker>
 ```
 
 ```javascript
 export default {
   data() {
     return {
-      date: new Date(2018, 0, 25) // Jan 25th, 2018
-    }
-  }
+      date: new Date(),
+    };
+  },
+};
+```
+
+### Format & Parse
+
+By default, the localized format will be used to format and parse the input text.
+
+Just like the `v-calendar` component, `v-date-picker` accepts an explicit `locale` prop. This might be preferred if you store your user's locale in a database or want to force all user's to a specific locale.
+
+<guide-datepicker-input-format-parse />
+
+```html
+<v-date-picker v-model="date" :locale="locale">
+  <template v-slot="{ inputValue, inputEvents }">
+    <input
+      class="bg-white border px-2 py-1 rounded"
+      :value="inputValue"
+      v-on="inputEvents"
+    />
+  </template>
+</v-date-picker>
+```
+
+```js
+data() {
+  return {
+    date: new Date(),
+    locale: null,
+  };
+},
+created() {
+  // Fetch user's locale using custom API (eg. 'en-ZA')
+  this.locale = await api.getUserLocale();
 }
 ```
 
-### Multiple Dates
+To use a custom mask that overrides the `locale`, assign the `masks.input` prop.
 
-The second mode is multiple date selection. It uses an array of `Date` objects for its internal `value` state. The selected value can be cleared by setting the value to `null` or an empty array `[]`.
-
-<guide-datepicker-multiple />
+<guide-datepicker-input-mask />
 
 ```html
-<v-date-picker
-  mode='multiple'
-  v-model='dates'
-  />
+<v-date-picker v-model="date" :masks="masks">
+  <template v-slot="{ inputValue, inputEvents }">
+    <input
+      class="bg-white border px-2 py-1 rounded"
+      :value="inputValue"
+      v-on="inputEvents"
+    />
+  </template>
+</v-date-picker>
 ```
 
-```javascript
-export default {
-  data() {
-    return {
-      dates: [
-        new Date(2018, 0, 1),  // Jan 1st, 2018
-        new Date(2018, 0, 15), // Jan 15th, 2018
-        new Date(2018, 0, 29)  // Jan 29th, 2018
-      ]
-    }
-  }
-}
+```js
+data() {
+  return {
+    date: new Date(),
+    masks: {
+      input: 'YYYY-MM-DD',
+    },
+  };
+},
 ```
 
-When used as a popover (`is-inline === false`), the user may enter dates in the input element as a list of comma separated date values. Each date is parsed with the built-in date parser using the specified `input` mask(s). If the user clears out the input text, the value is set to `null`. [Read this to learn how to configure the input element.](#customize-input-element)
+Please reference the [formatting & parsing section](./i18n.md#formatting-parsing-dates) for a complete list of available mask tokens.
 
-### Date Range
+### Form Example
 
-The third mode is date range selection with start and end dates. The selected value can be cleared by setting the value to `null`. Using an empty object `{ }` for the value is equivalent to a range with infinite start and end dates.
-
-<guide-datepicker-range />
-
-```html
-<v-date-picker
-  mode='range'
-  v-model='range'
-  />
-```
-
-```javascript
-export default {
-  data() {
-    return {
-      range: {
-        start: new Date(2018, 0, 16), // Jan 16th, 2018
-        end: new Date(2018, 0, 19)    // Jan 19th, 2018
-      }
-    }
-  }
-}
-```
-
-## Format & Parse Dates
-
-Please reference the [formatting & parsing section](/guide/#formatting-parsing) for steps to customizing the input element's formatting and parsing behavior.
-
-## Disable Dates
-
-Refer to the [disabling dates section](./dates.md#disabling-dates).
-
-## Require Selected Date
-
-There are 3 ways to clear a selected date (`value = null`).
-  1. Assign `null` to `value` prop or to local state variable that is bound to using `v-model`
-  2. User toggles selected dates by clicking them on the calendar (only valid when `mode` is `"single"` or `"multiple"`)
-  3. User clears the input element text and commits the change by pressing the `enter` key or changing focus (`blur` event)
-
-You can prevent methods 2 and 3 by setting the `is-required` prop to `true`.
-
-::: warning
-This effectively prevents the *user* from clearing the value. The developer can still clear it via method 1.
-:::
-
-## Customize Input Element
-
-::: tip
-The following applies for date pickers in popover mode (`is-inline === false`)
-:::
-
-There are 2 ways to customize the input element for `v-date-picker`
-1. Apply props for styling and behavior to the built in `input` element.
-2. Replace the `input` element entirely with your own custom element.
-
-### Set `input-props`
-
-By default, `v-date-picker` leaves the `input` element as a bare element with no attributes applied. However, it is very easy to apply your own classes, styling, readonly behavior, placeholder and more by using the `input-props` prop. This is an object you can use to configure the element as if you configuring it directly.
-
-Here, we assign some [Tailwind](https://tailwindcss.com/docs/what-is-tailwind/) classes, a placeholder and make the input readonly so the user has to select a date via the calendar.
-
-<guide-datepicker-input-props />
-
-```html
-<v-date-picker
-  v-model='myDate'
-  :input-props='{
-    class: "w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 hover:border-blue-5",
-    placeholder: "Please enter your birthday",
-    readonly: true
-  }'
-  />
-```
-
-### Use Custom Slot
-
-If you would like a more customized experience, you can use a custom slot to use as a trigger for the date picker popover element. For example, perhaps you would like to use a custom form input or something completely different.
-
-Here are the steps to utilize this approach.
-
-  1. Provide a default slot for `v-date-picker`. Be sure to extract out the following props by using `slot-scope`:
-
-| Prop | Type | Description |
-| ---- | ---- | ----------- |
-| `inputProps` | Object | Props that include the `value`, `placeholder`, `class` and `style` props needed for the input. |
-| `inputEvents` | Object | Events that are configured based on the props provided to `v-date-picker`, including `input`, `change` and `keyup`. Props like `update-on-input` and `input-debounce` are handled appropriately. |
-| `isDragging` | Boolean | Flag that is set when the user is actively dragging for a new range selection. |
-| `updateValue` | Function | Call to update the value at the time of your choosing. |
-| `hidePopover` | Function | Call to manually hide the popover. |
-
-:::tip
-Call `updateValue()` only if `inputEvents` does not handle your needs (for example, if something other than an `input` element is used).
-:::
-
-  2. Set `v-bind='inputProps'` and `v-on='inputEvents'` to your input, if needed.
-  3. Steps 1 & 2 should be sufficient for your input. However, if you need to manually set the value, such as with a button or other input method, call `updateValue(*newValue*, *options*)` to manually update and validate a string or data value, along with some additional options for how `v-date-picker` should react to your new value.
-
-| Property | Description | Default Value |
-| -------- | ----------- | ------------- |
-| `formatInput` | If new value is valid, date picker should reformat the `inputValue` (based on `masks.input`). | `true` |
-| `hidePopover` | If new value is valid, date picker should hide popover. | `false` |
-| `debounce` | If new value is valid, debounce rate for which the value is assigned, in milliseconds. If missing, updates occur immediately. | `undefined` |
-| `adjustPageRange` | If new value is valid, adjust the `from-page` in order to properly display the new assigned value. | `undefined` |
-
-::: tip
-Values passed to `updateValue()` are validated against `disabled-dates`, `available-dates`, `min-date` and `max-date` props.
-:::
-
-Here is an example using custom input with a validation message and **Clear** button to clear out the date.
+Here is a more complex example using a custom input with a validation message and **Clear** button to clear out the date.
 
 <guide-readme-dp-custom-slot />
 
 ```html
 <div class="w-full max-w-sm">
-  <form
-    class="bg-white shadow-md rounded px-8 pt-6 pb-8"
-    @submit.prevent>
-    <label
-      class="block text-gray-700 text-sm font-bold mb-2"
-      for="date">
-      Select Date Range
-    </label>
+  <form class="bg-white shadow-md rounded px-8 pt-6 pb-8" @submit.prevent>
+    <label class="block text-gray-600 text-sm font-bold mb-2" for="date"
+      >Select Date</label
+    >
     <div class="flex w-full">
-      <v-date-picker
-        mode="range"
-        v-model="date"
-        class="flex-grow">
-        <!--Custom Input Slot-->
-        <input
-          id="date"
-          slot-scope="{ inputProps, inputEvents, isDragging }"
-          :class="[`shadow appearance-none border rounded-l w-full py-2 px-3 ${ isDragging ? 'text-gray-400' : 'text-gray-700' }`, { 'border-red-600': errorMessage }]"
-          v-bind="inputProps"
-          v-on="inputEvents">
+      <v-date-picker v-model="date" class="flex-grow">
+        <template v-slot="{ inputValue, inputEvents }">
+          <input
+            id="date"
+            class="bg-white text-gray-700 w-full py-2 px-3 appearance-none border rounded-l focus:outline-none"
+            :class="{ 'border-red-600': errorMessage }"
+            :value="inputValue"
+            v-on="inputEvents"
+          />
+        </template>
       </v-date-picker>
-      <!--Clear Button-->
       <button
         type="button"
-        class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-r"
-        @click="date = null">
+        class="text-white font-bold py-2 px-4 rounded-r user-select-none focus:outline-none"
+        :class="date ? 'bg-red-500' : 'bg-red-300'"
+        :disabled="!date"
+        @click="date = null"
+      >
         Clear
-        </button>
+      </button>
     </div>
     <p class="text-red-600 text-xs italic mt-1" v-if="errorMessage">
       {{ errorMessage }}
@@ -307,57 +436,60 @@ export default {
 };
 ```
 
-### Disable Update On Input
+### Advanced Slots
 
-By default, the date picker's value will update as the user types into the input element with a debounce of `1000` milliseconds.
+Besides `input`s, other elements may be effectively used as the default slot. When doing so, there are other slot variables that you may use to further customize date selection behavior.
 
-If you would like to prevent this update behavior, set the `update-on-input` prop to false.
-
-```html
-<v-date-picker
-  v-model='date'
-  :update-on-input='false'>
-</v-date-picker>
-```
-
-```javascript
-export default {
-  data() {
-    return {
-      date: new Date()
-    }
-  }
-}
-```
-
-<guide-datepicker-disable-update />
-
-::: tip
-The user can still commit changes via the input `change` event, which fires when the `enter` key is pressed or focus is removed from the input (consistent among browsers). However, this can cause erratic behavior if the input is embedded within a form element. [Read here for more details on embedding `v-date-picker` in form elements.](#embed-in-forms)
+:::tip
+See the [date picker examples](/examples/datepickers.html) for more guidance on using these slot variables.
 :::
 
-### Set Input Debounce
+Here is a comprehensive list of the available slot props.
 
-Additionally, you can assign your own debounce, in milliseconds, via the `input-debounce` prop. The default duration is 1000ms, but here is an example of a making the input a little more responsive to text input.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `inputValue` | Object | Input text value. |
+| `inputEvents` | Object   | Events that are configured based on the props provided to `v-date-picker`, including `input`, `change` and `keyup`. Props like `update-on-input` and `input-debounce` are handled appropriately. |
+| `isDragging` | Boolean  | Set when the user is dragging a new range selection. |
+| `updateValue` | Function | Call to update the value at the time of your choosing. |
+| `showPopover` | Function | Call to manually show the popover. |
+| `hidePopover` | Function | Call to manually hide the popover. |
+| `togglePopover` | Function | Call to show/hide the popover. |
+| `getPopoverTriggerEvents` | Function | Call to get the bindable events for a given display mode. |
 
-```html
-<v-date-picker
-  v-model='date'
-  :input-debounce='500'
-  />
-```
+#### `updateValue()`
 
-```javascript
-export default {
-  data() {
-    return {
-      date: new Date(),
-    }
-  }
-}
-```
+Call `updateValue(value, opts)` to manually update the date value with some side-effect options. All side-effects assume that the provided value is valid.
 
-<guide-datepicker-input-debounce />
+::: tip
+Values passed to `updateValue()` are validated against `disabled-dates`, `available-dates`, `min-date` and `max-date` props.
+:::
+
+| Parameter | Type | Description | Default Value |
+| --------- | ---- | ----------- | ------------- |
+| `value` | `Date`, `String`, `Number` | New date value | `undefined` |
+| `opts.formatInput` | `Boolean` | Reformat the `inputValue`. | `true` |
+| `opts.hidePopover` | `Boolean` | Hide the popover. | `false` |
+| `opts.debounce` | `Number` | Debounce rate (ms) for which the value is assigned. | `undefined` |
+| `opts.adjustPageRange` | `Boolean` | Adjust the `from-page` in order to properly display the value. | `undefined` |
+
+## Disable Dates
+
+Refer to the [disabling dates section](./dates.md#disabling-dates).
+
+## Require Selected Date
+
+There are 3 ways to clear a selected date (`value = null`).
+
+1. Assign `null` to `value` prop or to local state variable that is bound to using `v-model`
+2. User toggles selected dates by clicking them on the calendar (only valid when `mode` is `"single"` or `"multiple"`)
+3. User clears the input element text and commits the change by pressing the `enter` key or changing focus (`blur` event)
+
+You can prevent methods 2 and 3 by setting the `is-required` prop to `true`.
+
+::: warning
+This effectively prevents the _user_ from clearing the value. The developer can still clear it via method 1.
+:::
 
 ## Customize Attributes
 
@@ -380,10 +512,9 @@ For example, say we want to use a `dot` instead of a `highlight` to denote the s
 
 ```html
 <v-date-picker
-  v-model='date'
-  :select-attribute='selectAttribute'
-  is-inline>
-</v-date-picker>
+  v-model="date"
+  :select-attribute="selectAttribute"
+/>
 ```
 
 ```javascript
@@ -392,11 +523,11 @@ export default {
     return {
       date: new Date(),
       selectAttribute: {
-        dot: true
-      }
-    }
-  }
-}
+        dot: true,
+      },
+    };
+  },
+};
 ```
 
 ### Selection Popover
@@ -409,18 +540,19 @@ We'll first try to display the dragged range, then fall back to the selected ran
 
 ```html
 <v-date-picker
-  mode="range"
   v-model="range"
   :select-attribute="selectDragAttribute"
   :drag-attribute="selectDragAttribute"
-  is-inline
+  is-range
   @drag="dragValue = $event"
 >
-  <div slot="day-popover" slot-scope="{ format }">
-    {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
-    -
-    {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}
-  </div>
+  <template v-slot:day-popover="{ format }">
+    <div>
+      {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
+      -
+      {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}
+    </div>
+  </template>
 </v-date-picker>
 ```
 

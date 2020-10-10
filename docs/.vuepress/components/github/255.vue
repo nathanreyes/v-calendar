@@ -6,7 +6,6 @@
     :max-date="maxDate"
     :from-page="fromPage"
     :to-page="toPage"
-    is-inline
   />
 </template>
 

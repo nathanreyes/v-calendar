@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker v-model="date" is-inline />
+    <v-date-picker v-model="date" />
     <div>
       <span>toString:</span>
       <span class="ml-2">{{ dateString }}</span>

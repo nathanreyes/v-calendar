@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-date-picker :mode="mode" v-model="selectedDate" is-inline />
+    <v-date-picker :mode="mode" v-model="selectedDate" />
   </div>
 </template>
 

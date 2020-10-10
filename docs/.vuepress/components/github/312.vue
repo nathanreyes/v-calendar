@@ -4,7 +4,6 @@
       <button @click="addAttributes">Add attributes</button>
       <button @click="removeAttributes">Remove attributes</button>
       <v-date-picker
-        is-inline
         mode="range"
         :value="null"
         :attributes="attributes"

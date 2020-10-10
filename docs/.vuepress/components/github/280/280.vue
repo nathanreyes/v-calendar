@@ -9,7 +9,6 @@
       :min-date="new Date()"
       :attributes="calendar.attributes"
       class="calendar mt-lg"
-      is-inline
     />
   </div>
 </template>

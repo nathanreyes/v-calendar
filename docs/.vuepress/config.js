@@ -19,10 +19,14 @@ module.exports = {
       {
         text: 'API',
         link: '/api/',
+        items: [
+          { text: 'v1.0', link: '/api/v1.0/' },
+          { text: 'v1.1', link: '/api/v1.1/' },
+        ],
       },
       {
         text: 'Changelog',
-        link: '/changelog/v1.0',
+        link: '/changelog/v1.1',
       },
       {
         text: 'Sponsor',
@@ -30,7 +34,23 @@ module.exports = {
       },
     ],
     sidebar: {
-      '/api/': [
+      '/api/v1.0/': [
+        {
+          title: 'API',
+          collapsable: false,
+          children: [
+            '',
+            'defaults',
+            'calendar',
+            'page-object',
+            'day-object',
+            'attribute',
+            'datepicker',
+            'date-patterns',
+          ],
+        },
+      ],
+      '/api/v1.1/': [
         {
           title: 'API',
           collapsable: false,
@@ -51,16 +71,17 @@ module.exports = {
           title: 'Changelog',
           collapsable: false,
           children: [
-            'v0.1',
-            'v0.2',
-            'v0.3',
-            'v0.4',
-            'v0.5',
-            'v0.6',
-            'v0.7',
-            'v0.8',
-            'v0.9',
+            'v1.1',
             'v1.0',
+            'v0.9',
+            'v0.8',
+            'v0.7',
+            'v0.6',
+            'v0.5',
+            'v0.4',
+            'v0.3',
+            'v0.2',
+            'v0.1',
           ],
         },
       ],
@@ -96,11 +117,16 @@ module.exports = {
             'layouts',
             'navigation',
             'dates',
-            'i18n',
             'attributes',
             'datepicker',
-            'theming-guide',
+            'timezones',
+            'i18n',
           ],
+        },
+        {
+          title: 'Examples',
+          collapsable: false,
+          children: ['/examples/datepickers'],
         },
       ],
     },
@@ -135,18 +161,6 @@ module.exports = {
               options: {
                 indent: 'postcss',
                 plugins: [tailwindcss('docs/.vuepress/tailwind.config.js')],
-              },
-            },
-          ],
-        },
-        {
-          test: /tailwind-lib\.css$/,
-          use: [
-            {
-              loader: 'postcss-loader',
-              options: {
-                indent: 'postcss',
-                plugins: [tailwindcss('./tailwind.config.js')],
               },
             },
           ],

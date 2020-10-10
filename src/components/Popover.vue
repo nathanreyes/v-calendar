@@ -13,7 +13,9 @@ export default {
       {
         class: [
           'vc-popover-content-wrapper',
-          { 'is-interactive': this.isInteractive },
+          {
+            'is-interactive': this.isInteractive,
+          },
         ],
         ref: 'popover',
       },
@@ -62,7 +64,6 @@ export default {
       ],
     );
   },
-  mixins: [popoversMixin],
   props: {
     id: { type: String, required: true },
     transition: { type: String, default: 'slide-fade' },
@@ -71,13 +72,17 @@ export default {
   data() {
     return {
       ref: null,
-      args: null,
-      visibility: '',
+      opts: null,
+      data: null,
       placement: 'bottom',
       positionFixed: false,
       modifiers: [],
       isInteractive: false,
-      delay: 10,
+      isHovered: false,
+      isFocused: false,
+      showDelay: 10,
+      hideDelay: 110,
+      autoHide: false,
       popperEl: null,
     };
   },
@@ -88,7 +93,7 @@ export default {
           this.$scopedSlots.default({
             direction: this.direction,
             alignment: this.alignment,
-            args: this.args,
+            data: this.data,
             updateLayout: this.update,
             hide: opts => this.hide(opts),
           })) ||
@@ -106,17 +111,13 @@ export default {
             phase: 'afterWrite',
             fn: this.onPopperUpdate,
           },
-          ...this.modifiers,
+          ...(this.modifiers || []),
         ],
         onFirstUpdate: this.onPopperUpdate,
       };
     },
     isVisible() {
-      return !!(
-        this.ref &&
-        (this.$scopedSlots.default || this.$slots.default) &&
-        this.visibility !== 'hidden'
-      );
+      return !!(this.ref && this.content);
     },
     direction() {
       return (this.placement && this.placement.split('-')[0]) || 'bottom';
@@ -139,20 +140,14 @@ export default {
     },
   },
   watch: {
-    state: {
-      immediate: true,
-      handler(val) {
-        if (val) {
-          this.ref = val.ref;
-          this.args = val.args;
-          this.visibility = val.visibility;
-          this.placement = val.placement;
-          this.positionFixed = val.positionFixed;
-          this.modifiers = val.modifiers;
-          this.isInteractive = val.isInteractive;
-          this.setupPopper();
-        }
-      },
+    opts(val, oldVal) {
+      if (oldVal && oldVal.callback) {
+        oldVal.callback({
+          ...oldVal,
+          completed: !val,
+          reason: val ? 'Overridden by action' : null,
+        });
+      }
     },
   },
   mounted() {
@@ -174,6 +169,10 @@ export default {
         document,
         this.onDocumentClick,
       );
+      on(document, 'show-popover', this.onDocumentShowPopover);
+      on(document, 'hide-popover', this.onDocumentHidePopover);
+      on(document, 'toggle-popover', this.onDocumentTogglePopover);
+      on(document, 'update-popover', this.onDocumentUpdatePopover);
     },
     removeEvents() {
       off(this.popoverEl, 'click', this.onClick);
@@ -183,33 +182,39 @@ export default {
       off(this.popoverEl, 'focusout', this.onFocusOut);
       off(document, 'keydown', this.onDocumentKeydown);
       if (this.removeDocHandler) this.removeDocHandler();
+      off(document, 'show-popover', this.onDocumentShowPopover);
+      off(document, 'hide-popover', this.onDocumentHidePopover);
+      off(document, 'toggle-popover', this.onDocumentTogglePopover);
+      off(document, 'update-popover', this.onDocumentUpdatePopover);
     },
     onClick(e) {
       e.stopPropagation();
     },
     onMouseOver() {
-      if (this.isInteractive && this.visibility === 'hover') {
-        this.show();
-      }
+      this.isHovered = true;
+      if (this.isInteractive) this.show();
     },
     onMouseLeave() {
-      if (this.isInteractive && this.visibility === 'hover') {
+      this.isHovered = false;
+      if (
+        this.autoHide &&
+        !this.isFocused &&
+        (!this.ref || this.ref !== document.activeElement)
+      ) {
         this.hide();
       }
     },
     onFocusIn() {
-      if (this.isInteractive && this.visibility === 'focus') {
-        this.show();
-      }
+      this.isFocused = true;
+      if (this.isInteractive) this.show();
     },
     onFocusOut(e) {
       if (
-        this.isInteractive &&
-        this.visibility === 'focus' &&
-        e.relatedTarget &&
+        !e.relatedTarget ||
         !elementContains(this.popoverEl, e.relatedTarget)
       ) {
-        this.hide();
+        this.isFocused = false;
+        if (!this.isHovered && this.autoHide) this.hide();
       }
     },
     onDocumentClick(e) {
@@ -231,26 +236,92 @@ export default {
         this.hide();
       }
     },
-    show() {
-      this.$showPopover({ id: this.id, ref: this.ref, delay: 0 });
+    onDocumentShowPopover({ detail }) {
+      if (!detail.id || detail.id !== this.id) return;
+      this.show(detail);
     },
-    hide(opts) {
-      this.$hidePopover({
-        ...opts,
-        id: this.id,
-        ref: this.ref,
-      });
+    onDocumentHidePopover({ detail }) {
+      if (!detail.id || detail.id !== this.id) return;
+      this.hide(detail);
     },
-    onUpdate({ args }) {
-      this.args = args;
+    onDocumentTogglePopover({ detail }) {
+      if (!detail.id || detail.id !== this.id) return;
+      this.toggle(detail);
+    },
+    onDocumentUpdatePopover({ detail }) {
+      this.update(detail);
+    },
+    show(opts = {}) {
+      opts.action = 'show';
+      const ref = opts.ref || this.ref;
+      const delay = opts.delay || this.showDelay;
+      // Validate options
+      if (!ref) {
+        if (opts.callback) {
+          opts.callback({
+            completed: false,
+            reason: 'Invalid reference element provided',
+          });
+        }
+        return;
+      }
+      clearTimeout(this.timeout);
+      this.opts = opts;
+      const fn = () => {
+        Object.assign(this, opts);
+        this.setupPopper();
+        this.opts = null;
+      };
+      if (delay > 0) {
+        this.timeout = setTimeout(() => fn(), delay);
+      } else {
+        fn();
+      }
+    },
+    hide(opts = {}) {
+      opts.action = 'hide';
+      const ref = opts.ref || this.ref;
+      const delay = opts.delay || this.hideDelay;
+      if (!this.ref || ref !== this.ref) {
+        if (opts.callback) {
+          opts.callback({
+            ...opts,
+            completed: false,
+            reason: this.ref
+              ? 'Invalid reference element provided'
+              : 'Popover already hidden',
+          });
+        }
+        return;
+      }
+      const fn = () => {
+        this.ref = null;
+        this.opts = null;
+      };
+      clearTimeout(this.timeout);
+      this.opts = opts;
+      if (delay > 0) {
+        this.timeout = setTimeout(fn, delay);
+      } else {
+        fn();
+      }
+    },
+    toggle(opts = {}) {
+      if (this.isVisible && opts.ref === this.ref) {
+        this.hide(opts);
+      } else {
+        this.show(opts);
+      }
+    },
+    update({ data }) {
+      this.data = data;
       this.setupPopper();
     },
     setupPopper() {
       this.$nextTick(() => {
         if (!this.ref || !this.$refs.popover) return;
         if (this.popper && this.popper.reference !== this.ref) {
-          this.popper.destroy();
-          this.popper = null;
+          this.destroyPopper();
         }
         if (!this.popper) {
           this.popper = createPopper(
@@ -320,6 +391,7 @@ export default {
   position: relative;
   outline: none;
   z-index: 10;
+  box-shadow: var(--shadow-lg);
   &.direction-bottom {
     margin-top: var(--popover-vertical-content-offset);
   }
@@ -342,7 +414,7 @@ export default {
   height: 12px;
   border-top: inherit;
   border-left: inherit;
-  background: inherit;
+  background-color: inherit;
   z-index: -1;
   &.direction-bottom {
     top: 0;

@@ -22,105 +22,112 @@
       <div class="mb-6">
         <h3 class="text-base semibold text-gray-700 mb-3">Popovers</h3>
         <v-calendar :attributes="popovers">
-          <div
-            slot="day-popover"
-            slot-scope="{ day, format, masks, attributes, updateLayout }"
+          <template
+            v-slot:day-popover="{
+              day,
+              format,
+              masks,
+              attributes,
+              updateLayout,
+            }"
           >
-            <!--Day Header-->
-            <span class="text-xs text-gray-3 font-semibold">{{
-              format(day.date, masks.dayPopover)
-            }}</span>
-            <!--Todo Rows-->
-            <popover-row
-              v-for="{
-                key,
-                customData,
-                highlight,
-                dot,
-                bar,
-              } in attributes.filter(a => a.customData)"
-              :key="key"
-              :attribute="{ highlight, dot, bar }"
-            >
-              <div class="flex flex-no-wrap items-center w-full">
-                <!--Todo content-->
-                <div class="flex-grow text-left">
-                  <!--Show textbox when editing todo-->
-                  <input
-                    v-if="customData.id === editId"
-                    class="appearance-none bg-white border px-1 text-black"
-                    :style="{ minWidth: '180px' }"
-                    v-model="customData.description"
-                    @keyup.enter="editId = 0"
-                    v-focus-select
-                  />
-                  <!--Show status/description when not editing-->
-                  <span class="flex items-center" v-else>
-                    <!--Completed checkbox-->
-                    <input type="checkbox" v-model="customData.isComplete" />
-                    <!--Description-->
-                    <span
-                      class="ml-2 cursor-pointer"
-                      :class="{ 'line-through': customData.isComplete }"
-                      @click="toggleTodoComplete(customData)"
-                      >{{ customData.description }}</span
+            <div>
+              <!--Day Header-->
+              <span class="text-xs text-gray-3 font-semibold">{{
+                format(day.date, masks.dayPopover)
+              }}</span>
+              <!--Todo Rows-->
+              <popover-row
+                v-for="{
+                  key,
+                  customData,
+                  highlight,
+                  dot,
+                  bar,
+                } in attributes.filter(a => a.customData)"
+                :key="key"
+                :attribute="{ highlight, dot, bar }"
+              >
+                <div class="flex flex-no-wrap items-center w-full">
+                  <!--Todo content-->
+                  <div class="flex-grow text-left">
+                    <!--Show textbox when editing todo-->
+                    <input
+                      v-if="customData.id === editId"
+                      class="appearance-none bg-white border px-1 text-black"
+                      :style="{ minWidth: '180px' }"
+                      v-model="customData.description"
+                      @keyup.enter="editId = 0"
+                      v-focus-select
+                    />
+                    <!--Show status/description when not editing-->
+                    <span class="flex items-center" v-else>
+                      <!--Completed checkbox-->
+                      <input type="checkbox" v-model="customData.isComplete" />
+                      <!--Description-->
+                      <span
+                        class="ml-2 cursor-pointer"
+                        :class="{ 'line-through': customData.isComplete }"
+                        @click="toggleTodoComplete(customData)"
+                        >{{ customData.description }}</span
+                      >
+                    </span>
+                  </div>
+                  <!--Edit/Done buttons-->
+                  <a
+                    @click.prevent="toggleTodoEdit(customData, updateLayout)"
+                    class="ml-2 cursor-pointer"
+                  >
+                    <!--Edit button-->
+                    <svg
+                      v-if="editId !== customData.id"
+                      class="fill-current text-blue-300"
+                      viewBox="0 0 20 20"
+                      width="12"
+                      height="12"
                     >
-                  </span>
+                      <path
+                        d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"
+                      ></path>
+                    </svg>
+                    <!--Done button-->
+                    <svg
+                      v-else
+                      class="fill-current text-green-300"
+                      viewBox="0 0 20 20"
+                      width="12"
+                      height="12"
+                    >
+                      <path d="M0 11l2-2 5 5L18 3l2 2L7 18z"></path>
+                    </svg>
+                  </a>
+                  <!--Delete button-->
+                  <a
+                    @click.prevent="deleteTodo(customData, updateLayout)"
+                    v-if="!editId || editId !== customData.id"
+                    class="ml-1 cursor-pointer"
+                  >
+                    <svg
+                      class="fill-current text-red-300"
+                      viewBox="0 0 20 20"
+                      width="12"
+                      height="12"
+                    >
+                      <path
+                        d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
+                      ></path>
+                    </svg>
+                  </a>
                 </div>
-                <!--Edit/Done buttons-->
-                <a
-                  @click.prevent="toggleTodoEdit(customData, updateLayout)"
-                  class="ml-2 cursor-pointer"
-                >
-                  <!--Edit button-->
-                  <svg
-                    v-if="editId !== customData.id"
-                    class="fill-current text-blue-300"
-                    viewBox="0 0 20 20"
-                    width="12"
-                    height="12"
-                  >
-                    <path
-                      d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"
-                    ></path>
-                  </svg>
-                  <!--Done button-->
-                  <svg
-                    v-else
-                    class="fill-current text-green-300"
-                    viewBox="0 0 20 20"
-                    width="12"
-                    height="12"
-                  >
-                    <path d="M0 11l2-2 5 5L18 3l2 2L7 18z"></path>
-                  </svg>
-                </a>
-                <!--Delete button-->
-                <a
-                  @click.prevent="deleteTodo(customData, updateLayout)"
-                  v-if="!editId || editId !== customData.id"
-                  class="ml-1 cursor-pointer"
-                >
-                  <svg
-                    class="fill-current text-red-300"
-                    viewBox="0 0 20 20"
-                    width="12"
-                    height="12"
-                  >
-                    <path
-                      d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"
-                    ></path>
-                  </svg>
-                </a>
-              </div>
-            </popover-row>
-            <!--Add Todo Row-->
-            <a
-              @click="addTodo(day)"
-              class="block text-center text-green-200 hover:text-green-300 font-semibold cursor-pointer px-1 mt-1"
-              >+ Add Todo</a
-            >
-          </div>
+              </popover-row>
+              <!--Add Todo Row-->
+              <a
+                @click="addTodo(day)"
+                class="block text-center text-green-200 hover:text-green-300 font-semibold cursor-pointer px-1 mt-1"
+                >+ Add Todo</a
+              >
+            </div>
+          </template>
         </v-calendar>
       </div>
     </div>
