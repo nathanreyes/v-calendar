@@ -15,18 +15,18 @@
     </div>
     <div class="vc-date-time">
       <div class="vc-date">
-        <div class="vc-weekday">
+        <span class="vc-weekday">
           {{ locale.format(date, 'WWW') }}
-        </div>
-        <div class="vc-month">
+        </span>
+        <span class="vc-month">
           {{ locale.format(date, 'MMM') }}
-        </div>
-        <div class="vc-day">
+        </span>
+        <span class="vc-day">
           {{ locale.format(date, 'DD') }}
-        </div>
-        <div class="vc-year">
+        </span>
+        <span class="vc-year">
           {{ locale.format(date, 'YYYY') }}
-        </div>
+        </span>
       </div>
       <div class="vc-time">
         <time-select v-model.number="hours" :options="hourOptions" />
@@ -253,7 +253,7 @@ export default {
   height: 30px;
   & button {
     font-size: var(--text-sm);
-    font-weight: var(--font-semibold);
+    font-weight: var(--font-medium);
     padding: 0 4px;
     border: 2px solid transparent;
     border-radius: var(--rounded);
