@@ -1,6 +1,5 @@
 <script>
 import { createPopper } from '@popperjs/core';
-import { popoversMixin } from '../utils/popovers';
 import { on, off, elementContains } from '../utils/helpers';
 import { addTapOrClickHandler } from '../utils/touch';
 import { isFunction } from '../utils/_';
@@ -313,10 +312,6 @@ export default {
         this.show(opts);
       }
     },
-    update({ data }) {
-      this.data = data;
-      this.setupPopper();
-    },
     setupPopper() {
       this.$nextTick(() => {
         if (!this.ref || !this.$refs.popover) return;
@@ -341,10 +336,9 @@ export default {
         this.placement = args.state.placement;
       }
     },
-    update() {
-      if (this.popper) {
-        this.popper.update();
-      }
+    update({ data }) {
+      this.data = data;
+      this.setupPopper();
     },
     beforeEnter(e) {
       this.$emit('beforeShow', e);

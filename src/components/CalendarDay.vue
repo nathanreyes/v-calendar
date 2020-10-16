@@ -192,7 +192,7 @@ export default {
         tabindex,
         'aria-label': this.day.ariaLabel,
         'aria-disabled': this.day.isDisabled ? 'true' : 'false',
-        'role': 'button'
+        role: 'button',
       };
     },
     dayEvent() {
@@ -247,7 +247,7 @@ export default {
         updatePopover({
           id: this.dayPopoverId,
           data: this.day,
-        })
+        });
       },
     },
   },
