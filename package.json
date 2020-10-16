@@ -1,7 +1,63 @@
 {
   "name": "v-calendar",
   "version": "1.0.8",
+  "private": false,
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
+  "author": "Nathan Reyes <nathanreyes@me.com>",
+  "scripts": {
+    "serve": "vue-cli-service serve src/lib.js",
+    "build": "yarn build:lib && yarn build:calendar && yarn build:date-picker && yarn build:popover && yarn build:popover-ref && yarn build:popover-row",
+    "lint": "vue-cli-service lint",
+    "build:calendar": "vue-cli-service build --target lib --dest lib/components --name calendar src/components/Calendar.vue",
+    "build:date-picker": "vue-cli-service build --no-clean --target lib --dest lib/components --name date-picker src/components/DatePicker.vue",
+    "build:docs": "vuepress build docs",
+    "build:lib": "vue-cli-service build --target lib src/lib.js --mode production",
+    "build:popover": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover src/components/Popover.vue",
+    "build:popover-ref": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover-ref src/components/PopoverRef.vue",
+    "build:popover-row": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover-row src/components/PopoverRow.vue",
+    "deploy:docs": "vuepress build docs && netlify deploy",
+    "dev": "vuepress dev docs",
+    "test": "vue-cli-service test:unit --watch"
+  },
+  "main": "lib/v-calendar.umd.min.js",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "date-fns": "^2.8.1",
+    "lodash": "^4.17.15",
+    "popper.js": "^1.16.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-arrow-functions": "^7.8.3",
+    "@fullhuman/postcss-purgecss": "^1.3.0",
+    "@vue/cli-plugin-babel": "~4.5.4",
+    "@vue/cli-plugin-eslint": "~4.5.4",
+    "@vue/cli-plugin-unit-jest": "~4.5.4",
+    "@vue/cli-service": "~4.5.4",
+    "@vue/eslint-config-airbnb": "^5.0.2",
+    "@vue/test-utils": "1.0.3",
+    "@vuepress/plugin-google-analytics": "^1.2.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "postcss-preset-env": "^6.7.0",
+    "tailwindcss": "1.1.4",
+    "vuepress": "1.2.0",
+    "webpack-bundle-analyzer": "^3.8.0"
+  },
+  "peerDependencies": {
+    "vue": "^2.5.18"
+  },
+  "browserslist": [
+    ">1%",
+    "not ie 11",
+    "not op_mini all"
+  ],
+  "homepage": "https://vcalendar.io",
   "keywords": [
     "vue",
     "vuejs",
@@ -14,63 +70,9 @@
     "bars",
     "indicators"
   ],
-  "homepage": "https://vcalendar.io",
-  "author": "Nathan Reyes <nathanreyes@me.com>",
-  "main": "lib/v-calendar.umd.min.js",
-  "files": [
-    "src",
-    "lib"
-  ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanreyes/v-calendar"
-  },
-  "private": false,
-  "license": "MIT",
-  "scripts": {
-    "serve": "vue-cli-service serve src/lib.js",
-    "build": "yarn build:lib && yarn build:calendar && yarn build:date-picker && yarn build:popover && yarn build:popover-ref && yarn build:popover-row",
-    "build:lib": "vue-cli-service build --target lib src/lib.js --mode production",
-    "build:calendar": "vue-cli-service build --target lib --dest lib/components --name calendar src/components/Calendar.vue",
-    "build:date-picker": "vue-cli-service build --no-clean --target lib --dest lib/components --name date-picker src/components/DatePicker.vue",
-    "build:popover": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover src/components/Popover.vue",
-    "build:popover-ref": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover-ref src/components/PopoverRef.vue",
-    "build:popover-row": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover-row src/components/PopoverRow.vue",
-    "test": "vue-cli-service test:unit --watch",
-    "lint": "vue-cli-service lint",
-    "dev": "vuepress dev docs",
-    "build:docs": "vuepress build docs",
-    "deploy:docs": "vuepress build docs && netlify deploy"
-  },
-  "dependencies": {
-    "date-fns": "^2.6.0",
-    "lodash": "^4.17.15",
-    "popper.js": "^1.14.7"
-  },
-  "devDependencies": {
-    "@babel/plugin-transform-arrow-functions": "^7.2.0",
-    "@fullhuman/postcss-purgecss": "^1.3.0",
-    "@vue/cli-plugin-babel": "^3.11.0",
-    "@vue/cli-plugin-eslint": "^3.11.0",
-    "@vue/cli-plugin-unit-jest": "^3.11.0",
-    "@vue/cli-service": "^3.11.0",
-    "@vue/eslint-config-airbnb": "^4.0.0",
-    "@vue/test-utils": "1.0.0-beta.29",
-    "@vuepress/plugin-google-analytics": "^1.2.0",
-    "babel-core": "^7.0.0-0",
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^22.0.4",
-    "postcss-preset-env": "^6.6.0",
-    "tailwindcss": "1.1.4",
-    "vuepress": "1.2.0",
-    "webpack-bundle-analyzer": "^3.8.0"
-  },
-  "peerDependencies": {
-    "vue": "^2.5.18"
-  },
-  "browserslist": [
-    ">1%",
-    "not ie 11",
-    "not op_mini all"
-  ]
+  }
 }
