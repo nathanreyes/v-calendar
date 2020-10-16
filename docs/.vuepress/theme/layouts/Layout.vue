@@ -35,7 +35,7 @@
       <div
         class="flex-shrink-0 hidden md:block md:relative z-10 w-72 overflow-y-auto"
       >
-        <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar">
+        <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar" show-ads>
           <template name="sidebar-top">
             <slot name="sidebar-top" />
           </template>
