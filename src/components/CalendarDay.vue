@@ -191,6 +191,8 @@ export default {
       return {
         tabindex,
         'aria-label': this.day.ariaLabel,
+        'aria-disabled': this.day.isDisabled ? 'true' : 'false',
+        'role': 'button'
       };
     },
     dayEvent() {
