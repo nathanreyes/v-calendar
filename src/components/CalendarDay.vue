@@ -207,49 +207,12 @@ export default {
     theme() {
       this.refresh();
     },
-    popovers: {
-      immediate: true,
-      handler() {
-        let popoverEvents = {};
-        if (this.popovers) {
-          const visibilities = ['click', 'focus', 'hover', 'visible'];
-          let placement = '';
-          let modifiers = null;
-          let isInteractive = false;
-          let vIdx = -1;
-          this.popovers.forEach(p => {
-            const vNew = visibilities.indexOf(p.visibility);
-            vIdx = vNew > vIdx ? vNew : vIdx;
-            placement = placement || p.placement;
-            modifiers = modifiers || p.modifiers;
-            isInteractive = isInteractive || p.isInteractive;
-          });
-          popoverEvents = getPopoverTriggerEvents({
-            id: this.dayPopoverId,
-            data: this.day,
-            visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
-            placement: placement || 'bottom',
-            modifiers,
-            isInteractive,
-          });
-        }
-        this.dayContentEvents = mergeEvents(
-          {
-            click: this.click,
-            mouseenter: this.mouseenter,
-            mouseleave: this.mouseleave,
-            focusin: this.focusin,
-            focusout: this.focusout,
-            keydown: this.keydown,
-          },
-          popoverEvents,
-        );
-        updatePopover({
-          id: this.dayPopoverId,
-          data: this.day,
-        });
-      },
+    popovers() {
+      this.refreshPopovers();
     },
+  },
+  mounted() {
+    this.refreshPopovers();
   },
   methods: {
     getDayEvent(origEvent) {
@@ -441,6 +404,46 @@ export default {
         },
       );
       popovers.splice(0, 0, resolvedPopover);
+    },
+    refreshPopovers() {
+      let popoverEvents = {};
+      if (this.popovers) {
+        const visibilities = ['click', 'focus', 'hover', 'visible'];
+        let placement = '';
+        let modifiers = null;
+        let isInteractive = false;
+        let vIdx = -1;
+        this.popovers.forEach(p => {
+          const vNew = visibilities.indexOf(p.visibility);
+          vIdx = vNew > vIdx ? vNew : vIdx;
+          placement = placement || p.placement;
+          modifiers = modifiers || p.modifiers;
+          isInteractive = isInteractive || p.isInteractive;
+        });
+        popoverEvents = getPopoverTriggerEvents({
+          id: this.dayPopoverId,
+          data: this.day,
+          visibility: vIdx >= 0 ? visibilities[vIdx] : 'hidden',
+          placement: placement || 'bottom',
+          modifiers,
+          isInteractive,
+        });
+      }
+      this.dayContentEvents = mergeEvents(
+        {
+          click: this.click,
+          mouseenter: this.mouseenter,
+          mouseleave: this.mouseleave,
+          focusin: this.focusin,
+          focusout: this.focusout,
+          keydown: this.keydown,
+        },
+        popoverEvents,
+      );
+      updatePopover({
+        id: this.dayPopoverId,
+        data: this.day,
+      });
     },
   },
 };
