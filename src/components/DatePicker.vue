@@ -84,10 +84,10 @@ export default {
           contentClass: this.$theme.container,
         },
         on: {
-          beforeShow: e => this.$emit('popoverWillShow', e),
-          afterShow: e => this.$emit('popoverDidShow', e),
-          beforeHide: e => this.$emit('popoverWillHide', e),
-          afterHide: e => this.$emit('popoverDidHide', e),
+          beforeShow: e => this.$emit('popoverwillshow', e),
+          afterShow: e => this.$emit('popoverdidshow', e),
+          beforeHide: e => this.$emit('popoverwillhide', e),
+          afterHide: e => this.$emit('popoverdidhide', e),
         },
         scopedSlots: {
           default() {
