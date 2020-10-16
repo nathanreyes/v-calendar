@@ -1,35 +1,39 @@
 import { elementContains } from './helpers';
 
 export function showPopover(opts) {
-  document.dispatchEvent(
-    new CustomEvent('show-popover', {
-      detail: opts,
-    }),
-  );
+  document &&
+    document.dispatchEvent(
+      new CustomEvent('show-popover', {
+        detail: opts,
+      }),
+    );
 }
 
 export function hidePopover(opts) {
-  document.dispatchEvent(
-    new CustomEvent('hide-popover', {
-      detail: opts,
-    }),
-  );
+  document &&
+    document.dispatchEvent(
+      new CustomEvent('hide-popover', {
+        detail: opts,
+      }),
+    );
 }
 
 export function togglePopover(opts) {
-  document.dispatchEvent(
-    new CustomEvent('toggle-popover', {
-      detail: opts,
-    }),
-  );
+  document &&
+    document.dispatchEvent(
+      new CustomEvent('toggle-popover', {
+        detail: opts,
+      }),
+    );
 }
 
 export function updatePopover(opts) {
-  document.dispatchEvent(
-    new CustomEvent('update-popover', {
-      detail: opts,
-    }),
-  );
+  document &&
+    document.dispatchEvent(
+      new CustomEvent('update-popover', {
+        detail: opts,
+      }),
+    );
 }
 
 export function getPopoverTriggerEvents(opts) {
