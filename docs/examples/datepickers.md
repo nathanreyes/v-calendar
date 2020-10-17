@@ -89,12 +89,17 @@ export default {
       <span class="block text-gray-600 text-sm text-left font-bold mb-2"
         >Select Range</span
       >
-      <v-date-picker v-model="range" mode="dateTime" is-range>
+      <v-date-picker
+        v-model="range"
+        mode="dateTime"
+        :masks="masks"
+        is-range
+      >
         <template v-slot="{ inputValue, inputEvents, isDragging }">
-          <div class="flex justify-start items-center">
-            <div class="relative w-40">
+          <div class="flex flex-col sm:flex-row justify-start items-center">
+            <div class="relative flex-grow">
               <svg
-                class="text-gray-600 w-4 h-4 m-2 absolute pointer-events-none"
+                class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
                 fill="none"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -113,10 +118,22 @@ export default {
                 v-on="inputEvents.start"
               />
             </div>
-            <span class="flex-shrink-0 mx-2">&#8594;</span>
-            <div class="relative w-40">
+            <span class="flex-shrink-0 m-2">
               <svg
-                class="text-gray-600 w-4 h-4 m-2 absolute pointer-events-none"
+                class="w-4 h-4 stroke-current text-gray-600"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </span>
+            <div class="relative flex-grow">
+              <svg
+                class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
                 fill="none"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -150,6 +167,9 @@ export default {
       range: {
         start: new Date(2020, 0, 6),
         end: new Date(2020, 0, 23),
+      },
+      masks: {
+        input: 'YYYY-MM-DD h:mm A',
       },
     };
   },
