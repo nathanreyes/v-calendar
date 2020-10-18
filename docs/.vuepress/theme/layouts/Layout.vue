@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col overflow-y-auto">
+  <div class="flex flex-col min-h-full overflow-y-auto">
     <Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
     <div
       class="flex-grow relative flex w-full max-w-5xl mx-auto text-gray-700 mt-12 md:mt-16 overflow-hidden"

@@ -3,7 +3,7 @@ title: 'Custom Defaults'
 sidebarDepth: 1
 ---
 
-## Custom Defaults
+### Custom Defaults
 
 Custom defaults can be provided on initialization. Note that almost all of these defaults can be overridden by props on `v-calendar` or `v-date-picker` components.
 
@@ -14,4 +14,4 @@ Vue.use(VCalendar, {
 })
 ```
 
-[Click here to see all defaults.](../api/defaults.md)
+[Click here to see all defaults.](../api/v1.1/defaults.md)
