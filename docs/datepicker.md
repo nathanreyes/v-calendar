@@ -6,9 +6,9 @@ sidebarDepth: 2
 # Date Picker
 
 :::warning
-`v1.1.0` has introduced a significant number of breaking changes.
+`v2.0.0` has introduced a significant number of breaking changes.
 
-[Read the upgrade guide for details.](/changelog/v1.1.html)
+[Read the upgrade guide for details.](/changelog/v2.0.html)
 :::
 
 `v-date-picker` is a feature-rich date picker implemented as a wrapper for `v-calendar`. That means that, out of the box, it accepts all props and emits all of the same events.
@@ -54,12 +54,12 @@ data() {
 
 ## Selection Modes :tada:
 
-*Introduced in **`v1.1.0`***
+*Introduced in **`v2.0.0`***
 
 Use the `mode` prop to switch between 3 different date selection modes: `date`, `dateTime` and `time`.
 
 :::warning
-Previous to `v1.1.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. As of `v1.1.0`, the `mode` prop has been repurposed for the date and time options. To get the previous `range` mode behavior, use the new `is-range` prop.
+Previous to `v2.0.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. As of `v2.0.0`, the `mode` prop has been repurposed for the date and time options. To get the previous `range` mode behavior, use the new `is-range` prop.
 :::
 
 ### Date
@@ -109,7 +109,7 @@ To limit user selction to only time components (hours, minutes, seconds), use `m
 
 ## Model Config :tada:
 
-*Introduced in **`v1.1.0`***
+*Introduced in **`v2.0.0`***
 
 The `model-config` prop is used to provide information about the date bound to `v-date-picker`. For example, if the date you provide is stored in a database as a string, this string value can be bound to `v-date-picker` directly, without any extra conversion logic required by your application.
 
@@ -235,7 +235,7 @@ data() {
 To display the picker as a popover, provide your own content as the default slot. Most often this will be an `input` element.
 
 :::warning
-As of `v1.1.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
+As of `v2.0.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
 :::
 
 ### Input

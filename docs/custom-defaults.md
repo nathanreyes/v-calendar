@@ -14,4 +14,4 @@ Vue.use(VCalendar, {
 })
 ```
 
-[Click here to see all defaults.](../api/v1.1/defaults.md)
+[Click here to see all defaults.](../api/v2.0/defaults.md)

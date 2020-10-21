@@ -21,12 +21,12 @@ module.exports = {
         link: '/api/',
         items: [
           { text: 'v1.0', link: '/api/v1.0/' },
-          { text: 'v1.1', link: '/api/v1.1/' },
+          { text: 'v2.0', link: '/api/v2.0/' },
         ],
       },
       {
         text: 'Changelog',
-        link: '/changelog/v1.1',
+        link: '/changelog/v2.0',
       },
       {
         text: 'Sponsor',
@@ -50,7 +50,7 @@ module.exports = {
           ],
         },
       ],
-      '/api/v1.1/': [
+      '/api/v2.0/': [
         {
           title: 'API',
           collapsable: false,
@@ -71,7 +71,7 @@ module.exports = {
           title: 'Changelog',
           collapsable: false,
           children: [
-            'v1.1',
+            'v2.0',
             'v1.0',
             'v0.9',
             'v0.8',

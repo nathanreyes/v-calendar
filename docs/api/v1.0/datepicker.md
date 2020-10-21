@@ -19,7 +19,7 @@ sidebarDepth: 2
 **Default:** `false`
 
 :::danger
-**`is-inline` deprecated in [`v1.1`](../v1.1)**
+**`is-inline` deprecated in [`v2.0`](../v2.0)**
 :::
 
 ### `mode`
@@ -31,7 +31,7 @@ sidebarDepth: 2
 **Default Value:** `"single"`
 
 :::warning
-**`mode` modified in [`v1.1`](../v1.1)**
+**`mode` modified in [`v2.0`](../v2.0)**
 :::
 
 ### `value`
@@ -43,7 +43,7 @@ sidebarDepth: 2
 **Default Value:** `null`
 
 :::warning
-**`value` modified in [`v1.1`](../v1.1)**
+**`value` modified in [`v2.0`](../v2.0)**
 :::
 
 ### `is-required`
@@ -67,7 +67,7 @@ Setting `value = null` still allowed through code.
 **Default Value:** [Reference code]()
 
 :::danger
-**`input-props` deprecated in [`v1.1`](../v1.1)**
+**`input-props` deprecated in [`v2.0`](../v2.0)**
 :::
 
 ### `update-on-input`
