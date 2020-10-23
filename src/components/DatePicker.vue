@@ -61,7 +61,12 @@ export default {
       const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
       return parts.map((dp, idx) =>
         h(TimePicker, {
-          props: { value: dp, locale: this.$locale, theme: this.$theme },
+          props: {
+            value: dp,
+            locale: this.$locale,
+            theme: this.$theme,
+            is24hr: this.is24hr,
+          },
           on: { input: p => this.onTimeInput(p, idx) },
         }),
       );
@@ -146,6 +151,7 @@ export default {
     mode: { type: String, default: MODE_DATE },
     value: { type: null, required: true },
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
+    is24hr: Boolean,
     isRequired: Boolean,
     isRange: Boolean,
     updateOnInput: Boolean,

@@ -32,7 +32,7 @@
         <time-select v-model.number="hours" :options="hourOptions" />
         <span style="margin: 0 4px;">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
-        <div class="vc-am-pm">
+        <div v-if="!is24hr" class="vc-am-pm">
           <button :class="{ active: isAM }" @click="isAM = true">
             AM
           </button>
@@ -56,6 +56,7 @@ export default {
     value: { type: Object, required: true },
     locale: { type: Object, required: true },
     theme: { type: Object, required: true },
+    is24hr: { type: Boolean, default: true },
   },
   data() {
     return {
@@ -157,8 +158,6 @@ export default {
     },
     setup() {
       this.protected(() => {
-        this.is24hr =
-          this.locale.is24hr !== undefined ? this.locale.is24hr : false;
         let { hours } = this.value;
         if (hours === 24) hours = 0;
         let isAM = true;
@@ -181,6 +180,7 @@ export default {
           ...this.value,
           hours,
           minutes: this.minutes,
+          seconds: 0,
         });
       });
     },
