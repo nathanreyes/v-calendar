@@ -26,6 +26,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "date-fns": "^2.8.1",
+    "date-fns-tz": "^1.0.12",
     "lodash": "^4.17.15"
   },
   "devDependencies": {

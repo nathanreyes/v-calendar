@@ -1,4 +1,5 @@
 /* eslint-disable no-bitwise, no-multi-assign */
+import toDate from 'date-fns-tz/toDate';
 import defaultLocales from './defaults/locales';
 import { pad, addPages, pageForDate, arrayHasItems } from './helpers';
 import {
@@ -492,47 +493,51 @@ export default class Locale {
     return parts;
   }
 
-  getDateFromParts(parts, timezone) {
+  getDateFromParts(parts, timeZone) {
     if (!parts) return null;
     const {
       year: y,
       month: m,
       day: d,
-      hours: hrs,
-      minutes: min,
-      seconds: sec,
-      milliseconds: ms,
+      hours: hrs = 0,
+      minutes: min = 0,
+      seconds: sec = 0,
+      milliseconds: ms = 0,
     } = parts;
     if (y === undefined || m === undefined || d === undefined) return null;
-    const utcDate = new Date(
-      Date.UTC(y || 0, m - 1, d || 0, hrs || 0, min || 0, sec || 0, ms || 0),
-    );
-    const tzOffsetMs = this.getTimezoneOffset(parts, timezone);
-    return new Date(utcDate.getTime() + tzOffsetMs);
+
+    if (timeZone) {
+      const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
+        hrs,
+        2,
+      )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
+      return toDate(dateString, { timeZone });
+    }
+    return new Date(y, m - 1, d, hrs, min, sec, ms);
   }
 
-  getTimezoneOffset(parts, timezone) {
+  getTimezoneOffset(parts, timeZone) {
     const {
       year: y,
       month: m,
       day: d,
-      minutes: min,
-      seconds: sec,
-      milliseconds: ms,
+      hours: hrs = 0,
+      minutes: min = 0,
+      seconds: sec = 0,
+      milliseconds: ms = 0,
     } = parts;
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      hour12: false,
-      hourCycle: 'h24',
-      timeZone: timezone || undefined,
-    });
-    const utcNoon = new Date(
-      Date.UTC(y || 0, m - 1, d || 0, 12, min || 0, sec || 0, ms || 0),
-    );
-    const tzHours = +formatter.format(utcNoon);
-    const tzOffset = 12 - tzHours;
-    const msInHour = 3600000;
-    return tzOffset * msInHour;
+    let date;
+    const utcDate = new Date(Date.UTC(y, m - 1, d, hrs, min, sec, ms));
+    if (timeZone) {
+      const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
+        hrs,
+        2,
+      )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
+      date = toDate(dateString, { timeZone });
+    } else {
+      date = new Date(y, m - 1, d, hrs, min, sec, ms);
+    }
+    return utcDate - date;
   }
 
   toPage(arg, fromPage) {
