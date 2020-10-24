@@ -16,7 +16,7 @@ export function setupScreens(screens = defaultScreens, forceSetup) {
   isSettingUp = true;
   shouldRefreshQueries = true;
   // Use a private Vue component to store reactive screen matches
-  screensComp = new Vue({
+  screensComp = Vue.createApp({
     data() {
       return {
         matches: [],
@@ -42,27 +42,29 @@ export function setupScreens(screens = defaultScreens, forceSetup) {
   isSettingUp = false;
 }
 
-// Global mixin that provides responsive '$screens' utility method
-// that refreshes any time the screen matches update
-Vue.mixin({
-  beforeCreate() {
-    if (!isSettingUp) {
-      setupScreens();
-    }
-  },
-  mounted() {
-    if (shouldRefreshQueries && screensComp) {
-      screensComp.refreshQueries();
-      shouldRefreshQueries = false;
-    }
-  },
-  computed: {
-    $screens() {
-      return (config, def) =>
-        screensComp.matches.reduce(
-          (prev, curr) => (has(config, curr) ? config[curr] : prev),
-          isUndefined(def) ? config.default : def,
-        );
+export function addMixin(app) {
+  // Global mixin that provides responsive '$screens' utility method
+  // that refreshes any time the screen matches update
+  app.mixin({
+    beforeCreate() {
+      if (!isSettingUp) {
+        setupScreens();
+      }
     },
-  },
-});
+    mounted() {
+      if (shouldRefreshQueries && screensComp) {
+        screensComp.refreshQueries();
+        shouldRefreshQueries = false;
+      }
+    },
+    computed: {
+      $screens() {
+        return (config, def) =>
+          screensComp.matches.reduce(
+            (prev, curr) => (has(config, curr) ? config[curr] : prev),
+            isUndefined(def) ? config.default : def,
+          );
+      },
+    },
+  });
+}

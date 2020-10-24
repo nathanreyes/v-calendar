@@ -32,7 +32,7 @@ let defaults_ = null;
 
 export const setupDefaults = opts => {
   if (!defaults_) {
-    defaults_ = new Vue({
+    defaults_ = Vue.createApp({
       data() {
         return {
           defaults: defaultsDeep(opts, pluginDefaults),

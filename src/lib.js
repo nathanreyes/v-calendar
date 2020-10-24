@@ -1,38 +1,27 @@
 import * as components from './components';
 import * as utils from './utils';
 
-// Declare install function executed by Vue.use()
-function install(Vue, opts) {
+// Declare install function executed by app.use()
+function install(app, opts) {
   // Don't install more than once
   if (install.installed) return;
   install.installed = true;
   // Manually setup calendar with options
-  const defaults = utils.setupCalendar(opts);
+  const defaults = utils.setupCalendar(app, opts);
   // Register components
   Object.entries(components).forEach(([componentName, component]) => {
-    Vue.component(`${defaults.componentPrefix}${componentName}`, component);
+    app.component(`${defaults.componentPrefix}${componentName}`, component);
   });
 }
 
-// Create module definition for Vue.use()
+// Create module definition for app.use()
 const plugin = {
   install,
   ...components,
   ...utils,
 };
 
-// Use automatically when global Vue instance detected
-let GlobalVue = null;
-if (typeof window !== 'undefined') {
-  GlobalVue = window.Vue;
-} else if (typeof global !== 'undefined') {
-  GlobalVue = global.Vue;
-}
-if (GlobalVue) {
-  GlobalVue.use(plugin);
-}
-
-// Default export is library as a whole, registered via Vue.use()
+// Default export is library as a whole, registered via app.use()
 export default plugin;
 
 // Allow component use individually
