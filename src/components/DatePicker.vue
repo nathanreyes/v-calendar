@@ -196,10 +196,12 @@ export default {
     },
     inputMask() {
       const masks = this.$locale.masks;
-      if (this.isTime)
+      if (this.isTime) {
         return this.is24hr ? masks.inputTime24hr : masks.inputTime;
-      if (this.isDateTime)
+      }
+      if (this.isDateTime) {
         return this.is24hr ? masks.inputDateTime24hr : masks.inputDateTime;
+      }
       return this.$locale.masks.input;
     },
     slotArgs() {
@@ -307,7 +309,7 @@ export default {
     },
   },
   watch: {
-    inputMask(val) {
+    inputMask() {
       this.formatInput();
     },
     isRange: {
