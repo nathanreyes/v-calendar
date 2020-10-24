@@ -67,7 +67,7 @@ export default {
   bottom: 0;
   right: 0;
   padding: 0 4px 0 0;
-  color: var(--gray-700);
+  color: var(--gray-500);
   & svg {
     width: 16px;
     height: 16px;
@@ -86,9 +86,6 @@ export default {
       border-color: var(--accent-500);
       background-color: var(--gray-800);
     }
-  }
-  & .vc-select-arrow {
-    color: var(--gray-300);
   }
 }
 </style>
