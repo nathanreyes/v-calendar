@@ -309,7 +309,8 @@ export default class Locale {
     return mask.replace(/\?\?/g, () => literals.shift());
   }
 
-  parse(dateStr, mask, timezone) {
+  parse(dateString, mask, timezone) {
+    // Normalize as an array of masks
     const masks = (arrayHasItems(mask) && mask) || [
       (isString(mask) && mask) || 'YYYY-MM-DD',
     ];
@@ -319,10 +320,12 @@ export default class Locale {
           if (typeof m !== 'string') {
             throw new Error('Invalid mask in fecha.parse');
           }
+          // Reset string value
+          let str = dateString;
           m = this.masks[m] || m;
           // Avoid regular expression denial of service, fail early for really long strings
           // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
-          if (dateStr.length > 1000) {
+          if (str.length > 1000) {
             return false;
           }
 
@@ -331,13 +334,13 @@ export default class Locale {
           m.replace(token, $0 => {
             if (parseFlags[$0]) {
               const info = parseFlags[$0];
-              const index = dateStr.search(info[0]);
+              const index = str.search(info[0]);
               if (!~index) {
                 isValid = false;
               } else {
-                dateStr.replace(info[0], result => {
+                str.replace(info[0], result => {
                   info[1](dateInfo, result, this);
-                  dateStr = dateStr.substr(index + result.length);
+                  str = str.substr(index + result.length);
                   return result;
                 });
               }
@@ -392,7 +395,7 @@ export default class Locale {
           }
           return date;
         })
-        .find(d => d) || new Date(dateStr)
+        .find(d => d) || new Date(dateString)
     );
   }
 
