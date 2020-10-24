@@ -1,5 +1,7 @@
 <template>
-  <v-calendar :attributes="attributes" />
+  <div class="example">
+    <v-calendar :attributes="attributes" />
+  </div>
 </template>
 
 <script>
