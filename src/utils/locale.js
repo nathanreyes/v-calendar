@@ -27,6 +27,7 @@ const monthUpdate = arrName => (d, v, l) => {
     d.month = index;
   }
 };
+const maskMacros = ['L', 'iso'];
 
 const daysInWeek = 7;
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -289,11 +290,7 @@ export default class Locale {
   format(date, mask, timezone) {
     date = this.normalizeDate(date);
     if (!date) return '';
-    mask =
-      (arrayHasItems(mask) && mask[0]) ||
-      (isString(mask) && mask) ||
-      'YYYY-MM-DD';
-    mask = this.masks[mask] || mask;
+    mask = this.normalizeMasks(mask)[0];
     const literals = [];
     // Make literals inactive by replacing them with ??
     mask = mask.replace(literal, ($0, $1) => {
@@ -311,10 +308,7 @@ export default class Locale {
   }
 
   parse(dateString, mask, timezone) {
-    // Normalize as an array of masks
-    const masks = (arrayHasItems(mask) && mask) || [
-      (isString(mask) && mask) || 'YYYY-MM-DD',
-    ];
+    const masks = this.normalizeMasks(mask);
     return (
       masks
         .map(m => {
@@ -323,7 +317,6 @@ export default class Locale {
           }
           // Reset string value
           let str = dateString;
-          m = this.masks[m] || m;
           // Avoid regular expression denial of service, fail early for really long strings
           // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
           if (str.length > 1000) {
@@ -397,6 +390,20 @@ export default class Locale {
           return date;
         })
         .find(d => d) || new Date(dateString)
+    );
+  }
+
+  // Normalizes mask(s) as an array with replaced mask macros
+  normalizeMasks(masks) {
+    return (
+      (arrayHasItems(masks) && masks) || [
+        (isString(masks) && masks) || 'YYYY-MM-DD',
+      ]
+    ).map(m =>
+      maskMacros.reduce(
+        (prev, curr) => prev.replace(curr, this.masks[curr] || ''),
+        m,
+      ),
     );
   }
 
