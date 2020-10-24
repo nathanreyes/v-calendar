@@ -57,12 +57,12 @@ export default {
     locale: { type: Object, required: true },
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
+    minuteIncrement: { type: Number, default: 1 },
   },
   data() {
     return {
       hours: 0,
       minutes: 0,
-      minuteIncrement: 1,
       isAM: true,
     };
   },
