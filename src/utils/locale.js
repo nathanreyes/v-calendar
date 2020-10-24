@@ -287,11 +287,12 @@ export default class Locale {
   }
 
   format(date, mask, timezone) {
+    date = this.normalizeDate(date);
+    if (!date) return '';
     mask =
       (arrayHasItems(mask) && mask[0]) ||
       (isString(mask) && mask) ||
       'YYYY-MM-DD';
-    date = this.getDateParts(this.normalizeDate(date), timezone);
     mask = this.masks[mask] || mask;
     const literals = [];
     // Make literals inactive by replacing them with ??
@@ -302,7 +303,7 @@ export default class Locale {
     // Apply formatting rules
     mask = mask.replace(token, $0 =>
       $0 in formatFlags
-        ? formatFlags[$0](date, this)
+        ? formatFlags[$0](this.getDateParts(date, timezone), this)
         : $0.slice(1, $0.length - 1),
     );
     // Inline literal values back into the formatted value
