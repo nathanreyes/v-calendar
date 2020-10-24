@@ -14,7 +14,7 @@
       </svg>
     </div>
     <div class="vc-date-time">
-      <div class="vc-date">
+      <div v-if="date" class="vc-date">
         <span class="vc-weekday">
           {{ locale.format(date, 'WWW') }}
         </span>
@@ -192,7 +192,7 @@ export default {
 .vc-time-container {
   display: flex;
   align-items: center;
-  padding: 0 8px 8px 8px;
+  padding: 8px;
   &.vc-invalid {
     pointer-events: none;
     opacity: 50%;
@@ -218,7 +218,8 @@ export default {
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   text-transform: uppercase;
-  padding: 4px 0 4px 4px;
+  padding: 0 0 4px 4px;
+  margin-top: -4px;
   & .vc-weekday {
     color: var(--gray-700);
     letter-spacing: var(--tracking-wide);
