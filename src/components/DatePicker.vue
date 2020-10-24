@@ -152,6 +152,7 @@ export default {
     mode: { type: String, default: MODE_DATE },
     value: { type: null, required: true },
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
+    minuteIncrement: Number,
     is24hr: Boolean,
     minuteIncrement: Number,
     isRequired: Boolean,
