@@ -194,10 +194,18 @@ export default {
     isDragging() {
       return !!this.dragValue;
     },
+    inputMask() {
+      const masks = this.$locale.masks;
+      if (this.isTime)
+        return this.is24hr ? masks.inputTime24hr : masks.inputTime;
+      if (this.isDateTime)
+        return this.is24hr ? masks.inputDateTime24hr : masks.inputDateTime;
+      return this.$locale.masks.input;
+    },
     slotArgs() {
       const inputConfig = {
         type: 'string',
-        mask: this.$locale.masks.input,
+        mask: this.inputMask,
         patch: PATCH_DATE_TIME,
         timezone: this.timezone,
       };
@@ -299,6 +307,9 @@ export default {
     },
   },
   watch: {
+    inputMask(val) {
+      this.formatInput();
+    },
     isRange: {
       immediate: true,
       handler() {
@@ -680,7 +691,7 @@ export default {
       this.$nextTick(() => {
         const opts = {
           type: 'string',
-          mask: this.$locale.masks.input,
+          mask: this.inputMask,
           timezone: this.timezone,
         };
         const value = this.denormalizeValue(
