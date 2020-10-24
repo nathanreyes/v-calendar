@@ -22,7 +22,7 @@
           {{ locale.format(date, 'MMM') }}
         </span>
         <span class="vc-day">
-          {{ locale.format(date, 'DD') }}
+          {{ locale.format(date, 'D') }}
         </span>
         <span class="vc-year">
           {{ locale.format(date, 'YYYY') }}
