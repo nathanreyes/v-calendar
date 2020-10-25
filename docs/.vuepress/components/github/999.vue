@@ -32,7 +32,7 @@
           >
         </label>
         <label for="range" class="ml-2">
-          <input id="range" type="checkbox" v-model="range" /><span class="ml-2"
+          <input id="range" type="checkbox" v-model="isRange" /><span class="ml-2"
             >Range</span
           >
         </label>
@@ -58,7 +58,7 @@
       </div>
     </div>
     <!--Date values-->
-    <template v-if="!range">
+    <template v-if="!isRange">
       <div class="flex mt-2">
         <span class="font-semibold text-gray-600 w-12">Date:</span
         ><span class="ml-2">{{ date }}</span>
@@ -76,7 +76,7 @@
     </template>
     <div class="flex mt-2">
       <!--Date picker-->
-      <div v-if="!range">
+      <div v-if="!isRange">
         <v-date-picker
           v-model="date"
           :mode="mode"
@@ -165,17 +165,17 @@ export default {
         // input: 'MM/DD/YYYY h:mm A',
       },
       minDate: new Date(),
-      range: false,
+      isRange: true,
       is24hr: false,
       minuteIncrement: 1,
-      inline: false,
+      inline: true,
       dark: false,
     };
   },
   methods: {
     clear() {
       this.date = '';
-      this.range = null;
+      this.dateRange = null;
     },
   },
 };
