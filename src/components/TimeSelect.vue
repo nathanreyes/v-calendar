@@ -36,6 +36,7 @@ export default {
     appearance: none;
     width: 52px;
     height: 30px;
+    font-size: var(--text-base);
     font-weight: var(--font-medium);
     text-align: left;
     background-color: var(--gray-200);

@@ -195,7 +195,7 @@ export default {
   padding: 8px;
   &.vc-invalid {
     pointer-events: none;
-    opacity: 50%;
+    opacity: 0.5;
   }
   &:not(:first-child) {
     border-top: 1px solid var(--gray-400);
@@ -256,6 +256,7 @@ export default {
     font-size: var(--text-sm);
     font-weight: var(--font-medium);
     padding: 0 4px;
+    background: transparent;
     border: 2px solid transparent;
     border-radius: var(--rounded);
     line-height: var(--leading-snug);
