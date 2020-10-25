@@ -122,12 +122,23 @@ export default {
     minuteOptions() {
       const options = [];
       let m = 0;
+      let added = false;
       while (m <= 59) {
         options.push({
           value: m,
           label: pad(m, 2),
         });
+        added = added || m === this.minutes;
         m += this.minuteIncrement;
+        // Add disabled option if interval has skipped it
+        if (!added && m > this.minutes) {
+          added = true;
+          options.push({
+            value: this.minutes,
+            label: pad(this.minutes, 2),
+            disabled: true,
+          });
+        }
       }
       return options;
     },
