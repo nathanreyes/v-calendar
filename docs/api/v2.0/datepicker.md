@@ -34,6 +34,22 @@ sidebarDepth: 2
 
 **Default Value:** `false`
 
+### `is24hr`
+
+**Type:** Boolean
+
+**Description:** Use 24-hr time picker and input format.
+
+**Default Value:** `false`
+
+### `minute-increment`
+
+**Type:** Number
+
+**Description:** Increment amount for the minute `select` options.
+
+**Default Value:** 1
+
 ### `is-required`
 
 **Type:** Boolean
