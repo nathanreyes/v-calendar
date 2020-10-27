@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-calendar :from-date="fromDate" :attributes="attrs"></v-calendar>
+    <v-calendar :from-date="fromDate" :attributes="attrs" />
   </div>
 </template>
 
@@ -13,12 +13,8 @@ export default {
         {
           key: 'today',
           highlight: {
-            backgroundColor: '#ff8080',
-            // Other properties are available too, like `height` & `borderRadius`
-          },
-          // Just use a normal style
-          contentStyle: {
-            color: '#fafafa',
+            color: 'orange',
+            fillMode: 'light',
           },
           dates: [
             new Date(2018, 0, 1),
