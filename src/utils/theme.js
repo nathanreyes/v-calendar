@@ -1,7 +1,14 @@
 import { isObject, isString, has, hasAny, set, toPairs, defaults } from './_';
 
 const targetProps = ['base', 'start', 'end', 'startEnd'];
-const displayProps = ['class', 'style', 'color', 'fillMode'];
+const displayProps = [
+  'class',
+  'contentClass',
+  'style',
+  'contentStyle',
+  'color',
+  'fillMode',
+];
 const defConfig = {
   color: 'blue',
   isDark: false,
@@ -161,6 +168,7 @@ export default class Theme {
   }
 
   contentAccent({ color, isDark }) {
+    if (!color) return null;
     return {
       fontWeight: 'var(--font-bold)',
       color: isDark ? `var(--${color}-100)` : `var(--${color}-900)`,
