@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-time-container" :class="[{ 'vc-invalid': !value.isValid }]">
+  <div
+    class="vc-time-picker"
+    :class="[{ 'vc-invalid': !value.isValid, 'vc-bordered': showBorder }]"
+  >
     <div>
       <svg
         fill="none"
@@ -58,6 +61,7 @@ export default {
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
     minuteIncrement: { type: Number, default: 1 },
+    showBorder: Boolean,
   },
   data() {
     return {
@@ -200,7 +204,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.vc-time-container {
+.vc-time-picker {
   display: flex;
   align-items: center;
   padding: 8px;
@@ -208,7 +212,7 @@ export default {
     pointer-events: none;
     opacity: 0.5;
   }
-  &:not(:first-child) {
+  &.vc-bordered {
     border-top: 1px solid var(--gray-400);
   }
 }
@@ -291,7 +295,7 @@ export default {
 }
 
 .vc-is-dark {
-  & .vc-time-container {
+  & .vc-time-picker {
     border-color: var(--gray-700);
   }
   & .vc-time-icon {

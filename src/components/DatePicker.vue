@@ -59,18 +59,22 @@ export default {
     const timePicker = () => {
       if (!this.dateParts) return null;
       const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
-      return parts.map((dp, idx) =>
-        h(TimePicker, {
-          props: {
-            value: dp,
-            locale: this.$locale,
-            theme: this.$theme,
-            is24hr: this.is24hr,
-            minuteIncrement: this.minuteIncrement,
-          },
-          on: { input: p => this.onTimeInput(p, idx) },
-        }),
-      );
+      return h('div', [
+        ...parts.map((dp, idx) =>
+          h(TimePicker, {
+            props: {
+              value: dp,
+              locale: this.$locale,
+              theme: this.$theme,
+              is24hr: this.is24hr,
+              minuteIncrement: this.minuteIncrement,
+              showBorder: !this.isTime,
+            },
+            on: { input: p => this.onTimeInput(p, idx) },
+          }),
+        ),
+        this.$scopedSlots.footer && this.$scopedSlots.footer(),
+      ]);
     };
     // Calendar renderer
     const calendar = () =>
@@ -96,7 +100,7 @@ export default {
         },
         scopedSlots: {
           ...this.$scopedSlots,
-          footer: this.isDateTime && timePicker,
+          footer: this.isDateTime ? timePicker : this.$scopedSlots.footer,
         },
         ref: 'calendar',
       });
