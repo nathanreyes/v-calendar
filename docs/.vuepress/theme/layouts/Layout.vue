@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-full overflow-y-auto">
     <Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
     <div
-      class="flex-grow relative flex w-full max-w-5xl mx-auto text-gray-700 mt-12 md:mt-16 overflow-hidden"
+      class="flex-grow relative flex w-full mx-auto text-gray-700 mt-12 md:mt-16 overflow-hidden"
       @touchstart="onTouchStart"
       @touchend="onTouchEnd"
     >
@@ -45,7 +45,7 @@
         </Sidebar>
       </div>
       <!--Main page-->
-      <div class="flex-grow">
+      <div class="flex-grow w-full">
         <!--Home page-->
         <Home v-if="$page.frontmatter.home" />
         <!--Other pages-->
