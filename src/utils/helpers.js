@@ -143,15 +143,15 @@ export const mixinOptionalProps = (source, target, props) => {
   };
 };
 
-export const on = (element, event, handler) => {
+export const on = (element, event, handler, opts) => {
   if (element && event && handler) {
-    element.addEventListener(event, handler, false);
+    element.addEventListener(event, handler, opts);
   }
 };
 
-export const off = (element, event, handler) => {
+export const off = (element, event, handler, opts) => {
   if (element && event) {
-    element.removeEventListener(event, handler, false);
+    element.removeEventListener(event, handler, opts);
   }
 };
 

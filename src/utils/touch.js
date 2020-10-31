@@ -29,10 +29,10 @@ export const addTapOrClickHandler = (element, handler) => {
     disableClick = false;
   };
   // Add event handlers
-  on(element, 'touchstart', touchstart);
-  on(element, 'touchmove', touchmove);
-  on(element, 'click', touchend);
-  on(element, 'touchend', touchend);
+  on(element, 'touchstart', touchstart, { passive: true });
+  on(element, 'touchmove', touchmove, { passive: true });
+  on(element, 'click', touchend, { passive: true });
+  on(element, 'touchend', touchend, { passive: true });
   // Return function that removes event handlers
   return () => {
     off(element, 'touchstart', touchstart);
@@ -89,9 +89,9 @@ export const addHorizontalSwipeHandler = (
     }
   }
   // Add event handlers
-  on(element, 'touchstart', touchStart);
+  on(element, 'touchstart', touchStart, { passive: true });
   // on(element, 'touchmove', touchmove);
-  on(element, 'touchend', touchEnd);
+  on(element, 'touchend', touchEnd, { passive: true });
   // Return function that removes event handlers
   return () => {
     off(element, 'touchstart', touchStart);
