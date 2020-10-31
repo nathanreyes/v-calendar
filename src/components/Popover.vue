@@ -65,7 +65,6 @@ export default {
   },
   props: {
     id: { type: String, required: true },
-    transition: { type: String, default: 'slide-fade' },
     contentClass: String,
   },
   data() {
@@ -73,6 +72,7 @@ export default {
       ref: null,
       opts: null,
       data: null,
+      transition: 'slide-fade',
       placement: 'bottom',
       positionFixed: false,
       modifiers: [],
