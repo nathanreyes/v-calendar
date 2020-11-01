@@ -25,7 +25,11 @@ In `v-calendar`, the timezone is used to set the beginning and ending time bound
 
 ```html
 <div>
-  <v-calendar :timezone="timezone" :attributes="attrs" />
+  <v-calendar
+    :from-page="{ month: 10, year: 2020 }"
+    :timezone="timezone"
+    :attributes="attrs"
+    />
   <div class="w-full mt-4">
     <div class="flex justify-between w-full">
       <span class="text-sm font-bold text-gray-800">-11:00</span>
