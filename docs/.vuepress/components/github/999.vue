@@ -32,7 +32,8 @@
           >
         </label>
         <label for="range" class="ml-2">
-          <input id="range" type="checkbox" v-model="isRange" /><span class="ml-2"
+          <input id="range" type="checkbox" v-model="isRange" /><span
+            class="ml-2"
             >Range</span
           >
         </label>
@@ -78,6 +79,7 @@
       <!--Date picker-->
       <div v-if="!isRange">
         <v-date-picker
+          class="my-picker"
           v-model="date"
           :mode="mode"
           :model-config="dateConfig"
@@ -85,7 +87,7 @@
           :minute-increment="minuteIncrement"
           :masks="masks"
           :timezone="timezone"
-          :popover="{ visibility: 'hover-focus' }"
+          :popover="popover"
           :is-dark="dark"
         >
           <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
@@ -109,7 +111,7 @@
           :minute-increment="minuteIncrement"
           :masks="masks"
           :timezone="timezone"
-          :popover="{ visibility: 'hover-focus' }"
+          :popover="popover"
           :is-dark="dark"
           is-range
         >
@@ -165,11 +167,15 @@ export default {
         // input: 'MM/DD/YYYY h:mm A',
       },
       minDate: new Date(),
-      isRange: true,
+      isRange: false,
       is24hr: false,
       minuteIncrement: 1,
-      inline: true,
+      inline: false,
       dark: false,
+      popover: {
+        visibility: 'hover',
+        transition: 'fade',
+      },
     };
   },
   methods: {
