@@ -28,7 +28,7 @@ sidebarDepth: 2
 
 **Description:** Selection mode: `"single"`, `"multiple"`, `"range"`
 
-**Default Value:** `"single"`
+**Default:** `"single"`
 
 :::warning
 **`mode` modified in [`v2.0`](../v2.0)**
@@ -40,7 +40,7 @@ sidebarDepth: 2
 
 **Description:** Selected date, dates or date range.
 
-**Default Value:** `null`
+**Default:** `null`
 
 :::warning
 **`value` modified in [`v2.0`](../v2.0)**
@@ -52,7 +52,7 @@ sidebarDepth: 2
 
 **Description:** Prevents the **user** from clearing the selected value.
 
-**Default Value:** `false`
+**Default:** `false`
 
 ::: tip
 Setting `value = null` still allowed through code.
@@ -64,7 +64,7 @@ Setting `value = null` still allowed through code.
 
 **Description:** Props to apply to the input DOM element.
 
-**Default Value:** [Reference code]()
+**Default:** [Reference code]()
 
 :::danger
 **`input-props` deprecated in [`v2.0`](../v2.0)**
@@ -76,7 +76,7 @@ Setting `value = null` still allowed through code.
 
 **Description:** Update the picker value after every `input` event. Otherwise, value is just updated on `change` event.
 
-**Default Value:** `true`
+**Default:** `true`
 
 ### `input-debounce`
 
@@ -84,7 +84,7 @@ Setting `value = null` still allowed through code.
 
 **Description:** If `update-on-input` is enabled, the duration in milliseconds at which the `input` event is debounced before updating the date value.
 
-**Default Value:** `1000`
+**Default:** `1000`
 
 ### `drag-attribute`
 
@@ -92,7 +92,7 @@ Setting `value = null` still allowed through code.
 
 **Description:** Attribute to use for the dragged selection in "range" mode. The `dates` property is ignored.
 
-**Default Value:** [Reference code]()
+**Default:** [Reference code]()
 
 ### `select-attribute`
 
@@ -100,7 +100,7 @@ Setting `value = null` still allowed through code.
 
 **Description:** Attribute to use for the value selection in all modes. The `dates` property is ignored.
 
-**Default Value:** [Reference code]()
+**Default:** [Reference code]()
 
 ### `popover`
 
@@ -108,15 +108,45 @@ Setting `value = null` still allowed through code.
 
 **Description:** Properties of the popover to apply for the calendar component.
 
-**Default Value:** [Reference code](./defaults.md)
+**Default:** [Reference code](./defaults.md)
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `visibility` | String | Visibility mode for the input/slot popover (`"hover-focus"`, `"hover"`, `"focus"`, `"visible"`, `"hidden"`) |
-| `placement` | String | Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/docs/v2/constructors/#placement) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`. |
-| `positionFixed` | Boolean | Display the popover in `fixed` mode. Reference [`popper.js`](https://popper.js.org/docs/v2/constructors/#strategy) for more details. |
-| `modifiers` | Array | Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers). |
-| `keepVisibleOnInput` | Boolean | Keep the popover visible after a date is selected, until the `visibility` determines. |
+### `popover.keepVisibleOnInput`
+
+**Type:** Boolean
+
+**Description:** Keep the popover visible after a date is selected (only applies for `mode: 'date'`), until the `visibility` determines that it should hide again.
+
+### `popover.modifiers`
+
+**Type:** Array
+
+**Description:** Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers/).
+
+**Default:** `undefined`
+
+### `popover.placement`
+
+**Type:** String
+
+**Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/popper-documentation.html#Popper.placements) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`.
+
+**Default:** `bottom-start`
+
+### `popover.positionFixed`
+
+**Type:** Boolean
+
+**Description:** Uses a `fixed` position when displaying the popover. Use this open when the calendar is placed within a container that has `overflow: hidden` style applied. Reference popper.js for more details.
+
+**Default:** `false`
+
+### `popover.visibility`
+
+**Type:** String
+
+**Description:** Visibility mode for the input/slot popover (`hover-focus`, `hover`, `focus`, `visible`, `hidden`)
+
+**Default:** `hover-focus`
 
 <!-- 
 ### 
@@ -125,7 +155,7 @@ Setting `value = null` still allowed through code.
 
 **Description:** 
 
-**Default Value:** 
+**Default:** 
 -->
 
 ## Events

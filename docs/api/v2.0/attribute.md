@@ -233,13 +233,15 @@ sidebarDepth: 2
 
 **Description:** Modifiers used to modify the behavior of [`popper.js`](https://popper.js.org/docs/v2/modifiers/).
 
+**Default:** `undefined`
+
 ### `popover.placement`
 
 **Type:** String
 
 **Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change. Valid placements include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`.
 
-**Default:** `"bottom-start"`
+**Default:** `bottom-start`
 
 ### `popover.positionFixed`
 
@@ -247,13 +249,13 @@ sidebarDepth: 2
 
 **Description:** Uses a `fixed` position when displaying the popover. Use this open when the calendar is placed within a container that has `overflow: hidden` style applied. Reference popper.js for more details.
 
-**Default:** `"bottom-start"`
+**Default:** `false`
 
 ### `popover.visibility`
 
 **Type:** String
 
-**Description:** Visibility of the popover when this label or slot is displayed (`"hover-focus`, `"hover"`, `"focus"`, `"click"`, `"visible"`, `"hidden"`).
+**Description:** Visibility of the popover when this label or slot is displayed (`hover-focus`, `hover`, `focus`, `click`, `visible`, `hidden`).
 
 **Default:** `"hover"`
 
