@@ -297,7 +297,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 To call methods on a component, assign a ref and call the method any time on or after the `mounted` lifecycle hook.
 
 ```html
-<v-calendar ref="calendar' />
+<v-calendar ref="calendar" />
 ```
 
 ```js
