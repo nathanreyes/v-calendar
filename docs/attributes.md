@@ -665,4 +665,4 @@ export default {
 
 ### Additional Options
 
-Reference [API](api/attribute.html#popover) for a complete list of popover options.
+Reference [API](api/v2.0/attribute.html#popover) for a complete list of popover options.
