@@ -174,7 +174,7 @@ export default {
       dark: false,
       popover: {
         visibility: 'hover',
-        transition: 'fade',
+        transition: 'slide-fade',
       },
     };
   },
