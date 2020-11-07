@@ -427,15 +427,16 @@ export default {
     },
     async focusDate(date, opts = {}) {
       const page = pageForDate(date);
-      // Calculate new fromPage
-      let fromPage = null;
-      if (opts.position) {
-        fromPage = this.getTargetPageRange(page, opts.position).fromPage;
-      } else if (pageIsBeforePage(page, this.firstPage)) {
-        fromPage = this.getTargetPageRange(page, -1).fromPage;
-      } else if (pageIsAfterPage(page, this.lastPage)) {
-        fromPage = this.getTargetPageRange(page, 1).fromPage;
+      // Adjust position if not explicitly set
+      if (!opts.position) {
+        if (pageIsBeforePage(page, this.firstPage)) {
+          opts.position = 1;
+        } else if (pageIsAfterPage(page, this.lastPage)) {
+          opts.position = -1;
+        }
       }
+      // Calculate new `fromPage`
+      const { fromPage } = this.getTargetPageRange(page, opts);
       // Move to new fromPage if it's different from the current one
       if (fromPage && !pageIsEqualToPage(fromPage, this.pages[0])) {
         await this.refreshPages({
@@ -481,7 +482,7 @@ export default {
       }
       await this.refreshPages({ ...opts, page });
     },
-    getTargetPageRange(page, position) {
+    getTargetPageRange(page, { position, force } = {}) {
       // Calculate the page to start displaying from
       let fromPage = null;
       // 1. Try the page parameter
@@ -507,18 +508,30 @@ export default {
       }
       // 5. Fall back to today's page
       fromPage = pageIsValid(fromPage) ? fromPage : pageForThisMonth();
-      // Adjust from page within allowed min/max pages
-      const toPage = addPages(fromPage, this.count - 1);
-      if (pageIsBeforePage(fromPage, this.minPage_)) {
-        fromPage = this.minPage_;
-      } else if (pageIsAfterPage(toPage, this.maxPage_)) {
-        fromPage = addPages(this.maxPage_, 1 - this.count);
+      let toPage = addPages(fromPage, this.count - 1);
+      // 6. Adjust for min/max pages if not forced
+      if (!force) {
+        if (pageIsBeforePage(fromPage, this.minPage_)) {
+          fromPage = this.minPage_;
+        } else if (pageIsAfterPage(toPage, this.maxPage_)) {
+          fromPage = addPages(this.maxPage_, 1 - this.count);
+        }
+        toPage = addPages(fromPage, this.count - 1);
       }
       return { fromPage, toPage };
     },
-    async refreshPages({ page, position = 1, transition, ignoreCache } = {}) {
+    async refreshPages({
+      page,
+      position = 1,
+      force,
+      transition,
+      ignoreCache,
+    } = {}) {
       return new Promise((resolve, reject) => {
-        const { fromPage, toPage } = this.getTargetPageRange(page, position);
+        const { fromPage, toPage } = this.getTargetPageRange(page, {
+          position,
+          force,
+        });
         // Create the new pages
         const pages = [];
         for (let i = 0; i < this.count; i++) {
