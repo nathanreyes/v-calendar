@@ -9,7 +9,7 @@ sidebarDepth: 2
 
 To expand the component to the full width of its container, set the `is-expanded` prop.
 
-<guide-readme-cal-expanded />
+<guide-layouts-expanded />
 
 ```html
 <v-calendar is-expanded />
@@ -21,7 +21,7 @@ To make the title header left or right aligned, use the `title-position` prop.
 
 ### Left Aligned
 
-<guide-readme-cal-title-position title-position="left" />
+<guide-layouts-title-position title-position="left" />
 
 ```html
 <v-calendar title-position="left" />
@@ -29,17 +29,31 @@ To make the title header left or right aligned, use the `title-position` prop.
 
 ### Right Aligned
 
-<guide-readme-cal-title-position title-position="right" />
+<guide-layouts-title-position title-position="right" />
 
 ```html
 <v-calendar title-position="right" />
+```
+
+## Trim Weeks
+
+By default, calendar panes always displays the maximum number of weeks in a month, even if the max week does not contain any days in the current month displayed.
+
+This is to ensure user interface consistency and prevents the calendar height from always changing as the user navigates months.
+
+However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
+
+<guide-layouts-trim-weeks />
+
+```html
+<v-calendar trim-weeks>
 ```
 
 ## Multiple Rows & Columns
 
 Use the `rows` and `columns` props to create multi-row and multi-column static layouts.
 
-<guide-readme-cal-rows-columns />
+<guide-layouts-rows />
 
 ```html
 <v-calendar :rows="2" />
@@ -59,7 +73,7 @@ V-Calendar takes a mobile-first approach, where each screen represents a minimum
 
 For example, suppose we wish to display a single column on mobile. Then, at the large size, we wish to expand the calendar to two columns.
 
-<guide-readme-cal-responsive />
+<guide-layouts-responsive />
 
 ```html
 <v-calendar :columns="$screens({ default: 1, lg: 2 })" />
@@ -76,7 +90,7 @@ Alternatively, we can pass the default value as a second parameter to the `$scre
 
 Let's add to the previous example so that a new row is added for large screens. Also, we would also like to expand the pane width to fill its container on mobile when only one column and row is displayed.
 
-<guide-readme-cal-responsive-expanded />
+<guide-layouts-responsive-expanded />
 
 ```html
 <v-calendar
@@ -122,7 +136,7 @@ export default {
 ```
 
 :::tip
-The `$screens` function is included as a lightweight mixin for all components when using V-Calendar. You can use it to make any of your props or computed properties responsive in any of your own components.
+The `$screens` function is included as a lightweight mixin for all components. It can be used to make any of your props or computed properties responsive in any of your own components.
 :::
 
 ### Screen Sizes

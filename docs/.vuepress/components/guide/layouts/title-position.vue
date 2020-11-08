@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-calendar :title-position="titlePosition"/>
+    <v-calendar :title-position="titlePosition" />
   </div>
 </template>
 
@@ -11,4 +11,3 @@ export default {
   },
 };
 </script>
-

@@ -11,12 +11,13 @@ export default {
   data() {
     return {
       maxDate: new Date(),
-      moveDate: new Date(2019, 0, 1),
+      moveDate: new Date(2021, 0, 1),
     };
   },
   methods: {
     moveToDate() {
-      this.$refs.calendar.focusDate(this.moveDate, { force: true });
+      // this.$refs.calendar.focusDate(this.moveDate, { force: true });
+      this.$refs.calendar.move(this.moveDate, { force: true });
     },
   },
 };
