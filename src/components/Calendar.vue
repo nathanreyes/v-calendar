@@ -258,6 +258,7 @@ export default {
     maxPage: Object,
     transition: String,
     attributes: [Object, Array],
+    trimWeeks: Boolean,
     disablePageSwipe: Boolean,
   },
   data() {
@@ -617,6 +618,7 @@ export default {
           key,
           month,
           year,
+          weeks: this.trimWeeks ? monthComps.weeks : 6,
           title: this.$locale.format(date, this.$locale.masks.title),
           shortMonthLabel: this.$locale.format(date, 'MMM'),
           monthLabel: this.$locale.format(date, 'MMMM'),

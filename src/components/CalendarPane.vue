@@ -72,7 +72,7 @@ export default {
       {
         class: 'vc-weeks',
         props: {
-          rows: 7,
+          rows: this.page.weeks + 1,
           columns: 7,
           columnWidth: '1fr',
           disableFocus: true,
@@ -149,7 +149,9 @@ export default {
         id: this.navPopoverId,
         visibility: this.navVisibility_,
         placement: this.navPlacement,
-        modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom'] } }],
+        modifiers: [
+          { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
+        ],
         isInteractive: true,
       });
     },
@@ -174,6 +176,7 @@ export default {
 .vc-pane {
   flex-grow: 1;
   flex-shrink: 1;
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
   justify-content: center;

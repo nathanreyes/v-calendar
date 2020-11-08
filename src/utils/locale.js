@@ -659,7 +659,10 @@ export default class Locale {
   }
 
   // Builds day components for a given page
-  getCalendarDays({ monthComps, prevMonthComps, nextMonthComps }, timezone) {
+  getCalendarDays(
+    { weeks, monthComps, prevMonthComps, nextMonthComps },
+    timezone,
+  ) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
@@ -696,7 +699,7 @@ export default class Locale {
         { timezone },
       );
     // Cycle through 6 weeks (max in month)
-    for (let w = 1; w <= 6; w++) {
+    for (let w = 1; w <= weeks; w++) {
       // Cycle through days in week
       for (
         let i = 1, weekday = firstDayOfWeek;
