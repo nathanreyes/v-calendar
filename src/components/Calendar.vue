@@ -431,20 +431,23 @@ export default {
       // Adjust position if not explicitly set
       if (!opts.position) {
         if (pageIsBeforePage(page, this.firstPage)) {
-          opts.position = 1;
-        } else if (pageIsAfterPage(page, this.lastPage)) {
           opts.position = -1;
+        } else if (pageIsAfterPage(page, this.lastPage)) {
+          opts.position = 1;
         }
       }
-      // Calculate new `fromPage`
-      const { fromPage } = this.getTargetPageRange(page, opts);
-      // Move to new fromPage if it's different from the current one
-      if (fromPage && !pageIsEqualToPage(fromPage, this.pages[0])) {
-        await this.refreshPages({
-          ...opts,
-          position: 1,
-          page: fromPage,
-        });
+      // Check for explicit position
+      if (opts.position !== undefined) {
+        // Calculate new `fromPage`
+        const { fromPage } = this.getTargetPageRange(page, opts);
+        // Move to new fromPage if it's different from the current one
+        if (fromPage && !pageIsEqualToPage(fromPage, this.pages[0])) {
+          await this.refreshPages({
+            ...opts,
+            position: 1,
+            page: fromPage,
+          });
+        }
       }
       // Set focus on the element for the date
       const focusableEl = this.$el.querySelector(
