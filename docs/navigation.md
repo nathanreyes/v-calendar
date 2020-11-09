@@ -5,35 +5,34 @@ sidebarDepth: 2
 
 ## User Interface
 
-### Header Buttons
+### Header
 
-Navigation arrows in the calendar header allow for user controlled calendar navigation forwards and backwards.
+There are 2 primary methods for navigating the calendar within the header.
+
+1. Navigation arrows to move forwards and backwards by a given [`step`](#month-steps) amount.
+2. Navigation popover to more easily skip to a specific month/year.
 
 <div class="example">
   <v-calendar />
 </div>
 
-### Month/Year Dropdown
-
-To more easily skip to a more specific month/year, the user may use the navigation popover.
-
-<div class="example">
-  <v-calendar nav-visibility="visible" />
-</div>
-
 ```html
-<v-calendar nav-visibility="visible" />
+<v-calendar />
 ```
 
 ### Month Steps
 
-By default, the calendar will skip to the month following the last and preceding the first months when navigating forwards and backwards, respectively.
+By default, the calendar will navigate to the month following the last current displayed month when navigating forwards. Conversely, it will navigate to the month preceding the first month when navigating backwards.
+
+This default step amount is equal to the number of rows multiplied by the number of columns in a given layout (2 rows x 1 column = 2).
 
 <div class="example">
   <v-calendar :rows="2" />
 </div>
 
-Alternatively, you can use the `step` prop to configure a custom month interval to skip.
+However, the `step` prop can be used to configure a custom month interval.
+
+For example, instead of moving forward by 2 months in the previous example, we can instead force it move by 1 month.
 
 <div class="example">
   <v-calendar :rows="2" :step="1" />
@@ -67,7 +66,7 @@ If `min-date` or `max-date` props are assigned, this will disable navigation for
 <v-calendar :max-date="new Date()" />
 ```
 
-## Key Commands :tada:
+## Key Commands
 
 Both `v-calendar` and `v-date-picker` now support the following key commands for navigation:
 
@@ -88,7 +87,7 @@ Both `v-calendar` and `v-date-picker` now support the following key commands for
 A calendar day must be in focus in order for commands to be recognized
 :::
 
-## *Move* Method :tada:
+## *Move* Method
 
 The base calendar component contains a `move` method that provides more flexible options not provided by the user interface or keyboard navigation. This method is asynchronous which can be `await`ed when a transition is specified.
 
@@ -135,7 +134,7 @@ await calendar.move(-5)
 
 ### Move to month
 
-Moves to a given month by calling `move(month)` with an object with `month` and `year` keys.
+Moves to a given month by calling `move(page)` with a page object with `month` and `year` keys.
 
 ```js
 // Get the calendar ref

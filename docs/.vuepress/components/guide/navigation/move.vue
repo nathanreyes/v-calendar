@@ -234,6 +234,7 @@ export default {
         new Date(1955, 11, 1),
         new Date(1969, 6, 20),
         new Date(2001, 8, 11),
+        new Date(),
       ],
       transition: 'slide-h',
       transitionOptions: ['slide-h', 'slide-v', 'fade', 'none'],
