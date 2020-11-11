@@ -25,9 +25,10 @@ export function setupScreens(screens = defaultScreens, forceSetup) {
     },
     methods: {
       refreshQueries() {
+        if (!window || !window.matchMedia) return;
         this.queries = mapValues(screens, v => {
           const query = window.matchMedia(buildMediaQuery(v));
-          query.addListener(this.refreshMatches);
+          query.addEventListener('change', this.refreshMatches);
           return query;
         });
         this.refreshMatches();
