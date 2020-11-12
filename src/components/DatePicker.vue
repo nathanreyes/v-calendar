@@ -755,6 +755,22 @@ export default {
       }
       return null;
     },
+    move(args, opts) {
+      if (this.$refs.calendar) {
+        return this.$refs.calendar.move(args, opts);
+      }
+      return Promise.reject(
+        new Error('Navigation disabled while calendar is not yet displayed'),
+      );
+    },
+    focusDate(date, opts) {
+      if (this.$refs.calendar) {
+        return this.$refs.calendar.focusDate(args, opts);
+      }
+      return Promise.reject(
+        new Error('Navigation disabled while calendar is not yet displayed'),
+      );
+    },
   },
 };
 </script>
