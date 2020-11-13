@@ -79,7 +79,7 @@ export default {
       isInteractive: false,
       isHovered: false,
       isFocused: false,
-      showDelay: 10,
+      showDelay: 0,
       hideDelay: 110,
       autoHide: false,
       popperEl: null,
@@ -253,7 +253,7 @@ export default {
     show(opts = {}) {
       opts.action = 'show';
       const ref = opts.ref || this.ref;
-      const delay = opts.delay || this.showDelay;
+      const delay = opts.showDelay >= 0 ? opts.showDelay : this.showDelay;
       // Validate options
       if (!ref) {
         if (opts.callback) {
@@ -280,7 +280,7 @@ export default {
     hide(opts = {}) {
       opts.action = 'hide';
       const ref = opts.ref || this.ref;
-      const delay = opts.delay || this.hideDelay;
+      const delay = opts.hideDelay >= 0 ? opts.hideDelay : this.hideDelay;
       if (!this.ref || ref !== this.ref) {
         if (opts.callback) {
           opts.callback({
