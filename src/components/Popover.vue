@@ -93,7 +93,7 @@ export default {
             direction: this.direction,
             alignment: this.alignment,
             data: this.data,
-            updateLayout: this.update,
+            updateLayout: this.setupPopper,
             hide: opts => this.hide(opts),
           })) ||
         this.$slots.default
@@ -248,6 +248,7 @@ export default {
       this.toggle(detail);
     },
     onDocumentUpdatePopover({ detail }) {
+      if (!detail.id || detail.id !== this.id) return;
       this.update(detail);
     },
     show(opts = {}) {
@@ -312,6 +313,10 @@ export default {
         this.show(opts);
       }
     },
+    update(opts = {}) {
+      Object.assign(this, opts);
+      this.setupPopper();
+    },
     setupPopper() {
       this.$nextTick(() => {
         if (!this.ref || !this.$refs.popover) return;
@@ -335,10 +340,6 @@ export default {
       } else if (args.state) {
         this.placement = args.state.placement;
       }
-    },
-    update({ data }) {
-      this.data = data;
-      this.setupPopper();
     },
     beforeEnter(e) {
       this.$emit('beforeShow', e);
