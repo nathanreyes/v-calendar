@@ -168,6 +168,49 @@ Setting `value = null` still allowed through code.
 
 **Default:** `hover-focus`
 
+## Methods
+
+To call methods on a component, assign a ref and call the method any time on or after the `mounted` lifecycle hook.
+
+```html
+<v-date-picker ref="datepicker" />
+```
+
+```js
+...
+mounted() {
+  // Get reference to the date picker component
+  const datepicker = this.$refs.datepicker;
+  // Call method of the component
+  datepicker.move(new Date());
+}
+...
+```
+
+### `move(Number|String|Date|Object)`
+
+#### Description
+
+Asynchronously navigates by a given number of months, to a given month or to a given date.
+
+This calls the [`Calendar.move`](./calendar.md#move-number-string-date-object) method under the hood.
+
+```js
+async move(arg, opts) => Promise
+```
+
+### `focusDate(String|Date)`
+
+#### Description
+
+Asynchronously navigates to the month for a given date and focuses on that day after transition is complete.
+
+This calls the [`Calendar.focusDate`](./calendar.md#focusdate-string-date) method under the hood.
+
+```js
+async focusDate(date, opts) => Promise
+```
+
 <!-- 
 ### 
 
