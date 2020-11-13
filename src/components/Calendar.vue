@@ -27,6 +27,7 @@ import {
 import {
   isNumber,
   isDate,
+  isString,
   isObject,
   hasAny,
   omit,
@@ -366,7 +367,7 @@ export default {
       } else {
         this.$emit('transition-end');
         if (this.transitionPromise) {
-          this.transitionPromise.resolve();
+          this.transitionPromise.resolve(true);
           this.transitionPromise = null;
         }
       }
@@ -407,54 +408,60 @@ export default {
     canMove(page) {
       return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
     },
-    async movePrev(opts) {
-      const result = await this.move(-this.step_, opts);
-      return result;
+    movePrev(opts) {
+      return this.move(-this.step_, opts);
     },
-    async moveNext(opts) {
-      const result = this.move(this.step_, opts);
-      return result;
+    moveNext(opts) {
+      return this.move(this.step_, opts);
     },
-    async move(arg, opts) {
-      const page = this.$locale.toPage(arg, this.pages[0]);
-      if (!page) {
-        return null;
-      }
-      const result = await this.refreshPages({
-        ...opts,
-        page,
-      });
-      return result;
-    },
-    async focusDate(date, opts = {}) {
-      const page = pageForDate(date);
-      // Adjust position if not explicitly set
+    move(arg, opts = {}) {
+      const page = this.$locale.toPage(arg, this.firstPage);
+      // Pin position if arg is number
+      if (isNumber(arg)) opts.position = 1;
+      // Reject unresolved pages
+      if (!page)
+        return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
+      // Set position if unspecified and out of current bounds
       if (!opts.position) {
         if (pageIsBeforePage(page, this.firstPage)) {
-          opts.position = 1;
-        } else if (pageIsAfterPage(page, this.lastPage)) {
           opts.position = -1;
+        } else if (pageIsAfterPage(page, this.lastPage)) {
+          opts.position = 1;
+        } else {
+          // Page already displayed with no specified position, so we're done
+          return Promise.resolve(true);
         }
       }
       // Calculate new `fromPage`
       const { fromPage } = this.getTargetPageRange(page, opts);
-      // Move to new fromPage if it's different from the current one
-      if (fromPage && !pageIsEqualToPage(fromPage, this.pages[0])) {
-        await this.refreshPages({
+      // Move to new `fromPage` if it's different from the current one
+      if (fromPage && !pageIsEqualToPage(fromPage, this.firstPage)) {
+        return this.refreshPages({
           ...opts,
           position: 1,
           page: fromPage,
         });
       }
+      return Promise.resolve(true);
+    },
+    async focusDate(date, opts = {}) {
+      // Move to the given date
+      await this.move(date, opts);
       // Set focus on the element for the date
       const focusableEl = this.$el.querySelector(
         `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
       );
       if (focusableEl) {
         focusableEl.focus();
+        return Promise.resolve(true);
       }
+      return Promise.reject(
+        new Error(
+          'Day element not found. Consider using `force` option is date is disabled.',
+        ),
+      );
     },
-    async showPageRange(range, opts) {
+    showPageRange(range, opts) {
       let fromPage;
       let toPage;
       if (isDate(range)) {
@@ -469,7 +476,7 @@ export default {
           toPage = isDate(to) ? pageForDate(to) : to;
         }
       } else {
-        return;
+        return Promise.reject(new Error('Invalid page range provided.'));
       }
       const lastPage = this.lastPage;
       let page = fromPage;
@@ -481,7 +488,7 @@ export default {
       if (pageIsBeforePage(page, fromPage)) {
         page = fromPage;
       }
-      await this.refreshPages({ ...opts, page });
+      return this.refreshPages({ ...opts, page });
     },
     getTargetPageRange(page, { position, force } = {}) {
       // Calculate the page to start displaying from
@@ -521,13 +528,7 @@ export default {
       }
       return { fromPage, toPage };
     },
-    async refreshPages({
-      page,
-      position = 1,
-      force,
-      transition,
-      ignoreCache,
-    } = {}) {
+    refreshPages({ page, position = 1, force, transition, ignoreCache } = {}) {
       return new Promise((resolve, reject) => {
         const { fromPage, toPage } = this.getTargetPageRange(page, {
           position,
@@ -559,7 +560,7 @@ export default {
             reject,
           };
         } else {
-          resolve();
+          resolve(true);
         }
       });
     },
