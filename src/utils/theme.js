@@ -112,6 +112,7 @@ export default class Theme {
 
   getHighlightBgStyle({ fillMode, color, isDark }) {
     switch (fillMode) {
+      case 'outline':
       case 'none':
         return {
           backgroundColor: isDark ? 'var(--gray-900)' : 'var(--white)',
@@ -135,12 +136,15 @@ export default class Theme {
           borderRadius: 'var(--rounded-full)',
         };
       default:
-        return null;
+        return {
+          borderRadius: 'var(--rounded-full)',
+        };
     }
   }
 
   getHighlightContentStyle({ fillMode, color, isDark }) {
     switch (fillMode) {
+      case 'outline':
       case 'none':
         return {
           fontWeight: 'var(--font-bold)',

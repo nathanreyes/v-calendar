@@ -296,7 +296,7 @@ export default {
       if (!dot && !bar && !highlight && !content) {
         attribute.highlight = {
           startEnd: {
-            fillMode: 'none',
+            fillMode: 'outline',
           },
         };
       }
