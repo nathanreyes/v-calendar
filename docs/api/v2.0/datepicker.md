@@ -102,6 +102,16 @@ Setting `value = null` still allowed through code.
 
 **Default:** [Reference code](./defaults.md)
 
+### `popover.hideDelay`
+
+*Introduced in `v2.1.0`*
+
+**Type:** Number
+
+**Description:** Amount of milliseconds to delay the popover when hiding. After this delay, the popover transition will start if `popover.transition` is not `none` or ``.
+
+**Default:** 0
+
 ### `popover.keepVisibleOnInput`
 
 **Type:** Boolean
@@ -131,6 +141,16 @@ Setting `value = null` still allowed through code.
 **Description:** Uses a `fixed` position when displaying the popover. Use this open when the calendar is placed within a container that has `overflow: hidden` style applied. Reference popper.js for more details.
 
 **Default:** `false`
+
+### `popover.showDelay`
+
+*Introduced in `v2.1.0`*
+
+**Type:** Number
+
+**Description:** Amount of milliseconds to delay the popover when showing. After this delay, the popover transition will start if `popover.transition` is not `none` or ``.
+
+**Default:** 0
 
 ### `popover.transition`
 

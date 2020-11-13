@@ -538,9 +538,11 @@ If you are not familiar with the convention of using scoped slots in Vue.js, you
 <v-calendar
   :attributes="attributes"
   >
-  <div slot="day-popover" slot-scope="">
-    Using my own content now
-  </div>
+  <template #day-popover>
+    <div>
+      Using my own content now
+    </div>
+  </template>
 </v-calendar>
 ```
 
@@ -588,11 +590,11 @@ Let's walk through the process of customizing the previous example. First, let's
 
 ```html
 <v-calendar :attributes="attributes">
-  <div slot="day-popover" slot-scope="{ day, format, masks }">
+  <template #day-popover="{ day, format, masks }">
     <div class="text-xs text-gray-300 font-semibold text-center">
       {{ format(day.date, masks.dayPopover) }}
     </div>
-  </div>
+  </template>
 </v-calendar>
 ```
 
@@ -602,11 +604,11 @@ Because this technique for displaying the header is common, you can extract the 
 
 ```html
 <v-calendar :attributes="attributes">
-  <div slot="day-popover" slot-scope="{ day, dayTitle }">
+  <template #day-popover="{ day, dayTitle }">
     <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
-  </div>
+  </template>
 </v-calendar>
 ```
 
@@ -639,19 +641,19 @@ Finally, if you wish to display indicators with your custom content, you can use
 
 ```html
 <v-calendar :attributes="attributes">
-  <div
-    slot="day-popover"
-    slot-scope="{ day, dayTitle, attributes }">
-    <div class="text-xs text-gray-300 font-semibold text-center">
-      {{ dayTitle }}
-    </div>
-    <popover-row
-      v-for="attr in attributes"
-      :key="attr.key"
-      :attribute="attr">
-      {{ attr.customData.description }}
-    </popover-row>
-  </div>
+  <template #day-popover="{ day, dayTitle, attributes }">
+    <div>
+      <div class="text-xs text-gray-300 font-semibold text-center">
+        {{ dayTitle }}
+      </div>
+      <popover-row
+        v-for="attr in attributes"
+        :key="attr.key"
+        :attribute="attr">
+        {{ attr.customData.description }}
+      </popover-row>
+    </template>
+  </template>
 </v-calendar>
 ```
 

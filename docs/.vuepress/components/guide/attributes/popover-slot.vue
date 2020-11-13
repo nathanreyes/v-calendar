@@ -1,9 +1,7 @@
 <template>
   <div class="example">
     <v-calendar :attributes="attributes">
-      <template
-        v-slot:day-popover="{ day, format, masks, dayTitle, attributes }"
-      >
+      <template #day-popover="{ day, format, masks, dayTitle, attributes }">
         <div>
           <span v-if="step === 1">Using my own content now</span>
           <div
