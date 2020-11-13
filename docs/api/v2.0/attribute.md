@@ -75,7 +75,11 @@ sidebarDepth: 2
 
 **Type:** String
 
-**Description:** Color fill option (`solid`, `light`, `none`)
+**Description:** Color fill option (`solid`, `light`, `outline`)
+
+:::warning
+The `none` option for `fillMode` is still available but will be deprecated in the next major release in favor of the more descriptive `outline` option.
+:::
 
 **Default:** `solid`
 

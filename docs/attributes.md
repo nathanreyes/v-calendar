@@ -182,13 +182,17 @@ These are all the configuration options you may use for further highlight custom
 | Property | Type | Description |
 | --- | --- | --- |
 | `color` | String | Color. |
-| `fillMode` | String | Color fill option: `solid` (default), `light`, `none`. |
+| `fillMode` | String | Color fill option: `solid` (default), `light`, `outline`. |
 | `class` | String | Class to apply to the highlight background element. |
 | `style` | Object | Style to apply to the highlight background element. |
 | `contentClass` | String | Class to apply to the highlight content element. |
 | `contentStyle` | Object | Style to apply to the highlight content element. |
 
-Here is an example using each of the three fill mode types (`solid`, `light` and `none`, respectively).
+:::warning
+The `none` option for `fillMode` is still available but will be deprecated in the next major release in favor of the more descriptive `outline` option.
+:::
+
+Here is an example using each of the three fill mode types (`solid`, `light` and `outline`, respectively).
 
 <guide-attributes-highlight-custom />
 
@@ -222,7 +226,7 @@ data() {
       {
         highlight: {
           color: 'purple',
-          fillMode: 'none',
+          fillMode: 'outline',
         },
         dates: new Date(year, month, 14),
       },
@@ -246,9 +250,9 @@ export default {
       attrs: [
         {
           highlight: {
-            start: { fillMode: 'none' },
+            start: { fillMode: 'outline' },
             base: { fillMode: 'light' },
-            end: { fillMode: 'none' },
+            end: { fillMode: 'outline' },
           },
           dates: { start: new Date(2019, 0, 14), end: new Date(2019, 0, 18) },
         },

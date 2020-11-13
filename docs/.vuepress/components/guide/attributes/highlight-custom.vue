@@ -31,7 +31,7 @@ export default {
         {
           highlight: {
             color: 'purple',
-            fillMode: 'none',
+            fillMode: 'outline',
           },
           dates: new Date(year, month, 14),
         },

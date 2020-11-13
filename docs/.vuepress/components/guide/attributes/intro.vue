@@ -72,7 +72,7 @@ export default {
         // Today attribute
         {
           highlight: {
-            fillMode: 'none',
+            fillMode: 'outline',
             color: 'purple',
             class: 'rounded-none bg-transparent',
           },

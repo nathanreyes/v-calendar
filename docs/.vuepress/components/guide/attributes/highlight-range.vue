@@ -11,9 +11,9 @@ export default {
       attrs: [
         {
           highlight: {
-            start: { fillMode: 'none' },
+            start: { fillMode: 'outline' },
             base: { fillMode: 'light' },
-            end: { fillMode: 'none' },
+            end: { fillMode: 'outline' },
           },
           dates: { start: new Date(2019, 0, 14), end: new Date(2019, 0, 18) },
         },
