@@ -59,7 +59,7 @@ data() {
 Use the `mode` prop to switch between 3 different date selection modes: `date`, `dateTime` and `time`.
 
 :::warning
-Previous to `v2.0.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. As of `v2.0.0`, the `mode` prop has been repurposed for the date and time options. To get the previous `range` mode behavior, use the new `is-range` prop.
+Previous to `v2.0.0`, the `mode` prop was used to switch between `date`, `range` and `multiple` date selections. As of `v2.0.0`, the `mode` prop has been repurposed for the date and time options. To get the previous `range` mode behavior, use the new `is-range` prop. To get the previous `multiple` mode behavior, [here](./examples/datepickers#multiple-dates-legacy) is an example of how to do that.
 :::
 
 ### Date
