@@ -27,7 +27,6 @@ import {
 import {
   isNumber,
   isDate,
-  isString,
   isObject,
   hasAny,
   omit,
@@ -419,8 +418,7 @@ export default {
       // Pin position if arg is number
       if (isNumber(arg)) opts.position = 1;
       // Reject unresolved pages
-      if (!page)
-        return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
+      if (!page) return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
       // Set position if unspecified and out of current bounds
       if (!opts.position) {
         if (pageIsBeforePage(page, this.firstPage)) {
