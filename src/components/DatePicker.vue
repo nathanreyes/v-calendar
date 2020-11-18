@@ -765,7 +765,7 @@ export default {
     },
     focusDate(date, opts) {
       if (this.$refs.calendar) {
-        return this.$refs.calendar.focusDate(args, opts);
+        return this.$refs.calendar.focusDate(date, opts);
       }
       return Promise.reject(
         new Error('Navigation disabled while calendar is not yet displayed'),
