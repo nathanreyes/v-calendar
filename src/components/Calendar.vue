@@ -444,22 +444,23 @@ export default {
       }
       return Promise.resolve(true);
     },
-    async focusDate(date, opts = {}) {
+    focusDate(date, opts = {}) {
       // Move to the given date
-      await this.move(date, opts);
-      // Set focus on the element for the date
-      const focusableEl = this.$el.querySelector(
-        `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
-      );
-      if (focusableEl) {
-        focusableEl.focus();
-        return Promise.resolve(true);
-      }
-      return Promise.reject(
-        new Error(
-          'Day element not found. Consider using `force` option is date is disabled.',
-        ),
-      );
+      this.move(date, opts).then(() => {
+        // Set focus on the element for the date
+        const focusableEl = this.$el.querySelector(
+          `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
+        );
+        if (focusableEl) {
+          focusableEl.focus();
+          return Promise.resolve(true);
+        }
+        return Promise.reject(
+          new Error(
+            'Day element not found. Consider using `force` option is date is disabled.',
+          ),
+        );
+      });
     },
     showPageRange(range, opts) {
       let fromPage;

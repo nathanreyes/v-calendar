@@ -487,21 +487,22 @@ export default {
       }
     },
     onInputInput(config, isStart) {
-      return async e => {
+      return e => {
         if (!this.updateOnInput_) return;
         let inputValue = e.target.value;
         this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
         if (this.isRange) {
           inputValue = { start: this.inputValues[0], end: this.inputValues[1] };
         }
-        await this.updateValue(inputValue, {
+        this.updateValue(inputValue, {
           config,
           patch: PATCH_DATE_TIME,
           formatInput: false,
           hidePopover: false,
           debounce: this.inputDebounce_,
+        }).then(() => {
+          this.adjustPageRange(isStart);
         });
-        this.adjustPageRange(isStart);
       };
     },
     onInputChange(config, isStart) {
