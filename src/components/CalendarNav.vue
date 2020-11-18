@@ -256,6 +256,7 @@ export default {
   align-items: center;
   line-height: var(--leading-snug);
   border-width: 2px;
+  border-style: solid;
   border-color: transparent;
   border-radius: var(--rounded);
   &.is-left {
@@ -279,6 +280,7 @@ export default {
   padding: 4px 8px;
   border-radius: var(--rounded);
   border-width: 2px;
+  border-style: solid;
   border-color: transparent;
   &:hover {
     background-color: var(--gray-900);
@@ -297,6 +299,7 @@ export default {
   cursor: pointer;
   border-color: transparent;
   border-width: 2px;
+  border-style: solid;
   border-radius: var(--rounded);
   &:hover {
     color: var(--white);
