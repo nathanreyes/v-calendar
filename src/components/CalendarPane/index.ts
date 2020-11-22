@@ -1,11 +1,12 @@
 import { App as Application } from 'vue';
 import CalendarPane from './CalendarPane.vue';
+import { Defaults } from '../../utils/defaults';
 
 import { registerComponent } from './../../utils/plugins/index';
 
 const Plugin = {
-  install(vue: Application) {
-    registerComponent(vue, CalendarPane);
+  install(app: Application, defaults: Defaults) {
+    registerComponent(app, CalendarPane, defaults);
   },
 };
 

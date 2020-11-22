@@ -12,9 +12,9 @@ const install: Exclude<Plugin['install'], undefined> = (
   defaults: Defaults,
 ) => {
   setVueInstance(instance);
-  setup(instance, defaults);
+  defaults = setup(instance, defaults);
   for (const componentKey in components) {
-    instance.use((components as any)[componentKey]);
+    instance.use((components as any)[componentKey], defaults);
   }
 };
 

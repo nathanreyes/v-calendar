@@ -1,11 +1,14 @@
 import { App as Application, Component } from 'vue';
+import { Defaults } from '../defaults';
 
 export const registerComponent = (
   instance: Application,
   component: Component,
+  defaults: Defaults = {},
 ) => {
   if (component) {
-    instance.component(component.name || '', component);
+    const prefix = defaults && defaults.componentPrefix;
+    instance.component(`${prefix}${component.name}`, component);
   }
 };
 
