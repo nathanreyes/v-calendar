@@ -22,8 +22,8 @@ import VCalendar from 'v-calendar';
 // Create the app
 const app = createApp();
 
-// Use the plugin with optional defaults as 2nd paramter
-app.use(VCalendar);
+// Use the plugin with optional defaults as 2nd parameter
+app.use(VCalendar, {});
 ```
 
 ### Use Components
@@ -58,35 +58,51 @@ Please follow below mentioned step to run this project:
 ### Clone the repo
 
 ```shell
-git clone https://github.com/nathanreyes/vue3-component-library
+git clone https://github.com/nathanreyes/v-calendar
+
+// Move to directory
+cd v-calendar
+```
+
+### Install dependencies
+
+```shell
+yarn
+```
+
+### Switch to `/next` branch
+
+```shell
+git checkout next
 ```
 
 ### Compiles and hot-reloads for development
 
-```
+```shell
 yarn serve
 ```
 
 ### Compiles and minifies for production
 
-```
+```shell
 yarn build
 ```
 
 ### Build Library
 
-```
+```shell
+// ES
+yarn build:es
+
+// ES, CommonJS and IIFE
 yarn build:js
-```
 
-### Build Library With Separate Css file
-
-```
-yarn build:js_css
+// ES, CommonJS, IIFE and CSS
+yarn:build:js_css
 ```
 
 ### Lints and fixes files
 
-```
+```shell
 yarn lint
 ```
