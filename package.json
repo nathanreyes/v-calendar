@@ -28,13 +28,13 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "build:es": "rimraf lib && cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
-    "build:js": "rimraf lib && cross-env NODE_ENV=production rollup --config rollup.config.js",
-    "build:js_css": "rimraf lib && cross-env NODE_ENV=production SEP_CSS=true rollup --config rollup.config.js",
-    "deploy:docs": "vuepress build docs && netlify deploy",
     "dev": "vuepress dev docs",
+    "build": "vue-cli-service build",
+    "build:es": "rimraf lib && cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
+    "build:lib": "rimraf lib && cross-env NODE_ENV=production rollup --config rollup.config.js",
+    "build:lib_css": "rimraf lib && cross-env NODE_ENV=production SEP_CSS=true rollup --config rollup.config.js",
+    "deploy:docs": "vuepress build docs && netlify deploy",
+    "lint": "vue-cli-service lint",
     "test": "vue-cli-service test:unit --watch"
   },
   "files": [

@@ -95,10 +95,10 @@ yarn build
 yarn build:es
 
 // ES, CommonJS and IIFE
-yarn build:js
+yarn build:lib
 
 // ES, CommonJS, IIFE and CSS
-yarn:build:js_css
+yarn:build:lib_css
 ```
 
 ### Lints and fixes files
