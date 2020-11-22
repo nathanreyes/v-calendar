@@ -1,0 +1,61 @@
+.vc-select {
+  position: relative;
+  & select {
+    flex-grow: 1;
+    display: block;
+    appearance: none;
+    width: 52px;
+    height: 30px;
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    text-align: left;
+    background-color: var(--gray-200);
+    border: 2px solid;
+    border-color: var(--gray-200);
+    color: var(--gray-900);
+    padding: 0 20px 0 8px;
+    border-radius: var(--rounded);
+    line-height: var(--leading-tight);
+    text-indent: 0px;
+    cursor: pointer;
+    -moz-padding-start: 3px;
+    &:hover {
+      color: var(--gray-600);
+    }
+    &:focus {
+      outline: 0;
+      border-color: var(--accent-400);
+      background-color: var(--white);
+    }
+  }
+}
+.vc-select-arrow {
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  padding: 0 4px 0 0;
+  color: var(--gray-500);
+  & svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+}
+.vc-is-dark {
+  & select {
+    background: var(--gray-700);
+    color: var(--gray-100);
+    border-color: var(--gray-700);
+    &:hover {
+      color: var(--gray-400);
+    }
+    &:focus {
+      border-color: var(--accent-500);
+      background-color: var(--gray-800);
+    }
+  }
+}

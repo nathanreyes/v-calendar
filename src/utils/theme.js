@@ -93,6 +93,7 @@ export default class Theme {
       config,
       type: 'highlight',
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     toPairs(highlight).forEach(([_, targetConfig]) => {
       const c = defaults(targetConfig, {
         isDark: this.isDark,
@@ -193,6 +194,7 @@ export default class Theme {
 
   normalizeNonHighlight(type, config, styleFn) {
     const attr = this.normalizeAttr({ type, config });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     toPairs(attr).forEach(([_, targetConfig]) => {
       defaults(targetConfig, { isDark: this.isDark, color: this.color });
       targetConfig.style = {

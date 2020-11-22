@@ -1,0 +1,750 @@
+<script>
+import { h } from 'vue';
+import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
+import addYears from 'date-fns/addYears';
+import Popover from '../Popover/Popover.vue';
+import PopoverRow from '../PopoverRow/PopoverRow.vue';
+import Grid from '../Grid/Grid.vue';
+import CalendarPane from '../CalendarPane/CalendarPane.vue';
+import CustomTransition from '../CustomTransition/CustomTransition.vue';
+import SvgIcon from '../SvgIcon/SvgIcon.vue';
+import AttributeStore from '../../utils/attributeStore';
+import { rootMixin, slotMixin } from '../../utils/mixins';
+import { addHorizontalSwipeHandler } from '../../utils/touch';
+import {
+  pageForDate,
+  pageForThisMonth,
+  addPages,
+  pageIsValid,
+  pageIsEqualToPage,
+  pageIsBeforePage,
+  pageIsAfterPage,
+  pageIsBetweenPages,
+  createGuid,
+  arrayHasItems,
+  onSpaceOrEnter,
+} from '../../utils/helpers';
+import {
+  isNumber,
+  isDate,
+  isObject,
+  hasAny,
+  omit,
+  head,
+  last,
+} from '../../utils/_';
+
+export default {
+  name: 'Calendar',
+  emits: [
+    'dayfocusin',
+    'dayfocusout',
+    'transition-start',
+    'transition-end',
+    'update:from-page',
+    'update:to-page',
+  ],
+  render() {
+    // Renderer for calendar arrows
+    const getArrowButton = isPrev => {
+      const click = () => this.move(isPrev ? -this.step_ : this.step_);
+      const keydown = e => onSpaceOrEnter(e, click);
+      const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
+      return h(
+        'div',
+        {
+          class: ['vc-arrow', { 'is-disabled': isDisabled }],
+          role: 'button',
+          onClick: click,
+          onKeydown: keydown,
+        },
+        [
+          (isPrev
+            ? this.safeSlot('header-left-button', { click })
+            : this.safeSlot('header-right-button', { click })) ||
+            h(SvgIcon, {
+              name: isPrev ? 'left-arrow' : 'right-arrow',
+            }),
+        ],
+      );
+    };
+    // Day popover
+    const getDayPopover = () =>
+      h(
+        Popover,
+        {
+          id: this.sharedState.dayPopoverId,
+          contentClass: 'vc-day-popover-container',
+        },
+        {
+          default: ({ data: day, updateLayout, hide }) => {
+            const attributes = Object.values(day.attributes).filter(
+              a => a.popover,
+            );
+            const masks = this.$locale.masks;
+            const format = this.formatDate;
+            const dayTitle = format(day.date, masks.dayPopover);
+            return this.safeSlot(
+              'day-popover',
+              {
+                day,
+                attributes,
+                masks,
+                format,
+                dayTitle,
+                updateLayout,
+                hide,
+              },
+              h('div', [
+                // Show popover header only if format is defined
+                masks.dayPopover &&
+                  h(
+                    'div',
+                    {
+                      class: ['vc-day-popover-header'],
+                    },
+                    [dayTitle],
+                  ),
+                attributes.map(attribute =>
+                  h(PopoverRow, {
+                    key: attribute.key,
+                    attribute,
+                  }),
+                ),
+              ]),
+            );
+          },
+        },
+      );
+
+    // Render calendar container
+    return h(
+      'div',
+      {
+        'data-helptext':
+          'Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year',
+        class: [
+          'vc-container',
+          `vc-${this.$theme.color}`,
+          {
+            'vc-is-expanded': this.isExpanded,
+            'vc-is-dark': this.$theme.isDark,
+          },
+        ],
+        onKeydown: this.handleKeydown,
+        onMouseup: e => e.preventDefault(),
+        ref: 'container',
+      },
+      [
+        h(
+          'div',
+          {
+            class: [
+              'vc-pane-container',
+              { 'in-transition': this.inTransition },
+            ],
+          },
+          [
+            h(
+              CustomTransition,
+              {
+                name: this.transitionName,
+                'on-before-enter': () => {
+                  this.inTransition = true;
+                },
+                'on-after-enter': () => {
+                  this.inTransition = false;
+                },
+              },
+              {
+                default: () =>
+                  h(
+                    Grid,
+                    {
+                      ...this.$attrs,
+                      class: 'grid',
+                      items: this.pages,
+                      rows: this.rows,
+                      columns: this.columns,
+                      columnWidth: 'minmax(256px, 1fr)',
+                      disableFocus: true,
+                      key: arrayHasItems(this.pages) ? this.pages[0].key : '',
+                    },
+                    {
+                      cell: ({ item: page, position }) =>
+                        h(CalendarPane, {
+                          ...this.$attrs,
+                          key: page && page.key,
+                          attributes: this.store,
+                          titlePosition: this.titlePosition_,
+                          page,
+                          minPage: this.minPage_,
+                          maxPage: this.maxPage_,
+                          canMove: this.canMove,
+                          'onUpdate:page': e => {
+                            this.refreshPages({ page: e, position });
+                          },
+                          onDayfocusin: e => {
+                            this.lastFocusedDay = e;
+                            this.$emit('dayfocusin', e);
+                          },
+                          onDayfocusout: e => {
+                            this.lastFocusedDay = null;
+                            this.$emit('dayfocusout', e);
+                          },
+                          slots: this.$slots,
+                        }),
+                    },
+                  ),
+              },
+            ),
+            h(
+              'div',
+              {
+                class: [`vc-arrows-container title-${this.titlePosition_}`],
+              },
+              [getArrowButton(true), getArrowButton(false)],
+            ),
+            this.$slots.footer && this.$slots.footer(),
+          ],
+        ),
+        getDayPopover(),
+      ],
+    );
+  },
+  mixins: [rootMixin, slotMixin],
+  provide() {
+    return {
+      sharedState: this.sharedState,
+    };
+  },
+  props: {
+    rows: {
+      type: Number,
+      default: 1,
+    },
+    columns: {
+      type: Number,
+      default: 1,
+    },
+    step: Number,
+    titlePosition: String,
+    isExpanded: Boolean,
+    fromDate: Date,
+    toDate: Date,
+    fromPage: Object,
+    toPage: Object,
+    minPage: Object,
+    maxPage: Object,
+    transition: String,
+    attributes: [Object, Array],
+    trimWeeks: Boolean,
+    disablePageSwipe: Boolean,
+  },
+  data() {
+    return {
+      pages: [],
+      store: null,
+      lastFocusedDay: null,
+      focusableDay: new Date().getDate(),
+      transitionName: '',
+      inTransition: false,
+      sharedState: {
+        dayPopoverId: createGuid(),
+        theme: {},
+        masks: {},
+        locale: {},
+      },
+    };
+  },
+  computed: {
+    titlePosition_() {
+      return this.propOrDefault('titlePosition', 'titlePosition');
+    },
+    firstPage() {
+      return head(this.pages);
+    },
+    lastPage() {
+      return last(this.pages);
+    },
+    minPage_() {
+      return this.minPage || pageForDate(this.normalizeDate(this.minDate));
+    },
+    maxPage_() {
+      return this.maxPage || pageForDate(this.normalizeDate(this.maxDate));
+    },
+    count() {
+      return this.rows * this.columns;
+    },
+    step_() {
+      return this.step || this.count;
+    },
+    canMovePrev() {
+      return (
+        !pageIsValid(this.minPage_) ||
+        pageIsAfterPage(this.pages[0], this.minPage_)
+      );
+    },
+    canMoveNext() {
+      return (
+        !pageIsValid(this.maxPage_) ||
+        pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
+      );
+    },
+  },
+  watch: {
+    $locale() {
+      this.refreshLocale();
+      this.refreshPages({ page: this.firstPage, ignoreCache: true });
+      this.initStore();
+    },
+    $theme() {
+      this.refreshTheme();
+      this.initStore();
+    },
+    timezone() {
+      // Refresh pages to reset the time boundaries
+      this.refreshPages({ ignoreCache: true });
+      // Refresh attributes
+      this.refreshAttrs(this.pages, this.store.list, null, true);
+    },
+    fromDate() {
+      this.refreshPages();
+    },
+    fromPage(val) {
+      const firstPage = this.pages && this.pages[0];
+      if (pageIsEqualToPage(val, firstPage)) return;
+      this.refreshPages();
+    },
+    toPage(val) {
+      const lastPage = this.pages && this.pages[this.pages.length - 1];
+      if (pageIsEqualToPage(val, lastPage)) return;
+      this.refreshPages();
+    },
+    count() {
+      this.refreshPages();
+    },
+    attributes(val) {
+      const { adds, deletes } = this.store.refresh(val);
+      this.refreshAttrs(this.pages, adds, deletes);
+    },
+    pages(val) {
+      this.refreshAttrs(val, this.store.list, null, true);
+    },
+    disabledAttribute() {
+      this.refreshDisabledDays();
+    },
+    lastFocusedDay(val) {
+      if (val) {
+        this.focusableDay = val.day;
+        this.refreshFocusableDays();
+      }
+    },
+    inTransition(val) {
+      if (val) {
+        this.$emit('transition-start');
+      } else {
+        this.$emit('transition-end');
+        if (this.transitionPromise) {
+          this.transitionPromise.resolve(true);
+          this.transitionPromise = null;
+        }
+      }
+    },
+  },
+  created() {
+    this.refreshLocale();
+    this.refreshTheme();
+    this.initStore();
+    this.refreshPages();
+  },
+  mounted() {
+    if (!this.disablePageSwipe) {
+      // Add swipe handler to move to next and previous pages
+      this.removeHandlers = addHorizontalSwipeHandler(
+        this.$refs.container,
+        ({ toLeft, toRight }) => {
+          if (toLeft) {
+            this.moveNext();
+          } else if (toRight) {
+            this.movePrev();
+          }
+        },
+        this.$defaults.touch,
+      );
+    }
+  },
+  beforeUnmount() {
+    this.removeHandlers();
+  },
+  methods: {
+    refreshLocale() {
+      this.sharedState.locale = this.$locale;
+      this.sharedState.masks = this.$locale.masks;
+    },
+    refreshTheme() {
+      this.sharedState.theme = this.$theme;
+    },
+    canMove(page) {
+      return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
+    },
+    movePrev(opts) {
+      return this.move(-this.step_, opts);
+    },
+    moveNext(opts) {
+      return this.move(this.step_, opts);
+    },
+    move(arg, opts = {}) {
+      const page = this.$locale.toPage(arg, this.firstPage);
+      // Pin position if arg is number
+      if (isNumber(arg)) opts.position = 1;
+      // Reject unresolved pages
+      if (!page)
+        return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
+      // Set position if unspecified and out of current bounds
+      if (!opts.position) {
+        if (pageIsBeforePage(page, this.firstPage)) {
+          opts.position = -1;
+        } else if (pageIsAfterPage(page, this.lastPage)) {
+          opts.position = 1;
+        } else {
+          // Page already displayed with no specified position, so we're done
+          return Promise.resolve(true);
+        }
+      }
+      // Calculate new `fromPage`
+      const { fromPage } = this.getTargetPageRange(page, opts);
+      // Move to new `fromPage` if it's different from the current one
+      if (fromPage && !pageIsEqualToPage(fromPage, this.firstPage)) {
+        return this.refreshPages({
+          ...opts,
+          position: 1,
+          page: fromPage,
+        });
+      }
+      return Promise.resolve(true);
+    },
+    focusDate(date, opts = {}) {
+      // Move to the given date
+      this.move(date, opts).then(() => {
+        // Set focus on the element for the date
+        const focusableEl = this.$el.querySelector(
+          `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
+        );
+        if (focusableEl) {
+          focusableEl.focus();
+          return Promise.resolve(true);
+        }
+        return Promise.reject(
+          new Error(
+            'Day element not found. Consider using `force` option is date is disabled.',
+          ),
+        );
+      });
+    },
+    showPageRange(range, opts) {
+      let fromPage;
+      let toPage;
+      if (isDate(range)) {
+        fromPage = pageForDate(range);
+      } else if (isObject(range)) {
+        const { month, year } = range;
+        const { from, to } = range;
+        if (isNumber(month) && isNumber(year)) {
+          fromPage = range;
+        } else if (from || to) {
+          fromPage = isDate(from) ? pageForDate(from) : from;
+          toPage = isDate(to) ? pageForDate(to) : to;
+        }
+      } else {
+        return Promise.reject(new Error('Invalid page range provided.'));
+      }
+      const lastPage = this.lastPage;
+      let page = fromPage;
+      // Offset page from the desired `toPage`
+      if (pageIsAfterPage(toPage, lastPage)) {
+        page = addPages(toPage, -(this.pages.length - 1));
+      }
+      // But no earlier than the desired `fromPage`
+      if (pageIsBeforePage(page, fromPage)) {
+        page = fromPage;
+      }
+      return this.refreshPages({ ...opts, page });
+    },
+    getTargetPageRange(page, { position, force } = {}) {
+      // Calculate the page to start displaying from
+      let fromPage = null;
+      // 1. Try the page parameter
+      if (pageIsValid(page)) {
+        const pagesToAdd =
+          position > 0 ? 1 - position : -(this.count + position);
+        fromPage = addPages(page, pagesToAdd);
+      } else {
+        // 2. Try the fromPage prop
+        fromPage =
+          this.fromPage || pageForDate(this.normalizeDate(this.fromDate));
+        if (!pageIsValid(fromPage)) {
+          // 3. Try the toPage prop
+          const toPage =
+            this.toPage || pageForDate(this.normalizeDate(this.toPage));
+          if (pageIsValid(toPage)) {
+            fromPage = addPages(toPage, 1 - this.count);
+          } else {
+            // 4. Try the first attribute
+            fromPage = this.getPageForAttributes();
+          }
+        }
+      }
+      // 5. Fall back to today's page
+      fromPage = pageIsValid(fromPage) ? fromPage : pageForThisMonth();
+      let toPage = addPages(fromPage, this.count - 1);
+      // 6. Adjust for min/max pages if not forced
+      if (!force) {
+        if (pageIsBeforePage(fromPage, this.minPage_)) {
+          fromPage = this.minPage_;
+        } else if (pageIsAfterPage(toPage, this.maxPage_)) {
+          fromPage = addPages(this.maxPage_, 1 - this.count);
+        }
+        toPage = addPages(fromPage, this.count - 1);
+      }
+      return { fromPage, toPage };
+    },
+    refreshPages({ page, position = 1, force, transition, ignoreCache } = {}) {
+      return new Promise((resolve, reject) => {
+        const { fromPage, toPage } = this.getTargetPageRange(page, {
+          position,
+          force,
+        });
+        // Create the new pages
+        const pages = [];
+        for (let i = 0; i < this.count; i++) {
+          pages.push(this.buildPage(addPages(fromPage, i), ignoreCache));
+        }
+        // Refresh disabled days for new pages
+        this.refreshDisabledDays(pages);
+        // Refresh focusable days for new pages
+        this.refreshFocusableDays(pages);
+        // Assign the transition
+        this.transitionName = this.getPageTransition(
+          this.pages[0],
+          pages[0],
+          transition,
+        );
+        // Assign the new pages
+        this.pages = pages;
+        // Emit page update events
+        this.$emit('update:from-page', fromPage);
+        this.$emit('update:to-page', toPage);
+        if (this.transitionName && this.transitionName !== 'none') {
+          this.transitionPromise = {
+            resolve,
+            reject,
+          };
+        } else {
+          resolve(true);
+        }
+      });
+    },
+    refreshDisabledDays(pages) {
+      this.getPageDays(pages).forEach(d => {
+        d.isDisabled =
+          !!this.disabledAttribute && this.disabledAttribute.intersectsDay(d);
+      });
+    },
+    refreshFocusableDays(pages) {
+      this.getPageDays(pages).forEach(d => {
+        d.isFocusable = d.inMonth && d.day === this.focusableDay;
+      });
+    },
+    getPageDays(pages = this.pages) {
+      return pages.reduce((prev, curr) => prev.concat(curr.days), []);
+    },
+    getPageTransition(oldPage, newPage, transition = this.transition) {
+      if (transition === 'none') return transition;
+      if (
+        transition === 'fade' ||
+        (!transition && this.count > 1) ||
+        !pageIsValid(oldPage) ||
+        !pageIsValid(newPage)
+      ) {
+        return 'fade';
+      }
+      // Moving to a previous page
+      const movePrev = pageIsBeforePage(newPage, oldPage);
+      // Vertical slide
+      if (transition === 'slide-v') {
+        return movePrev ? 'slide-down' : 'slide-up';
+      }
+      // Horizontal slide
+      return movePrev ? 'slide-right' : 'slide-left';
+    },
+    getPageForAttributes() {
+      let page = null;
+      const attr = this.store.pinAttr;
+      if (attr && attr.hasDates) {
+        let [date] = attr.dates;
+        date = date.start || date.date;
+        page = pageForDate(this.normalizeDate(date));
+      }
+      return page;
+    },
+    buildPage({ month, year }, ignoreCache) {
+      const key = `${year.toString()}-${month.toString()}`;
+      let page = this.pages.find(p => p.key === key);
+      if (!page || ignoreCache) {
+        const date = new Date(year, month - 1, 15);
+        const monthComps = this.$locale.getMonthComps(month, year);
+        const prevMonthComps = this.$locale.getPrevMonthComps(month, year);
+        const nextMonthComps = this.$locale.getNextMonthComps(month, year);
+        page = {
+          key,
+          month,
+          year,
+          weeks: this.trimWeeks ? monthComps.weeks : 6,
+          title: this.$locale.format(date, this.$locale.masks.title),
+          shortMonthLabel: this.$locale.format(date, 'MMM'),
+          monthLabel: this.$locale.format(date, 'MMMM'),
+          shortYearLabel: year.toString().substring(2),
+          yearLabel: year.toString(),
+          monthComps,
+          prevMonthComps,
+          nextMonthComps,
+          canMove: pg => this.canMove(pg),
+          move: pg => this.move(pg),
+          moveThisMonth: () => this.moveThisMonth(),
+          movePrevMonth: () => this.move(prevMonthComps),
+          moveNextMonth: () => this.move(nextMonthComps),
+          refresh: true,
+        };
+        // Assign day info
+        page.days = this.$locale.getCalendarDays(page, this.timezone);
+      }
+      return page;
+    },
+    initStore() {
+      // Create a new attribute store
+      this.store = new AttributeStore(
+        this.$theme,
+        this.$locale,
+        this.attributes,
+      );
+      // Refresh attributes for existing pages
+      this.refreshAttrs(this.pages, this.store.list, [], true);
+    },
+    refreshAttrs(pages = [], adds = [], deletes = [], reset) {
+      if (!arrayHasItems(pages)) return;
+      // For each page...
+      pages.forEach(p => {
+        // For each day...
+        p.days.forEach(d => {
+          let shouldRefresh = false;
+          let map = {};
+          // If resetting...
+          if (reset) {
+            shouldRefresh = true;
+          } else if (hasAny(d.attributesMap, deletes)) {
+            // Delete attributes from the delete list
+            map = omit(d.attributesMap, deletes);
+            // Flag day for refresh
+            shouldRefresh = true;
+          } else {
+            // Get the existing attributes
+            map = d.attributesMap || {};
+          }
+          // For each attribute to add...
+          adds.forEach(attr => {
+            // Add it if it includes the current day
+            const targetDate = attr.intersectsDay(d);
+            if (targetDate) {
+              const newAttr = {
+                ...attr,
+                targetDate,
+              };
+              map[attr.key] = newAttr;
+              // Flag day for refresh
+              shouldRefresh = true;
+            }
+          });
+          // Reassign day attributes
+          if (shouldRefresh) {
+            d.attributesMap = map;
+            d.shouldRefresh = true;
+          }
+        });
+      });
+    },
+    handleKeydown(e) {
+      const day = this.lastFocusedDay;
+      if (day != null) {
+        day.event = e;
+        this.handleDayKeydown(day);
+      }
+    },
+    handleDayKeydown(day) {
+      const { date, event } = day;
+      let newDate = null;
+      switch (event.key) {
+        case 'ArrowLeft': {
+          // Move to previous day
+          newDate = addDays(date, -1);
+          break;
+        }
+        case 'ArrowRight': {
+          // Move to next day
+          newDate = addDays(date, 1);
+          break;
+        }
+        case 'ArrowUp': {
+          // Move to previous week
+          newDate = addDays(date, -7);
+          break;
+        }
+        case 'ArrowDown': {
+          // Move to next week
+          newDate = addDays(date, 7);
+          break;
+        }
+        case 'Home': {
+          // Move to first weekday position
+          newDate = addDays(date, -day.weekdayPosition + 1);
+          break;
+        }
+        case 'End': {
+          // Move to last weekday position
+          newDate = addDays(date, day.weekdayPositionFromEnd);
+          break;
+        }
+        case 'PageUp': {
+          if (event.altKey) {
+            // Move to previous year w/ Alt/Option key
+            newDate = addYears(date, -1);
+          } else {
+            // Move to previous month
+            newDate = addMonths(date, -1);
+          }
+          break;
+        }
+        case 'PageDown': {
+          if (event.altKey) {
+            // Move to next year w/ Alt/Option key
+            newDate = addYears(date, 1);
+          } else {
+            // Move to next month
+            newDate = addMonths(date, 1);
+          }
+          break;
+        }
+      }
+      if (newDate) {
+        event.preventDefault();
+        this.focusDate(newDate);
+      }
+    },
+  },
+};
+</script>
+
+<style lang="css">
+@import './calendar.css';
+</style>

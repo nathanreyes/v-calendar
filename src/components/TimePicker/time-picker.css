@@ -1,0 +1,140 @@
+.vc-time-picker {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  &.vc-invalid {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  &.vc-bordered {
+    border-top: 1px solid var(--gray-400);
+  }
+}
+
+.vc-time-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--gray-600);
+}
+
+.vc-time-content {
+  margin-left: 8px;
+}
+
+.vc-time-date {
+  display: flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  padding: 0 0 4px 4px;
+  margin-top: -4px;
+  line-height: 21px;
+}
+
+.vc-time-weekday {
+  color: var(--gray-700);
+  letter-spacing: var(--tracking-wide);
+}
+
+.vc-time-month {
+  color: var(--accent-600);
+  margin-left: 8px;
+}
+
+.vc-time-day {
+  color: var(--accent-600);
+  margin-left: 4px;
+}
+
+.vc-time-year {
+  color: var(--gray-500);
+  margin-left: 8px;
+}
+
+.vc-time-select {
+  display: flex;
+  align-items: center;
+}
+
+.vc-am-pm {
+  display: flex;
+  align-items: center;
+  background: var(--gray-200);
+  color: var(--gray-800);
+  margin-left: 8px;
+  padding: 4px;
+  border-radius: var(--rounded);
+  height: 30px;
+  & button {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    padding: 0 4px;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: var(--rounded);
+    line-height: var(--leading-snug);
+    &:hover {
+      color: var(--gray-600);
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+    &.active {
+      background: var(--accent-600);
+      color: var(--white);
+      &:hover {
+        background: var(--accent-500);
+      }
+      &:focus {
+        border-color: var(--accent-400);
+      }
+    }
+  }
+}
+
+.vc-is-dark {
+  & .vc-time-picker {
+    border-color: var(--gray-700);
+  }
+  & .vc-time-icon {
+    color: var(--gray-400);
+  }
+  & .vc-time-weekday {
+    color: var(--gray-400);
+  }
+  & .vc-time-month {
+    color: var(--accent-400);
+  }
+  & .vc-time-day {
+    color: var(--accent-400);
+  }
+  & .vc-time-year {
+    color: var(--gray-500);
+  }
+  & .vc-am-pm {
+    background: var(--gray-700);
+    &:focus {
+      border-color: var(--accent-500);
+    }
+    & button {
+      color: var(--gray-100);
+      &:hover {
+        color: var(--gray-400);
+      }
+      &:focus {
+        border-color: var(--accent-500);
+      }
+      &.active {
+        background: var(--accent-500);
+        color: var(--white);
+        &:hover {
+          background: var(--accent-600);
+        }
+        &:focus {
+          border-color: var(--accent-500);
+        }
+      }
+    }
+  }
+}

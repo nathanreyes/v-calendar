@@ -1,0 +1,77 @@
+.none-enter-active,
+.none-leave-active {
+  transition-duration: 0s;
+}
+
+.fade-enter-active,
+.fade-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-up-enter-active,
+.slide-up-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active,
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: transform var(--slide-duration) var(--slide-timing),
+    opacity var(--slide-duration) var(--slide-timing);
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.none-leave-active,
+.fade-leave-active,
+.slide-left-leave-active,
+.slide-right-leave-active,
+.slide-up-leave-active,
+.slide-down-leave-active {
+  position: absolute !important;
+  width: 100%;
+}
+
+.none-enter-from,
+.none-leave-to,
+.fade-enter-from,
+.fade-leave-to,
+.slide-left-enter-from,
+.slide-left-leave-to,
+.slide-right-enter-from,
+.slide-right-leave-to,
+.slide-up-enter-from,
+.slide-up-leave-to,
+.slide-down-enter-from,
+.slide-down-leave-to,
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+}
+
+.slide-left-enter-from,
+.slide-right-leave-to,
+.slide-fade-enter-from.direction-left,
+.slide-fade-leave-to.direction-left {
+  transform: translateX(var(--slide-translate));
+}
+
+.slide-right-enter-from,
+.slide-left-leave-to,
+.slide-fade-enter-from.direction-right,
+.slide-fade-leave-to.direction-right {
+  transform: translateX(calc(-1 * var(--slide-translate)));
+}
+
+.slide-up-enter-from,
+.slide-down-leave-to,
+.slide-fade-enter-from.direction-top,
+.slide-fade-leave-to.direction-top {
+  transform: translateY(var(--slide-translate));
+}
+
+.slide-down-enter-from,
+.slide-up-leave-to,
+.slide-fade-enter-from.direction-bottom,
+.slide-fade-leave-to.direction-bottom {
+  transform: translateY(calc(-1 * var(--slide-translate)));
+}

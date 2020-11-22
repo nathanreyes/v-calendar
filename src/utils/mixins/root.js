@@ -3,7 +3,6 @@ import Theme from '../theme';
 import Locale from '../locale';
 import { isObject, isArray, isDate } from '../_';
 import { defaultsMixin } from '../defaults';
-import { setupScreens } from '../screens';
 import Attribute from '../attribute';
 
 export const rootMixin = {
@@ -77,9 +76,9 @@ export const rootMixin = {
       );
     },
   },
-  created() {
-    setupScreens(this.$defaults.screens);
-  },
+  // created() {
+  //   setupScreens(this.$defaults.screens);
+  // },
   methods: {
     formatDate(date, mask) {
       return this.$locale ? this.$locale.format(date, mask) : '';

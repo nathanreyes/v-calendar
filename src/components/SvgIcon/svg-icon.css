@@ -1,0 +1,8 @@
+.vc-svg-icon {
+  display: inline-block;
+  stroke: currentColor;
+  stroke-width: 0;
+  & path {
+    fill: currentColor;
+  }
+}

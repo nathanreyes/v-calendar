@@ -1,65 +1,14 @@
 {
   "name": "v-calendar",
-  "version": "2.0.2",
+  "version": "3.0.0-alpha.0",
   "private": false,
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "author": "Nathan Reyes <nathanreyes@me.com>",
-  "scripts": {
-    "serve": "vue-cli-service serve src/lib.js",
-    "build": "yarn build:lib && yarn build:calendar && yarn build:date-picker && yarn build:popover && yarn build:popover-row",
-    "lint": "vue-cli-service lint",
-    "build:calendar": "vue-cli-service build --target lib --dest lib/components --name calendar src/components/Calendar.vue",
-    "build:date-picker": "vue-cli-service build --no-clean --target lib --dest lib/components --name date-picker src/components/DatePicker.vue",
-    "build:docs": "vuepress build docs",
-    "build:lib": "vue-cli-service build --target lib src/lib.js --mode production",
-    "build:popover": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover src/components/Popover.vue",
-    "build:popover-row": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover-row src/components/PopoverRow.vue",
-    "deploy:docs": "vuepress build docs && netlify deploy",
-    "dev": "vuepress dev docs",
-    "test": "vue-cli-service test:unit --watch"
-  },
-  "main": "lib/v-calendar.umd.min.js",
-  "files": [
-    "src",
-    "lib"
-  ],
-  "dependencies": {
-    "core-js": "^3.6.5",
-    "date-fns": "^2.8.1",
-    "date-fns-tz": "^1.0.12",
-    "lodash": "^4.17.15"
-  },
-  "devDependencies": {
-    "@babel/plugin-transform-arrow-functions": "^7.8.3",
-    "@fullhuman/postcss-purgecss": "^1.3.0",
-    "@popperjs/core": "^2.4.0",
-    "@vue/cli-plugin-babel": "~4.5.4",
-    "@vue/cli-plugin-eslint": "~4.5.4",
-    "@vue/cli-plugin-unit-jest": "~4.5.4",
-    "@vue/cli-service": "~4.5.4",
-    "@vue/eslint-config-airbnb": "^5.0.2",
-    "@vue/test-utils": "1.0.3",
-    "@vuepress/plugin-google-analytics": "^1.2.0",
-    "babel-core": "^7.0.0-0",
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^22.0.4",
-    "eslint": "^6.8.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "postcss-preset-env": "^6.7.0",
-    "tailwindcss": "^1.5.1",
-    "vuepress": "1.2.0",
-    "webpack-bundle-analyzer": "^3.8.0"
-  },
-  "peerDependencies": {
-    "@popperjs/core": "^2.4.0",
-    "vue": "^3.0.0"
-  },
-  "browserslist": [
-    ">1%",
-    "not ie 11",
-    "not op_mini all"
-  ],
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "unpkg": "lib/vcalendar.min.js",
+  "types": "types/index.d.ts",
+  "license": "MIT",
   "homepage": "https://vcalendar.io",
   "keywords": [
     "vue",
@@ -73,9 +22,105 @@
     "bars",
     "indicators"
   ],
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanreyes/v-calendar"
+  },
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "build:es": "rimraf lib && cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
+    "build:js": "rimraf lib && cross-env NODE_ENV=production rollup --config rollup.config.js",
+    "build:js_css": "rimraf lib && cross-env NODE_ENV=production SEP_CSS=true rollup --config rollup.config.js",
+    "deploy:docs": "vuepress build docs && netlify deploy",
+    "dev": "vuepress dev docs",
+    "test": "vue-cli-service test:unit --watch"
+  },
+  "files": [
+    "src",
+    "lib",
+    "types/*.d.ts"
+  ],
+  "dependencies": {
+    "@types/lodash": "^4.14.165",
+    "core-js": "^3.7.0",
+    "date-fns": "^2.16.1",
+    "date-fns-tz": "^1.0.12",
+    "lodash": "^4.17.20"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "7.12.0",
+    "@popperjs/core": "2.4.0",
+    "@rollup/plugin-alias": "^3.1.1",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-image": "^2.0.5",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-replace": "^2.3.3",
+    "@rollup/plugin-url": "^5.0.1",
+    "@typescript-eslint/eslint-plugin": "2.33.0",
+    "@typescript-eslint/parser": "2.33.0",
+    "@vue/cli-plugin-babel": "4.5.0",
+    "@vue/cli-plugin-eslint": "4.5.0",
+    "@vue/cli-plugin-typescript": "4.5.0",
+    "@vue/cli-plugin-unit-jest": "~4.5.4",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-prettier": "6.0.0",
+    "@vue/eslint-config-typescript": "5.0.2",
+    "@vue/eslint-config-airbnb": "^5.0.2",
+    "@vue/test-utils": "1.0.3",
+    "autoprefixer": "^9.7.8",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^22.0.4",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.8.0",
+    "eslint-plugin-prettier": "3.1.3",
+    "eslint-plugin-vue": "^7.1.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.2",
+    "postcss": "^8.0.0",
+    "postcss-import": "12.0.1",
+    "postcss-inline-svg": "^4.1.0",
+    "postcss-loader": "^4.0.4",
+    "postcss-nested": "^4.2.1",
+    "postcss-simple-vars": "5.0.2",
+    "postcss-url": "^8.0.0",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.30.0",
+    "rollup-plugin-css-only": "^2.1.0",
+    "rollup-plugin-postcss": "^3.1.8",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "0.28.0",
+    "rollup-plugin-vue": "^6.0.0-beta.10",
+    "typescript": "3.9.3",
+    "vue": "^3.0.0",
+    "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "peerDependencies": {
+    "@popperjs/core": "^2.4.0",
+    "vue": "^3.0.0"
   }
 }

@@ -1,0 +1,5 @@
+{
+  "**/*.+(ts|js|vue)": [
+    "eslint --cache --fix"
+  ]
+}

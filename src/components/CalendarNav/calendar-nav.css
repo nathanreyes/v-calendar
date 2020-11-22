@@ -1,0 +1,111 @@
+.vc-nav-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: var(--leading-snug);
+  border: 2px solid transparent;
+  border-radius: var(--rounded);
+  &.is-left {
+    margin-right: auto;
+  }
+  &.is-right {
+    margin-left: auto;
+  }
+  &:hover {
+    background-color: var(--gray-900);
+  }
+  &:focus {
+    border-color: var(--accent-600);
+  }
+}
+
+.vc-nav-title {
+  color: var(--accent-100);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-snug);
+  padding: 4px 8px;
+  border-radius: var(--rounded);
+  border: 2px solid transparent;
+  &:hover {
+    background-color: var(--gray-900);
+  }
+  &:focus {
+    border-color: var(--accent-600);
+  }
+}
+
+.vc-nav-item {
+  width: 48px;
+  text-align: center;
+  line-height: var(--leading-snug);
+  font-weight: var(--font-semibold);
+  padding: 4px 0;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: var(--rounded);
+  &:hover {
+    color: var(--white);
+    background-color: var(--gray-900);
+    box-shadow: var(--shadow-inner);
+  }
+  &:focus {
+    border-color: var(--accent-600);
+  }
+  &.is-active {
+    color: var(--accent-900);
+    background: var(--accent-100);
+    border-color: transparent;
+    font-weight: var(--font-bold);
+    box-shadow: var(--shadow);
+  }
+  &.is-inactive {
+    border-color: transparent;
+  }
+  &:is-inactive-current {
+    color: var(--accent-100);
+    font-weight: var(--bold);
+    border-color: var(--accent-100);
+  }
+  &.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+.vc-is-dark {
+  & .vc-nav-title {
+    color: var(--gray-900);
+    &:hover {
+      background-color: var(--gray-200);
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+  }
+  & .vc-nav-arrow {
+    &:hover {
+      background-color: var(--gray-200);
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+  }
+  & .vc-nav-item {
+    &:hover {
+      color: var(--gray-900);
+      background-color: var(--gray-200);
+      box-shadow: none;
+    }
+    &:focus {
+      border-color: var(--accent-400);
+    }
+    &.is-active {
+      color: var(--white);
+      background: var(--accent-500);
+    }
+    &.is-inactive-current {
+      color: var(--accent-600);
+      border-color: var(--accent-500);
+    }
+  }
+}
