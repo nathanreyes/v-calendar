@@ -97,7 +97,7 @@ export const defaultsMixin: Component = {
       return fallback;
     },
   },
-  mounted() {
+  created() {
     if (!state.didSetup && window && window.__vcalendar__) {
       state.defaults = defaultsDeep(window.__vcalendar__, defaultConfig);
       state.didSetup = true;
