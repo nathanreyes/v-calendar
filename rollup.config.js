@@ -136,7 +136,7 @@ const components = fs
 const entriespath = {
   index: './src/index.ts',
   ...components.reduce((obj, name) => {
-    obj[name] = baseFolder + componentsFolder + name + '/index.ts';
+    obj[name] = baseFolder + componentsFolder + name + `/${name}.vue`;
     return obj;
   }, {}),
 };
@@ -152,7 +152,7 @@ let buildFormats = [];
 const mapComponent = name => {
   return [
     {
-      input: baseFolder + componentsFolder + `${name}/index.ts`,
+      input: baseFolder + componentsFolder + `${name}/${name}.vue`,
       external,
       output: {
         format: 'umd',

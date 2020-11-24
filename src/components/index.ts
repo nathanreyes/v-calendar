@@ -1,6 +1,6 @@
-import Calendar from './Calendar';
-import DatePicker from './DatePicker';
-import Popover from './Popover';
-import PopoverRow from './PopoverRow';
+import Calendar from './Calendar/Calendar.vue';
+import DatePicker from './DatePicker/DatePicker.vue';
+import Popover from './Popover/Popover.vue';
+import PopoverRow from './PopoverRow/PopoverRow.vue';
 
 export { Calendar, DatePicker, Popover, PopoverRow };

@@ -4,19 +4,19 @@ import setup from './utils/setup';
 import { setVueInstance } from './utils/config/index';
 import { Defaults } from './utils/defaults';
 
-export { setup as setupCalendar };
-export { default as screensPlugin } from './utils/screens';
-
 const install: Exclude<Plugin['install'], undefined> = (
-  instance: Application,
+  app: Application,
   defaults: Defaults,
 ) => {
-  setVueInstance(instance);
-  defaults = setup(instance, defaults);
+  setVueInstance(app);
+  defaults = setup(app, defaults);
   for (const componentKey in components) {
-    instance.use((components as any)[componentKey], defaults);
+    const component = (components as any)[componentKey];
+    app.component(`${defaults.componentPrefix}${component.name}`, component);
   }
 };
 
 export default install;
 export * from './components';
+export { setup as SetupCalendar };
+export { default as Screens } from './utils/screens';
