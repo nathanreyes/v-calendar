@@ -1,5 +1,6 @@
 import { App as Application, Component } from 'vue';
 import { Defaults } from '../defaults';
+import { get } from '../_';
 
 export const registerComponent = (
   instance: Application,
@@ -7,7 +8,7 @@ export const registerComponent = (
   defaults: Defaults = {},
 ) => {
   if (component) {
-    const prefix = defaults && defaults.componentPrefix;
+    const prefix = get(defaults, 'componentPrefix', '');
     instance.component(`${prefix}${component.name}`, component);
   }
 };
