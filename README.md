@@ -26,29 +26,17 @@ const app = createApp();
 app.use(VCalendar, {});
 ```
 
-### Use Components
-
-```html
-<template>
-  <Calendar />
-  <DatePicker v-model="date" />
-</template>
-```
+### Use Components Globally
 
 ```js
+import { createApp } from 'vue';
 import { Calendar, DatePicker } from 'v-calendar';
 
-export default {
-  components: {
-    Calendar,
-    DatePicker,
-  },
-  data() {
-    return {
-      date: new Date(),
-    };
-  },
-};
+// Create the app
+const app = createApp();
+
+// Use each component with optional defaults as 2nd parameter
+app.use(Calendar).use(DatePicker);
 ```
 
 ## Source setup
