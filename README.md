@@ -30,6 +30,13 @@ createApp(App)
   .mount('#app');
 ```
 
+```html
+<template>
+  <v-calendar />
+  <v-date-picker v-model="date" />
+</template>
+```
+
 ### Method 2: Use Components Globally
 
 ```js
@@ -45,6 +52,13 @@ createApp(App)
   .component('DatePicker', DatePicker)
   // Mount the app
   .mount('#app');
+```
+
+```html
+<template>
+  <Calendar />
+  <DatePicker v-model="date" />
+</template>
 ```
 
 ### Method 3: Use Components As Needed
