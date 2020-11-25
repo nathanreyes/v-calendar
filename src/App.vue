@@ -1,63 +1,66 @@
 <template>
   <div>
-    <Calendar
-      :attributes="attributes"
-      :columns="$screens({ default: 1, md: 2 })"
-      transition="fade"
-    >
-      <template #day-popover="{}"> Helloooo </template>
-    </Calendar>
-  </div>
-  <div class="date-examples">
     <div>
-      <div>
-        <label for="dark">
-          <input id="dark" type="checkbox" v-model="isDark" />
-          Is Dark</label
-        >
-        <label for="range">
-          <input id="range" type="checkbox" v-model="isRange" />
-          Is Range</label
-        >
-      </div>
-      <div>
-        <label for="date">
-          <input id="date" type="radio" v-model="mode" value="date" />
-          date
-        </label>
-        <label for="datetime">
-          <input id="datetime" type="radio" v-model="mode" value="datetime" />
-          datetime</label
-        >
-        <label for="time">
-          <input id="time" type="radio" v-model="mode" value="time" />
-          time</label
-        >
-      </div>
-      <DatePicker
-        :mode="mode"
-        v-model="date"
-        :is-dark="isDark"
-        :is-range="isRange"
-      />
-    </div>
-    <div>
-      <DatePicker
-        :mode="mode"
-        v-model="date"
-        :is-dark="isDark"
-        :is-range="isRange"
+      <Calendar
+        :attributes="attributes"
+        :columns="$screens({ default: 1, md: 2 })"
+        transition="slide-h"
+        :masks="{ weekdays: 'WWW' }"
       >
-        <template #default="{ inputValue, inputEvents }">
-          <template v-if="isRange">
-            <input :value="inputValue.start" v-on="inputEvents.start" />
-            <input :value="inputValue.end" v-on="inputEvents.end" />
+        <template #day-popover="{}"> Helloooo </template>
+      </Calendar>
+    </div>
+    <div class="date-examples">
+      <div>
+        <div>
+          <label for="dark">
+            <input id="dark" type="checkbox" v-model="isDark" />
+            Is Dark</label
+          >
+          <label for="range">
+            <input id="range" type="checkbox" v-model="isRange" />
+            Is Range</label
+          >
+        </div>
+        <div>
+          <label for="date">
+            <input id="date" type="radio" v-model="mode" value="date" />
+            date
+          </label>
+          <label for="datetime">
+            <input id="datetime" type="radio" v-model="mode" value="datetime" />
+            datetime</label
+          >
+          <label for="time">
+            <input id="time" type="radio" v-model="mode" value="time" />
+            time</label
+          >
+        </div>
+        <DatePicker
+          :mode="mode"
+          v-model="date"
+          :is-dark="isDark"
+          :is-range="isRange"
+        />
+      </div>
+      <div>
+        <DatePicker
+          :mode="mode"
+          v-model="date"
+          :is-dark="isDark"
+          :is-range="isRange"
+        >
+          <template #default="{ inputValue, inputEvents }">
+            <template v-if="isRange">
+              <input :value="inputValue.start" v-on="inputEvents.start" />
+              <input :value="inputValue.end" v-on="inputEvents.end" />
+            </template>
+            <template v-else>
+              <input :value="inputValue" v-on="inputEvents" />
+            </template>
           </template>
-          <template v-else>
-            <input :value="inputValue" v-on="inputEvents" />
-          </template>
-        </template>
-      </DatePicker>
+        </DatePicker>
+      </div>
     </div>
   </div>
 </template>
