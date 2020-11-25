@@ -57,6 +57,7 @@
   font-weight: var(--font-medium);
   width: 28px;
   height: 28px;
+  line-height: 1;
   margin: 1.6px auto;
   border-radius: var(--rounded-full);
   user-select: none;

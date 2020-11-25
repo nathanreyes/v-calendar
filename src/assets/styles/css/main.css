@@ -237,6 +237,7 @@
 
   --day-content-transition-time: 0.13s ease-in;
 
+  display: inline-flex;
   font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     'Helvetica', 'Arial', sans-serif;

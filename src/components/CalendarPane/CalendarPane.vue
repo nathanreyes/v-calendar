@@ -65,17 +65,14 @@ export default {
 
     // Weekdays
     const weekdays = h(
-      Grid,
+      'div',
       {
         class: 'vc-weekdays',
         items: this.weekdayLabels,
-        rows: 1,
-        columns: 7,
-        columnWidth: '1fr',
         disableFocus: true,
       },
-      {
-        cell: ({ item: wl }) =>
+      [
+        ...this.weekdayLabels.map(wl =>
           h(
             'div',
             {
@@ -84,7 +81,8 @@ export default {
             },
             [wl],
           ),
-      },
+        ),
+      ],
     );
 
     // Weeks

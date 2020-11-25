@@ -2,10 +2,6 @@
   flex-grow: 1;
   flex-shrink: 1;
   align-self: flex-start;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
 }
 
 .vc-horizontal-divider {
@@ -18,7 +14,7 @@
   align-items: stretch;
   color: var(--gray-900);
   user-select: none;
-  padding: 10px 10px 0 10px;
+  padding: 10px 10px 0px 10px;
   &.align-left {
     order: -1;
     justify-content: flex-start;
@@ -34,6 +30,7 @@
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  height: 26px;
   &.align-left {
     justify-content: flex-start;
   }
@@ -54,7 +51,6 @@
   user-select: none;
   white-space: nowrap;
   padding: 0 8px;
-  line-height: 27px;
   &:hover {
     opacity: 0.75;
   }
@@ -73,10 +69,14 @@
   user-select: none;
 }
 
+.vc-weekdays {
+  display: flex;
+}
+
 .vc-weeks {
   flex-shrink: 1;
   flex-grow: 1;
-  padding: 5px 6px 7px 6px;
+  padding: 6px;
 }
 
 .vc-nav-popover-container {
