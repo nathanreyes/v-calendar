@@ -36,10 +36,18 @@
         <span style="margin: 0 4px;">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
         <div v-if="!is24hr" class="vc-am-pm">
-          <button :class="{ active: isAM }" @click.prevent="isAM = true" type="button">
+          <button
+            :class="{ active: isAM }"
+            @click.prevent="isAM = true"
+            type="button"
+          >
             AM
           </button>
-          <button :class="{ active: !isAM }" @click.prevent="isAM = false" type="button">
+          <button
+            :class="{ active: !isAM }"
+            @click.prevent="isAM = false"
+            type="button"
+          >
             PM
           </button>
         </div>
@@ -262,12 +270,12 @@ export default {
   display: flex;
   align-items: center;
   background: var(--gray-200);
-  color: var(--gray-800);
   margin-left: 8px;
   padding: 4px;
   border-radius: var(--rounded);
   height: 30px;
   & button {
+    color: var(--gray-900);
     font-size: var(--text-sm);
     font-weight: var(--font-medium);
     padding: 0 4px;
@@ -315,11 +323,11 @@ export default {
   }
   & .vc-am-pm {
     background: var(--gray-700);
-    color: var(--gray-100);
     &:focus {
       border-color: var(--accent-500);
     }
     & button {
+      color: var(--gray-100);
       &:hover {
         color: var(--gray-400);
       }

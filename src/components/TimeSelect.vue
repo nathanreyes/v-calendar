@@ -43,7 +43,7 @@ export default {
     background-color: var(--gray-200);
     border: 2px solid;
     border-color: var(--gray-200);
-    color: var(--gray-700);
+    color: var(--gray-900);
     padding: 0 20px 0 8px;
     border-radius: var(--rounded);
     line-height: var(--leading-tight);
