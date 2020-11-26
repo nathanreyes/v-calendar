@@ -45,30 +45,36 @@ export const rootMixin = {
       // Return new locale
       return new Locale(config, this.$locales);
     },
-    disabledAttribute() {
-      // Build up a complete list of disabled dates
-      let dates = [];
-      // Initialize with disabled dates prop, if any
-      if (this.disabledDates) {
-        dates = isArray(this.disabledDates)
-          ? this.disabledDates
-          : [this.disabledDates];
-      }
+    disabledDates_() {
+      const dates = this.normalizeDates(this.disabledDates);
       // Add disabled dates for minDate and maxDate props
       const minDate = this.normalizeDate(this.minDate);
       const maxDate = this.normalizeDate(this.maxDate);
       if (minDate) {
-        dates.push({ start: null, end: addDays(minDate, -1) });
+        dates.push({
+          start: null,
+          end: addDays(minDate, -1),
+          expandRange: true,
+        });
       }
       if (maxDate) {
-        dates.push({ start: addDays(maxDate, 1), end: null });
+        dates.push({
+          start: addDays(maxDate, 1),
+          end: null,
+          expandRange: true,
+        });
       }
-      // Return the new disabled attribute
+      return dates;
+    },
+    availableDates_() {
+      return this.normalizeDates(this.availableDates);
+    },
+    disabledAttribute() {
       return new Attribute(
         {
           key: 'disabled',
-          dates,
-          excludeDates: this.availableDates,
+          dates: this.disabledDates_,
+          excludeDates: this.availableDates_,
           excludeMode: 'includes',
           order: 100,
         },
@@ -91,6 +97,14 @@ export const rootMixin = {
     },
     normalizeDate(date, config) {
       return this.$locale ? this.$locale.normalizeDate(date, config) : date;
+    },
+    normalizeDates(dates) {
+      return (isArray(dates) ? dates : [dates]).map(d => {
+        if (isObject(d)) {
+          d.expandRange = true;
+        }
+        return d;
+      });
     },
   },
 };

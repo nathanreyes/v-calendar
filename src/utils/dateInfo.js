@@ -7,6 +7,7 @@ const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
   constructor(config, { order = 0, locale } = {}) {
+    this.dateShowIntersectsDate = this.dateShallowIntersectsDate.bind(this);
     this.isDateInfo = true;
     this.isRange = isObject(config);
     this.isDate = !this.isRange;
@@ -34,12 +35,18 @@ export default class DateInfo {
       } else if (start && config.span >= 1) {
         end = addDays(start, config.span - 1);
       }
-      // Reset invalid dates to null and strip times for valid dates
-      if (start) {
-        if (!isDate(start)) start = null;
+      // Reset invalid dates to null
+      if (!isDate(start)) {
+        start = null;
+      } else if (config.expandRange) {
+        start = this.locale.adjustTimeForDate(start, {
+          timeAdjust: '00:00:00',
+        });
       }
-      if (end) {
-        if (!isDate(end)) end = null;
+      if (!isDate(end)) {
+        end = null;
+      } else if (config.expandRange) {
+        end = this.locale.adjustTimeForDate(end, { timeAdjust: '23:59:59' });
       }
       // Assign start and end dates
       this.start = start;
