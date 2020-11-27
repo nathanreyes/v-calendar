@@ -7,7 +7,6 @@ const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
   constructor(config, { order = 0, locale } = {}) {
-    this.dateShowIntersectsDate = this.dateShallowIntersectsDate.bind(this);
     this.isDateInfo = true;
     this.isRange = isObject(config);
     this.isDate = !this.isRange;
