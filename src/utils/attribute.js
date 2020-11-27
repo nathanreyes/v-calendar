@@ -44,33 +44,26 @@ export default class Attribute {
     if (popover) {
       this.popover = popover;
     }
-    // Wrap dates in array if needed
-    if (dates) {
-      this.dates = isArray(dates) ? dates : [dates];
-    }
+    // Assign dates
+    this.dates = (isArray(dates) ? dates : [dates])
+      .map(
+        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
+      )
+      .filter(d => d);
     this.hasDates = arrayHasItems(this.dates);
-    // Wrap exclude dates in array if needed
-    if (excludeDates) {
-      this.excludeDates = isArray(excludeDates) ? excludeDates : [excludeDates];
-    }
+    // Assign exclude dates
+    this.excludeDates = (isArray(excludeDates) ? excludeDates : [excludeDates])
+      .map(
+        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
+      )
+      .filter(d => d);
     this.hasExcludeDates = arrayHasItems(this.excludeDates);
     this.excludeMode = excludeMode || 'intersects';
-    // Assign final dates
-    this.dates = (
-      (this.hasDates && this.dates) ||
-      (this.hasExcludeDates && [{}]) ||
-      []
-    )
-      .map(
-        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
-      )
-      .filter(d => d);
-    // Assign final exclude dates
-    this.excludeDates = ((this.hasExcludeDates && this.excludeDates) || [])
-      .map(
-        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
-      )
-      .filter(d => d);
+    // Add infinite date range if excluded dates exist
+    if (this.hasExcludeDates && !this.hasDates) {
+      this.dates.push(new DateInfo({}, this.dateOpts));
+      this.hasDates = true;
+    }
     this.isComplex = some(this.dates, d => d.isComplex);
   }
 
