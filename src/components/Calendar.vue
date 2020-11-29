@@ -457,7 +457,7 @@ export default {
         }
         return Promise.reject(
           new Error(
-            'Day element not found. Consider using `force` option is date is disabled.',
+            'Day element not found. Consider using `force` option if date is disabled.',
           ),
         );
       });
