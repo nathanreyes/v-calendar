@@ -46,10 +46,10 @@ export default class Attribute {
     }
     // Assign dates
     this.dates = locale.normalizeDates(dates, this.dateOpts);
-    this.hasDates = arrayHasItems(this.dates);
+    this.hasDates = !!arrayHasItems(this.dates);
     // Assign exclude dates
     this.excludeDates = locale.normalizeDates(excludeDates, this.dateOpts);
-    this.hasExcludeDates = arrayHasItems(this.excludeDates);
+    this.hasExcludeDates = !!arrayHasItems(this.excludeDates);
     this.excludeMode = excludeMode || 'intersects';
     // Add infinite date range if excluded dates exist
     if (this.hasExcludeDates && !this.hasDates) {

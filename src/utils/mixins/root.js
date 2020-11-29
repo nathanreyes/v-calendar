@@ -1,12 +1,9 @@
-import { addDays } from 'date-fns';
 import Theme from '../theme';
 import Locale from '../locale';
 import { isObject, isArray, isDate } from '../_';
 import { defaultsMixin } from '../defaults';
 import { setupScreens } from '../screens';
 import Attribute from '../attribute';
-import { arrayHasItems } from '../helpers';
-import DateInfo from '../dateInfo';
 
 export const rootMixin = {
   mixins: [defaultsMixin],
@@ -50,29 +47,30 @@ export const rootMixin = {
       return new Locale(config, this.$locales);
     },
     disabledDates_() {
+      const { minDate, minDateExact, maxDate, maxDateExact } = this;
       const isFullDay = !this.isDateTime && !this.isTime;
-      return this.$locale.normalizeDates(this.disabledDates, { isFullDay });
+      const dates = this.$locale.normalizeDates(this.disabledDates, { isFullDay });
+      // Add disabled range for min date
+      if (minDateExact || minDate) {
+        let end = minDateExact ? this.normalizeDate(minDateExact) : this.normalizeDate(minDate, { time: '00:00:00' });
+        dates.push({
+          start: null,
+          endExact: new Date(end.getTime() - 1000),
+        });
+      }
+      // Add disabled range for min date
+      if (maxDateExact || maxDate) {
+        let start = maxDateExact ? this.normalizeDate(maxDateExact) : this.normalizeDate(maxDate, { time: '23:59:59' });
+        dates.push({
+          startExact: new Date(start.getTime() + 1000),
+          end: null,
+        });
+        console.log(dates);
+      }
+      return dates;
     },
     availableDates_() {
-      const { minDate, minDateExact, maxDate, maxDateExact } = this;
-      const dates = arrayHasItems(this.availableDates)
-        ? this.availableDates
-        : [];
-      const range = {};
-      if (minDateExact) {
-        range.startExact = minDateExact;
-      } else if (minDate) {
-        range.start = minDate;
-      }
-      if (maxDateExact) {
-        range.endExact = maxDateExact;
-      } else if (maxDate) {
-        range.end = maxDate;
-      }
-      if (Object.keys(range).length > 0) {
-        dates.push(range);
-      }
-      return this.$locale.normalizeDates(dates, { isFullDay: true });
+      return this.$locale.normalizeDates(this.availableDates, { isFullDay: true });
     },
     disabledAttribute() {
       return new Attribute(

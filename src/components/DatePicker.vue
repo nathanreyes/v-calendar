@@ -87,8 +87,8 @@ export default {
           timezone: this.timezone,
         },
         props: {
-          minDate: this.minDate,
-          maxDate: this.maxDate,
+          minDate: this.minDateExact || this.minDate,
+          maxDate: this.maxDateExact || this.maxDate,
           disabledDates: this.disabledDates,
           availableDates: this.availableDates,
         },
