@@ -455,11 +455,7 @@ export default {
           focusableEl.focus();
           return Promise.resolve(true);
         }
-        return Promise.reject(
-          new Error(
-            'Day element not found. Consider using `force` option if date is disabled.',
-          ),
-        );
+        return Promise.resolve(false);
       });
     },
     showPageRange(range, opts) {
