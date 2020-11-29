@@ -65,7 +65,6 @@ export const rootMixin = {
           startExact: new Date(start.getTime() + 1000),
           end: null,
         });
-        console.log(dates);
       }
       return dates;
     },
