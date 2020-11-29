@@ -5,6 +5,8 @@ import { isObject, isArray, isDate } from '../_';
 import { defaultsMixin } from '../defaults';
 import { setupScreens } from '../screens';
 import Attribute from '../attribute';
+import { arrayHasItems } from '../helpers';
+import DateInfo from '../dateInfo';
 
 export const rootMixin = {
   mixins: [defaultsMixin],
@@ -17,6 +19,8 @@ export const rootMixin = {
     timezone: String,
     minDate: null,
     maxDate: null,
+    minDateExact: null,
+    maxDateExact: null,
     disabledDates: null,
     availableDates: null,
     theme: null,
@@ -46,28 +50,29 @@ export const rootMixin = {
       return new Locale(config, this.$locales);
     },
     disabledDates_() {
-      const dates = this.normalizeDates(this.disabledDates);
-      // Add disabled dates for minDate and maxDate props
-      const minDate = this.normalizeDate(this.minDate);
-      const maxDate = this.normalizeDate(this.maxDate);
-      if (minDate) {
-        dates.push({
-          start: null,
-          end: addDays(minDate, -1),
-          expandRange: true,
-        });
-      }
-      if (maxDate) {
-        dates.push({
-          start: addDays(maxDate, 1),
-          end: null,
-          expandRange: true,
-        });
-      }
-      return dates;
+      const isFullDay = !this.isDateTime && !this.isTime;
+      return this.$locale.normalizeDates(this.disabledDates, { isFullDay });
     },
     availableDates_() {
-      return this.normalizeDates(this.availableDates);
+      const { minDate, minDateExact, maxDate, maxDateExact } = this;
+      const dates = arrayHasItems(this.availableDates)
+        ? this.availableDates
+        : [];
+      const range = {};
+      if (minDateExact) {
+        range.startExact = minDateExact;
+      } else if (minDate) {
+        range.start = minDate;
+      }
+      if (maxDateExact) {
+        range.endExact = maxDateExact;
+      } else if (maxDate) {
+        range.end = maxDate;
+      }
+      if (Object.keys(range).length > 0) {
+        dates.push(range);
+      }
+      return this.$locale.normalizeDates(dates, { isFullDay: true });
     },
     disabledAttribute() {
       return new Attribute(
@@ -97,14 +102,6 @@ export const rootMixin = {
     },
     normalizeDate(date, config) {
       return this.$locale ? this.$locale.normalizeDate(date, config) : date;
-    },
-    normalizeDates(dates) {
-      return (isArray(dates) ? dates : [dates]).map(d => {
-        if (isObject(d)) {
-          d.expandRange = true;
-        }
-        return d;
-      });
     },
   },
 };

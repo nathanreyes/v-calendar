@@ -1,5 +1,6 @@
 /* eslint-disable no-bitwise, no-multi-assign */
 import toDate from 'date-fns-tz/toDate';
+import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
 import { pad, addPages, pageForDate, arrayHasItems } from './helpers';
 import {
@@ -7,6 +8,7 @@ import {
   isNumber,
   isString,
   isObject,
+  isArray,
   has,
   defaultsDeep,
   clamp,
@@ -426,7 +428,16 @@ export default class Locale {
       result = isDate(d) ? new Date(d.getTime()) : null;
     }
     if (auto) config.type = type;
-    return result && !isNaN(result.getTime()) ? result : null;
+    if (result && !isNaN(result.getTime())) {
+      if (config.time) {
+        result = this.adjustTimeForDate(result, {
+          timeAdjust: config.time,
+          timezone: config.timezone,
+        });
+      }
+      return result;
+    }
+    return null;
   }
 
   denormalizeDate(date, { type, mask, timezone } = {}) {
@@ -457,6 +468,17 @@ export default class Locale {
       date = this.getDateFromParts(dateParts, timezone);
     }
     return date;
+  }
+
+  normalizeDates(dates, opts) {
+    opts = opts || {};
+    opts.locale = opts.locale || this;
+    // Assign dates
+    return (isArray(dates) ? dates : [dates])
+      .map(d => {
+        return d && (d instanceof DateInfo ? d : new DateInfo(d, opts));
+      })
+      .filter(d => d);
   }
 
   getDateParts(date, timezone) {

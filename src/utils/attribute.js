@@ -45,18 +45,10 @@ export default class Attribute {
       this.popover = popover;
     }
     // Assign dates
-    this.dates = (isArray(dates) ? dates : [dates])
-      .map(
-        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
-      )
-      .filter(d => d);
+    this.dates = locale.normalizeDates(dates, this.dateOpts);
     this.hasDates = arrayHasItems(this.dates);
     // Assign exclude dates
-    this.excludeDates = (isArray(excludeDates) ? excludeDates : [excludeDates])
-      .map(
-        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
-      )
-      .filter(d => d);
+    this.excludeDates = locale.normalizeDates(excludeDates, this.dateOpts);
     this.hasExcludeDates = arrayHasItems(this.excludeDates);
     this.excludeMode = excludeMode || 'intersects';
     // Add infinite date range if excluded dates exist
