@@ -750,11 +750,11 @@ export default class Locale {
         //  We don't know how the UI wants to display various days,
         //  so we'll supply all the data we can
         const dateFromTime = dft(year, month, day);
-        const date = dateFromTime(12, 0, 0, 0);
         const range = {
           start: dateFromTime(0, 0, 0),
           end: dateFromTime(23, 59, 59, 999),
         };
+        const date = range.start;
         const id = this.getDayId(date);
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
