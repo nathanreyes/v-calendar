@@ -1,8 +1,9 @@
 <template>
   <div>
-    <v-date-picker v-model="date" :max-date="maxDate" />
+    <v-date-picker mode="datetime" v-model="date" :max-date-exact="maxDate" />
     <v-date-picker
       v-model="date"
+      mode="datetime"
       :disabled-dates="disabledDates"
       :available-dates="availableDates"
     />
@@ -15,12 +16,11 @@ export default {
   data() {
     return {
       date: null,
-      maxDate: new Date(),
-      disabledDates: {
-        start: new Date(2020, 10, 2),
-        end: new Date(2020, 10, 14),
-      },
-      availableDates: new Date(2020, 10, 8),
+      maxDate: new Date(2020, 10, 14, 12, 0, 0),
+      disabledDates: [
+        { start: new Date(2020, 10, 1), end: new Date(2020, 10, 12) },
+      ],
+      availableDates: [new Date(2020, 10, 8), new Date(2020, 10, 26)],
     };
   },
 };
