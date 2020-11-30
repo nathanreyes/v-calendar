@@ -472,7 +472,7 @@ export default class Locale {
 
   normalizeDates(dates, opts) {
     opts = opts || {};
-    opts.locale = opts.locale || this;
+    opts.locale = this;
     // Assign dates
     return (isArray(dates) ? dates : [dates])
       .map(d => {
