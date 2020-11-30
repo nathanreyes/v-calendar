@@ -1,14 +1,6 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="w-full">
-      <div class="w-full">
-        <span class="font-semibold text-gray-600">Timezone</span>
-        <select class="border px-3 py-1 ml-2" v-model="timezone">
-          <option v-for="tz in timezones" :key="tz" :value="tz">{{
-            tz
-          }}</option>
-        </select>
-      </div>
       <div class="flex items-center mt-2">
         <span class="font-semibold text-gray-600 w-12">Mode:</span>
         <label for="single" class="ml-2">
@@ -48,6 +40,11 @@
             >Dark</span
           >
         </label>
+        <label for="utc" class="ml-2">
+          <input id="utc" type="checkbox" v-model="utc" /><span class="ml-2"
+            >UTC</span
+          >
+        </label>
       </div>
       <div class="mt-2">
         <button
@@ -65,6 +62,7 @@
         ><span class="ml-2">{{ date }}</span>
       </div>
     </template>
+    <!--Date range values-->
     <template v-else>
       <div class="flex mt-2">
         <span class="font-semibold text-gray-600 w-12">Start:</span
@@ -77,7 +75,7 @@
     </template>
     <div class="flex mt-2">
       <!--Date picker-->
-      <div v-if="!isRange">
+      <div v-if="!isRange" style="display: flex">
         <v-date-picker
           class="my-picker"
           v-model="date"
@@ -90,7 +88,7 @@
           :popover="popover"
           :is-dark="dark"
         >
-          <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
+          <!-- <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
             <div class="flex items-center">
               <input
                 class="px-3 py-1 flex-grow border rounded"
@@ -98,11 +96,11 @@
                 v-on="inputEvents"
               />
             </div>
-          </template>
+          </template> -->
         </v-date-picker>
       </div>
       <!--Date range picker-->
-      <div v-else>
+      <div v-else style="display: flex">
         <v-date-picker
           v-model="dateRange"
           :mode="mode"
@@ -160,9 +158,10 @@ export default {
           timeAdjust: '11:55:00',
         },
       },
-      timezone: '',
       timezones: orderBy(timezones),
       dateRange: { start, end },
+      disabledDates: { start: new Date(2020, 10, 1), on: { dailyInterval: 4 } },
+      maxDate: new Date(2020, 10, 18, 12, 0, 0),
       masks: {
         // input: 'MM/DD/YYYY h:mm A',
       },
@@ -170,13 +169,19 @@ export default {
       isRange: false,
       is24hr: false,
       minuteIncrement: 1,
-      inline: false,
+      inline: true,
       dark: false,
+      utc: false,
       popover: {
         visibility: 'hover',
         transition: 'slide-fade',
       },
     };
+  },
+  computed: {
+    timezone() {
+      return this.utc ? 'utc' : '';
+    },
   },
   methods: {
     clear() {
