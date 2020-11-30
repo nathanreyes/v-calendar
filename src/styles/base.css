@@ -237,7 +237,10 @@
 
   --day-content-transition-time: 0.13s ease-in;
 
+  position: relative;
   display: inline-flex;
+  width: max-content;
+  height: max-content;
   font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     'Helvetica', 'Arial', sans-serif;
@@ -246,8 +249,6 @@
   border: 1px solid;
   border-color: var(--gray-400);
   border-radius: var(--rounded-lg);
-  position: relative;
-  width: max-content;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
