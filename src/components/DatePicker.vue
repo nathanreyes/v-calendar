@@ -456,18 +456,18 @@ export default {
         if (!this.isDragging) {
           this.dragTrackingValue = { ...day.range };
         } else {
-          this.dragTrackingValue.end = day.range.start;
+          this.dragTrackingValue.end = day.date;
         }
         opts.isDragging = !this.isDragging;
         opts.hidePopover = opts.hidePopover && !opts.isDragging;
         this.updateValue(this.dragTrackingValue, opts);
       } else {
-        this.updateValue(day.range.start, opts);
+        this.updateValue(day.date, opts);
       }
     },
     onDayMouseEnter(day) {
       if (!this.isDragging) return;
-      this.dragTrackingValue.end = day.range.start;
+      this.dragTrackingValue.end = day.date;
       this.updateValue(this.dragTrackingValue, {
         patch: PATCH_DATE,
         adjustTime: true,
