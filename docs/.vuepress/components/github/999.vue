@@ -87,6 +87,7 @@
           :timezone="timezone"
           :popover="popover"
           :is-dark="dark"
+          :disabled-dates="disabledDates"
         >
           <!-- <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
             <div class="flex items-center">
@@ -160,7 +161,10 @@ export default {
       },
       timezones: orderBy(timezones),
       dateRange: { start, end },
-      disabledDates: { start: new Date(2020, 10, 1), on: { dailyInterval: 4 } },
+      disabledDates: {
+        start: new Date(2020, 11, 1),
+        on: { dailyInterval: 4 },
+      },
       maxDate: new Date(2020, 10, 18, 12, 0, 0),
       masks: {
         // input: 'MM/DD/YYYY h:mm A',
@@ -171,7 +175,7 @@ export default {
       minuteIncrement: 1,
       inline: true,
       dark: false,
-      utc: false,
+      utc: true,
       popover: {
         visibility: 'hover',
         transition: 'slide-fade',
