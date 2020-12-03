@@ -47,9 +47,7 @@ export const rootMixin = {
       return new Locale(config, this.$locales);
     },
     disabledDates_() {
-      const dates = this.$locale.normalizeDates(this.disabledDates, {
-        isFullDay: true,
-      });
+      const dates = this.normalizeDates(this.disabledDates);
       const { minDate, minDateExact, maxDate, maxDateExact } = this;
       // Add disabled range for min date
       if (minDateExact || minDate) {
@@ -74,9 +72,7 @@ export const rootMixin = {
       return dates;
     },
     availableDates_() {
-      return this.$locale.normalizeDates(this.availableDates, {
-        isFullDay: true,
-      });
+      return this.normalizeDates(this.availableDates);
     },
     disabledAttribute() {
       return new Attribute(
@@ -107,6 +103,12 @@ export const rootMixin = {
     },
     normalizeDate(date, config) {
       return this.$locale ? this.$locale.normalizeDate(date, config) : date;
+    },
+    normalizeDates(dates) {
+      return this.$locale.normalizeDates(dates, {
+        isFullDay: true,
+        timezone: this.timezone,
+      });
     },
   },
 };
