@@ -1,6 +1,6 @@
 import DateInfo from './dateInfo';
 import { arrayHasItems, createGuid } from './helpers';
-import { isUndefined, isArray, some } from './_';
+import { isUndefined, some } from './_';
 
 export default class Attribute {
   constructor(
@@ -21,12 +21,13 @@ export default class Attribute {
     },
     theme,
     locale,
+    timezone,
   ) {
     this.key = isUndefined(key) ? createGuid() : key;
     this.hashcode = hashcode;
     this.customData = customData;
     this.order = order || 0;
-    this.dateOpts = { order, locale };
+    this.dateOpts = { order, locale, timezone };
     this.pinPage = pinPage;
     // Normalize attribute types
     if (highlight) {
@@ -62,6 +63,7 @@ export default class Attribute {
   // Accepts: Date or date range object
   // Returns: First date that partially intersects the given date
   intersectsDate(date) {
+    date = date instanceof DateInfo ? date : new DateInfo(date, this.dateOpts);
     return (
       !this.excludesDate(date) &&
       (this.dates.find(d => d.intersectsDate(date)) || false)

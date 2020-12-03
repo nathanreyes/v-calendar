@@ -6,11 +6,12 @@ import Locale from './locale';
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale, isFullDay } = {}) {
+  constructor(config, { order = 0, locale, timezone, isFullDay } = {}) {
     this.isDateInfo = true;
-    this.locale = locale instanceof Locale ? locale : new Locale(locale);
-    this.firstDayOfWeek = this.locale.firstDayOfWeek;
     this.order = order;
+    this.locale = locale instanceof Locale ? locale : new Locale(locale);
+    this.timezone = timezone;
+    this.firstDayOfWeek = this.locale.firstDayOfWeek;
 
     // Adjust config for simple dates
     if (!isObject(config)) {
@@ -22,31 +23,29 @@ export default class DateInfo {
         };
       } else {
         config = {
-          startExact: date,
-          endExact: date,
+          startOn: date,
+          endOn: date,
         };
       }
     }
 
     let start = null;
     let end = null;
-
-    if (config.startExact) {
-      start = this.locale.normalizeDate(config.startExact);
-    } else if (config.start) {
+    if (config.start) {
       start = this.locale.normalizeDate(config.start, {
         ...this.opts,
         time: '00:00:00',
       });
+    } else if (config.startOn) {
+      start = this.locale.normalizeDate(config.startOn, this.opts);
     }
-
-    if (config.endExact) {
-      end = this.locale.normalizeDate(config.endExact);
-    } else if (config.end) {
+    if (config.end) {
       end = this.locale.normalizeDate(config.end, {
         ...this.opts,
         time: '23:59:59',
       });
+    } else if (config.endOn) {
+      end = this.locale.normalizeDate(config.endOn, this.opts);
     }
 
     // Reconfigure start and end dates if needed
@@ -104,6 +103,7 @@ export default class DateInfo {
     return {
       order: this.order,
       locale: this.locale,
+      timezone: this.timezone,
     };
   }
 
@@ -139,8 +139,12 @@ export default class DateInfo {
   static get patterns() {
     return {
       dailyInterval: {
-        test: (day, interval, di) =>
-          di.diffInDays(di.start || new Date(), day.date) % interval === 0,
+        test: (day, interval, di) => {
+          const diff =
+            di.diffInDays(di.start || new Date(), day.date) % interval;
+          console.log(day.date.toISOString(), diff);
+          return diff === 0;
+        },
       },
       weeklyInterval: {
         test: (day, interval, di) =>
@@ -224,6 +228,10 @@ export default class DateInfo {
 
   iterateDatesInRange({ start, end }, fn) {
     if (!start || !end || !isFunction(fn)) return null;
+    start = this.locale.normalizeDate(start, {
+      ...this.opts,
+      time: '00:00:00',
+    });
     const state = {
       i: 0,
       date: start,

@@ -325,8 +325,8 @@ export default {
     timezone() {
       // Refresh pages to reset the time boundaries
       this.refreshPages({ ignoreCache: true });
-      // Refresh attributes
-      this.refreshAttrs(this.pages, this.store.list, null, true);
+      // Refresh attribute store
+      this.initStore();
     },
     fromDate() {
       this.refreshPages();
@@ -642,6 +642,7 @@ export default {
       this.store = new AttributeStore(
         this.$theme,
         this.$locale,
+        this.timezone,
         this.attributes,
       );
       // Refresh attributes for existing pages

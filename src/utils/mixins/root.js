@@ -47,29 +47,36 @@ export const rootMixin = {
       return new Locale(config, this.$locales);
     },
     disabledDates_() {
+      const dates = this.$locale.normalizeDates(this.disabledDates, {
+        isFullDay: true,
+      });
       const { minDate, minDateExact, maxDate, maxDateExact } = this;
-      const isFullDay = !this.isDateTime && !this.isTime;
-      const dates = this.$locale.normalizeDates(this.disabledDates, { isFullDay });
       // Add disabled range for min date
       if (minDateExact || minDate) {
-        let end = minDateExact ? this.normalizeDate(minDateExact) : this.normalizeDate(minDate, { time: '00:00:00' });
+        let end = minDateExact
+          ? this.normalizeDate(minDateExact)
+          : this.normalizeDate(minDate, { time: '00:00:00' });
         dates.push({
           start: null,
-          endExact: new Date(end.getTime() - 1000),
+          end: new Date(end.getTime() - 1000),
         });
       }
       // Add disabled range for min date
       if (maxDateExact || maxDate) {
-        let start = maxDateExact ? this.normalizeDate(maxDateExact) : this.normalizeDate(maxDate, { time: '23:59:59' });
+        let start = maxDateExact
+          ? this.normalizeDate(maxDateExact)
+          : this.normalizeDate(maxDate, { time: '23:59:59' });
         dates.push({
-          startExact: new Date(start.getTime() + 1000),
+          start: new Date(start.getTime() + 1000),
           end: null,
         });
       }
       return dates;
     },
     availableDates_() {
-      return this.$locale.normalizeDates(this.availableDates, { isFullDay: true });
+      return this.$locale.normalizeDates(this.availableDates, {
+        isFullDay: true,
+      });
     },
     disabledAttribute() {
       return new Attribute(
@@ -82,6 +89,7 @@ export const rootMixin = {
         },
         this.$theme,
         this.$locale,
+        this.timezone,
       );
     },
   },

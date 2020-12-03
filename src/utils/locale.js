@@ -484,6 +484,7 @@ export default class Locale {
   getDateParts(date, timezone) {
     if (!date) return null;
     let tzDate = date;
+    timezone = timezone || undefined;
     if (timezone) {
       const normDate = new Date(
         date.toLocaleString('en-US', { timeZone: timezone }),
