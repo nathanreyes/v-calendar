@@ -139,12 +139,8 @@ export default class DateInfo {
   static get patterns() {
     return {
       dailyInterval: {
-        test: (day, interval, di) => {
-          const diff =
-            di.diffInDays(di.start || new Date(), day.date) % interval;
-          console.log(day.date.toISOString(), diff);
-          return diff === 0;
-        },
+        test: (day, interval, di) =>
+          di.diffInDays(di.start || new Date(), day.date) % interval === 0,
       },
       weeklyInterval: {
         test: (day, interval, di) =>
