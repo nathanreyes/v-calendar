@@ -1,6 +1,6 @@
 import Theme from '../theme';
 import Locale from '../locale';
-import { isObject, isArray, isDate } from '../_';
+import { isObject, isDate } from '../_';
 import { defaultsMixin } from '../defaults';
 import { setupScreens } from '../screens';
 import Attribute from '../attribute';
@@ -51,7 +51,7 @@ export const rootMixin = {
       const { minDate, minDateExact, maxDate, maxDateExact } = this;
       // Add disabled range for min date
       if (minDateExact || minDate) {
-        let end = minDateExact
+        const end = minDateExact
           ? this.normalizeDate(minDateExact)
           : this.normalizeDate(minDate, { time: '00:00:00' });
         dates.push({
@@ -61,7 +61,7 @@ export const rootMixin = {
       }
       // Add disabled range for min date
       if (maxDateExact || maxDate) {
-        let start = maxDateExact
+        const start = maxDateExact
           ? this.normalizeDate(maxDateExact)
           : this.normalizeDate(maxDate, { time: '23:59:59' });
         dates.push({

@@ -472,9 +472,7 @@ export default class Locale {
     opts.locale = this;
     // Assign dates
     return (isArray(dates) ? dates : [dates])
-      .map(d => {
-        return d && (d instanceof DateInfo ? d : new DateInfo(d, opts));
-      })
+      .map(d => d && (d instanceof DateInfo ? d : new DateInfo(d, opts)))
       .filter(d => d);
   }
 

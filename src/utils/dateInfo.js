@@ -1,7 +1,6 @@
 import { addDays } from 'date-fns';
 import { mixinOptionalProps } from './helpers';
-import { isObject, isArray, isFunction, has } from './_';
-import Locale from './locale';
+import { isObject, isArray, isFunction } from './_';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
@@ -9,7 +8,7 @@ export default class DateInfo {
   constructor(config, { order = 0, locale, isFullDay } = {}) {
     this.isDateInfo = true;
     this.order = order;
-    this.locale = locale instanceof Locale ? locale : new Locale(locale);
+    this.locale = locale;
     this.firstDayOfWeek = this.locale.firstDayOfWeek;
 
     // Adjust config for simple dates
