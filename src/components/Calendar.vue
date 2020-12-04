@@ -693,7 +693,9 @@ export default {
       }
     },
     handleDayKeydown(day) {
-      const { date, event } = day;
+      let { dateFromTime, event } = day;
+      // Set to noon to offset any day savings time offset
+      const date = day.dateFromTime(12);
       let newDate = null;
       switch (event.key) {
         case 'ArrowLeft': {
