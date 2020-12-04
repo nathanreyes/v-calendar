@@ -84,7 +84,6 @@ export default {
           attributes: this.attributes_,
           theme: this.$theme,
           locale: this.$locale,
-          timezone: this.timezone,
         },
         props: {
           minDate: this.minDateExact || this.minDate,
@@ -213,7 +212,6 @@ export default {
         type: 'string',
         mask: this.inputMask,
         patch: PATCH_DATE_TIME,
-        timezone: this.timezone,
       };
       const {
         isRange,
@@ -373,30 +371,27 @@ export default {
   methods: {
     initDateConfig() {
       let config;
-      const timezone = this.timezone;
       if (this.isRange) {
         config = {
           start: {
-            timezone,
             ..._rangeConfig.start,
             ...(this.modelConfig.start || this.modelConfig),
           },
           end: {
-            timezone,
             ..._rangeConfig.end,
             ...(this.modelConfig.end || this.modelConfig),
           },
         };
       } else {
-        config = { timezone, ..._dateConfig, ...this.modelConfig };
+        config = { ..._dateConfig, ...this.modelConfig };
       }
       this.dateConfig = config;
     },
     getDateParts(date) {
-      return this.$locale.getDateParts(date, this.timezone);
+      return this.$locale.getDateParts(date);
     },
     getDateFromParts(parts) {
-      return this.$locale.getDateFromParts(parts, this.timezone);
+      return this.$locale.getDateFromParts(parts);
     },
     refreshDateParts() {
       const value = this.dragValue || this.value_;
@@ -475,7 +470,7 @@ export default {
     },
     onTimeInput(parts, idx) {
       const opts = {
-        config: { timezone: this.timezone, type: 'object' },
+        config: { type: 'object' },
         patch: PATCH_TIME,
       };
       if (this.isRange) {
@@ -699,7 +694,6 @@ export default {
         const opts = {
           type: 'string',
           mask: this.inputMask,
-          timezone: this.timezone,
         };
         const value = this.denormalizeValue(
           this.dragValue || this.value_,

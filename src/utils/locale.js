@@ -269,11 +269,12 @@ export function resolveConfig(config, locales) {
 }
 
 export default class Locale {
-  constructor(config, locales = defaultLocales) {
+  constructor(config, locales = defaultLocales, timezone) {
     const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
     this.id = id;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
+    this.timezone = timezone;
     this.dayNames = this.getDayNames('long');
     this.dayNamesShort = this.getDayNames('short');
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
@@ -289,7 +290,7 @@ export default class Locale {
     this.toPage = this.toPage.bind(this);
   }
 
-  format(date, mask, timezone) {
+  format(date, mask) {
     date = this.normalizeDate(date);
     if (!date) return '';
     mask = this.normalizeMasks(mask)[0];
@@ -302,14 +303,14 @@ export default class Locale {
     // Apply formatting rules
     mask = mask.replace(token, $0 =>
       $0 in formatFlags
-        ? formatFlags[$0](this.getDateParts(date, timezone), this)
+        ? formatFlags[$0](this.getDateParts(date), this)
         : $0.slice(1, $0.length - 1),
     );
     // Inline literal values back into the formatted value
     return mask.replace(/\?\?/g, () => literals.shift());
   }
 
-  parse(dateString, mask, timezone) {
+  parse(dateString, mask) {
     const masks = this.normalizeMasks(mask);
     return (
       masks
@@ -376,18 +377,15 @@ export default class Locale {
               ),
             );
           } else {
-            date = this.getDateFromParts(
-              {
-                year: dateInfo.year || today.getFullYear(),
-                month: (dateInfo.month || 0) + 1,
-                day: dateInfo.day || 1,
-                hours: dateInfo.hour || 0,
-                minutes: dateInfo.minute || 0,
-                seconds: dateInfo.second || 0,
-                milliseconds: dateInfo.millisecond || 0,
-              },
-              timezone,
-            );
+            date = this.getDateFromParts({
+              year: dateInfo.year || today.getFullYear(),
+              month: (dateInfo.month || 0) + 1,
+              day: dateInfo.day || 1,
+              hours: dateInfo.hour || 0,
+              minutes: dateInfo.minute || 0,
+              seconds: dateInfo.second || 0,
+              milliseconds: dateInfo.millisecond || 0,
+            });
           }
           return date;
         })
@@ -419,10 +417,10 @@ export default class Locale {
     } else if (isString(d)) {
       type = 'string';
       const mask = config.mask || 'iso';
-      result = d ? this.parse(d, mask, config.timezone) : null;
+      result = d ? this.parse(d, mask) : null;
     } else if (isObject(d)) {
       type = 'object';
-      result = this.getDateFromParts(d, config.timezone);
+      result = this.getDateFromParts(d);
     } else {
       type = 'date';
       result = isDate(d) ? new Date(d.getTime()) : null;
@@ -432,7 +430,6 @@ export default class Locale {
       if (config.time) {
         result = this.adjustTimeForDate(result, {
           timeAdjust: config.time,
-          timezone: config.timezone,
         });
       }
       return result;
@@ -440,22 +437,22 @@ export default class Locale {
     return null;
   }
 
-  denormalizeDate(date, { type, mask, timezone } = {}) {
+  denormalizeDate(date, { type, mask } = {}) {
     switch (type) {
       case 'number':
         return date ? date.getTime() : NaN;
       case 'string':
-        return date ? this.format(date, mask || 'iso', timezone) : '';
+        return date ? this.format(date, mask || 'iso') : '';
       default:
         return date ? new Date(date) : null;
     }
   }
 
-  adjustTimeForDate(date, { timeAdjust, timezone }) {
+  adjustTimeForDate(date, { timeAdjust }) {
     if (timeAdjust) {
-      const dateParts = this.getDateParts(date, timezone);
+      const dateParts = this.getDateParts(date);
       if (timeAdjust === 'now') {
-        const timeParts = this.getDateParts(new Date(), timezone);
+        const timeParts = this.getDateParts(new Date());
         dateParts.hours = timeParts.hours;
         dateParts.minutes = timeParts.minutes;
         dateParts.seconds = timeParts.seconds;
@@ -465,7 +462,7 @@ export default class Locale {
         dateParts.minutes = +timeParts[1];
         dateParts.seconds = +timeParts[2];
       }
-      date = this.getDateFromParts(dateParts, timezone);
+      date = this.getDateFromParts(dateParts);
     }
     return date;
   }
@@ -481,13 +478,12 @@ export default class Locale {
       .filter(d => d);
   }
 
-  getDateParts(date, timezone) {
+  getDateParts(date) {
     if (!date) return null;
     let tzDate = date;
-    timezone = timezone || undefined;
-    if (timezone) {
+    if (this.timezone) {
       const normDate = new Date(
-        date.toLocaleString('en-US', { timeZone: timezone }),
+        date.toLocaleString('en-US', { timeZone: this.timezone }),
       );
       const diff = normDate.getTime() - date.getTime();
       tzDate = new Date(date.getTime() + diff);
@@ -523,11 +519,11 @@ export default class Locale {
       date,
       isValid: true,
     };
-    parts.timezoneOffset = this.getTimezoneOffset(parts, timezone) / 60000;
+    parts.timezoneOffset = this.getTimezoneOffset(parts) / 60000;
     return parts;
   }
 
-  getDateFromParts(parts, timeZone) {
+  getDateFromParts(parts) {
     if (!parts) return null;
     const {
       year: y,
@@ -540,12 +536,12 @@ export default class Locale {
     } = parts;
     if (y === undefined || m === undefined || d === undefined) return null;
 
-    if (timeZone) {
+    if (this.timezone) {
       const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-      return toDate(dateString, { timeZone });
+      return toDate(dateString, { timeZone: this.timezone });
     }
     return new Date(y, m - 1, d, hrs, min, sec, ms);
   }
@@ -682,10 +678,7 @@ export default class Locale {
   }
 
   // Builds day components for a given page
-  getCalendarDays(
-    { weeks, monthComps, prevMonthComps, nextMonthComps },
-    timezone,
-  ) {
+  getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
@@ -717,10 +710,15 @@ export default class Locale {
     const todayMonth = today.getMonth() + 1;
     const todayYear = today.getFullYear();
     const dft = (y, m, d) => (hours, minutes, seconds, milliseconds) =>
-      this.normalizeDate(
-        { year: y, month: m, day: d, hours, minutes, seconds, milliseconds },
-        { timezone },
-      );
+      this.normalizeDate({
+        year: y,
+        month: m,
+        day: d,
+        hours,
+        minutes,
+        seconds,
+        milliseconds,
+      });
     // Cycle through 6 weeks (max in month)
     for (let w = 1; w <= weeks; w++) {
       // Cycle through days in week

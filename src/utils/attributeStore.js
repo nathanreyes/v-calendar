@@ -2,10 +2,9 @@ import Attribute from './attribute';
 import { arrayHasItems, hash } from './helpers';
 
 export default class AttributeStore {
-  constructor(theme, locale, timezone, attrs) {
+  constructor(theme, locale, attrs) {
     this.theme = theme;
     this.locale = locale;
-    this.timezone = timezone;
     this.map = {};
     this.refresh(attrs, true);
   }
@@ -39,7 +38,6 @@ export default class AttributeStore {
             },
             this.theme,
             this.locale,
-            this.timezone,
           );
           adds.push(exAttr);
         }

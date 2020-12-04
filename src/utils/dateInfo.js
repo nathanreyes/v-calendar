@@ -6,11 +6,10 @@ import Locale from './locale';
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale, timezone, isFullDay } = {}) {
+  constructor(config, { order = 0, locale, isFullDay } = {}) {
     this.isDateInfo = true;
     this.order = order;
     this.locale = locale instanceof Locale ? locale : new Locale(locale);
-    this.timezone = timezone;
     this.firstDayOfWeek = this.locale.firstDayOfWeek;
 
     // Adjust config for simple dates
@@ -103,7 +102,6 @@ export default class DateInfo {
     return {
       order: this.order,
       locale: this.locale,
-      timezone: this.timezone,
     };
   }
 

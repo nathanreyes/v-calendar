@@ -44,7 +44,7 @@ export const rootMixin = {
             masks: this.masks,
           };
       // Return new locale
-      return new Locale(config, this.$locales);
+      return new Locale(config, this.$locales, this.timezone);
     },
     disabledDates_() {
       const dates = this.normalizeDates(this.disabledDates);
@@ -85,7 +85,6 @@ export const rootMixin = {
         },
         this.$theme,
         this.$locale,
-        this.timezone,
       );
     },
   },
@@ -107,7 +106,6 @@ export const rootMixin = {
     normalizeDates(dates) {
       return this.$locale.normalizeDates(dates, {
         isFullDay: true,
-        timezone: this.timezone,
       });
     },
   },

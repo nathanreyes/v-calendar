@@ -21,13 +21,12 @@ export default class Attribute {
     },
     theme,
     locale,
-    timezone,
   ) {
     this.key = isUndefined(key) ? createGuid() : key;
     this.hashcode = hashcode;
     this.customData = customData;
     this.order = order || 0;
-    this.dateOpts = { order, locale, timezone };
+    this.dateOpts = { order, locale };
     this.pinPage = pinPage;
     // Normalize attribute types
     if (highlight) {

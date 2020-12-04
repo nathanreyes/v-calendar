@@ -322,12 +322,6 @@ export default {
       this.refreshTheme();
       this.initStore();
     },
-    timezone() {
-      // Refresh pages to reset the time boundaries
-      this.refreshPages({ ignoreCache: true });
-      // Refresh attribute store
-      this.initStore();
-    },
     fromDate() {
       this.refreshPages();
     },
@@ -633,7 +627,7 @@ export default {
           refresh: true,
         };
         // Assign day info
-        page.days = this.$locale.getCalendarDays(page, this.timezone);
+        page.days = this.$locale.getCalendarDays(page);
       }
       return page;
     },
@@ -642,7 +636,6 @@ export default {
       this.store = new AttributeStore(
         this.$theme,
         this.$locale,
-        this.timezone,
         this.attributes,
       );
       // Refresh attributes for existing pages
