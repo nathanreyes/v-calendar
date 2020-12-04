@@ -5,7 +5,6 @@ import TimePicker from './TimePicker';
 import { rootMixin } from '../utils/mixins';
 import { addTapOrClickHandler } from '../utils/touch';
 import {
-  pageForDate,
   datesAreEqual,
   createGuid,
   elementContains,
@@ -744,7 +743,7 @@ export default {
     },
     getPageForValue(isStart) {
       if (this.hasValue(this.value_)) {
-        return pageForDate(
+        return this.pageForDate(
           this.isRange ? this.value_[isStart ? 'start' : 'end'] : this.value_,
         );
       }

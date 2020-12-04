@@ -2,7 +2,7 @@
 import toDate from 'date-fns-tz/toDate';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
-import { pad, addPages, pageForDate, arrayHasItems } from './helpers';
+import { pad, addPages, arrayHasItems } from './helpers';
 import {
   isDate,
   isNumber,
@@ -575,10 +575,10 @@ export default class Locale {
       return addPages(fromPage, arg);
     }
     if (isString(arg)) {
-      return pageForDate(this.normalizeDate(arg));
+      return this.getDateParts(this.normalizeDate(arg));
     }
     if (isDate(arg)) {
-      return pageForDate(arg);
+      return this.getDateParts(arg);
     }
     if (isObject(arg)) {
       return arg;

@@ -108,5 +108,11 @@ export const rootMixin = {
         isFullDay: true,
       });
     },
+    pageForDate(date) {
+      return this.$locale.getDateParts(this.normalizeDate(date));
+    },
+    pageForThisMonth() {
+      return this.pageForDate(new Date());
+    },
   },
 };
