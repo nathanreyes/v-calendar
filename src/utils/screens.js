@@ -3,7 +3,7 @@
 import Vue from 'vue';
 import buildMediaQuery from './buildMediaQuery';
 import defaultScreens from './defaults/screens.json';
-import { isUndefined, mapValues, toPairs, has } from './_';
+import { isUndefined, mapValues, toPairs, isFunction, has } from './_';
 
 let isSettingUp = false;
 let shouldRefreshQueries = false;
@@ -28,7 +28,12 @@ export function setupScreens(screens = defaultScreens, forceSetup) {
         if (!window || !window.matchMedia) return;
         this.queries = mapValues(screens, v => {
           const query = window.matchMedia(buildMediaQuery(v));
-          query.addEventListener('change', this.refreshMatches);
+          if (isFunction(query.addEventListener)) {
+            query.addEventListener('change', this.refreshMatches);
+          } else {
+            // Deprecated 'MediaQueryList' API, <Safari 14, <Edge 16
+            query.addListener(this.refreshMatches);
+          }
           return query;
         });
         this.refreshMatches();
