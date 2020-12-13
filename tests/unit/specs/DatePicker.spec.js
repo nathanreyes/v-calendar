@@ -7,14 +7,21 @@ describe('DatePicker', () => {
   beforeEach(() => {
     wrapper = mount(DatePicker, {
       propsData: {
-        value: new Date(2000, 0, 1),
+        value: new Date(2000, 0, 15),
       },
     });
   });
 
   describe(':props', () => {
     it(':value - renders a date value', async () => {
-      expect(wrapper.find('.id-2000-01-01').exists()).toBe(true);
+      expect(wrapper.find('.id-2000-01-15').exists()).toBe(true);
+    });
+    it(':min-date - prevents date before minimum date', async () => {
+      await wrapper.setProps({ minDate: new Date(2000, 0, 5) });
+      // Day before min date is disabled
+      expect(wrapper.find('.id-2000-01-04 .is-disabled').exists()).toBe(true);
+      // Day of min date is not disabled
+      expect(wrapper.find('.id-2000-01-05 .is-disabled').exists()).toBe(false);
     });
   });
 });
