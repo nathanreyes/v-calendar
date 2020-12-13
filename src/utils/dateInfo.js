@@ -61,14 +61,8 @@ export default class DateInfo {
     this.startTime = start ? start.getTime() : NaN;
     this.end = end;
     this.endTime = end ? end.getTime() : NaN;
-
-    // Assign spans
-    if (start && end) {
-      this.daySpan = this.diffInDays(start, end);
-      this.weekSpan = this.diffInWeeks(start, end);
-      this.monthSpan = this.diffInMonths(start, end);
-      this.yearSpan = this.diffInYears(start, end);
-    }
+    this.isDate = this.startTime && this.startTime === this.endTime;
+    this.isRange = !this.isDate;
 
     // Assign 'and' condition
     const andOpt = mixinOptionalProps(config, {}, DateInfo.patternProps);
@@ -88,14 +82,6 @@ export default class DateInfo {
     }
     // Assign flag if date is complex
     this.isComplex = !!this.on;
-  }
-
-  get isDate() {
-    return this.startTime && this.startTime === this.endTime;
-  }
-
-  get isRange() {
-    return !this.isDate;
   }
 
   get opts() {
