@@ -600,19 +600,20 @@ export default class Locale {
     return this.getMonthDates().map(d => dtf.format(d));
   }
 
-  getWeekdayDates({
-    year = 2000,
-    utc = false,
-    firstDayOfWeek = this.firstDayOfWeek,
-  } = {}) {
+  getWeekdayDates(firstDayOfWeek = this.firstDayOfWeek) {
     const dates = [];
-    for (let i = 1, j = 0; j < daysInWeek; i++) {
-      const d = utc ? new Date(Date.UTC(year, 0, i)) : new Date(year, 0, i);
-      const day = utc ? d.getUTCDay() : d.getDay();
-      if (day === firstDayOfWeek - 1 || j > 0) {
-        dates.push(d);
-        j++;
-      }
+    const year = 2020;
+    const month = 1;
+    const day = 5 + firstDayOfWeek - 1;
+    for (let i = 0; i < daysInWeek; i++) {
+      dates.push(
+        this.getDateFromParts({
+          year,
+          month,
+          day: day + i,
+          hours: 12,
+        }),
+      );
     }
     return dates;
   }
@@ -620,11 +621,9 @@ export default class Locale {
   getDayNames(length) {
     const dtf = new Intl.DateTimeFormat(this.id, {
       weekday: length,
-      timeZone: 'UTC',
+      timeZone: this.timezone || undefined,
     });
-    return this.getWeekdayDates({ firstDayOfWeek: 1, utc: true }).map(d =>
-      dtf.format(d),
-    );
+    return this.getWeekdayDates(1).map(d => dtf.format(d));
   }
 
   // Days/month/year components for a given month and year
@@ -655,8 +654,8 @@ export default class Locale {
 
   // Days/month/year components for today's month
   getThisMonthComps() {
-    const date = new Date();
-    return this.getMonthComps(date.getMonth() + 1, date.getFullYear());
+    const { month, year } = this.getDateParts(new Date());
+    return this.getMonthComps(month, year);
   }
 
   // Day/month/year components for previous month
@@ -752,7 +751,7 @@ export default class Locale {
           end: dateFromTime(23, 59, 59, 999),
         };
         const date = range.start;
-        const id = this.getDayId(date);
+        const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
         const isToday =
