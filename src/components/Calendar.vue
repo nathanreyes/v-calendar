@@ -489,12 +489,10 @@ export default {
         fromPage = addPages(page, pagesToAdd);
       } else {
         // 2. Try the fromPage prop
-        fromPage =
-          this.fromPage || this.pageForDate(this.normalizeDate(this.fromDate));
+        fromPage = this.fromPage || this.pageForDate(this.fromDate);
         if (!pageIsValid(fromPage)) {
           // 3. Try the toPage prop
-          const toPage =
-            this.toPage || this.pageForDate(this.normalizeDate(this.toPage));
+          const toPage = this.toPage || this.pageForDate(this.toPage);
           if (pageIsValid(toPage)) {
             fromPage = addPages(toPage, 1 - this.count);
           } else {
