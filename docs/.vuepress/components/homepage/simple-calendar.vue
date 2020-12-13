@@ -136,7 +136,8 @@
 
 <script>
 const PopoverRow = require('@/components/PopoverRow').default;
-const { pageForThisMonth, pageForNextMonth } = require('@/utils/helpers');
+const Locale = require('@/utils/locale').default;
+const locale = new Locale();
 
 export default {
   components: {
@@ -144,8 +145,8 @@ export default {
   },
   data() {
     return {
-      pageForThisMonth: pageForThisMonth(),
-      pageForNextMonth: pageForNextMonth(),
+      pageForThisMonth: null,
+      pageForNextMonth: null,
       incId: 5,
       editId: 0,
       todos: [],
@@ -332,13 +333,17 @@ export default {
       ];
     },
   },
+  created() {
+    this.refreshMonthData();
+  },
   mounted() {
     this.refreshTodos();
   },
   methods: {
     refreshMonthData() {
-      this.pageForThisMonth = pageForThisMonth();
-      this.pageForNextMonth = pageForNextMonth();
+      const { month, year } = locale.getThisMonthComps();
+      this.pageForThisMonth = { month, year };
+      this.pageForNextMonth = locale.getNextMonthComps(month, year);
     },
     refreshTodos() {
       this.todos = [

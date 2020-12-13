@@ -5,9 +5,13 @@
 </template>
 
 <script>
-const { pageForThisMonth, pageForNextMonth } = require('@/utils/helpers');
-let { month: thisMonth, year: thisMonthYear } = pageForThisMonth();
-let { month: nextMonth, year: nextMonthYear } = pageForNextMonth();
+const Locale = require('@/utils/locale').default;
+const locale = new Locale();
+let { month: thisMonth, year: thisMonthYear } = locale.getThisMonthComps();
+let { month: nextMonth, year: nextMonthYear } = locale.getNextMonthComps(
+  thisMonth,
+  thisMonthYear,
+);
 thisMonth--;
 nextMonth--;
 

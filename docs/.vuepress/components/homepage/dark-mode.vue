@@ -29,12 +29,14 @@
 </template>
 
 <script>
-const { pageForThisMonth } = require('@/utils/helpers');
-let { month, year } = pageForThisMonth();
-
 export default {
   data() {
+    const date = new Date();
+    const month = date.getMonth();
+    const year = date.getFullYear();
     return {
+      month,
+      year,
       bgStyle: {
         backgroundImage: `linear-gradient(to bottom right,hsl(209, 18%, 30%),hsl(210, 24%, 16%))`,
       },
@@ -42,8 +44,8 @@ export default {
         {
           highlight: true,
           dates: {
-            start: new Date(year, month - 1, 7),
-            end: new Date(year, month - 1, 20),
+            start: new Date(year, month, 7),
+            end: new Date(year, month, 20),
           },
         },
       ],
@@ -55,8 +57,8 @@ export default {
         {
           highlight: true,
           dates: {
-            start: new Date(year, month - 1, 7),
-            end: new Date(year, month - 1, 20),
+            start: new Date(this.year, this.month, 7),
+            end: new Date(this.year, this.month, 20),
           },
         },
       ];

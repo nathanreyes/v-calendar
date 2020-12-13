@@ -1,9 +1,10 @@
 <template>
   <div>
-    <v-date-picker mode="datetime" v-model="date" :max-date-exact="maxDate" />
+    <v-date-picker mode="datetime" v-model="date" :max-date="maxDate" />
     <v-date-picker
       v-model="date"
       mode="datetime"
+      :max-date="maxDate"
       :disabled-dates="disabledDates"
       :available-dates="availableDates"
     />
