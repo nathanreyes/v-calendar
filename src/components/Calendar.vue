@@ -690,7 +690,7 @@ export default {
     },
     handleDayKeydown(day) {
       const { dateFromTime, event } = day;
-      // Set to noon to offset any day savings time offset
+      // Set to noon to offset any daylight savings time offset
       const date = dateFromTime(12);
       let newDate = null;
       switch (event.key) {
