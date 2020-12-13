@@ -1,6 +1,7 @@
 import { addDays } from 'date-fns';
 import { mixinOptionalProps } from './helpers';
 import { isObject, isArray, isFunction } from './_';
+import Locale from './locale';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
@@ -8,7 +9,7 @@ export default class DateInfo {
   constructor(config, { order = 0, locale, isFullDay } = {}) {
     this.isDateInfo = true;
     this.order = order;
-    this.locale = locale;
+    this.locale = locale instanceof Locale ? locale : new Locale(locale);
     this.firstDayOfWeek = this.locale.firstDayOfWeek;
 
     // Adjust config for simple dates
@@ -241,7 +242,7 @@ export default class DateInfo {
   }
 
   shallowIntersectingRange(other) {
-    return this.rangeShallowIntersectingRange(this, other);
+    return this.rangeShallowIntersectingRange(this, this.toDateInfo(other));
   }
 
   // Returns a date range that intersects two DateInfo objects
@@ -249,8 +250,6 @@ export default class DateInfo {
   //   so this method should only really be called for special conditions
   //   where absolute accuracy is not necessarily needed
   rangeShallowIntersectingRange(date1, date2) {
-    date1 = this.toDateInfo(date1);
-    date2 = this.toDateInfo(date2);
     if (!this.dateShallowIntersectsDate(date1, date2)) {
       return null;
     }
