@@ -269,7 +269,7 @@ export function resolveConfig(config, locales) {
 }
 
 export default class Locale {
-  constructor(config, locales = defaultLocales, timezone) {
+  constructor(config, { locales = defaultLocales, timezone } = {}) {
     const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
     this.id = id;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);

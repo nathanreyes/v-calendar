@@ -44,7 +44,10 @@ export const rootMixin = {
             masks: this.masks,
           };
       // Return new locale
-      return new Locale(config, this.$locales, this.timezone);
+      return new Locale(config, {
+        locales: this.$locales,
+        timezone: this.timezone,
+      });
     },
     disabledDates_() {
       const dates = this.normalizeDates(this.disabledDates);

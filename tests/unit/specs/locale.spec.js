@@ -93,7 +93,7 @@ describe('Locale', () => {
   });
   it('should calculate day components correctly', () => {
     const testComponent = c => {
-      const locale = new Locale(undefined, undefined, c.timezone);
+      const locale = new Locale(undefined, { timezone: c.timezone });
       const day = locale.getDateParts(new Date(c.date));
       const omitKeys = ['date', 'timezone'];
       return Object.keys(c)
