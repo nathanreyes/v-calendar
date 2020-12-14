@@ -299,7 +299,7 @@ When using `disabled-dates` and `available-dates`, `v-calendar` will not automat
 Use the `min-date`, `min-page`, `max-date` or `max-page` props to manually assign the page bounds when using `disabled-dates` or `available-dates`.
 :::
 
-## Include vs Exclude Dates
+## Explicit vs Implicit Dates
 
 Currently, there are four places where date expressions are used:
 * [`attribute.dates`](/api/attribute.md#dates): Date(s) to display attributes .
@@ -340,3 +340,13 @@ However, it might be more efficient to express what dates you would like to excl
 ```
 
 The second expression is more terse and declarative than the first. It even performs slighly better. The point is, just take a second to consider which method is best suited for your application.
+
+### Simultaneous Use
+
+We can discuss using both explicit and implicit date expressions by observing the `disabled-dates` and `available-dates` props for `v-date-picker`.
+
+The rules are as follows:
+
+1. If `disabled-dates` is provided and `available-dates` is not, `disabled-dates` is simply evaluated to directly disable calendar days.
+2. If `disabled-dates` is NOT provided and `available-dates` is provided, then an infinite disabled date range(`{ start: null, end: null }`) is first added to effectively disable all dates. Then, `available-dates` is evaluted to re-enable the dates it specifies.
+3. If `disabled-dates` and `available-dates` are both provided, the `disabled-dates` expression is evaluated first. Then, `available-dates` is evaluated to re-enable any dates not explicitly disabled by `disabled-dates`. Specifying dates in `available-dates` that lie outside the range of any `disabled-dates` has no effect and should be avoided.
