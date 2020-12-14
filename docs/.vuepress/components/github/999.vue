@@ -89,7 +89,7 @@
           :is-dark="dark"
           :disabled-dates="disabledDates"
         >
-          <!-- <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
+          <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
             <div class="flex items-center">
               <input
                 class="px-3 py-1 flex-grow border rounded"
@@ -97,7 +97,7 @@
                 v-on="inputEvents"
               />
             </div>
-          </template> -->
+          </template>
         </v-date-picker>
       </div>
       <!--Date range picker-->
@@ -112,6 +112,7 @@
           :timezone="timezone"
           :popover="popover"
           :is-dark="dark"
+          :disabled-dates="disabledDates"
           is-range
         >
           <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
@@ -173,7 +174,7 @@ export default {
       isRange: false,
       is24hr: false,
       minuteIncrement: 1,
-      inline: true,
+      inline: false,
       dark: false,
       utc: true,
       popover: {
