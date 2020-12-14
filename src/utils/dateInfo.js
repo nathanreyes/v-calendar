@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { addDays } from 'date-fns';
 import { mixinOptionalProps } from './helpers';
 import { isObject, isArray, isFunction } from './_';

@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise, no-multi-assign */
+/* eslint-disable no-bitwise, no-multi-assign, import/no-cycle */
 import toDate from 'date-fns-tz/toDate';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
