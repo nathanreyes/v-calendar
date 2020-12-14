@@ -60,17 +60,17 @@ describe('DatePicker', () => {
     });
     it(':is-required - keeps date when set', async () => {
       await wrapper.setProps({ isRequired: true });
-      await wrapper.find('.id-2000-01-15 .vc-day-content').trigger('click');
-      expect(wrapper.find('.id-2000-01-15 .vc-highlight').exists()).toBe(true);
-      await wrapper.find('.id-2000-01-15 .vc-day-content').trigger('click');
-      expect(wrapper.find('.id-2000-01-15 .vc-highlight').exists()).toBe(true);
+      await wrapper.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      expect(wrapper.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
+      await wrapper.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      expect(wrapper.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
     });
     it(':is-required - clears date when not set', async () => {
       await wrapper.setProps({ isRequired: false });
-      await wrapper.find('.id-2000-01-15 .vc-day-content').trigger('click');
-      expect(wrapper.find('.id-2000-01-15 .vc-highlight').exists()).toBe(true);
-      await wrapper.find('.id-2000-01-15 .vc-day-content').trigger('click');
-      expect(wrapper.find('.id-2000-01-15 .vc-highlight').exists()).toBe(false);
+      await wrapper.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      expect(wrapper.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
+      await wrapper.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      expect(wrapper.find('.id-2000-01-25 .vc-highlight').exists()).toBe(false);
     });
   });
 });
