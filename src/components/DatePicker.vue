@@ -727,7 +727,7 @@ export default {
       });
     },
     hidePopover(opts = {}) {
-      hp({ ...opts, id: this.datePickerPopoverId });
+      hp({ hideDelay: 10, ...opts, id: this.datePickerPopoverId });
     },
     togglePopover(opts) {
       tp({
