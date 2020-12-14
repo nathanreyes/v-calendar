@@ -274,7 +274,7 @@ export default class Locale {
     this.id = id;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
-    this.timezone = timezone;
+    this.timezone = timezone || undefined;
     this.dayNames = this.getDayNames('long');
     this.dayNamesShort = this.getDayNames('short');
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
@@ -517,7 +517,7 @@ export default class Locale {
       date,
       isValid: true,
     };
-    parts.timezoneOffset = this.getTimezoneOffset(parts) / 60000;
+    parts.timezoneOffset = this.getTimezoneOffset(parts);
     return parts;
   }
 
@@ -544,7 +544,7 @@ export default class Locale {
     return new Date(y, m - 1, d, hrs, min, sec, ms);
   }
 
-  getTimezoneOffset(parts, timeZone) {
+  getTimezoneOffset(parts) {
     const {
       year: y,
       month: m,
@@ -556,16 +556,16 @@ export default class Locale {
     } = parts;
     let date;
     const utcDate = new Date(Date.UTC(y, m - 1, d, hrs, min, sec, ms));
-    if (timeZone) {
+    if (this.timezone) {
       const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-      date = toDate(dateString, { timeZone });
+      date = toDate(dateString, { timeZone: this.timezone });
     } else {
       date = new Date(y, m - 1, d, hrs, min, sec, ms);
     }
-    return utcDate - date;
+    return (date - utcDate) / 60000;
   }
 
   toPage(arg, fromPage) {
@@ -621,7 +621,7 @@ export default class Locale {
   getDayNames(length) {
     const dtf = new Intl.DateTimeFormat(this.id, {
       weekday: length,
-      timeZone: this.timezone || undefined,
+      timeZone: this.timezone,
     });
     return this.getWeekdayDates(1).map(d => dtf.format(d));
   }

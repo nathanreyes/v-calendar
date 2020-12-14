@@ -21,7 +21,7 @@ export default {
       modelConfig: {
         type: 'string',
       },
-      timezone: 'Europe/Paris',
+      timezone: 'America/New_York',
     };
   },
 };
