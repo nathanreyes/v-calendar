@@ -1,77 +1,87 @@
 import { addDays } from 'date-fns';
 import { mixinOptionalProps } from './helpers';
-import { isDate, isObject, isArray, isFunction } from './_';
+import { isObject, isArray, isFunction } from './_';
 import Locale from './locale';
 
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale } = {}) {
+  constructor(config, { order = 0, locale, isFullDay } = {}) {
     this.isDateInfo = true;
-    this.isRange = isObject(config);
-    this.isDate = !this.isRange;
     this.order = order;
     this.locale = locale instanceof Locale ? locale : new Locale(locale);
     this.firstDayOfWeek = this.locale.firstDayOfWeek;
-    // Process date
-    if (this.isDate) {
-      this.type = 'date';
-      // Initialize date from config
-      this.date = this.locale.normalizeDate(config);
-      this.dateTime = this.date && this.date.getTime();
+
+    // Adjust config for simple dates
+    if (!isObject(config)) {
+      const date = this.locale.normalizeDate(config);
+      if (isFullDay) {
+        config = {
+          start: date,
+          end: date,
+        };
+      } else {
+        config = {
+          startOn: date,
+          endOn: date,
+        };
+      }
     }
-    // Process date range
-    if (this.isRange) {
-      this.type = 'range';
-      // Initialize start and end dates from config (null means infinity)
-      let start = this.locale.normalizeDate(config.start);
-      let end = this.locale.normalizeDate(config.end);
-      // Reconfigure start and end dates if needed
-      if (start && end && start > end) {
-        const temp = start;
-        start = end;
-        end = temp;
-      } else if (start && config.span >= 1) {
-        end = addDays(start, config.span - 1);
-      }
-      // Reset invalid dates to null and strip times for valid dates
-      if (start) {
-        if (!isDate(start)) start = null;
-      }
-      if (end) {
-        if (!isDate(end)) end = null;
-      }
-      // Assign start and end dates
-      this.start = start;
-      this.startTime = start ? start.getTime() : NaN;
-      this.end = end;
-      this.endTime = end ? end.getTime() : NaN;
-      // Assign spans
-      if (start && end) {
-        this.daySpan = this.diffInDays(start, end);
-        this.weekSpan = this.diffInWeeks(start, end);
-        this.monthSpan = this.diffInMonths(start, end);
-        this.yearSpan = this.diffInYears(start, end);
-      }
-      // Assign 'and' condition
-      const andOpt = mixinOptionalProps(config, {}, DateInfo.patternProps);
-      if (andOpt.assigned) {
-        this.on = { and: andOpt.target };
-      }
-      // Assign 'or' conditions
-      if (config.on) {
-        const or = (isArray(config.on) ? config.on : [config.on])
-          .map(o => {
-            if (isFunction(o)) return o;
-            const opt = mixinOptionalProps(o, {}, DateInfo.patternProps);
-            return opt.assigned ? opt.target : null;
-          })
-          .filter(o => o);
-        if (or.length) this.on = { ...this.on, or };
-      }
-      // Assign flag if date is complex
-      this.isComplex = !!this.on;
+
+    let start = null;
+    let end = null;
+    if (config.start) {
+      start = this.locale.normalizeDate(config.start, {
+        ...this.opts,
+        time: '00:00:00',
+      });
+    } else if (config.startOn) {
+      start = this.locale.normalizeDate(config.startOn, this.opts);
     }
+    if (config.end) {
+      end = this.locale.normalizeDate(config.end, {
+        ...this.opts,
+        time: '23:59:59',
+      });
+    } else if (config.endOn) {
+      end = this.locale.normalizeDate(config.endOn, this.opts);
+    }
+
+    // Reconfigure start and end dates if needed
+    if (start && end && start > end) {
+      const temp = start;
+      start = end;
+      end = temp;
+    } else if (start && config.span >= 1) {
+      end = addDays(start, config.span - 1);
+    }
+
+    // Assign start and end dates
+    this.start = start;
+    this.startTime = start ? start.getTime() : NaN;
+    this.end = end;
+    this.endTime = end ? end.getTime() : NaN;
+    this.isDate = this.startTime && this.startTime === this.endTime;
+    this.isRange = !this.isDate;
+
+    // Assign 'and' condition
+    const andOpt = mixinOptionalProps(config, {}, DateInfo.patternProps);
+    if (andOpt.assigned) {
+      this.on = { and: andOpt.target };
+    }
+    // Assign 'or' conditions
+    if (config.on) {
+      const or = (isArray(config.on) ? config.on : [config.on])
+        .map(o => {
+          if (isFunction(o)) return o;
+          const opt = mixinOptionalProps(o, {}, DateInfo.patternProps);
+          return opt.assigned ? opt.target : null;
+        })
+        .filter(o => o);
+      if (or.length) this.on = { ...this.on, or };
+    }
+    // Assign flag if date is complex
+    this.isComplex = !!this.on;
   }
 
   get opts() {
@@ -198,6 +208,10 @@ export default class DateInfo {
 
   iterateDatesInRange({ start, end }, fn) {
     if (!start || !end || !isFunction(fn)) return null;
+    start = this.locale.normalizeDate(start, {
+      ...this.opts,
+      time: '00:00:00',
+    });
     const state = {
       i: 0,
       date: start,
@@ -214,7 +228,7 @@ export default class DateInfo {
   }
 
   shallowIntersectingRange(other) {
-    return this.rangeShallowIntersectingRange(this, other);
+    return this.rangeShallowIntersectingRange(this, this.toDateInfo(other));
   }
 
   // Returns a date range that intersects two DateInfo objects
@@ -222,8 +236,6 @@ export default class DateInfo {
   //   so this method should only really be called for special conditions
   //   where absolute accuracy is not necessarily needed
   rangeShallowIntersectingRange(date1, date2) {
-    date1 = this.toDateInfo(date1);
-    date2 = this.toDateInfo(date2);
     if (!this.dateShallowIntersectsDate(date1, date2)) {
       return null;
     }
@@ -298,7 +310,7 @@ export default class DateInfo {
   dateShallowIntersectsDate(date1, date2) {
     if (date1.isDate) {
       return date2.isDate
-        ? date1.dateTime === date2.dateTime
+        ? date1.startTime === date2.startTime
         : this.dateShallowIncludesDate(date2, date1);
     }
     if (date2.isDate) {
@@ -353,21 +365,21 @@ export default class DateInfo {
     // First date is simple date
     if (date1.isDate) {
       if (date2.isDate) {
-        return date1.dateTime === date2.dateTime;
+        return date1.startTime === date2.startTime;
       }
       if (!date2.startTime || !date2.endTime) {
         return false;
       }
       return (
-        date1.dateTime === date2.startTime && date1.dateTime === date2.endTime
+        date1.startTime === date2.startTime && date1.startTime === date2.endTime
       );
     }
     // Second date is simple date and first is date range
     if (date2.isDate) {
-      if (date1.start && date2.date < date1.start) {
+      if (date1.start && date2.start < date1.start) {
         return false;
       }
-      if (date1.end && date2.date > date1.end) {
+      if (date1.end && date2.start > date1.end) {
         return false;
       }
       return true;
@@ -408,15 +420,6 @@ export default class DateInfo {
   }
 
   toRange() {
-    if (this.isDate) {
-      return new DateInfo(
-        {
-          start: this.date,
-          end: this.date,
-        },
-        this.opts,
-      );
-    }
     return new DateInfo(
       {
         start: this.start,
@@ -429,7 +432,7 @@ export default class DateInfo {
   // Build the 'compare to other' function
   compare(other) {
     if (this.order !== other.order) return this.order - other.order;
-    if (this.type !== other.type) return this.isDate ? 1 : -1;
+    if (this.isDate !== other.isDate) return this.isDate ? 1 : -1;
     if (this.isDate) return 0;
     const diff = this.start - other.start;
     return diff !== 0 ? diff : this.end - other.end;

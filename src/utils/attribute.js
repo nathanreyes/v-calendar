@@ -1,6 +1,6 @@
 import DateInfo from './dateInfo';
 import { arrayHasItems, createGuid } from './helpers';
-import { isUndefined, isArray, some } from './_';
+import { isUndefined, some } from './_';
 
 export default class Attribute {
   constructor(
@@ -44,39 +44,25 @@ export default class Attribute {
     if (popover) {
       this.popover = popover;
     }
-    // Wrap dates in array if needed
-    if (dates) {
-      this.dates = isArray(dates) ? dates : [dates];
-    }
-    this.hasDates = arrayHasItems(this.dates);
-    // Wrap exclude dates in array if needed
-    if (excludeDates) {
-      this.excludeDates = isArray(excludeDates) ? excludeDates : [excludeDates];
-    }
-    this.hasExcludeDates = arrayHasItems(this.excludeDates);
+    // Assign dates
+    this.dates = locale.normalizeDates(dates, this.dateOpts);
+    this.hasDates = !!arrayHasItems(this.dates);
+    // Assign exclude dates
+    this.excludeDates = locale.normalizeDates(excludeDates, this.dateOpts);
+    this.hasExcludeDates = !!arrayHasItems(this.excludeDates);
     this.excludeMode = excludeMode || 'intersects';
-    // Assign final dates
-    this.dates = (
-      (this.hasDates && this.dates) ||
-      (this.hasExcludeDates && [{}]) ||
-      []
-    )
-      .map(
-        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
-      )
-      .filter(d => d);
-    // Assign final exclude dates
-    this.excludeDates = ((this.hasExcludeDates && this.excludeDates) || [])
-      .map(
-        d => d && (d instanceof DateInfo ? d : new DateInfo(d, this.dateOpts)),
-      )
-      .filter(d => d);
+    // Add infinite date range if excluded dates exist
+    if (this.hasExcludeDates && !this.hasDates) {
+      this.dates.push(new DateInfo({}, this.dateOpts));
+      this.hasDates = true;
+    }
     this.isComplex = some(this.dates, d => d.isComplex);
   }
 
   // Accepts: Date or date range object
   // Returns: First date that partially intersects the given date
   intersectsDate(date) {
+    date = date instanceof DateInfo ? date : new DateInfo(date, this.dateOpts);
     return (
       !this.excludesDate(date) &&
       (this.dates.find(d => d.intersectsDate(date)) || false)

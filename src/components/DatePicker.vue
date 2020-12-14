@@ -5,7 +5,6 @@ import TimePicker from './TimePicker';
 import { rootMixin } from '../utils/mixins';
 import { addTapOrClickHandler } from '../utils/touch';
 import {
-  pageForDate,
   datesAreEqual,
   createGuid,
   elementContains,
@@ -84,11 +83,10 @@ export default {
           attributes: this.attributes_,
           theme: this.$theme,
           locale: this.$locale,
-          timezone: this.timezone,
         },
         props: {
-          minDate: this.minDate,
-          maxDate: this.maxDate,
+          minDate: this.minDateExact || this.minDate,
+          maxDate: this.maxDateExact || this.maxDate,
           disabledDates: this.disabledDates,
           availableDates: this.availableDates,
         },
@@ -213,7 +211,6 @@ export default {
         type: 'string',
         mask: this.inputMask,
         patch: PATCH_DATE_TIME,
-        timezone: this.timezone,
       };
       const {
         isRange,
@@ -373,30 +370,27 @@ export default {
   methods: {
     initDateConfig() {
       let config;
-      const timezone = this.timezone;
       if (this.isRange) {
         config = {
           start: {
-            timezone,
             ..._rangeConfig.start,
             ...(this.modelConfig.start || this.modelConfig),
           },
           end: {
-            timezone,
             ..._rangeConfig.end,
             ...(this.modelConfig.end || this.modelConfig),
           },
         };
       } else {
-        config = { timezone, ..._dateConfig, ...this.modelConfig };
+        config = { ..._dateConfig, ...this.modelConfig };
       }
       this.dateConfig = config;
     },
     getDateParts(date) {
-      return this.$locale.getDateParts(date, this.timezone);
+      return this.$locale.getDateParts(date);
     },
     getDateFromParts(parts) {
-      return this.$locale.getDateFromParts(parts, this.timezone);
+      return this.$locale.getDateFromParts(parts);
     },
     refreshDateParts() {
       const value = this.dragValue || this.value_;
@@ -456,18 +450,18 @@ export default {
         if (!this.isDragging) {
           this.dragTrackingValue = { ...day.range };
         } else {
-          this.dragTrackingValue.end = day.range.start;
+          this.dragTrackingValue.end = day.date;
         }
         opts.isDragging = !this.isDragging;
         opts.hidePopover = opts.hidePopover && !opts.isDragging;
         this.updateValue(this.dragTrackingValue, opts);
       } else {
-        this.updateValue(day.range.start, opts);
+        this.updateValue(day.date, opts);
       }
     },
     onDayMouseEnter(day) {
       if (!this.isDragging) return;
-      this.dragTrackingValue.end = day.range.start;
+      this.dragTrackingValue.end = day.date;
       this.updateValue(this.dragTrackingValue, {
         patch: PATCH_DATE,
         adjustTime: true,
@@ -475,7 +469,7 @@ export default {
     },
     onTimeInput(parts, idx) {
       const opts = {
-        config: { timezone: this.timezone, type: 'object' },
+        config: { type: 'object' },
         patch: PATCH_TIME,
       };
       if (this.isRange) {
@@ -699,7 +693,6 @@ export default {
         const opts = {
           type: 'string',
           mask: this.inputMask,
-          timezone: this.timezone,
         };
         const value = this.denormalizeValue(
           this.dragValue || this.value_,
@@ -750,7 +743,7 @@ export default {
     },
     getPageForValue(isStart) {
       if (this.hasValue(this.value_)) {
-        return pageForDate(
+        return this.pageForDate(
           this.isRange ? this.value_[isStart ? 'start' : 'end'] : this.value_,
         );
       }

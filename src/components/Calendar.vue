@@ -12,8 +12,6 @@ import AttributeStore from '../utils/attributeStore';
 import { rootMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import {
-  pageForDate,
-  pageForThisMonth,
   addPages,
   pageIsValid,
   pageIsEqualToPage,
@@ -288,10 +286,10 @@ export default {
       return last(this.pages);
     },
     minPage_() {
-      return this.minPage || pageForDate(this.normalizeDate(this.minDate));
+      return this.minPage || this.pageForDate(this.minDate);
     },
     maxPage_() {
-      return this.maxPage || pageForDate(this.normalizeDate(this.maxDate));
+      return this.maxPage || this.pageForDate(this.maxDate);
     },
     count() {
       return this.rows * this.columns;
@@ -321,12 +319,6 @@ export default {
     $theme() {
       this.refreshTheme();
       this.initStore();
-    },
-    timezone() {
-      // Refresh pages to reset the time boundaries
-      this.refreshPages({ ignoreCache: true });
-      // Refresh attributes
-      this.refreshAttrs(this.pages, this.store.list, null, true);
     },
     fromDate() {
       this.refreshPages();
@@ -455,26 +447,22 @@ export default {
           focusableEl.focus();
           return Promise.resolve(true);
         }
-        return Promise.reject(
-          new Error(
-            'Day element not found. Consider using `force` option is date is disabled.',
-          ),
-        );
+        return Promise.resolve(false);
       });
     },
     showPageRange(range, opts) {
       let fromPage;
       let toPage;
       if (isDate(range)) {
-        fromPage = pageForDate(range);
+        fromPage = this.pageForDate(range);
       } else if (isObject(range)) {
         const { month, year } = range;
         const { from, to } = range;
         if (isNumber(month) && isNumber(year)) {
           fromPage = range;
         } else if (from || to) {
-          fromPage = isDate(from) ? pageForDate(from) : from;
-          toPage = isDate(to) ? pageForDate(to) : to;
+          fromPage = isDate(from) ? this.pageForDate(from) : from;
+          toPage = isDate(to) ? this.pageForDate(to) : to;
         }
       } else {
         return Promise.reject(new Error('Invalid page range provided.'));
@@ -501,12 +489,10 @@ export default {
         fromPage = addPages(page, pagesToAdd);
       } else {
         // 2. Try the fromPage prop
-        fromPage =
-          this.fromPage || pageForDate(this.normalizeDate(this.fromDate));
+        fromPage = this.fromPage || this.pageForDate(this.fromDate);
         if (!pageIsValid(fromPage)) {
           // 3. Try the toPage prop
-          const toPage =
-            this.toPage || pageForDate(this.normalizeDate(this.toPage));
+          const toPage = this.toPage || this.pageForDate(this.toPage);
           if (pageIsValid(toPage)) {
             fromPage = addPages(toPage, 1 - this.count);
           } else {
@@ -516,7 +502,7 @@ export default {
         }
       }
       // 5. Fall back to today's page
-      fromPage = pageIsValid(fromPage) ? fromPage : pageForThisMonth();
+      fromPage = pageIsValid(fromPage) ? fromPage : this.pageForThisMonth();
       let toPage = addPages(fromPage, this.count - 1);
       // 6. Adjust for min/max pages if not forced
       if (!force) {
@@ -604,7 +590,7 @@ export default {
       if (attr && attr.hasDates) {
         let [date] = attr.dates;
         date = date.start || date.date;
-        page = pageForDate(this.normalizeDate(date));
+        page = this.pageForDate(date);
       }
       return page;
     },
@@ -637,7 +623,7 @@ export default {
           refresh: true,
         };
         // Assign day info
-        page.days = this.$locale.getCalendarDays(page, this.timezone);
+        page.days = this.$locale.getCalendarDays(page);
       }
       return page;
     },
@@ -703,7 +689,9 @@ export default {
       }
     },
     handleDayKeydown(day) {
-      const { date, event } = day;
+      const { dateFromTime, event } = day;
+      // Set to noon to offset any daylight savings time offset
+      const date = dateFromTime(12);
       let newDate = null;
       switch (event.key) {
         case 'ArrowLeft': {

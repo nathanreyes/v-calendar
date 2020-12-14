@@ -72,7 +72,7 @@ import Grid from './Grid';
 import SvgIcon from './SvgIcon';
 import { childMixin } from '../utils/mixins';
 import { head, last } from '../utils/_';
-import { pageForDate, onSpaceOrEnter } from '../utils/helpers';
+import { onSpaceOrEnter } from '../utils/helpers';
 
 const _yearGroupCount = 12;
 
@@ -108,7 +108,7 @@ export default {
         : `${this.firstYear} - ${this.lastYear}`;
     },
     monthItems() {
-      const { month: thisMonth, year: thisYear } = pageForDate(new Date());
+      const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
         return {
@@ -122,7 +122,7 @@ export default {
       });
     },
     yearItems() {
-      const { _, year: thisYear } = pageForDate(new Date());
+      const { _, year: thisYear } = this.pageForDate(new Date());
       const startYear = this.yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
       const items = [];

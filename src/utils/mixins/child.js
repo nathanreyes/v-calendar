@@ -21,5 +21,8 @@ export const childMixin = {
     format(date, mask) {
       return this.locale.format(date, mask);
     },
+    pageForDate(date) {
+      return this.locale.getDateParts(this.locale.normalizeDate(date));
+    },
   },
 };

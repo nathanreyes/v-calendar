@@ -1,12 +1,14 @@
 /* eslint-disable no-bitwise, no-multi-assign */
 import toDate from 'date-fns-tz/toDate';
+import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
-import { pad, addPages, pageForDate, arrayHasItems } from './helpers';
+import { pad, addPages, arrayHasItems } from './helpers';
 import {
   isDate,
   isNumber,
   isString,
   isObject,
+  isArray,
   has,
   defaultsDeep,
   clamp,
@@ -267,11 +269,12 @@ export function resolveConfig(config, locales) {
 }
 
 export default class Locale {
-  constructor(config, locales = defaultLocales) {
+  constructor(config, { locales = defaultLocales, timezone } = {}) {
     const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
     this.id = id;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
+    this.timezone = timezone || undefined;
     this.dayNames = this.getDayNames('long');
     this.dayNamesShort = this.getDayNames('short');
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
@@ -287,7 +290,7 @@ export default class Locale {
     this.toPage = this.toPage.bind(this);
   }
 
-  format(date, mask, timezone) {
+  format(date, mask) {
     date = this.normalizeDate(date);
     if (!date) return '';
     mask = this.normalizeMasks(mask)[0];
@@ -300,14 +303,14 @@ export default class Locale {
     // Apply formatting rules
     mask = mask.replace(token, $0 =>
       $0 in formatFlags
-        ? formatFlags[$0](this.getDateParts(date, timezone), this)
+        ? formatFlags[$0](this.getDateParts(date), this)
         : $0.slice(1, $0.length - 1),
     );
     // Inline literal values back into the formatted value
     return mask.replace(/\?\?/g, () => literals.shift());
   }
 
-  parse(dateString, mask, timezone) {
+  parse(dateString, mask) {
     const masks = this.normalizeMasks(mask);
     return (
       masks
@@ -374,18 +377,15 @@ export default class Locale {
               ),
             );
           } else {
-            date = this.getDateFromParts(
-              {
-                year: dateInfo.year || today.getFullYear(),
-                month: (dateInfo.month || 0) + 1,
-                day: dateInfo.day || 1,
-                hours: dateInfo.hour || 0,
-                minutes: dateInfo.minute || 0,
-                seconds: dateInfo.second || 0,
-                milliseconds: dateInfo.millisecond || 0,
-              },
-              timezone,
-            );
+            date = this.getDateFromParts({
+              year: dateInfo.year || today.getFullYear(),
+              month: (dateInfo.month || 0) + 1,
+              day: dateInfo.day || 1,
+              hours: dateInfo.hour || 0,
+              minutes: dateInfo.minute || 0,
+              seconds: dateInfo.second || 0,
+              milliseconds: dateInfo.millisecond || 0,
+            });
           }
           return date;
         })
@@ -417,34 +417,42 @@ export default class Locale {
     } else if (isString(d)) {
       type = 'string';
       const mask = config.mask || 'iso';
-      result = d ? this.parse(d, mask, config.timezone) : null;
+      result = d ? this.parse(d, mask) : null;
     } else if (isObject(d)) {
       type = 'object';
-      result = this.getDateFromParts(d, config.timezone);
+      result = this.getDateFromParts(d);
     } else {
       type = 'date';
       result = isDate(d) ? new Date(d.getTime()) : null;
     }
     if (auto) config.type = type;
-    return result && !isNaN(result.getTime()) ? result : null;
+    if (result && !isNaN(result.getTime())) {
+      if (config.time) {
+        result = this.adjustTimeForDate(result, {
+          timeAdjust: config.time,
+        });
+      }
+      return result;
+    }
+    return null;
   }
 
-  denormalizeDate(date, { type, mask, timezone } = {}) {
+  denormalizeDate(date, { type, mask } = {}) {
     switch (type) {
       case 'number':
         return date ? date.getTime() : NaN;
       case 'string':
-        return date ? this.format(date, mask || 'iso', timezone) : '';
+        return date ? this.format(date, mask || 'iso') : '';
       default:
         return date ? new Date(date) : null;
     }
   }
 
-  adjustTimeForDate(date, { timeAdjust, timezone }) {
+  adjustTimeForDate(date, { timeAdjust }) {
     if (timeAdjust) {
-      const dateParts = this.getDateParts(date, timezone);
+      const dateParts = this.getDateParts(date);
       if (timeAdjust === 'now') {
-        const timeParts = this.getDateParts(new Date(), timezone);
+        const timeParts = this.getDateParts(new Date());
         dateParts.hours = timeParts.hours;
         dateParts.minutes = timeParts.minutes;
         dateParts.seconds = timeParts.seconds;
@@ -454,17 +462,26 @@ export default class Locale {
         dateParts.minutes = +timeParts[1];
         dateParts.seconds = +timeParts[2];
       }
-      date = this.getDateFromParts(dateParts, timezone);
+      date = this.getDateFromParts(dateParts);
     }
     return date;
   }
 
-  getDateParts(date, timezone) {
+  normalizeDates(dates, opts) {
+    opts = opts || {};
+    opts.locale = this;
+    // Assign dates
+    return (isArray(dates) ? dates : [dates])
+      .map(d => d && (d instanceof DateInfo ? d : new DateInfo(d, opts)))
+      .filter(d => d);
+  }
+
+  getDateParts(date) {
     if (!date) return null;
     let tzDate = date;
-    if (timezone) {
+    if (this.timezone) {
       const normDate = new Date(
-        date.toLocaleString('en-US', { timeZone: timezone }),
+        date.toLocaleString('en-US', { timeZone: this.timezone }),
       );
       const diff = normDate.getTime() - date.getTime();
       tzDate = new Date(date.getTime() + diff);
@@ -500,11 +517,11 @@ export default class Locale {
       date,
       isValid: true,
     };
-    parts.timezoneOffset = this.getTimezoneOffset(parts, timezone) / 60000;
+    parts.timezoneOffset = this.getTimezoneOffset(parts);
     return parts;
   }
 
-  getDateFromParts(parts, timeZone) {
+  getDateFromParts(parts) {
     if (!parts) return null;
     const {
       year: y,
@@ -517,17 +534,17 @@ export default class Locale {
     } = parts;
     if (y === undefined || m === undefined || d === undefined) return null;
 
-    if (timeZone) {
+    if (this.timezone) {
       const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-      return toDate(dateString, { timeZone });
+      return toDate(dateString, { timeZone: this.timezone });
     }
     return new Date(y, m - 1, d, hrs, min, sec, ms);
   }
 
-  getTimezoneOffset(parts, timeZone) {
+  getTimezoneOffset(parts) {
     const {
       year: y,
       month: m,
@@ -539,16 +556,16 @@ export default class Locale {
     } = parts;
     let date;
     const utcDate = new Date(Date.UTC(y, m - 1, d, hrs, min, sec, ms));
-    if (timeZone) {
+    if (this.timezone) {
       const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-      date = toDate(dateString, { timeZone });
+      date = toDate(dateString, { timeZone: this.timezone });
     } else {
       date = new Date(y, m - 1, d, hrs, min, sec, ms);
     }
-    return utcDate - date;
+    return (date - utcDate) / 60000;
   }
 
   toPage(arg, fromPage) {
@@ -556,10 +573,10 @@ export default class Locale {
       return addPages(fromPage, arg);
     }
     if (isString(arg)) {
-      return pageForDate(this.normalizeDate(arg));
+      return this.getDateParts(this.normalizeDate(arg));
     }
     if (isDate(arg)) {
-      return pageForDate(arg);
+      return this.getDateParts(arg);
     }
     if (isObject(arg)) {
       return arg;
@@ -583,19 +600,20 @@ export default class Locale {
     return this.getMonthDates().map(d => dtf.format(d));
   }
 
-  getWeekdayDates({
-    year = 2000,
-    utc = false,
-    firstDayOfWeek = this.firstDayOfWeek,
-  } = {}) {
+  getWeekdayDates(firstDayOfWeek = this.firstDayOfWeek) {
     const dates = [];
-    for (let i = 1, j = 0; j < daysInWeek; i++) {
-      const d = utc ? new Date(Date.UTC(year, 0, i)) : new Date(year, 0, i);
-      const day = utc ? d.getUTCDay() : d.getDay();
-      if (day === firstDayOfWeek - 1 || j > 0) {
-        dates.push(d);
-        j++;
-      }
+    const year = 2020;
+    const month = 1;
+    const day = 5 + firstDayOfWeek - 1;
+    for (let i = 0; i < daysInWeek; i++) {
+      dates.push(
+        this.getDateFromParts({
+          year,
+          month,
+          day: day + i,
+          hours: 12,
+        }),
+      );
     }
     return dates;
   }
@@ -603,11 +621,9 @@ export default class Locale {
   getDayNames(length) {
     const dtf = new Intl.DateTimeFormat(this.id, {
       weekday: length,
-      timeZone: 'UTC',
+      timeZone: this.timezone,
     });
-    return this.getWeekdayDates({ firstDayOfWeek: 1, utc: true }).map(d =>
-      dtf.format(d),
-    );
+    return this.getWeekdayDates(1).map(d => dtf.format(d));
   }
 
   // Days/month/year components for a given month and year
@@ -638,8 +654,8 @@ export default class Locale {
 
   // Days/month/year components for today's month
   getThisMonthComps() {
-    const date = new Date();
-    return this.getMonthComps(date.getMonth() + 1, date.getFullYear());
+    const { month, year } = this.getDateParts(new Date());
+    return this.getMonthComps(month, year);
   }
 
   // Day/month/year components for previous month
@@ -659,10 +675,7 @@ export default class Locale {
   }
 
   // Builds day components for a given page
-  getCalendarDays(
-    { weeks, monthComps, prevMonthComps, nextMonthComps },
-    timezone,
-  ) {
+  getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
     const { firstDayOfWeek, firstWeekday } = monthComps;
     const prevMonthDaysToShow =
@@ -694,10 +707,15 @@ export default class Locale {
     const todayMonth = today.getMonth() + 1;
     const todayYear = today.getFullYear();
     const dft = (y, m, d) => (hours, minutes, seconds, milliseconds) =>
-      this.normalizeDate(
-        { year: y, month: m, day: d, hours, minutes, seconds, milliseconds },
-        { timezone },
-      );
+      this.normalizeDate({
+        year: y,
+        month: m,
+        day: d,
+        hours,
+        minutes,
+        seconds,
+        milliseconds,
+      });
     // Cycle through 6 weeks (max in month)
     for (let w = 1; w <= weeks; w++) {
       // Cycle through days in week
@@ -728,12 +746,12 @@ export default class Locale {
         //  We don't know how the UI wants to display various days,
         //  so we'll supply all the data we can
         const dateFromTime = dft(year, month, day);
-        const date = dateFromTime(12, 0, 0, 0);
         const range = {
           start: dateFromTime(0, 0, 0),
           end: dateFromTime(23, 59, 59, 999),
         };
-        const id = this.getDayId(date);
+        const date = range.start;
+        const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
         const isToday =
