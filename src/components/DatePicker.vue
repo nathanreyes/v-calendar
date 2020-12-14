@@ -456,6 +456,7 @@ export default {
         opts.hidePopover = opts.hidePopover && !opts.isDragging;
         this.updateValue(this.dragTrackingValue, opts);
       } else {
+        opts.clearIfEqual = !this.isRequired;
         this.updateValue(day.date, opts);
       }
     },
@@ -551,6 +552,7 @@ export default {
         config = this.dateConfig,
         patch = PATCH_DATE_TIME,
         notify = true,
+        clearIfEqual = false,
         formatInput = true,
         hidePopover = false,
         adjustTime = false,
@@ -571,44 +573,55 @@ export default {
       }
 
       // 2. Validation (date or range)
-      if (
+      const isDisabled =
         this.hasValue(normalizedValue) &&
         this.disabledAttribute &&
-        this.disabledAttribute.intersectsDate(normalizedValue)
-      ) {
+        this.disabledAttribute.intersectsDate(normalizedValue);
+      if (isDisabled) {
         if (isDragging) return;
         normalizedValue = this.value_;
       }
 
-      // 3. Assignment
-      const valueKey = isDragging ? 'dragValue' : 'value_';
-      const valueChanged = !this.valuesAreEqual(
-        this[valueKey],
-        normalizedValue,
-      );
-      if (valueChanged) {
-        this.$set(this, valueKey, normalizedValue);
-        // Clear drag value if needed
-        if (!isDragging) this.dragValue = null;
-      }
-
-      // 4. Denormalization/Notification
-      if (notify && valueChanged) {
-        // 4A. Denormalization
-        const denormalizedValue = this.denormalizeValue(
+      // Only for valid values...
+      if (!isDisabled) {
+        // 3. Assignment
+        const valueKey = isDragging ? 'dragValue' : 'value_';
+        let valueChanged = !this.valuesAreEqual(
+          this[valueKey],
           normalizedValue,
-          this.dateConfig,
         );
-        // 4B. Notification
-        const event = this.isDragging ? 'drag' : 'input';
-        this.watchValue = false;
-        this.$emit(event, denormalizedValue);
-        this.$nextTick(() => (this.watchValue = true));
+        // Clear value if same value selected and not required
+        if (!valueChanged && clearIfEqual) {
+          normalizedValue = null;
+          valueChanged = true;
+        }
+        // Assign value
+        if (valueChanged) {
+          this.$set(this, valueKey, normalizedValue);
+          // Clear drag value if needed
+          if (!isDragging) this.dragValue = null;
+        }
+
+        // 4. Denormalization/Notification
+        if (notify && valueChanged) {
+          // 4A. Denormalization
+          const denormalizedValue = this.denormalizeValue(
+            normalizedValue,
+            this.dateConfig,
+          );
+          // 4B. Notification
+          const event = this.isDragging ? 'drag' : 'input';
+          this.watchValue = false;
+          this.$emit(event, denormalizedValue);
+          this.$nextTick(() => (this.watchValue = true));
+        }
+
+        // 5. Hide popover if needed
+        if (hidePopover) this.hidePopover();
       }
 
-      // 5. Side effects for non-inline pickers
+      // 6. Format inputs if needed
       if (formatInput) this.formatInput();
-      if (hidePopover) this.hidePopover();
     },
     hasValue(value) {
       if (this.isRange) {
