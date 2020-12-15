@@ -501,23 +501,19 @@ export default {
       };
     },
     onInputChange(config, isStart) {
-      const opts = {
-        config,
-        formatInput: true,
-        hidePopover: false,
-      };
       return e => {
         const inputValue = e.target.value;
-        if (this.isRange) {
-          this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
-          this.updateValue(
-            { start: this.inputValues[0], end: this.inputValues[1] },
-            opts,
-          );
-        } else {
-          this.inputValues.splice(0, 1, inputValue);
-          this.updateValue(inputValue, opts);
-        }
+        this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
+        const value = this.isRange
+          ? { start: this.inputValues[0], end: this.inputValues[1] }
+          : inputValue;
+        this.updateValue(value, {
+          config,
+          formatInput: true,
+          hidePopover: false,
+        }).then(() => {
+          this.adjustPageRange(isStart);
+        });
       };
     },
     onInputShow(isStart) {
