@@ -458,7 +458,7 @@ export default class Locale {
         dateParts.seconds = timeParts.seconds;
         dateParts.milliseconds = timeParts.milliseconds;
       } else {
-        var d = new Date(`2000-01-01T${timeAdjust}`);
+        const d = new Date(`2000-01-01T${timeAdjust}`);
         dateParts.hours = d.getHours();
         dateParts.minutes = d.getMinutes();
         dateParts.seconds = d.getSeconds();
