@@ -88,6 +88,7 @@
           :popover="popover"
           :is-dark="dark"
           :disabled-dates="disabledDates"
+          :is-required="isRequired"
         >
           <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
             <div class="flex items-center">
@@ -113,6 +114,7 @@
           :popover="popover"
           :is-dark="dark"
           :disabled-dates="disabledDates"
+          :is-required="isRequired"
           is-range
         >
           <template v-slot="{ inputValue, inputEvents }" v-if="!inline">
@@ -176,9 +178,10 @@ export default {
       minuteIncrement: 1,
       inline: false,
       dark: false,
-      utc: true,
+      utc: false,
+      isRequired: false,
       popover: {
-        visibility: 'hover',
+        visibility: 'hover-focus',
         transition: 'slide-fade',
       },
     };

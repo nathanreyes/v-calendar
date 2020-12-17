@@ -52,7 +52,7 @@
         <span class="text-gray-600 font-semibold tracking-wide"
           >Date (ISO):</span
         >
-        <span class="text-gray-800 ml-2">{{ date.toISOString() }}</span>
+        <span class="text-gray-800 ml-2">{{ date && date.toISOString() }}</span>
       </div>
     </template>
     <template v-else>

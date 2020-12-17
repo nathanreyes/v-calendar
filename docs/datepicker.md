@@ -201,7 +201,11 @@ To bind to a string value, provide a `model-config` with the necessary `type: 's
 <guide-datepicker-model-string />
 
 ```html
-<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+<v-date-picker
+  v-model="customer.birthday"
+  :model-config="modelConfig"
+  is-required
+  />
 ```
 
 ```js
@@ -620,17 +624,31 @@ Refer to the [disabling dates section](./dates.md#disabling-dates).
 
 ## Require Selected Date
 
-There are 3 ways to clear a selected date (`value = null`).
+Setting the `is-required` prop will prevent clearing the date value by deleting all text from the `input` element or re-selecting a picker date.
 
-1. Assign `null` to `value` prop or to local state variable that is bound to using `v-model`
-2. User toggles selected dates by clicking them on the calendar (only valid when `mode` is `"single"` or `"multiple"`)
-3. User clears the input element text and commits the change by pressing the `enter` key or changing focus (`blur` event)
+<guide-datepicker-is-required />
 
-You can prevent methods 2 and 3 by setting the `is-required` prop to `true`.
+```html
+<v-date-picker v-model="date" is-required>
+  <template v-slot="{ inputValue, inputEvents }">
+    <input
+      class="bg-white border px-2 py-1 rounded"
+      :value="inputValue"
+      v-on="inputEvents"
+    />
+  </template>
+</v-date-picker>
+```
 
-::: warning
-This effectively prevents the _user_ from clearing the value. The developer can still clear it via method 1.
-:::
+```js
+export default {
+  data() {
+    return {
+      date: new Date(),
+    };
+  },
+};
+```
 
 ## Customize Attributes
 

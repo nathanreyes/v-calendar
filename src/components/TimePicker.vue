@@ -204,6 +204,7 @@ export default {
           hours,
           minutes: this.minutes,
           seconds: 0,
+          milliseconds: 0,
         });
       });
     },

@@ -456,11 +456,13 @@ export default class Locale {
         dateParts.hours = timeParts.hours;
         dateParts.minutes = timeParts.minutes;
         dateParts.seconds = timeParts.seconds;
+        dateParts.milliseconds = timeParts.milliseconds;
       } else {
-        const timeParts = timeAdjust.split(':');
-        dateParts.hours = +timeParts[0];
-        dateParts.minutes = +timeParts[1];
-        dateParts.seconds = +timeParts[2];
+        const d = new Date(`2000-01-01T${timeAdjust}`);
+        dateParts.hours = d.getHours();
+        dateParts.minutes = d.getMinutes();
+        dateParts.seconds = d.getSeconds();
+        dateParts.milliseconds = d.getMilliseconds();
       }
       date = this.getDateFromParts(dateParts);
     }
@@ -483,9 +485,11 @@ export default class Locale {
       const normDate = new Date(
         date.toLocaleString('en-US', { timeZone: this.timezone }),
       );
+      normDate.setMilliseconds(date.getMilliseconds());
       const diff = normDate.getTime() - date.getTime();
       tzDate = new Date(date.getTime() + diff);
     }
+    const milliseconds = tzDate.getMilliseconds();
     const seconds = tzDate.getSeconds();
     const minutes = tzDate.getMinutes();
     const hours = tzDate.getHours();
@@ -502,6 +506,7 @@ export default class Locale {
     );
     const weekFromEnd = comps.weeks - week + 1;
     const parts = {
+      milliseconds,
       seconds,
       minutes,
       hours,
