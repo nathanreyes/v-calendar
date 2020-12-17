@@ -179,7 +179,7 @@ export default {
       inline: false,
       dark: false,
       utc: false,
-      isRequired: true,
+      isRequired: false,
       popover: {
         visibility: 'hover-focus',
         transition: 'slide-fade',

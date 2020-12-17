@@ -1,7 +1,11 @@
 <template>
   <div class="example">
     <div class="flex">
-      <v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+      <v-date-picker
+        v-model="customer.birthday"
+        :model-config="modelConfig"
+        is-required
+      />
       <div class="ml-4 text-sm">
         <h4 class="text-gray-700">Customer Info</h4>
         <div class="flex">

@@ -201,7 +201,11 @@ To bind to a string value, provide a `model-config` with the necessary `type: 's
 <guide-datepicker-model-string />
 
 ```html
-<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
+<v-date-picker
+  v-model="customer.birthday"
+  :model-config="modelConfig"
+  is-required
+  />
 ```
 
 ```js
