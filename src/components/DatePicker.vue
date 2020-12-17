@@ -563,6 +563,11 @@ export default {
         isDragging,
       );
 
+      // Reset to previous value if it was cleared but is required
+      if (!normalizedValue && this.isRequired) {
+        normalizedValue = this.value_;
+      }
+
       // Time Adjustment
       if (adjustTime) {
         normalizedValue = this.adjustTimeForValue(normalizedValue, config);
@@ -576,45 +581,43 @@ export default {
       if (isDisabled) {
         if (isDragging) return;
         normalizedValue = this.value_;
+        // Don't allow hiding popover
+        hidePopover = false;
       }
 
-      // Only for valid values...
-      if (!isDisabled) {
-        // 3. Assignment
-        const valueKey = isDragging ? 'dragValue' : 'value_';
-        let valueChanged = !this.valuesAreEqual(
-          this[valueKey],
+      // 3. Assignment
+      const valueKey = isDragging ? 'dragValue' : 'value_';
+      let valueChanged = !this.valuesAreEqual(this[valueKey], normalizedValue);
+
+      // Clear value if same value selected and clearIfEqual is set
+      if (!isDisabled && !valueChanged && clearIfEqual) {
+        normalizedValue = null;
+        valueChanged = true;
+      }
+
+      // Assign value
+      if (valueChanged) {
+        this.$set(this, valueKey, normalizedValue);
+        // Clear drag value if needed
+        if (!isDragging) this.dragValue = null;
+      }
+
+      // 4. Denormalization/Notification
+      if (notify && valueChanged) {
+        // 4A. Denormalization
+        const denormalizedValue = this.denormalizeValue(
           normalizedValue,
+          this.dateConfig,
         );
-        // Clear value if same value selected and not required
-        if (!valueChanged && clearIfEqual) {
-          normalizedValue = null;
-          valueChanged = true;
-        }
-        // Assign value
-        if (valueChanged) {
-          this.$set(this, valueKey, normalizedValue);
-          // Clear drag value if needed
-          if (!isDragging) this.dragValue = null;
-        }
-
-        // 4. Denormalization/Notification
-        if (notify && valueChanged) {
-          // 4A. Denormalization
-          const denormalizedValue = this.denormalizeValue(
-            normalizedValue,
-            this.dateConfig,
-          );
-          // 4B. Notification
-          const event = this.isDragging ? 'drag' : 'input';
-          this.watchValue = false;
-          this.$emit(event, denormalizedValue);
-          this.$nextTick(() => (this.watchValue = true));
-        }
-
-        // 5. Hide popover if needed
-        if (hidePopover) this.hidePopover();
+        // 4B. Notification
+        const event = this.isDragging ? 'drag' : 'input';
+        this.watchValue = false;
+        this.$emit(event, denormalizedValue);
+        this.$nextTick(() => (this.watchValue = true));
       }
+
+      // 5. Hide popover if needed
+      if (hidePopover) this.hidePopover();
 
       // 6. Format inputs if needed
       if (formatInput) this.formatInput();
@@ -655,8 +658,8 @@ export default {
       return this.getDateFromParts(result);
     },
     adjustTimeForValue(value, config) {
+      if (!this.hasValue(value)) return null;
       if (this.isRange) {
-        if (!this.hasValue(value)) return null;
         return {
           start: this.$locale.adjustTimeForDate(
             value.start,
