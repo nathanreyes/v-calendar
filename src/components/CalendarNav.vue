@@ -47,7 +47,7 @@
         role="button"
         :aria-label="item.ariaLabel"
         :class="getItemClasses(item)"
-        :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
+        :tabindex="item.isDisabled ? undefined : 0"
         @click="item.click"
         @keydown="e => onSpaceOrEnter(e, item.click)"
       >
@@ -152,11 +152,9 @@ export default {
     getItemClasses({ isActive, isCurrent, isDisabled }) {
       const classes = ['vc-nav-item'];
       if (isActive) {
-        classes.push('is-active', 'vc-grid-focus');
+        classes.push('is-active');
       } else if (isCurrent) {
-        classes.push('is-inactive-current');
-      } else {
-        classes.push('is-inactive');
+        classes.push('is-current');
       }
       if (isDisabled) {
         classes.push('is-disabled');
@@ -279,14 +277,10 @@ export default {
   &.is-active {
     color: var(--accent-900);
     background: var(--accent-100);
-    border-color: transparent;
     font-weight: var(--font-bold);
     box-shadow: var(--shadow);
   }
-  &.is-inactive {
-    border-color: transparent;
-  }
-  &:is-inactive-current {
+  &:is-current {
     color: var(--accent-100);
     font-weight: var(--bold);
     border-color: var(--accent-100);
@@ -328,7 +322,7 @@ export default {
       color: var(--white);
       background: var(--accent-500);
     }
-    &.is-inactive-current {
+    &.is-current {
       color: var(--accent-600);
       border-color: var(--accent-500);
     }
