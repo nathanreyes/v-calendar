@@ -199,7 +199,9 @@ export default {
                     {
                       class: 'vc-pane-layout',
                       style: {
-                        gridTemplateColumns: `repeat(${this.columns}, minmax(256px, 1fr)`,
+                        gridTemplateColumns: `repeat(${
+                          this.columns
+                        }, minmax(${this.minPaneWidth || 0}, 1fr)`,
                       },
                       attrs: {
                         ...this.$attrs,
@@ -254,6 +256,10 @@ export default {
     attributes: [Object, Array],
     trimWeeks: Boolean,
     disablePageSwipe: Boolean,
+    minPaneWidth: {
+      type: String,
+      default: '250px',
+    },
   },
   data() {
     return {
