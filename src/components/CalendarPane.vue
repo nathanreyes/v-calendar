@@ -183,7 +183,6 @@ export default {
 .vc-header {
   flex-shrink: 0;
   display: flex;
-  align-items: stretch;
   color: var(--gray-900);
   user-select: none;
   padding: 10px 10px 0 10px;
@@ -222,23 +221,9 @@ export default {
   user-select: none;
   white-space: nowrap;
   padding: 0 8px;
-  line-height: 27px;
   &:hover {
     opacity: 0.75;
   }
-}
-
-.vc-weekday {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  color: var(--gray-500);
-  font-size: var(--text-sm);
-  font-weight: var(--font-bold);
-  padding: 5px 0;
-  cursor: default;
-  user-select: none;
 }
 
 .vc-weeks {
@@ -250,6 +235,19 @@ export default {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding: 5px 6px 7px 6px;
+}
+
+.vc-weekday {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  color: var(--gray-500);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  padding: 2px 0 4px 0;
+  cursor: default;
+  user-select: none;
 }
 
 .vc-is-dark {
