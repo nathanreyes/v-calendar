@@ -435,9 +435,7 @@ export default {
 <style lang="postcss" scoped>
 .vc-day {
   position: relative;
-  min-height: 28px;
   width: 100%;
-  height: 100%;
   z-index: 1;
   &.is-not-in-month * {
     opacity: 0;
@@ -458,7 +456,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
   transform-origin: 50% 50%;
 }
 
@@ -466,7 +463,6 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 100%;
   transform-origin: 0% 50%;
 }
 
@@ -474,7 +470,6 @@ export default {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  height: 100%;
   transform-origin: 100% 50%;
 }
 
@@ -492,7 +487,8 @@ export default {
   font-weight: var(--font-medium);
   width: 28px;
   height: 28px;
-  margin: 1.6px auto;
+  line-height: 28px;
+  margin: 1px;
   border-radius: var(--rounded-full);
   user-select: none;
   cursor: pointer;
