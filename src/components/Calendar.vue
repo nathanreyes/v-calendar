@@ -4,7 +4,6 @@ import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Popover from './Popover';
 import PopoverRow from './PopoverRow';
-import Grid from './Grid';
 import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
@@ -196,14 +195,11 @@ export default {
                 },
                 [
                   h(
-                    Grid,
+                    'div',
                     {
-                      class: 'grid',
-                      props: {
-                        rows: this.rows,
-                        columns: this.columns,
-                        columnWidth: 'minmax(256px, 1fr)',
-                        disableFocus: true,
+                      style: {
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${this.columns}, minmax(256px, 1fr)`,
                       },
                       attrs: {
                         ...this.$attrs,

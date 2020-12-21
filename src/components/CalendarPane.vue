@@ -2,7 +2,6 @@
 import Popover from './Popover';
 import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
-import Grid from './Grid';
 import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { getPopoverTriggerEvents } from '../utils/popovers';
 import { createGuid } from '../utils/helpers';
@@ -68,15 +67,9 @@ export default {
 
     // Weeks
     const weeks = h(
-      Grid,
+      'div',
       {
         class: 'vc-weeks',
-        props: {
-          rows: this.page.weeks + 1,
-          columns: 7,
-          columnWidth: '1fr',
-          disableFocus: true,
-        },
       },
       [
         ...this.weekdayLabels.map((wl, i) =>
@@ -251,6 +244,11 @@ export default {
 .vc-weeks {
   flex-shrink: 1;
   flex-grow: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  position: relative;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 5px 6px 7px 6px;
 }
 
