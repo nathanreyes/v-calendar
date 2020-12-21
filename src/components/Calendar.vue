@@ -197,8 +197,8 @@ export default {
                   h(
                     'div',
                     {
+                      class: 'vc-pane-layout',
                       style: {
-                        display: 'grid',
                         gridTemplateColumns: `repeat(${this.columns}, minmax(256px, 1fr)`,
                       },
                       attrs: {
@@ -757,6 +757,10 @@ export default {
   &.in-transition {
     overflow: hidden;
   }
+}
+
+.vc-pane-layout {
+  display: grid;
 }
 
 .vc-arrow {
