@@ -199,9 +199,9 @@ export default {
                     {
                       class: 'vc-pane-layout',
                       style: {
-                        gridTemplateColumns: `repeat(${
-                          this.columns
-                        }, minmax(${this.minPaneWidth || 0}, 1fr)`,
+                        gridTemplateColumns: `repeat(${this.columns}, minmax(${
+                          this.minPaneWidth || 0
+                        }, 1fr)`,
                       },
                       attrs: {
                         ...this.$attrs,
@@ -258,7 +258,7 @@ export default {
     disablePageSwipe: Boolean,
     minPaneWidth: {
       type: String,
-      default: '250px',
+      default: '254px',
     },
   },
   data() {

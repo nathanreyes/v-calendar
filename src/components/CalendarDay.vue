@@ -489,7 +489,6 @@ export default {
   width: 28px;
   height: 28px;
   line-height: 28px;
-  margin: 1px;
   border-radius: var(--rounded-full);
   user-select: none;
   cursor: pointer;
