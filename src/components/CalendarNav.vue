@@ -7,7 +7,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-left"
-        tabindex="-1"
+        tabindex="0"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
       >
@@ -30,7 +30,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-right"
-        tabindex="-1"
+        tabindex="0"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
       >
