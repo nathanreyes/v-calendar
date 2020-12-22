@@ -437,6 +437,7 @@ export default {
   position: relative;
   width: 100%;
   z-index: 1;
+  height: 32px;
   &.is-not-in-month * {
     opacity: 0;
     pointer-events: none;

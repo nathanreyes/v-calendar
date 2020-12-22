@@ -240,6 +240,7 @@ export default {
   border-width: 2px;
   border-style: solid;
   border-color: transparent;
+  user-select: none;
   &:hover {
     background-color: var(--gray-900);
   }
@@ -266,6 +267,7 @@ export default {
   border-width: 2px;
   border-style: solid;
   border-radius: var(--rounded);
+  user-select: none;
   &:hover {
     color: var(--white);
     background-color: var(--gray-900);
