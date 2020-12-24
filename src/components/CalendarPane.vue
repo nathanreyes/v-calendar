@@ -155,6 +155,10 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.vc-pane {
+  min-width: 250px;
+}
+
 .vc-header {
   display: flex;
   justify-content: center;
@@ -181,8 +185,6 @@ export default {
 }
 
 .vc-weeks {
-  flex-shrink: 1;
-  flex-grow: 1;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   position: relative;
