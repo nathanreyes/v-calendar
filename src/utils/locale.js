@@ -748,7 +748,7 @@ export default class Locale {
         days.push({
           id,
           label: day.toString(),
-          ariaLabel: formatter.format(new Date(year, month, day)),
+          ariaLabel: formatter.format(new Date(year, month - 1, day)),
           day,
           dayFromEnd,
           weekday,
