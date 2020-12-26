@@ -435,8 +435,7 @@ export default {
 <style lang="postcss" scoped>
 .vc-day {
   position: relative;
-  min-height: 30px;
-  width: 100%;
+  min-height: 32px;
   z-index: 1;
   &.is-not-in-month * {
     opacity: 0;
