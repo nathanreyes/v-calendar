@@ -2,15 +2,14 @@
   <!--Nav panel-->
   <div class="vc-nav-container">
     <!--Nav header-->
-    <grid :columns="3" ref="headerGrid" @rollover="onHeaderRollover">
+    <div class="vc-nav-header">
       <!--Move prev button-->
       <span
         role="button"
         class="vc-nav-arrow is-left"
-        tabindex="-1"
+        tabindex="0"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
-        ref="prevButton"
       >
         <slot name="nav-left-button">
           <svg-icon name="left-arrow" width="20px" height="24px" />
@@ -24,7 +23,6 @@
         tabindex="0"
         @click="toggleMode"
         @keydown="e => onSpaceOrEnter(e, toggleMode)"
-        ref="titleButton"
       >
         {{ title }}
       </span>
@@ -32,43 +30,34 @@
       <span
         role="button"
         class="vc-nav-arrow is-right"
-        tabindex="-1"
+        tabindex="0"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
-        ref="nextButton"
       >
         <slot name="nav-right-button">
           <svg-icon name="right-arrow" width="20px" height="24px" />
         </slot>
       </span>
-    </grid>
+    </div>
     <!--Navigation items-->
-    <grid
-      :rows="4"
-      :columns="3"
-      gap="2px 5px"
-      ref="itemsGrid"
-      @rollover="onItemsRollover"
-    >
+    <div class="vc-nav-items">
       <span
         v-for="item in activeItems"
         :key="item.label"
         role="button"
         :aria-label="item.ariaLabel"
         :class="getItemClasses(item)"
-        :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
+        :tabindex="item.isDisabled ? undefined : 0"
         @click="item.click"
         @keydown="e => onSpaceOrEnter(e, item.click)"
-        ref="items"
       >
         {{ item.label }}
       </span>
-    </grid>
+    </div>
   </div>
 </template>
 
 <script>
-import Grid from './Grid';
 import SvgIcon from './SvgIcon';
 import { childMixin } from '../utils/mixins';
 import { head, last } from '../utils/_';
@@ -79,7 +68,6 @@ const _yearGroupCount = 12;
 export default {
   name: 'CalendarNav',
   components: {
-    Grid,
     SvgIcon,
   },
   mixins: [childMixin],
@@ -160,18 +148,13 @@ export default {
   created() {
     this.yearIndex = this.year;
   },
-  mounted() {
-    this.$refs.itemsGrid.tryFocus();
-  },
   methods: {
     getItemClasses({ isActive, isCurrent, isDisabled }) {
       const classes = ['vc-nav-item'];
       if (isActive) {
-        classes.push('is-active', 'vc-grid-focus');
+        classes.push('is-active');
       } else if (isCurrent) {
-        classes.push('is-inactive-current');
-      } else {
-        classes.push('is-inactive');
+        classes.push('is-current');
       }
       if (isDisabled) {
         classes.push('is-disabled');
@@ -187,7 +170,6 @@ export default {
     yearClick(year) {
       this.yearIndex = year;
       this.monthMode = true;
-      this.$refs.itemsGrid.tryFocus();
     },
     toggleMode() {
       this.monthMode = !this.monthMode;
@@ -216,40 +198,16 @@ export default {
     moveNextYearGroup() {
       this.yearGroupIndex++;
     },
-    onHeaderRollover(e) {
-      switch (e.direction) {
-        case 'vertical-trailing':
-          this.$refs.itemsGrid.tryFocus();
-          break;
-      }
-      e.handled = true;
-    },
-    onItemsRollover(e) {
-      switch (e.direction) {
-        case 'horizontal-leading': {
-          this.movePrev();
-          break;
-        }
-        case 'horizontal-trailing': {
-          this.moveNext();
-          break;
-        }
-        case 'vertical-leading': {
-          this.$refs.headerGrid.tryFocus();
-          e.handled = true;
-          break;
-        }
-        case 'vertical-trailing': {
-          e.handled = true;
-          break;
-        }
-      }
-    },
   },
 };
 </script>
 
 <style lang="postcss">
+.vc-nav-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 .vc-nav-arrow {
   display: flex;
   justify-content: center;
@@ -282,12 +240,20 @@ export default {
   border-width: 2px;
   border-style: solid;
   border-color: transparent;
+  user-select: none;
   &:hover {
     background-color: var(--gray-900);
   }
   &:focus {
     border-color: var(--accent-600);
   }
+}
+
+.vc-nav-items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-row-gap: 2px;
+  grid-column-gap: 5px;
 }
 
 .vc-nav-item {
@@ -301,6 +267,7 @@ export default {
   border-width: 2px;
   border-style: solid;
   border-radius: var(--rounded);
+  user-select: none;
   &:hover {
     color: var(--white);
     background-color: var(--gray-900);
@@ -312,14 +279,10 @@ export default {
   &.is-active {
     color: var(--accent-900);
     background: var(--accent-100);
-    border-color: transparent;
     font-weight: var(--font-bold);
     box-shadow: var(--shadow);
   }
-  &.is-inactive {
-    border-color: transparent;
-  }
-  &:is-inactive-current {
+  &:is-current {
     color: var(--accent-100);
     font-weight: var(--bold);
     border-color: var(--accent-100);
@@ -361,7 +324,7 @@ export default {
       color: var(--white);
       background: var(--accent-500);
     }
-    &.is-inactive-current {
+    &.is-current {
       color: var(--accent-600);
       border-color: var(--accent-500);
     }
