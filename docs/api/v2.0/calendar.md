@@ -344,7 +344,7 @@ Calling `move(num)` with a **positive** number will move **forwards** by a given
 Calling `move(num)` with a **negative** number will move **backwards** by a given number of months.
 
 ```html
-<v-calendar ref="calendar">
+<v-calendar ref="calendar" />
 ```
 
 ```js
