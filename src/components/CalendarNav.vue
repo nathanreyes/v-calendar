@@ -282,7 +282,7 @@ export default {
     font-weight: var(--font-bold);
     box-shadow: var(--shadow);
   }
-  &:is-current {
+  &.is-current {
     color: var(--accent-100);
     font-weight: var(--bold);
     border-color: var(--accent-100);
