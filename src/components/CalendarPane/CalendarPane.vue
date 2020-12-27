@@ -59,7 +59,7 @@ export default {
         class: 'vc-weeks',
       },
       [
-        ...this.weekdayLabels.map((wl, i) => {
+        ...this.weekdayLabels.map((wl, i) =>
           h(
             'div',
             {
@@ -67,8 +67,8 @@ export default {
               class: 'vc-weekday',
             },
             [wl],
-          );
-        }),
+          ),
+        ),
         ...this.page.days.map(day =>
           h(CalendarDay, {
             ...this.$attrs,
