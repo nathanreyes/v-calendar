@@ -463,6 +463,7 @@ export default {
         opts.hidePopover = opts.hidePopover && !opts.isDragging;
         this.updateValue(this.dragTrackingValue, opts);
       } else {
+        opts.clearIfEqual = !this.isRequired;
         this.updateValue(day.date, opts);
       }
     },
@@ -505,23 +506,19 @@ export default {
       };
     },
     onInputChange(config, isStart) {
-      const opts = {
-        config,
-        formatInput: true,
-        hidePopover: false,
-      };
       return e => {
         const inputValue = e.target.value;
-        if (this.isRange) {
-          this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
-          this.updateValue(
-            { start: this.inputValues[0], end: this.inputValues[1] },
-            opts,
-          );
-        } else {
-          this.inputValues.splice(0, 1, inputValue);
-          this.updateValue(inputValue, opts);
-        }
+        this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
+        const value = this.isRange
+          ? { start: this.inputValues[0], end: this.inputValues[1] }
+          : inputValue;
+        this.updateValue(value, {
+          config,
+          formatInput: true,
+          hidePopover: false,
+        }).then(() => {
+          this.adjustPageRange(isStart);
+        });
       };
     },
     onInputShow(isStart) {
@@ -556,6 +553,7 @@ export default {
         config = this.dateConfig,
         patch = PATCH_DATE_TIME,
         notify = true,
+        clearIfEqual = false,
         formatInput = true,
         hidePopover = false,
         adjustTime = false,
@@ -570,27 +568,39 @@ export default {
         isDragging,
       );
 
+      // Reset to previous value if it was cleared but is required
+      if (!normalizedValue && this.isRequired) {
+        normalizedValue = this.value_;
+      }
+
       // Time Adjustment
       if (adjustTime) {
         normalizedValue = this.adjustTimeForValue(normalizedValue, config);
       }
 
       // 2. Validation (date or range)
-      if (
+      const isDisabled =
         this.hasValue(normalizedValue) &&
         this.disabledAttribute &&
-        this.disabledAttribute.intersectsDate(normalizedValue)
-      ) {
+        this.disabledAttribute.intersectsDate(normalizedValue);
+      if (isDisabled) {
         if (isDragging) return;
         normalizedValue = this.value_;
+        // Don't allow hiding popover
+        hidePopover = false;
       }
 
       // 3. Assignment
       const valueKey = isDragging ? 'dragValue' : 'value_';
-      const valueChanged = !this.valuesAreEqual(
-        this[valueKey],
-        normalizedValue,
-      );
+      let valueChanged = !this.valuesAreEqual(this[valueKey], normalizedValue);
+
+      // Clear value if same value selected and clearIfEqual is set
+      if (!isDisabled && !valueChanged && clearIfEqual) {
+        normalizedValue = null;
+        valueChanged = true;
+      }
+
+      // Assign value
       if (valueChanged) {
         this[valueKey] = normalizedValue;
         // Clear drag value if needed
@@ -611,8 +621,10 @@ export default {
         this.$nextTick(() => (this.watchValue = true));
       }
 
-      // 5. Side effects for non-inline pickers
+      // 5. Hide popover if needed
       if (formatInput) this.formatInput();
+
+      // 6. For inputs if needed
       if (hidePopover) this.hidePopover();
     },
     hasValue(value) {
@@ -651,8 +663,8 @@ export default {
       return this.getDateFromParts(result);
     },
     adjustTimeForValue(value, config) {
+      if (!this.hasValue(value)) return null;
       if (this.isRange) {
-        if (!this.hasValue(value)) return null;
         return {
           start: this.$locale.adjustTimeForDate(
             value.start,
@@ -719,7 +731,7 @@ export default {
       });
     },
     hidePopover(opts = {}) {
-      hp({ ...opts, id: this.datePickerPopoverId });
+      hp({ hideDelay: 10, ...opts, id: this.datePickerPopoverId });
     },
     togglePopover(opts) {
       tp({

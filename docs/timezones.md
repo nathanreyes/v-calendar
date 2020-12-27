@@ -216,6 +216,30 @@ export default {
 
 ### Time Assignment
 
-Similarly, if `mode === 'date'` and the `modelConfig.timeAssign` has been explicitly set, then the assigned time will use the locally assigned `timezone` if one has been set, or the local browser's timezone otherwise.
+Similarly, if `mode === 'date'` and the `modelConfig.timeAssign` has been explicitly set, then the assigned time will reflect the assigned `timezone` or the local browser's timezone otherwise.
 
 <guide-timezones-picker-date />
+
+```html
+<v-date-picker
+  v-model="dateRange"
+  :model-config="modelConfig"
+  is-range
+/>
+```
+
+```js
+export default {
+  data() {
+    return {
+      dateRange: {
+        start: new Date(2020, 0, 6),
+        end: new Date(2020, 0, 10),
+      },
+      modelConfig: {
+        timeAdjust: '12:00:00',
+      },
+    };
+  },
+};
+```
