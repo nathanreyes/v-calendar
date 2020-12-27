@@ -1,5 +1,4 @@
 import DateInfo from '@/utils/dateInfo';
-import Locale from '../../../src/utils/locale';
 import { addDays } from 'date-fns';
 
 describe('addDays', () => {
@@ -18,7 +17,7 @@ describe('addDays', () => {
 });
 
 describe('DateInfo simple date', () => {
-  const date = new DateInfo(new Date(2018, 0, 1));
+  const date = new DateInfo(new Date(2018, 0, 1), { isFullDay: true });
   it('should include simple date', () => {
     expect(date.includesDate(new Date(2018, 0, 1))).toEqual(true);
   });
@@ -59,23 +58,38 @@ describe('DateInfo date range', () => {
     const ranges = [
       {
         range: { start: null, end: null },
-        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 15) },
+        result: {
+          start: new Date(2018, 0, 1),
+          end: new Date(2018, 0, 15, 23, 59, 59),
+        },
       },
       {
         range: { start: null, end: new Date(2018, 0, 1) },
-        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 1) },
+        result: {
+          start: new Date(2018, 0, 1),
+          end: new Date(2018, 0, 1, 23, 59, 59),
+        },
       },
       {
         range: { start: new Date(2017, 11, 31), end: new Date(2018, 0, 1) },
-        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 1) },
+        result: {
+          start: new Date(2018, 0, 1),
+          end: new Date(2018, 0, 1, 23, 59, 59),
+        },
       },
       {
         range: { start: new Date(2017, 11, 31), end: new Date(2018, 0, 16) },
-        result: { start: new Date(2018, 0, 1), end: new Date(2018, 0, 15) },
+        result: {
+          start: new Date(2018, 0, 1),
+          end: new Date(2018, 0, 15, 23, 59, 59),
+        },
       },
       {
         range: { start: new Date(2018, 0, 15), end: null },
-        result: { start: new Date(2018, 0, 15), end: new Date(2018, 0, 15) },
+        result: {
+          start: new Date(2018, 0, 15),
+          end: new Date(2018, 0, 15, 23, 59, 59),
+        },
       },
       {
         range: { start: null, end: new Date(2017, 11, 31) },

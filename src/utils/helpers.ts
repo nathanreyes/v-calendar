@@ -64,14 +64,6 @@ export const pageIsEqualToPage = (aPage: Page, bPage: Page): boolean => {
   return aPage.month === bPage.month && aPage.year === bPage.year;
 };
 
-export const pageForDate = (date: Date): Page | null => {
-  if (!date) return null;
-  return {
-    month: date.getMonth() + 1,
-    year: date.getFullYear(),
-  };
-};
-
 export const addPages = ({ month, year }: Page, count: number): Page => {
   const incr = count > 0 ? 1 : -1;
   for (let i = 0; i < Math.abs(count); i++) {
@@ -89,12 +81,6 @@ export const addPages = ({ month, year }: Page, count: number): Page => {
     year,
   };
 };
-
-export const pageForThisMonth = (): Page => pageForDate(new Date()) as Page;
-
-export const pageForNextMonth = () => addPages(pageForThisMonth(), 1);
-
-export const pageForPrevMonth = () => addPages(pageForThisMonth(), -1);
 
 export const getMaxPage = (...args: Array<Page>) =>
   args.reduce((prev, curr) => {
