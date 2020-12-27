@@ -1,7 +1,14 @@
 import { App, reactive } from 'vue';
 import buildMediaQuery from './buildMediaQuery';
 import defaultScreens from './defaults/screens.json';
-import { defaultsDeep, isUndefined, mapValues, toPairs, has } from './_';
+import {
+  defaultsDeep,
+  isUndefined,
+  mapValues,
+  toPairs,
+  isFunction,
+  has,
+} from './_';
 
 declare const window: any;
 
@@ -34,7 +41,12 @@ export default {
       if (!shouldRefreshQueries || !window || !window.matchMedia) return;
       state.queries = mapValues(screens, (v: string) => {
         const query = window.matchMedia(buildMediaQuery(v));
-        query.addEventListener('change', refreshMatches);
+        if (isFunction(query.addEventListener)) {
+          query.addEventListener('change', refreshMatches);
+        } else {
+          // Deprecated 'MediaQueryList' API, < Safari 14, < Edge 16
+          query.addListener(refreshMatches);
+        }
         return query;
       });
       shouldRefreshQueries = false;
