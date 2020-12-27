@@ -176,6 +176,7 @@ export default {
   font-size: var(--text-lg);
   color: var(--gray-800);
   font-weight: var(--font-semibold);
+  line-height: 28px;
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
@@ -194,13 +195,13 @@ export default {
 }
 
 .vc-weekday {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
   color: var(--gray-500);
   font-size: var(--text-sm);
   font-weight: var(--font-bold);
-  height: 28px;
+  line-height: 14px;
+  padding-top: 4px;
+  padding-bottom: 8px;
   cursor: default;
   user-select: none;
 }
