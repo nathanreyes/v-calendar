@@ -267,12 +267,6 @@ export default {
     popover_() {
       return this.propOrDefault('popover', 'datePicker.popover', 'merge');
     },
-    canHidePopover() {
-      return !(
-        this.popover.keepVisibleOnInput ||
-        this.popover_.visibility !== 'visible'
-      );
-    },
     selectAttribute_() {
       if (!this.hasValue(this.value_)) return null;
       const attribute = {
@@ -447,11 +441,13 @@ export default {
       this.$emit('daykeydown', day);
     },
     handleDayClick(day) {
+      const { keepVisibleOnInput, visibility } = this.popover_;
       const opts = {
         patch: PATCH_DATE,
         adjustTime: true,
         formatInput: true,
-        hidePopover: this.isDate,
+        hidePopover:
+          this.isDate && !keepVisibleOnInput && visibility !== 'visible',
       };
       if (this.isRange) {
         if (!this.isDragging) {

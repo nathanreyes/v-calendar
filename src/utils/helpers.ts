@@ -99,19 +99,6 @@ export function datesAreEqual(a: any, b: any): boolean {
 
 export const arrayHasItems = (array: Array<any>): boolean =>
   isArray(array) && array.length > 0;
-
-export const findAncestor = (
-  el: Element | null,
-  fn: Function,
-): Element | null => {
-  if (!el) return null;
-  if (fn && fn(el)) return el;
-  return findAncestor(el.parentElement, fn);
-};
-
-export const elementHasAncestor = (el: Element, ancestor: Element) =>
-  !!findAncestor(el, (e: Element) => e === ancestor);
-
 export interface ElementPosition {
   top: number;
   left: number;
