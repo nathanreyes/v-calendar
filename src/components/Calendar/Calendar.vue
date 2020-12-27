@@ -5,7 +5,6 @@ import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Popover from '../Popover/Popover.vue';
 import PopoverRow from '../PopoverRow/PopoverRow.vue';
-import Grid from '../Grid/Grid.vue';
 import CalendarPane from '../CalendarPane/CalendarPane.vue';
 import CustomTransition from '../CustomTransition/CustomTransition.vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
@@ -158,42 +157,38 @@ export default {
               {
                 default: () =>
                   h(
-                    Grid,
+                    'div',
                     {
                       ...this.$attrs,
-                      class: 'grid',
-                      items: this.pages,
-                      rows: this.rows,
-                      columns: this.columns,
-                      columnWidth: 'minmax(256px, 1fr)',
-                      disableFocus: true,
-                      key: arrayHasItems(this.pages) ? this.pages[0].key : '',
+                      class: 'vc-pane-layout',
+                      style: {
+                        gridTemplateColumns: `repeat(${this.columns}, 1fr)`,
+                      },
                     },
-                    {
-                      cell: ({ item: page, position }) =>
-                        h(CalendarPane, {
-                          ...this.$attrs,
-                          key: page && page.key,
-                          attributes: this.store,
-                          titlePosition: this.titlePosition_,
-                          page,
-                          minPage: this.minPage_,
-                          maxPage: this.maxPage_,
-                          canMove: this.canMove,
-                          'onUpdate:page': e => {
-                            this.refreshPages({ page: e, position });
-                          },
-                          onDayfocusin: e => {
-                            this.lastFocusedDay = e;
-                            this.$emit('dayfocusin', e);
-                          },
-                          onDayfocusout: e => {
-                            this.lastFocusedDay = null;
-                            this.$emit('dayfocusout', e);
-                          },
-                          slots: this.$slots,
-                        }),
-                    },
+                    this.pages.map((page, i) =>
+                      h(CalendarPane, {
+                        ...this.$attrs,
+                        key: page && page.key,
+                        attributes: this.store,
+                        titlePosition: this.titlePosition_,
+                        page,
+                        minPage: this.minPage_,
+                        maxPage: this.maxPage_,
+                        canMove: this.canMove,
+                        'onUpdate:page': e => {
+                          this.refreshPages({ page: e, position: i + 1 });
+                        },
+                        onDayfocusin: e => {
+                          this.lastFocusedDay = e;
+                          this.$emit('dayfocusin', e);
+                        },
+                        onDayfocusout: e => {
+                          this.lastFocusedDay = null;
+                          this.$emit('dayfocusout', e);
+                        },
+                        slots: this.$slots,
+                      }),
+                    ),
                   ),
               },
             ),

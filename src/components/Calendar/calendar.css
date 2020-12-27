@@ -8,6 +8,10 @@
   }
 }
 
+.vc-pane-layout {
+  display: grid;
+}
+
 .vc-arrow {
   display: flex;
   justify-content: center;

@@ -3,7 +3,6 @@ import { h } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
-import Grid from '../Grid/Grid.vue';
 import { childMixin, slotMixin } from '../../utils/mixins';
 import { getPopoverTriggerEvents } from '../../utils/popovers';
 import { createGuid } from '../../utils/helpers';
@@ -17,93 +16,67 @@ export default {
     // Header
     const header =
       this.safeSlot('header', this.page) ||
-      h('div', { class: 'vc-header' }, [
+      // Default header
+      h('div', { class: `vc-header align-${this.titlePosition}` }, [
         // Header title
         h(
           'div',
           {
-            class: `vc-title-layout align-${this.titlePosition}`,
+            class: 'vc-title',
+            ...this.navPopoverEvents,
           },
-          [
-            h('div', { class: 'vc-title-wrapper' }, [
-              // Title content
+          [this.safeSlot('header-title', this.page, this.page.title)],
+        ),
+        // Navigation popover
+        h(
+          Popover,
+          {
+            id: this.navPopoverId,
+            contentClass: 'vc-nav-popover-container',
+          },
+          {
+            // Navigation pane
+            default: () =>
               h(
-                'div',
+                CalendarNav,
                 {
-                  class: 'vc-title',
-                  ...this.navPopoverEvents,
-                },
-                [this.safeSlot('header-title', this.page, this.page.title)],
-              ),
-              // Navigation popover
-              h(
-                Popover,
-                {
-                  id: this.navPopoverId,
-                  contentClass: 'vc-nav-popover-container',
+                  value: this.page,
+                  validator: this.canMove,
+                  onInput: $event => this.move($event),
                 },
                 {
-                  // Navigation pane
-                  default: () =>
-                    h(
-                      CalendarNav,
-                      {
-                        value: this.page,
-                        validator: this.canMove,
-                        onInput: $event => this.move($event),
-                      },
-                      {
-                        ...this.$slots,
-                      },
-                    ),
+                  ...this.$slots,
                 },
               ),
-            ]),
-          ],
+          },
         ),
       ]);
 
-    // Weekdays
-    const weekdays = h(
+    // Weeks
+    const weeks = h(
       'div',
       {
-        class: 'vc-weekdays',
-        items: this.weekdayLabels,
-        disableFocus: true,
+        class: 'vc-weeks',
       },
       [
-        ...this.weekdayLabels.map(wl =>
+        ...this.weekdayLabels.map((wl, i) => {
           h(
             'div',
             {
-              key: wl,
+              key: i + 1,
               class: 'vc-weekday',
             },
             [wl],
-          ),
-        ),
-      ],
-    );
-
-    // Weeks
-    const weeks = h(
-      Grid,
-      {
-        class: 'vc-days',
-        items: this.page.days,
-        rows: this.page.weeks,
-        columns: 7,
-        columnWidth: '1fr',
-        disableFocus: true,
-      },
-      {
-        cell: ({ item: day }) =>
+          );
+        }),
+        ...this.page.days.map(day =>
           h(CalendarDay, {
             ...this.$attrs,
             day,
             slots: this.$slots,
           }),
-      },
+        ),
+      ],
     );
 
     return h(
@@ -112,7 +85,7 @@ export default {
         class: 'vc-pane',
         ref: 'pane',
       },
-      [header, h('div', { class: 'vc-weeks' }, [weekdays, weeks])],
+      [header, weeks],
     );
   },
   props: {
