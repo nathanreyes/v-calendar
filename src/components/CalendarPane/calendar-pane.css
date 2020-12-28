@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 14px 0px 14px;
+  padding: 10px 16px 0px 16px;
   &.align-left {
     justify-content: flex-start;
   }
@@ -19,6 +19,7 @@
   font-size: var(--text-lg);
   color: var(--gray-800);
   font-weight: var(--font-semibold);
+  line-height: 28px;
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
@@ -37,13 +38,13 @@
 }
 
 .vc-weekday {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
   color: var(--gray-500);
   font-size: var(--text-sm);
   font-weight: var(--font-bold);
-  height: 28px;
+  line-height: 14px;
+  padding-top: 4px;
+  padding-bottom: 8px;
   cursor: default;
   user-select: none;
 }
