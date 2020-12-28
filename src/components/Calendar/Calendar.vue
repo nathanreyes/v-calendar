@@ -164,6 +164,7 @@ export default {
                       style: {
                         gridTemplateColumns: `repeat(${this.columns}, 1fr)`,
                       },
+                      key: this.firstPage ? this.firstPage.key : '',
                     },
                     this.pages.map((page, i) =>
                       h(CalendarPane, {
