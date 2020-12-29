@@ -34,7 +34,7 @@
   position: relative;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 5px;
+  padding: 6px;
 }
 
 .vc-weekday {

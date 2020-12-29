@@ -99,10 +99,12 @@ export function datesAreEqual(a: any, b: any): boolean {
 
 export const arrayHasItems = (array: Array<any>): boolean =>
   isArray(array) && array.length > 0;
+
 export interface ElementPosition {
   top: number;
   left: number;
 }
+
 export const elementPositionInAncestor = (
   el: HTMLElement,
   ancestor: HTMLElement,

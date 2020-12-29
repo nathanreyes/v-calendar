@@ -3,7 +3,7 @@
     :name="name_"
     :appear="appear"
     @before-enter="beforeEnter"
-    @afterEnter="afterEnter"
+    @after-enter="afterEnter"
   >
     <slot />
   </transition>
@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     name_() {
-      return this.name || 'none';
+      return `vc-${this.name || 'none'}`;
     },
   },
   methods: {
