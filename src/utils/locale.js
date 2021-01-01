@@ -458,11 +458,11 @@ export default class Locale {
         dateParts.seconds = timeParts.seconds;
         dateParts.milliseconds = timeParts.milliseconds;
       } else {
-        const d = new Date(`2000-01-01T${timeAdjust}`);
-        dateParts.hours = d.getHours();
-        dateParts.minutes = d.getMinutes();
-        dateParts.seconds = d.getSeconds();
-        dateParts.milliseconds = d.getMilliseconds();
+        const d = new Date(`2000-01-01T${timeAdjust}Z`);
+        dateParts.hours = d.getUTCHours();
+        dateParts.minutes = d.getUTCMinutes();
+        dateParts.seconds = d.getUTCSeconds();
+        dateParts.milliseconds = d.getUTCMilliseconds();
       }
       date = this.getDateFromParts(dateParts);
     }
