@@ -1,0 +1,18 @@
+[
+  {
+    "props": {
+      "mode": "datetime",
+      "value": "2021-01-15T04:15:00Z",
+      "modelConfig": {
+        "type": "string",
+        "mask": "YYYY-MM-DDTHH:mm:ss.SSSZ"
+      },
+      "timezone": "utc"
+    },
+    "hours": 4,
+    "minutes": 15,
+    "isAM": true,
+    "select": "30",
+    "newValue": "2021-01-30T04:15:00Z"
+  }
+]
