@@ -14,7 +14,7 @@ import {
   clamp,
 } from './_';
 
-const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|X{1,3}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
 const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
@@ -118,18 +118,21 @@ const formatFlags = {
   A(d, l) {
     return d.hours < 12 ? l.amPm[0].toUpperCase() : l.amPm[1].toUpperCase();
   },
-  X(d) {
+  Z() {
+    return 'Z';
+  },
+  ZZ(d) {
     const o = d.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}`;
   },
-  XX(d) {
+  ZZZ(d) {
     const o = d.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(
       Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60),
       4,
     )}`;
   },
-  XXX(d) {
+  ZZZZ(d) {
     const o = d.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}:${pad(
       Math.abs(o) % 60,
@@ -224,7 +227,7 @@ const parseFlags = {
       }
     },
   ],
-  X: [
+  Z: [
     /[^\s]*?[+-]\d\d:?\d\d|[^\s]*?Z?/,
     (d, v) => {
       if (v === 'Z') v = '+00:00';
@@ -244,7 +247,7 @@ parseFlags.mm = parseFlags.m;
 parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
 parseFlags.ss = parseFlags.s;
 parseFlags.A = parseFlags.a;
-parseFlags.XXX = parseFlags.XX = parseFlags.X;
+parseFlags.ZZZZ = parseFlags.ZZZ = parseFlags.ZZ = parseFlags.Z;
 
 export function resolveConfig(config, locales) {
   // Get the detected locale string
@@ -300,10 +303,12 @@ export default class Locale {
       literals.push($1);
       return '??';
     });
+    const timezone = /Z$/.test(mask) ? 'utc' : this.timezone;
+    const dateParts = this.getDateParts(date, timezone);
     // Apply formatting rules
     mask = mask.replace(token, $0 =>
       $0 in formatFlags
-        ? formatFlags[$0](this.getDateParts(date), this)
+        ? formatFlags[$0](dateParts, this)
         : $0.slice(1, $0.length - 1),
     );
     // Inline literal values back into the formatted value
@@ -478,12 +483,12 @@ export default class Locale {
       .filter(d => d);
   }
 
-  getDateParts(date) {
+  getDateParts(date, timezone = this.timezone) {
     if (!date) return null;
     let tzDate = date;
-    if (this.timezone) {
+    if (timezone) {
       const normDate = new Date(
-        date.toLocaleString('en-US', { timeZone: this.timezone }),
+        date.toLocaleString('en-US', { timeZone: timezone }),
       );
       normDate.setMilliseconds(date.getMilliseconds());
       const diff = normDate.getTime() - date.getTime();
