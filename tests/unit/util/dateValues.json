@@ -5,6 +5,22 @@
       "value": "2021-01-15T04:15:00Z",
       "modelConfig": {
         "type": "string",
+        "mask": "iso"
+      },
+      "timezone": "utc"
+    },
+    "hours": 4,
+    "minutes": 15,
+    "isAM": true,
+    "clickEl": ".id-2021-01-30 .vc-day-content",
+    "newValue": "2021-01-30T04:15:00.000Z"
+  },
+  {
+    "props": {
+      "mode": "datetime",
+      "value": "2021-01-15T04:15:00.123Z",
+      "modelConfig": {
+        "type": "string",
         "mask": "YYYY-MM-DDTHH:mm:ss.SSSZ"
       },
       "timezone": "utc"
@@ -12,7 +28,71 @@
     "hours": 4,
     "minutes": 15,
     "isAM": true,
-    "select": "30",
+    "clickEl": ".id-2021-01-30 .vc-day-content",
+    "newValue": "2021-01-30T04:15:00.123Z"
+  },
+  {
+    "props": {
+      "mode": "datetime",
+      "value": "2021-01-15T04:15:00Z",
+      "modelConfig": {
+        "type": "string",
+        "mask": "YYYY-MM-DDTHH:mm:ssZ"
+      },
+      "timezone": "utc"
+    },
+    "hours": 4,
+    "minutes": 15,
+    "isAM": true,
+    "clickEl": ".id-2021-01-30 .vc-day-content",
+    "newValue": "2021-01-30T04:15:00Z"
+  },
+  {
+    "props": {
+      "mode": "datetime",
+      "value": "2021-01-15T04:15:00Z",
+      "modelConfig": {
+        "type": "string",
+        "mask": "iso"
+      },
+      "timezone": "Europe/Kiev"
+    },
+    "hours": 6,
+    "minutes": 15,
+    "isAM": true,
+    "clickEl": ".id-2021-01-30 .vc-day-content",
+    "newValue": "2021-01-30T04:15:00.000Z"
+  },
+  {
+    "props": {
+      "mode": "datetime",
+      "value": "2021-01-15T04:15:00.123Z",
+      "modelConfig": {
+        "type": "string",
+        "mask": "YYYY-MM-DDTHH:mm:ss.SSSZ"
+      },
+      "timezone": "Europe/Kiev"
+    },
+    "hours": 6,
+    "minutes": 15,
+    "isAM": true,
+    "clickEl": ".id-2021-01-30 .vc-day-content",
+    "newValue": "2021-01-30T04:15:00.123Z"
+  },
+  {
+    "props": {
+      "mode": "datetime",
+      "value": "2021-01-15T04:15:00Z",
+      "modelConfig": {
+        "type": "string",
+        "mask": "YYYY-MM-DDTHH:mm:ssZ"
+      },
+      "timezone": "Europe/Kiev"
+    },
+    "hours": 6,
+    "minutes": 15,
+    "isAM": true,
+    "clickEl": ".id-2021-01-30 .vc-day-content",
     "newValue": "2021-01-30T04:15:00Z"
   }
 ]
