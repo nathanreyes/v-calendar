@@ -519,7 +519,7 @@ data() {
 },
 ```
 
-Please reference the [formatting & parsing section](./i18n.md#formatting-parsing-dates) for a complete list of available mask tokens.
+Please reference the [formatting & parsing section](./format-parse-dates.md) for a complete list of available mask tokens.
 
 ### Form Example
 
@@ -620,7 +620,7 @@ Values passed to `updateValue()` are validated against `disabled-dates`, `availa
 
 ## Disable Dates
 
-Refer to the [disabling dates section](./dates.md#disabling-dates).
+Refer to the [disabling dates section](./disable-dates.md).
 
 ## Require Selected Date
 

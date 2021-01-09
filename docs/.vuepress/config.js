@@ -116,12 +116,16 @@ module.exports = {
             'colors-dark-mode',
             'layouts',
             'navigation',
-            'dates',
             'attributes',
             'datepicker',
             'timezones',
             'i18n',
           ],
+        },
+        {
+          title: 'Working With Dates',
+          collapsable: false,
+          children: ['format-parse-dates', 'date-expressions', 'disable-dates'],
         },
         {
           title: 'Examples',
