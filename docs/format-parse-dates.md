@@ -9,7 +9,7 @@ sidebarDepth: 2
 
 Masks are used to properly format and parse different sections of the calendar and date picker components.
 
-Masks are composed of tokens that derive the active locale. Reference the [i18n](./i18n.html) section for more information about how masks can be explicitly provided with a locale or via the `masks` prop.
+Masks are composed of tokens that derive from the active locale. Reference the [i18n](./i18n.html) section for more information about how masks can be explicitly provided with a locale or via the `masks` prop.
 
 ### Default Masks
 
@@ -28,6 +28,8 @@ Here are the default masks provided by the plugin.
 | `inputTime24hr` | Date picker input for `mode: 'time'` and `is24hr: true` .| ✔ | `["HH:mm"]` |
 | `data` | Attribute `dates` property. | ✔ | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
 | `iso` | Default iso format when used by `model-config` prop or other masks. | ✔ | `"YYYY-MM-DDTHH:mm:ss.SSSZ"` |
+
+The parse flag indicates that a given mask is used to format **and parse** dates. [Read below for more details about parsing dates](#parsing-dates).
 
 ### Mask Tokens
 
@@ -71,7 +73,7 @@ Use the following tokens to configure your custom masks:
 
 ## Parsing dates
 
-You may notice that some default masks are assigned as array values. This is because it uses the supplied masks(s) to parse, as well as display, the selected date.
+You may notice that some default masks are assigned array values. This is because it uses the supplied mask(s) to parse, as well as display, the selected date.
 
 The first supplied mask is used to format a given date, while all masks are used (from first to last) to parse the date string. The first successfully parsed date is used as the date value.
 
