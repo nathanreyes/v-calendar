@@ -43,11 +43,9 @@ export default {
           attributes: this.store,
         },
         props: {
-          titlePosition: this.titlePosition_,
           page,
-          minPage: this.minPage_,
-          maxPage: this.maxPage_,
-          canMove: this.canMove,
+          titlePosition: this.titlePosition_,
+          canMove: this.canMove_,
         },
         on: {
           ...this.$listeners,
@@ -254,6 +252,7 @@ export default {
     attributes: [Object, Array],
     trimWeeks: Boolean,
     disablePageSwipe: Boolean,
+    canMove: Function,
   },
   data() {
     return {
@@ -294,16 +293,10 @@ export default {
       return this.step || this.count;
     },
     canMovePrev() {
-      return (
-        !pageIsValid(this.minPage_) ||
-        pageIsAfterPage(this.pages[0], this.minPage_)
-      );
+      return this.canMove_(addPages(this.firstPage, -1));
     },
     canMoveNext() {
-      return (
-        !pageIsValid(this.maxPage_) ||
-        pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
-      );
+      return this.canMove_(addPages(this.lastPage, 1));
     },
   },
   watch: {
@@ -392,8 +385,13 @@ export default {
     refreshTheme() {
       this.sharedState.theme = this.$theme;
     },
-    canMove(page) {
-      return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
+    canMove_(page) {
+      let result = pageIsBetweenPages(page, this.minPage_, this.maxPage_);
+      if (this.canMove) {
+        const newResult = this.canMove(page, result);
+        if (newResult !== undefined) result = newResult;
+      }
+      return result;
     },
     movePrev(opts) {
       return this.move(-this.step_, opts);
@@ -611,7 +609,7 @@ export default {
           monthComps,
           prevMonthComps,
           nextMonthComps,
-          canMove: pg => this.canMove(pg),
+          canMove: pg => this.canMove_(pg),
           move: pg => this.move(pg),
           moveThisMonth: () => this.moveThisMonth(),
           movePrevMonth: () => this.move(prevMonthComps),
