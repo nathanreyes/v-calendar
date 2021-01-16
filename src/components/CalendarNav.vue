@@ -8,7 +8,7 @@
         role="button"
         class="vc-nav-arrow is-left"
         :class="{ 'is-disabled': !prevItemsEnabled }"
-        tabindex="0"
+        :tabindex="prevItemsEnabled ? 0 : undefined"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
       >
@@ -32,7 +32,7 @@
         role="button"
         class="vc-nav-arrow is-right"
         :class="{ 'is-disabled': !nextItemsEnabled }"
-        tabindex="0"
+        :tabindex="nextItemsEnabled ? 0 : undefined"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
       >
