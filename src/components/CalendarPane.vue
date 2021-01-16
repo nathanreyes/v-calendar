@@ -37,6 +37,7 @@ export default {
                 id: this.navPopoverId,
                 contentClass: 'vc-nav-popover-container',
               },
+              ref: 'navPopover',
             },
             [
               // Navigation pane
@@ -146,6 +147,7 @@ export default {
   methods: {
     move(page) {
       this.$emit('update:page', page);
+      this.$refs.navPopover.hide({ hideDelay: 0 });
     },
     refresh() {
       this.$refs.days.forEach(d => d.refresh());
