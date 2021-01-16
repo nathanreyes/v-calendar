@@ -7,6 +7,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-left"
+        :class="{ 'is-disabled': !prevItemsEnabled }"
         tabindex="0"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
@@ -30,6 +31,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-right"
+        :class="{ 'is-disabled': !nextItemsEnabled }"
         tabindex="0"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
@@ -96,36 +98,36 @@ export default {
         : `${this.firstYear} - ${this.lastYear}`;
     },
     monthItems() {
-      const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
-      return this.locale.getMonthDates().map((d, i) => {
-        const month = i + 1;
-        return {
-          label: this.locale.format(d, this.masks.navMonths),
-          ariaLabel: this.locale.format(d, 'MMMM YYYY'),
-          isActive: month === this.month && this.yearIndex === this.year,
-          isCurrent: month === thisMonth && this.yearIndex === thisYear,
-          isDisabled: !this.validator({ month, year: this.yearIndex }),
-          click: () => this.monthClick(month),
-        };
-      });
+      return this.getMonthItems(this.yearIndex);
     },
     yearItems() {
-      const { _, year: thisYear } = this.pageForDate(new Date());
-      const startYear = this.yearGroupIndex * _yearGroupCount;
-      const endYear = startYear + _yearGroupCount;
-      const items = [];
-      for (let year = startYear; year < endYear; year += 1) {
-        items.push({
-          year,
-          label: year,
-          ariaLabel: year,
-          isActive: year === this.year,
-          isCurrent: year === thisYear,
-          isDisabled: !this.validator({ month: this.month, year }),
-          click: () => this.yearClick(year),
-        });
-      }
-      return items;
+      return this.getYearItems(this.yearGroupIndex);
+    },
+    prevItemsEnabled() {
+      return this.monthMode
+        ? this.prevMonthItemsEnabled
+        : this.prevYearItemsEnabled;
+    },
+    nextItemsEnabled() {
+      return this.monthMode
+        ? this.nextMonthItemsEnabled
+        : this.nextYearItemsEnabled;
+    },
+    prevMonthItemsEnabled() {
+      return this.getMonthItems(this.yearIndex - 1).some(i => !i.isDisabled);
+    },
+    nextMonthItemsEnabled() {
+      return this.getMonthItems(this.yearIndex + 1).some(i => !i.isDisabled);
+    },
+    prevYearItemsEnabled() {
+      return this.getYearItems(this.yearGroupIndex - 1).some(
+        i => !i.isDisabled,
+      );
+    },
+    nextYearItemsEnabled() {
+      return this.getYearItems(this.yearGroupIndex + 1).some(
+        i => !i.isDisabled,
+      );
     },
     activeItems() {
       return this.monthMode ? this.monthItems : this.yearItems;
@@ -163,6 +165,43 @@ export default {
     },
     getYearGroupIndex(year) {
       return Math.floor(year / _yearGroupCount);
+    },
+    getMonthItems(yearIndex) {
+      const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
+      return this.locale.getMonthDates().map((d, i) => {
+        const month = i + 1;
+        return {
+          label: this.locale.format(d, this.masks.navMonths),
+          ariaLabel: this.locale.format(d, 'MMMM YYYY'),
+          isActive: month === this.month && yearIndex === this.year,
+          isCurrent: month === thisMonth && yearIndex === thisYear,
+          isDisabled: !this.validator({ month, year: yearIndex }),
+          click: () => this.monthClick(month),
+        };
+      });
+    },
+    getYearItems(yearGroupIndex) {
+      const { _, year: thisYear } = this.pageForDate(new Date());
+      const startYear = yearGroupIndex * _yearGroupCount;
+      const endYear = startYear + _yearGroupCount;
+      const items = [];
+      for (let year = startYear; year < endYear; year += 1) {
+        let enabled = false;
+        for (let month = 1; month < 12; month++) {
+          enabled = this.validator({ month, year });
+          if (enabled) break;
+        }
+        items.push({
+          year,
+          label: year,
+          ariaLabel: year,
+          isActive: year === this.year,
+          isCurrent: year === thisYear,
+          isDisabled: !enabled,
+          click: () => this.yearClick(year),
+        });
+      }
+      return items;
     },
     monthClick(month) {
       this.$emit('input', { month, year: this.yearIndex });
@@ -222,6 +261,11 @@ export default {
   }
   &.is-right {
     margin-left: auto;
+  }
+  &.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+    cursor: not-allowed;
   }
   &:hover {
     background-color: var(--gray-900);
