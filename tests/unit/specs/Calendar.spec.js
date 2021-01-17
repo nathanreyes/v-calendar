@@ -1,5 +1,8 @@
 import { mount } from '@vue/test-utils';
 import Calendar from '@/components/Calendar';
+import disabledTests from '../util/disabledTests';
+import { pad } from '@/utils/helpers';
+import { isNumber } from 'lodash';
 
 describe('Calendar', () => {
   let wrapper = null;
@@ -13,71 +16,94 @@ describe('Calendar', () => {
       await wrapper.setProps({ fromPage: { month: 1, year: 2000 } });
       expect(wrapper.find('.vc-day.id-2000-01-01').exists()).toBe(true);
     });
-    const minDate = new Date(2020, 10, 15);
-    const testMinDate = () => {
-      expect(wrapper.find('.id-2020-11-14 .vc-day-content').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-14 .vc-day-content.is-disabled').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-15 .vc-day-content').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-15 .vc-day-content.is-disabled').exists()).toBe(false);
+
+    const expectDisabledArrows = (arrows, wrapper) => {
+      ['left', 'right'].forEach(dir => {
+        const disabledClass = arrows.includes(dir) ? '.is-disabled' : ':not(.is-disabled)';
+        const arrowSelector = `.vc-arrow.is-${dir}${disabledClass}`;
+        expect(wrapper.find(arrowSelector).exists()).toBe(true);
+      });
     };
-    const maxDate = new Date(2020, 10, 15);
-    const testMaxDate = () => {
-      expect(wrapper.find('.id-2020-11-15 .vc-day-content').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-15 .vc-day-content.is-disabled').exists()).toBe(false);
-      expect(wrapper.find('.id-2020-11-16 .vc-day-content').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-16 .vc-day-content.is-disabled').exists()).toBe(true);
-    };
-    const disabledDatesDailyInterval = [
-      { start: new Date(2020, 10, 1), end: null, on: { dailyInterval: 4 } },
-    ];
-    const testDisabledDatesDailyInterval = isCombinedWithOtherTests => {
-      expect(wrapper.find('.id-2020-11-01 .vc-day-content.is-disabled').exists()).toBe(true);
-      if (!isCombinedWithOtherTests) {
-        expect(wrapper.find('.id-2020-11-02 .vc-day-content.is-disabled').exists()).toBe(false);
-        expect(wrapper.find('.id-2020-11-03 .vc-day-content.is-disabled').exists()).toBe(false);
-        expect(wrapper.find('.id-2020-11-04 .vc-day-content.is-disabled').exists()).toBe(false);
+
+    const expectDisabledDays = (days, wrapper) => {
+      for (let i = 1; i <= 31; i++) {
+        const daySelector = `.vc-day.day-${i}:not(.is-not-in-month) .vc-day-content`;
+        if (wrapper.find(daySelector).exists()) {
+          const isDisabled = days.some(d => (d > 0 ? d === i : d.start <= i && i <= d.end));
+          const disabledClass = isDisabled ? '.is-disabled' : ':not(.is-disabled)';
+          const dayContentSelector = `${daySelector}${disabledClass}`;
+          expect(wrapper.find(dayContentSelector).exists()).toBe(true);
+        }
       }
-      expect(wrapper.find('.id-2020-11-05 .vc-day-content.is-disabled').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-09 .vc-day-content.is-disabled').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-13 .vc-day-content.is-disabled').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-17 .vc-day-content.is-disabled').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-21 .vc-day-content.is-disabled').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-25 .vc-day-content.is-disabled').exists()).toBe(true);
-      expect(wrapper.find('.id-2020-11-29 .vc-day-content.is-disabled').exists()).toBe(true);
+      return;
     };
-    it(':min-date disables dates before date', async () => {
-      await wrapper.setProps({ fromPage: { month: 11, year: 2020 }, minDate });
-      testMinDate();
-    });
-    it(':max-date disables dates after date', async () => {
-      await wrapper.setProps({ fromPage: { month: 11, year: 2020 }, maxDate });
-      testMaxDate();
-    });
-    it(':disabled-dates disables dates with daily interval', async () => {
-      await wrapper.setProps({
-        fromPage: { month: 11, year: 2020 },
-        disabledDates: disabledDatesDailyInterval,
+
+    const expectDisabledNavArrows = (directions, wrapper) => {
+      ['left', 'right'].forEach(dir => {
+        const disabledClass = directions.includes(dir) ? '.is-disabled' : ':not(.is-disabled)';
+        const arrowSelector = `.vc-nav-arrow.is-${dir}${disabledClass}`;
+        expect(wrapper.find(arrowSelector).exists()).toBe(true);
       });
-      testDisabledDatesDailyInterval();
-    });
-    it(':min-date works with :disabled-dates', async () => {
-      await wrapper.setProps({
-        fromPage: { month: 11, year: 2020 },
-        minDate,
-        disabledDates: disabledDatesDailyInterval,
+    };
+
+    const expectDisabledNavMonths = (months, year, wrapper) => {
+      for (let i = 1; i <= 12; i++) {
+        const disabledClass = months.includes(i) ? '.is-disabled' : ':not(.is-disabled)';
+        const itemSelector = `.vc-nav-item${disabledClass}[data-id="${year}.${pad(i, 2)}"]`;
+        expect(wrapper.find(itemSelector).exists()).toBe(true);
+      }
+    };
+
+    const expectDisabledNavYears = (years, wrapper) => {
+      for (let i = 2016; i <= 2027; i++) {
+        const disabledClass = years.includes(i) ? '.is-disabled' : ':not(.is-disabled)';
+        const itemSelector = `.vc-nav-item${disabledClass}[data-id="${i}"]`;
+        expect(wrapper.find(itemSelector).exists()).toBe(true);
+      }
+    };
+
+    for (let test of disabledTests) {
+      it(test.it, async () => {
+        await wrapper.setProps(test.props);
+        // Test disabled arrows
+        if (test.disabledArrows) {
+          expectDisabledArrows(test.disabledArrows, wrapper);
+        }
+        // Test disabled days
+        if (test.disabledDays) {
+          expectDisabledDays(test.disabledDays, wrapper);
+        }
+        const nav = test.nav;
+        if (nav) {
+          // Click header title to display nav popover
+          await wrapper.find('.vc-title').trigger('click');
+          const months = nav.months;
+          if (months) {
+            // Test disabled nav month arrows
+            if (months.disabledArrows) {
+              expectDisabledNavArrows(months.disabledArrows, wrapper);
+            }
+            // Test disabled nav month items
+            if (months.disabledMonths) {
+              expectDisabledNavMonths(months.disabledMonths, months.year, wrapper);
+            }
+          }
+          const years = nav.years;
+          if (years) {
+            // Click nav title to display nav years
+            await wrapper.find('.vc-nav-title').trigger('click');
+            // Test disabled nav year arrows
+            if (years.disabledArrows) {
+              expectDisabledNavArrows(years.disabledArrows, wrapper);
+            }
+            // Test disabled nav year items
+            if (years.disabledYears) {
+              expectDisabledNavYears(years.disabledYears, wrapper);
+            }
+          }
+        }
       });
-      testMinDate();
-      testDisabledDatesDailyInterval(true);
-    });
-    it(':max-date works with :disabled-dates', async () => {
-      await wrapper.setProps({
-        fromPage: { month: 11, year: 2020 },
-        maxDate,
-        disabledDates: disabledDatesDailyInterval,
-      });
-      testMaxDate();
-      testDisabledDatesDailyInterval(true);
-    });
+    }
   });
 
   describe(':methods', () => {
