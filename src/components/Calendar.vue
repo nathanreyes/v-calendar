@@ -73,7 +73,11 @@ export default {
       return h(
         'div',
         {
-          class: ['vc-arrow', { 'is-disabled': isDisabled }],
+          class: [
+            'vc-arrow',
+            `is-${isPrev ? 'left' : 'right'}`,
+            { 'is-disabled': isDisabled },
+          ],
           attrs: {
             role: 'button',
           },
