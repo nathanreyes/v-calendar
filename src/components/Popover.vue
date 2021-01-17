@@ -410,6 +410,7 @@ export default {
   border-top: inherit;
   border-left: inherit;
   background-color: inherit;
+  user-select: none;
   z-index: -1;
   &.direction-bottom {
     top: 0;
