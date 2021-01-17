@@ -2,7 +2,6 @@ import { mount } from '@vue/test-utils';
 import DatePicker from '@/components/DatePicker';
 import TimePicker from '@/components/TimePicker';
 import dateValues from '../util/dateValues.json';
-import wait from '../util/wait';
 
 describe('DatePicker', () => {
   describe(':props', () => {
