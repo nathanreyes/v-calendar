@@ -1,6 +1,11 @@
 <template>
   <div class="example">
-    <v-calendar :min-date="minDate" :max-date="maxDate" :can-move="canMove" />
+    <v-calendar
+      :from-page="{ month: 11, year: 2020 }"
+      :min-date="minDate"
+      :max-date="maxDate"
+      :can-move="canMove"
+    />
   </div>
 </template>
 
@@ -9,10 +14,10 @@ export default {
   githubTitle: `Can't use the popover navigation correctly when set "min-date" or "max-date"`,
   data() {
     return {
-      // minDate: new Date(2020, 0, 12),
-      // maxDate: new Date(2021, 0, 12),
       minDate: null,
       maxDate: null,
+      // minDate: new Date(2020, 10, 10),
+      // maxDate: new Date(2020, 10, 20),
     };
   },
   methods: {
