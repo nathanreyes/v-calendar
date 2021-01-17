@@ -167,18 +167,20 @@ export default {
     getYearGroupIndex(year) {
       return Math.floor(year / _yearGroupCount);
     },
-    getMonthItems(yearIndex) {
+    getMonthItems(year) {
       const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
         return {
-          id: `${yearIndex}.${pad(month, 2)}`,
+          month,
+          year,
+          id: `${year}.${pad(month, 2)}`,
           label: this.locale.format(d, this.masks.navMonths),
           ariaLabel: this.locale.format(d, 'MMMM YYYY'),
-          isActive: month === this.month && yearIndex === this.year,
-          isCurrent: month === thisMonth && yearIndex === thisYear,
-          isDisabled: !this.validator({ month, year: yearIndex }),
-          click: () => this.monthClick(month),
+          isActive: month === this.month && year === this.year,
+          isCurrent: month === thisMonth && year === thisYear,
+          isDisabled: !this.validator({ month, year }),
+          click: () => this.monthClick(month, year),
         };
       });
     },
@@ -194,6 +196,7 @@ export default {
           if (enabled) break;
         }
         items.push({
+          year,
           id: year,
           label: year,
           ariaLabel: year,
@@ -205,8 +208,8 @@ export default {
       }
       return items;
     },
-    monthClick(month) {
-      this.$emit('input', { month, year: this.yearIndex });
+    monthClick(month, year) {
+      this.$emit('input', { month, year });
     },
     yearClick(year) {
       this.yearIndex = year;
