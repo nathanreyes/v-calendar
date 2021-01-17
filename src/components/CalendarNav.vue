@@ -47,6 +47,7 @@
         v-for="item in activeItems"
         :key="item.label"
         role="button"
+        :data-id="item.id"
         :aria-label="item.ariaLabel"
         :class="getItemClasses(item)"
         :tabindex="item.isDisabled ? undefined : 0"
@@ -63,7 +64,7 @@
 import SvgIcon from './SvgIcon';
 import { childMixin } from '../utils/mixins';
 import { head, last } from '../utils/_';
-import { onSpaceOrEnter } from '../utils/helpers';
+import { onSpaceOrEnter, pad } from '../utils/helpers';
 
 const _yearGroupCount = 12;
 
@@ -171,6 +172,7 @@ export default {
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
         return {
+          id: `${yearIndex}.${pad(month, 2)}`,
           label: this.locale.format(d, this.masks.navMonths),
           ariaLabel: this.locale.format(d, 'MMMM YYYY'),
           isActive: month === this.month && yearIndex === this.year,
@@ -192,7 +194,7 @@ export default {
           if (enabled) break;
         }
         items.push({
-          year,
+          id: year,
           label: year,
           ariaLabel: year,
           isActive: year === this.year,
