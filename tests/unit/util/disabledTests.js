@@ -1,7 +1,7 @@
 const disabledTests = [
   // Min date
   {
-    it: 'Disables days, arrows and nav state for min date',
+    it: ':min-date disables days, arrows and nav state',
     props: { fromPage: { month: 11, year: 2020 }, minDate: new Date(2020, 10, 15) },
     disabledDays: [{ start: 1, end: 14 }],
     disabledArrows: ['left'],
@@ -19,7 +19,7 @@ const disabledTests = [
   },
   // Max date
   {
-    it: 'Disables days, arrows and nav state for max date',
+    it: ':max-date disables days, arrows and nav state',
     props: { fromPage: { month: 11, year: 2020 }, maxDate: new Date(2020, 10, 15) },
     disabledDays: [{ start: 16, end: 30 }],
     disabledArrows: ['right'],
@@ -37,7 +37,7 @@ const disabledTests = [
   },
   // Min date and max date
   {
-    it: 'Disables days, arrows and nav state for min and max date',
+    it: ':min-date and :max-date disable days, arrows and nav state',
     props: {
       fromPage: { month: 11, year: 2020 },
       minDate: new Date(2020, 10, 10),
@@ -62,7 +62,7 @@ const disabledTests = [
   },
   // Daily interval
   {
-    it: 'Disables days for daily interval',
+    it: ':disabled-dates disables daily interval',
     props: {
       fromPage: { month: 11, year: 2020 },
       disabledDates: [{ start: new Date(2020, 10, 1), end: null, on: { dailyInterval: 4 } }],
@@ -71,7 +71,8 @@ const disabledTests = [
   },
   // Daily interval with min and max date
   {
-    it: 'Disables days, arrows and nav state for daily interval, min and max date',
+    it:
+      ':min-date, :max-date, :disabled-dates disables days, arrows and nav state for daily interval',
     props: {
       fromPage: { month: 11, year: 2020 },
       disabledDates: [{ start: new Date(2020, 10, 1), end: null, on: { dailyInterval: 4 } }],
@@ -89,6 +90,29 @@ const disabledTests = [
       years: {
         disabledArrows: ['left', 'right'],
         disabledYears: [2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024, 2025, 2026, 2027],
+      },
+    },
+  },
+  // Custom move validator
+  {
+    it: ':can-move disables nav months and years',
+    props: {
+      fromPage: { month: 11, year: 2020 },
+      canMove: ({ month, year }) => {
+        const disableMonths = [1, 3, 6, 9, 12];
+        const disableYears = [2016, 2019, 2022, 2025];
+        return !disableMonths.includes(month) && !disableYears.includes(year);
+      },
+    },
+    disabledArrows: ['right'],
+    nav: {
+      months: {
+        disabledArrows: ['left'],
+        disabledMonths: [1, 3, 6, 9, 12],
+        year: 2020,
+      },
+      years: {
+        disabledYears: [2016, 2019, 2022, 2025],
       },
     },
   },
