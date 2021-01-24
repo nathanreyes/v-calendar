@@ -147,11 +147,28 @@ export default {
     yearIndex(val) {
       this.yearGroupIndex = this.getYearGroupIndex(val);
     },
+    value() {
+      this.focusFirstItem();
+    },
   },
   created() {
     this.yearIndex = this.year;
   },
+  mounted() {
+    this.focusFirstItem();
+  },
   methods: {
+    focusFirstItem() {
+      this.$nextTick(() => {
+        // Set focus on the first enabled nav item
+        const focusableEl = this.$el.querySelector(
+          `.vc-nav-item:not(.is-disabled)`,
+        );
+        if (focusableEl) {
+          focusableEl.focus();
+        }
+      });
+    },
     getItemClasses({ isActive, isCurrent, isDisabled }) {
       const classes = ['vc-nav-item'];
       if (isActive) {
@@ -209,22 +226,27 @@ export default {
       return items;
     },
     monthClick(month, year) {
-      this.$emit('input', { month, year });
+      if (this.validator({ month, year })) {
+        this.$emit('input', { month, year });
+      }
     },
     yearClick(year) {
       this.yearIndex = year;
       this.monthMode = true;
+      this.focusFirstItem();
     },
     toggleMode() {
       this.monthMode = !this.monthMode;
     },
     movePrev() {
+      if (!this.prevItemsEnabled) return;
       if (this.monthMode) {
         this.movePrevYear();
       }
       this.movePrevYearGroup();
     },
     moveNext() {
+      if (!this.nextItemsEnabled) return;
       if (this.monthMode) {
         this.moveNextYear();
       }
@@ -324,9 +346,6 @@ export default {
     background-color: var(--gray-900);
     box-shadow: var(--shadow-inner);
   }
-  &:focus {
-    border-color: var(--accent-600);
-  }
   &.is-active {
     color: var(--accent-900);
     background: var(--accent-100);
@@ -337,6 +356,9 @@ export default {
     color: var(--accent-100);
     font-weight: var(--bold);
     border-color: var(--accent-100);
+  }
+  &:focus {
+    border-color: var(--accent-600);
   }
   &.is-disabled {
     opacity: 0.25;
@@ -368,9 +390,6 @@ export default {
       background-color: var(--gray-200);
       box-shadow: none;
     }
-    &:focus {
-      border-color: var(--accent-400);
-    }
     &.is-active {
       color: var(--white);
       background: var(--accent-500);
@@ -378,6 +397,9 @@ export default {
     &.is-current {
       color: var(--accent-600);
       border-color: var(--accent-500);
+    }
+    &:focus {
+      border-color: var(--accent-400);
     }
   }
 }
