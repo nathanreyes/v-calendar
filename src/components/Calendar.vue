@@ -176,86 +176,83 @@ export default {
       });
 
     // Renderer for calendar container
-    const getContainerGrid = () =>
-      h(
-        'div',
-        {
-          attrs: {
-            'data-helptext':
-              'Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year',
-          },
-          class: [
-            'vc-container',
-            `vc-${this.$theme.color}`,
-            {
-              'vc-is-expanded': this.isExpanded,
-              'vc-is-dark': this.$theme.isDark,
-            },
-          ],
-          on: {
-            keydown: this.handleKeydown,
-            mouseup: e => e.preventDefault(),
-          },
-          ref: 'container',
+    return h(
+      'div',
+      {
+        attrs: {
+          'data-helptext':
+            'Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year',
         },
-        [
-          h(
-            'div',
-            {
-              class: [
-                'vc-pane-container',
-                { 'in-transition': this.inTransition },
-              ],
-            },
-            [
-              h(
-                CustomTransition,
-                {
-                  props: {
-                    name: this.transitionName,
-                  },
-                  on: {
-                    beforeEnter: () => {
-                      this.inTransition = true;
-                    },
-                    afterEnter: () => {
-                      this.inTransition = false;
-                    },
-                  },
-                },
-                [
-                  h(
-                    'div',
-                    {
-                      class: 'vc-pane-layout',
-                      style: {
-                        gridTemplateColumns: `repeat(${this.columns}, 1fr)`,
-                      },
-                      attrs: {
-                        ...this.$attrs,
-                      },
-                      key: arrayHasItems(this.pages) ? this.pages[0].key : '',
-                    },
-                    panes,
-                  ),
-                ],
-              ),
-              h(
-                'div',
-                {
-                  class: [`vc-arrows-container title-${this.titlePosition_}`],
-                },
-                [getArrowButton(true), getArrowButton(false)],
-              ),
-              this.$scopedSlots.footer && this.$scopedSlots.footer(),
-            ],
-          ),
-          getNavPopover(),
-          getDayPopover(),
+        class: [
+          'vc-container',
+          `vc-${this.$theme.color}`,
+          {
+            'vc-is-expanded': this.isExpanded,
+            'vc-is-dark': this.$theme.isDark,
+          },
         ],
-      );
-
-    return getContainerGrid();
+        on: {
+          keydown: this.handleKeydown,
+          mouseup: e => e.preventDefault(),
+        },
+        ref: 'container',
+      },
+      [
+        getNavPopover(),
+        h(
+          'div',
+          {
+            class: [
+              'vc-pane-container',
+              { 'in-transition': this.inTransition },
+            ],
+          },
+          [
+            h(
+              CustomTransition,
+              {
+                props: {
+                  name: this.transitionName,
+                },
+                on: {
+                  beforeEnter: () => {
+                    this.inTransition = true;
+                  },
+                  afterEnter: () => {
+                    this.inTransition = false;
+                  },
+                },
+              },
+              [
+                h(
+                  'div',
+                  {
+                    class: 'vc-pane-layout',
+                    style: {
+                      gridTemplateColumns: `repeat(${this.columns}, 1fr)`,
+                    },
+                    attrs: {
+                      ...this.$attrs,
+                    },
+                    key: arrayHasItems(this.pages) ? this.pages[0].key : '',
+                  },
+                  panes,
+                ),
+              ],
+            ),
+            h(
+              'div',
+              {
+                class: [`vc-arrows-container title-${this.titlePosition_}`],
+              },
+              [getArrowButton(true), getArrowButton(false)],
+            ),
+            this.$scopedSlots.footer && this.$scopedSlots.footer(),
+          ],
+        ),
+        getDayPopover(),
+      ],
+    );
   },
   mixins: [rootMixin, safeScopedSlotMixin],
   provide() {
