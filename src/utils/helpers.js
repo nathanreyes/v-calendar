@@ -71,13 +71,6 @@ export const addPages = ({ month, year }, count) => {
   };
 };
 
-export const getMaxPage = (...args) =>
-  args.reduce((prev, curr) => {
-    if (!prev) return curr;
-    if (!curr) return prev;
-    return pageIsAfterPage(curr, prev) ? curr : prev;
-  });
-
 export function datesAreEqual(a, b) {
   const aIsDate = isDate(a);
   const bIsDate = isDate(b);
@@ -87,20 +80,6 @@ export function datesAreEqual(a, b) {
 }
 
 export const arrayHasItems = array => isArray(array) && array.length;
-
-export const elementPositionInAncestor = (el, ancestor) => {
-  let top = 0;
-  let left = 0;
-  do {
-    top += el.offsetTop || 0;
-    left += el.offsetLeft || 0;
-    el = el.offsetParent;
-  } while (el && el !== ancestor);
-  return {
-    top,
-    left,
-  };
-};
 
 export const mixinOptionalProps = (source, target, props) => {
   const assigned = [];
