@@ -25,7 +25,7 @@ export default {
     move() {
       this.$refs.calendar.move(
         { month: 2, year: 2020 },
-        { force: false, transition: 'slide-h' },
+        { force: false, position: 1 },
       );
     },
   },
