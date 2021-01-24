@@ -76,6 +76,7 @@ export default {
   mixins: [childMixin],
   props: {
     value: { type: Object, default: () => ({ month: 0, year: 0 }) },
+    position: { type: Number, default: 1 },
     validator: { type: Function, default: () => () => true },
   },
   data() {
@@ -168,6 +169,7 @@ export default {
       return Math.floor(year / _yearGroupCount);
     },
     getMonthItems(year) {
+      const { position } = this;
       const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
@@ -179,12 +181,13 @@ export default {
           ariaLabel: this.locale.format(d, 'MMMM YYYY'),
           isActive: month === this.month && year === this.year,
           isCurrent: month === thisMonth && year === thisYear,
-          isDisabled: !this.validator({ month, year }),
+          isDisabled: !this.validator({ month, year }, { position }),
           click: () => this.monthClick(month, year),
         };
       });
     },
     getYearItems(yearGroupIndex) {
+      const { position } = this;
       const { _, year: thisYear } = this.pageForDate(new Date());
       const startYear = yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
@@ -192,7 +195,7 @@ export default {
       for (let year = startYear; year < endYear; year += 1) {
         let enabled = false;
         for (let month = 1; month < 12; month++) {
-          enabled = this.validator({ month, year });
+          enabled = this.validator({ month, year }, { position });
           if (enabled) break;
         }
         items.push({

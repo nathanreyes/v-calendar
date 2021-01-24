@@ -17,6 +17,7 @@ import {
   pageIsBeforePage,
   pageIsAfterPage,
   pageIsBetweenPages,
+  pageRangeToArray,
   createGuid,
   arrayHasItems,
   onSpaceOrEnter,
@@ -44,12 +45,13 @@ export default {
         },
         props: {
           page,
+          position: i + 1,
           titlePosition: this.titlePosition_,
-          canMove: this.canMove_,
+          canMove: this.canMove,
         },
         on: {
           ...this.$listeners,
-          'update:page': e => this.refreshPages({ page: e, position: i + 1 }),
+          'update:page': e => this.move(e, { position: i + 1 }),
           dayfocusin: e => {
             this.lastFocusedDay = e;
             this.$emit('dayfocusin', e);
@@ -256,7 +258,6 @@ export default {
     attributes: [Object, Array],
     trimWeeks: Boolean,
     disablePageSwipe: Boolean,
-    canMove: Function,
   },
   data() {
     return {
@@ -297,10 +298,10 @@ export default {
       return this.step || this.count;
     },
     canMovePrev() {
-      return this.canMove_(addPages(this.firstPage, -1));
+      return this.canMove(-this.step_);
     },
     canMoveNext() {
-      return this.canMove_(addPages(this.lastPage, 1));
+      return this.canMove(this.step_);
     },
   },
   watch: {
@@ -389,13 +390,38 @@ export default {
     refreshTheme() {
       this.sharedState.theme = this.$theme;
     },
-    canMove_(page) {
-      let result = pageIsBetweenPages(page, this.minPage_, this.maxPage_);
-      if (this.canMove) {
-        const newResult = this.canMove(page, result);
-        if (newResult !== undefined) result = newResult;
+    canMove(arg, opts = {}) {
+      const page = this.$locale.toPage(arg, this.firstPage);
+      let { position } = opts;
+      // Pin position if arg is number
+      if (isNumber(arg)) position = 1;
+      // Reject unresolved pages
+      if (!page) {
+        return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
       }
-      return result;
+      // Set position if unspecified and out of current bounds
+      if (!position) {
+        if (pageIsBeforePage(page, this.firstPage)) {
+          position = -1;
+        } else if (pageIsAfterPage(page, this.lastPage)) {
+          position = 1;
+        } else {
+          // Page already displayed with no specified position, so we're done
+          return Promise.resolve(true);
+        }
+      }
+      // Calculate new page range without adjusting to min/max
+      Object.assign(
+        opts,
+        this.getTargetPageRange(page, {
+          position,
+          force: true,
+        }),
+      );
+      // Verify we can to move to any pages in the target range
+      return pageRangeToArray(opts.fromPage, opts.toPage).some(p =>
+        pageIsBetweenPages(p, this.minPage_, this.maxPage_),
+      );
     },
     movePrev(opts) {
       return this.move(-this.step_, opts);
@@ -404,39 +430,27 @@ export default {
       return this.move(this.step_, opts);
     },
     move(arg, opts = {}) {
-      const page = this.$locale.toPage(arg, this.firstPage);
-      // Pin position if arg is number
-      if (isNumber(arg)) opts.position = 1;
-      // Reject unresolved pages
-      if (!page) {
-        return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
+      // Reject if we can't move to this page
+      const canMove = this.canMove(arg, opts);
+      if (!opts.force && !canMove) {
+        return Promise.reject(
+          new Error(`Move target is disabled: ${JSON.stringify(opts)}`),
+        );
       }
-      // Set position if unspecified and out of current bounds
-      if (!opts.position) {
-        if (pageIsBeforePage(page, this.firstPage)) {
-          opts.position = -1;
-        } else if (pageIsAfterPage(page, this.lastPage)) {
-          opts.position = 1;
-        } else {
-          // Page already displayed with no specified position, so we're done
-          return Promise.resolve(true);
-        }
-      }
-      // Calculate new `fromPage`
-      const { fromPage } = this.getTargetPageRange(page, opts);
       // Move to new `fromPage` if it's different from the current one
-      if (fromPage && !pageIsEqualToPage(fromPage, this.firstPage)) {
+      if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, this.firstPage)) {
         return this.refreshPages({
           ...opts,
+          page: opts.fromPage,
           position: 1,
-          page: fromPage,
+          force: true,
         });
       }
       return Promise.resolve(true);
     },
     focusDate(date, opts = {}) {
       // Move to the given date
-      this.move(date, opts).then(() => {
+      return this.move(date, opts).then(() => {
         // Set focus on the element for the date
         const focusableEl = this.$el.querySelector(
           `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
@@ -478,31 +492,20 @@ export default {
       return this.refreshPages({ ...opts, page });
     },
     getTargetPageRange(page, { position, force } = {}) {
-      // Calculate the page to start displaying from
       let fromPage = null;
-      // 1. Try the page parameter
+      let toPage = null;
       if (pageIsValid(page)) {
-        const pagesToAdd =
-          position > 0 ? 1 - position : -(this.count + position);
+        let pagesToAdd = 0;
+        position = +position;
+        if (!isNaN(position)) {
+          pagesToAdd = position > 0 ? 1 - position : -(this.count + position);
+        }
         fromPage = addPages(page, pagesToAdd);
       } else {
-        // 2. Try the fromPage prop
-        fromPage = this.fromPage || this.pageForDate(this.fromDate);
-        if (!pageIsValid(fromPage)) {
-          // 3. Try the toPage prop
-          const toPage = this.toPage || this.pageForDate(this.toPage);
-          if (pageIsValid(toPage)) {
-            fromPage = addPages(toPage, 1 - this.count);
-          } else {
-            // 4. Try the first attribute
-            fromPage = this.getPageForAttributes();
-          }
-        }
+        fromPage = this.getDefaultInitialPage();
       }
-      // 5. Fall back to today's page
-      fromPage = pageIsValid(fromPage) ? fromPage : this.pageForThisMonth();
-      let toPage = addPages(fromPage, this.count - 1);
-      // 6. Adjust for min/max pages if not forced
+      toPage = addPages(fromPage, this.count - 1);
+      // Adjust range for min/max if not forced
       if (!force) {
         if (pageIsBeforePage(fromPage, this.minPage_)) {
           fromPage = this.minPage_;
@@ -512,6 +515,26 @@ export default {
         toPage = addPages(fromPage, this.count - 1);
       }
       return { fromPage, toPage };
+    },
+    getDefaultInitialPage() {
+      // 1. Try the fromPage prop
+      let page = this.fromPage || this.pageForDate(this.fromDate);
+      if (!pageIsValid(page)) {
+        // 2. Try the toPage prop
+        const toPage = this.toPage || this.pageForDate(this.toPage);
+        if (pageIsValid(toPage)) {
+          page = addPages(toPage, 1 - this.count);
+        }
+      }
+      // 3. Try the first attribute
+      if (!pageIsValid(page)) {
+        page = this.getPageForAttributes();
+      }
+      // 4. Use today's page
+      if (!pageIsValid(page)) {
+        page = this.pageForThisMonth();
+      }
+      return page;
     },
     refreshPages({ page, position = 1, force, transition, ignoreCache } = {}) {
       return new Promise((resolve, reject) => {
@@ -613,7 +636,7 @@ export default {
           monthComps,
           prevMonthComps,
           nextMonthComps,
-          canMove: pg => this.canMove_(pg),
+          canMove: pg => this.canMove(pg),
           move: pg => this.move(pg),
           moveThisMonth: () => this.moveThisMonth(),
           movePrevMonth: () => this.move(prevMonthComps),
@@ -745,7 +768,7 @@ export default {
       }
       if (newDate) {
         event.preventDefault();
-        this.focusDate(newDate);
+        this.focusDate(newDate).catch(() => {});
       }
     },
   },

@@ -44,6 +44,7 @@ export default {
               h(CalendarNav, {
                 props: {
                   value: this.page,
+                  position: this.position,
                   validator: this.canMove,
                 },
                 on: {
@@ -101,6 +102,7 @@ export default {
   },
   props: {
     page: Object,
+    position: Number,
     titlePosition: String,
     navVisibility: String,
     canMove: {

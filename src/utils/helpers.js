@@ -11,8 +11,6 @@ export const pad = (val, len, char = '0') => {
 
 export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
 
-export const pageIsValid = page => !!(page && page.month && page.year);
-
 export const mergeEvents = (...args) => {
   const result = {};
   args.forEach(e =>
@@ -28,6 +26,8 @@ export const mergeEvents = (...args) => {
   );
   return result;
 };
+
+export const pageIsValid = page => !!(page && page.month && page.year);
 
 export const pageIsBeforePage = (page, comparePage) => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
@@ -51,6 +51,16 @@ export const pageIsEqualToPage = (aPage, bPage) => {
   if (aPage && !bPage) return false;
   if (!aPage && !bPage) return true;
   return aPage.month === bPage.month && aPage.year === bPage.year;
+};
+
+export const pageRangeToArray = (from, to) => {
+  if (!pageIsValid(from) || !pageIsValid(to)) return [];
+  const result = [];
+  while (!pageIsAfterPage(from, to)) {
+    result.push(from);
+    from = addPages(from, 1);
+  }
+  return result;
 };
 
 export const addPages = ({ month, year }, count) => {
