@@ -25,11 +25,11 @@ export default {
     return {
       customer: {
         name: 'Nathan Reyes',
-        birthday: '1983-01-21T02:30:00-5:00',
+        birthday: '1983-01-21T07:30:00.000Z',
       },
       modelConfig: {
         type: 'string',
-        mask: 'YYYY-MM-DDTHH:mm:ssXXX',
+        mask: 'iso',
         timeAdjust: '12:00:00', // Assign noon time to selected dates
       },
     };
