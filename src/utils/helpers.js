@@ -53,16 +53,6 @@ export const pageIsEqualToPage = (aPage, bPage) => {
   return aPage.month === bPage.month && aPage.year === bPage.year;
 };
 
-export const pageRangeToArray = (from, to) => {
-  if (!pageIsValid(from) || !pageIsValid(to)) return [];
-  const result = [];
-  while (!pageIsAfterPage(from, to)) {
-    result.push(from);
-    from = addPages(from, 1);
-  }
-  return result;
-};
-
 export const addPages = ({ month, year }, count) => {
   const incr = count > 0 ? 1 : -1;
   for (let i = 0; i < Math.abs(count); i++) {
@@ -79,6 +69,16 @@ export const addPages = ({ month, year }, count) => {
     month,
     year,
   };
+};
+
+export const pageRangeToArray = (from, to) => {
+  if (!pageIsValid(from) || !pageIsValid(to)) return [];
+  const result = [];
+  while (!pageIsAfterPage(from, to)) {
+    result.push(from);
+    from = addPages(from, 1);
+  }
+  return result;
 };
 
 export function datesAreEqual(a, b) {
