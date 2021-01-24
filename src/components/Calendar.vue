@@ -99,6 +99,7 @@ export default {
         ],
       );
     };
+
     // Nav popover
     const getNavPopover = () =>
       h(Popover, {
@@ -109,20 +110,22 @@ export default {
         ref: 'navPopover',
         scopedSlots: {
           default: ({ data }) => {
+            const { position, page } = data;
             return h(CalendarNav, {
               props: {
-                value: data.page,
-                position: data.position,
-                validator: this.canMove,
+                value: page,
+                position,
+                validator: e => this.canMove(e, { position }),
               },
               on: {
-                input: $event => this.move($event),
+                input: e => this.move(e, { position }),
               },
               scopedSlots: this.$scopedSlots,
             });
           },
         },
       });
+
     // Day popover
     const getDayPopover = () =>
       h(Popover, {
