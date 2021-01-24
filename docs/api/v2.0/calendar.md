@@ -149,24 +149,6 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `undefined`
 
-### `can-move`
-
-**Type:** Function
-
-**Description:** Function used to determine if navigation to a given page is allowed.
-
-```js
-canMove(page: Object, defaultResult: Boolean): result: Boolean
-```
-
-The `defaultResult` will be `true` or `false`, depending if any of the `min-date`, `min-page`, `max-date` or `max-page` props have also been provided.
-
-In this way, you can override the default navigation behavior of the min and max props.
-
-If no value is returned (`undefined`), the `defaultResult` is used. Otherwise, navigation is enabled if a "truthy" result is returned.
-
-**Default:** `undefined`
-
 ### `attributes`
 
 **Type:** Array[Object]

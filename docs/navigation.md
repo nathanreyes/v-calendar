@@ -66,22 +66,6 @@ If `min-date` or `max-date` props are assigned, this will disable navigation for
 <v-calendar :max-date="new Date()" />
 ```
 
-### Disable & Enable Months :tada:
-
-Use the `can-move` function prop to override the default navigation behavior for any given month.
-
-```js
-canMove(page: Object, defaultResult: Boolean): result: Boolean
-```
-
-This function will allow for what pages can be navigated to within the calendar panes or calendar navigation dropdown.
-
-The `defaultResult` will be `true` or `false`, depending if any of the `min-date`, `min-page`, `max-date` or `max-page` props have also been provided.
-
-In this way, you can override the default navigation behavior of the min and max props.
-
-If no value is returned (`undefined`), the `defaultResult` is used. Otherwise, navigation is enabled if a "truthy" result is returned.
-
 ## Key Commands
 
 Both `v-calendar` and `v-date-picker` now support the following key commands for navigation:
