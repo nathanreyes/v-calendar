@@ -168,7 +168,6 @@ export default {
       return Math.floor(year / _yearGroupCount);
     },
     getMonthItems(year) {
-      const { position } = this;
       const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
