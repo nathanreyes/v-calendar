@@ -1,10 +1,7 @@
 <script>
-import Popover from './Popover';
-import CalendarNav from './CalendarNav';
 import CalendarDay from './CalendarDay';
 import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { getPopoverTriggerEvents } from '../utils/popovers';
-import { createGuid } from '../utils/helpers';
 
 export default {
   name: 'CalendarPane',
@@ -28,31 +25,6 @@ export default {
               on: this.navPopoverEvents,
             },
             [this.safeScopedSlot('header-title', this.page, this.page.title)],
-          ),
-          // Navigation popover
-          h(
-            Popover,
-            {
-              props: {
-                id: this.navPopoverId,
-                contentClass: 'vc-nav-popover-container',
-              },
-              ref: 'navPopover',
-            },
-            [
-              // Navigation pane
-              h(CalendarNav, {
-                props: {
-                  value: this.page,
-                  position: this.position,
-                  validator: this.canMove,
-                },
-                on: {
-                  input: $event => this.move($event),
-                },
-                scopedSlots: this.$scopedSlots,
-              }),
-            ],
           ),
         ],
       );
@@ -105,15 +77,6 @@ export default {
     position: Number,
     titlePosition: String,
     navVisibility: String,
-    canMove: {
-      type: Function,
-      default: () => true,
-    },
-  },
-  data() {
-    return {
-      navPopoverId: createGuid(),
-    };
   },
   computed: {
     navVisibility_() {
@@ -130,13 +93,21 @@ export default {
       }
     },
     navPopoverEvents() {
+      const {
+        sharedState,
+        navVisibility_,
+        navPlacement,
+        page,
+        position,
+      } = this;
       return getPopoverTriggerEvents({
-        id: this.navPopoverId,
-        visibility: this.navVisibility_,
-        placement: this.navPlacement,
+        id: sharedState.navPopoverId,
+        visibility: navVisibility_,
+        placement: navPlacement,
         modifiers: [
           { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
         ],
+        data: { page, position },
         isInteractive: true,
       });
     },
@@ -147,10 +118,6 @@ export default {
     },
   },
   methods: {
-    move(page) {
-      this.$emit('update:page', page);
-      this.$refs.navPopover.hide({ hideDelay: 0 });
-    },
     refresh() {
       this.$refs.days.forEach(d => d.refresh());
     },

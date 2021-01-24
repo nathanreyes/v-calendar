@@ -4,6 +4,7 @@ import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Popover from './Popover';
 import PopoverRow from './PopoverRow';
+import CalendarNav from './CalendarNav';
 import CalendarPane from './CalendarPane';
 import CustomTransition from './CustomTransition';
 import SvgIcon from './SvgIcon';
@@ -47,11 +48,9 @@ export default {
           page,
           position: i + 1,
           titlePosition: this.titlePosition_,
-          canMove: this.canMove,
         },
         on: {
           ...this.$listeners,
-          'update:page': e => this.move(e, { position: i + 1 }),
           dayfocusin: e => {
             this.lastFocusedDay = e;
             this.$emit('dayfocusin', e);
@@ -100,6 +99,30 @@ export default {
         ],
       );
     };
+    // Nav popover
+    const getNavPopover = () =>
+      h(Popover, {
+        props: {
+          id: this.sharedState.navPopoverId,
+          contentClass: 'vc-nav-popover-container',
+        },
+        ref: 'navPopover',
+        scopedSlots: {
+          default: ({ data }) => {
+            return h(CalendarNav, {
+              props: {
+                value: data.page,
+                position: data.position,
+                validator: this.canMove,
+              },
+              on: {
+                input: $event => this.move($event),
+              },
+              scopedSlots: this.$scopedSlots,
+            });
+          },
+        },
+      });
     // Day popover
     const getDayPopover = () =>
       h(Popover, {
@@ -224,6 +247,7 @@ export default {
               this.$scopedSlots.footer && this.$scopedSlots.footer(),
             ],
           ),
+          getNavPopover(),
           getDayPopover(),
         ],
       );
@@ -268,6 +292,7 @@ export default {
       transitionName: '',
       inTransition: false,
       sharedState: {
+        navPopoverId: createGuid(),
         dayPopoverId: createGuid(),
         theme: {},
         masks: {},
@@ -437,6 +462,8 @@ export default {
           new Error(`Move target is disabled: ${JSON.stringify(opts)}`),
         );
       }
+      // Hide nav popover for good measure
+      this.$refs.navPopover.hide({ hideDelay: 0 });
       // Move to new `fromPage` if it's different from the current one
       if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, this.firstPage)) {
         return this.refreshPages({

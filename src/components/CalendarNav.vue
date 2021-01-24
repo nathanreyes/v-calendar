@@ -259,6 +259,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
   line-height: var(--leading-snug);
   border-width: 2px;
   border-style: solid;
