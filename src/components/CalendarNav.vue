@@ -162,7 +162,7 @@ export default {
       this.$nextTick(() => {
         // Set focus on the first enabled nav item
         const focusableEl = this.$el.querySelector(
-          `.vc-nav-item:not(.is-disabled)`,
+          '.vc-nav-item:not(.is-disabled)',
         );
         if (focusableEl) {
           focusableEl.focus();
