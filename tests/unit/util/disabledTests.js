@@ -93,29 +93,6 @@ const disabledTests = [
       },
     },
   },
-  // Custom move validator
-  {
-    it: ':can-move disables nav months and years',
-    props: {
-      fromPage: { month: 11, year: 2020 },
-      canMove: ({ month, year }) => {
-        const disableMonths = [1, 3, 6, 9, 12];
-        const disableYears = [2016, 2019, 2022, 2025];
-        return !disableMonths.includes(month) && !disableYears.includes(year);
-      },
-    },
-    disabledArrows: ['right'],
-    nav: {
-      months: {
-        disabledArrows: ['left'],
-        disabledMonths: [1, 3, 6, 9, 12],
-        year: 2020,
-      },
-      years: {
-        disabledYears: [2016, 2019, 2022, 2025],
-      },
-    },
-  },
 ];
 
 module.exports = disabledTests;
