@@ -58,6 +58,24 @@ export default {
 };
 
 function renderLink(h, to, text, active) {
+  if (text === 'Flatlogic') {
+    return h(
+      'a',
+      {
+        attrs: {
+          href: to,
+        },
+      },
+      [
+        h('img', {
+          attrs: {
+            src: 'flatlogic_templates.svg',
+          },
+          class: 'h-4 ml-4 mt-2 cursor-pointer hover:opacity-50',
+        }),
+      ],
+    );
+  }
   return h(
     'router-link',
     {
@@ -106,17 +124,3 @@ function renderExternal(h, to, text) {
   );
 }
 </script>
-
-<style lang="stylus">
-// a.sidebar-link {
-//   .sidebar-sub-headers & {
-//     padding-top: 0.25rem;
-//     padding-bottom: 0.25rem;
-//     border-left: none;
-
-//     &.active {
-//       font-weight: 500;
-//     }
-//   }
-// }
-</style>

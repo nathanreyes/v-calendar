@@ -28,7 +28,7 @@
     </div>
     <div class="mt-10 text-center sm:text-left">
       <a
-        class="bg-indigo-500 text-white font-semibold rounded-full py-3 px-4 no-underline cursor-pointer hover:bg-indigo-600"
+        class="bg-indigo-500 text-white font-semibold rounded-full py-3 px-4 cursor-pointer hover:bg-indigo-600 hover:text-white hover:no-underline"
         href="https://github.com/sponsors/nathanreyes"
       >
         Support this project
