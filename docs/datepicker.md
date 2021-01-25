@@ -581,6 +581,95 @@ export default {
 };
 ```
 
+### Component Wrappers
+
+`v-date-picker` can be used with your own custom input components wrappers or component libraries such as Vuetify.
+
+Most likely, custom input components will wrap their own input components with other non-input elements, which make them non-compatible with the following sytax.
+
+```html
+<v-date-picker v-model="date">
+  <template v-slot="{ inputValue, inputEvents }">
+    <my-custom-input-component :value="inputValue" v-on="inputEvents" />
+  </template>
+</v-date-picker>
+```
+
+Whilst an input component wrapper will usually have some kind of `value` prop that can be assigned, an `input` element is required to properly bind the focus, key and mouse events.
+
+#### Custom Wrappers
+
+If you have control over the design of the custom component, be sure to assign the `$listeners` to the nested `input` element. This will automatically bind the non-assigned events to the `input`.
+
+Here is an example using our awesome custom input component.
+
+<div class="example">
+  <github-763 />
+</div>
+
+```html
+<template>
+  <div class="relative flex-grow">
+    <svg
+      class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+      />
+    </svg>
+    <input
+      class="flex-grow text-gray-900 pl-8 pr-2 py-1 bg-white border-2 focus:outline-none focus:border-blue-500 rounded w-full"
+      v-bind="$attrs"
+      v-on="$listeners"
+    />
+  </div>
+</template>
+```
+
+```js
+export default {
+  name: 'MyCustomInputComponent',
+  inheritAttrs: false,
+};
+```
+
+We now have a custom components that properly binds all the events needed for the date picker to work.
+
+#### Component Libraries
+
+For component libraries that wrap `input` elements (eg. Vuetify), use the `input-selectors` prop to pass a selector (or array of selectors for range pickers) that can be used to extract the input element(s).
+
+Here is an example using our custom input component.
+
+```html
+<v-date-picker v-model="date" input-selectors="input">
+  <custom-input />
+</v-date-picker>
+```
+
+:::tip
+Selectors are scoped to each `v-date-picker`, so don't worry about selecting elements outside the scope of the the date picker. Most often a simple 'input' selector will work.
+:::
+
+For range pickers, pass an array with the first and second selectors for the start and end date inputs, respectively.
+
+```html
+<v-date-picker
+  class="flex items-center"
+  v-model="range"
+  :input-selectors="['.start input', '.end input']"
+  is-range
+  >
+  <custom-input class="start" /> - <custom-input class="end" />
+</v-date-picker>
+```
+
 ### Advanced Slots
 
 Besides `input`s, other elements may be effectively used as the default slot. When doing so, there are other slot variables that you may use to further customize date selection behavior.
