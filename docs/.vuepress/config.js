@@ -102,7 +102,7 @@ module.exports = {
         {
           title: '',
           collapsable: false,
-          children: ['', 'sponsors', 'flaglogic'],
+          children: ['', 'sponsors', 'flatlogic'],
         },
         {
           title: 'Getting Started',
