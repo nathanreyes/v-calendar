@@ -11,6 +11,9 @@ import {
   pageIsBetweenPages,
   on,
   off,
+  firstEl,
+  toArray,
+  arrayHasItems,
 } from '../utils/helpers';
 import { isObject, isArray, pick } from '../utils/_';
 import {
@@ -122,30 +125,38 @@ export default {
     return (
       (this.$scopedSlots.default &&
         // Convert this span to a fragment when supported in Vue
-        h('span', [
-          // Slot content
-          this.$scopedSlots.default(this.slotArgs),
-          // Popover content
-          h(Popover, {
-            props: {
-              id: this.datePickerPopoverId,
-              placement: 'bottom-start',
-              contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
+        h(
+          'span',
+          {
+            attrs: {
+              'data-id': this.id,
             },
-            on: {
-              beforeShow: e => this.$emit('popoverWillShow', e),
-              afterShow: e => this.$emit('popoverDidShow', e),
-              beforeHide: e => this.$emit('popoverWillHide', e),
-              afterHide: e => this.$emit('popoverDidHide', e),
-            },
-            scopedSlots: {
-              default() {
-                return content();
+          },
+          [
+            // Slot content
+            this.$scopedSlots.default(this.slotArgs),
+            // Popover content
+            h(Popover, {
+              props: {
+                id: this.datePickerPopoverId,
+                placement: 'bottom-start',
+                contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
               },
-            },
-            ref: 'popover',
-          }),
-        ])) ||
+              on: {
+                beforeShow: e => this.$emit('popoverWillShow', e),
+                afterShow: e => this.$emit('popoverDidShow', e),
+                beforeHide: e => this.$emit('popoverWillHide', e),
+                afterHide: e => this.$emit('popoverDidHide', e),
+              },
+              scopedSlots: {
+                default() {
+                  return content();
+                },
+              },
+              ref: 'popover',
+            }),
+          ],
+        )) ||
       content()
     );
   },
@@ -155,6 +166,7 @@ export default {
     value: { type: null, required: true },
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
     is24hr: Boolean,
+    inputSelectors: [Array, String],
     minuteIncrement: Number,
     isRequired: Boolean,
     isRange: Boolean,
@@ -167,6 +179,7 @@ export default {
   },
   data() {
     return {
+      id: createGuid(),
       value_: null,
       dateParts: null,
       activeDate: '',
@@ -206,26 +219,20 @@ export default {
       }
       return this.$locale.masks.input;
     },
-    slotArgs() {
-      const inputConfig = {
-        type: 'string',
-        mask: this.inputMask,
-        patch: PATCH_DATE_TIME,
-      };
-      const {
-        isRange,
-        isDragging,
-        updateValue,
-        showPopover,
-        hidePopover,
-        togglePopover,
-      } = this;
-      const inputValue = isRange
+    inputValue() {
+      return this.isRange
         ? {
             start: this.inputValues[0],
             end: this.inputValues[1],
           }
         : this.inputValues[0];
+    },
+    inputEvents() {
+      const inputConfig = {
+        type: 'string',
+        mask: this.inputMask,
+        patch: PATCH_DATE_TIME,
+      };
       const events = [true, false].map(isStart => ({
         input: this.onInputInput(inputConfig, isStart),
         change: this.onInputChange(inputConfig, isStart),
@@ -240,12 +247,24 @@ export default {
           },
         }),
       }));
-      const inputEvents = isRange
+      const inputEvents = this.isRange
         ? {
             start: events[0],
             end: events[1],
           }
         : events[0];
+      return inputEvents;
+    },
+    slotArgs() {
+      const {
+        isDragging,
+        inputValue,
+        inputEvents,
+        updateValue,
+        showPopover,
+        hidePopover,
+        togglePopover,
+      } = this;
       return {
         inputValue,
         inputEvents,
@@ -294,7 +313,7 @@ export default {
       return attribute;
     },
     attributes_() {
-      const attrs = isArray(this.attributes) ? [...this.attributes] : [];
+      const attrs = toArray(this.attributes);
       if (this.dragAttribute_) {
         attrs.push(this.dragAttribute_);
       } else if (this.selectAttribute_) {
@@ -304,6 +323,16 @@ export default {
     },
   },
   watch: {
+    inputSelectors(selectors, oldSelectors) {
+      this.bindInputEvents(oldSelectors, this.inputEvents, off);
+      this.bindInputEvents(selectors, this.inputEvents, on);
+      this.updateInputValues(oldSelectors, ['', '']);
+      this.updateInputValues(selectors, this.inputValues);
+    },
+    inputEvents(events, oldEvents) {
+      this.bindInputEvents(this.inputSelectors, oldEvents, off);
+      this.bindInputEvents(this.inputSelectors, events, on);
+    },
     inputMask() {
       this.formatInput();
     },
@@ -328,6 +357,9 @@ export default {
     dragValue() {
       this.refreshDateParts();
     },
+    inputValues(values) {
+      this.updateInputValues(this.inputSelectors, values);
+    },
     timezone() {
       this.initDateConfig();
       this.refreshDateParts();
@@ -344,6 +376,7 @@ export default {
     this.refreshDateParts();
   },
   mounted() {
+    this.bindInputEvents(this.inputSelectors, this.inputEvents, on);
     // Handle escape key presses
     on(document, 'keydown', this.onDocumentKeyDown);
     // Clear drag on background click
@@ -357,6 +390,7 @@ export default {
     });
     // Clean up handlers
     this.$once('beforeDestroy', () => {
+      this.bindInputEvents(this.inputSelectors, this.inputEvents, off);
       off(document, 'keydown', this.onDocumentKeyDown);
       offTapOrClickHandler();
     });
@@ -711,6 +745,26 @@ export default {
         } else {
           this.inputValues = [value, ''];
         }
+      });
+    },
+    getInput(selectors, index) {
+      selectors = toArray(selectors);
+      if (selectors.length - 1 < index) return;
+      return firstEl(`span[data-id="${this.id}"] ${selectors[index]}`);
+    },
+    updateInputValues(selectors, values) {
+      if (!arrayHasItems(values)) return;
+      values.forEach((value, i) => {
+        const input = this.getInput(selectors, i);
+        if (input) input.value = value;
+      });
+    },
+    bindInputEvents(selectors, events, onOrOff) {
+      events = events.start ? [events.start, events.end] : [events];
+      events.forEach((evts, i) => {
+        const input = this.getInput(selectors, i);
+        if (!input) return;
+        Object.keys(evts).forEach(evt => onOrOff(input, evt, evts[evt]));
       });
     },
     showPopover(opts = {}) {
