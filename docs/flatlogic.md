@@ -9,4 +9,4 @@ Thanks to Flatlogic for [mentioning us](https://flatlogic.com/blog/best-javascri
 
 Support the development of V-Calendar by using one of the template links below to get a jump-start with your application.
 
-<flaglogic-page />
+<flatlogic-page />
