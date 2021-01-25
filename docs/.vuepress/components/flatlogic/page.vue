@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-x-6 gap-y-8 sm:grid-cols-2 xl:grid-cols-3 mt-6">
+  <div class="grid gap-x-6 gap-y-8 sm:grid-cols-2 mt-6">
     <flatlogic-template
       v-for="template in templates"
       :key="template.targetUrl"
@@ -34,6 +34,15 @@ export default {
             'https://flatlogic.com/assets/templates/vue_material_full-25bf27297f7022c202807764f053691fbc52362fc80ffac8b98fa88cb6616730.png',
           title: 'Vue Material Template Full',
           subtitle: 'Premium Vue Material Admin Dashboard Template downloads',
+        },
+        {
+          targetUrl:
+            'https://flatlogic.com/templates/vue-material-template-nodejs',
+          imgUrl:
+            'https://flatlogic.com/assets/templates/vue_material_full_nodejs-f1fa24aa5f3719a07968d18345e76d9276bcde78014368396a7bb55e10efe0d3.png',
+          title: 'Vue Material Template Node.js',
+          subtitle:
+            'Premium Vue Material Template and Theme with Node.js Backend',
         },
       ],
     };

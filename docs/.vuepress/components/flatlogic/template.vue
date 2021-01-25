@@ -12,8 +12,13 @@
         class="w-72 border-2 border-gray-400 rounded-lg"
       />
     </a>
-    <p class="font-medium text-gray-700 p-0 mt-2 mb-0">{{ title }}</p>
-    <p v-if="subtitle" class="text-xs text-gray-500 p-0 mt-2 mb-0 leading-none">
+    <p class="font-medium text-gray-700 text-center p-0 mt-2 mb-0">
+      {{ title }}
+    </p>
+    <p
+      v-if="subtitle"
+      class="text-xs text-center text-gray-500 p-0 mt-2 mb-0 leading-none"
+    >
       {{ subtitle }}
     </p>
   </div>
