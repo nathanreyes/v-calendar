@@ -501,7 +501,10 @@ export default {
         const inputValue = e.target.value;
         this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
         const value = this.isRange
-          ? { start: this.inputValues[0], end: this.inputValues[1] }
+          ? {
+              start: this.inputValues[0],
+              end: this.inputValues[1] || this.inputValues[0],
+            }
           : inputValue;
         this.updateValue(value, {
           config,
