@@ -769,7 +769,7 @@ export default class Locale {
         const isFirstDay = thisMonth && day === 1;
         const isLastDay = thisMonth && day === monthComps.days;
         const onTop = w === 1;
-        const onBottom = w === 6;
+        const onBottom = w === weeks;
         const onLeft = i === 1;
         const onRight = i === daysInWeek;
         days.push({
