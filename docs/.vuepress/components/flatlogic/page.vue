@@ -44,6 +44,20 @@ export default {
           subtitle:
             'Premium Vue Material Template and Theme with Node.js Backend',
         },
+        {
+          targetUrl: 'https://flatlogic.com/templates/light-blue-vue',
+          imgUrl:
+            'https://flatlogic.com/assets/templates/light_blue_vue_full-e044d30242912d5756b190e576bf30ea967b725c09d2e371a7eabf1c6a9c33b2.webp',
+          title: 'Light Blue Vue',
+          subtitle: 'Vue Admin Dashboard Template',
+        },
+        {
+          targetUrl: 'https://flatlogic.com/templates/light-blue-vue-node-js',
+          imgUrl:
+            'https://flatlogic.com/assets/templates/light_blue_vue_full_nodejs-06f941c849f0a83a3c0d38c728101eace06a7515ea048f12bcd91f165280246f.webp',
+          title: 'Light Blue Vue Node.js',
+          subtitle: 'Vue Admin Template with Node.JS Backend',
+        },
       ],
     };
   },
