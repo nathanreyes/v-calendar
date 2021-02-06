@@ -726,17 +726,24 @@ export default {
     showPopover(opts = {}) {
       sp({
         ref: this.$el,
+        ...this.popover_,
         ...opts,
         isInteractive: true,
         id: this.datePickerPopoverId,
       });
     },
     hidePopover(opts = {}) {
-      hp({ hideDelay: 10, ...opts, id: this.datePickerPopoverId });
+      hp({
+        hideDelay: 10,
+        ...this.popover_,
+        ...opts,
+        id: this.datePickerPopoverId,
+      });
     },
     togglePopover(opts) {
       tp({
         ref: this.$el,
+        ...this.popover_,
         ...opts,
         isInteractive: true,
         id: this.datePickerPopoverId,
