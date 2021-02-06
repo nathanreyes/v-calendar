@@ -38,7 +38,7 @@ Binding to date ranges is also supported by setting the `is-range` prop.
 <guide-datepicker-simple-range />
 
 ```html
-<v-date-picker value="range" is-range />
+<v-date-picker v-model="range" is-range />
 ```
 
 ```js
