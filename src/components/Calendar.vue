@@ -207,6 +207,7 @@ export default {
         ref: 'container',
       },
       [
+        this.safeScopedSlot('left-side'),
         getNavPopover(),
         h(
           'div',
