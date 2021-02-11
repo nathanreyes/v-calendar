@@ -131,6 +131,16 @@ export const onSpaceOrEnter = (event, handler) => {
   }
 };
 
+export const toArray = items => {
+  if (isArray(items)) return [...items];
+  return items == null ? [] : [items];
+};
+
+export const firstEl = selectors => {
+  if (!isArray(selectors)) selectors = [selectors];
+  return selectors.map(s => document.querySelector(s)).find(el => el);
+};
+
 /* eslint-disable no-bitwise */
 
 export const createGuid = () => {
