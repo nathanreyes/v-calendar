@@ -282,6 +282,7 @@ export default {
     attributes: [Object, Array],
     trimWeeks: Boolean,
     disablePageSwipe: Boolean,
+    showWeeknumbers: Boolean
   },
   data() {
     return {
@@ -669,6 +670,7 @@ export default {
           movePrevMonth: () => this.move(prevMonthComps),
           moveNextMonth: () => this.move(nextMonthComps),
           refresh: true,
+          showWeeknumbers: this.showWeeknumbers
         };
         // Assign day info
         page.days = this.$locale.getCalendarDays(page);

@@ -1,5 +1,8 @@
 /* eslint-disable no-bitwise, no-multi-assign, import/no-cycle */
 import toDate from 'date-fns-tz/toDate';
+import getISOWeek from 'date-fns/getISOWeek';
+import getWeeksInMonth from 'date-fns/getWeeksInMonth';
+import addDays from 'date-fns/addDays';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
 import { pad, addPages, arrayHasItems } from './helpers';
@@ -643,11 +646,14 @@ export default class Locale {
     if (!comps) {
       const inLeapYear =
         (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-      const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
+      const firstDayOfMonth = new Date(year, month - 1, 1);
+      const firstWeekday = firstDayOfMonth.getDay() + 1;
       const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
-      const weeks = Math.ceil(
-        (days + Math.abs(firstWeekday - this.firstDayOfWeek)) / daysInWeek,
-      );
+      const weeks = getWeeksInMonth(firstDayOfMonth, {
+        weekStartsOn: this.firstDayOfWeek - 1
+      });
+      const isoWeeks = [...Array(weeks).keys()]
+        .map(wIdx => getISOWeek(addDays(firstDayOfMonth, wIdx * 7)));
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
         inLeapYear,
@@ -656,6 +662,7 @@ export default class Locale {
         weeks,
         month,
         year,
+        isoWeeks
       };
       this.monthData[key] = comps;
     }
