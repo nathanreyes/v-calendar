@@ -2,7 +2,7 @@
   {
     "props": {
       "mode": "datetime",
-      "value": "2021-01-15T04:15:00Z",
+      "value": "2021-01-15T04:15:00.000Z",
       "modelConfig": {
         "type": "string",
         "mask": "iso"
@@ -34,10 +34,10 @@
   {
     "props": {
       "mode": "datetime",
-      "value": "2021-01-15T04:15:00Z",
+      "value": "2021-01-15T04:15:00.000Z",
       "modelConfig": {
         "type": "string",
-        "mask": "YYYY-MM-DDTHH:mm:ssZ"
+        "mask": "YYYY-MM-DDTHH:mm:ss.SSSZ"
       },
       "timezone": "utc"
     },
@@ -45,7 +45,7 @@
     "minutes": 15,
     "isAM": true,
     "clickEl": ".id-2021-01-30 .vc-day-content",
-    "newValue": "2021-01-30T04:15:00Z"
+    "newValue": "2021-01-30T04:15:00.000Z"
   },
   {
     "props": {

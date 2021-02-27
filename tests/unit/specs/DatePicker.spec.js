@@ -123,5 +123,84 @@ describe('DatePicker', () => {
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(false);
     });
+
+    it(':model-config.fillDate - fills missing date parts for date', async () => {
+      const dp = mountWithInputs({
+        value: null,
+        mode: 'time',
+        modelConfig: {
+          fillDate: new Date(2021, 0, 1),
+        },
+      });
+      await updateInputs(dp, '12:15 PM');
+      expect(dp.vm.value_.toISOString()).toEqual('2021-01-01T12:15:00.000Z');
+    });
+
+    it(':model-config.fillDate - fills missing date parts for date range', async () => {
+      const dp = mountWithInputs({
+        value: null,
+        mode: 'time',
+        isRange: true,
+        modelConfig: {
+          fillDate: new Date(2021, 0, 1),
+        },
+      });
+      await updateInputs(dp, '12:15 PM');
+      expect(dp.vm.value_).toEqual({
+        start: '2021-01-01T12:15:00.000Z',
+        end: '2021-01-01T12:15:00.000Z',
+      });
+    });
   });
 });
+
+function mountWithInputs(props) {
+  return mount(DatePicker, {
+    propsData: {
+      ...props,
+      timezone: 'utc',
+    },
+    scopedSlots: {
+      default: function(props) {
+        if (props.isRange) {
+          return this.$createElement('div', [
+            this.$createElement('input', {
+              props: {
+                value: props.inputValue.start,
+              },
+              on: props.inputEvents.start,
+            }),
+            this.$createElement('input', {
+              props: {
+                value: props.inputValue.end,
+              },
+              on: props.inputEvents.end,
+            }),
+          ]);
+        }
+        return this.$createElement('input', {
+          props: {
+            value: props.inputValue,
+          },
+          on: props.inputEvents,
+        });
+      },
+    },
+  });
+}
+
+async function updateInputs(dp, startValue, endValue) {
+  const inputs = dp.findAll('input');
+  let input = null;
+  if (startValue) {
+    input = inputs.at(0);
+    console.log('update', input, startValue);
+    await input.setValue(startValue);
+    await input.trigger('change');
+  }
+  if (endValue) {
+    input = inputs.at(1);
+    await input.setValue(endValue);
+    await input.trigger('change');
+  }
+}
