@@ -5,7 +5,7 @@
         <div class="flex items-center">
           <button
             class="p-2 bg-blue-100 border border-blue-200 hover:bg-blue-200 text-blue-600 rounded-l focus:bg-blue-500 focus:text-white focus:border-blue-500 focus:outline-none"
-            @click="togglePopover({ placement: 'auto-start' })"
+            @click="togglePopover()"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
