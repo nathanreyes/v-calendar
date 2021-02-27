@@ -42,12 +42,6 @@ const MODE_DATE = 'date';
 const MODE_DATE_TIME = 'datetime';
 const MODE_TIME = 'time';
 
-const MODE_PATCH = {
-  [MODE_DATE]: PATCH.DATE,
-  [MODE_TIME]: PATCH.TIME,
-  [MODE_DATE_TIME]: PATCH.DATE_TIME,
-};
-
 export default {
   name: 'DatePicker',
   render(h) {
@@ -65,8 +59,9 @@ export default {
               is24hr: this.is24hr,
               minuteIncrement: this.minuteIncrement,
               showBorder: !this.isTime,
+              isDisabled: this.isDateTime && !dp.isValid,
             },
-            on: { input: p => this.onTimeInput(p, idx) },
+            on: { input: p => this.onTimeInput(p, idx === 0) },
           }),
         ),
         this.$scopedSlots.footer && this.$scopedSlots.footer(),
@@ -190,11 +185,6 @@ export default {
     isTime() {
       return this.mode.toLowerCase() === MODE_TIME;
     },
-    modePatch() {
-      if (this.isDate) return PATCH.DATE;
-      if (this.isTime) return PATCH.DATE_TIME;
-      return PATCH.DATE_TIME;
-    },
     isDragging() {
       return !!this.dragValue;
     },
@@ -208,11 +198,23 @@ export default {
       }
       return this.$locale.masks.input;
     },
+    inputMaskHasTime() {
+      return /[Hh]/g.test(this.inputMask);
+    },
+    inputMaskHasDate() {
+      return /[dD]{1,2}|Do|W{1,4}|M{1,4}|YY(?:YY)?/g.test(this.inputMask);
+    },
+    inputMaskPatch() {
+      if (this.inputMaskHasTime && this.inputMaskHasDate)
+        return PATCH.DATE_TIME;
+      if (this.inputMaskHasDate) return PATCH.DATE;
+      if (this.inputMaskHasTime) return PATCH.TIME;
+      return undefined;
+    },
     slotArgs() {
       const inputConfig = {
         type: 'string',
         mask: this.inputMask,
-        patch: this.modePatch,
       };
       const {
         isRange,
@@ -466,32 +468,34 @@ export default {
         adjustTime: true,
       });
     },
-    onTimeInput(parts, idx) {
+    onTimeInput(parts, isStart) {
+      let value = null;
+      let opts = null;
       if (this.isRange) {
-        const start = idx === 0 ? parts : this.dateParts[0];
-        const end = idx === 0 ? this.dateParts[1] : parts;
-        this.updateValue(
-          { start, end },
-          {
-            start: {
-              ...this.dateConfig.start,
-              type: 'object',
-              patch: PATCH.TIME,
-            },
-            end: {
-              ...this.dateConfig.end,
-              type: 'object',
-              patch: PATCH.TIME,
-            },
+        const start = isStart ? parts : this.dateParts[0];
+        const end = isStart ? this.dateParts[1] : parts;
+        value = { start, end };
+        opts = {
+          start: {
+            ...this.dateConfig.start,
+            type: 'object',
+            patch: PATCH.TIME,
           },
-        );
+          end: {
+            ...this.dateConfig.end,
+            type: 'object',
+            patch: PATCH.TIME,
+          },
+        };
       } else {
-        this.updateValue(parts, {
+        value = parts;
+        opts = {
           ...this.dateConfig,
           type: 'object',
           patch: PATCH.TIME,
-        });
+        };
       }
+      this.updateValue(value, opts).then(() => this.adjustPageRange(isStart));
     },
     onInputInput(config, isStart) {
       return e => {
@@ -506,13 +510,11 @@ export default {
         }
         this.updateValue(inputValue, {
           config,
-          patch: this.modePatch,
+          patch: this.inputMaskPatch,
           formatInput: false,
           hidePopover: false,
           debounce: this.inputDebounce_,
-        }).then(() => {
-          this.adjustPageRange(isStart);
-        });
+        }).then(() => this.adjustPageRange(isStart));
       };
     },
     onInputChange(config, isStart) {
@@ -527,7 +529,7 @@ export default {
           : inputValue;
         this.updateValue(value, {
           config,
-          patch: this.modePatch,
+          patch: this.inputMaskPatch,
           formatInput: true,
           hidePopover: false,
         }).then(() => {
@@ -649,22 +651,22 @@ export default {
       if (this.isRange) {
         const startConfig = config.start || config;
         const start = this.normalizeDate(value.start, {
-          fillDate: this.value_ && this.value_.start,
           ...startConfig,
+          fillDate: (this.value_ && this.value_.start) || startConfig.fillDate,
           patch,
         });
         const endConfig = config.end || config;
         const end = this.normalizeDate(value.end, {
-          fillDate: this.value_ && this.value_.end,
           ...endConfig,
+          fillDate: (this.value_ && this.value_.end) || endConfig.fillDate,
           patch,
         });
         const result = this.sortRange({ start, end });
         return isDragging ? result : this.sortRange(result);
       }
       return this.normalizeDate(value, {
-        fillDate: this.value_,
         ...config,
+        fillDate: this.value_ || config.fillDate,
         patch,
       });
     },
