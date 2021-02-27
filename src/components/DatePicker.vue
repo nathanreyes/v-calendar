@@ -188,6 +188,21 @@ export default {
     isDragging() {
       return !!this.dragValue;
     },
+    modelConfig_() {
+      if (this.isRange) {
+        return {
+          start: {
+            ..._rangeConfig.start,
+            ...(this.modelConfig.start || this.modelConfig),
+          },
+          end: {
+            ..._rangeConfig.end,
+            ...(this.modelConfig.end || this.modelConfig),
+          },
+        };
+      }
+      return { ..._dateConfig, ...this.modelConfig };
+    },
     inputMask() {
       const masks = this.$locale.masks;
       if (this.isTime) {
@@ -212,10 +227,6 @@ export default {
       return undefined;
     },
     slotArgs() {
-      const inputConfig = {
-        type: 'string',
-        mask: this.inputMask,
-      };
       const {
         isRange,
         isDragging,
@@ -231,8 +242,8 @@ export default {
           }
         : this.inputValues[0];
       const events = [true, false].map(isStart => ({
-        input: this.onInputInput(inputConfig, isStart),
-        change: this.onInputChange(inputConfig, isStart),
+        input: this.onInputInput(isStart),
+        change: this.onInputChange(isStart),
         keyup: this.onInputKeyup,
         ...getPopoverTriggerEvents({
           ...this.popover_,
@@ -311,16 +322,10 @@ export default {
     inputMask() {
       this.formatInput();
     },
-    isRange: {
-      immediate: true,
-      handler() {
-        this.initDateConfig();
-      },
-    },
     value() {
       if (!this.watchValue) return;
       this.forceUpdateValue(this.value, {
-        config: this.modelConfig,
+        config: this.modelConfig_,
         notify: false,
         formatInput: true,
         hidePopover: false,
@@ -333,14 +338,13 @@ export default {
       this.refreshDateParts();
     },
     timezone() {
-      this.initDateConfig();
       this.refreshDateParts();
       this.forceUpdateValue(this.value_, { notify: true, formatInput: true });
     },
   },
   created() {
     this.forceUpdateValue(this.value, {
-      config: this.modelConfig,
+      config: this.modelConfig_,
       notify: false,
       formatInput: true,
       hidePopover: false,
@@ -366,24 +370,6 @@ export default {
     });
   },
   methods: {
-    initDateConfig() {
-      let config;
-      if (this.isRange) {
-        config = {
-          start: {
-            ..._rangeConfig.start,
-            ...(this.modelConfig.start || this.modelConfig),
-          },
-          end: {
-            ..._rangeConfig.end,
-            ...(this.modelConfig.end || this.modelConfig),
-          },
-        };
-      } else {
-        config = { ..._dateConfig, ...this.modelConfig };
-      }
-      this.dateConfig = config;
-    },
     getDateParts(date) {
       return this.$locale.getDateParts(date);
     },
@@ -466,76 +452,58 @@ export default {
       this.updateValue(this.dragTrackingValue, {
         patch: PATCH.DATE,
         adjustTime: true,
+        formatInput: true,
+        hidePopover: false,
       });
     },
     onTimeInput(parts, isStart) {
       let value = null;
-      let opts = null;
       if (this.isRange) {
         const start = isStart ? parts : this.dateParts[0];
         const end = isStart ? this.dateParts[1] : parts;
         value = { start, end };
-        opts = {
-          start: {
-            ...this.dateConfig.start,
-            type: 'object',
-            patch: PATCH.TIME,
-          },
-          end: {
-            ...this.dateConfig.end,
-            type: 'object',
-            patch: PATCH.TIME,
-          },
-        };
       } else {
         value = parts;
-        opts = {
-          ...this.dateConfig,
-          type: 'object',
-          patch: PATCH.TIME,
-        };
       }
-      this.updateValue(value, opts).then(() => this.adjustPageRange(isStart));
+      this.updateValue(value, { patch: PATCH.TIME }).then(() =>
+        this.adjustPageRange(isStart),
+      );
     },
-    onInputInput(config, isStart) {
+    onInputInput(isStart) {
       return e => {
         if (!this.updateOnInput_) return;
-        let inputValue = e.target.value;
-        this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
-        if (this.isRange) {
-          inputValue = {
-            start: this.inputValues[0],
-            end: this.inputValues[1] || this.inputValues[0],
-          };
-        }
-        this.updateValue(inputValue, {
-          config,
-          patch: this.inputMaskPatch,
+        this.onInputUpdate(e.target.value, isStart, {
           formatInput: false,
           hidePopover: false,
           debounce: this.inputDebounce_,
-        }).then(() => this.adjustPageRange(isStart));
-      };
-    },
-    onInputChange(config, isStart) {
-      return e => {
-        const inputValue = e.target.value;
-        this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
-        const value = this.isRange
-          ? {
-              start: this.inputValues[0],
-              end: this.inputValues[1] || this.inputValues[0],
-            }
-          : inputValue;
-        this.updateValue(value, {
-          config,
-          patch: this.inputMaskPatch,
-          formatInput: true,
-          hidePopover: false,
-        }).then(() => {
-          this.adjustPageRange(isStart);
         });
       };
+    },
+    onInputChange(isStart) {
+      return e => {
+        this.onInputUpdate(e.target.value, isStart, {
+          formatInput: true,
+          hidePopover: false,
+        });
+      };
+    },
+    onInputUpdate(inputValue, isStart, opts) {
+      this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
+      const value = this.isRange
+        ? {
+            start: this.inputValues[0],
+            end: this.inputValues[1] || this.inputValues[0],
+          }
+        : inputValue;
+      const config = {
+        type: 'string',
+        mask: this.inputMask,
+      };
+      this.updateValue(value, {
+        ...opts,
+        config,
+        patch: this.inputMaskPatch,
+      }).then(() => this.adjustPageRange(isStart));
     },
     onInputShow(isStart) {
       this.adjustPageRange(isStart);
@@ -566,7 +534,7 @@ export default {
     forceUpdateValue(
       value,
       {
-        config = this.dateConfig,
+        config = this.modelConfig_,
         patch = PATCH.DATE_TIME,
         notify = true,
         clearIfEqual = false,
@@ -576,12 +544,13 @@ export default {
         isDragging = this.isDragging,
       } = {},
     ) {
+      console.log('config', config);
       // 1. Normalization
       let normalizedValue = this.normalizeValue(
         value,
         config,
         patch,
-        isDragging,
+        !isDragging,
       );
 
       // Reset to previous value if it was cleared but is required
@@ -623,10 +592,7 @@ export default {
       // 4. Denormalization/Notification
       if (notify && valueChanged) {
         // 4A. Denormalization
-        const denormalizedValue = this.denormalizeValue(
-          normalizedValue,
-          this.dateConfig,
-        );
+        const denormalizedValue = this.denormalizeValue(normalizedValue);
         // 4B. Notification
         const event = this.isDragging ? 'drag' : 'input';
         this.watchValue = false;
@@ -646,27 +612,32 @@ export default {
       }
       return !!value;
     },
-    normalizeValue(value, config, patch, isDragging) {
+    normalizeValue(value, config, patch, sortRange) {
       if (!this.hasValue(value)) return null;
       if (this.isRange) {
+        const result = {};
+        const startFillDate =
+          (this.value_ && this.value_.start) ||
+          this.modelConfig_.start.fillDate;
         const startConfig = config.start || config;
-        const start = this.normalizeDate(value.start, {
+        result.start = this.normalizeDate(value.start, {
           ...startConfig,
-          fillDate: (this.value_ && this.value_.start) || startConfig.fillDate,
+          fillDate: startFillDate,
           patch,
         });
+        const endFillDate =
+          (this.value_ && this.value_.end) || this.modelConfig_.end.fillDate;
         const endConfig = config.end || config;
-        const end = this.normalizeDate(value.end, {
+        result.end = this.normalizeDate(value.end, {
           ...endConfig,
-          fillDate: (this.value_ && this.value_.end) || endConfig.fillDate,
+          fillDate: endFillDate,
           patch,
         });
-        const result = this.sortRange({ start, end });
-        return isDragging ? result : this.sortRange(result);
+        return sortRange ? this.sortRange(result) : result;
       }
       return this.normalizeDate(value, {
         ...config,
-        fillDate: this.value_ || config.fillDate,
+        fillDate: this.value_ || this.modelConfig_.fillDate,
         patch,
       });
     },
@@ -690,7 +661,7 @@ export default {
       }
       return { start, end };
     },
-    denormalizeValue(value, config) {
+    denormalizeValue(value, config = this.modelConfig_) {
       if (this.isRange) {
         if (!this.hasValue(value)) return null;
         return {
