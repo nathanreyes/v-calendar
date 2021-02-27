@@ -129,6 +129,7 @@ describe('DatePicker', () => {
         value: null,
         mode: 'time',
         modelConfig: {
+          type: 'string',
           fillDate: new Date(2021, 0, 1),
         },
       });
@@ -142,13 +143,14 @@ describe('DatePicker', () => {
         mode: 'time',
         isRange: true,
         modelConfig: {
+          type: 'string',
           fillDate: new Date(2021, 0, 1),
         },
       });
-      await updateInputs(dp, '12:15 PM');
+      await updateInputs(dp, '12:15 PM', '12:15 PM');
       expect(dp.vm.value_).toEqual({
-        start: '2021-01-01T12:15:00.000Z',
-        end: '2021-01-01T12:15:00.000Z',
+        start: new Date('2021-01-01T12:15:00.000Z'),
+        end: new Date('2021-01-01T12:15:00.000Z'),
       });
     });
   });
@@ -161,28 +163,28 @@ function mountWithInputs(props) {
       timezone: 'utc',
     },
     scopedSlots: {
-      default: function(props) {
+      default: function(sProps) {
         if (props.isRange) {
           return this.$createElement('div', [
             this.$createElement('input', {
               props: {
-                value: props.inputValue.start,
+                value: sProps.inputValue.start,
               },
-              on: props.inputEvents.start,
+              on: sProps.inputEvents.start,
             }),
             this.$createElement('input', {
               props: {
-                value: props.inputValue.end,
+                value: sProps.inputValue.end,
               },
-              on: props.inputEvents.end,
+              on: sProps.inputEvents.end,
             }),
           ]);
         }
         return this.$createElement('input', {
           props: {
-            value: props.inputValue,
+            value: sProps.inputValue,
           },
-          on: props.inputEvents,
+          on: sProps.inputEvents,
         });
       },
     },
@@ -194,7 +196,6 @@ async function updateInputs(dp, startValue, endValue) {
   let input = null;
   if (startValue) {
     input = inputs.at(0);
-    console.log('update', input, startValue);
     await input.setValue(startValue);
     await input.trigger('change');
   }
