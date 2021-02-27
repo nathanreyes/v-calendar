@@ -20,14 +20,16 @@ describe('DatePicker', () => {
           propsData: dv.props,
         });
         await dp.vm.$nextTick();
-        const tp = dp.findComponent(TimePicker).vm;
-        const { hours, minutes, isAM, clickEl, newValue } = dv;
-        expect(tp.hours).toEqual(hours);
-        expect(tp.minutes).toEqual(minutes);
-        expect(tp.isAM).toEqual(isAM);
-        if (clickEl) {
-          await dp.find(clickEl).trigger('click');
-          expect(dp.emitted().input[0][0]).toEqual(newValue);
+        if (dv.props.mode !== 'date') {
+          const tp = dp.findComponent(TimePicker).vm;
+          const { hours, minutes, isAM } = dv.time;
+          expect(tp.hours).toEqual(hours);
+          expect(tp.minutes).toEqual(minutes);
+          expect(tp.isAM).toEqual(isAM);
+        }
+        if (dv.clickEl) {
+          await dp.find(dv.clickEl).trigger('click');
+          expect(dp.emitted().input[0][0]).toEqual(dv.newValue);
         }
       }
     });
@@ -124,7 +126,7 @@ describe('DatePicker', () => {
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(false);
     });
 
-    it(':model-config.fillDate - fills missing date parts for date', async () => {
+    it(':model-config.fillDate - fills missing date parts for date input', async () => {
       const dp = mountWithInputs({
         value: null,
         mode: 'time',
@@ -137,7 +139,7 @@ describe('DatePicker', () => {
       expect(dp.vm.value_.toISOString()).toEqual('2021-01-01T12:15:00.000Z');
     });
 
-    it(':model-config.fillDate - fills missing date parts for date range', async () => {
+    it(':model-config.fillDate - fills missing date parts for date range inputs', async () => {
       const dp = mountWithInputs({
         value: null,
         mode: 'time',

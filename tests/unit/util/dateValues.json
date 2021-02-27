@@ -9,9 +9,11 @@
       },
       "timezone": "utc"
     },
-    "hours": 4,
-    "minutes": 15,
-    "isAM": true,
+    "time": {
+      "hours": 4,
+      "minutes": 15,
+      "isAM": true
+    },
     "clickEl": ".id-2021-01-30 .vc-day-content",
     "newValue": "2021-01-30T04:15:00.000Z"
   },
@@ -25,9 +27,11 @@
       },
       "timezone": "utc"
     },
-    "hours": 4,
-    "minutes": 15,
-    "isAM": true,
+    "time": {
+      "hours": 4,
+      "minutes": 15,
+      "isAM": true
+    },
     "clickEl": ".id-2021-01-30 .vc-day-content",
     "newValue": "2021-01-30T04:15:00.123Z"
   },
@@ -41,9 +45,11 @@
       },
       "timezone": "utc"
     },
-    "hours": 4,
-    "minutes": 15,
-    "isAM": true,
+    "time": {
+      "hours": 4,
+      "minutes": 15,
+      "isAM": true
+    },
     "clickEl": ".id-2021-01-30 .vc-day-content",
     "newValue": "2021-01-30T04:15:00.000Z"
   },
@@ -57,9 +63,11 @@
       },
       "timezone": "Europe/Kiev"
     },
-    "hours": 6,
-    "minutes": 15,
-    "isAM": true,
+    "time": {
+      "hours": 6,
+      "minutes": 15,
+      "isAM": true
+    },
     "clickEl": ".id-2021-01-30 .vc-day-content",
     "newValue": "2021-01-30T04:15:00.000Z"
   },
@@ -73,9 +81,11 @@
       },
       "timezone": "Europe/Kiev"
     },
-    "hours": 6,
-    "minutes": 15,
-    "isAM": true,
+    "time": {
+      "hours": 6,
+      "minutes": 15,
+      "isAM": true
+    },
     "clickEl": ".id-2021-01-30 .vc-day-content",
     "newValue": "2021-01-30T04:15:00.123Z"
   },
@@ -89,9 +99,26 @@
       },
       "timezone": "Europe/Kiev"
     },
-    "hours": 6,
-    "minutes": 15,
-    "isAM": true,
+    "time": {
+      "hours": 6,
+      "minutes": 15,
+      "isAM": true
+    },
+    "clickEl": ".id-2021-01-30 .vc-day-content",
+    "newValue": "2021-01-30T04:15:00Z"
+  },
+  {
+    "props": {
+      "mode": "date",
+      "value": null,
+      "fromPage": { "month": 1, "year": 2021},
+      "modelConfig": {
+        "type": "string",
+        "mask": "YYYY-MM-DDTHH:mm:ssZ",
+        "fillDate": "2021-01-15T04:15:00Z"
+      },
+      "timezone": "utc"
+    },
     "clickEl": ".id-2021-01-30 .vc-day-content",
     "newValue": "2021-01-30T04:15:00Z"
   }
