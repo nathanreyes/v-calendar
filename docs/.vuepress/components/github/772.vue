@@ -22,7 +22,6 @@
       mode="dateTime"
       :model-config="modelConfig"
       :masks="masks"
-      :popover="{ visibility: 'visible', transition: 'none' }"
       timezone="utc"
     >
       <template v-slot="{ inputValue, inputEvents }">
