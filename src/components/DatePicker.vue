@@ -30,11 +30,9 @@ const _dateConfig = {
 const _rangeConfig = {
   start: {
     ..._dateConfig,
-    timeAdjust: '00:00:00',
   },
   end: {
     ..._dateConfig,
-    timeAdjust: '23:59:59',
   },
 };
 
