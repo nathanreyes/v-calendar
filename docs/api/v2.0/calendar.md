@@ -229,6 +229,14 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `undefined`
 
+### show-weeknumbers
+
+**Type:** Boolean
+
+**Description:** Shows the (iso) week number on the left side of the week.
+
+**Default:** `undefined`
+
 <!--
 ### 
 

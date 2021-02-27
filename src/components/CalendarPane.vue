@@ -7,6 +7,41 @@ export default {
   name: 'CalendarPane',
   mixins: [childMixin, safeScopedSlotMixin],
   render(h) {
+    const weeknumbers =
+      this.safeScopedSlot('weeknumbers', this.page) ||
+      h(
+        'div',
+        {
+          class: 'vc-weeknumber-grid'
+        },
+        [
+          h(
+            'div',
+            {
+              key: 'weeknumberheader',
+              class: 'vc-weekday'
+            },
+            ['']
+          ),
+          ...this.page.monthComps.isoWeeks.map((w, i) =>
+            h(
+              'div',
+              {
+                key: `w${i}`,
+                class: 'vc-weeknumber'
+              },
+              [h(
+                'span',
+                {
+                  key: `wc${i}`,
+                  class: 'vc-weeknumber-content'
+                },
+                [w]
+              )]
+            ),
+          ),
+        ],
+      );
     // Header
     const header =
       this.safeScopedSlot('header', this.page) ||
@@ -63,13 +98,21 @@ export default {
       ],
     );
 
+    const combined = h(
+      'div',
+      {
+        class: 'vc-combined-container'
+      },
+      [weeknumbers, weeks]
+    );
+
     return h(
       'div',
       {
         class: 'vc-pane',
         ref: 'pane',
       },
-      [header, weeks],
+      [header, this.page.showWeeknumbers ? combined : weeks],
     );
   },
   inheritAttrs: false,
@@ -157,6 +200,37 @@ export default {
   }
 }
 
+.vc-combined-container {
+  display: flex;
+}
+
+.vc-weeknumber-grid {
+  display: grid;
+  grid-template-rows: 26px 32px 32px 32px 32px 32px 32px;
+  position: relative;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 5px;
+  padding-right: 0px;
+}
+
+.vc-weeknumber {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vc-weeknumber-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--text-xs);
+  font-style: italic;
+  line-height: 28px;
+  width: 28px;
+  height: 28px;
+}
+
 .vc-weeks {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -164,6 +238,7 @@ export default {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding: 5px;
+  min-width: 250px;
 }
 
 .vc-weekday {

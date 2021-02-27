@@ -38,7 +38,13 @@
         <p>This uses the built version of the plugin</p>
       </section>
       <section>
-        <v-calendar />
+        <div class="selectors">
+          <label for="weeks">
+            <input id="weeks" type="checkbox" v-model="weeks" />
+            Show week numbers
+          </label>
+        </div>
+        <v-calendar :show-weeknumbers="weeks" :key="weeks" />
       </section>
       <section>
         <div class="selectors">
@@ -65,6 +71,7 @@
       data() {
         return {
           mode: 'single',
+          weeks: false,
           date: new Date()
         }
       }
