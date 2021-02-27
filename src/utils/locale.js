@@ -427,7 +427,8 @@ export default class Locale {
 
   normalizeDate(d, config = {}) {
     let result = null;
-    let { type, mask, patch, fillDate, time } = config;
+    let { type, fillDate } = config;
+    const { mask, patch, time } = config;
     const auto = type === 'auto' || !type;
     if (isNumber(d)) {
       type = 'number';

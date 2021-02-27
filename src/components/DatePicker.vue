@@ -12,7 +12,7 @@ import {
   on,
   off,
 } from '../utils/helpers';
-import { isObject, isArray, pick } from '../utils/_';
+import { isObject, isArray } from '../utils/_';
 import {
   showPopover as sp,
   hidePopover as hp,
@@ -218,8 +218,9 @@ export default {
       return /[dD]{1,2}|Do|W{1,4}|M{1,4}|YY(?:YY)?/g.test(this.inputMask);
     },
     inputMaskPatch() {
-      if (this.inputMaskHasTime && this.inputMaskHasDate)
+      if (this.inputMaskHasTime && this.inputMaskHasDate) {
         return PATCH.DATE_TIME;
+      }
       if (this.inputMaskHasDate) return PATCH.DATE;
       if (this.inputMaskHasTime) return PATCH.TIME;
       return undefined;
