@@ -544,7 +544,6 @@ export default {
         isDragging = this.isDragging,
       } = {},
     ) {
-      console.log('config', config);
       // 1. Normalization
       let normalizedValue = this.normalizeValue(
         value,
