@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-time-picker"
-    :class="[{ 'vc-invalid': !value.isValid, 'vc-bordered': showBorder }]"
+    :class="[{ 'vc-disabled': isDisabled, 'vc-bordered': showBorder }]"
   >
     <div>
       <svg
@@ -35,7 +35,11 @@
         <time-select v-model.number="hours" :options="hourOptions" />
         <span style="margin: 0 4px;">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
-        <div v-if="!is24hr" class="vc-am-pm">
+        <div
+          v-if="!is24hr"
+          class="vc-am-pm"
+          :class="{ 'vc-disabled': !(hours >= 0) }"
+        >
           <button
             :class="{ active: isAM }"
             @click.prevent="isAM = true"
@@ -70,6 +74,7 @@ export default {
     is24hr: { type: Boolean, default: true },
     minuteIncrement: { type: Number, default: 1 },
     showBorder: Boolean,
+    isDisabled: Boolean,
   },
   data() {
     return {
@@ -228,6 +233,11 @@ export default {
 
 .vc-date-time {
   margin-left: 8px;
+}
+
+.vc-disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .vc-time-icon {

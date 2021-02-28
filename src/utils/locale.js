@@ -12,7 +12,20 @@ import {
   has,
   defaultsDeep,
   clamp,
+  pick,
 } from './_';
+
+export const PATCH = {
+  DATE_TIME: 1,
+  DATE: 2,
+  TIME: 3,
+};
+
+const PATCH_KEYS = {
+  1: ['year', 'month', 'day', 'hours', 'minutes', 'seconds', 'milliseconds'],
+  2: ['year', 'month', 'day'],
+  3: ['hours', 'minutes', 'seconds', 'milliseconds'],
+};
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
@@ -414,15 +427,15 @@ export default class Locale {
 
   normalizeDate(d, config = {}) {
     let result = null;
-    let type = config.type;
+    let { type, fillDate } = config;
+    const { mask, patch, time } = config;
     const auto = type === 'auto' || !type;
     if (isNumber(d)) {
       type = 'number';
       result = new Date(+d);
     } else if (isString(d)) {
       type = 'string';
-      const mask = config.mask || 'iso';
-      result = d ? this.parse(d, mask) : null;
+      result = d ? this.parse(d, mask || 'iso') : null;
     } else if (isObject(d)) {
       type = 'object';
       result = this.getDateFromParts(d);
@@ -430,11 +443,20 @@ export default class Locale {
       type = 'date';
       result = isDate(d) ? new Date(d.getTime()) : null;
     }
+
+    if (result && patch) {
+      fillDate = fillDate == null ? new Date() : this.normalizeDate(fillDate);
+      const parts = {
+        ...this.getDateParts(fillDate),
+        ...pick(this.getDateParts(result), PATCH_KEYS[patch]),
+      };
+      result = this.getDateFromParts(parts);
+    }
     if (auto) config.type = type;
     if (result && !isNaN(result.getTime())) {
-      if (config.time) {
+      if (time) {
         result = this.adjustTimeForDate(result, {
-          timeAdjust: config.time,
+          timeAdjust: time,
         });
       }
       return result;
@@ -533,25 +555,25 @@ export default class Locale {
 
   getDateFromParts(parts) {
     if (!parts) return null;
+    const d = new Date();
     const {
-      year: y,
-      month: m,
-      day: d,
+      year = d.getFullYear(),
+      month = d.getMonth() + 1,
+      day = d.getDate(),
       hours: hrs = 0,
       minutes: min = 0,
       seconds: sec = 0,
       milliseconds: ms = 0,
     } = parts;
-    if (y === undefined || m === undefined || d === undefined) return null;
 
     if (this.timezone) {
-      const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
+      const dateString = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}T${pad(
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
       return toDate(dateString, { timeZone: this.timezone });
     }
-    return new Date(y, m - 1, d, hrs, min, sec, ms);
+    return new Date(year, month - 1, day, hrs, min, sec, ms);
   }
 
   getTimezoneOffset(parts) {

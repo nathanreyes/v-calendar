@@ -20,14 +20,16 @@ describe('DatePicker', () => {
           propsData: dv.props,
         });
         await dp.vm.$nextTick();
-        const tp = dp.findComponent(TimePicker).vm;
-        const { hours, minutes, isAM, clickEl, newValue } = dv;
-        expect(tp.hours).toEqual(hours);
-        expect(tp.minutes).toEqual(minutes);
-        expect(tp.isAM).toEqual(isAM);
-        if (clickEl) {
-          await dp.find(clickEl).trigger('click');
-          expect(dp.emitted().input[0][0]).toEqual(newValue);
+        if (dv.props.mode !== 'date') {
+          const tp = dp.findComponent(TimePicker).vm;
+          const { hours, minutes, isAM } = dv.time;
+          expect(tp.hours).toEqual(hours);
+          expect(tp.minutes).toEqual(minutes);
+          expect(tp.isAM).toEqual(isAM);
+        }
+        if (dv.clickEl) {
+          await dp.find(dv.clickEl).trigger('click');
+          expect(dp.emitted().input[0][0]).toEqual(dv.newValue);
         }
       }
     });
@@ -123,5 +125,85 @@ describe('DatePicker', () => {
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(false);
     });
+
+    it(':model-config.fillDate - fills missing date parts for date input', async () => {
+      const dp = mountWithInputs({
+        value: null,
+        mode: 'time',
+        modelConfig: {
+          type: 'string',
+          fillDate: new Date(2021, 0, 1),
+        },
+      });
+      await updateInputs(dp, '12:15 PM');
+      expect(dp.vm.value_.toISOString()).toEqual('2021-01-01T12:15:00.000Z');
+    });
+
+    it(':model-config.fillDate - fills missing date parts for date range inputs', async () => {
+      const dp = mountWithInputs({
+        value: null,
+        mode: 'time',
+        isRange: true,
+        modelConfig: {
+          type: 'string',
+          fillDate: new Date(2021, 0, 1),
+        },
+      });
+      await updateInputs(dp, '12:15 PM', '12:15 PM');
+      expect(dp.vm.value_).toEqual({
+        start: new Date('2021-01-01T12:15:00.000Z'),
+        end: new Date('2021-01-01T12:15:00.000Z'),
+      });
+    });
   });
 });
+
+function mountWithInputs(props) {
+  return mount(DatePicker, {
+    propsData: {
+      ...props,
+      timezone: 'utc',
+    },
+    scopedSlots: {
+      default: function(sProps) {
+        if (props.isRange) {
+          return this.$createElement('div', [
+            this.$createElement('input', {
+              props: {
+                value: sProps.inputValue.start,
+              },
+              on: sProps.inputEvents.start,
+            }),
+            this.$createElement('input', {
+              props: {
+                value: sProps.inputValue.end,
+              },
+              on: sProps.inputEvents.end,
+            }),
+          ]);
+        }
+        return this.$createElement('input', {
+          props: {
+            value: sProps.inputValue,
+          },
+          on: sProps.inputEvents,
+        });
+      },
+    },
+  });
+}
+
+async function updateInputs(dp, startValue, endValue) {
+  const inputs = dp.findAll('input');
+  let input = null;
+  if (startValue) {
+    input = inputs.at(0);
+    await input.setValue(startValue);
+    await input.trigger('change');
+  }
+  if (endValue) {
+    input = inputs.at(1);
+    await input.setValue(endValue);
+    await input.trigger('change');
+  }
+}
