@@ -291,7 +291,7 @@ When used with date ranges, the `modelConfig` may be specified as an object with
 <guide-datepicker-time-adjust-range />
 
 ```html
-<v-date-picker v-model="range" :model-config="modelConfig">
+<v-date-picker v-model="range" :model-config="modelConfig" is-range >
 ```
 
 ```js
