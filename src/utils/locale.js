@@ -672,10 +672,11 @@ export default class Locale {
       const firstWeekday = firstDayOfMonth.getDay() + 1;
       const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
       const weeks = getWeeksInMonth(firstDayOfMonth, {
-        weekStartsOn: this.firstDayOfWeek - 1
+        weekStartsOn: this.firstDayOfWeek - 1,
       });
-      const isoWeeks = [...Array(weeks).keys()]
-        .map(wIdx => getISOWeek(addDays(firstDayOfMonth, wIdx * 7)));
+      const isoWeeks = [...Array(weeks).keys()].map(wIdx =>
+        getISOWeek(addDays(firstDayOfMonth, wIdx * 7)),
+      );
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
         inLeapYear,
@@ -684,7 +685,7 @@ export default class Locale {
         weeks,
         month,
         year,
-        isoWeeks
+        isoWeeks,
       };
       this.monthData[key] = comps;
     }
@@ -716,7 +717,7 @@ export default class Locale {
   // Builds day components for a given page
   getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
-    const { firstDayOfWeek, firstWeekday } = monthComps;
+    const { firstDayOfWeek, firstWeekday, isoWeeks } = monthComps;
     const prevMonthDaysToShow =
       firstWeekday +
       (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -
@@ -793,6 +794,7 @@ export default class Locale {
         const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
+        const isoWeek = isoWeeks[w - 1];
         const isToday =
           day === todayDay && month === todayMonth && year === todayYear;
         const isFirstDay = thisMonth && day === 1;
@@ -814,6 +816,7 @@ export default class Locale {
           weekdayOrdinalFromEnd,
           week,
           weekFromEnd,
+          isoWeek,
           month,
           year,
           dateFromTime,
