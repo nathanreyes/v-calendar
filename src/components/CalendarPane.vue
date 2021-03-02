@@ -40,7 +40,7 @@ export default {
         [wl],
       ),
     );
-    if (this.page.showWeeknumbers) {
+    if (this.showWeeknumbers_) {
       weekdayCells.unshift(
         h('div', {
           class: 'vc-weekday',
@@ -50,10 +50,13 @@ export default {
 
     // Day cells
     const dayCells = [];
-    const { days, showWeeknumbers } = this.page;
     const { daysInWeek } = this.locale;
-    days.forEach((day, i) => {
-      if (showWeeknumbers && i % daysInWeek === 0) {
+    this.page.days.forEach((day, i) => {
+      const mod = i % daysInWeek;
+      const showLeft = this.showWeeknumbers_.startsWith('left') && mod === 0;
+      const showRight =
+        this.showWeeknumbers_.startsWith('right') && mod === daysInWeek;
+      if (showLeft || showRight) {
         dayCells.push(
           h(
             'div',
@@ -64,10 +67,10 @@ export default {
               h(
                 'span',
                 {
-                  class: {
-                    'vc-weeknumber-content': true,
-                    [`is-${showWeeknumbers}`]: showWeeknumbers.length,
-                  },
+                  class: [
+                    'vc-weeknumber-content',
+                    `is-${this.showWeeknumbers_}`,
+                  ],
                 },
                 [day.isoWeek],
               ),
@@ -96,7 +99,7 @@ export default {
       {
         class: {
           'vc-weeks': true,
-          'vc-show-weeknumbers': this.page.showWeeknumbers,
+          'vc-show-weeknumbers': this.showWeeknumbers_,
         },
       },
       [weekdayCells, dayCells],
@@ -117,8 +120,16 @@ export default {
     position: Number,
     titlePosition: String,
     navVisibility: String,
+    showWeeknumbers: String,
   },
   computed: {
+    showWeeknumbers_() {
+      let { showWeeknumbers } = this;
+      if (showWeeknumbers !== undefined) {
+        showWeeknumbers = showWeeknumbers || 'left';
+      }
+      return showWeeknumbers;
+    },
     navVisibility_() {
       return this.propOrDefault('navVisibility', 'navVisibility');
     },
@@ -216,9 +227,12 @@ export default {
   margin-top: 2px;
   color: var(--gray-500);
   user-select: none;
-  &.is-outside {
+  &.is-left-outside {
     position: absolute;
     left: -32px;
+  }
+  &.is-right-outside {
+    position: absolute;
   }
 }
 
