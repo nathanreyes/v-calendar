@@ -7,41 +7,6 @@ export default {
   name: 'CalendarPane',
   mixins: [childMixin, safeScopedSlotMixin],
   render(h) {
-    const weeknumbers =
-      this.safeScopedSlot('weeknumbers', this.page) ||
-      h(
-        'div',
-        {
-          class: 'vc-weeknumber-grid'
-        },
-        [
-          h(
-            'div',
-            {
-              key: 'weeknumberheader',
-              class: 'vc-weekday'
-            },
-            ['']
-          ),
-          ...this.page.monthComps.isoWeeks.map((w, i) =>
-            h(
-              'div',
-              {
-                key: `w${i}`,
-                class: 'vc-weeknumber'
-              },
-              [h(
-                'span',
-                {
-                  key: `wc${i}`,
-                  class: 'vc-weeknumber-content'
-                },
-                [w]
-              )]
-            ),
-          ),
-        ],
-      );
     // Header
     const header =
       this.safeScopedSlot('header', this.page) ||
@@ -63,47 +28,78 @@ export default {
           ),
         ],
       );
-    // Weeks
-    const weeks = h(
-      'div',
-      {
-        class: 'vc-weeks',
-      },
-      [
-        ...this.weekdayLabels.map((wl, i) =>
+
+    // Weekday cells
+    const weekdayCells = this.weekdayLabels.map((wl, i) =>
+      h(
+        'div',
+        {
+          key: i + 1,
+          class: 'vc-weekday',
+        },
+        [wl],
+      ),
+    );
+    if (this.page.showWeeknumbers) {
+      weekdayCells.unshift(
+        h('div', {
+          class: 'vc-weekday',
+        }),
+      );
+    }
+
+    // Day cells
+    const dayCells = [];
+    const { days, showWeeknumbers } = this.page;
+    const { daysInWeek } = this.locale;
+    days.forEach((day, i) => {
+      if (showWeeknumbers && i % daysInWeek === 0) {
+        dayCells.push(
           h(
             'div',
             {
-              key: i + 1,
-              class: 'vc-weekday',
+              class: ['vc-weeknumber'],
             },
-            [wl],
+            [
+              h(
+                'span',
+                {
+                  class: {
+                    'vc-weeknumber-content': true,
+                    [`is-${showWeeknumbers}`]: showWeeknumbers.length,
+                  },
+                },
+                [day.isoWeek],
+              ),
+            ],
           ),
-        ),
-        ...this.page.days.map(day =>
-          h(CalendarDay, {
-            attrs: {
-              ...this.$attrs,
-              day,
-            },
-            on: {
-              ...this.$listeners,
-            },
-            scopedSlots: this.$scopedSlots,
-            key: day.id,
-            ref: 'days',
-            refInFor: true,
-          }),
-        ),
-      ],
-    );
+        );
+      }
+      dayCells.push(
+        h(CalendarDay, {
+          attrs: {
+            day,
+          },
+          on: {
+            ...this.$listeners,
+          },
+          scopedSlots: this.$scopedSlots,
+          key: day.id,
+          ref: 'days',
+          refInFor: true,
+        }),
+      );
+    });
 
-    const combined = h(
+    const weeks = h(
       'div',
       {
-        class: 'vc-combined-container'
+        class: {
+          'vc-weeks': true,
+          'vc-show-weeknumbers': this.page.showWeeknumbers,
+        },
       },
-      [weeknumbers, weeks]
+      [weekdayCells, dayCells],
     );
 
     return h(
@@ -112,7 +108,7 @@ export default {
         class: 'vc-pane',
         ref: 'pane',
       },
-      [header, this.page.showWeeknumbers ? combined : weeks],
+      [header, weeks],
     );
   },
   inheritAttrs: false,
@@ -200,24 +196,11 @@ export default {
   }
 }
 
-.vc-combined-container {
-  display: flex;
-}
-
-.vc-weeknumber-grid {
-  display: grid;
-  grid-template-rows: 26px 32px 32px 32px 32px 32px 32px;
-  position: relative;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 5px;
-  padding-right: 0px;
-}
-
 .vc-weeknumber {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .vc-weeknumber-content {
@@ -225,20 +208,31 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: var(--text-xs);
+  font-weight: var(--font-medium);
   font-style: italic;
-  line-height: 28px;
+  /* line-height: 28px; */
   width: 28px;
   height: 28px;
+  margin-top: 2px;
+  color: var(--gray-500);
+  user-select: none;
+  &.is-outside {
+    position: absolute;
+    left: -32px;
+  }
 }
 
 .vc-weeks {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   position: relative;
-  overflow: auto;
+  /* overflow: auto; */
   -webkit-overflow-scrolling: touch;
   padding: 5px;
   min-width: 250px;
+  &.vc-show-weeknumbers {
+    grid-template-columns: auto repeat(7, 1fr);
+  }
 }
 
 .vc-weekday {

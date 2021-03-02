@@ -5,8 +5,11 @@
       Responsive multi-row and column layouts
     </h3>
     <div class="flex justify-center">
-      <v-calendar :rows="2" :columns="$screens({ default: 1, lg: 2 })" />
+      <v-calendar
+        show-weeknumbers="outside"
+        :rows="2"
+        :columns="$screens({ default: 1, lg: 2 })"
+      />
     </div>
   </div>
 </template>
-    

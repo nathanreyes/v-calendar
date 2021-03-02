@@ -291,6 +291,7 @@ export default class Locale {
   constructor(config, { locales = defaultLocales, timezone } = {}) {
     const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
     this.id = id;
+    this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
     this.timezone = timezone || undefined;
