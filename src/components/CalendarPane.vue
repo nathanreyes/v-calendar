@@ -40,43 +40,52 @@ export default {
         [wl],
       ),
     );
-    if (this.showWeeknumbers_) {
+
+    const showWeeknumbersLeft = this.showWeeknumbers_.startsWith('left');
+    const showWeeknumbersRight = this.showWeeknumbers_.startsWith('right');
+
+    if (showWeeknumbersLeft) {
       weekdayCells.unshift(
+        h('div', {
+          class: 'vc-weekday',
+        }),
+      );
+    } else if (showWeeknumbersRight) {
+      weekdayCells.push(
         h('div', {
           class: 'vc-weekday',
         }),
       );
     }
 
+    const getWeeknumberCell = day =>
+      h(
+        'div',
+        {
+          class: ['vc-weeknumber'],
+        },
+        [
+          h(
+            'span',
+            {
+              class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
+            },
+            [day.isoWeek],
+          ),
+        ],
+      );
+
     // Day cells
     const dayCells = [];
     const { daysInWeek } = this.locale;
+
     this.page.days.forEach((day, i) => {
       const mod = i % daysInWeek;
-      const showLeft = this.showWeeknumbers_.startsWith('left') && mod === 0;
-      const showRight =
-        this.showWeeknumbers_.startsWith('right') && mod === daysInWeek;
-      if (showLeft || showRight) {
-        dayCells.push(
-          h(
-            'div',
-            {
-              class: ['vc-weeknumber'],
-            },
-            [
-              h(
-                'span',
-                {
-                  class: [
-                    'vc-weeknumber-content',
-                    `is-${this.showWeeknumbers_}`,
-                  ],
-                },
-                [day.isoWeek],
-              ),
-            ],
-          ),
-        );
+      if (
+        (showWeeknumbersLeft && mod === 0) ||
+        (showWeeknumbersRight && mod === daysInWeek)
+      ) {
+        dayCells.push(getWeeknumberCell(day));
       }
       dayCells.push(
         h(CalendarDay, {
@@ -92,6 +101,9 @@ export default {
           refInFor: true,
         }),
       );
+      if (showWeeknumbersRight && mod === daysInWeek - 1) {
+        dayCells.push(getWeeknumberCell(day));
+      }
     });
 
     const weeks = h(
@@ -100,6 +112,8 @@ export default {
         class: {
           'vc-weeks': true,
           'vc-show-weeknumbers': this.showWeeknumbers_,
+          'is-left': showWeeknumbersLeft,
+          'is-right': showWeeknumbersRight,
         },
       },
       [weekdayCells, dayCells],
@@ -124,11 +138,8 @@ export default {
   },
   computed: {
     showWeeknumbers_() {
-      let { showWeeknumbers } = this;
-      if (showWeeknumbers !== undefined) {
-        showWeeknumbers = showWeeknumbers || 'left';
-      }
-      return showWeeknumbers;
+      if (this.showWeeknumbers == null) return '';
+      return this.showWeeknumbers || 'left';
     },
     navVisibility_() {
       return this.propOrDefault('navVisibility', 'navVisibility');
@@ -229,10 +240,11 @@ export default {
   user-select: none;
   &.is-left-outside {
     position: absolute;
-    left: -32px;
+    left: var(--weeknumber-offset);
   }
   &.is-right-outside {
     position: absolute;
+    right: var(--weeknumber-offset);
   }
 }
 
@@ -246,6 +258,9 @@ export default {
   min-width: 250px;
   &.vc-show-weeknumbers {
     grid-template-columns: auto repeat(7, 1fr);
+    &.is-right {
+      grid-template-columns: repeat(7, 1fr) auto;
+    }
   }
 }
 
