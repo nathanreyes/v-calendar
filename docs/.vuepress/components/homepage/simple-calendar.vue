@@ -1,13 +1,13 @@
 <template>
   <div class="section">
-    <h2>Simple Calendars</h2>
+    <h2>Calendar Attributes</h2>
     <h3>
       Show highlights, dots, bars and custom popovers
     </h3>
     <div class="flex flex-col items-center md:flex-row md:justify-around">
       <div class="mb-6">
         <h3 class="text-base semibold text-gray-700 mb-3">Highlights</h3>
-        <v-calendar :attributes="highlights" ref="cal" show-weeknumbers />
+        <v-calendar :attributes="highlights" ref="cal" />
       </div>
       <div class="mb-6">
         <h3 class="text-base semibold text-gray-700 mb-3">Dots</h3>
@@ -131,17 +131,18 @@
         </v-calendar>
       </div>
     </div>
+    <h2>Week Numbers</h2>
     <div class="flex flex-col items-center md:flex-row md:justify-around mb-8">
       <div class="mb-6">
-        <h3 class="text-base semibold text-gray-700 mb-3">Week numbers</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">Inside Calendar</h3>
         <div class="mb-6">
           <v-calendar show-weeknumbers />
         </div>
       </div>
       <div class="mb-6">
-        <h3 class="text-base semibold text-gray-700 mb-3">Week numbers</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">Outside Calendar</h3>
         <div class="mb-6">
-          <v-calendar show-weeknumbers="outside" />
+          <v-calendar show-weeknumbers="left-outside" />
         </div>
       </div>
     </div>

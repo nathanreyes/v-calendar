@@ -49,6 +49,40 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 <v-calendar trim-weeks>
 ```
 
+## Week Numbers
+
+Show iso week numbers in the calendar using the `show-weeknumbers` prop.
+
+<guide-layouts-weeknumbers />
+
+```html
+<v-calendar show-weeknumbers />
+```
+
+By default, this will display the numbers inside the calendar pane.
+
+Alternatively, you can display the week numbers outside the calendar or on the right side by providing a value for the prop.
+
+<guide-layouts-weeknumbers option="left-outside" />
+
+```html
+<v-calendar show-weeknumbers="left-outside ">
+```
+
+Or even on the right side.
+
+<guide-layouts-weeknumbers option="right" />
+
+```html
+<v-calendar show-weeknumbers="right">
+```
+
+<guide-layouts-weeknumbers option="right-outside" />
+
+```html
+<v-calendar show-weeknumbers="right-outside">
+```
+
 ## Multiple Rows & Columns
 
 Use the `rows` and `columns` props to create multi-row and multi-column static layouts.
