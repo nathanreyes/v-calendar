@@ -43,10 +43,6 @@ export default {
 
     const showWeeknumbersLeft = this.showWeeknumbers_.startsWith('left');
     const showWeeknumbersRight = this.showWeeknumbers_.startsWith('right');
-    const isEmbedded =
-      (showWeeknumbersLeft && this.column > 1) ||
-      (showWeeknumbersRight && this.columnFromEnd > 1);
-
     if (showWeeknumbersLeft) {
       weekdayCells.unshift(
         h('div', {
@@ -71,11 +67,7 @@ export default {
           h(
             'span',
             {
-              class: [
-                'vc-weeknumber-content',
-                `is-${this.showWeeknumbers_}`,
-                isEmbedded ? 'is-embedded' : '',
-              ],
+              class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
             },
             [day.isoWeek],
           ),
@@ -154,7 +146,10 @@ export default {
   computed: {
     showWeeknumbers_() {
       if (this.showWeeknumbers == null) return '';
-      return this.showWeeknumbers || 'left';
+      if (this.showWeeknumbers.startsWith('right')) {
+        return this.columnFromEnd > 1 ? 'right' : this.showWeeknumbers;
+      }
+      return this.column > 1 ? 'left' : this.showWeeknumbers;
     },
     navVisibility_() {
       return this.propOrDefault('navVisibility', 'navVisibility');
@@ -255,16 +250,10 @@ export default {
   &.is-left-outside {
     position: absolute;
     left: var(--weeknumber-offset);
-    &.is-embedded {
-      left: var(--weeknumber-offset-embedded);
-    }
   }
   &.is-right-outside {
     position: absolute;
     right: var(--weeknumber-offset);
-    &.is-embedded {
-      right: var(--weeknumber-offset-embedded);
-    }
   }
 }
 
