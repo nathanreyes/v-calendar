@@ -38,15 +38,24 @@ export default {
   name: 'Calendar',
   render(h) {
     // Renderer for calendar panes
-    const panes = this.pages.map((page, i) =>
-      h(CalendarPane, {
+    const panes = this.pages.map((page, i) => {
+      const position = i + 1;
+      const row = Math.ceil((i + 1) / this.columns);
+      const rowFromEnd = this.rows - row + 1;
+      const column = position % this.columns || this.columns;
+      const columnFromEnd = this.columns - column + 1;
+      return h(CalendarPane, {
         attrs: {
           ...this.$attrs,
           attributes: this.store,
         },
         props: {
           page,
-          position: i + 1,
+          position,
+          row,
+          rowFromEnd,
+          column,
+          columnFromEnd,
           titlePosition: this.titlePosition_,
         },
         on: {
@@ -64,8 +73,8 @@ export default {
         key: page.key,
         ref: 'pages',
         refInFor: true,
-      }),
-    );
+      });
+    });
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const click = () => this.move(isPrev ? -this.step_ : this.step_);

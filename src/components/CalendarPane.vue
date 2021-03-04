@@ -43,6 +43,9 @@ export default {
 
     const showWeeknumbersLeft = this.showWeeknumbers_.startsWith('left');
     const showWeeknumbersRight = this.showWeeknumbers_.startsWith('right');
+    const isEmbedded =
+      (showWeeknumbersLeft && this.column > 1) ||
+      (showWeeknumbersRight && this.columnFromEnd > 1);
 
     if (showWeeknumbersLeft) {
       weekdayCells.unshift(
@@ -68,7 +71,11 @@ export default {
           h(
             'span',
             {
-              class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
+              class: [
+                'vc-weeknumber-content',
+                `is-${this.showWeeknumbers_}`,
+                isEmbedded ? 'is-embedded' : '',
+              ],
             },
             [day.isoWeek],
           ),
@@ -122,7 +129,11 @@ export default {
     return h(
       'div',
       {
-        class: 'vc-pane',
+        class: [
+          'vc-pane',
+          `row-from-end-${this.rowFromEnd}`,
+          `column-from-end-${this.columnFromEnd}`,
+        ],
         ref: 'pane',
       },
       [header, weeks],
@@ -132,6 +143,10 @@ export default {
   props: {
     page: Object,
     position: Number,
+    row: Number,
+    rowFromEnd: Number,
+    column: Number,
+    columnFromEnd: Number,
     titlePosition: String,
     navVisibility: String,
     showWeeknumbers: String,
@@ -232,7 +247,6 @@ export default {
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
   font-style: italic;
-  /* line-height: 28px; */
   width: 28px;
   height: 28px;
   margin-top: 2px;
@@ -241,10 +255,16 @@ export default {
   &.is-left-outside {
     position: absolute;
     left: var(--weeknumber-offset);
+    &.is-embedded {
+      left: var(--weeknumber-offset-embedded);
+    }
   }
   &.is-right-outside {
     position: absolute;
     right: var(--weeknumber-offset);
+    &.is-embedded {
+      right: var(--weeknumber-offset-embedded);
+    }
   }
 }
 
