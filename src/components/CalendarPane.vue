@@ -58,7 +58,8 @@ export default {
       );
     }
 
-    const getWeeknumberCell = day =>
+    // Weeknumber cell
+    const getWeeknumberCell = isoWeek =>
       h(
         'div',
         {
@@ -69,8 +70,17 @@ export default {
             'span',
             {
               class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
+              on: {
+                click: event => {
+                  this.$emit('weeknumberclick', {
+                    isoWeek,
+                    days: this.page.days.filter(d => d.isoWeek === isoWeek),
+                    event,
+                  });
+                },
+              },
             },
-            [day.isoWeek],
+            [isoWeek],
           ),
         ],
       );
@@ -78,14 +88,14 @@ export default {
     // Day cells
     const dayCells = [];
     const { daysInWeek } = this.locale;
-
     this.page.days.forEach((day, i) => {
       const mod = i % daysInWeek;
+      // Insert weeknumber cell on left side if needed
       if (
         (showWeeknumbersLeft && mod === 0) ||
         (showWeeknumbersRight && mod === daysInWeek)
       ) {
-        dayCells.push(getWeeknumberCell(day));
+        dayCells.push(getWeeknumberCell(day.isoWeek));
       }
       dayCells.push(
         h(CalendarDay, {
@@ -101,8 +111,9 @@ export default {
           refInFor: true,
         }),
       );
+      // Insert weeknumber cell on right side if needed
       if (showWeeknumbersRight && mod === daysInWeek - 1) {
-        dayCells.push(getWeeknumberCell(day));
+        dayCells.push(getWeeknumberCell(day.isoWeek));
       }
     });
 
