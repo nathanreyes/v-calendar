@@ -207,7 +207,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 ### `locale`
 
-**Type:** String, Object
+**Type:** String | Object
 
 **Description:** The locale identifier or locale configuration to use for displaying the calendar.
 
@@ -229,11 +229,11 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `undefined`
 
-### show-weeknumbers
+### `show-weeknumbers`
 
-**Type:** Boolean
+**Type:** Boolean | String
 
-**Description:** Shows the (iso) week number on the left side of the week.
+**Description:** Shows the (iso) week number on the left side of the calendar (Boolean) or on a specified side of the calendar (`left`, `left-outside`, `right`, `right-outside`).
 
 **Default:** `undefined`
 
