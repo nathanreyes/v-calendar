@@ -2,6 +2,7 @@
 import CalendarDay from './CalendarDay';
 import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { getPopoverTriggerEvents } from '../utils/popovers';
+import { isBoolean } from '../utils/_';
 
 export default {
   name: 'CalendarPane',
@@ -141,11 +142,13 @@ export default {
     columnFromEnd: Number,
     titlePosition: String,
     navVisibility: String,
-    showWeeknumbers: String,
+    showWeeknumbers: [Boolean, String],
   },
   computed: {
     showWeeknumbers_() {
       if (this.showWeeknumbers == null) return '';
+      if (isBoolean(this.showWeeknumbers))
+        return this.showWeeknumbers ? 'left' : '';
       if (this.showWeeknumbers.startsWith('right')) {
         return this.columnFromEnd > 1 ? 'right' : this.showWeeknumbers;
       }
