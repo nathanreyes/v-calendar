@@ -134,15 +134,19 @@
     <h2>Week Numbers</h2>
     <div class="flex flex-col items-center md:flex-row md:justify-around mb-8">
       <div class="mb-6">
-        <h3 class="text-base semibold text-gray-700 mb-3">Inside Calendar</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">
+          Default Left Inside
+        </h3>
         <div class="mb-6">
           <v-calendar show-weeknumbers />
         </div>
       </div>
       <div class="mb-6">
-        <h3 class="text-base semibold text-gray-700 mb-3">Outside Calendar</h3>
+        <h3 class="text-base semibold text-gray-700 mb-3">
+          Right and Outside Options
+        </h3>
         <div class="mb-6">
-          <v-calendar show-weeknumbers="left-outside" />
+          <v-calendar show-weeknumbers="right-outside" />
         </div>
       </div>
     </div>
