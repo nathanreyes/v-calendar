@@ -1,5 +1,5 @@
 ---
-title: 'Date & Time Picker :tada:'
+title: Date & Time Picker
 sidebarDepth: 2
 ---
 

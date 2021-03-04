@@ -49,7 +49,7 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 <v-calendar trim-weeks>
 ```
 
-## Week Numbers
+## Week Numbers :tada:
 
 Show iso week numbers in the calendar using the `show-weeknumbers` prop.
 
