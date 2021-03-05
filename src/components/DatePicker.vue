@@ -360,6 +360,7 @@ export default {
         !elementContains(this.$el, e.target)
       ) {
         this.dragValue = null;
+        this.formatInput();
       }
     });
     // Clean up handlers
