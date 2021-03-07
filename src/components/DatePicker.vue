@@ -36,9 +36,18 @@ const _rangeConfig = {
   },
 };
 
-const MODE_DATE = 'date';
-const MODE_DATE_TIME = 'datetime';
-const MODE_TIME = 'time';
+const MODE = {
+  DATE: 'date',
+  DATE_TIME: 'datetime',
+  TIME: 'time',
+};
+
+const RANGE_PRIORITY = {
+  NONE: 0,
+  START: 1,
+  END: 2,
+  BOTH: 3,
+};
 
 export default {
   name: 'DatePicker',
@@ -57,7 +66,7 @@ export default {
               is24hr: this.is24hr,
               minuteIncrement: this.minuteIncrement,
               showBorder: !this.isTime,
-              isDisabled: this.isDateTime && !dp.isValid,
+              isDisabled: (this.isDateTime && !dp.isValid) || this.isDragging,
             },
             on: { input: p => this.onTimeInput(p, idx === 0) },
           }),
@@ -141,7 +150,7 @@ export default {
   },
   mixins: [rootMixin],
   props: {
-    mode: { type: String, default: MODE_DATE },
+    mode: { type: String, default: MODE.DATE },
     value: { type: null, required: true },
     modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
     is24hr: Boolean,
@@ -175,13 +184,13 @@ export default {
       return this.propOrDefault('inputDebounce', 'datePicker.inputDebounce');
     },
     isDate() {
-      return this.mode.toLowerCase() === MODE_DATE;
+      return this.mode.toLowerCase() === MODE.DATE;
     },
     isDateTime() {
-      return this.mode.toLowerCase() === MODE_DATE_TIME;
+      return this.mode.toLowerCase() === MODE.DATE_TIME;
     },
     isTime() {
-      return this.mode.toLowerCase() === MODE_TIME;
+      return this.mode.toLowerCase() === MODE.TIME;
     },
     isDragging() {
       return !!this.dragValue;
@@ -439,6 +448,9 @@ export default {
           this.dragTrackingValue.end = day.date;
         }
         opts.isDragging = !this.isDragging;
+        opts.rangePriority = opts.isDragging
+          ? RANGE_PRIORITY.NONE
+          : RANGE_PRIORITY.BOTH;
         opts.hidePopover = opts.hidePopover && !opts.isDragging;
         this.updateValue(this.dragTrackingValue, opts);
       } else {
@@ -454,6 +466,7 @@ export default {
         adjustTime: true,
         formatInput: true,
         hidePopover: false,
+        rangePriority: RANGE_PRIORITY.NONE,
       });
     },
     onTimeInput(parts, isStart) {
@@ -465,9 +478,10 @@ export default {
       } else {
         value = parts;
       }
-      this.updateValue(value, { patch: PATCH.TIME }).then(() =>
-        this.adjustPageRange(isStart),
-      );
+      this.updateValue(value, {
+        patch: PATCH.TIME,
+        rangePriority: isStart ? RANGE_PRIORITY.START : RANGE_PRIORITY.END,
+      }).then(() => this.adjustPageRange(isStart));
     },
     onInputInput(isStart) {
       return e => {
@@ -503,6 +517,7 @@ export default {
         ...opts,
         config,
         patch: this.inputMaskPatch,
+        rangePriority: isStart ? RANGE_PRIORITY.START : RANGE_PRIORITY.END,
       }).then(() => this.adjustPageRange(isStart));
     },
     onInputShow(isStart) {
@@ -542,6 +557,7 @@ export default {
         hidePopover = false,
         adjustTime = false,
         isDragging = this.isDragging,
+        rangePriority = RANGE_PRIORITY.BOTH,
       } = {},
     ) {
       // 1. Normalization
@@ -549,7 +565,7 @@ export default {
         value,
         config,
         patch,
-        !isDragging,
+        rangePriority,
       );
 
       // Reset to previous value if it was cleared but is required
@@ -611,28 +627,30 @@ export default {
       }
       return !!value;
     },
-    normalizeValue(value, config, patch, sortRange) {
+    normalizeValue(value, config, patch, rangePriority) {
       if (!this.hasValue(value)) return null;
       if (this.isRange) {
         const result = {};
+        const start = value.start > value.end ? value.end : value.start;
         const startFillDate =
           (this.value_ && this.value_.start) ||
           this.modelConfig_.start.fillDate;
         const startConfig = config.start || config;
-        result.start = this.normalizeDate(value.start, {
+        result.start = this.normalizeDate(start, {
           ...startConfig,
           fillDate: startFillDate,
           patch,
         });
+        const end = value.start > value.end ? value.start : value.end;
         const endFillDate =
           (this.value_ && this.value_.end) || this.modelConfig_.end.fillDate;
         const endConfig = config.end || config;
-        result.end = this.normalizeDate(value.end, {
+        result.end = this.normalizeDate(end, {
           ...endConfig,
           fillDate: endFillDate,
           patch,
         });
-        return sortRange ? this.sortRange(result) : result;
+        return this.sortRange(result, rangePriority);
       }
       return this.normalizeDate(value, {
         ...config,
@@ -653,10 +671,17 @@ export default {
       }
       return this.$locale.adjustTimeForDate(value, config);
     },
-    sortRange(range) {
+    sortRange(range, priority = RANGE_PRIORITY.NONE) {
       const { start, end } = range;
       if (start > end) {
-        return { start: end, end: start };
+        switch (priority) {
+          case RANGE_PRIORITY.START:
+            return { start, end: start };
+          case RANGE_PRIORITY.END:
+            return { start: end, end };
+          case RANGE_PRIORITY.BOTH:
+            return { start: end, end: start };
+        }
       }
       return { start, end };
     },
