@@ -158,8 +158,9 @@ export default {
   computed: {
     showWeeknumbers_() {
       if (this.showWeeknumbers == null) return '';
-      if (isBoolean(this.showWeeknumbers))
+      if (isBoolean(this.showWeeknumbers)) {
         return this.showWeeknumbers ? 'left' : '';
+      }
       if (this.showWeeknumbers.startsWith('right')) {
         return this.columnFromEnd > 1 ? 'right' : this.showWeeknumbers;
       }
