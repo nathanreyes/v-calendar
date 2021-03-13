@@ -94,11 +94,11 @@ To display ISO week numbers, use the `show-iso-weeknumbers` prop with the same c
 <guide-layouts-weeknumbers iso />
 
 ```html
-<v-calendar show-iso-weeknumbers />
+<v-calendar :first-day-of-week="2" show-iso-weeknumbers />
 ```
 
 :::warning
-For the ISO week date standard (ISO-8601), weeks start on **Monday** and end on **Sunday**. If the `firstDayOfWeek` setting is different, this could result in 2 weeks displaying the same week number.
+For the ISO week date standard (ISO-8601), weeks start on **Monday** and end on **Sunday**. If the `firstDayOfWeek` setting is different (US), this could result in 2 weeks displaying the same week number in certain months.
 :::
 
 ## Multiple Rows & Columns
