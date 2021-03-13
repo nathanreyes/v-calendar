@@ -10,7 +10,6 @@
       :attributes="attributes"
       disable-page-swipe
       is-expanded
-      show-weeknumbers
     >
       <template v-slot:day-content="{ day, attributes }">
         <div class="flex flex-col h-full z-10 overflow-hidden">
@@ -18,6 +17,7 @@
           <div class="flex-grow overflow-y-auto overflow-x-auto">
             <p
               v-for="attr in attributes"
+              :key="attr.key"
               class="text-xs leading-tight rounded-sm p-1 mt-0 mb-1"
               :class="attr.customData.class"
             >
