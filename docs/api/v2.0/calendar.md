@@ -277,7 +277,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 **Params:**: Week info object.
 ```js
 {
-  isoWeek: Number, // Iso week number of the weeknumber clicked
+  weeknumber: Number, // Weeknumber clicked
   days: [Day], // List of day objects for the weeknumber clicked
   event: MouseEvent, // Native event emitted
 }
