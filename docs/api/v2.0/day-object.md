@@ -40,13 +40,25 @@ pageClass: docs-page
 
 **Type:** Number
 
-**Description:** Week number form the start of the month (1 - 6).
+**Description:** Week number from the start of the month (1 - 6).
 
 ### `weekFromEnd`
 
 **Type:** Number
 
 **Description:** Week number from the end of the month (1 - 6).
+
+### `weeknumber`
+
+**Type:** Number
+
+**Description:** Week number of the year (usually 1 - 52).
+
+### `isoWeeknumber`
+
+**Type:** Number
+
+**Description:** ISO year week number of the year (usually 1 - 52).
 
 ### `month`
 
