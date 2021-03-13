@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise, no-multi-assign, import/no-cycle */
 import toDate from 'date-fns-tz/toDate';
 import getISOWeek from 'date-fns/getISOWeek';
+import getWeek from 'date-fns/getWeek';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import addDays from 'date-fns/addDays';
 import DateInfo from './dateInfo';
@@ -672,12 +673,17 @@ export default class Locale {
       const firstDayOfMonth = new Date(year, month - 1, 1);
       const firstWeekday = firstDayOfMonth.getDay() + 1;
       const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+      const weekStartsOn = this.firstDayOfWeek - 1;
       const weeks = getWeeksInMonth(firstDayOfMonth, {
-        weekStartsOn: this.firstDayOfWeek - 1,
+        weekStartsOn,
       });
-      const isoWeeks = [...Array(weeks).keys()].map(wIdx =>
-        getISOWeek(addDays(firstDayOfMonth, wIdx * 7)),
-      );
+      const weeknumbers = [];
+      const isoWeeknumbers = [];
+      for (let i = 0; i < weeks; i++) {
+        const date = addDays(firstDayOfMonth, i * 7);
+        weeknumbers.push(getWeek(date, { weekStartsOn }));
+        isoWeeknumbers.push(getISOWeek(date));
+      }
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
         inLeapYear,
@@ -686,7 +692,8 @@ export default class Locale {
         weeks,
         month,
         year,
-        isoWeeks,
+        weeknumbers,
+        isoWeeknumbers,
       };
       this.monthData[key] = comps;
     }
@@ -718,7 +725,12 @@ export default class Locale {
   // Builds day components for a given page
   getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
-    const { firstDayOfWeek, firstWeekday, isoWeeks } = monthComps;
+    const {
+      firstDayOfWeek,
+      firstWeekday,
+      isoWeeknumbers,
+      weeknumbers,
+    } = monthComps;
     const prevMonthDaysToShow =
       firstWeekday +
       (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -
@@ -795,7 +807,8 @@ export default class Locale {
         const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
-        const isoWeek = isoWeeks[w - 1];
+        const weeknumber = weeknumbers[w - 1];
+        const isoWeeknumber = isoWeeknumbers[w - 1];
         const isToday =
           day === todayDay && month === todayMonth && year === todayYear;
         const isFirstDay = thisMonth && day === 1;
@@ -817,7 +830,8 @@ export default class Locale {
           weekdayOrdinalFromEnd,
           week,
           weekFromEnd,
-          isoWeek,
+          weeknumber,
+          isoWeeknumber,
           month,
           year,
           dateFromTime,

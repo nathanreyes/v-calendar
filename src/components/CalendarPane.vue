@@ -59,7 +59,7 @@ export default {
     }
 
     // Weeknumber cell
-    const getWeeknumberCell = isoWeek =>
+    const getWeeknumberCell = weeknumber =>
       h(
         'div',
         {
@@ -73,14 +73,16 @@ export default {
               on: {
                 click: event => {
                   this.$emit('weeknumberclick', {
-                    isoWeek,
-                    days: this.page.days.filter(d => d.isoWeek === isoWeek),
+                    weeknumber,
+                    days: this.page.days.filter(
+                      d => d[this.weeknumberKey] === weeknumber,
+                    ),
                     event,
                   });
                 },
               },
             },
-            [isoWeek],
+            [weeknumber],
           ),
         ],
       );
@@ -95,7 +97,7 @@ export default {
         (showWeeknumbersLeft && mod === 0) ||
         (showWeeknumbersRight && mod === daysInWeek)
       ) {
-        dayCells.push(getWeeknumberCell(day.isoWeek));
+        dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
       }
       dayCells.push(
         h(CalendarDay, {
@@ -113,7 +115,7 @@ export default {
       );
       // Insert weeknumber cell on right side if needed
       if (showWeeknumbersRight && mod === daysInWeek - 1) {
-        dayCells.push(getWeeknumberCell(day.isoWeek));
+        dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
       }
     });
 
@@ -154,17 +156,22 @@ export default {
     titlePosition: String,
     navVisibility: String,
     showWeeknumbers: [Boolean, String],
+    showIsoWeeknumbers: [Boolean, String],
   },
   computed: {
+    weeknumberKey() {
+      return this.showWeeknumbers ? 'weeknumber' : 'isoWeeknumber';
+    },
     showWeeknumbers_() {
-      if (this.showWeeknumbers == null) return '';
-      if (isBoolean(this.showWeeknumbers)) {
-        return this.showWeeknumbers ? 'left' : '';
+      const showWeeknumbers = this.showWeeknumbers || this.showIsoWeeknumbers;
+      if (showWeeknumbers == null) return '';
+      if (isBoolean(showWeeknumbers)) {
+        return showWeeknumbers ? 'left' : '';
       }
-      if (this.showWeeknumbers.startsWith('right')) {
-        return this.columnFromEnd > 1 ? 'right' : this.showWeeknumbers;
+      if (showWeeknumbers.startsWith('right')) {
+        return this.columnFromEnd > 1 ? 'right' : showWeeknumbers;
       }
-      return this.column > 1 ? 'left' : this.showWeeknumbers;
+      return this.column > 1 ? 'left' : showWeeknumbers;
     },
     navVisibility_() {
       return this.propOrDefault('navVisibility', 'navVisibility');
