@@ -138,7 +138,7 @@
           Default Left Inside
         </h3>
         <div class="mb-6">
-          <v-calendar show-weeknumbers />
+          <v-calendar :from-page="{ month: 1, year: 2021 }" show-weeknumbers />
         </div>
       </div>
       <div class="mb-6">
@@ -146,7 +146,10 @@
           ISO, Right and Outside Options
         </h3>
         <div class="mb-6">
-          <v-calendar show-iso-weeknumbers="right-outside" />
+          <v-calendar
+            :from-page="{ month: 1, year: 2021 }"
+            show-iso-weeknumbers="right-outside"
+          />
         </div>
       </div>
     </div>
