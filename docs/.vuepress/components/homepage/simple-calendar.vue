@@ -143,10 +143,10 @@
       </div>
       <div class="mb-6">
         <h3 class="text-base semibold text-gray-700 mb-3">
-          Right and Outside Options
+          ISO, Right and Outside Options
         </h3>
         <div class="mb-6">
-          <v-calendar show-weeknumbers="right-outside" />
+          <v-calendar show-iso-weeknumbers="right-outside" />
         </div>
       </div>
     </div>
