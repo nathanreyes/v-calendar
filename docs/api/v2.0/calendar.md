@@ -213,7 +213,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `undefined` [Resolved by defaults or detected locale if not completely specified](./defaults.md#locale)
 
-### `timezone` :tada:
+### `timezone`
 
 **Type:** String
 
@@ -221,19 +221,27 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Default:** `undefined` [Resolved by defaults or detected timezone if not completely specified](./defaults.md#locale)
 
+### `show-weeknumbers`
+
+**Type:** Boolean | String
+
+**Description:** Shows the week number on the left side of the calendar (Boolean) or on a specified side of the calendar (`left`, `left-outside`, `right`, `right-outside`).
+
+**Default:** `undefined`
+
+### `show-iso-weeknumbers`
+
+**Type:** Boolean | String
+
+**Description:** Shows the ISO week number on the left side of the calendar (Boolean) or on a specified side of the calendar (`left`, `left-outside`, `right`, `right-outside`).
+
+**Default:** `undefined`
+
 ### `disable-page-swipe`
 
 **Type:** Boolean
 
 **Description:** Disables swipe detection for navigating forwards and backwards.
-
-**Default:** `undefined`
-
-### `show-weeknumbers`
-
-**Type:** Boolean | String
-
-**Description:** Shows the (iso) week number on the left side of the calendar (Boolean) or on a specified side of the calendar (`left`, `left-outside`, `right`, `right-outside`).
 
 **Default:** `undefined`
 
