@@ -51,7 +51,7 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 
 ## Week Numbers :tada:
 
-Show iso week numbers in the calendar using the `show-weeknumbers` prop.
+Show week numbers in the calendar using the `show-weeknumbers` prop.
 
 <guide-layouts-weeknumbers />
 
@@ -63,13 +63,15 @@ By default, this will display the numbers inside the calendar pane.
 
 Alternatively, you can display the week numbers outside the calendar or on the right side by providing a value for the prop.
 
+#### Left Outside
+
 <guide-layouts-weeknumbers option="left-outside" />
 
 ```html
 <v-calendar show-weeknumbers="left-outside ">
 ```
 
-Or even on the right side.
+#### Right
 
 <guide-layouts-weeknumbers option="right" />
 
@@ -77,11 +79,27 @@ Or even on the right side.
 <v-calendar show-weeknumbers="right">
 ```
 
+#### Right Outside
+
 <guide-layouts-weeknumbers option="right-outside" />
 
 ```html
 <v-calendar show-weeknumbers="right-outside">
 ```
+
+### ISO Week Numbers
+
+To display ISO week numbers, use the `show-iso-weeknumbers` prop with the same convention as `show-weeknumbers`. If both are assigned, the `show-weeknumbers` prop takes precendence.
+
+<guide-layouts-weeknumbers iso />
+
+```html
+<v-calendar show-iso-weeknumbers />
+```
+
+:::warning
+For the ISO week date standard (ISO-8601), weeks start on **Monday** and end on **Sunday**. If the `firstDayOfWeek` setting is different, this could result in 2 weeks displaying the same week number.
+:::
 
 ## Multiple Rows & Columns
 

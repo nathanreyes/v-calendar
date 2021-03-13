@@ -1,6 +1,9 @@
 <template>
   <div class="example">
-    <v-calendar :show-weeknumbers="option" />
+    <v-calendar
+      :show-weeknumbers="!iso && option"
+      :show-iso-weeknumbers="iso && option"
+    />
   </div>
 </template>
 
@@ -11,6 +14,7 @@ export default {
       type: String,
       default: 'left',
     },
+    iso: Boolean,
   },
 };
 </script>
