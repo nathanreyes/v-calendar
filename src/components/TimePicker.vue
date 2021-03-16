@@ -35,6 +35,15 @@
         <time-select v-model.number="hours" :options="hourOptions" />
         <span style="margin: 0 4px;">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
+        <span
+          v-if="useSeconds"
+          style="margin: 0 4px;"
+        >:</span>
+        <time-select
+          v-if="useSeconds"
+          v-model.number="seconds"
+          :options="secondOptions"
+        />
         <div
           v-if="!is24hr"
           class="vc-am-pm"
@@ -73,6 +82,8 @@ export default {
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
     minuteIncrement: { type: Number, default: 1 },
+    useSeconds: { type: Boolean, default: false },
+    secondIncrement: { type: Number, default: 1 },
     showBorder: Boolean,
     isDisabled: Boolean,
   },
@@ -80,6 +91,7 @@ export default {
     return {
       hours: 0,
       minutes: 0,
+      seconds: 0,
       isAM: true,
     };
   },
@@ -159,6 +171,29 @@ export default {
       }
       return options;
     },
+    secondOptions() {
+      const options = [];
+      let s = 0;
+      let added = false;
+      while (s <= 59) {
+        options.push({
+          value: s,
+          label: pad(s, 2),
+        });
+        added = added || s === this.seconds;
+        m += this.secondIncrement;
+        // Add disabled option if interval has skipped it
+        if (!added && s > this.seconds) {
+          added = true;
+          options.push({
+            value: this.seconds,
+            label: pad(this.seconds, 2),
+            disabled: true,
+          });
+        }
+      }
+      return options;
+    },
   },
   watch: {
     value() {
@@ -168,6 +203,9 @@ export default {
       this.updateValue();
     },
     minutes() {
+      this.updateValue();
+    },
+    seconds() {
       this.updateValue();
     },
     isAM() {
@@ -195,6 +233,7 @@ export default {
         }
         this.hours = hours;
         this.minutes = this.value.minutes;
+        this.seconds = this.value.seconds;
         this.isAM = isAM;
       });
     },
@@ -208,7 +247,7 @@ export default {
           ...this.value,
           hours,
           minutes: this.minutes,
-          seconds: 0,
+          seconds: this.seconds,
           milliseconds: 0,
         });
       });
