@@ -103,6 +103,7 @@ export default {
       hours: 0,
       minutes: 0,
       seconds: 0,
+      milliseconds: 0,
       isAM: true,
     };
   },
@@ -282,7 +283,7 @@ export default {
           hours,
           minutes: this.minutes,
           seconds: this.seconds,
-          milliseconds: 0,
+          milliseconds: this.milliseconds,
         });
       });
     },
