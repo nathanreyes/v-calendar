@@ -44,6 +44,15 @@
           v-model.number="seconds"
           :options="secondOptions"
         />
+        <span
+          v-if="useMilliseconds"
+          style="margin: 0 4px;"
+        >:</span>
+        <time-select
+          v-if="useMilliseconds"
+          v-model.number="milliseconds"
+          :options="millisecondOptions"
+        />
         <div
           v-if="!is24hr"
           class="vc-am-pm"
@@ -82,8 +91,10 @@ export default {
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
     minuteIncrement: { type: Number, default: 1 },
-    useSeconds: { type: Boolean, default: false },
     secondIncrement: { type: Number, default: 1 },
+    millisecondIncrement: { type: Number, default: 1 },
+    useSeconds: { type: Boolean, default: false },
+    useMilliseconds: { type: Boolean, default: false },
     showBorder: Boolean,
     isDisabled: Boolean,
   },
@@ -188,6 +199,29 @@ export default {
           options.push({
             value: this.seconds,
             label: pad(this.seconds, 2),
+            disabled: true,
+          });
+        }
+      }
+      return options;
+    },
+    millisecondOptions() {
+      const options = [];
+      let s = 0;
+      let added = false;
+      while (s <= 999) {
+        options.push({
+          value: s,
+          label: pad(s, 4),
+        });
+        added = added || s === this.milliseconds;
+        m += this.millisecondIncrement;
+        // Add disabled option if interval has skipped it
+        if (!added && s > this.milliseconds) {
+          added = true;
+          options.push({
+            value: this.milliseconds,
+            label: pad(this.milliseconds, 4),
             disabled: true,
           });
         }
