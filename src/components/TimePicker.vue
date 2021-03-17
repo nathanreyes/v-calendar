@@ -213,7 +213,7 @@ export default {
       while (s <= 999) {
         options.push({
           value: s,
-          label: pad(s, 4),
+          label: pad(s, 3),
         });
         added = added || s === this.milliseconds;
         s += this.millisecondIncrement;
@@ -222,7 +222,7 @@ export default {
           added = true;
           options.push({
             value: this.milliseconds,
-            label: pad(this.milliseconds, 4),
+            label: pad(this.milliseconds, 3),
             disabled: true,
           });
         }
