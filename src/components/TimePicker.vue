@@ -52,6 +52,7 @@
           v-if="useMilliseconds"
           v-model.number="milliseconds"
           :options="millisecondOptions"
+          class="vc-select-wide"
         />
         <div
           v-if="!is24hr"
