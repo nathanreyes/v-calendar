@@ -272,6 +272,7 @@ export default {
         this.hours = hours;
         this.minutes = this.value.minutes;
         this.seconds = this.value.seconds;
+        this.milliseconds = this.value.milliseconds;
         this.isAM = isAM;
       });
     },
