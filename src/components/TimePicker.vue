@@ -193,7 +193,7 @@ export default {
           label: pad(s, 2),
         });
         added = added || s === this.seconds;
-        m += this.secondIncrement;
+        s += this.secondIncrement;
         // Add disabled option if interval has skipped it
         if (!added && s > this.seconds) {
           added = true;
@@ -216,7 +216,7 @@ export default {
           label: pad(s, 4),
         });
         added = added || s === this.milliseconds;
-        m += this.millisecondIncrement;
+        s += this.millisecondIncrement;
         // Add disabled option if interval has skipped it
         if (!added && s > this.milliseconds) {
           added = true;
