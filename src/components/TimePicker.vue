@@ -243,6 +243,9 @@ export default {
     seconds() {
       this.updateValue();
     },
+    milliseconds() {
+      this.updateValue();
+    },
     isAM() {
       this.updateValue();
     },
