@@ -1,6 +1,6 @@
 <template>
   <div class="example">
-    <v-date-picker class="inline-block h-full" v-model="date">
+    <v-date-picker class="inline-block h-full" v-model="date" :buddhist="buddhist">
       <template v-slot="{ inputValue, togglePopover }">
         <div class="flex items-center">
           <button
@@ -25,6 +25,10 @@
         </div>
       </template>
     </v-date-picker>
+        <div>
+        <input id="buddhist" type="checkbox" v-model="buddhist" class="mt-3" />
+        <label for="buddhist">Is Buddhist Year</label>
+      </div>
   </div>
 </template>
 
@@ -33,6 +37,7 @@ export default {
   data() {
     return {
       date: new Date(),
+      buddhist:false
     };
   },
 };

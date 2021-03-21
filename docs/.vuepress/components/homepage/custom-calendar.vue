@@ -27,6 +27,15 @@
         </div>
       </template>
     </v-calendar>
+    <h2 class="h2">Buddhist Year Calendars</h2>
+    <v-calendar
+      class="custom-calendar max-w-full"
+      :masks="masks"
+      :attributes="attributes"
+      disable-page-swipe
+      :buddhist="true"
+      is-expanded
+    />
   </div>
 </template>
 

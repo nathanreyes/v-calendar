@@ -13,6 +13,10 @@
         <h3 class="text-base semibold text-gray-700 mb-3">Dots</h3>
         <v-calendar :attributes="dots" />
       </div>
+      <div class="mb-6">
+        <h3 class="text-base semibold text-gray-700 mb-3">Buddhist Year</h3>
+        <v-calendar :attributes="highlights" ref="cal" :buddhist="true" />
+      </div>
     </div>
     <div class="flex flex-col items-center md:flex-row md:justify-around mb-8">
       <div class="mb-6">
