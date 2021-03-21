@@ -57,6 +57,7 @@ export default {
           column,
           columnFromEnd,
           titlePosition: this.titlePosition_,
+          buddhist: this.buddhist,
         },
         on: {
           ...this.$listeners,
@@ -125,6 +126,7 @@ export default {
                 value: page,
                 position,
                 validator: e => this.canMove(e, { position }),
+                buddhist: this.buddhist,
               },
               on: {
                 input: e => this.move(e, { position }),
@@ -291,6 +293,10 @@ export default {
     attributes: [Object, Array],
     trimWeeks: Boolean,
     disablePageSwipe: Boolean,
+    buddhist: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -659,16 +665,21 @@ export default {
         const monthComps = this.$locale.getMonthComps(month, year);
         const prevMonthComps = this.$locale.getPrevMonthComps(month, year);
         const nextMonthComps = this.$locale.getNextMonthComps(month, year);
+        const yearTransform = year + ((this.buddhist) ? 543 : 0)
+        let titleTransform = this.$locale.format(date, this.$locale.masks.title);
+        if (this.buddhist) {
+          titleTransform = `${titleTransform.split(' ')[0]} ${yearTransform}`;
+        }
         page = {
           key,
           month,
           year,
           weeks: this.trimWeeks ? monthComps.weeks : 6,
-          title: this.$locale.format(date, this.$locale.masks.title),
+          title: titleTransform,
           shortMonthLabel: this.$locale.format(date, 'MMM'),
           monthLabel: this.$locale.format(date, 'MMMM'),
-          shortYearLabel: year.toString().substring(2),
-          yearLabel: year.toString(),
+          shortYearLabel:  yearTransform.toString().substring(2),
+          yearLabel:  yearTransform.toString(),
           monthComps,
           prevMonthComps,
           nextMonthComps,

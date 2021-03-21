@@ -230,7 +230,7 @@ This examples utilizes a dedicated button for displaying the dropdown picker. He
 
 ```html
 <template>
-  <v-date-picker class="inline-block h-full" v-model="date">
+  <v-date-picker class="inline-block h-full" v-model="date" :buddhist="buddhist">
     <template v-slot="{ inputValue, togglePopover }">
       <div class="flex items-center">
         <button
@@ -262,6 +262,7 @@ export default {
   data() {
     return {
       date: new Date(),
+      buddhist: false
     };
   },
 };
