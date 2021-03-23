@@ -119,8 +119,8 @@ export default {
     };
     return (
       (this.$scopedSlots.default &&
-        // Convert this span to a fragment when supported in Vue
-        h('span', [
+        // Convert this div to a fragment when supported in Vue
+        h('div', [
           // Slot content
           this.$scopedSlots.default(this.slotArgs),
           // Popover content
