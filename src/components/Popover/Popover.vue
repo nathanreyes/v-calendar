@@ -142,9 +142,6 @@ export default {
       }
       return isLeftRight ? 'middle' : 'center';
     },
-    state() {
-      return this.$popovers[this.id];
-    },
   },
   watch: {
     opts(val, oldVal) {

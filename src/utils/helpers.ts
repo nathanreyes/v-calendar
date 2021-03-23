@@ -17,9 +17,6 @@ export const pad = (val: string, len: number, char = '0') => {
 export const evalFn = (fn: Function, args: any) =>
   isFunction(fn) ? fn(args) : fn;
 
-export const pageIsValid = (page: Page | null): boolean =>
-  !!(page && page.month && page.year);
-
 export const mergeEvents = (...args: Array<any>) => {
   const result: any = {};
   args.forEach(e =>
@@ -35,6 +32,9 @@ export const mergeEvents = (...args: Array<any>) => {
   );
   return result;
 };
+
+export const pageIsValid = (page: Page | null): boolean =>
+  !!(page && page.month && page.year);
 
 export const pageIsBeforePage = (page: Page, comparePage: Page): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
@@ -82,12 +82,15 @@ export const addPages = ({ month, year }: Page, count: number): Page => {
   };
 };
 
-export const getMaxPage = (...args: Array<Page>) =>
-  args.reduce((prev, curr) => {
-    if (!prev) return curr;
-    if (!curr) return prev;
-    return pageIsAfterPage(curr, prev) ? curr : prev;
-  });
+export const pageRangeToArray = (from: Page, to: Page) => {
+  if (!pageIsValid(from) || !pageIsValid(to)) return [];
+  const result = [];
+  while (!pageIsAfterPage(from, to)) {
+    result.push(from);
+    from = addPages(from, 1);
+  }
+  return result;
+};
 
 export function datesAreEqual(a: any, b: any): boolean {
   const aIsDate = isDate(a);
@@ -104,23 +107,6 @@ export interface ElementPosition {
   top: number;
   left: number;
 }
-
-export const elementPositionInAncestor = (
-  el: HTMLElement,
-  ancestor: HTMLElement,
-): ElementPosition => {
-  let top = 0;
-  let left = 0;
-  do {
-    top += el.offsetTop || 0;
-    left += el.offsetLeft || 0;
-    el = el.offsetParent as any;
-  } while (el && el !== ancestor);
-  return {
-    top,
-    left,
-  };
-};
 
 export const mixinOptionalProps = (source: any, target: any, props: [any]) => {
   const assigned: Array<string> = [];

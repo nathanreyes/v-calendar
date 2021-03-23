@@ -5,12 +5,14 @@ import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Popover from '../Popover/Popover.vue';
 import PopoverRow from '../PopoverRow/PopoverRow.vue';
+import CalendarNav from '../CalendarNav/CalendarNav.vue';
 import CalendarPane from '../CalendarPane/CalendarPane.vue';
 import CustomTransition from '../CustomTransition/CustomTransition.vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
 import AttributeStore from '../../utils/attributeStore';
 import { rootMixin, slotMixin } from '../../utils/mixins';
 import { addHorizontalSwipeHandler } from '../../utils/touch';
+import { getDefault } from '../../utils/defaults';
 import {
   addPages,
   pageIsValid,
@@ -18,6 +20,7 @@ import {
   pageIsBeforePage,
   pageIsAfterPage,
   pageIsBetweenPages,
+  pageRangeToArray,
   createGuid,
   arrayHasItems,
   onSpaceOrEnter,
@@ -43,6 +46,38 @@ export default {
     'update:to-page',
   ],
   render() {
+    // Renderer for calendar panes
+    const panes = this.pages.map((page, i) => {
+      const position = i + 1;
+      const row = Math.ceil((i + 1) / this.columns);
+      const rowFromEnd = this.rows - row + 1;
+      const column = position % this.columns || this.columns;
+      const columnFromEnd = this.columns - column + 1;
+      return h(CalendarPane, {
+        ...this.$attrs,
+        key: page.key,
+        attributes: this.store,
+        page,
+        position,
+        row,
+        rowFromEnd,
+        column,
+        columnFromEnd,
+        titlePosition: this.titlePosition,
+        canMove: this.canMove,
+        'onUpdate:page': e => this.move(e, { position: i + 1 }),
+        onDayfocusin: e => {
+          this.lastFocusedDay = e;
+          this.$emit('dayfocusin', e);
+        },
+        onDayfocusout: e => {
+          this.lastFocusedDay = null;
+          this.$emit('dayfocusout', e);
+        },
+        slots: this.$slots,
+      });
+    });
+
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const click = () => this.move(isPrev ? -this.step_ : this.step_);
@@ -51,7 +86,11 @@ export default {
       return h(
         'div',
         {
-          class: ['vc-arrow', { 'is-disabled': isDisabled }],
+          class: [
+            'vc-arrow',
+            `is-${isPrev ? 'left' : 'right'}`,
+            { 'is-disabled': isDisabled },
+          ],
           role: 'button',
           onClick: click,
           onKeydown: keydown,
@@ -66,6 +105,36 @@ export default {
         ],
       );
     };
+
+    // Nav popover
+    const getNavPopover = () =>
+      h(
+        Popover,
+        {
+          id: this.sharedState.navPopoverId,
+          contentClass: 'vc-nav-popover-container',
+          ref: 'navPopover',
+        },
+        {
+          // Navigation pane
+          default: ({ data }) => {
+            const { position, page } = data;
+            return h(
+              CalendarNav,
+              {
+                value: page,
+                position,
+                validator: e => this.canMove(e, { position }),
+                onInput: e => this.move(e),
+              },
+              {
+                ...this.$slots,
+              },
+            );
+          },
+        },
+      );
+
     // Day popover
     const getDayPopover = () =>
       h(
@@ -134,6 +203,7 @@ export default {
         ref: 'container',
       },
       [
+        getNavPopover(),
         h(
           'div',
           {
@@ -166,37 +236,14 @@ export default {
                       },
                       key: this.firstPage ? this.firstPage.key : '',
                     },
-                    this.pages.map((page, i) =>
-                      h(CalendarPane, {
-                        ...this.$attrs,
-                        key: page && page.key,
-                        attributes: this.store,
-                        titlePosition: this.titlePosition_,
-                        page,
-                        minPage: this.minPage_,
-                        maxPage: this.maxPage_,
-                        canMove: this.canMove,
-                        'onUpdate:page': e => {
-                          this.refreshPages({ page: e, position: i + 1 });
-                        },
-                        onDayfocusin: e => {
-                          this.lastFocusedDay = e;
-                          this.$emit('dayfocusin', e);
-                        },
-                        onDayfocusout: e => {
-                          this.lastFocusedDay = null;
-                          this.$emit('dayfocusout', e);
-                        },
-                        slots: this.$slots,
-                      }),
-                    ),
+                    panes,
                   ),
               },
             ),
             h(
               'div',
               {
-                class: [`vc-arrows-container title-${this.titlePosition_}`],
+                class: [`vc-arrows-container title-${this.titlePosition}`],
               },
               [getArrowButton(true), getArrowButton(false)],
             ),
@@ -223,7 +270,10 @@ export default {
       default: 1,
     },
     step: Number,
-    titlePosition: String,
+    titlePosition: {
+      type: String,
+      default: getDefault('titlePosition'),
+    },
     isExpanded: Boolean,
     fromDate: Date,
     toDate: Date,
@@ -245,6 +295,7 @@ export default {
       transitionName: '',
       inTransition: false,
       sharedState: {
+        navPopoverId: createGuid(),
         dayPopoverId: createGuid(),
         theme: {},
         masks: {},
@@ -253,9 +304,6 @@ export default {
     };
   },
   computed: {
-    titlePosition_() {
-      return this.propOrDefault('titlePosition', 'titlePosition');
-    },
     firstPage() {
       return head(this.pages);
     },
@@ -275,16 +323,10 @@ export default {
       return this.step || this.count;
     },
     canMovePrev() {
-      return (
-        !pageIsValid(this.minPage_) ||
-        pageIsAfterPage(this.pages[0], this.minPage_)
-      );
+      return this.canMove(-this.step_);
     },
     canMoveNext() {
-      return (
-        !pageIsValid(this.maxPage_) ||
-        pageIsBeforePage(this.pages[this.pages.length - 1], this.maxPage_)
-      );
+      return this.canMove(this.step_);
     },
   },
   watch: {
@@ -359,7 +401,7 @@ export default {
             this.movePrev();
           }
         },
-        this.$defaults.touch,
+        getDefault('touch'),
       );
     }
   },
@@ -374,8 +416,35 @@ export default {
     refreshTheme() {
       this.sharedState.theme = this.$theme;
     },
-    canMove(page) {
-      return pageIsBetweenPages(page, this.minPage_, this.maxPage_);
+    canMove(arg, opts = {}) {
+      const page = this.firstPage && this.$locale.toPage(arg, this.firstPage);
+      if (!page) return false;
+      let { position } = opts;
+      // Pin position if arg is number
+      if (isNumber(arg)) position = 1;
+      // Set position if unspecified and out of current bounds
+      if (!position) {
+        if (pageIsBeforePage(page, this.firstPage)) {
+          position = -1;
+        } else if (pageIsAfterPage(page, this.lastPage)) {
+          position = 1;
+        } else {
+          // Page already displayed
+          return true;
+        }
+      }
+      // Calculate new page range without adjusting to min/max
+      Object.assign(
+        opts,
+        this.getTargetPageRange(page, {
+          position,
+          force: true,
+        }),
+      );
+      // Verify we can move to any pages in the target range
+      return pageRangeToArray(opts.fromPage, opts.toPage).some(p =>
+        pageIsBetweenPages(p, this.minPage_, this.maxPage_),
+      );
     },
     movePrev(opts) {
       return this.move(-this.step_, opts);
@@ -384,38 +453,29 @@ export default {
       return this.move(this.step_, opts);
     },
     move(arg, opts = {}) {
-      const page = this.$locale.toPage(arg, this.firstPage);
-      // Pin position if arg is number
-      if (isNumber(arg)) opts.position = 1;
-      // Reject unresolved pages
-      if (!page)
-        return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
-      // Set position if unspecified and out of current bounds
-      if (!opts.position) {
-        if (pageIsBeforePage(page, this.firstPage)) {
-          opts.position = -1;
-        } else if (pageIsAfterPage(page, this.lastPage)) {
-          opts.position = 1;
-        } else {
-          // Page already displayed with no specified position, so we're done
-          return Promise.resolve(true);
-        }
+      // Reject if we can't move to this page
+      const canMove = this.canMove(arg, opts);
+      if (!opts.force && !canMove) {
+        return Promise.reject(
+          new Error(`Move target is disabled: ${JSON.stringify(opts)}`),
+        );
       }
-      // Calculate new `fromPage`
-      const { fromPage } = this.getTargetPageRange(page, opts);
+      // Hide nav popover for good measure
+      this.$refs.navPopover.hide({ hideDelay: 0 });
       // Move to new `fromPage` if it's different from the current one
-      if (fromPage && !pageIsEqualToPage(fromPage, this.firstPage)) {
+      if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, this.firstPage)) {
         return this.refreshPages({
           ...opts,
+          page: opts.fromPage,
           position: 1,
-          page: fromPage,
+          force: true,
         });
       }
       return Promise.resolve(true);
     },
     focusDate(date, opts = {}) {
       // Move to the given date
-      this.move(date, opts).then(() => {
+      return this.move(date, opts).then(() => {
         // Set focus on the element for the date
         const focusableEl = this.$el.querySelector(
           `.id-${this.$locale.getDayId(date)}.in-month .vc-focusable`,
@@ -457,33 +517,20 @@ export default {
       return this.refreshPages({ ...opts, page });
     },
     getTargetPageRange(page, { position, force } = {}) {
-      // Calculate the page to start displaying from
       let fromPage = null;
-      // 1. Try the page parameter
+      let toPage = null;
       if (pageIsValid(page)) {
-        const pagesToAdd =
-          position > 0 ? 1 - position : -(this.count + position);
+        let pagesToAdd = 0;
+        position = +position;
+        if (!isNaN(position)) {
+          pagesToAdd = position > 0 ? 1 - position : -(this.count + position);
+        }
         fromPage = addPages(page, pagesToAdd);
       } else {
-        // 2. Try the fromPage prop
-        fromPage =
-          this.fromPage || this.pageForDate(this.normalizeDate(this.fromDate));
-        if (!pageIsValid(fromPage)) {
-          // 3. Try the toPage prop
-          const toPage =
-            this.toPage || this.pageForDate(this.normalizeDate(this.toPage));
-          if (pageIsValid(toPage)) {
-            fromPage = addPages(toPage, 1 - this.count);
-          } else {
-            // 4. Try the first attribute
-            fromPage = this.getPageForAttributes();
-          }
-        }
+        fromPage = this.getDefaultInitialPage();
       }
-      // 5. Fall back to today's page
-      fromPage = pageIsValid(fromPage) ? fromPage : this.pageForThisMonth();
-      let toPage = addPages(fromPage, this.count - 1);
-      // 6. Adjust for min/max pages if not forced
+      toPage = addPages(fromPage, this.count - 1);
+      // Adjust range for min/max if not forced
       if (!force) {
         if (pageIsBeforePage(fromPage, this.minPage_)) {
           fromPage = this.minPage_;
@@ -493,6 +540,26 @@ export default {
         toPage = addPages(fromPage, this.count - 1);
       }
       return { fromPage, toPage };
+    },
+    getDefaultInitialPage() {
+      // 1. Try the fromPage prop
+      let page = this.fromPage || this.pageForDate(this.fromDate);
+      if (!pageIsValid(page)) {
+        // 2. Try the toPage prop
+        const toPage = this.toPage || this.pageForDate(this.toPage);
+        if (pageIsValid(toPage)) {
+          page = addPages(toPage, 1 - this.count);
+        }
+      }
+      // 3. Try the first attribute
+      if (!pageIsValid(page)) {
+        page = this.getPageForAttributes();
+      }
+      // 4. Use today's page
+      if (!pageIsValid(page)) {
+        page = this.pageForThisMonth();
+      }
+      return page;
     },
     refreshPages({ page, position = 1, force, transition, ignoreCache } = {}) {
       return new Promise((resolve, reject) => {
@@ -724,7 +791,7 @@ export default {
       }
       if (newDate) {
         event.preventDefault();
-        this.focusDate(newDate);
+        this.focusDate(newDate).catch();
       }
     },
   },

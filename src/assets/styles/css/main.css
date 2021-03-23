@@ -236,6 +236,7 @@
   --slide-timing: ease;
 
   --day-content-transition-time: 0.13s ease-in;
+  --weeknumber-offset: -34px;
 
   position: relative;
   display: inline-flex;

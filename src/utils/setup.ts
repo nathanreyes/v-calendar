@@ -1,5 +1,5 @@
 import { App } from 'vue';
-import { default as setupDefaults, Defaults } from './defaults';
+import { setup as setupDefaults, Defaults } from './defaults';
 import screensPlugin from './screens';
 
 export default (app: App, defaults: Defaults) => {

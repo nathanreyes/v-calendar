@@ -1,5 +1,9 @@
 /* eslint-disable no-bitwise, no-multi-assign */
 import toDate from 'date-fns-tz/toDate';
+import getISOWeek from 'date-fns/getISOWeek';
+import getWeek from 'date-fns/getWeek';
+import getWeeksInMonth from 'date-fns/getWeeksInMonth';
+import addDays from 'date-fns/addDays';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
 import { pad, addPages, arrayHasItems } from './helpers';
@@ -12,9 +16,22 @@ import {
   has,
   defaultsDeep,
   clamp,
+  pick,
 } from './_';
 
-const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|X{1,3}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+export const PATCH = {
+  DATE_TIME: 1,
+  DATE: 2,
+  TIME: 3,
+};
+
+const PATCH_KEYS = {
+  1: ['year', 'month', 'day', 'hours', 'minutes', 'seconds', 'milliseconds'],
+  2: ['year', 'month', 'day'],
+  3: ['hours', 'minutes', 'seconds', 'milliseconds'],
+};
+
+const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
 const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
@@ -119,18 +136,21 @@ const formatFlags = {
   A(d, l) {
     return d.hours < 12 ? l.amPm[0].toUpperCase() : l.amPm[1].toUpperCase();
   },
-  X(d) {
+  Z() {
+    return 'Z';
+  },
+  ZZ(d) {
     const o = d.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}`;
   },
-  XX(d) {
+  ZZZ(d) {
     const o = d.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(
       Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60),
       4,
     )}`;
   },
-  XXX(d) {
+  ZZZZ(d) {
     const o = d.timezoneOffset;
     return `${o > 0 ? '-' : '+'}${pad(Math.floor(Math.abs(o) / 60), 2)}:${pad(
       Math.abs(o) % 60,
@@ -225,7 +245,7 @@ const parseFlags = {
       }
     },
   ],
-  X: [
+  Z: [
     /[^\s]*?[+-]\d\d:?\d\d|[^\s]*?Z?/,
     (d, v) => {
       if (v === 'Z') v = '+00:00';
@@ -245,7 +265,7 @@ parseFlags.mm = parseFlags.m;
 parseFlags.hh = parseFlags.H = parseFlags.HH = parseFlags.h;
 parseFlags.ss = parseFlags.s;
 parseFlags.A = parseFlags.a;
-parseFlags.XXX = parseFlags.XX = parseFlags.X;
+parseFlags.ZZZZ = parseFlags.ZZZ = parseFlags.ZZ = parseFlags.Z;
 
 export function resolveConfig(config, locales) {
   // Get the detected locale string
@@ -273,6 +293,7 @@ export default class Locale {
   constructor(config, { locales = defaultLocales, timezone } = {}) {
     const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
     this.id = id;
+    this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
     this.timezone = timezone || undefined;
@@ -301,10 +322,12 @@ export default class Locale {
       literals.push($1);
       return '??';
     });
+    const timezone = /Z$/.test(mask) ? 'utc' : this.timezone;
+    const dateParts = this.getDateParts(date, timezone);
     // Apply formatting rules
     mask = mask.replace(token, $0 =>
       $0 in formatFlags
-        ? formatFlags[$0](this.getDateParts(date), this)
+        ? formatFlags[$0](dateParts, this)
         : $0.slice(1, $0.length - 1),
     );
     // Inline literal values back into the formatted value
@@ -410,15 +433,15 @@ export default class Locale {
 
   normalizeDate(d, config = {}) {
     let result = null;
-    let type = config.type;
+    let { type, fillDate } = config;
+    const { mask, patch, time } = config;
     const auto = type === 'auto' || !type;
     if (isNumber(d)) {
       type = 'number';
       result = new Date(+d);
     } else if (isString(d)) {
       type = 'string';
-      const mask = config.mask || 'iso';
-      result = d ? this.parse(d, mask) : null;
+      result = d ? this.parse(d, mask || 'iso') : null;
     } else if (isObject(d)) {
       type = 'object';
       result = this.getDateFromParts(d);
@@ -426,11 +449,20 @@ export default class Locale {
       type = 'date';
       result = isDate(d) ? new Date(d.getTime()) : null;
     }
+
+    if (result && patch) {
+      fillDate = fillDate == null ? new Date() : this.normalizeDate(fillDate);
+      const parts = {
+        ...this.getDateParts(fillDate),
+        ...pick(this.getDateParts(result), PATCH_KEYS[patch]),
+      };
+      result = this.getDateFromParts(parts);
+    }
     if (auto) config.type = type;
     if (result && !isNaN(result.getTime())) {
-      if (config.time) {
+      if (time) {
         result = this.adjustTimeForDate(result, {
-          timeAdjust: config.time,
+          timeAdjust: time,
         });
       }
       return result;
@@ -459,11 +491,11 @@ export default class Locale {
         dateParts.seconds = timeParts.seconds;
         dateParts.milliseconds = timeParts.milliseconds;
       } else {
-        const d = new Date(`2000-01-01T${timeAdjust}`);
-        dateParts.hours = d.getHours();
-        dateParts.minutes = d.getMinutes();
-        dateParts.seconds = d.getSeconds();
-        dateParts.milliseconds = d.getMilliseconds();
+        const d = new Date(`2000-01-01T${timeAdjust}Z`);
+        dateParts.hours = d.getUTCHours();
+        dateParts.minutes = d.getUTCMinutes();
+        dateParts.seconds = d.getUTCSeconds();
+        dateParts.milliseconds = d.getUTCMilliseconds();
       }
       date = this.getDateFromParts(dateParts);
     }
@@ -479,14 +511,14 @@ export default class Locale {
       .filter(d => d);
   }
 
-  getDateParts(date) {
+  getDateParts(date, timezone = this.timezone) {
     if (!date) return null;
     let tzDate = date;
-    if (this.timezone) {
+    if (timezone) {
       const normDate = new Date(
-        date.toLocaleString('en-US', { timeZone: this.timezone }),
+        date.toLocaleString('en-US', { timeZone: timezone }),
       );
-      normDate.setMilliseconds(date.getMilliseconds);
+      normDate.setMilliseconds(date.getMilliseconds());
       const diff = normDate.getTime() - date.getTime();
       tzDate = new Date(date.getTime() + diff);
     }
@@ -529,25 +561,25 @@ export default class Locale {
 
   getDateFromParts(parts) {
     if (!parts) return null;
+    const d = new Date();
     const {
-      year: y,
-      month: m,
-      day: d,
+      year = d.getFullYear(),
+      month = d.getMonth() + 1,
+      day = d.getDate(),
       hours: hrs = 0,
       minutes: min = 0,
       seconds: sec = 0,
       milliseconds: ms = 0,
     } = parts;
-    if (y === undefined || m === undefined || d === undefined) return null;
 
     if (this.timezone) {
-      const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
+      const dateString = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}T${pad(
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
       return toDate(dateString, { timeZone: this.timezone });
     }
-    return new Date(y, m - 1, d, hrs, min, sec, ms);
+    return new Date(year, month - 1, day, hrs, min, sec, ms);
   }
 
   getTimezoneOffset(parts) {
@@ -639,11 +671,20 @@ export default class Locale {
     if (!comps) {
       const inLeapYear =
         (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-      const firstWeekday = new Date(year, month - 1, 1).getDay() + 1;
+      const firstDayOfMonth = new Date(year, month - 1, 1);
+      const firstWeekday = firstDayOfMonth.getDay() + 1;
       const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
-      const weeks = Math.ceil(
-        (days + Math.abs(firstWeekday - this.firstDayOfWeek)) / daysInWeek,
-      );
+      const weekStartsOn = this.firstDayOfWeek - 1;
+      const weeks = getWeeksInMonth(firstDayOfMonth, {
+        weekStartsOn,
+      });
+      const weeknumbers = [];
+      const isoWeeknumbers = [];
+      for (let i = 0; i < weeks; i++) {
+        const date = addDays(firstDayOfMonth, i * 7);
+        weeknumbers.push(getWeek(date, { weekStartsOn }));
+        isoWeeknumbers.push(getISOWeek(date));
+      }
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
         inLeapYear,
@@ -652,6 +693,8 @@ export default class Locale {
         weeks,
         month,
         year,
+        weeknumbers,
+        isoWeeknumbers,
       };
       this.monthData[key] = comps;
     }
@@ -683,7 +726,12 @@ export default class Locale {
   // Builds day components for a given page
   getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
-    const { firstDayOfWeek, firstWeekday } = monthComps;
+    const {
+      firstDayOfWeek,
+      firstWeekday,
+      isoWeeknumbers,
+      weeknumbers,
+    } = monthComps;
     const prevMonthDaysToShow =
       firstWeekday +
       (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -
@@ -760,12 +808,14 @@ export default class Locale {
         const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
+        const weeknumber = weeknumbers[w - 1];
+        const isoWeeknumber = isoWeeknumbers[w - 1];
         const isToday =
           day === todayDay && month === todayMonth && year === todayYear;
         const isFirstDay = thisMonth && day === 1;
         const isLastDay = thisMonth && day === monthComps.days;
         const onTop = w === 1;
-        const onBottom = w === 6;
+        const onBottom = w === weeks;
         const onLeft = i === 1;
         const onRight = i === daysInWeek;
         days.push({
@@ -781,6 +831,8 @@ export default class Locale {
           weekdayOrdinalFromEnd,
           week,
           weekFromEnd,
+          weeknumber,
+          isoWeeknumber,
           month,
           year,
           dateFromTime,

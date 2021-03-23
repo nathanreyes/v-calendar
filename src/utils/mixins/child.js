@@ -1,8 +1,5 @@
-import { defaultsMixin } from '../defaults';
-
 export const childMixin = {
   inject: ['sharedState'],
-  mixins: [defaultsMixin],
   computed: {
     masks() {
       return this.sharedState.masks;

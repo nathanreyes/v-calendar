@@ -30,7 +30,6 @@
   &:focus {
     border-color: var(--gray-300);
   }
-
   &.is-disabled {
     opacity: 0.25;
     pointer-events: none;

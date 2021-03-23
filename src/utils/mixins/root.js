@@ -1,14 +1,19 @@
 import Theme from '../theme';
 import Locale from '../locale';
 import { isObject, isDate } from '../_';
-import { defaultsMixin } from '../defaults';
 import Attribute from '../attribute';
+import { locales, getDefault } from '../defaults';
 
 export const rootMixin = {
-  mixins: [defaultsMixin],
   props: {
-    color: String,
-    isDark: Boolean,
+    color: {
+      type: String,
+      default: getDefault('color'),
+    },
+    isDark: {
+      type: Boolean,
+      default: getDefault('isDark'),
+    },
     firstDayOfWeek: Number,
     masks: Object,
     locale: [String, Object],
@@ -27,8 +32,8 @@ export const rootMixin = {
       if (this.theme instanceof Theme) return this.theme;
       // Create the theme
       return new Theme({
-        color: this.passedProp('color', 'blue'),
-        isDark: this.passedProp('isDark', false),
+        color: this.color,
+        isDark: this.isDark,
       });
     },
     $locale() {
@@ -44,7 +49,7 @@ export const rootMixin = {
           };
       // Return new locale
       return new Locale(config, {
-        locales: this.$locales,
+        locales: locales.value,
         timezone: this.timezone,
       });
     },

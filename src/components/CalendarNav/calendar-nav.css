@@ -7,6 +7,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
   line-height: var(--leading-snug);
   border-width: 2px;
   border-style: solid;
@@ -17,6 +19,11 @@
   }
   &.is-right {
     margin-left: auto;
+  }
+  &.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+    cursor: not-allowed;
   }
   &:hover {
     background-color: var(--gray-900);
@@ -68,9 +75,6 @@
     background-color: var(--gray-900);
     box-shadow: var(--shadow-inner);
   }
-  &:focus {
-    border-color: var(--accent-600);
-  }
   &.is-active {
     color: var(--accent-900);
     background: var(--accent-100);
@@ -81,6 +85,9 @@
     color: var(--accent-100);
     font-weight: var(--bold);
     border-color: var(--accent-100);
+  }
+  &:focus {
+    border-color: var(--accent-600);
   }
   &.is-disabled {
     opacity: 0.25;
@@ -112,9 +119,6 @@
       background-color: var(--gray-200);
       box-shadow: none;
     }
-    &:focus {
-      border-color: var(--accent-400);
-    }
     &.is-active {
       color: var(--white);
       background: var(--accent-500);
@@ -122,6 +126,9 @@
     &.is-current {
       color: var(--accent-600);
       border-color: var(--accent-500);
+    }
+    &:focus {
+      border-color: var(--accent-400);
     }
   }
 }

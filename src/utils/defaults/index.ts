@@ -1,5 +1,5 @@
-import { reactive, computed, Component } from 'vue';
-import { isObject, defaultsDeep, mapValues, get, has } from '../_';
+import { reactive, computed } from 'vue';
+import { defaultsDeep, mapValues, get, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';
@@ -22,6 +22,8 @@ interface DatePickerDefaults {
 
 export interface Defaults {
   componentPrefix?: string;
+  color?: string;
+  isDark?: boolean;
   navVisibility?: string;
   titlePosition?: string;
   transition?: string;
@@ -34,6 +36,8 @@ export interface Defaults {
 
 const defaultConfig: Defaults = {
   componentPrefix: 'v',
+  color: 'blue',
+  isDark: false,
   navVisibility: 'click',
   titlePosition: 'center',
   transition: 'slide-h',
@@ -53,54 +57,26 @@ const defaultConfig: Defaults = {
   },
 };
 
-const state = reactive({
-  didSetup: false,
-  defaults: defaultConfig,
-});
+const state = reactive(defaultConfig);
 
 const computedLocales = computed(() => {
-  return mapValues(state.defaults.locales, (v: any) => {
-    v.masks = defaultsDeep(v.masks, state.defaults.masks);
+  return mapValues(state.locales, (v: any) => {
+    v.masks = defaultsDeep(v.masks, state.masks);
     return v;
   });
 });
 
-const setup = (defaults: Defaults) => {
-  state.defaults = defaultsDeep(defaults, state.defaults);
-  state.didSetup = true;
-  return state.defaults;
+export { computedLocales as locales };
+
+export const getDefault = (path: string) => {
+  if (window && has(window.__vcalendar__, path)) {
+    return get(window.__vcalendar__, path);
+  }
+  return get(state, path);
 };
 
-export default setup;
+export default state;
 
-export const defaultsMixin: Component = {
-  computed: {
-    $defaults(): Defaults {
-      return state.defaults;
-    },
-    $locales() {
-      return computedLocales.value;
-    },
-  },
-  methods: {
-    propOrDefault(prop: string, defaultPath: string, strategy: string): any {
-      return this.passedProp(prop, get(this.$defaults, defaultPath), strategy);
-    },
-    passedProp(prop: string, fallback: any, strategy: string): any {
-      if (has(this.$props, prop)) {
-        const propValue = this[prop];
-        if (isObject(propValue) && strategy === 'merge') {
-          return defaultsDeep(propValue, fallback);
-        }
-        return propValue;
-      }
-      return fallback;
-    },
-  },
-  created() {
-    if (!state.didSetup && window && window.__vcalendar__) {
-      state.defaults = defaultsDeep(window.__vcalendar__, defaultConfig);
-      state.didSetup = true;
-    }
-  },
+export const setup = (userDefaults: Defaults) => {
+  return defaultsDeep(state, userDefaults);
 };
