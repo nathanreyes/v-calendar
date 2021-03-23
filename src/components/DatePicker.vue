@@ -3,7 +3,6 @@ import Calendar from './Calendar';
 import Popover from './Popover';
 import TimePicker from './TimePicker';
 import { rootMixin } from '../utils/mixins';
-import { addTapOrClickHandler } from '../utils/touch';
 import {
   datesAreEqual,
   createGuid,
@@ -361,21 +360,20 @@ export default {
   },
   mounted() {
     // Handle escape key presses
-    on(document, 'keydown', this.onDocumentKeyDown);
-    // Clear drag on background click
-    const offTapOrClickHandler = addTapOrClickHandler(document, e => {
+    const offKeydown = on(document, 'keydown', this.clearDragAndInput);
+    // Handle document clicks
+    const offDocumentClick = on(document, 'click', e => {
       if (
         document.body.contains(e.target) &&
         !elementContains(this.$el, e.target)
       ) {
-        this.dragValue = null;
-        this.formatInput();
+        this.clearDragAndInput();
       }
     });
     // Clean up handlers
     this.$once('beforeDestroy', () => {
-      off(document, 'keydown', this.onDocumentKeyDown);
-      offTapOrClickHandler();
+      offKeydown();
+      offDocumentClick();
     });
   },
   methods: {
@@ -406,11 +404,9 @@ export default {
       }
       this.$nextTick(() => (this.dateParts = dateParts));
     },
-    onDocumentKeyDown(e) {
-      // Clear drag on escape keydown
-      if (this.dragValue && e.key === 'Escape') {
-        this.dragValue = null;
-      }
+    clearDragAndInput() {
+      this.dragValue = null;
+      this.formatInput();
     },
     onDayClick(day) {
       this.handleDayClick(day);
