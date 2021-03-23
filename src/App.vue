@@ -1,11 +1,12 @@
 <template>
   <div>
-    <div>
+    <div class="calendar-examples">
       <Calendar
         :attributes="attributes"
         :columns="$screens({ default: 1, md: 2 })"
         transition="slide-h"
         :masks="{ weekdays: 'WWW' }"
+        show-weeknumbers="right-outside"
       >
         <template #day-popover="{}"> Helloooo </template>
       </Calendar>
@@ -105,7 +106,11 @@ export default {
 </script>
 
 <style scoped>
+.calendar-examples {
+  margin: 2rem;
+}
 .date-examples {
+  margin: 2rem;
   display: flex;
 }
 </style>
