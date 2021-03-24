@@ -36,11 +36,11 @@
         <span style="margin: 0 4px;">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
         <span
-          v-if="useSeconds"
+          v-if="useSeconds || useMilliseconds"
           style="margin: 0 4px;"
         >:</span>
         <time-select
-          v-if="useSeconds"
+          v-if="useSeconds || useMilliseconds"
           v-model.number="seconds"
           :options="secondOptions"
         />
