@@ -47,7 +47,7 @@
         <span
           v-if="useMilliseconds"
           style="margin: 0 4px;"
-        >:</span>
+        >.</span>
         <time-select
           v-if="useMilliseconds"
           v-model.number="milliseconds"
