@@ -333,6 +333,7 @@ export default {
       if (!this.watchValue) return;
       this.forceUpdateValue(this.value, {
         config: this.modelConfig_,
+        isDragging: false,
         notify: false,
         formatInput: true,
         hidePopover: false,
