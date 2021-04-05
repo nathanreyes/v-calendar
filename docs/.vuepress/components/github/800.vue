@@ -13,12 +13,12 @@ export default {
   created() {
     this.getDisabledDatesFromApi().then(dates => {
       // All of these methods should work in Vue 2
-      // this.disabledDates = dates;
+      this.disabledDates = dates;
       // this.disabledDates = this.disabledDates.concat(dates);
       // this.disabledDates.push(...dates);
 
       // This won't work in Vue 2
-      this.disabledDates[0] = dates[0];
+      // this.disabledDates[0] = dates[0];
     });
   },
   methods: {
