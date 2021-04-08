@@ -361,7 +361,9 @@ export default {
   },
   mounted() {
     // Handle escape key presses
-    const offKeydown = on(document, 'keydown', this.clearDragAndInput);
+    const offKeydown = on(document, 'keydown', e => {
+      if (e.Key === 'Escape') this.clearDragAndInput;
+    });
     // Handle document clicks
     const offDocumentClick = on(document, 'click', e => {
       if (
