@@ -26,9 +26,17 @@ export const PATCH = {
 };
 
 const PATCH_KEYS = {
-  1: ['year', 'month', 'day', 'hours', 'minutes', 'seconds', 'milliseconds'],
-  2: ['year', 'month', 'day'],
-  3: ['hours', 'minutes', 'seconds', 'milliseconds'],
+  [PATCH.DATE_TIME]: [
+    'year',
+    'month',
+    'day',
+    'hours',
+    'minutes',
+    'seconds',
+    'milliseconds',
+  ],
+  [PATCH.DATE]: ['year', 'month', 'day'],
+  [PATCH.TIME]: ['hours', 'minutes', 'seconds', 'milliseconds'],
 };
 
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
