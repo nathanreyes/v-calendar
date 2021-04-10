@@ -20,9 +20,9 @@ import {
 } from './_';
 
 export const PATCH = {
-  DATE_TIME: 1,
-  DATE: 2,
-  TIME: 3,
+  DATE_TIME: 'DATE_TIME',
+  DATE: 'DATE',
+  TIME: 'TIME',
 };
 
 const PATCH_KEYS = {

@@ -42,10 +42,10 @@ const MODE = {
 };
 
 const RANGE_PRIORITY = {
-  NONE: 0,
-  START: 1,
-  END: 2,
-  BOTH: 3,
+  NONE: 'NONE',
+  START: 'START',
+  END: 'END',
+  BOTH: 'BOTH',
 };
 
 export default {
