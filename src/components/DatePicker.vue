@@ -657,19 +657,6 @@ export default {
         patch,
       });
     },
-    adjustTimeForValue(value, config) {
-      if (!this.hasValue(value)) return null;
-      if (this.isRange) {
-        return {
-          start: this.$locale.adjustTimeForDate(
-            value.start,
-            config.start || config,
-          ),
-          end: this.$locale.adjustTimeForDate(value.end, config.end || config),
-        };
-      }
-      return this.$locale.adjustTimeForDate(value, config);
-    },
     sortRange(range, priority = RANGE_PRIORITY.NONE) {
       const { start, end } = range;
       if (start > end) {
@@ -683,6 +670,19 @@ export default {
         }
       }
       return { start, end };
+    },
+    adjustTimeForValue(value, config) {
+      if (!this.hasValue(value)) return null;
+      if (this.isRange) {
+        return {
+          start: this.$locale.adjustTimeForDate(
+            value.start,
+            config.start || config,
+          ),
+          end: this.$locale.adjustTimeForDate(value.end, config.end || config),
+        };
+      }
+      return this.$locale.adjustTimeForDate(value, config);
     },
     denormalizeValue(value, config = this.modelConfig_) {
       if (this.isRange) {
