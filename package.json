@@ -48,7 +48,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "postcss-preset-env": "^6.7.0",
     "tailwindcss": "^1.5.1",
-    "vuepress": "1.2.0",
+    "vuepress": "^1.8.2",
     "webpack-bundle-analyzer": "^3.8.0"
   },
   "peerDependencies": {
