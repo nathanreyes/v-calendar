@@ -41,11 +41,10 @@ const MODE = {
   TIME: 'time',
 };
 
-const RANGE_PRIORITY = {
+const SORT_PRIORITY = {
   NONE: 'NONE',
   START: 'START',
   END: 'END',
-  BOTH: 'BOTH',
 };
 
 export default {
@@ -133,7 +132,10 @@ export default {
             on: {
               beforeShow: e => this.$emit('popoverWillShow', e),
               afterShow: e => this.$emit('popoverDidShow', e),
-              beforeHide: e => this.$emit('popoverWillHide', e),
+              beforeHide: e => {
+                this.clearDrag();
+                this.$emit('popoverWillHide', e);
+              },
               afterHide: e => this.$emit('popoverDidHide', e),
             },
             scopedSlots: {
@@ -168,7 +170,9 @@ export default {
       value_: null,
       dateParts: null,
       activeDate: '',
+      isDragging: false,
       dragValue: null,
+      dragTrackingValue: null,
       inputValues: ['', ''],
       updateTimeout: null,
       watchValue: true,
@@ -190,9 +194,6 @@ export default {
     },
     isTime() {
       return this.mode.toLowerCase() === MODE.TIME;
-    },
-    isDragging() {
-      return !!this.dragValue;
     },
     modelConfig_() {
       if (this.isRange) {
@@ -331,15 +332,16 @@ export default {
     },
     value() {
       if (!this.watchValue) return;
+      this.clearDrag();
       this.forceUpdateValue(this.value, {
         config: this.modelConfig_,
-        isDragging: false,
         notify: false,
         formatInput: true,
         hidePopover: false,
       });
     },
     value_() {
+      this.clearDrag();
       this.refreshDateParts();
     },
     dragValue() {
@@ -359,26 +361,6 @@ export default {
     });
     this.refreshDateParts();
   },
-  mounted() {
-    // Handle escape key presses
-    const offKeydown = on(document, 'keydown', e => {
-      if (e.Key === 'Escape') this.clearDragAndInput;
-    });
-    // Handle document clicks
-    const offDocumentClick = on(document, 'click', e => {
-      if (
-        document.body.contains(e.target) &&
-        !elementContains(this.$el, e.target)
-      ) {
-        this.clearDragAndInput();
-      }
-    });
-    // Clean up handlers
-    this.$once('beforeDestroy', () => {
-      offKeydown();
-      offDocumentClick();
-    });
-  },
   methods: {
     getDateParts(date) {
       return this.$locale.getDateParts(date);
@@ -387,7 +369,7 @@ export default {
       return this.$locale.getDateFromParts(parts);
     },
     refreshDateParts() {
-      const value = this.dragValue || this.value_;
+      const value = this.isDragging ? this.dragValue : this.value_;
       const dateParts = [];
       if (this.isRange) {
         if (value && value.start) {
@@ -407,8 +389,9 @@ export default {
       }
       this.$nextTick(() => (this.dateParts = dateParts));
     },
-    clearDragAndInput() {
+    clearDrag() {
       this.dragValue = null;
+      this.isDragging = false;
       this.formatInput();
     },
     onDayClick(day) {
@@ -424,9 +407,6 @@ export default {
           day.event.preventDefault();
           break;
         }
-        case 'Escape': {
-          this.hidePopover();
-        }
       }
       // Re-emit event
       this.$emit('daykeydown', day);
@@ -441,17 +421,15 @@ export default {
           this.isDate && !keepVisibleOnInput && visibility !== 'visible',
       };
       if (this.isRange) {
-        if (!this.isDragging) {
+        this.isDragging = !this.isDragging;
+        if (this.isDragging) {
           this.dragTrackingValue = { ...day.range };
         } else {
           this.dragTrackingValue.end = day.date;
         }
-        opts.isDragging = !this.isDragging;
-        opts.rangePriority = opts.isDragging
-          ? RANGE_PRIORITY.NONE
-          : RANGE_PRIORITY.BOTH;
-        opts.hidePopover = opts.hidePopover && !opts.isDragging;
-        this.updateValue(this.dragTrackingValue, opts);
+        opts.hidePopover = opts.hidePopover && !this.isDragging;
+        const value = this.sortRange(this.dragTrackingValue);
+        this.updateValue(value, opts);
       } else {
         opts.clearIfEqual = !this.isRequired;
         this.updateValue(day.date, opts);
@@ -460,12 +438,11 @@ export default {
     onDayMouseEnter(day) {
       if (!this.isDragging) return;
       this.dragTrackingValue.end = day.date;
-      this.updateValue(this.dragTrackingValue, {
+      this.updateValue(this.sortRange(this.dragTrackingValue), {
         patch: PATCH.DATE,
-        adjustTime: true,
+        adjustTime: false,
         formatInput: true,
         hidePopover: false,
-        rangePriority: RANGE_PRIORITY.NONE,
       });
     },
     onTimeInput(parts, isStart) {
@@ -479,14 +456,14 @@ export default {
       }
       this.updateValue(value, {
         patch: PATCH.TIME,
-        rangePriority: isStart ? RANGE_PRIORITY.START : RANGE_PRIORITY.END,
+        sortPriority: isStart ? SORT_PRIORITY.START : SORT_PRIORITY.END,
       }).then(() => this.adjustPageRange(isStart));
     },
     onInputInput(isStart) {
       return e => {
         if (!this.updateOnInput_) return;
         this.onInputUpdate(e.target.value, isStart, {
-          formatInput: false,
+          formatInput: this.isRange && isStart ? 'end' : 'start',
           hidePopover: false,
           debounce: this.inputDebounce_,
         });
@@ -516,7 +493,7 @@ export default {
         ...opts,
         config,
         patch: this.inputMaskPatch,
-        rangePriority: isStart ? RANGE_PRIORITY.START : RANGE_PRIORITY.END,
+        sortPriority: isStart ? SORT_PRIORITY.START : SORT_PRIORITY.END,
       }).then(() => this.adjustPageRange(isStart));
     },
     onInputShow(isStart) {
@@ -555,8 +532,7 @@ export default {
         formatInput = true,
         hidePopover = false,
         adjustTime = false,
-        isDragging = this.isDragging,
-        rangePriority = RANGE_PRIORITY.BOTH,
+        sortPriority = SORT_PRIORITY.NONE,
       } = {},
     ) {
       // 1. Normalization
@@ -564,7 +540,7 @@ export default {
         value,
         config,
         patch,
-        rangePriority,
+        sortPriority,
       );
 
       // Reset to previous value if it was cleared but is required
@@ -580,14 +556,14 @@ export default {
       // 2. Validation (date or range)
       const isDisabled = this.valueIsDisabled(normalizedValue);
       if (isDisabled) {
-        if (isDragging) return;
+        if (this.isDragging) return;
         normalizedValue = this.value_;
         // Don't allow hiding popover
         hidePopover = false;
       }
 
       // 3. Assignment
-      const valueKey = isDragging ? 'dragValue' : 'value_';
+      const valueKey = this.isDragging ? 'dragValue' : 'value_';
       let valueChanged = !this.valuesAreEqual(this[valueKey], normalizedValue);
 
       // Clear value if same value selected and clearIfEqual is set
@@ -599,8 +575,6 @@ export default {
       // Assign value
       if (valueChanged) {
         this.$set(this, valueKey, normalizedValue);
-        // Clear drag value if needed
-        if (!isDragging) this.dragValue = null;
       }
 
       // 4. Denormalization/Notification
@@ -618,7 +592,7 @@ export default {
       if (hidePopover) this.hidePopover();
 
       // 6. Format inputs if needed
-      if (formatInput) this.formatInput();
+      if (formatInput) this.formatInput(formatInput);
     },
     hasValue(value) {
       if (this.isRange) {
@@ -626,30 +600,28 @@ export default {
       }
       return !!value;
     },
-    normalizeValue(value, config, patch, rangePriority) {
+    normalizeValue(value, config, patch, sortPriority) {
       if (!this.hasValue(value)) return null;
       if (this.isRange) {
-        const result = {};
-        const start = value.start > value.end ? value.end : value.start;
-        const startFillDate =
-          (this.value_ && this.value_.start) ||
-          this.modelConfig_.start.fillDate;
-        const startConfig = config.start || config;
-        result.start = this.normalizeDate(start, {
-          ...startConfig,
-          fillDate: startFillDate,
-          patch,
-        });
-        const end = value.start > value.end ? value.start : value.end;
-        const endFillDate =
-          (this.value_ && this.value_.end) || this.modelConfig_.end.fillDate;
-        const endConfig = config.end || config;
-        result.end = this.normalizeDate(end, {
-          ...endConfig,
-          fillDate: endFillDate,
-          patch,
-        });
-        return this.sortRange(result, rangePriority);
+        return this.sortRange(
+          {
+            start: this.normalizeDate(value.start, {
+              ...(config.start || config),
+              fillDate:
+                (this.value_ && this.value_.start) ||
+                this.modelConfig_.start.fillDate,
+              patch,
+            }),
+            end: this.normalizeDate(value.end, {
+              ...(config.end || config),
+              fillDate:
+                (this.value_ && this.value_.end) ||
+                this.modelConfig_.end.fillDate,
+              patch,
+            }),
+          },
+          sortPriority,
+        );
       }
       return this.normalizeDate(value, {
         ...config,
@@ -657,15 +629,15 @@ export default {
         patch,
       });
     },
-    sortRange(range, priority = RANGE_PRIORITY.NONE) {
+    sortRange(range, priority = SORT_PRIORITY.NONE) {
       const { start, end } = range;
       if (start > end) {
         switch (priority) {
-          case RANGE_PRIORITY.START:
+          case SORT_PRIORITY.START:
             return { start, end: start };
-          case RANGE_PRIORITY.END:
+          case SORT_PRIORITY.END:
             return { start: end, end };
-          case RANGE_PRIORITY.BOTH:
+          default:
             return { start: end, end: start };
         }
       }
@@ -714,18 +686,21 @@ export default {
         this.disabledAttribute.intersectsDate(value)
       );
     },
-    formatInput() {
+    formatInput(startOrEnd) {
       this.$nextTick(() => {
         const opts = {
           type: 'string',
           mask: this.inputMask,
         };
         const value = this.denormalizeValue(
-          this.dragValue || this.value_,
+          this.isDragging ? this.dragValue : this.value_,
           opts,
         );
         if (this.isRange) {
-          this.inputValues = [value && value.start, value && value.end];
+          const inputValues = [...this.inputValues];
+          if (startOrEnd !== 'end') inputValues[0] = value && value.start;
+          if (startOrEnd !== 'start') inputValues[1] = value && value.end;
+          this.inputValues = inputValues;
         } else {
           this.inputValues = [value, ''];
         }
