@@ -106,7 +106,6 @@
         <v-date-picker
           v-model="dateRange"
           :mode="mode"
-          :model-config="dateConfig"
           :is24hr="is24hr"
           :minute-increment="minuteIncrement"
           :masks="masks"
@@ -164,21 +163,22 @@ export default {
       },
       timezones: orderBy(timezones),
       dateRange: { start, end },
-      disabledDates: {
-        start: new Date(2020, 11, 1),
-        on: { dailyInterval: 4 },
-      },
+      // disabledDates: {
+      //   start: new Date(2020, 11, 1),
+      //   on: { dailyInterval: 4 },
+      // },
+      disabledDates: [],
       maxDate: new Date(2020, 10, 18, 12, 0, 0),
       masks: {
         // input: 'MM/DD/YYYY h:mm A',
       },
       minDate: new Date(),
-      isRange: false,
+      isRange: true,
       is24hr: false,
       minuteIncrement: 1,
       inline: false,
       dark: false,
-      utc: false,
+      utc: true,
       isRequired: false,
       popover: {
         visibility: 'hover-focus',

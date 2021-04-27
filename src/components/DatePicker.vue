@@ -134,6 +134,7 @@ export default {
               afterShow: e => this.$emit('popoverDidShow', e),
               beforeHide: e => {
                 this.clearDrag();
+                this.formatInput();
                 this.$emit('popoverWillHide', e);
               },
               afterHide: e => this.$emit('popoverDidHide', e),
@@ -332,20 +333,12 @@ export default {
     },
     value() {
       if (!this.watchValue) return;
-      this.clearDrag();
       this.forceUpdateValue(this.value, {
         config: this.modelConfig_,
         notify: false,
         formatInput: true,
         hidePopover: false,
       });
-    },
-    value_() {
-      this.clearDrag();
-      this.refreshDateParts();
-    },
-    dragValue() {
-      this.refreshDateParts();
     },
     timezone() {
       this.refreshDateParts();
@@ -427,6 +420,7 @@ export default {
         } else {
           this.dragTrackingValue.end = day.date;
         }
+        opts.clearDrag = !this.isDragging;
         opts.hidePopover = opts.hidePopover && !this.isDragging;
         const value = this.sortRange(this.dragTrackingValue);
         this.updateValue(value, opts);
@@ -441,6 +435,7 @@ export default {
       this.updateValue(this.sortRange(this.dragTrackingValue), {
         patch: PATCH.DATE,
         adjustTime: false,
+        clearDrag: false,
         formatInput: true,
         hidePopover: false,
       });
@@ -463,7 +458,7 @@ export default {
       return e => {
         if (!this.updateOnInput_) return;
         this.onInputUpdate(e.target.value, isStart, {
-          formatInput: this.isRange && isStart ? 'end' : 'start',
+          formatInput: this.isRange ? (isStart ? 'end' : 'start') : false,
           hidePopover: false,
           debounce: this.inputDebounce_,
         });
@@ -528,6 +523,7 @@ export default {
         config = this.modelConfig_,
         patch = PATCH.DATE_TIME,
         notify = true,
+        clearDrag = true,
         clearIfEqual = false,
         formatInput = true,
         hidePopover = false,
@@ -562,7 +558,10 @@ export default {
         hidePopover = false;
       }
 
-      // 3. Assignment
+      // 3. Clear drag if needed
+      if (this.isRange && clearDrag) this.clearDrag();
+
+      // 4. Assignment
       const valueKey = this.isDragging ? 'dragValue' : 'value_';
       let valueChanged = !this.valuesAreEqual(this[valueKey], normalizedValue);
 
@@ -575,23 +574,24 @@ export default {
       // Assign value
       if (valueChanged) {
         this.$set(this, valueKey, normalizedValue);
+        this.refreshDateParts();
       }
 
-      // 4. Denormalization/Notification
+      // 5. Denormalization/Notification
       if (notify && valueChanged) {
-        // 4A. Denormalization
+        // 5A. Denormalization
         const denormalizedValue = this.denormalizeValue(normalizedValue);
-        // 4B. Notification
+        // 5B. Notification
         const event = this.isDragging ? 'drag' : 'input';
         this.watchValue = false;
         this.$emit(event, denormalizedValue);
         this.$nextTick(() => (this.watchValue = true));
       }
 
-      // 5. Hide popover if needed
+      // 6. Hide popover if needed
       if (hidePopover) this.hidePopover();
 
-      // 6. Format inputs if needed
+      // 7. Format inputs if needed
       if (formatInput) this.formatInput(formatInput);
     },
     hasValue(value) {
@@ -696,6 +696,7 @@ export default {
           this.isDragging ? this.dragValue : this.value_,
           opts,
         );
+        console.log('format', startOrEnd);
         if (this.isRange) {
           const inputValues = [...this.inputValues];
           if (startOrEnd !== 'end') inputValues[0] = value && value.start;
