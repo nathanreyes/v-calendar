@@ -442,12 +442,12 @@ export default class Locale {
     } else if (isString(d)) {
       type = 'string';
       result = d ? this.parse(d, mask || 'iso') : null;
-    } else if (isObject(d)) {
-      type = 'object';
-      result = this.getDateFromParts(d);
-    } else {
+    } else if (isDate(d)) {
       type = 'date';
-      result = isDate(d) ? new Date(d.getTime()) : null;
+      result = new Date(d.getTime());
+    } else if () {
+      type = 'object';
+      result = isObject(d) ? this.getDateFromParts(d) : null;
     }
 
     if (result && patch) {
