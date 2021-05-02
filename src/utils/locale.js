@@ -445,7 +445,7 @@ export default class Locale {
     } else if (isDate(d)) {
       type = 'date';
       result = new Date(d.getTime());
-    } else if () {
+    } else {
       type = 'object';
       result = isObject(d) ? this.getDateFromParts(d) : null;
     }
