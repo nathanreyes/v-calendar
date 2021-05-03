@@ -53,29 +53,32 @@ export default {
       const rowFromEnd = this.rows - row + 1;
       const column = position % this.columns || this.columns;
       const columnFromEnd = this.columns - column + 1;
-      return h(CalendarPane, {
-        ...this.$attrs,
-        key: page.key,
-        attributes: this.store,
-        page,
-        position,
-        row,
-        rowFromEnd,
-        column,
-        columnFromEnd,
-        titlePosition: this.titlePosition,
-        canMove: this.canMove,
-        'onUpdate:page': e => this.move(e, { position: i + 1 }),
-        onDayfocusin: e => {
-          this.lastFocusedDay = e;
-          this.$emit('dayfocusin', e);
+      return h(
+        CalendarPane,
+        {
+          ...this.$attrs,
+          key: page.key,
+          attributes: this.store,
+          page,
+          position,
+          row,
+          rowFromEnd,
+          column,
+          columnFromEnd,
+          titlePosition: this.titlePosition,
+          canMove: this.canMove,
+          'onUpdate:page': e => this.move(e, { position: i + 1 }),
+          onDayfocusin: e => {
+            this.lastFocusedDay = e;
+            this.$emit('dayfocusin', e);
+          },
+          onDayfocusout: e => {
+            this.lastFocusedDay = null;
+            this.$emit('dayfocusout', e);
+          },
         },
-        onDayfocusout: e => {
-          this.lastFocusedDay = null;
-          this.$emit('dayfocusout', e);
-        },
-        slots: this.$slots,
-      });
+        this.$slots,
+      );
     });
 
     // Renderer for calendar arrows

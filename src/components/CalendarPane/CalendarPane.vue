@@ -96,11 +96,14 @@ export default {
         dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
       }
       dayCells.push(
-        h(CalendarDay, {
-          ...this.$attrs,
-          day,
-          slots: this.$slots,
-        }),
+        h(
+          CalendarDay,
+          {
+            ...this.$attrs,
+            day,
+          },
+          this.$slots,
+        ),
       );
       // Insert weeknumber cell on right side if needed
       if (showWeeknumbersRight && mod === daysInWeek - 1) {
