@@ -261,6 +261,7 @@ export default {
           ],
         ),
         getDayPopover(),
+        this.safeScopedSlot('right-side'),
       ],
     );
   },
