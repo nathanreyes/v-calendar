@@ -207,6 +207,7 @@ export default {
         ref: 'container',
       },
       [
+        this.safeScopedSlot('left-side'),
         getNavPopover(),
         h(
           'div',
@@ -260,6 +261,7 @@ export default {
           ],
         ),
         getDayPopover(),
+        this.safeScopedSlot('right-side'),
       ],
     );
   },
