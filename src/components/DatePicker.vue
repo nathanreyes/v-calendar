@@ -330,14 +330,17 @@ export default {
     inputMask() {
       this.formatInput();
     },
-    value() {
-      if (!this.watchValue) return;
-      this.forceUpdateValue(this.value, {
-        config: this.modelConfig_,
-        notify: false,
-        formatInput: true,
-        hidePopover: false,
-      });
+    value: {
+      handler() {
+        if (!this.watchValue) return;
+        this.forceUpdateValue(this.value, {
+          config: this.modelConfig_,
+          notify: false,
+          formatInput: true,
+          hidePopover: false,
+        });
+      },
+      deep: true
     },
     value_() {
       this.refreshDateParts();
