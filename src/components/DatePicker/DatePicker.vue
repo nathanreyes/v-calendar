@@ -63,6 +63,13 @@ export default {
     'popover-did-hide',
   ],
   render() {
+    // Footer
+    const footer = (wrap, wrapperEl) => {
+      if (!this.$slots.footer) return wrap;
+      const children = [wrap, this.$slots.footer()];
+      return wrapperEl ? h(wrapperEl, children) : children;
+    };
+
     // Timepicker renderer
     const timePicker = () => {
       if (!this.dateParts) return null;
@@ -109,7 +116,7 @@ export default {
         },
         {
           ...this.$slots,
-          footer: () => (this.isDateTime ? timePicker() : this.$slots.footer),
+          footer: () => (this.isDateTime ? footer(timePicker()) : footer()),
         },
       );
 
@@ -125,7 +132,7 @@ export default {
               { 'vc-is-dark': this.$theme.isDark },
             ],
           },
-          [timePicker()],
+          footer(timePicker(), 'div'),
         );
       }
       return calendar();
