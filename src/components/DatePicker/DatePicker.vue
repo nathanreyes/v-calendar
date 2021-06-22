@@ -494,8 +494,9 @@ export default {
       return e => {
         if (!this.updateOnInput) return;
         this.onInputUpdate(e.target.value, isStart, {
-          formatInput: true,
+          formatInput: false,
           hidePopover: false,
+          debounce: this.inputDebounce,
         });
       };
     },
