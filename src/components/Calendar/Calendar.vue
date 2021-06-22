@@ -409,7 +409,7 @@ export default {
     }
   },
   beforeUnmount() {
-    this.removeHandlers();
+    this.removeHandlers && this.removeHandlers();
   },
   methods: {
     refreshLocale() {
