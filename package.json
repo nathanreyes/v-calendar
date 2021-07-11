@@ -10,6 +10,7 @@
     "lint": "vue-cli-service lint",
     "build:calendar": "vue-cli-service build --target lib --dest lib/components --name calendar src/components/Calendar.vue",
     "build:date-picker": "vue-cli-service build --no-clean --target lib --dest lib/components --name date-picker src/components/DatePicker.vue",
+    "build:year-picker": "vue-cli-service build --no-clean --target lib --dest lib/components --name date-picker src/components/YearPicker.vue",
     "build:docs": "vuepress build docs",
     "build:lib": "vue-cli-service build --target lib src/lib.js --mode production",
     "build:popover": "vue-cli-service build --no-clean --target lib --dest lib/components --name popover src/components/Popover.vue",
