@@ -5,6 +5,8 @@ export default VCalendarLibrary;
 
 export const Calendar: Exclude<Plugin['install'], undefined> | DefineComponent;
 
+export const DatePicker: Exclude<Plugin['install'], undefined> | DefineComponent;
+
 export const Popover: Exclude<Plugin['install'], undefined> | DefineComponent;
 
 export const PopoverRow:
