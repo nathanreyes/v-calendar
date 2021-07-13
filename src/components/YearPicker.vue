@@ -194,7 +194,7 @@ export default {
       this.yearIndex = this.value;
     },
     yearIndex(val) {
-      this.yearGroupIndex = this.getYearGroupIndex(val);
+      this.yearGroupIndex = this.getYearGroupIndex(val || new Date().getFullYear());
       this.yearItems = this.getItems(this.yearGroupIndex);
     },
     yearGroupIndex(val) {
