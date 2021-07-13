@@ -9,7 +9,7 @@
     <div class="flex flex-col items-center mb-6">
       <v-date-picker v-model="range" is-range />
     </div>
-    <h4>Time Selection & Timezones</h4>
+    <h4>Time Selection &amp; Timezones</h4>
     <div class="flex flex-col items-center mb-6">
       <v-date-picker mode="dateTime" v-model="range2" is-range />
     </div>
