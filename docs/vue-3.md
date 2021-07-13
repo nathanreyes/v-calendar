@@ -98,7 +98,7 @@ Please follow below mentioned step to run this project:
 ```shell
 git clone https://github.com/nathanreyes/v-calendar
 
-// Move to directory
+# Move to directory
 cd v-calendar
 ```
 
@@ -129,14 +129,14 @@ yarn build
 ### Build Library
 
 ```shell
-// ES
+# ES
 yarn build:es
 
-// ES, CommonJS and IIFE
+# ES, CommonJS and IIFE
 yarn build:lib
 
-// ES, CommonJS, IIFE and CSS
-yarn:build:lib_css
+# ES, CommonJS, IIFE and CSS
+yarn build:lib_css
 ```
 
 ### Lints and fixes files
