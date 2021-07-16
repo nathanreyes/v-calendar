@@ -157,7 +157,7 @@ If the bound date does not match of the the minute options derived by the `minut
 
 ### Time
 
-To limit user selction to only time components (hours, minutes, seconds), use `mode: 'time'`.
+To limit user selection to only time components (hours, minutes, seconds), use `mode: 'time'`.
 
 <guide-datepicker-with-value mode="time" />
 

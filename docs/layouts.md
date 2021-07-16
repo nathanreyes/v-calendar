@@ -68,7 +68,7 @@ Alternatively, you can display the week numbers outside the calendar or on the r
 <guide-layouts-weeknumbers option="left-outside" />
 
 ```html
-<v-calendar show-weeknumbers="left-outside ">
+<v-calendar show-weeknumbers="left-outside">
 ```
 
 #### Right

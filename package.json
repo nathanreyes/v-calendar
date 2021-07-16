@@ -1,6 +1,6 @@
 {
   "name": "v-calendar",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "private": false,
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "author": "Nathan Reyes <nathanreyes@me.com>",
@@ -25,10 +25,10 @@
     "lib"
   ],
   "dependencies": {
-    "core-js": "^3.6.5",
-    "date-fns": "^2.8.1",
-    "date-fns-tz": "^1.0.12",
-    "lodash": "4.17.20"
+    "core-js": "^3.15.2",
+    "date-fns": "^2.22.1",
+    "date-fns-tz": "^1.1.4",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@babel/plugin-transform-arrow-functions": "^7.8.3",

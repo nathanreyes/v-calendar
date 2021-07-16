@@ -130,7 +130,7 @@ Setting `value = null` still allowed through code.
 
 **Type:** String
 
-**Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/popper-documentation.html#Popper.placements) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`.
+**Description:** Default or suggested placement of the popover. This may change as the browser window dimensions change. [Valid placements](https://popper.js.org/docs/v2/constructors/#options) include `auto`, `top`, `right`, `bottom`, `left`. Each placement can have suffixed variations `-start` or `-end`.
 
 **Default:** `bottom-start`
 
