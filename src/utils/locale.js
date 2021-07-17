@@ -284,6 +284,10 @@ export function resolveConfig(config, locales) {
   const defLocale = { ...locales['en-IE'], ...locales[id], id };
   // Assign or merge defaults with provided config
   config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
+  // Set default mask if not provided with custom option
+  if (!config.masks.L) {
+    config.masks.L = 'MM/DD/YYYY';
+  }
   // Return resolved config
   return config;
 }
