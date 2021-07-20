@@ -3,7 +3,7 @@
     class="vc-time-picker"
     :class="[{ 'vc-invalid': !modelValue.isValid, 'vc-bordered': showBorder }]"
   >
-    <div>
+    <div class="vc-time-icon-container">
       <svg
         fill="none"
         stroke-linecap="round"

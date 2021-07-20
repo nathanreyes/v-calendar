@@ -76,7 +76,9 @@ export default {
       const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
       return h(
         'div',
-        {},
+        {
+          class: 'vc-timepicker-container',
+        },
         {
           ...this.$slots,
           default: () =>
