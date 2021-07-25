@@ -358,9 +358,12 @@ export default {
     count() {
       this.refreshPages();
     },
-    attributes(val) {
-      const { adds, deletes } = this.store.refresh(val);
-      this.refreshAttrs(this.pages, adds, deletes);
+    attributes: {
+      handler(val) {
+        const { adds, deletes } = this.store.refresh(val);
+        this.refreshAttrs(this.pages, adds, deletes);
+      },
+      deep: true,
     },
     pages(val) {
       this.refreshAttrs(val, this.store.list, null, true);
