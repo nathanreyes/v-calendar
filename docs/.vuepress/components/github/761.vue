@@ -11,7 +11,7 @@ export default {
     return {
       attributes: [
         {
-          dates: new Date(2021, 0, 14),
+          dates: [new Date()],
           highlight: true,
         },
       ],
@@ -19,10 +19,12 @@ export default {
   },
   methods: {
     addDayAttribute(day) {
-      this.attributes.push({
-        dates: day.date,
-        highlight: true,
-      });
+      // this.attributes.push({
+      //   dates: day.date,
+      //   highlight: true,
+      // });
+      const attr = this.attributes[0];
+      attr.dates.push(day.date);
     },
   },
 };
