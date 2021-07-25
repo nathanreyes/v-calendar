@@ -39,6 +39,8 @@ export default {
         day: this.day,
         attributes: this.day.attributes,
         attributesMap: this.day.attributesMap,
+        dayClass: this.dayContentClass,
+        dayStyle: this.dayContentStyle,
         dayProps: this.dayContentProps,
         dayEvents: this.dayContentEvents,
       }) ||
