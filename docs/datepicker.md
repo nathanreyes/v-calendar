@@ -281,7 +281,7 @@ data() {
 
 | Time Setting | Description |
 | --- | --- |
-| *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
+| *`HH:mm:ss`* | Custom time in `HH:mm:ss` format |
 | `now` | Assign to the instant of date selection. |
 
 #### Adjust Date Range Times
