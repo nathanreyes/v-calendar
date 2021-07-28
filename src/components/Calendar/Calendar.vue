@@ -797,7 +797,7 @@ export default {
       }
       if (newDate) {
         event.preventDefault();
-        this.focusDate(newDate).catch();
+        this.focusDate(newDate).catch(() => {});
       }
     },
   },
