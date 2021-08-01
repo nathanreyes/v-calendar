@@ -69,7 +69,7 @@ createApp(App)
 ```html
 <template>
   <Calendar />
-  <DatePicker v-model="date">
+  <DatePicker v-model="date" />
 </template>
 ```
 
