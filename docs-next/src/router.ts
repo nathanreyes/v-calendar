@@ -3,7 +3,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Home from '@/pages/Home.vue';
-import Calendar from '@/pages/Calendar.vue';
+import Weekly from '@/pages/calendar/Weekly.vue';
 
 const routes = [
   {
@@ -15,8 +15,8 @@ const routes = [
         component: Home,
       },
       {
-        path: 'calendar',
-        component: Calendar,
+        path: 'calendar/weekly',
+        component: Weekly,
       },
     ],
   },

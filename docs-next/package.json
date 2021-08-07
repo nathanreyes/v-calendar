@@ -7,6 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.3.3",
     "vue": "^3.0.5",
     "vue-router": "4"
   },
