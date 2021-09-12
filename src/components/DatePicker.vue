@@ -67,6 +67,7 @@ export default {
               minuteIncrement: this.minuteIncrement,
               showBorder: !this.isTime,
               isDisabled: (this.isDateTime && !dp.isValid) || this.isDragging,
+              validHourRange: this.validHourRange
             },
             on: { input: p => this.onTimeInput(p, idx === 0) },
           }),
@@ -163,6 +164,7 @@ export default {
     dragAttribute: Object,
     selectAttribute: Object,
     attributes: Array,
+    validHourRange: Object
   },
   data() {
     return {
