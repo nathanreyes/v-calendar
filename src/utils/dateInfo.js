@@ -7,15 +7,26 @@ import Locale from './locale';
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
-  constructor(config, { order = 0, locale, isFullDay } = {}) {
+  constructor(config, { order = 0, locale, isFullDay } = {}, mileages) {
     this.isDateInfo = true;
     this.order = order;
     this.locale = locale instanceof Locale ? locale : new Locale(locale);
     this.firstDayOfWeek = this.locale.firstDayOfWeek;
-
-    // Adjust config for simple dates
     if (!isObject(config)) {
-      const date = this.locale.normalizeDate(config);
+      const date = this.locale.normalizeDate(config)
+      const isSameDay = (target1, target2) => {
+        return target1.getFullYear() === target2.getFullYear()
+          && target1.getMonth() === target2.getMonth()
+          && target1.getDate() === target2.getDate(); }
+      if (mileages) {
+        mileages.forEach((item) => {
+            if (isSameDay(item.date, date)) {
+              if (item.price) {
+                this.mileage = `+${item.price}`;
+              }
+            }
+        });
+      }
       if (isFullDay) {
         config = {
           start: date,

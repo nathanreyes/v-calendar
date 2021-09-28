@@ -21,17 +21,17 @@ npm i v-calendar
 
 <homepage-simple-calendar />
 
-<homepage-multi-calendar />
+[comment]: <> (<homepage-multi-calendar />)
 
-<homepage-dark-mode />
+[comment]: <> (<homepage-dark-mode />)
 
-<homepage-datepicker />
+[comment]: <> (<homepage-datepicker />)
 
-#### Popovers w/ Custom Slots
+[comment]: <> (#### Popovers w/ Custom Slots)
 
-<examples-date-range />
+[comment]: <> (<examples-date-range />)
 
-<homepage-custom-calendar />
+[comment]: <> (<homepage-custom-calendar />)
 
 [View example in GitHub](https://github.com/nathanreyes/v-calendar/blob/master/docs/.vuepress/components/homepage/custom-calendar.vue)
 

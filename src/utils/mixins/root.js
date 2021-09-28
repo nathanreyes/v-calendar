@@ -44,6 +44,7 @@ export const rootMixin = {
             masks: this.masks,
           };
       // Return new locale
+      console.log(new Locale())
       return new Locale(config, {
         locales: this.$locales,
         timezone: this.timezone,

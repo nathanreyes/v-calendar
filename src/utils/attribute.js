@@ -18,6 +18,7 @@ export default class Attribute {
       customData,
       order,
       pinPage,
+      mileages
     },
     theme,
     locale,
@@ -45,7 +46,7 @@ export default class Attribute {
       this.popover = popover;
     }
     // Assign dates
-    this.dates = locale.normalizeDates(dates, this.dateOpts);
+    this.dates = locale.normalizeDates(dates, this.dateOpts, mileages);
     this.hasDates = !!arrayHasItems(this.dates);
     // Assign exclude dates
     this.excludeDates = locale.normalizeDates(excludeDates, this.dateOpts);
