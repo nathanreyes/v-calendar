@@ -80,6 +80,10 @@ export default {
       const click = () => this.move(isPrev ? -this.step_ : this.step_);
       const keydown = e => onSpaceOrEnter(e, click);
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
+      const prevMonth = this.pages[0].prevMonthComps.month;
+      const nextMonth = this.pages[0].nextMonthComps.month;
+      const prevMonthLabel = this.sharedState.locale.monthNamesShort[prevMonth - 1];
+      const nextMonthLabel = this.sharedState.locale.monthNamesShort[nextMonth - 1];
       return h(
         'div',
         {
@@ -100,11 +104,15 @@ export default {
           (isPrev
             ? this.safeScopedSlot('header-left-button', { click })
             : this.safeScopedSlot('header-right-button', { click })) ||
-            h(SvgIcon, {
+            [
+              [isPrev ? '' : nextMonthLabel],
+              h(SvgIcon, {
               props: {
                 name: isPrev ? 'left-arrow' : 'right-arrow',
               },
             }),
+              [isPrev ? prevMonthLabel : '']
+            ]
         ],
       );
     };
@@ -623,6 +631,7 @@ export default {
       });
     },
     getPageDays(pages = this.pages) {
+
       return pages.reduce((prev, curr) => prev.concat(curr.days), []);
     },
     getPageTransition(oldPage, newPage, transition = this.transition) {

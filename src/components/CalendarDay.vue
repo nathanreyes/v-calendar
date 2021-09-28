@@ -1,8 +1,8 @@
 <script>
-import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
-import { arrayHasItems, mergeEvents } from '../utils/helpers';
-import { getPopoverTriggerEvents, updatePopover } from '../utils/popovers';
-import { last, get, defaults } from '../utils/_';
+import {childMixin, safeScopedSlotMixin} from '../utils/mixins';
+import {arrayHasItems, mergeEvents} from '../utils/helpers';
+import {getPopoverTriggerEvents, updatePopover} from '../utils/popovers';
+import {last, get, defaults} from '../utils/_';
 
 export default {
   name: 'CalendarDay',
@@ -16,12 +16,12 @@ export default {
         {
           class: 'vc-highlights vc-day-layer',
         },
-        this.backgrounds.map(({ key, wrapperClass, class: bgClass, style }) =>
+        this.backgrounds.map(({key, wrapperClass, class: bgClass, style}) =>
           h(
             'div',
             {
               key,
-              class: wrapperClass,
+              class: [wrapperClass, 'vc-day-box-align-baseline'],
             },
             [
               h('div', {
@@ -30,8 +30,8 @@ export default {
               }),
             ],
           ),
-        ),
-      );
+        ));
+
 
     // Content layer
     const contentLayer = () =>
@@ -47,7 +47,7 @@ export default {
         {
           class: this.dayContentClass,
           style: this.dayContentStyle,
-          attrs: { ...this.dayContentProps },
+          attrs: {...this.dayContentProps},
           on: this.dayContentEvents,
           ref: 'content',
         },
@@ -60,7 +60,7 @@ export default {
       h(
         'div',
         {
-          class: 'vc-day-layer vc-day-box-center-bottom',
+          class: 'vc-day-layer vc-day-box-center-bottom vc-day-box-align-baseline vc-dots-justify',
         },
         [
           h(
@@ -68,12 +68,14 @@ export default {
             {
               class: 'vc-dots',
             },
-            this.dots.map(({ key, class: bgClass, style }) =>
-              h('span', {
-                key,
-                class: bgClass,
-                style,
-              }),
+            this.dots.map(({key, class: bgClass, style}) =>
+                h('span', {
+                    key,
+                    class: bgClass,
+                    style,
+                  },
+                )
+              ,
             ),
           ),
         ],
@@ -93,12 +95,34 @@ export default {
             {
               class: 'vc-bars',
             },
-            this.bars.map(({ key, class: bgClass, style }) =>
+            this.bars.map(({key, class: bgClass, style}) =>
               h('span', {
                 key,
                 class: bgClass,
                 style,
               }),
+            ),
+          ),
+        ],
+      );
+    const mileagesLayer = () =>
+      this.hasMileages &&
+      h(
+        'div',
+        {
+          class: 'vc-day-layer vc-day-box-center-bottom',
+        },
+        [
+          h(
+            'div',
+            {
+              class: 'vc-mileages',
+            },
+            this.mileages.map(({key, class: bgClass, price}) =>
+              h('span', {
+                key,
+                class: bgClass,
+              }, [price]),
             ),
           ),
         ],
@@ -111,16 +135,17 @@ export default {
         class: [
           'vc-day',
           ...this.day.classes,
-          { 'vc-day-box-center-center': !this.$scopedSlots['day-content'] },
-          { 'is-not-in-month': !this.inMonth },
+          {'vc-day-box-center-center': !this.$scopedSlots['day-content']},
+          {'is-not-in-month': !this.inMonth},
+          'vc-day-box-align-baseline'
         ],
       },
-      [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer()],
+      [backgroundsLayer(), contentLayer(), dotsLayer(), barsLayer(), mileagesLayer()],
     );
   },
   inject: ['sharedState'],
   props: {
-    day: { type: Object, required: true },
+    day: {type: Object, required: true},
   },
   data() {
     return {
@@ -165,6 +190,12 @@ export default {
     hasBars() {
       return !!arrayHasItems(this.bars);
     },
+    mileages() {
+      return this.glyphs.mileages;
+    },
+    hasMileages() {
+      return !!arrayHasItems(this.mileages);
+    },
     popovers() {
       return this.glyphs.popovers;
     },
@@ -174,7 +205,7 @@ export default {
     dayContentClass() {
       return [
         'vc-day-content vc-focusable',
-        { 'is-disabled': this.isDisabled },
+        {'is-disabled': this.isDisabled},
         get(last(this.content), 'class') || '',
       ];
     },
@@ -246,6 +277,7 @@ export default {
         backgrounds: [],
         dots: [],
         bars: [],
+        mileages: [],
         popovers: [],
         content: [],
       };
@@ -259,8 +291,8 @@ export default {
       );
       this.day.attributes.forEach(attr => {
         // Add glyphs for each attribute
-        const { targetDate } = attr;
-        const { isDate, isComplex, startTime, endTime } = targetDate;
+        const {targetDate} = attr;
+        const {isDate, isComplex, startTime, endTime, mileage} = targetDate;
         const onStart = this.startTime <= startTime;
         const onEnd = this.endTime >= endTime;
         const onStartAndEnd = onStart && onEnd;
@@ -272,22 +304,24 @@ export default {
           onEnd,
           onStartAndEnd,
           onStartOrEnd,
+          mileage
         };
         this.processHighlight(attr, dateInfo, glyphs);
         this.processNonHighlight(attr, 'content', dateInfo, glyphs.content);
         this.processNonHighlight(attr, 'dot', dateInfo, glyphs.dots);
         this.processNonHighlight(attr, 'bar', dateInfo, glyphs.bars);
+        this.processCustomLabel(attr, 'mileage', dateInfo, glyphs.mileages);
         this.processPopover(attr, glyphs);
       });
       this.glyphs = glyphs;
     },
     processHighlight(
-      { key, highlight },
-      { isDate, isComplex, onStart, onEnd, onStartAndEnd },
-      { backgrounds, content },
+      {key, highlight},
+      {isDate, isComplex, onStart, onEnd, onStartAndEnd},
+      {backgrounds, content},
     ) {
       if (!highlight) return;
-      const { base, start, end } = highlight;
+      const {base, start, end} = highlight;
       if (isDate || isComplex) {
         backgrounds.push({
           key,
@@ -362,11 +396,11 @@ export default {
         });
       }
     },
-    processNonHighlight(attr, itemKey, { isDate, onStart, onEnd }, list) {
+    processNonHighlight(attr, itemKey, {isDate, onStart, onEnd}, list) {
       if (!attr[itemKey]) return;
-      const { key } = attr;
+      const {key} = attr;
       const className = `vc-${itemKey}`;
-      const { base, start, end } = attr[itemKey];
+      const {base, start, end} = attr[itemKey];
       if (isDate || onStart) {
         list.push({
           key,
@@ -387,8 +421,31 @@ export default {
         });
       }
     },
-    processPopover(attribute, { popovers }) {
-      const { key, customData, popover } = attribute;
+    processCustomLabel(attr, itemKey, {isDate, onStart, onEnd, mileage}, list) {
+      const {key} = attr;
+      const className = `vc-${itemKey}`;
+      if (isDate || onStart) {
+        list.push({
+          key,
+          class: [className],
+          price: mileage
+        });
+      } else if (onEnd) {
+        list.push({
+          key,
+          class: [className],
+          price: mileage
+        });
+      } else {
+        list.push({
+          key,
+          class: [className],
+          price: mileage
+        });
+      }
+    },
+    processPopover(attribute, {popovers}) {
+      const {key, customData, popover} = attribute;
       if (!popover) return;
       const resolvedPopover = defaults(
         {
@@ -396,7 +453,7 @@ export default {
           customData,
           attribute,
         },
-        { ...popover },
+        {...popover},
         {
           visibility: popover.label ? 'hover' : 'click',
           placement: 'bottom',
@@ -409,7 +466,7 @@ export default {
       let popoverEvents = {};
       if (arrayHasItems(this.popovers)) {
         popoverEvents = getPopoverTriggerEvents(
-          defaults({ id: this.dayPopoverId, data: this.day }, ...this.popovers),
+          defaults({id: this.dayPopoverId, data: this.day}, ...this.popovers),
         );
       }
       this.dayContentEvents = mergeEvents(
@@ -435,12 +492,15 @@ export default {
 <style lang="postcss" scoped>
 .vc-day {
   position: relative;
-  min-height: 32px;
+  min-height: 44px;
   z-index: 1;
-  &.is-not-in-month * {
-    opacity: 0;
-    pointer-events: none;
-  }
+
+&
+.is-not-in-month * {
+  opacity: 0;
+  pointer-events: none;
+}
+
 }
 
 .vc-day-layer {
@@ -457,6 +517,14 @@ export default {
   justify-content: center;
   align-items: center;
   transform-origin: 50% 50%;
+}
+
+.vc-day-box-align-baseline {
+  align-items: baseline !important;
+}
+
+.vc-dots-justify {
+  justify-content: flex-end !important;
 }
 
 .vc-day-box-left-center {
@@ -491,30 +559,46 @@ export default {
   border-radius: var(--rounded-full);
   user-select: none;
   cursor: pointer;
-  &:hover {
-    background-color: hsla(211, 25%, 84%, 0.3);
-  }
-  &:focus {
-    font-weight: var(--font-bold);
-    background-color: hsla(211, 25%, 84%, 0.4);
-  }
-  &.is-disabled {
-    color: var(--gray-400);
-  }
+
+&
+:hover {
+  background-color: hsla(211, 25%, 84%, 0.3);
+}
+
+&
+:focus {
+  font-weight: var(--font-bold);
+  background-color: hsla(211, 25%, 84%, 0.4);
+}
+
+&
+.is-disabled {
+  color: var(--gray-400);
+}
+
 }
 
 .vc-is-dark {
-  & .vc-day-content {
-    &:hover {
-      background-color: hsla(216, 15%, 52%, 0.3);
-    }
-    &:focus {
-      background-color: hsla(216, 15%, 52%, 0.4);
-    }
-    &.is-disabled {
-      color: var(--gray-600);
-    }
-  }
+
+&
+.vc-day-content {
+
+&
+:hover {
+  background-color: hsla(216, 15%, 52%, 0.3);
+}
+
+&
+:focus {
+  background-color: hsla(216, 15%, 52%, 0.4);
+}
+
+&
+.is-disabled {
+  color: var(--gray-600);
+}
+
+}
 }
 
 .vc-highlights {
@@ -526,29 +610,37 @@ export default {
 .vc-highlight {
   width: 28px;
   height: 28px;
-  &.vc-highlight-base-start {
-    width: 50% !important;
-    border-radius: 0 !important;
-    border-right-width: 0 !important;
-  }
-  &.vc-highlight-base-end {
-    width: 50% !important;
-    border-radius: 0 !important;
-    border-left-width: 0 !important;
-  }
-  &.vc-highlight-base-middle {
-    width: 100%;
-    border-radius: 0 !important;
-    border-left-width: 0 !important;
-    border-right-width: 0 !important;
-    margin: 0 -1px;
-  }
+
+&
+.vc-highlight-base-start {
+  width: 50% !important;
+  border-radius: 0 !important;
+  border-right-width: 0 !important;
+}
+
+&
+.vc-highlight-base-end {
+  width: 50% !important;
+  border-radius: 0 !important;
+  border-left-width: 0 !important;
+}
+
+&
+.vc-highlight-base-middle {
+  width: 100%;
+  border-radius: 0 !important;
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
+  margin: 0 -1px;
+}
+
 }
 
 .vc-dots {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-right: 3px;
 }
 
 .vc-dot {
@@ -556,9 +648,13 @@ export default {
   height: 5px;
   border-radius: 50%;
   transition: all var(--day-content-transition-time);
-  &:not(:last-child) {
-    margin-right: 3px;
-  }
+  margin-left: 1px;
+
+&
+:not(:last-child) {
+  margin-right: 3px;
+}
+
 }
 
 .vc-bars {
@@ -572,5 +668,10 @@ export default {
   flex-grow: 1;
   height: 3px;
   transition: all var(--day-content-transition-time);
+}
+
+.vc-mileages {
+  font-size: 10px;
+  font-weight: var(--font-normal);
 }
 </style>

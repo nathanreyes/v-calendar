@@ -6,7 +6,7 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import addDays from 'date-fns/addDays';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
-import { pad, addPages, arrayHasItems } from './helpers';
+import {pad, addPages, arrayHasItems} from './helpers';
 import {
   isDate,
   isNumber,
@@ -37,7 +37,8 @@ const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
 const word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
 const literal = /\[([^]*?)\]/gm;
-const noop = () => {};
+const noop = () => {
+};
 const monthUpdate = arrName => (d, v, l) => {
   const index = l[arrName].indexOf(
     v.charAt(0).toUpperCase() + v.substr(1).toLowerCase(),
@@ -281,7 +282,7 @@ export function resolveConfig(config, locales) {
   const validKey = k => localeKeys.find(lk => lk.toLowerCase() === k);
   id = validKey(id) || validKey(id.substring(0, 2)) || detLocale;
   // Add fallback and spread default locale to prevent repetitive update loops
-  const defLocale = { ...locales['en-IE'], ...locales[id], id };
+  const defLocale = {...locales['en-IE'], ...locales[id], id};
   // Assign or merge defaults with provided config
   config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
   // Return resolved config
@@ -289,8 +290,8 @@ export function resolveConfig(config, locales) {
 }
 
 export default class Locale {
-  constructor(config, { locales = defaultLocales, timezone } = {}) {
-    const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
+  constructor(config, {locales = defaultLocales, timezone} = {}) {
+    const {id, firstDayOfWeek, masks} = resolveConfig(config, locales);
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
@@ -469,7 +470,7 @@ export default class Locale {
     return null;
   }
 
-  denormalizeDate(date, { type, mask } = {}) {
+  denormalizeDate(date, {type, mask} = {}) {
     switch (type) {
       case 'number':
         return date ? date.getTime() : NaN;
@@ -480,7 +481,7 @@ export default class Locale {
     }
   }
 
-  adjustTimeForDate(date, { timeAdjust }) {
+  adjustTimeForDate(date, {timeAdjust}) {
     if (timeAdjust) {
       const dateParts = this.getDateParts(date);
       if (timeAdjust === 'now') {
@@ -501,12 +502,11 @@ export default class Locale {
     return date;
   }
 
-  normalizeDates(dates, opts) {
+  normalizeDates(dates, opts, mileages) {
     opts = opts || {};
     opts.locale = this;
-    // Assign dates
     return (isArray(dates) ? dates : [dates])
-      .map(d => d && (d instanceof DateInfo ? d : new DateInfo(d, opts)))
+      .map(d => d && (d instanceof DateInfo ? d : new DateInfo(d, opts, mileages)))
       .filter(d => d);
   }
 
@@ -576,7 +576,7 @@ export default class Locale {
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-      return toDate(dateString, { timeZone: this.timezone });
+      return toDate(dateString, {timeZone: this.timezone});
     }
     return new Date(year, month - 1, day, hrs, min, sec, ms);
   }
@@ -598,7 +598,7 @@ export default class Locale {
         hrs,
         2,
       )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-      date = toDate(dateString, { timeZone: this.timezone });
+      date = toDate(dateString, {timeZone: this.timezone});
     } else {
       date = new Date(y, m - 1, d, hrs, min, sec, ms);
     }
@@ -681,7 +681,7 @@ export default class Locale {
       const isoWeeknumbers = [];
       for (let i = 0; i < weeks; i++) {
         const date = addDays(firstDayOfMonth, i * 7);
-        weeknumbers.push(getWeek(date, { weekStartsOn }));
+        weeknumbers.push(getWeek(date, {weekStartsOn}));
         isoWeeknumbers.push(getISOWeek(date));
       }
       comps = {
@@ -702,7 +702,7 @@ export default class Locale {
 
   // Days/month/year components for today's month
   getThisMonthComps() {
-    const { month, year } = this.getDateParts(new Date());
+    const {month, year} = this.getDateParts(new Date());
     return this.getMonthComps(month, year);
   }
 
@@ -723,7 +723,7 @@ export default class Locale {
   }
 
   // Builds day components for a given page
-  getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
+  getCalendarDays({weeks, monthComps, prevMonthComps, nextMonthComps}) {
     const days = [];
     const {
       firstDayOfWeek,
