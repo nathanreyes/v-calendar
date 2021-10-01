@@ -335,7 +335,7 @@ export default {
   watch: {
     $locale() {
       this.refreshLocale();
-      this.refreshPages({ page: this.firstPage, ignoreCache: true });
+      this.refreshPages({ page: this.firstPage });
       this.initStore();
     },
     $theme() {
@@ -567,7 +567,7 @@ export default {
       }
       return page;
     },
-    refreshPages({ page, position = 1, force, transition, ignoreCache } = {}) {
+    refreshPages({ page, position = 1, force, transition } = {}) {
       return new Promise((resolve, reject) => {
         const { fromPage, toPage } = this.getTargetPageRange(page, {
           position,
@@ -576,7 +576,7 @@ export default {
         // Create the new pages
         const pages = [];
         for (let i = 0; i < this.count; i++) {
-          pages.push(this.buildPage(addPages(fromPage, i), ignoreCache));
+          pages.push(this.buildPage(addPages(fromPage, i)));
         }
         // Refresh disabled days for new pages
         this.refreshDisabledDays(pages);
@@ -646,37 +646,16 @@ export default {
       }
       return page;
     },
-    buildPage({ month, year }, ignoreCache) {
-      const key = `${year.toString()}-${month.toString()}`;
-      let page = this.pages.find(p => p.key === key);
-      if (!page || ignoreCache) {
-        const date = new Date(year, month - 1, 15);
-        const monthComps = this.$locale.getMonthComps(month, year);
-        const prevMonthComps = this.$locale.getPrevMonthComps(month, year);
-        const nextMonthComps = this.$locale.getNextMonthComps(month, year);
-        page = {
-          key,
-          month,
-          year,
-          weeks: this.trimWeeks ? monthComps.weeks : 6,
-          title: this.$locale.format(date, this.$locale.masks.title),
-          shortMonthLabel: this.$locale.format(date, 'MMM'),
-          monthLabel: this.$locale.format(date, 'MMMM'),
-          shortYearLabel: year.toString().substring(2),
-          yearLabel: year.toString(),
-          monthComps,
-          prevMonthComps,
-          nextMonthComps,
-          canMove: pg => this.canMove(pg),
-          move: pg => this.move(pg),
-          moveThisMonth: () => this.moveThisMonth(),
-          movePrevMonth: () => this.move(prevMonthComps),
-          moveNextMonth: () => this.move(nextMonthComps),
-          refresh: true,
-        };
-        // Assign day info
-        page.days = this.$locale.getCalendarDays(page);
-      }
+    buildPage({ month, year }) {
+      const page = this.$locale.getCalendarPage(
+        { month, year },
+        this.trimWeeks,
+      );
+      page.canMove = pg => this.canMove(pg);
+      page.move = pg => this.move(pg);
+      page.moveThisMonth = () => this.move(page.monthComps);
+      page.moveNextMonth = () => this.move(page.nextMonthComps);
+      page.prevNextMonth = () => this.move(page.prevMonthComps);
       return page;
     },
     initStore() {
@@ -707,7 +686,7 @@ export default {
             shouldRefresh = true;
           } else {
             // Get the existing attributes
-            map = d.attributesMap || {};
+            map = { ...d.attributesMap };
           }
           // For each attribute to add...
           adds.forEach(attr => {
@@ -726,7 +705,6 @@ export default {
           // Reassign day attributes
           if (shouldRefresh) {
             d.attributesMap = map;
-            d.shouldRefresh = true;
           }
         });
       });

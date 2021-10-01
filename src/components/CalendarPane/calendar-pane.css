@@ -7,10 +7,10 @@
   justify-content: center;
   align-items: center;
   padding: 10px 16px 0px 16px;
-  &.align-left {
+  &.vc-align-left {
     justify-content: flex-start;
   }
-  &.align-right {
+  &.vc-align-right {
     justify-content: flex-end;
   }
 }
@@ -32,7 +32,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  position: absolute;
+  height: 100%;
+  &.is-left,
+  &.is-left-outside {
+    left: calc(var(--weeknumber-offset) * -1);
+  }
+  &.is-right,
+  &.is-right-outside {
+    right: calc(var(--weeknumber-offset) * -1);
+  }
 }
 
 .vc-weeknumber-content {
@@ -47,29 +56,19 @@
   margin-top: 2px;
   color: var(--gray-500);
   user-select: none;
-  &.is-left-outside {
-    position: absolute;
-    left: var(--weeknumber-offset);
-  }
-  &.is-right-outside {
-    position: absolute;
-    right: var(--weeknumber-offset);
-  }
 }
 
 .vc-weeks {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
   position: relative;
   /* overflow: auto; */
   -webkit-overflow-scrolling: touch;
   padding: 6px;
   min-width: 250px;
-  &.vc-show-weeknumbers {
-    grid-template-columns: auto repeat(7, 1fr);
-    &.is-right {
-      grid-template-columns: repeat(7, 1fr) auto;
-    }
+  &.vc-show-weeknumbers-left {
+    margin-left: var(--weeknumber-offset);
+  }
+  &.vc-show-weeknumbers-right {
+    margin-right: var(--weeknumber-offset);
   }
 }
 
@@ -85,8 +84,11 @@
   user-select: none;
 }
 
+.vc-week,
 .vc-weekdays {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  position: relative;
 }
 
 .vc-nav-popover-container {

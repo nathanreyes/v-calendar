@@ -51,6 +51,7 @@ export default {
         attributesMap: this.day.attributesMap,
         dayProps: this.dayContentProps,
         dayEvents: this.dayContentEvents,
+        locale: this.locale,
       }) ||
       h(
         'span',
@@ -220,7 +221,7 @@ export default {
     popovers() {
       this.refreshPopovers();
     },
-    'day.shouldRefresh'() {
+    'day.attributesMap'() {
       this.refresh();
     },
   },
@@ -254,9 +255,6 @@ export default {
       this.$emit('daykeydown', this.getDayEvent(e));
     },
     refresh() {
-      if (!this.day.shouldRefresh) return;
-      /* eslint-disable vue/no-mutating-props */
-      this.day.shouldRefresh = false;
       const glyphs = {
         backgrounds: [],
         dots: [],
@@ -264,6 +262,7 @@ export default {
         popovers: [],
         content: [],
       };
+      // eslint-disable-next-line vue/no-mutating-props
       this.day.attributes = Object.values(this.day.attributesMap || {}).sort(
         (a, b) => a.order - b.order,
       );

@@ -1,14 +1,15 @@
 <script>
 import { h } from 'vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
+import CustomTransition from '../CustomTransition/CustomTransition.vue';
 import { childMixin, slotMixin } from '../../utils/mixins';
 import { getPopoverTriggerEvents } from '../../utils/popovers';
 import { getDefault } from '../../utils/defaults';
-import { isBoolean } from '../../utils/_';
+import { isBoolean, pick } from '../../utils/_';
 
 export default {
   name: 'CalendarPane',
-  emits: ['update:page', 'weeknumberclick'],
+  emits: ['update:page', 'update:week', 'update:days', 'weeknumberclick'],
   mixins: [childMixin, slotMixin],
   inheritAttrs: false,
   render() {
@@ -16,7 +17,7 @@ export default {
     const header =
       this.safeSlot('header', this.page) ||
       // Default header
-      h('div', { class: `vc-header align-${this.titlePosition}` }, [
+      h('div', { class: `vc-header vc-align-${this.titlePosition}` }, [
         // Header title
         h(
           'div',
@@ -29,45 +30,33 @@ export default {
       ]);
 
     // Weekday cells
-    const weekdayCells = this.weekdayLabels.map((wl, i) =>
-      h(
-        'div',
-        {
-          key: i + 1,
-          class: 'vc-weekday',
-        },
-        [wl],
+    const getWeekdayCells = h(
+      'div',
+      { class: 'vc-weekdays' },
+      this.weekdayLabels.map((wl, i) =>
+        h(
+          'div',
+          {
+            key: i + 1,
+            class: 'vc-weekday',
+          },
+          [wl],
+        ),
       ),
     );
-
-    const showWeeknumbersLeft = this.showWeeknumbers_.startsWith('left');
-    const showWeeknumbersRight = this.showWeeknumbers_.startsWith('right');
-    if (showWeeknumbersLeft) {
-      weekdayCells.unshift(
-        h('div', {
-          class: 'vc-weekday',
-        }),
-      );
-    } else if (showWeeknumbersRight) {
-      weekdayCells.push(
-        h('div', {
-          class: 'vc-weekday',
-        }),
-      );
-    }
 
     // Weeknumber cell
     const getWeeknumberCell = weeknumber =>
       h(
         'div',
         {
-          class: ['vc-weeknumber'],
+          class: ['vc-weeknumber', `is-${this.showWeeknumbers_}`],
         },
         [
           h(
             'span',
             {
-              class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
+              class: ['vc-weeknumber-content'],
               onClick: event => {
                 this.$emit('weeknumberclick', {
                   weeknumber,
@@ -84,46 +73,72 @@ export default {
       );
 
     // Day cells
-    const dayCells = [];
-    const { daysInWeek } = this.locale;
-    this.page.days.forEach((day, i) => {
-      const mod = i % daysInWeek;
-      // Inset weeknumber cell on left side if needed
-      if (
-        (showWeeknumbersLeft && mod === 0) ||
-        (showWeeknumbersRight && mod === daysInWeek)
-      ) {
-        dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
-      }
-      dayCells.push(
-        h(
-          CalendarDay,
-          {
-            ...this.$attrs,
-            day,
-          },
-          this.$slots,
-        ),
+    const getDayCells = () => {
+      const daysGroupedByWeek = this.page.days.reduce((result, day) => {
+        const weeknumber = day[this.weeknumberKey];
+        if (this.isWeekly && weeknumber !== this.weeknumber) return result;
+        let days = result[weeknumber];
+        if (!days) {
+          days = [];
+          result[weeknumber] = days;
+        }
+        days.push(day);
+        return result;
+      }, {});
+
+      const dayCells = Object.entries(daysGroupedByWeek).reduce(
+        (result, [weeknumber, days]) => {
+          const cells = [];
+          if (this.showWeeknumbers_) cells.push(getWeeknumberCell(weeknumber));
+          days.forEach(day => {
+            cells.push(
+              h(
+                CalendarDay,
+                {
+                  ...this.$attrs,
+                  day,
+                },
+                this.$slots,
+              ),
+            );
+          });
+          result.push(
+            h(
+              'div',
+              { key: `weeknumber-${weeknumber}`, class: 'vc-week' },
+              cells,
+            ),
+          );
+          return result;
+        },
+        [],
       );
-      // Insert weeknumber cell on right side if needed
-      if (showWeeknumbersRight && mod === daysInWeek - 1) {
-        dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
-      }
-    });
+
+      return h(
+        CustomTransition,
+        { name: 'slide-fade' },
+        {
+          default: () => {
+            return h('div', dayCells);
+          },
+        },
+      );
+    };
 
     // Weeks
-    const weeks = h(
-      'div',
-      {
-        class: {
-          'vc-weeks': true,
-          'vc-show-weeknumbers': this.showWeeknumbers_,
-          'is-left': showWeeknumbersLeft,
-          'is-right': showWeeknumbersRight,
+    const weeks =
+      this.safeSlot('week', this.slotProps) ||
+      h(
+        'div',
+        {
+          class: {
+            'vc-weeks': true,
+            [`vc-show-weeknumbers-${this.showWeeknumbers_}`]: this
+              .showWeeknumbers_,
+          },
         },
-      },
-      [weekdayCells, dayCells],
-    );
+        [getWeekdayCells, getDayCells()],
+      );
 
     return h(
       'div',
@@ -145,6 +160,8 @@ export default {
     rowFromEnd: Number,
     column: Number,
     columnFromEnd: Number,
+    isWeekly: Boolean,
+    week: Number,
     titlePosition: String,
     navVisibility: {
       type: String,
@@ -153,9 +170,40 @@ export default {
     showWeeknumbers: [Boolean, String],
     showIsoWeeknumbers: [Boolean, String],
   },
+  data() {
+    return {
+      weekTransition: '',
+    };
+  },
   computed: {
+    slotProps() {
+      return pick(this, [
+        'page',
+        'position',
+        'row',
+        'rowFromEnd',
+        'column',
+        'columnFromEnd',
+        'week',
+        'days',
+        'locale',
+      ]);
+    },
+    weeknumber() {
+      if (this.week) {
+        const day = this.page.days.find(d => d.week === this.week && d.inMonth);
+        return day.weeknumber;
+      }
+      const day = this.page.days.find(d => d.inMonth);
+      return day.weeknumber;
+    },
+    days() {
+      return this.isWeekly
+        ? this.page.days.filter(d => d.weeknumber === this.weeknumber)
+        : this.page.days;
+    },
     weeknumberKey() {
-      return this.showWeeknumbers ? 'weeknumber' : 'isoWeeknumber';
+      return this.showIsoWeeknumbers ? 'isoWeeknumber' : 'weeknumber';
     },
     showWeeknumbers_() {
       const showWeeknumbers = this.showWeeknumbers || this.showIsoWeeknumbers;
@@ -196,6 +244,24 @@ export default {
       return this.locale
         .getWeekdayDates()
         .map(d => this.format(d, this.masks.weekdays));
+    },
+  },
+  watch: {
+    week(val, oldVal) {
+      let transition = '';
+      if (val === oldVal + 1) {
+        transition = 'slide-left';
+      } else if (val === oldVal - 1) {
+        transition = 'slide-right';
+      }
+      this.weekTransition = transition;
+      this.$emit('update:week', val);
+    },
+    days: {
+      immediate: true,
+      handler(val) {
+        this.$emit('update:days', val);
+      },
     },
   },
 };

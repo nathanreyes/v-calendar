@@ -5,7 +5,7 @@ export interface Page {
   year: number;
 }
 
-export const pad = (val: string, len: number, char = '0') => {
+export const pad = (val: string | number, len: number, char = '0') => {
   val = val !== null && val !== undefined ? String(val) : '';
   len = len || 2;
   while (val.length < len) {
@@ -100,7 +100,7 @@ export function datesAreEqual(a: any, b: any): boolean {
   return a.getTime() === b.getTime();
 }
 
-export const arrayHasItems = (array: Array<any>): boolean =>
+export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
 
 export interface ElementPosition {

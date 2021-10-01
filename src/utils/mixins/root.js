@@ -116,6 +116,7 @@ export const rootMixin = {
       });
     },
     pageForDate(date) {
+      if (!date) return null;
       return this.$locale.getDateParts(this.normalizeDate(date));
     },
     pageForThisMonth() {

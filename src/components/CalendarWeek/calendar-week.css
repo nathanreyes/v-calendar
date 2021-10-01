@@ -1,0 +1,105 @@
+.vc-weekly-container {
+  --gutter-width: 50px;
+  --grid-cell-border-color: #e5e7eb;
+  --accent-500: rgba(99, 102, 241, 1);
+  --gray-400: rgba(156, 163, 175, 1);
+
+  width: 800px;
+  overflow: auto;
+
+  & .vc-weekly-header {
+    top: 0;
+    position: sticky;
+    display: flex;
+    background-color: white;
+    border-bottom: 1px solid var(--grid-cell-border-color);
+    padding-left: var(--gutter-width);
+    margin-top: -1px;
+    z-index: 1;
+  }
+  & .vc-weekly-day-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    &.is-today {
+      & .vc-weekly-day-header-label {
+        color: var(--accent-500);
+      }
+      & .vc-weekly-day-header-day {
+        color: white;
+        background-color: var(--accent-500);
+      }
+    }
+  }
+  & .vc-weekly-day-header-label {
+    display: flex;
+    justify-content: center;
+    color: var(--gray-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1rem;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+  & .vc-weekly-day-header-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.75rem;
+    margin: 0.5rem 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    cursor: pointer;
+  }
+  & .vc-weekly-grid {
+    position: relative;
+    display: grid;
+    height: 500px;
+    margin-left: var(--gutter-width);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-rows: repeat(25, auto);
+  }
+
+  & .grid-cell {
+    height: 48px;
+    border-top: 1px solid var(--grid-cell-border-color);
+    border-left: 1px solid var(--grid-cell-border-color);
+    &.vc-hour-0 {
+      border-top: none;
+    }
+  }
+  & .label-cell {
+    position: absolute;
+    color: #4b5563;
+    font-size: 0.7rem;
+    left: 0px;
+    width: var(--gutter-width);
+    text-align: right;
+    padding-right: 0.25rem;
+    transform: translateX(-50px) translateY(-50%);
+    /* transform: translateX(-10px) translateY(-50%); */
+  }
+  & .event-cell {
+    position: absolute;
+    min-height: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+    &.is-dragging {
+      opacity: 0.5;
+    }
+  }
+  & .drag-cell {
+    position: absolute;
+    height: 20px;
+    width: 80px;
+    cursor: move;
+    border-radius: 3px;
+    background-color: blue;
+    cursor: pointer;
+    pointer-events: none;
+  }
+}
