@@ -154,7 +154,9 @@ export default {
     this.addEvents();
   },
   beforeDestroy() {
+    this.destroyPopper();
     this.removeEvents();
+    this.popoverEl = null;
   },
   methods: {
     addEvents() {

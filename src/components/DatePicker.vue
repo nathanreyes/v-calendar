@@ -363,7 +363,7 @@ export default {
     // Handle escape key presses
     on(document, 'keydown', this.onDocumentKeyDown);
     // Clear drag on background click
-    const offTapOrClickHandler = addTapOrClickHandler(document, e => {
+    this.offTapOrClickHandler = addTapOrClickHandler(document, e => {
       if (
         document.body.contains(e.target) &&
         !elementContains(this.$el, e.target)
@@ -372,11 +372,10 @@ export default {
         this.formatInput();
       }
     });
-    // Clean up handlers
-    this.$once('beforeDestroy', () => {
-      off(document, 'keydown', this.onDocumentKeyDown);
-      offTapOrClickHandler();
-    });
+  },
+  destroyed() {
+    off(document, 'keydown', this.onDocumentKeyDown);
+    this.offTapOrClickHandler();
   },
   methods: {
     getDateParts(date) {
