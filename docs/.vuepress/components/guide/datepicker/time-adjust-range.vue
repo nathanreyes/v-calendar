@@ -1,10 +1,8 @@
 <template>
   <div class="example">
-    <div class="flex">
-      <div class="flex-shrink">
-        <v-date-picker v-model="range" :model-config="modelConfig" is-range />
-      </div>
-      <div class="flex-grow ml-4 text-sm">
+    <div class="flex flex-col items-center md:flex-row md:items-start">
+      <v-date-picker v-model="range" :model-config="modelConfig" is-range />
+      <div class="flex-grow mt-4 md:ml-4 text-sm">
         <h4 class="text-gray-700">Select Date Range</h4>
         <div class="flex">
           <span class="inline-block w-16 font-semibold text-gray-600"
