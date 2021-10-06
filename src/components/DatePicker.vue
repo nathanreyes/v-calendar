@@ -368,10 +368,6 @@ export default {
     off(document, 'keydown', this.onDocumentKeyDown);
     on(document, 'click', this.onDocumentClick);
   },
-  destroyed() {
-    off(document, 'keydown', this.onDocumentKeyDown);
-    off(document, 'click', this.onDocumentClick);
-  },
   methods: {
     getDateParts(date) {
       return this.$locale.getDateParts(date);
