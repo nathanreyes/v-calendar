@@ -1,47 +1,6 @@
 import { on, off } from './helpers';
 import { isFunction } from './_';
 
-// This function detects taps or clicks
-// Can't just rely on 'click' event because of oddities in mobile Safari
-export const addTapOrClickHandler = (element, handler) => {
-  if (!element || !element.addEventListener || !isFunction(handler)) {
-    return null;
-  }
-  // State variables
-  let tap = false;
-  let disableClick = false;
-  const touchstart = () => (tap = true);
-  const touchmove = () => (tap = false);
-  const touchend = event => {
-    if (tap) {
-      // Reset state
-      tap = false;
-      // Disable click so we don't call handler twice
-      disableClick = true;
-      handler(event);
-      return;
-    }
-    // Make sure tap event hasn't disabled click
-    if (event.type === 'click' && !disableClick) {
-      handler(event);
-    }
-    // Reset state
-    disableClick = false;
-  };
-  // Add event handlers
-  on(element, 'touchstart', touchstart, { passive: true });
-  on(element, 'touchmove', touchmove, { passive: true });
-  on(element, 'click', touchend, { passive: true });
-  on(element, 'touchend', touchend, { passive: true });
-  // Return function that removes event handlers
-  return () => {
-    off(element, 'touchstart', touchstart);
-    off(element, 'touchmove', touchmove);
-    off(element, 'click', touchend);
-    off(element, 'touchend', touchend);
-  };
-};
-
 export const addHorizontalSwipeHandler = (
   element,
   handler,
