@@ -366,7 +366,7 @@ export default {
   },
   destroyed() {
     off(document, 'keydown', this.onDocumentKeyDown);
-    on(document, 'click', this.onDocumentClick);
+    off(document, 'click', this.onDocumentClick);
   },
   methods: {
     getDateParts(date) {
