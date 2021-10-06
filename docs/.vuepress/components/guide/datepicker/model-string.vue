@@ -1,12 +1,12 @@
 <template>
   <div class="example">
-    <div class="flex">
+    <div class="flex flex-col md:flex-row">
       <v-date-picker
         v-model="customer.birthday"
         :model-config="modelConfig"
         is-required
       />
-      <div class="ml-4 text-sm">
+      <div class="mt-4 md:ml-4 text-sm">
         <h4 class="text-gray-700">Customer Info</h4>
         <div class="flex">
           <span class="inline-block w-16 font-semibold text-gray-600"
