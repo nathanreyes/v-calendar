@@ -8,6 +8,7 @@
     <button v-if="!running" @click="startTest()">Start Test</button>
     <button v-else @click="stopTest()">Stop Test</button>
     <v-date-picker v-if="visible" v-model="date" mode="datetime" />
+    <v-calendar v-if="visible" />
   </div>
 </template>
 
