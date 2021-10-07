@@ -132,4 +132,4 @@ The rules are as follows:
 
 1. If `disabled-dates` is provided and `available-dates` is not, `disabled-dates` is simply evaluated to directly disable calendar days.
 2. If `disabled-dates` is NOT provided and `available-dates` is provided, then an infinite disabled date range(`{ start: null, end: null }`) is first added to effectively disable all dates. Then, `available-dates` is evaluted to re-enable the dates it specifies.
-3. If `disabled-dates` and `available-dates` are both provided, the `disabled-dates` expression is evaluated first. Then, `available-dates` is evaluated to re-enable any dates not explicitly disabled by `disabled-dates`. Specifying dates in `available-dates` that lie outside the range of any `disabled-dates` has no effect and should be avoided.
+3. If `disabled-dates` and `available-dates` are both provided, the `disabled-dates` expression is evaluated first. Then, `available-dates` is evaluated to re-enable any dates that are explicitly disabled by `disabled-dates`. Specifying dates in `available-dates` that lie outside the range of any `disabled-dates` has no effect and should be avoided.
