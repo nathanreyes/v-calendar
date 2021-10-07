@@ -1,6 +1,6 @@
 <template>
   <div class="vc-select">
-    <select v-bind="$attrs" @change="$emit('input', $event.target.value)">
+    <select v-model="model" v-bind="$attrs" @change="$emit('input', $event.target.value)">
       <option
         v-for="option in options"
         :key="option.value"
@@ -24,7 +24,18 @@ export default {
   inheritAttrs: false,
   props: {
     options: Array,
+    value: Number
   },
+  computed: {
+    model: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit('input', value);
+      }
+    }
+  }
 };
 </script>
 
