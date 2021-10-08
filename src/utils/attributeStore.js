@@ -9,6 +9,14 @@ export default class AttributeStore {
     this.refresh(attrs, true);
   }
 
+  destroy() {
+    this.theme = null;
+    this.locale = null;
+    this.map = {};
+    this.list = [];
+    this.pinAttr = null;
+  }
+
   refresh(attrs, reset) {
     const map = {};
     const list = [];

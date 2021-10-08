@@ -5,7 +5,6 @@ import Popover from '../Popover/Popover.vue';
 import TimePicker from '../TimePicker/TimePicker.vue';
 import { rootMixin } from '../../utils/mixins';
 import { getDefault } from '../../utils/defaults';
-import { addTapOrClickHandler } from '../../utils/touch';
 import {
   datesAreEqual,
   createGuid,
@@ -377,20 +376,12 @@ export default {
     // Handle escape key presses
     on(document, 'keydown', this.onDocumentKeyDown);
     // Clear drag on background click
-    this.offTapOrClickHandler = addTapOrClickHandler(document, e => {
-      if (
-        document.body.contains(e.target) &&
-        !elementContains(this.$el, e.target)
-      ) {
-        this.dragValue = null;
-        this.formatInput();
-      }
-    });
+    on(document, 'click', this.onDocumentClick);
   },
   beforeUnmount() {
     // Clean up handlers
     off(document, 'keydown', this.onDocumentKeyDown);
-    this.offTapOrClickHandler();
+    off(document, 'click', this.onDocumentClick);
   },
   methods: {
     getDateParts(date) {
@@ -424,6 +415,15 @@ export default {
       // Clear drag on escape keydown
       if (this.dragValue && e.key === 'Escape') {
         this.dragValue = null;
+      }
+    },
+    onDocumentClick(e) {
+      if (
+        document.body.contains(e.target) &&
+        !elementContains(this.$el, e.target)
+      ) {
+        this.dragValue = null;
+        this.formatInput();
       }
     },
     onDayClick(day) {

@@ -4,8 +4,17 @@
       <div class="text-xs text-gray-900 font-medium uppercase tracking-wide">
         Calendar
       </div>
-      <div class="mt-2">
+      <div class="flex flex-col space-y-2 mt-2">
         <RouterLink to="/calendar/weekly" class="text-sm">Weekly</RouterLink>
+        <RouterLink to="/calendar/blank" class="text-sm">Blank</RouterLink>
+      </div>
+    </div>
+    <div>
+      <div class="text-xs text-gray-900 font-medium uppercase tracking-wide">
+        Date Picker
+      </div>
+      <div class="flex flex-col space-y-2 mt-2">
+        <RouterLink to="/datepicker/date" class="text-sm">Date</RouterLink>
       </div>
     </div>
   </div>

@@ -412,7 +412,11 @@ export default {
     }
   },
   beforeUnmount() {
-    this.removeHandlers && this.removeHandlers();
+    this.pages = [];
+    this.store.destroy();
+    this.store = null;
+    this.sharedState = null;
+    if (this.removeHandlers) this.removeHandlers();
   },
   methods: {
     refreshLocale() {

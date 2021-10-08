@@ -2,7 +2,6 @@
 import { h } from 'vue';
 import { createPopper } from '@popperjs/core';
 import { on, off, elementContains } from '../../utils/helpers';
-import { addTapOrClickHandler } from '../../utils/touch';
 import { isFunction, omit } from '../../utils/_';
 import CustomTransition from '../CustomTransition/CustomTransition.vue';
 
@@ -159,7 +158,9 @@ export default {
     this.addEvents();
   },
   beforeUnmount() {
+    this.destroyPopper();
     this.removeEvents();
+    this.popoverEl = null;
   },
   methods: {
     addEvents() {
@@ -169,10 +170,7 @@ export default {
       on(this.popoverEl, 'focusin', this.onFocusIn);
       on(this.popoverEl, 'focusout', this.onFocusOut);
       on(document, 'keydown', this.onDocumentKeydown);
-      this.removeDocHandler = addTapOrClickHandler(
-        document,
-        this.onDocumentClick,
-      );
+      on(document, 'click', this.onDocumentClick);
       on(document, 'show-popover', this.onDocumentShowPopover);
       on(document, 'hide-popover', this.onDocumentHidePopover);
       on(document, 'toggle-popover', this.onDocumentTogglePopover);
@@ -185,7 +183,7 @@ export default {
       off(this.popoverEl, 'focusin', this.onFocusIn);
       off(this.popoverEl, 'focusout', this.onFocusOut);
       off(document, 'keydown', this.onDocumentKeydown);
-      if (this.removeDocHandler) this.removeDocHandler();
+      off(document, 'click', this.onDocumentClick);
       off(document, 'show-popover', this.onDocumentShowPopover);
       off(document, 'hide-popover', this.onDocumentHidePopover);
       off(document, 'toggle-popover', this.onDocumentTogglePopover);
