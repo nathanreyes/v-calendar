@@ -87,6 +87,7 @@ export default {
           maxDate: this.maxDateExact || this.maxDate,
           disabledDates: this.disabledDates,
           availableDates: this.availableDates,
+          buddhist: this.buddhist,
         },
         on: {
           ...this.$listeners,
@@ -162,6 +163,10 @@ export default {
     dragAttribute: Object,
     selectAttribute: Object,
     attributes: Array,
+    buddhist: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
