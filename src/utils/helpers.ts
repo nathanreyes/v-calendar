@@ -1,6 +1,7 @@
 import { isArray, isObject, isFunction, isDate } from './_';
 
-export interface Page {
+export interface PageAddress {
+  week?: number;
   month: number;
   year: number;
 }
@@ -33,38 +34,54 @@ export const mergeEvents = (...args: Array<any>) => {
   return result;
 };
 
-export const pageIsValid = (page: Page | null): boolean =>
+export const pageIsValid = (page: PageAddress | null): boolean =>
   !!(page && page.month && page.year);
 
-export const pageIsBeforePage = (page: Page, comparePage: Page): boolean => {
+export const pageIsBeforePage = (
+  page: PageAddress,
+  comparePage: PageAddress,
+): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
   if (page.year === comparePage.year) return page.month < comparePage.month;
   return page.year < comparePage.year;
 };
 
-export const pageIsAfterPage = (page: Page, comparePage: Page): boolean => {
+export const pageIsAfterPage = (
+  page: PageAddress,
+  comparePage: PageAddress,
+): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
   if (page.year === comparePage.year) return page.month > comparePage.month;
   return page.year > comparePage.year;
 };
 
 export const pageIsBetweenPages = (
-  page: Page,
-  fromPage: Page,
-  toPage: Page,
+  page: PageAddress,
+  fromPage: PageAddress,
+  toPage: PageAddress,
 ): boolean =>
   (page || false) &&
   !pageIsBeforePage(page, fromPage) &&
   !pageIsAfterPage(page, toPage);
 
-export const pageIsEqualToPage = (aPage: Page, bPage: Page): boolean => {
+export const pageIsEqualToPage = (
+  aPage: PageAddress,
+  bPage: PageAddress,
+): boolean => {
   if (!aPage && bPage) return false;
   if (aPage && !bPage) return false;
   if (!aPage && !bPage) return true;
-  return aPage.month === bPage.month && aPage.year === bPage.year;
+  return (
+    aPage.year === bPage.year &&
+    aPage.month === bPage.month &&
+    aPage.week === bPage.week
+  );
 };
 
-export const addPages = ({ month, year }: Page, count: number): Page => {
+export const addPages = (
+  { month, year }: PageAddress,
+  count: number,
+): PageAddress => {
   const incr = count > 0 ? 1 : -1;
   for (let i = 0; i < Math.abs(count); i++) {
     month += incr;
@@ -82,7 +99,7 @@ export const addPages = ({ month, year }: Page, count: number): Page => {
   };
 };
 
-export const pageRangeToArray = (from: Page, to: Page) => {
+export const pageRangeToArray = (from: PageAddress, to: PageAddress) => {
   if (!pageIsValid(from) || !pageIsValid(to)) return [];
   const result = [];
   while (!pageIsAfterPage(from, to)) {
@@ -153,7 +170,7 @@ export const elementContains = (element: Element, child: Element) =>
 
 export const onSpaceOrEnter = (
   event: KeyboardEvent,
-  handler: EventHandlerNonNull,
+  handler: (e: KeyboardEvent) => void,
 ) => {
   if (event.key === ' ' || event.key === 'Enter') {
     handler(event);

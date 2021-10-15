@@ -243,13 +243,14 @@ export default {
                   ),
               },
             ),
-            h(
-              'div',
-              {
-                class: [`vc-arrows-container title-${this.titlePosition}`],
-              },
-              [getArrowButton(true), getArrowButton(false)],
-            ),
+            !this.$slots.default &&
+              h(
+                'div',
+                {
+                  class: [`vc-arrows-container title-${this.titlePosition}`],
+                },
+                [getArrowButton(true), getArrowButton(false)],
+              ),
             this.$slots.footer && this.$slots.footer(),
           ],
         ),
@@ -651,15 +652,12 @@ export default {
       return page;
     },
     buildPage({ month, year }) {
-      const page = this.$locale.getCalendarPage(
-        { month, year },
-        this.trimWeeks,
-      );
+      const page = this.$locale.getPage({ month, year }, this.trimWeeks);
       page.canMove = pg => this.canMove(pg);
       page.move = pg => this.move(pg);
       page.moveThisMonth = () => this.move(page.monthComps);
       page.moveNextMonth = () => this.move(page.nextMonthComps);
-      page.prevNextMonth = () => this.move(page.prevMonthComps);
+      page.movePrevMonth = () => this.move(page.prevMonthComps);
       return page;
     },
     initStore() {

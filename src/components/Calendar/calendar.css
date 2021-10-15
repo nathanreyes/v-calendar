@@ -24,6 +24,7 @@
   border-style: solid;
   border-radius: var(--rounded);
   border-color: transparent;
+  z-index: 1;
   &:hover {
     background: var(--gray-200);
   }

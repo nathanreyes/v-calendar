@@ -1,16 +1,53 @@
 <template>
   <div class="vc-weekly-container">
     <div class="vc-weekly-header">
-      <template v-for="day in days" :key="day.id">
-        <div class="vc-weekly-day-header" :class="{ 'is-today': day.isToday }">
-          <div class="vc-weekly-day-header-label">
-            {{ locale.format(day.date, 'WWW') }}
-          </div>
-          <span class="vc-weekly-day-header-day" @click="printDay(day)">{{
-            day.day
-          }}</span>
+      <div class="vc-weekly-header-nav">
+        <div class="vc-arrow" role="button" @click="page.movePrevMonth()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
         </div>
-      </template>
+        <div class="vc-arrow" role="button" @click="page.moveNextMonth()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </div>
+        <span class="vc-weekly-title">{{ page.title }}</span>
+      </div>
+      <div class="vc-weekly-header-days">
+        <template v-for="day in days" :key="day.id">
+          <div class="vc-weekly-day" :class="{ 'is-today': day.isToday }">
+            <div class="vc-weekly-day-label">
+              {{ locale.format(day.date, 'WWW') }}
+            </div>
+            <span class="vc-weekly-day-number" @click="printDay(day)">{{
+              day.day
+            }}</span>
+          </div>
+        </template>
+      </div>
     </div>
     <div
       class="vc-weekly-grid"
@@ -72,7 +109,8 @@ interface DragState {
 export default defineComponent({
   props: {
     week: Number,
-    days: Array,
+    days: { type: Array, required: true },
+    page: Object,
     locale: Object,
   },
   setup(props) {

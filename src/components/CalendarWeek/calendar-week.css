@@ -10,29 +10,45 @@
   & .vc-weekly-header {
     top: 0;
     position: sticky;
-    display: flex;
     background-color: white;
-    border-bottom: 1px solid var(--grid-cell-border-color);
-    padding-left: var(--gutter-width);
     margin-top: -1px;
     z-index: 1;
-  }
-  & .vc-weekly-day-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    &.is-today {
-      & .vc-weekly-day-header-label {
-        color: var(--accent-500);
+    & .vc-weekly-header-nav {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      & * + * {
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
       }
-      & .vc-weekly-day-header-day {
-        color: white;
-        background-color: var(--accent-500);
+      & .vc-weekly-title {
+        margin-left: 1rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+      }
+    }
+    & .vc-weekly-header-days {
+      display: flex;
+      border-bottom: 1px solid var(--grid-cell-border-color);
+      padding-left: var(--gutter-width);
+    }
+    & .vc-weekly-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+      &.is-today {
+        & .vc-weekly-day-label {
+          color: var(--accent-500);
+        }
+        & .vc-weekly-day-number {
+          color: white;
+          background-color: var(--accent-500);
+        }
       }
     }
   }
-  & .vc-weekly-day-header-label {
+  & .vc-weekly-day-label {
     display: flex;
     justify-content: center;
     color: var(--gray-400);
@@ -42,7 +58,7 @@
     letter-spacing: 0.025em;
     text-transform: uppercase;
   }
-  & .vc-weekly-day-header-day {
+  & .vc-weekly-day-number {
     display: flex;
     justify-content: center;
     align-items: center;

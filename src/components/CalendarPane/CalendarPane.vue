@@ -13,6 +13,10 @@ export default {
   mixins: [childMixin, slotMixin],
   inheritAttrs: false,
   render() {
+    // Content slot
+    const contentSlot = this.safeSlot('default', this.slotProps);
+    if (contentSlot) return contentSlot;
+
     // Header
     const header =
       this.safeSlot('header', this.page) ||
@@ -74,71 +78,43 @@ export default {
 
     // Day cells
     const getDayCells = () => {
-      const daysGroupedByWeek = this.page.days.reduce((result, day) => {
-        const weeknumber = day[this.weeknumberKey];
-        if (this.isWeekly && weeknumber !== this.weeknumber) return result;
-        let days = result[weeknumber];
-        if (!days) {
-          days = [];
-          result[weeknumber] = days;
+      return this.page.weeks.map(week => {
+        const cells = [];
+        if (this.showWeeknumbers_) {
+          cells.push(getWeeknumberCell(week.weeknumber));
         }
-        days.push(day);
-        return result;
-      }, {});
-
-      const dayCells = Object.entries(daysGroupedByWeek).reduce(
-        (result, [weeknumber, days]) => {
-          const cells = [];
-          if (this.showWeeknumbers_) cells.push(getWeeknumberCell(weeknumber));
-          days.forEach(day => {
-            cells.push(
-              h(
-                CalendarDay,
-                {
-                  ...this.$attrs,
-                  day,
-                },
-                this.$slots,
-              ),
-            );
-          });
-          result.push(
+        cells.concat(
+          week.days.map(day =>
             h(
-              'div',
-              { key: `weeknumber-${weeknumber}`, class: 'vc-week' },
-              cells,
+              CalendarDay,
+              {
+                ...this.$attrs,
+                day,
+              },
+              this.$slots,
             ),
-          );
-          return result;
-        },
-        [],
-      );
-
-      return h(
-        CustomTransition,
-        { name: 'slide-fade' },
-        {
-          default: () => {
-            return h('div', dayCells);
-          },
-        },
-      );
+          ),
+        );
+        return h(
+          'div',
+          { key: `weeknumber-${week.weeknumber}`, class: 'vc-week' },
+          cells,
+        );
+      });
     };
 
     // Weeks
-    const weeks =
-      this.safeSlot('week', this.slotProps) ||
-      h(
-        'div',
-        {
-          class: {
-            'vc-weeks': true,
-            [`vc-show-weeknumbers-${this.showWeeknumbers_}`]: this
-              .showWeeknumbers_,
-          },
+    const weeks = h(
+      'div',
+      {
+        class: {
+          'vc-weeks': true,
+          [`vc-show-weeknumbers-${this.showWeeknumbers_}`]: this
+            .showWeeknumbers_,
         },
-        [getWeekdayCells, getDayCells()],
-      );
+      },
+      [getWeekdayCells, getDayCells()],
+    );
 
     return h(
       'div',
