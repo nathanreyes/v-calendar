@@ -167,6 +167,15 @@ Setting `value = null` still allowed through code.
 **Description:** Visibility mode for the input/slot popover (`hover-focus`, `hover`, `focus`, `visible`, `hidden`)
 
 **Default:** `hover-focus`
+### `validHourRange`
+
+**Type:** Object
+
+**Description:** Set a range of valid hours. This object accepts a min and a max prop. For example
+`{min: 7 max: 22}`. *This only works if `this.is24hr` is set to `true`*.
+
+**Default:** `{}`
+
 
 ## Methods
 
