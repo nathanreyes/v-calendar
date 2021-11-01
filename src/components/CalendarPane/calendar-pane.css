@@ -2,32 +2,6 @@
   min-width: 250px;
 }
 
-.vc-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 16px 0px 16px;
-  &.vc-align-left {
-    justify-content: flex-start;
-  }
-  &.vc-align-right {
-    justify-content: flex-end;
-  }
-}
-
-.vc-title {
-  font-size: var(--text-lg);
-  color: var(--gray-800);
-  font-weight: var(--font-semibold);
-  line-height: 28px;
-  cursor: pointer;
-  user-select: none;
-  white-space: nowrap;
-  &:hover {
-    opacity: 0.75;
-  }
-}
-
 .vc-weeknumber {
   display: flex;
   justify-content: center;

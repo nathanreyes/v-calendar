@@ -5,9 +5,16 @@ import getISOWeek from 'date-fns/getISOWeek';
 import getWeek from 'date-fns/getWeek';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
-import { pad, addPages, arrayHasItems, PageAddress } from './helpers';
+import {
+  pad,
+  arrayHasItems,
+  PageAddress,
+  pageIsAfterPage,
+  pageIsValid,
+} from './helpers';
 import {
   isDate,
   isNumber,
@@ -32,8 +39,22 @@ const PATCH_KEYS = {
   3: ['hours', 'minutes', 'seconds', 'milliseconds'],
 };
 
+export type PageView = 'daily' | 'weekly' | 'monthly';
+
+interface PageOptions {
+  view: PageView;
+  trimWeeks: boolean;
+  position: number;
+}
+
 export interface Page extends PageAddress {
   key: string;
+  day?: number;
+  week?: number;
+  month: number;
+  year: number;
+  view: PageView;
+  position: number;
   weeksCount: number;
   title: string;
   shortMonthLabel: string;
@@ -83,6 +104,7 @@ interface CalendarDay {
   weekdayOrdinalFromEnd: number;
   week: number;
   weekFromEnd: number;
+  weekPosition: number;
   weeknumber: number;
   isoWeeknumber: number;
   month: number;
@@ -102,15 +124,22 @@ interface CalendarDay {
   onBottom: boolean;
   onLeft: boolean;
   onRight: boolean;
-  dateFromTime: (hours: number, minutes: number, seconds: number) => Date;
+  dateFromTime: (
+    hours: number,
+    minutes: number,
+    seconds: number,
+    milliseconds: number,
+  ) => Date;
 }
 
 interface CalendarWeek {
   id: string;
   week: number;
+  weekPosition: number;
   weeknumber: number;
   isoWeeknumber: number;
   days: CalendarDay[];
+  title: string;
 }
 
 interface DateObject {
@@ -735,7 +764,7 @@ export default class Locale {
 
   toPage(arg: any, fromPage: Page) {
     if (isNumber(arg)) {
-      return addPages(fromPage, arg);
+      return this.addPages(fromPage, arg);
     }
     if (isString(arg)) {
       return this.getDateParts(this.normalizeDate(arg));
@@ -791,6 +820,48 @@ export default class Locale {
     return this.getWeekdayDates(1).map(d => dtf.format(d));
   }
 
+  addPages(
+    { day, week, month, year }: PageAddress,
+    count: number,
+  ): PageAddress {
+    if (day) {
+      const date = new Date(year, month - 1, day);
+      const newDate = addDays(date, count);
+      return {
+        day: newDate.getDate(),
+        month: newDate.getMonth() + 1,
+        year: newDate.getFullYear(),
+      };
+    } else if (week) {
+      const comps = this.getMonthComps(month, year);
+      const date = comps.firstDayOfMonth;
+      const newDate = addDays(date, (week - 1 + count) * 7);
+      const parts = this.getDateParts(newDate);
+      return {
+        week: parts.week,
+        month: parts.month,
+        year: parts.year,
+      };
+    } else {
+      const date = new Date(year, month - 1, 1);
+      const newDate = addMonths(date, count);
+      return {
+        month: newDate.getMonth() + 1,
+        year: newDate.getFullYear(),
+      };
+    }
+  }
+
+  pageRangeToArray(from: PageAddress, to: PageAddress) {
+    if (!pageIsValid(from) || !pageIsValid(to)) return [];
+    const result = [];
+    while (!pageIsAfterPage(from, to)) {
+      result.push(from);
+      from = this.addPages(from, 1);
+    }
+    return result;
+  }
+
   // Days/month/year components for a given month and year
   getMonthComps(month: number, year: number) {
     const key = `${month}-${year}`;
@@ -814,6 +885,7 @@ export default class Locale {
       }
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
+        firstDayOfMonth,
         inLeapYear,
         firstWeekday,
         days,
@@ -850,8 +922,12 @@ export default class Locale {
     return this.format(date, 'YYYY-MM-DD');
   }
 
-  getPage({ month, year }: PageAddress, trimWeeks: boolean) {
-    const key = `${year.toString()}-${month.toString()}`;
+  getPage(
+    { day, week, month, year }: PageAddress,
+    { trimWeeks, view, position }: PageOptions,
+  ) {
+    const keyComps = [year, month, week, day].filter(c => c! > 0);
+    const key = keyComps.join('-');
     let page: Page = this.pageCache[key];
     if (!page) {
       const date = new Date(year, month - 1, 15);
@@ -862,6 +938,8 @@ export default class Locale {
         key,
         month,
         year,
+        view,
+        position,
         weeksCount: trimWeeks ? monthComps.weeks : 6,
         title: this.format(date, this.masks.title),
         shortMonthLabel: this.format(date, 'MMM'),
@@ -874,21 +952,44 @@ export default class Locale {
         days: [],
         weeks: [],
       };
-      // Assign day info
       page.days = this.getDays(page);
       page.weeks = this.getWeeks(page);
+      this.pageCache[key] = page;
     }
-    return page;
+    const result: Page = { ...page };
+    if (view === 'daily') {
+      if (day) {
+        result.day = day;
+        const dayObj = result.days.find(d => d.day === day && d.inMonth)!;
+        result.weeks = [result.weeks[dayObj.week - 1]];
+        result.weeks[0].days = [dayObj];
+        result.days = [dayObj];
+      } else if (week) {
+        const dayObj = result.weeks[week - 1].days[0];
+        result.weeks = [result.weeks[week - 1]];
+        result.weeks[0].days = [dayObj];
+        result.days = [dayObj];
+      } else {
+        result.day = 1;
+        const dayObj = result.weeks[0].days.find(d => d.inMonth)!;
+        result.weeks = [result.weeks[0]];
+        result.weeks[0].days = [dayObj];
+        result.days = [dayObj];
+      }
+      result.title = result.days[0].ariaLabel;
+    } else if (view === 'weekly') {
+      result.week = week || 1;
+      result.weeks = [result.weeks[result.week - 1]];
+      result.days = result.weeks[0].days;
+      result.title = result.weeks[0].title;
+    }
+    return result;
   }
 
   // Builds day components for a given page
-  getDays({
-    weeksCount,
-    monthComps,
-    prevMonthComps,
-    nextMonthComps,
-  }: Page): CalendarDay[] {
-    const days = [];
+  getDays(pg: Page): CalendarDay[] {
+    const days: CalendarDay[] = [];
+    const { weeksCount, monthComps, prevMonthComps, nextMonthComps } = pg;
     const {
       firstDayOfWeek,
       firstWeekday,
@@ -914,7 +1015,7 @@ export default class Locale {
     let dayFromEnd = prevMonthComps.days - day + 1;
     let weekdayOrdinal = Math.floor((day - 1) / daysInWeek + 1);
     let weekdayOrdinalFromEnd = 1;
-    let week = prevMonthComps.weeksCount;
+    let week = prevMonthComps.weeks;
     let weekFromEnd = 1;
     let month = prevMonthComps.month;
     let year = prevMonthComps.year;
@@ -1000,6 +1101,7 @@ export default class Locale {
             weekdayOrdinalFromEnd,
             week,
             weekFromEnd,
+            weekPosition: w,
             weeknumber,
             isoWeeknumber,
             month,
@@ -1075,20 +1177,44 @@ export default class Locale {
   }
 
   getWeeks(page: Page): CalendarWeek[] {
-    return page.days.reduce((result: CalendarWeek[], day: CalendarDay) => {
-      let week = result[day.week - 1];
-      if (!week) {
-        week = {
-          id: `week-${day.week}`,
-          week: day.week,
-          weeknumber: day.weeknumber,
-          isoWeeknumber: day.isoWeeknumber,
-          days: [],
-        };
-        result[day.week - 1] = week;
+    const result = page.days.reduce(
+      (result: CalendarWeek[], day: CalendarDay, i) => {
+        const weekIndex = Math.floor(i / 7);
+        let week = result[weekIndex];
+        if (!week) {
+          week = {
+            id: `week-${weekIndex + 1}`,
+            title: '',
+            week: day.week,
+            weekPosition: day.weekPosition,
+            weeknumber: day.weeknumber,
+            isoWeeknumber: day.isoWeeknumber,
+            days: [],
+          };
+          result[weekIndex] = week;
+        }
+        week.days.push(day);
+        return result;
+      },
+      Array(page.weeksCount),
+    );
+    result.forEach(week => {
+      const fromDay = week.days[0];
+      const toDay = week.days[week.days.length - 1];
+      if (fromDay.month === toDay.month) {
+        week.title = this.format(fromDay.date, 'MMMM YYYY');
+      } else if (fromDay.year === toDay.year) {
+        week.title = `${this.format(fromDay.date, 'MMM')} - ${this.format(
+          toDay.date,
+          'MMM',
+        )} ${fromDay.year}`;
+      } else {
+        week.title = `${this.format(fromDay.date, 'MMM YYYY')} - ${this.format(
+          toDay.date,
+          'MMM YYYY',
+        )}`;
       }
-      week.days.push(day);
-      return result;
-    }, Array(page.weeksCount));
+    });
+    return result;
   }
 }

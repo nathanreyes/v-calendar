@@ -1,6 +1,7 @@
 import { isArray, isObject, isFunction, isDate } from './_';
 
 export interface PageAddress {
+  day?: number;
   week?: number;
   month: number;
   year: number;
@@ -42,8 +43,13 @@ export const pageIsBeforePage = (
   comparePage: PageAddress,
 ): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
-  if (page.year === comparePage.year) return page.month < comparePage.month;
-  return page.year < comparePage.year;
+  if (page.year !== comparePage.year) return page.year < comparePage.year;
+  if (page.month !== comparePage.month) return page.month < comparePage.month;
+  if (page.week !== comparePage.week)
+    return (page.week || 0) < (comparePage.week || 0);
+  if (page.day !== comparePage.day)
+    return (page.day || 0) < (comparePage.day || 0);
+  return false;
 };
 
 export const pageIsAfterPage = (
@@ -51,8 +57,13 @@ export const pageIsAfterPage = (
   comparePage: PageAddress,
 ): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
-  if (page.year === comparePage.year) return page.month > comparePage.month;
-  return page.year > comparePage.year;
+  if (page.year !== comparePage.year) return page.year > comparePage.year;
+  if (page.month !== comparePage.month) return page.month > comparePage.month;
+  if (page.week !== comparePage.week)
+    return (page.week || 0) > (comparePage.week || 0);
+  if (page.day !== comparePage.day)
+    return (page.day || 0) > (comparePage.day || 0);
+  return false;
 };
 
 export const pageIsBetweenPages = (
@@ -76,37 +87,6 @@ export const pageIsEqualToPage = (
     aPage.month === bPage.month &&
     aPage.week === bPage.week
   );
-};
-
-export const addPages = (
-  { month, year }: PageAddress,
-  count: number,
-): PageAddress => {
-  const incr = count > 0 ? 1 : -1;
-  for (let i = 0; i < Math.abs(count); i++) {
-    month += incr;
-    if (month > 12) {
-      month = 1;
-      year++;
-    } else if (month < 1) {
-      month = 12;
-      year--;
-    }
-  }
-  return {
-    month,
-    year,
-  };
-};
-
-export const pageRangeToArray = (from: PageAddress, to: PageAddress) => {
-  if (!pageIsValid(from) || !pageIsValid(to)) return [];
-  const result = [];
-  while (!pageIsAfterPage(from, to)) {
-    result.push(from);
-    from = addPages(from, 1);
-  }
-  return result;
 };
 
 export function datesAreEqual(a: any, b: any): boolean {

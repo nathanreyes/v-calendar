@@ -1,0 +1,19 @@
+.vc-header {
+  display: grid;
+  align-items: center;
+  padding: 8px 10px;
+  .vc-title {
+    grid-row: 1;
+    grid-column: title;
+    font-size: var(--text-lg);
+    color: var(--gray-800);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    margin: 0 0.75rem;
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+}

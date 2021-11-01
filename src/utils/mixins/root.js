@@ -122,5 +122,8 @@ export const rootMixin = {
     pageForThisMonth() {
       return this.pageForDate(new Date());
     },
+    addPages(address, count) {
+      return this.$locale.addPages(address, count);
+    },
   },
 };

@@ -15,10 +15,12 @@
 .vc-slide-down-leave-active,
 .vc-slide-fade-enter-active,
 .vc-slide-fade-leave-active {
-  transition: transform var(--slide-duration) var(--slide-timing),
-    opacity var(--slide-duration) var(--slide-timing);
-  backface-visibility: hidden;
-  pointer-events: none;
+  &:not(.vc-exclude) {
+    transition: transform var(--slide-duration) var(--slide-timing),
+      opacity var(--slide-duration) var(--slide-timing);
+    backface-visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 .vc-none-leave-active,

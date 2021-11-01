@@ -1,48 +1,24 @@
 <template>
-  <div class="vc-weekly-container">
-    <div class="vc-weekly-header">
-      <div class="vc-weekly-header-nav">
-        <div class="vc-arrow" role="button" @click="page.movePrevMonth()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </div>
-        <div class="vc-arrow" role="button" @click="page.moveNextMonth()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </div>
-        <span class="vc-weekly-title">{{ page.title }}</span>
+  <div class="vc-grid-container vc-exclude">
+    <div class="vc-grid-header">
+      <div class="vc-grid-header-nav">
+        <CalendarHeader
+          :page="page"
+          :title="page.title"
+          layout="pnt-"
+          :navPopoverId="navPopoverId"
+          @move-prev="page.movePrevMonth"
+          @move-next="page.moveNextMonth"
+        />
       </div>
-      <div class="vc-weekly-header-days">
-        <template v-for="day in days" :key="day.id">
-          <div class="vc-weekly-day" :class="{ 'is-today': day.isToday }">
-            <div class="vc-weekly-day-label">
+
+      <div class="vc-grid-header-days">
+        <template v-for="day in page.weeks[0].days" :key="day.id">
+          <div class="vc-grid-day" :class="{ 'is-today': day.isToday }">
+            <div class="vc-grid-day-label">
               {{ locale.format(day.date, 'WWW') }}
             </div>
-            <span class="vc-weekly-day-number" @click="printDay(day)">{{
+            <span class="vc-grid-day-number" @click="printDay(day)">{{
               day.day
             }}</span>
           </div>
@@ -50,7 +26,8 @@
       </div>
     </div>
     <div
-      class="vc-weekly-grid"
+      class="vc-grid"
+      :style="gridStyle"
       @dragenter="onGridDragEnter"
       @dragover="onGridDragOver"
       @drop="onGridDrop"
@@ -87,7 +64,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive, ref } from 'vue';
+import { defineComponent, computed, reactive, ref, onCreated } from 'vue';
+import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
+import { Page } from '../../utils/locale';
 
 interface DragPoint {
   x: number;
@@ -107,14 +86,14 @@ interface DragState {
 }
 
 export default defineComponent({
+  components: { CalendarHeader },
   props: {
-    week: Number,
-    days: { type: Array, required: true },
-    page: Object,
+    page: { type: Object, required: true },
+    navPopoverId: String,
     locale: Object,
   },
   setup(props) {
-    console.log('Weekly props', props);
+    const { days } = props.page as Page;
     const pixelsPerHour = 48;
     const gridEl = ref<HTMLElement>();
     const getPositionFromEvent = (event: DragEvent) => {
@@ -145,10 +124,16 @@ export default defineComponent({
       };
     });
 
+    const gridStyle = computed(() => {
+      const columns = props.page.weeks[0].days.length;
+      return {
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+      };
+    });
     const gridCells = computed(() => {
       const result = [];
       for (let hour = 0; hour < 24; hour++) {
-        for (const day of props.days) {
+        for (const day of days) {
           result.push({
             id: `${day.id}-${hour}`,
             day,
@@ -160,7 +145,7 @@ export default defineComponent({
     });
     const eventCells = computed(() => {
       const result = [];
-      props.days.forEach((day, dayIndex) => {
+      days.forEach((day, dayIndex) => {
         Object.entries(day.attributesMap).forEach(([key, attr]) => {
           attr.dates.forEach(dateInfo => {
             const { startTime } = dateInfo;
@@ -197,7 +182,7 @@ export default defineComponent({
     const labelCells = computed(() => {
       const result = [];
       for (let i = 0; i < 24; i++) {
-        const date = props.days[0].dateFromTime(i, 0, 0);
+        const date = days[0].dateFromTime(i, 0, 0);
         const timeLabel = props.locale.format(date, 'h A');
         if (i === 0) continue;
         result.push({
@@ -215,6 +200,7 @@ export default defineComponent({
       gridEl,
       dragCell,
       dragStyle,
+      gridStyle,
       gridCells,
       eventCells,
       labelCells,
@@ -248,13 +234,11 @@ export default defineComponent({
       onGridDragEnter(event: DragEvent) {
         event.preventDefault();
         event.dataTransfer!.dropEffect = 'move';
-        // console.log('dragenter', event.dataTransfer.effectAllowed);
       },
       onGridDragOver(event: DragEvent) {
         event.preventDefault();
         event.dataTransfer!.dropEffect = 'move';
         dragState.value.current = getPositionFromEvent(event);
-        // console.log('dragover', dragState.value);
       },
       onGridDrop(event: DragEvent) {
         event.preventDefault();
@@ -265,5 +249,5 @@ export default defineComponent({
 </script>
 
 <style lang="css">
-@import './calendar-week.css';
+@import './calendar-grid.css';
 </style>

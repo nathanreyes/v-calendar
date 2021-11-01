@@ -1,37 +1,38 @@
 <script>
 import { h } from 'vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
-import CustomTransition from '../CustomTransition/CustomTransition.vue';
+import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import { childMixin, slotMixin } from '../../utils/mixins';
-import { getPopoverTriggerEvents } from '../../utils/popovers';
 import { getDefault } from '../../utils/defaults';
-import { isBoolean, pick } from '../../utils/_';
+import { isBoolean } from '../../utils/_';
 
 export default {
   name: 'CalendarPane',
-  emits: ['update:page', 'update:week', 'update:days', 'weeknumberclick'],
+  emits: [
+    'update:page',
+    'update:week',
+    'update:days',
+    'weeknumberclick',
+    'move-prev',
+    'move-next',
+  ],
   mixins: [childMixin, slotMixin],
   inheritAttrs: false,
   render() {
-    // Content slot
-    const contentSlot = this.safeSlot('default', this.slotProps);
-    if (contentSlot) return contentSlot;
-
     // Header
     const header =
       this.safeSlot('header', this.page) ||
       // Default header
-      h('div', { class: `vc-header vc-align-${this.titlePosition}` }, [
-        // Header title
-        h(
-          'div',
-          {
-            class: 'vc-title',
-            ...this.navPopoverEvents,
-          },
-          [this.safeSlot('header-title', this.page, this.page.title)],
-        ),
-      ]);
+      h(CalendarHeader, {
+        page: this.page,
+        title: this.page.title,
+        titlePosition: this.titlePosition,
+        navVisibility: this.navVisibility,
+        canMovePrev: this.canMovePrev,
+        canMoveNext: this.canMoveNext,
+        onMovePrev: this.onMovePrev,
+        onMoveNext: this.onMoveNext,
+      });
 
     // Weekday cells
     const getWeekdayCells = h(
@@ -79,11 +80,11 @@ export default {
     // Day cells
     const getDayCells = () => {
       return this.page.weeks.map(week => {
-        const cells = [];
+        let cells = [];
         if (this.showWeeknumbers_) {
           cells.push(getWeeknumberCell(week.weeknumber));
         }
-        cells.concat(
+        cells = cells.concat(
           week.days.map(day =>
             h(
               CalendarDay,
@@ -131,18 +132,17 @@ export default {
   },
   props: {
     page: Object,
-    position: Number,
     row: Number,
     rowFromEnd: Number,
     column: Number,
     columnFromEnd: Number,
-    isWeekly: Boolean,
-    week: Number,
     titlePosition: String,
     navVisibility: {
       type: String,
       default: getDefault('navVisibility'),
     },
+    canMovePrev: Boolean,
+    canMoveNext: Boolean,
     showWeeknumbers: [Boolean, String],
     showIsoWeeknumbers: [Boolean, String],
   },
@@ -152,32 +152,6 @@ export default {
     };
   },
   computed: {
-    slotProps() {
-      return pick(this, [
-        'page',
-        'position',
-        'row',
-        'rowFromEnd',
-        'column',
-        'columnFromEnd',
-        'week',
-        'days',
-        'locale',
-      ]);
-    },
-    weeknumber() {
-      if (this.week) {
-        const day = this.page.days.find(d => d.week === this.week && d.inMonth);
-        return day.weeknumber;
-      }
-      const day = this.page.days.find(d => d.inMonth);
-      return day.weeknumber;
-    },
-    days() {
-      return this.isWeekly
-        ? this.page.days.filter(d => d.weeknumber === this.weeknumber)
-        : this.page.days;
-    },
     weeknumberKey() {
       return this.showIsoWeeknumbers ? 'isoWeeknumber' : 'weeknumber';
     },
@@ -192,34 +166,13 @@ export default {
       }
       return this.column > 1 ? 'left' : showWeeknumbers;
     },
-    navPlacement() {
-      switch (this.titlePosition) {
-        case 'left':
-          return 'bottom-start';
-        case 'right':
-          return 'bottom-end';
-        default:
-          return 'bottom';
-      }
-    },
-    navPopoverEvents() {
-      const { sharedState, navVisibility, navPlacement, page, position } = this;
-      return getPopoverTriggerEvents({
-        id: sharedState.navPopoverId,
-        visibility: navVisibility,
-        placement: navPlacement,
-        modifiers: [
-          { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
-        ],
-        data: { page, position },
-        isInteractive: true,
-        isRenderFn: true,
-      });
-    },
     weekdayLabels() {
-      return this.locale
-        .getWeekdayDates()
-        .map(d => this.format(d, this.masks.weekdays));
+      return this.page.weeks[0].days.map(d => {
+        return this.format(d.date, this.masks.weekdays);
+      });
+      // return this.locale
+      //   .getWeekdayDates()
+      //   .map(d => this.format(d, this.masks.weekdays));
     },
   },
   watch: {
@@ -233,11 +186,13 @@ export default {
       this.weekTransition = transition;
       this.$emit('update:week', val);
     },
-    days: {
-      immediate: true,
-      handler(val) {
-        this.$emit('update:days', val);
-      },
+  },
+  methods: {
+    onMovePrev() {
+      this.$emit('move-prev');
+    },
+    onMoveNext() {
+      this.$emit('move-next');
     },
   },
 };

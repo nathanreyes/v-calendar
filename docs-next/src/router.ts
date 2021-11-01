@@ -4,7 +4,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Home from '@/pages/Home.vue';
 import Blank from '@/pages/Blank.vue';
-import Weekly from '@/pages/calendar/Weekly.vue';
+import Grid from '@/pages/calendar/Grid.vue';
 import DatepickerDate from '@/pages/datepicker/Date.vue';
 
 const routes = [
@@ -17,8 +17,8 @@ const routes = [
         component: Home,
       },
       {
-        path: 'calendar/weekly',
-        component: Weekly,
+        path: 'calendar/grid',
+        component: Grid,
       },
       {
         path: 'calendar/blank',

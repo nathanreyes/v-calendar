@@ -5,7 +5,7 @@
         Calendar
       </div>
       <div class="flex flex-col space-y-2 mt-2">
-        <RouterLink to="/calendar/weekly" class="text-sm">Weekly</RouterLink>
+        <RouterLink to="/calendar/grid" class="text-sm">Grid</RouterLink>
         <RouterLink to="/calendar/blank" class="text-sm">Blank</RouterLink>
       </div>
     </div>

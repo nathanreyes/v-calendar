@@ -13,6 +13,7 @@
 }
 
 .vc-arrow {
+  grid-row: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,6 +26,12 @@
   border-radius: var(--rounded);
   border-color: transparent;
   z-index: 1;
+  &.vc-prev {
+    grid-column: prev;
+  }
+  &.vc-next {
+    grid-column: next;
+  }
   &:hover {
     background: var(--gray-200);
   }
@@ -55,22 +62,6 @@
   color: var(--gray-300);
   font-weight: var(--font-semibold);
   text-align: center;
-}
-
-.vc-arrows-container {
-  width: 100%;
-  position: absolute;
-  top: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 10px;
-  pointer-events: none;
-  &.title-left {
-    justify-content: flex-end;
-  }
-  &.title-right {
-    justify-content: flex-start;
-  }
 }
 
 .vc-is-dark {

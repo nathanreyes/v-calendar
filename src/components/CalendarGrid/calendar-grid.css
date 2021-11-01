@@ -1,4 +1,4 @@
-.vc-weekly-container {
+.vc-grid-container {
   --gutter-width: 50px;
   --grid-cell-border-color: #e5e7eb;
   --accent-500: rgba(99, 102, 241, 1);
@@ -7,13 +7,13 @@
   width: 800px;
   overflow: auto;
 
-  & .vc-weekly-header {
+  & .vc-grid-header {
     top: 0;
     position: sticky;
     background-color: white;
     margin-top: -1px;
     z-index: 1;
-    & .vc-weekly-header-nav {
+    /* & .vc-grid-header-nav {
       display: flex;
       align-items: center;
       margin-bottom: 0.5rem;
@@ -21,34 +21,34 @@
         margin-right: 0.5rem;
         margin-left: 0.5rem;
       }
-      & .vc-weekly-title {
+      & .vc-grid-title {
         margin-left: 1rem;
         font-size: 1.75rem;
         font-weight: 700;
       }
-    }
-    & .vc-weekly-header-days {
+    } */
+    & .vc-grid-header-days {
       display: flex;
       border-bottom: 1px solid var(--grid-cell-border-color);
       padding-left: var(--gutter-width);
     }
-    & .vc-weekly-day {
+    & .vc-grid-day {
       display: flex;
       flex-direction: column;
       align-items: center;
       flex-grow: 1;
       &.is-today {
-        & .vc-weekly-day-label {
+        & .vc-grid-day-label {
           color: var(--accent-500);
         }
-        & .vc-weekly-day-number {
+        & .vc-grid-day-number {
           color: white;
           background-color: var(--accent-500);
         }
       }
     }
   }
-  & .vc-weekly-day-label {
+  & .vc-grid-day-label {
     display: flex;
     justify-content: center;
     color: var(--gray-400);
@@ -58,25 +58,24 @@
     letter-spacing: 0.025em;
     text-transform: uppercase;
   }
-  & .vc-weekly-day-number {
+  & .vc-grid-day-number {
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.25rem;
     font-weight: 500;
     line-height: 1.75rem;
-    margin: 0.5rem 0;
-    width: 2rem;
-    height: 2rem;
+    margin: 0.25rem 0 0.5rem 0;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 9999px;
     cursor: pointer;
   }
-  & .vc-weekly-grid {
+  & .vc-grid {
     position: relative;
     display: grid;
     height: 500px;
     margin-left: var(--gutter-width);
-    grid-template-columns: repeat(7, minmax(0, 1fr));
     grid-template-rows: repeat(25, auto);
   }
 

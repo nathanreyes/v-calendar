@@ -19,7 +19,7 @@
       <!--Mode switch button-->
       <span
         role="button"
-        class="vc-nav-title vc-grid-focus"
+        class="vc-nav-title"
         :class="{ 'is-disabled': !nextItemsEnabled }"
         :style="{ whiteSpace: 'nowrap' }"
         :tabindex="nextItemsEnabled ? 0 : undefined"

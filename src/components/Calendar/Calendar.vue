@@ -8,22 +8,18 @@ import PopoverRow from '../PopoverRow/PopoverRow.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
 import CalendarPane from '../CalendarPane/CalendarPane.vue';
 import CustomTransition from '../CustomTransition/CustomTransition.vue';
-import SvgIcon from '../SvgIcon/SvgIcon.vue';
 import AttributeStore from '../../utils/attributeStore';
 import { rootMixin, slotMixin } from '../../utils/mixins';
 import { addHorizontalSwipeHandler } from '../../utils/touch';
 import { getDefault } from '../../utils/defaults';
 import {
-  addPages,
   pageIsValid,
   pageIsEqualToPage,
   pageIsBeforePage,
   pageIsAfterPage,
   pageIsBetweenPages,
-  pageRangeToArray,
   createGuid,
   arrayHasItems,
-  onSpaceOrEnter,
 } from '../../utils/helpers';
 import {
   isNumber,
@@ -33,7 +29,14 @@ import {
   omit,
   head,
   last,
+  pick,
 } from '../../utils/_';
+
+const PICK_PAGE = {
+  daily: ['day', 'week', 'month', 'year'],
+  weekly: ['week', 'month', 'year'],
+  monthly: ['month', 'year'],
+};
 
 export default {
   name: 'Calendar',
@@ -47,67 +50,46 @@ export default {
   ],
   render() {
     // Renderer for calendar panes
-    const panes = this.pages.map((page, i) => {
-      const position = i + 1;
-      const row = Math.ceil((i + 1) / this.columns);
-      const rowFromEnd = this.rows - row + 1;
-      const column = position % this.columns || this.columns;
-      const columnFromEnd = this.columns - column + 1;
-      return h(
-        CalendarPane,
-        {
-          ...this.$attrs,
-          key: page.key,
-          attributes: this.store,
-          page,
-          position,
-          row,
-          rowFromEnd,
-          column,
-          columnFromEnd,
-          titlePosition: this.titlePosition,
-          canMove: this.canMove,
-          'onUpdate:page': e => this.move(e, { position: i + 1 }),
-          onDayfocusin: e => {
-            this.lastFocusedDay = e;
-            this.$emit('dayfocusin', e);
+    const renderPages = pages =>
+      pages.map((page, i) => {
+        const row = Math.ceil((i + 1) / this.columns);
+        const rowFromEnd = this.rows - row + 1;
+        const column = page.position % this.columns || this.columns;
+        const columnFromEnd = this.columns - column + 1;
+        const component = this.$slots.default || CalendarPane;
+        return h(
+          component,
+          {
+            ...this.$attrs,
+            key: page.key,
+            view: this.view,
+            attributes: this.store,
+            locale: this.$locale,
+            page,
+            row,
+            rowFromEnd,
+            column,
+            columnFromEnd,
+            titlePosition: this.titlePosition,
+            navPopoverId: this.sharedState.navPopoverId,
+            canMove: this.canMove,
+            canMovePrev: this.canMovePrev,
+            canMoveNext: this.canMoveNext,
+            onMovePrev: this.movePrev,
+            onMoveNext: this.moveNext,
+            'onUpdate:page': e => this.move(e, { position: i + 1 }),
+            onDayfocusin: e => {
+              this.lastFocusedDay = e;
+              this.$emit('dayfocusin', e);
+            },
+            onDayfocusout: e => {
+              this.lastFocusedDay = null;
+              this.$emit('dayfocusout', e);
+            },
           },
-          onDayfocusout: e => {
-            this.lastFocusedDay = null;
-            this.$emit('dayfocusout', e);
-          },
-        },
-        this.$slots,
-      );
-    });
-
-    // Renderer for calendar arrows
-    const getArrowButton = isPrev => {
-      const click = () => this.move(isPrev ? -this.step_ : this.step_);
-      const keydown = e => onSpaceOrEnter(e, click);
-      const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
-      return h(
-        'div',
-        {
-          class: [
-            'vc-arrow',
-            `is-${isPrev ? 'left' : 'right'}`,
-            { 'is-disabled': isDisabled },
-          ],
-          role: 'button',
-          onClick: click,
-          onKeydown: keydown,
-        },
-        [
-          (isPrev
-            ? this.safeSlot('header-left-button', { click })
-            : this.safeSlot('header-right-button', { click })) ||
-            h(SvgIcon, {
-              name: isPrev ? 'left-arrow' : 'right-arrow',
-            }),
-        ],
-      );
-    };
+          this.$slots,
+        );
+      });
 
     // Nav popover
     const getNavPopover = () =>
@@ -121,13 +103,12 @@ export default {
         {
           // Navigation pane
           default: ({ data }) => {
-            const { position, page } = data;
+            const { page } = data;
             return h(
               CalendarNav,
               {
                 value: page,
-                position,
-                validator: e => this.canMove(e, { position }),
+                validator: e => this.canMove(e, { position: page.position }),
                 onInput: e => this.move(e),
               },
               {
@@ -239,18 +220,10 @@ export default {
                       },
                       key: this.firstPage ? this.firstPage.key : '',
                     },
-                    panes,
+                    renderPages(this.pages),
                   ),
               },
             ),
-            !this.$slots.default &&
-              h(
-                'div',
-                {
-                  class: [`vc-arrows-container title-${this.titlePosition}`],
-                },
-                [getArrowButton(true), getArrowButton(false)],
-              ),
             this.$slots.footer && this.$slots.footer(),
           ],
         ),
@@ -265,6 +238,13 @@ export default {
     };
   },
   props: {
+    view: {
+      type: String,
+      default: 'monthly',
+      validator(value) {
+        return ['daily', 'weekly', 'monthly'].includes(value);
+      },
+    },
     rows: {
       type: Number,
       default: 1,
@@ -342,6 +322,9 @@ export default {
     $theme() {
       this.refreshTheme();
       this.initStore();
+    },
+    view() {
+      this.refreshPages();
     },
     fromDate() {
       this.refreshPages();
@@ -453,9 +436,9 @@ export default {
         }),
       );
       // Verify we can move to any pages in the target range
-      return pageRangeToArray(opts.fromPage, opts.toPage).some(p =>
-        pageIsBetweenPages(p, this.minPage_, this.maxPage_),
-      );
+      return this.$locale
+        .pageRangeToArray(opts.fromPage, opts.toPage)
+        .some(p => pageIsBetweenPages(p, this.minPage_, this.maxPage_));
     },
     movePrev(opts) {
       return this.move(-this.step_, opts);
@@ -519,7 +502,7 @@ export default {
       let page = fromPage;
       // Offset page from the desired `toPage`
       if (pageIsAfterPage(toPage, lastPage)) {
-        page = addPages(toPage, -(this.pages.length - 1));
+        page = this.addPages(toPage, -(this.pages.length - 1));
       }
       // But no earlier than the desired `fromPage`
       if (pageIsBeforePage(page, fromPage)) {
@@ -536,20 +519,22 @@ export default {
         if (!isNaN(position)) {
           pagesToAdd = position > 0 ? 1 - position : -(this.count + position);
         }
-        fromPage = addPages(page, pagesToAdd);
+        fromPage = this.addPages(page, pagesToAdd);
       } else {
         fromPage = this.getDefaultInitialPage();
       }
-      toPage = addPages(fromPage, this.count - 1);
+      toPage = this.addPages(fromPage, this.count - 1);
       // Adjust range for min/max if not forced
       if (!force) {
         if (pageIsBeforePage(fromPage, this.minPage_)) {
           fromPage = this.minPage_;
         } else if (pageIsAfterPage(toPage, this.maxPage_)) {
-          fromPage = addPages(this.maxPage_, 1 - this.count);
+          fromPage = this.addPages(this.maxPage_, 1 - this.count);
         }
-        toPage = addPages(fromPage, this.count - 1);
+        toPage = this.addPages(fromPage, this.count - 1);
       }
+      fromPage = pick(fromPage, PICK_PAGE[this.view]);
+      toPage = pick(toPage, PICK_PAGE[this.view]);
       return { fromPage, toPage };
     },
     getDefaultInitialPage() {
@@ -559,7 +544,7 @@ export default {
         // 2. Try the toPage prop
         const toPage = this.toPage || this.pageForDate(this.toPage);
         if (pageIsValid(toPage)) {
-          page = addPages(toPage, 1 - this.count);
+          page = this.addPages(toPage, 1 - this.count);
         }
       }
       // 3. Try the first attribute
@@ -581,7 +566,8 @@ export default {
         // Create the new pages
         const pages = [];
         for (let i = 0; i < this.count; i++) {
-          pages.push(this.buildPage(addPages(fromPage, i)));
+          const newPage = this.addPages(fromPage, i);
+          pages.push(this.buildPage(newPage, i + 1));
         }
         // Refresh disabled days for new pages
         this.refreshDisabledDays(pages);
@@ -651,13 +637,18 @@ export default {
       }
       return page;
     },
-    buildPage({ month, year }) {
-      const page = this.$locale.getPage({ month, year }, this.trimWeeks);
+    buildPage(pageAddress, position) {
+      const { trimWeeks, view } = this;
+      const page = this.$locale.getPage(pageAddress, {
+        trimWeeks,
+        view,
+        position,
+      });
       page.canMove = pg => this.canMove(pg);
       page.move = pg => this.move(pg);
       page.moveThisMonth = () => this.move(page.monthComps);
-      page.moveNextMonth = () => this.move(page.nextMonthComps);
-      page.movePrevMonth = () => this.move(page.prevMonthComps);
+      page.moveNextMonth = () => this.move(this.addPages(page, 1));
+      page.movePrevMonth = () => this.move(this.addPages(page, -1));
       return page;
     },
     initStore() {
