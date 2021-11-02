@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive, ref, onCreated } from 'vue';
+import { defineComponent, computed, reactive, ref } from 'vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import { Page } from '../../utils/locale';
 
