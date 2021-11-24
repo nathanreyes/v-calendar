@@ -5,7 +5,6 @@
   .vc-title {
     grid-row: 1;
     grid-column: title;
-    font-size: var(--text-lg);
     color: var(--gray-800);
     font-weight: var(--font-semibold);
     cursor: pointer;
@@ -15,5 +14,14 @@
     &:hover {
       opacity: 0.75;
     }
+  }
+  &.is-lg {
+    font-size: var(--text-lg);
+  }
+  &.is-xl {
+    font-size: var(--text-xl);
+  }
+  &.is-2xl {
+    font-size: var(--text-2xl);
   }
 }

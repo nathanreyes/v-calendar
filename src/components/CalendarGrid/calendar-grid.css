@@ -1,120 +1,301 @@
 .vc-grid-container {
   --gutter-width: 50px;
+  --gutter-height: 8px;
   --grid-cell-border-color: #e5e7eb;
-  --accent-500: rgba(99, 102, 241, 1);
+  --indigo-500: rgba(99, 102, 241, 1);
   --gray-400: rgba(156, 163, 175, 1);
 
-  width: 800px;
-  overflow: auto;
+  width: 900px;
+  overflow: hidden;
 
-  & .vc-grid-header {
+  .vc-grid {
+    position: relative;
+    height: 700px;
+    overflow-y: auto;
+  }
+
+  .vc-grid-header {
     top: 0;
     position: sticky;
     background-color: white;
     margin-top: -1px;
-    z-index: 1;
-    /* & .vc-grid-header-nav {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      & * + * {
-        margin-right: 0.5rem;
-        margin-left: 0.5rem;
-      }
-      & .vc-grid-title {
-        margin-left: 1rem;
-        font-size: 1.75rem;
-        font-weight: 700;
-      }
-    } */
-    & .vc-grid-header-days {
-      display: flex;
-      border-bottom: 1px solid var(--grid-cell-border-color);
-      padding-left: var(--gutter-width);
-    }
-    & .vc-grid-day {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-grow: 1;
-      &.is-today {
-        & .vc-grid-day-label {
-          color: var(--accent-500);
-        }
-        & .vc-grid-day-number {
-          color: white;
-          background-color: var(--accent-500);
-        }
-      }
-    }
+    z-index: 10;
   }
-  & .vc-grid-day-label {
+
+  .vc-grid-header-days {
     display: flex;
-    justify-content: center;
-    color: var(--gray-400);
-    font-size: 0.75rem;
-    font-weight: 700;
-    line-height: 1rem;
-    letter-spacing: 0.025em;
-    text-transform: uppercase;
+    border-bottom: 1px solid var(--grid-cell-border-color);
+    padding-left: var(--gutter-width);
   }
-  & .vc-grid-day-number {
+
+  .vc-grid-header-day {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    user-select: none;
+    .vc-grid-header-day-label {
+      display: flex;
+      justify-content: center;
+      color: var(--gray-400);
+      font-size: 0.75rem;
+      font-weight: 700;
+      line-height: 1rem;
+      letter-spacing: 0.025em;
+      text-transform: uppercase;
+    }
+    .vc-grid-header-day-number {
+      &:hover {
+        background-color: var(--gray-200);
+      }
+    }
+    &.is-today {
+      & .vc-grid-header-day-label {
+        color: var(--indigo-500);
+      }
+      .vc-grid-header-day-number {
+        color: white;
+        background-color: var(--indigo-500);
+        &:hover {
+          background-color: var(--indigo-600);
+        }
+      }
+    }
+  }
+
+  .vc-grid-header-day-number {
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.25rem;
     font-weight: 500;
     line-height: 1.75rem;
-    margin: 0.25rem 0 0.5rem 0;
+    margin: 0.25rem 0 0.25rem 0;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 9999px;
     cursor: pointer;
   }
-  & .vc-grid {
-    position: relative;
-    display: grid;
-    height: 500px;
-    margin-left: var(--gutter-width);
-    grid-template-rows: repeat(25, auto);
+
+  .vc-grid-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
   }
 
-  & .grid-cell {
-    height: 48px;
-    border-top: 1px solid var(--grid-cell-border-color);
-    border-left: 1px solid var(--grid-cell-border-color);
-    &.vc-hour-0 {
-      border-top: none;
+  .vc-events-layer {
+    display: flex;
+    justify-content: stretch;
+  }
+
+  .vc-grid-content {
+    position: relative;
+    display: grid;
+    margin-left: var(--gutter-width);
+    margin-top: var(--gutter-height);
+    grid-template-rows: repeat(25, auto);
+    &.is-resizing {
+      cursor: ns-resize;
+    }
+    &.is-dragging {
+      cursor: grabbing;
+    }
+    &.is-resizing,
+    &.is-dragging {
+      .vc-event-cell {
+        /* pointer-events: none; */
+      }
     }
   }
-  & .label-cell {
+
+  .vc-grid-day {
+    position: relative;
+    flex-grow: 1;
+    height: 100%;
+    margin: 0 2px 0 0;
+  }
+
+  .vc-grid-line-hour {
+    stroke-dasharray: 3 2;
+    stroke: var(--gray-400);
+  }
+
+  .vc-grid-label-cell {
     position: absolute;
-    color: #4b5563;
-    font-size: 0.7rem;
+    color: var(--gray-700);
+    font-size: var(--text-2xs);
     left: 0px;
     width: var(--gutter-width);
     text-align: right;
-    padding-right: 0.25rem;
+    padding-right: 0.5rem;
     transform: translateX(-50px) translateY(-50%);
-    /* transform: translateX(-10px) translateY(-50%); */
+    user-select: none;
   }
-  & .event-cell {
+
+  .vc-event-cell {
     position: absolute;
     min-height: 5px;
+    width: 100%;
     cursor: pointer;
-    border-radius: 3px;
-    &.is-dragging {
-      opacity: 0.5;
+    border-radius: 5px;
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--white);
+    &:hover {
+      background-color: var(--indigo-600);
     }
-  }
-  & .drag-cell {
-    position: absolute;
-    height: 20px;
-    width: 80px;
-    cursor: move;
-    border-radius: 3px;
-    background-color: blue;
-    cursor: pointer;
-    pointer-events: none;
+    &.is-gray {
+      background-color: var(--gray-600);
+      border: 2px solid var(--gray-400);
+      &:hover {
+        background-color: var(--gray-700);
+      }
+      &.is-selected {
+        background-color: var(--gray-700);
+      }
+    }
+    &.is-red {
+      background-color: var(--red-600);
+      border: 2px solid var(--red-400);
+      &:hover {
+        background-color: var(--red-700);
+      }
+      &.is-selected {
+        background-color: var(--red-700);
+      }
+    }
+    &.is-orange {
+      background-color: var(--orange-600);
+      border: 2px solid var(--orange-400);
+      &:hover {
+        background-color: var(--orange-700);
+      }
+      &.is-selected {
+        background-color: var(--orange-700);
+      }
+    }
+    &.is-yellow {
+      background-color: var(--yellow-600);
+      border: 2px solid var(--yellow-400);
+      &:hover {
+        background-color: var(--yellow-700);
+      }
+      &.is-selected {
+        background-color: var(--yellow-700);
+      }
+    }
+    &.is-green {
+      background-color: var(--green-600);
+      border: 2px solid var(--green-400);
+      &:hover {
+        background-color: var(--green-700);
+      }
+      &.is-selected {
+        background-color: var(--green-700);
+      }
+    }
+    &.is-blue {
+      background-color: var(--blue-600);
+      border: 2px solid var(--blue-400);
+      &:hover {
+        background-color: var(--blue-700);
+      }
+      &.is-selected {
+        background-color: var(--blue-700);
+      }
+    }
+    &.is-indigo {
+      background-color: var(--indigo-600);
+      border: 2px solid var(--indigo-400);
+      &:hover {
+        background-color: var(--indigo-700);
+      }
+      &.is-selected {
+        background-color: var(--indigo-700);
+      }
+    }
+    &.is-purple {
+      background-color: var(--purple-600);
+      border: 2px solid var(--purple-400);
+      &:hover {
+        background-color: var(--purple-700);
+      }
+      &.is-selected {
+        background-color: var(--purple-700);
+      }
+    }
+    &.is-collapsed {
+      .vc-event-cell-content {
+        display: flex;
+        > * + * {
+          margin-left: 3px;
+        }
+      }
+      .vc-event-cell-end-label {
+        display: none;
+      }
+    }
+    &.is-collapsed,
+    &.is-constrained,
+    &.is-small {
+      line-height: var(--leading-none);
+      .vc-event-cell-label {
+        line-height: var(--leading-none);
+      }
+      .vc-event-cell-content {
+        overflow-y: hidden;
+      }
+    }
+    &.is-collapsed,
+    &.is-constrained {
+      border-width: 0px;
+      .vc-event-cell-content {
+        padding-top: 0px;
+        padding-bottom: 0px;
+      }
+    }
+    &.is-collapsed {
+      border-radius: 3px;
+    }
+    &.is-selected {
+      border-color: var(--gray-300);
+      outline: 2px solid var(--blue-500);
+    }
+    &.is-dragging,
+    &.is-resizing,
+    &.is-selected {
+      z-index: 1;
+    }
+    &.is-resizing {
+      cursor: ns-resize;
+    }
+    .vc-event-cell-layout {
+      position: relative;
+      height: 100%;
+    }
+    .vc-event-cell-content {
+      height: 100%;
+      padding: 0.125rem 0.25rem;
+      overflow-y: auto;
+    }
+    .vc-event-cell-resizer {
+      position: absolute;
+      width: 100%;
+      left: 0px;
+      cursor: ns-resize;
+      height: 7px;
+      &.is-start {
+        top: -5px;
+      }
+      &.is-end {
+        bottom: -5px;
+      }
+    }
+    .vc-event-cell-label {
+      user-select: none;
+      line-height: var(--leading-tight);
+    }
   }
 }

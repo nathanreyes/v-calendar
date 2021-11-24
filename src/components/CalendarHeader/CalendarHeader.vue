@@ -1,5 +1,9 @@
 <template>
-  <div class="vc-header" :style="gridStyle">
+  <div
+    class="vc-header"
+    :class="{ 'is-lg': isLg, 'is-xl': isXl, 'is-2xl': is2xl }"
+    :style="gridStyle"
+  >
     <div
       :class="['vc-arrow', 'vc-prev', { 'is-disabled': !canMovePrev }]"
       role="button"
@@ -11,7 +15,7 @@
       </slot>
     </div>
     <div class="vc-title" v-on="navPopoverEvents">
-      <slot name="header-title">{{ title }}</slot>
+      <slot name="header-title">{{ page.title }}</slot>
     </div>
     <div
       :class="['vc-arrow', 'vc-next', { 'is-disabled': !canMoveNext }]"
@@ -27,7 +31,7 @@
 </template>
 
 <script>
-import { defineComponent, inject, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
 import { getDefault } from '../../utils/defaults';
 import { getPopoverTriggerEvents } from '../../utils/popovers';
@@ -36,11 +40,6 @@ export default defineComponent({
   components: { SvgIcon },
   props: {
     page: Object,
-    title: String,
-    titlePosition: {
-      type: String,
-      default: getDefault('titlePosition'),
-    },
     layout: String,
     navPopoverId: String,
     navVisibility: {
@@ -49,10 +48,13 @@ export default defineComponent({
     },
     canMovePrev: { type: Boolean, default: true },
     canMoveNext: { type: Boolean, default: true },
+    isLg: Boolean,
+    isXl: Boolean,
+    is2xl: Boolean,
   },
   setup(props, { emit }) {
     const navPlacement = computed(() => {
-      switch (props.titlePosition) {
+      switch (props.page.titlePosition) {
         case 'left':
           return 'bottom-start';
         case 'right':
@@ -74,8 +76,10 @@ export default defineComponent({
         isInteractive: true,
       });
     });
-    const titleLeft = computed(() => props.titlePosition.includes('left'));
-    const titleRight = computed(() => props.titlePosition.includes('right'));
+    const titleLeft = computed(() => props.page.titlePosition.includes('left'));
+    const titleRight = computed(() =>
+      props.page.titlePosition.includes('right'),
+    );
     const layout_ = computed(() => {
       if (props.layout) return props.layout;
       if (titleLeft.value) return 't-pn';

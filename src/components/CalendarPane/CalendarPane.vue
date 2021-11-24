@@ -26,7 +26,7 @@ export default {
       h(CalendarHeader, {
         page: this.page,
         title: this.page.title,
-        titlePosition: this.titlePosition,
+        titlePosition: this.page.titlePosition,
         navVisibility: this.navVisibility,
         canMovePrev: this.canMovePrev,
         canMoveNext: this.canMoveNext,
@@ -122,8 +122,10 @@ export default {
       {
         class: [
           'vc-pane',
-          `row-from-end-${this.rowFromEnd}`,
-          `column-from-end-${this.columnFromEnd}`,
+          `row-${this.page.row}`,
+          `row-from-end-${this.page.rowFromEnd}`,
+          `column-${this.page.column}`,
+          `column-from-end-${this.page.columnFromEnd}`,
         ],
         ref: 'pane',
       },
@@ -132,11 +134,6 @@ export default {
   },
   props: {
     page: Object,
-    row: Number,
-    rowFromEnd: Number,
-    column: Number,
-    columnFromEnd: Number,
-    titlePosition: String,
     navVisibility: {
       type: String,
       default: getDefault('navVisibility'),
@@ -186,6 +183,9 @@ export default {
       this.weekTransition = transition;
       this.$emit('update:week', val);
     },
+  },
+  created() {
+    console.log('CalendarPane created');
   },
   methods: {
     onMovePrev() {
