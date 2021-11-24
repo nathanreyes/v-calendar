@@ -439,9 +439,7 @@ export class Grid {
 
   // #region Util
 
-  refreshCells_ = 0;
   refreshCells() {
-    // log('refreshCells', ++this.refreshCells_);
     this.cells = this.getEventCells(this.days);
     this.refreshDayCells();
   }

@@ -1,9 +1,6 @@
 .vc-grid-container {
   --gutter-width: 50px;
   --gutter-height: 8px;
-  --grid-cell-border-color: #e5e7eb;
-  --indigo-500: rgba(99, 102, 241, 1);
-  --gray-400: rgba(156, 163, 175, 1);
 
   width: 900px;
   overflow: hidden;
@@ -19,12 +16,12 @@
     position: sticky;
     background-color: white;
     margin-top: -1px;
-    z-index: 10;
+    z-index: 2;
   }
 
   .vc-grid-header-days {
     display: flex;
-    border-bottom: 1px solid var(--grid-cell-border-color);
+    border-bottom: 1px solid var(--gray-300);
     padding-left: var(--gutter-width);
   }
 

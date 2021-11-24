@@ -144,6 +144,7 @@
 <script lang="ts">
 import {
   defineComponent,
+  inject,
   computed,
   reactive,
   ref,
@@ -168,10 +169,11 @@ export default defineComponent({
   props: {
     page: { type: Object, required: true },
     transition: String,
-    navPopoverId: String,
-    locale: { type: Object, required: true },
   },
   setup(props, { emit }) {
+    const sharedState = inject<any>('sharedState');
+    const locale = sharedState.locale;
+    const navPopoverId = sharedState.navPopoverId;
     const transitionName = ref('none');
     const gridEl = ref<HTMLElement>();
     const { page } = toRefs(props);
@@ -229,7 +231,7 @@ export default defineComponent({
       const result = [];
       for (let i = 0; i < 24; i++) {
         const date = days.value[0].dateFromTime(i, 0, 0, 0);
-        const timeLabel = props.locale.format(date, 'h A');
+        const timeLabel = locale.format(date, 'h A');
         if (i === 0) continue;
         result.push({
           id: `${i}-label`,
@@ -304,6 +306,8 @@ export default defineComponent({
     };
 
     return {
+      locale,
+      navPopoverId,
       grid,
       days,
       weeks,
