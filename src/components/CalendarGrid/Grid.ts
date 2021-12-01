@@ -22,15 +22,13 @@ export type GridStateEvent =
   | 'EVENT_CURSOR_DOWN_SHIFT'
   | 'EVENT_CURSOR_MOVE'
   | 'EVENT_CURSOR_MOVE_SHIFT'
-  | 'EVENT_CURSOR_UP'
-  | 'EVENT_CURSOR_UP_SHIFT'
   | 'EVENT_RESIZE_START_CURSOR_DOWN'
   | 'EVENT_RESIZE_START_CURSOR_DOWN_SHIFT'
   | 'EVENT_RESIZE_END_CURSOR_DOWN'
   | 'EVENT_RESIZE_END_CURSOR_DOWN_SHIFT'
   | 'ESCAPE';
 
-const loggingEnabled = false;
+const loggingEnabled = true;
 function log(...args: any[]) {
   if (loggingEnabled) {
     console.log(...args);
@@ -43,6 +41,7 @@ interface DragOriginState {
   day: CalendarDay;
   weekdayPosition: number;
   cell: Cell;
+  cellSelected: boolean;
   minOffsetDays: number;
   maxOffsetDays: number;
 }
@@ -95,6 +94,8 @@ export class Grid {
   createTimer: number | undefined = undefined;
   createTimerDurationMs = 700;
 
+  isTouch = false;
+
   constructor(days: CalendarDay[], source: GridSource) {
     this.days = days;
     this.source = source;
@@ -112,6 +113,14 @@ export class Grid {
 
   get active() {
     return this.resizing || this.dragging;
+  }
+
+  get hasSelected() {
+    return this.selectedCount > 0;
+  }
+
+  get selectedCount() {
+    return this.cells.filter(c => c.selected).length;
   }
 
   get snapMs() {
@@ -225,13 +234,20 @@ export class Grid {
         } else {
           this.deselectAllCells();
           const newCell = this.createNewCell(this.createOrigin.position, day);
+          newCell.selected = true;
           this.source.didCreateEvent(newCell);
         }
         this.state = 'NORMAL';
         break;
       }
+      case 'EVENT_CURSOR_MOVE':
+      case 'EVENT_CURSOR_MOVE_SHIFT':
       case 'GRID_CURSOR_MOVE':
       case 'GRID_CURSOR_MOVE_SHIFT': {
+        if (this.isTouch) {
+          this.state = 'NORMAL';
+          return;
+        }
         this.deselectAllCells();
         const cell = this.createNewCell(this.createOrigin.position, day);
         const position = cell.position + cell.height;
@@ -250,6 +266,8 @@ export class Grid {
   ) {
     if (!this.resizeOrigin) return;
     switch (event) {
+      case 'EVENT_CURSOR_MOVE':
+      case 'EVENT_CURSOR_MOVE_SHIFT':
       case 'GRID_CURSOR_MOVE':
       case 'GRID_CURSOR_MOVE_SHIFT': {
         this.updateResizingCells(position, day);
@@ -285,11 +303,13 @@ export class Grid {
         break;
       }
       case 'GRID_CURSOR_UP': {
-        if (position === this.dragOrigin.position) {
-          this.deselectAllCells();
-          this.dragOrigin.cell.selected = true;
-        }
+        const dragOrigin = this.dragOrigin;
         this.stopDraggingCells();
+        if (position === dragOrigin.position) {
+          const select = !dragOrigin.cellSelected || this.selectedCount > 1;
+          this.deselectAllCells();
+          dragOrigin.cell.selected = select;
+        }
         this.state = 'NORMAL';
         break;
       }
@@ -358,6 +378,7 @@ export class Grid {
   startDraggingCells(position: number, day: CalendarDay, cell: Cell) {
     if (this.active) return;
     this.dragging = true;
+    const cellSelected = cell.selected;
     cell.selected = true;
     const selectedCells = this.getSelectedCells();
     const indices = selectedCells.map(c =>
@@ -373,6 +394,7 @@ export class Grid {
       minOffsetDays,
       day,
       cell,
+      cellSelected,
     };
     selectedCells.forEach(cell => {
       this.source.willMoveEvent(cell);

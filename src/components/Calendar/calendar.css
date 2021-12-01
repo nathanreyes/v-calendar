@@ -32,6 +32,9 @@
   &.vc-next {
     grid-column: next;
   }
+  &.vc-up {
+    grid-column: up;
+  }
   &:hover {
     background: var(--gray-200);
   }

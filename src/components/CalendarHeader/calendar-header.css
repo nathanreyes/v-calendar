@@ -17,11 +17,14 @@
   }
   &.is-lg {
     font-size: var(--text-lg);
+    min-height: 46px;
   }
   &.is-xl {
     font-size: var(--text-xl);
+    min-height: 46px;
   }
   &.is-2xl {
     font-size: var(--text-2xl);
+    min-height: 52px;
   }
 }

@@ -130,7 +130,7 @@ export class Cell {
       top: `${this.position}px`,
       height: `${this.height}px`,
     };
-    this.class = [`is-${this.color}`, this.getClassForHeight(this.height)];
+    this.class = [`vc-${this.color}`, this.getClassForHeight(this.height)];
   }
 
   getClassForHeight(height: number) {
