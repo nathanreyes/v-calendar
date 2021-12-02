@@ -7,6 +7,9 @@ import {
   onMounted,
   onUnmounted,
   watch,
+  inject,
+  ToRefs,
+  nextTick,
 } from 'vue';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
@@ -14,7 +17,13 @@ import addYears from 'date-fns/addYears';
 import Popover from '../Popover/Popover.vue';
 import AttributeStore from './attributeStore';
 import Attribute from './attribute';
-import { default as Locale, CalendarDay, Page, TitlePosition } from './locale';
+import {
+  default as Locale,
+  CalendarDay,
+  CalendarWeek,
+  Page,
+  TitlePosition,
+} from './locale';
 import Theme from './theme';
 import {
   pageIsValid,
@@ -27,9 +36,10 @@ import {
   getPageTransition,
   PageAddress,
 } from './helpers';
-import { isNumber, isObject, hasAny, omit, head, last } from './_';
+import { isBoolean, isNumber, isObject, hasAny, omit, head, last } from './_';
 import { locales, getDefault } from './defaults';
 import { addHorizontalSwipeHandler } from './touch';
+import { skipWatcher, handleWatcher } from './watchers';
 
 type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -53,6 +63,8 @@ interface CalendarProps {
   titlePosition: TitlePosition;
   navVisibility: NavVisibility;
   isExpanded: boolean;
+  showWeeknumbers: boolean | string;
+  showIsoWeeknumbers: boolean | string;
   minPage?: PageAddress;
   minDate?: Date;
   minDateExact?: Date;
@@ -74,18 +86,59 @@ interface CalendarProps {
   timezone?: string;
 }
 
-interface CalendarState {
-  containerRef: HTMLElement | null;
-  navPopoverRef: typeof Popover | null;
-  lastFocusedDay: CalendarDay | null;
-  focusableDay: number;
-  inTransition: boolean;
-  navPopoverId: string;
-  dayPopoverId: string;
-  pages: Page[];
-  store: AttributeStore;
-  transitionName: string;
-}
+export const props = {
+  color: {
+    type: String,
+    default: getDefault('color'),
+  },
+  isDark: {
+    type: Boolean,
+    default: getDefault('isDark'),
+  },
+  view: {
+    type: String,
+    default: 'monthly',
+    validator(value: string) {
+      return ['daily', 'weekly', 'monthly'].includes(value);
+    },
+  },
+  rows: {
+    type: Number,
+    default: 1,
+  },
+  columns: {
+    type: Number,
+    default: 1,
+  },
+  step: Number,
+  titlePosition: {
+    type: String,
+    default: getDefault('titlePosition'),
+  },
+  navVisibility: {
+    type: String,
+    default: getDefault('navVisibility'),
+  },
+  showWeeknumbers: [Boolean, String],
+  showIsoWeeknumbers: [Boolean, String],
+  isExpanded: Boolean,
+  minPage: Object,
+  maxPage: Object,
+  transition: String,
+  attributes: [Object, Array],
+  trimWeeks: Boolean,
+  firstDayOfWeek: Number,
+  masks: Object,
+  locale: [String, Object],
+  timezone: String,
+  minDate: null,
+  maxDate: null,
+  minDateExact: null,
+  maxDateExact: null,
+  disabledDates: null,
+  availableDates: null,
+  disablePageSwipe: Boolean,
+};
 
 export const emits = [
   'dayclick',
@@ -94,11 +147,34 @@ export const emits = [
   'dayfocusin',
   'dayfocusout',
   'daykeydown',
+  'weeknumberclick',
   'transition-start',
   'transition-end',
   'did-move',
   'update:view',
 ];
+
+interface CalendarState {
+  containerRef: HTMLElement | null;
+  navPopoverRef: typeof Popover | null;
+  lastFocusedDay: CalendarDay | null;
+  focusableDay: number;
+  inTransition: boolean;
+  navPopoverId: string;
+  dayPopoverId: string;
+  view: CalendarView;
+  pages: Page[];
+  store: AttributeStore;
+  transitionName: string;
+  refreshing: boolean;
+}
+
+interface CalendarContext extends CalendarState {
+  theme: Theme;
+  locale: Locale;
+  masks: Record<string, any>;
+  count: number;
+}
 
 export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   const state = reactive<CalendarState>({
@@ -109,9 +185,11 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     inTransition: false,
     navPopoverId: createGuid(),
     dayPopoverId: createGuid(),
+    view: props.view,
     pages: [],
     store: null,
     transitionName: '',
+    refreshing: false,
   });
 
   // Non-reactive util vars
@@ -166,14 +244,11 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     () => props.maxPage || locale.value.getPageForDate(props.maxDate),
   );
 
-  const view = computed<CalendarView>({
-    get() {
-      return props.view;
-    },
-    set(val) {
-      emit('update:view', val);
-    },
-  });
+  const navVisibility = computed(() => props.navVisibility);
+
+  const showWeeknumbers = computed(() => !!props.showWeeknumbers);
+
+  const showIsoWeeknumbers = computed(() => !!props.showIsoWeeknumbers);
 
   const disabledDates = computed(() => {
     const dates = locale.value.normalizeDates(props.disabledDates, {
@@ -222,6 +297,8 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     );
   });
 
+  const isMonthly = computed(() => state.view === 'monthly');
+
   // #endregion Computed properties
 
   // #region Methods
@@ -241,7 +318,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   };
 
   const addPages = (address: PageAddress, count: number) => {
-    return locale.value.addPages(address, count, view.value);
+    return locale.value.addPages(address, count, state.view);
   };
 
   const getPageForAttributes = () => {
@@ -311,8 +388,20 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   const refreshFocusableDays = (pages: Page[]) => {
     getPageDays(pages).forEach(d => {
       d.isFocusable =
-        view.value !== 'monthly' || (d.inMonth && d.day === state.focusableDay);
+        isMonthly.value || (d.inMonth && d.day === state.focusableDay);
     });
+  };
+
+  const getWeeknumberPosition = (column: number, columnFromEnd: number) => {
+    const showWeeknumbers = props.showWeeknumbers || props.showIsoWeeknumbers;
+    if (showWeeknumbers == null) return '';
+    if (isBoolean(showWeeknumbers)) {
+      return showWeeknumbers ? 'left' : '';
+    }
+    if (showWeeknumbers.startsWith('right')) {
+      return columnFromEnd > 1 ? 'right' : showWeeknumbers;
+    }
+    return column > 1 ? 'left' : showWeeknumbers;
   };
 
   const refreshPages = ({
@@ -335,9 +424,10 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
         const rowFromEnd = props.rows - row + 1;
         const column = position % props.columns || props.columns;
         const columnFromEnd = props.columns - column + 1;
+        const weeknumberPosition = getWeeknumberPosition(column, columnFromEnd);
         pages.push(
           locale.value.getPage(newPage, {
-            view: view.value,
+            view: state.view,
             titlePosition: props.titlePosition,
             trimWeeks: props.trimWeeks,
             position,
@@ -345,6 +435,9 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
             rowFromEnd,
             column,
             columnFromEnd,
+            showWeeknumbers: showWeeknumbers.value,
+            showIsoWeeknumbers: showIsoWeeknumbers.value,
+            weeknumberPosition,
           }),
         );
       }
@@ -435,7 +528,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     opts: Partial<MoveOptions> = {},
   ) => {
     const page =
-      firstPage.value && locale.value.toPage(arg, firstPage.value, view.value);
+      firstPage.value && locale.value.toPage(arg, firstPage.value, state.view);
     if (!page) return false;
     let { position } = opts;
     // Pin position if arg is number
@@ -446,10 +539,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
         position = -1;
       } else if (pageIsAfterPage(page, lastPage.value)) {
         position = 1;
-      } else if (
-        pageIsEqualToPage(page, firstPage.value) ||
-        view.value === 'monthly'
-      ) {
+      } else if (pageIsEqualToPage(page, firstPage.value) || isMonthly.value) {
         // Page already displayed
         return true;
       }
@@ -464,7 +554,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     );
     // Verify we can move to any pages in the target range
     return locale.value
-      .pageRangeToArray(opts.fromPage!, opts.toPage!, view.value)
+      .pageRangeToArray(opts.fromPage!, opts.toPage!, state.view)
       .some(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
   };
 
@@ -488,11 +578,11 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
       if (state.navPopoverRef) {
         state.navPopoverRef.hide({ hideDelay: 0 });
       }
-      // Change view if needed
-      // if (opts.view && opts.view !== view.value) {
-      //   view.value = opts.view;
-      //   await nextTick();
-      // }
+      // Quietly change view if needed
+      if (opts.view) {
+        skipWatcher('view', 10);
+        state.view = opts.view;
+      }
       await refreshPages({
         ...opts,
         page: opts.fromPage,
@@ -513,10 +603,9 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   };
 
   const tryFocusDate = (date: Date) => {
-    const inMonth = view.value === 'monthly' ? '.in-month' : '';
-    const selector = `.id-${locale.value.getDayId(
-      date,
-    )}${inMonth}.vc-focusable`;
+    const inMonth = isMonthly.value ? '.in-month' : '';
+    const daySelector = `.id-${locale.value.getDayId(date)}${inMonth}`;
+    const selector = `${daySelector}.vc-focusable, ${daySelector} .vc-focusable`;
     const el = state.containerRef;
     if (el) {
       const focusableEl = el.querySelector(selector) as HTMLElement;
@@ -629,6 +718,10 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     }
   };
 
+  const onWeeknumberClick = (week: CalendarWeek, event: MouseEvent) => {
+    emit('weeknumberclick', week, event);
+  };
+
   // #endregion Methods
 
   // #region Lifecycle methods
@@ -691,8 +784,17 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   watch(
     () => props.view,
     () => {
-      refreshPages();
-      // refreshAttrs(state.pages, state.store.list, [], true);
+      state.view = props.view;
+    },
+  );
+
+  watch(
+    () => state.view,
+    () => {
+      handleWatcher('view', () => {
+        refreshPages();
+      });
+      emit('update:view', state.view);
     },
   );
 
@@ -720,9 +822,11 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     lastPage,
     minPage,
     maxPage,
-    view,
+    navVisibility,
     canMovePrev,
     canMoveNext,
+    showWeeknumbers,
+    showIsoWeeknumbers,
     canMove,
     move,
     movePrev,
@@ -738,7 +842,18 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     onDayMouseleave,
     onDayFocusin,
     onDayFocusout,
+    onWeeknumberClick,
   });
   provide('context', context);
   return context;
+}
+
+export function useCalendarContext(): ToRefs<CalendarContext> {
+  const context = inject<CalendarContext>('context');
+  if (!context) {
+    throw new Error(
+      'Calendar context missing. Please verify this component is nexted within a valid context provider.',
+    );
+  }
+  return toRefs(context);
 }
