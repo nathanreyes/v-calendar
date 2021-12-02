@@ -62,7 +62,6 @@
 
 <script>
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
-import { childMixin } from '../../utils/mixins';
 import { head, last } from '../../utils/_';
 import { onSpaceOrEnter, pad } from '../../utils/helpers';
 
@@ -74,7 +73,7 @@ export default {
   components: {
     SvgIcon,
   },
-  mixins: [childMixin],
+  inject: ['context'],
   props: {
     value: { type: Object, default: () => ({ month: 0, year: 0 }) },
     validator: { type: Function, default: () => () => true },
@@ -88,6 +87,9 @@ export default {
     };
   },
   computed: {
+    locale() {
+      return this.context.locale;
+    },
     month() {
       return this.value ? this.value.month || 0 : 0;
     },
@@ -186,14 +188,16 @@ export default {
       return Math.floor(year / _yearGroupCount);
     },
     getMonthItems(year) {
-      const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
+      const { month: thisMonth, year: thisYear } = this.locale.getPageForDate(
+        new Date(),
+      );
       return this.locale.getMonthDates().map((d, i) => {
         const month = i + 1;
         return {
           month,
           year,
           id: `${year}.${pad(month, 2)}`,
-          label: this.locale.format(d, this.masks.navMonths),
+          label: this.locale.format(d, this.context.masks.navMonths),
           ariaLabel: this.locale.format(d, 'MMMM YYYY'),
           isActive: month === this.month && year === this.year,
           isCurrent: month === thisMonth && year === thisYear,
@@ -203,7 +207,7 @@ export default {
       });
     },
     getYearItems(yearGroupIndex) {
-      const { _, year: thisYear } = this.pageForDate(new Date());
+      const { _, year: thisYear } = this.locale.getPageForDate(new Date());
       const startYear = yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
       const items = [];
