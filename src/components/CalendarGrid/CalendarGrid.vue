@@ -11,6 +11,12 @@
     <!--Grid header-->
     <div class="vc-grid-header">
       <div class="vc-grid-header-days">
+        <div
+          v-if="weeks[0].weeknumberDisplay"
+          class="vc-grid-header-weeknumber"
+        >
+          W{{ weeks[0].weeknumberDisplay }}
+        </div>
         <template v-for="day in weeks[0].days" :key="day.id">
           <div
             class="vc-grid-header-day"
@@ -156,6 +162,8 @@
       </Transition>
     </div>
   </div>
+  <!--Nav popover-->
+  <CalendarNavPopover />
 </template>
 
 <script lang="ts">
@@ -168,12 +176,12 @@ import {
   watch,
   onMounted,
 } from 'vue';
+import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import { Grid, GridStateEvent } from './Grid';
 import { Cell } from './Cell';
 import { CalendarDay, Page } from '../../utils/locale';
-import { useCalendar, emits } from '../../utils/calendar';
-import { getDefault } from '../../utils/defaults';
+import { emits, props, useCalendar } from '../../utils/calendar';
 
 export interface Point {
   x: number;
@@ -181,7 +189,7 @@ export interface Point {
 }
 
 export default defineComponent({
-  components: { CalendarHeader },
+  components: { CalendarNavPopover, CalendarHeader },
   emits: [
     ...emits,
     'day-header-click',
@@ -192,61 +200,10 @@ export default defineComponent({
     'will-move-event',
     'did-move-event',
   ],
-  props: {
-    color: {
-      type: String,
-      default: getDefault('color'),
-    },
-    isDark: {
-      type: Boolean,
-      default: getDefault('isDark'),
-    },
-
-    view: {
-      type: String,
-      default: 'monthly',
-      validator(value) {
-        return ['daily', 'weekly', 'monthly'].includes(value);
-      },
-    },
-    rows: {
-      type: Number,
-      default: 1,
-    },
-    columns: {
-      type: Number,
-      default: 1,
-    },
-    step: Number,
-    titlePosition: {
-      type: String,
-      default: getDefault('titlePosition'),
-    },
-    navVisibility: {
-      type: String,
-      default: getDefault('navVisibility'),
-    },
-    isExpanded: Boolean,
-    minPage: Object,
-    maxPage: Object,
-    transition: String,
-    attributes: [Object, Array],
-    trimWeeks: Boolean,
-    firstDayOfWeek: Number,
-    masks: Object,
-    locale: [String, Object],
-    timezone: String,
-    minDate: null,
-    maxDate: null,
-    minDateExact: null,
-    maxDateExact: null,
-    disabledDates: null,
-    availableDates: null,
-    disablePageSwipe: Boolean,
-  },
+  props,
   setup(props, { emit }) {
     const context = useCalendar(props, { emit });
-    // const containerRef = ref(context.containerRef);
+    const containerRef = toRef(context, 'containerRef');
     const page = computed<Page>(() => context.pages[0]);
     const gridEl = ref<HTMLElement>();
     const days = computed(() => page.value.viewDays);
@@ -371,7 +328,7 @@ export default defineComponent({
 
     return {
       context,
-      containerRef: toRef(context, 'containerRef'),
+      containerRef,
       page,
       grid,
       days,

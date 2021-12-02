@@ -8,18 +8,31 @@
   overflow: hidden;
 
   .vc-grid-header {
-    top: 0;
-    position: sticky;
     background-color: white;
-    margin-top: -1px;
+    margin-top: 10px;
     z-index: 2;
   }
 
   .vc-grid-header-days {
     display: flex;
+    position: relative;
     border-bottom: 1px solid var(--gray-300);
     padding-left: var(--gutter-left);
     padding-right: var(--gutter-right);
+  }
+
+  .vc-grid-header-weeknumber {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+    color: var(--gray-400);
+    position: absolute;
+    left: 0;
+    width: var(--gutter-left);
+    height: 100%;
   }
 
   .vc-grid-header-day {

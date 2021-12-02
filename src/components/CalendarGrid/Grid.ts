@@ -28,7 +28,7 @@ export type GridStateEvent =
   | 'EVENT_RESIZE_END_CURSOR_DOWN_SHIFT'
   | 'ESCAPE';
 
-const loggingEnabled = true;
+const loggingEnabled = false;
 function log(...args: any[]) {
   if (loggingEnabled) {
     console.log(...args);
