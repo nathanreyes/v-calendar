@@ -237,11 +237,15 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   const lastPage = computed(() => last(state.pages));
 
   const minPage = computed(
-    () => props.minPage || locale.value.getPageForDate(props.minDate),
+    () =>
+      props.minPage ||
+      (props.minDate ? locale.value.getPageForDate(props.minDate) : null),
   );
 
   const maxPage = computed(
-    () => props.maxPage || locale.value.getPageForDate(props.maxDate),
+    () =>
+      props.maxPage ||
+      (props.maxDate ? locale.value.getPageForDate(props.maxDate) : null),
   );
 
   const navVisibility = computed(() => props.navVisibility);
@@ -317,8 +321,99 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     }
   };
 
-  const addPages = (address: PageAddress, count: number) => {
-    return locale.value.addPages(address, count, state.view);
+  const addPages = (address: PageAddress, count: number, view = state.view) => {
+    return locale.value.addPages(address, count, view);
+  };
+
+  const getPageDays = (pages: Page[] = state.pages): CalendarDay[] => {
+    return pages.reduce(
+      (prev, curr) => prev.concat(curr.days),
+      [] as CalendarDay[],
+    );
+  };
+
+  const refreshDisabledDays = (pages: Page[]) => {
+    getPageDays(pages).forEach(d => {
+      d.isDisabled =
+        !!disabledAttribute.value && disabledAttribute.value.intersectsDay(d);
+    });
+  };
+
+  const refreshFocusableDays = (pages: Page[]) => {
+    getPageDays(pages).forEach(d => {
+      d.isFocusable =
+        isMonthly.value || (d.inMonth && d.day === state.focusableDay);
+    });
+  };
+
+  const refreshAttrs = (
+    pages: Page[] = [],
+    adds: Attribute[] = [],
+    deletes: any = [],
+    reset: boolean,
+  ) => {
+    if (!arrayHasItems(pages)) return;
+    // For each page...
+    pages.forEach(p => {
+      // For each day...
+      p.days.forEach(d => {
+        let shouldRefresh = false;
+        let map: any = {};
+        // If resetting...
+        if (reset) {
+          shouldRefresh = true;
+        } else if (hasAny(d.attributesMap, deletes)) {
+          // Delete attributes from the delete list
+          map = omit(d.attributesMap, deletes);
+          // Flag day for refresh
+          shouldRefresh = true;
+        } else {
+          // Get the existing attributes
+          map = { ...d.attributesMap };
+        }
+        // For each attribute to add...
+        adds.forEach(attr => {
+          // Add it if it includes the current day
+          const targetDate = attr.intersectsDay(d);
+          if (targetDate) {
+            const newAttr = {
+              ...attr,
+              targetDate,
+            };
+            map[attr.key] = newAttr;
+            // Flag day for refresh
+            shouldRefresh = true;
+          }
+        });
+        // Reassign day attributes
+        if (shouldRefresh) {
+          d.attributesMap = map;
+        }
+      });
+    });
+  };
+
+  const initStore = () => {
+    // Create a new attribute store
+    state.store = new AttributeStore(
+      theme.value,
+      locale.value,
+      props.attributes,
+    );
+    // Refresh attributes for existing pages
+    refreshAttrs(state.pages, state.store.list, [], true);
+  };
+
+  const getWeeknumberPosition = (column: number, columnFromEnd: number) => {
+    const showWeeknumbers = props.showWeeknumbers || props.showIsoWeeknumbers;
+    if (showWeeknumbers == null) return '';
+    if (isBoolean(showWeeknumbers)) {
+      return showWeeknumbers ? 'left' : '';
+    }
+    if (showWeeknumbers.startsWith('right')) {
+      return columnFromEnd > 1 ? 'right' : showWeeknumbers;
+    }
+    return column > 1 ? 'left' : showWeeknumbers;
   };
 
   const getPageForAttributes = () => {
@@ -343,22 +438,27 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   };
 
   const getTargetPageRange = (
-    page: PageAddress | undefined,
-    { position, force }: Partial<MoveOptions> = {},
+    target: number | string | Date | PageAddress | undefined,
+    opts: Partial<MoveOptions> = {},
   ) => {
     let fromPage = null;
     let toPage = null;
-    if (pageIsValid(page)) {
-      let pagesToAdd = 0;
-      position = +position!;
-      if (!isNaN(position)) {
-        pagesToAdd = position > 0 ? 1 - position : -(count.value + position);
-      }
-      fromPage = addPages(page!, pagesToAdd);
+    const { view = state.view, position = 1, force } = opts;
+
+    let page;
+    if (isObject(target)) {
+      page = target;
+    } else if (target != null) {
+      page = locale.value.toPage(target, firstPage.value, view);
     } else {
-      fromPage = getDefaultInitialPage();
+      page = getDefaultInitialPage();
     }
-    toPage = addPages(fromPage!, count.value - 1);
+    page = page as PageAddress;
+
+    const pagesToAdd = position > 0 ? 1 - position : -(count.value + position);
+    fromPage = addPages(page, pagesToAdd, view);
+    toPage = addPages(fromPage!, count.value - 1, view);
+
     // Adjust range for min/max if not forced
     if (!force) {
       if (pageIsBeforePage(fromPage, minPage.value)) {
@@ -369,39 +469,6 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
       toPage = addPages(fromPage!, count.value - 1);
     }
     return { fromPage, toPage };
-  };
-
-  const getPageDays = (pages: Page[] = state.pages): CalendarDay[] => {
-    return pages.reduce(
-      (prev, curr) => prev.concat(curr.days),
-      [] as CalendarDay[],
-    );
-  };
-
-  const refreshDisabledDays = (pages: Page[]) => {
-    getPageDays(pages).forEach(d => {
-      d.isDisabled =
-        !!disabledAttribute.value && disabledAttribute.value.intersectsDay(d);
-    });
-  };
-
-  const refreshFocusableDays = (pages: Page[]) => {
-    getPageDays(pages).forEach(d => {
-      d.isFocusable =
-        isMonthly.value || (d.inMonth && d.day === state.focusableDay);
-    });
-  };
-
-  const getWeeknumberPosition = (column: number, columnFromEnd: number) => {
-    const showWeeknumbers = props.showWeeknumbers || props.showIsoWeeknumbers;
-    if (showWeeknumbers == null) return '';
-    if (isBoolean(showWeeknumbers)) {
-      return showWeeknumbers ? 'left' : '';
-    }
-    if (showWeeknumbers.startsWith('right')) {
-      return columnFromEnd > 1 ? 'right' : showWeeknumbers;
-    }
-    return column > 1 ? 'left' : showWeeknumbers;
   };
 
   const refreshPages = ({
@@ -465,90 +532,15 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     });
   };
 
-  const refreshAttrs = (
-    pages: Page[] = [],
-    adds: Attribute[] = [],
-    deletes: any = [],
-    reset: boolean,
-  ) => {
-    if (!arrayHasItems(pages)) return;
-    // For each page...
-    pages.forEach(p => {
-      // For each day...
-      p.days.forEach(d => {
-        let shouldRefresh = false;
-        let map: any = {};
-        // If resetting...
-        if (reset) {
-          shouldRefresh = true;
-        } else if (hasAny(d.attributesMap, deletes)) {
-          // Delete attributes from the delete list
-          map = omit(d.attributesMap, deletes);
-          // Flag day for refresh
-          shouldRefresh = true;
-        } else {
-          // Get the existing attributes
-          map = { ...d.attributesMap };
-        }
-        // For each attribute to add...
-        adds.forEach(attr => {
-          // Add it if it includes the current day
-          const targetDate = attr.intersectsDay(d);
-          if (targetDate) {
-            const newAttr = {
-              ...attr,
-              targetDate,
-            };
-            map[attr.key] = newAttr;
-            // Flag day for refresh
-            shouldRefresh = true;
-          }
-        });
-        // Reassign day attributes
-        if (shouldRefresh) {
-          d.attributesMap = map;
-        }
-      });
-    });
-  };
-
-  const initStore = () => {
-    // Create a new attribute store
-    state.store = new AttributeStore(
-      theme.value,
-      locale.value,
-      props.attributes,
-    );
-    // Refresh attributes for existing pages
-    refreshAttrs(state.pages, state.store.list, [], true);
-  };
-
   const canMove = (
-    arg: number | string | Date | PageAddress,
+    target: number | string | Date | PageAddress,
     opts: Partial<MoveOptions> = {},
   ) => {
-    const page =
-      firstPage.value && locale.value.toPage(arg, firstPage.value, state.view);
-    if (!page) return false;
-    let { position } = opts;
-    // Pin position if arg is number
-    if (isNumber(arg)) position = 1;
-    // Set position if unspecified and out of current bounds
-    if (!position) {
-      if (pageIsBeforePage(page, firstPage.value)) {
-        position = -1;
-      } else if (pageIsAfterPage(page, lastPage.value)) {
-        position = 1;
-      } else if (pageIsEqualToPage(page, firstPage.value) || isMonthly.value) {
-        // Page already displayed
-        return true;
-      }
-    }
     // Calculate new page range without adjusting to min/max
     Object.assign(
       opts,
-      getTargetPageRange(page, {
-        position,
+      getTargetPageRange(target, {
+        ...opts,
         force: true,
       }),
     );
@@ -740,6 +732,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   initStore();
   refreshPages();
 
+  // Mounted
   onMounted(() => {
     if (!props.disablePageSwipe) {
       // Add swipe handler to move to next and previous pages
@@ -757,6 +750,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     }
   });
 
+  // Unmounted
   onUnmounted(() => {
     state.pages = [];
     state.store.destroy();
