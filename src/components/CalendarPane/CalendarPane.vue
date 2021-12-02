@@ -1,199 +1,69 @@
+<template>
+  <div
+    :class="[
+      'vc-pane',
+      `row-${page.row}`,
+      `row-from-end-${page.rowFromEnd}`,
+      `column-${page.column}`,
+      `column-from-end-${page.columnFromEnd}`,
+    ]"
+    ref="pane"
+  >
+    <CalendarHeader :page="page" layout="-t-" is-lg />
+    <div
+      class="vc-weeks"
+      :class="{
+        [`vc-show-weeknumbers-${page.weeknumberPosition}`]: page.weeknumberPosition,
+      }"
+    >
+      <div class="vc-weekdays">
+        <!--Weekday labels-->
+        <div v-for="wl in page.weekdayLabels" :key="wl" class="vc-weekday">
+          {{ wl }}
+        </div>
+      </div>
+      <!--Weeks-->
+      <div
+        v-for="week in page.viewWeeks"
+        :key="`weeknumber-${week.weeknumber}`"
+        class="vc-week"
+      >
+        <!--Weeknumber-->
+        <div
+          v-if="page.weeknumberPosition"
+          :class="['vc-weeknumber', `is-${page.weeknumberPosition}`]"
+        >
+          <span
+            :class="['vc-weeknumber-content']"
+            @click="onWeeknumberClick(week, $event)"
+            >{{ week.weeknumberDisplay }}</span
+          >
+        </div>
+        <!--Week days-->
+        <CalendarDay v-for="day in week.days" :key="day.id" :day="day" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
-import { h } from 'vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
-import { childMixin, slotMixin } from '../../utils/mixins';
-import { getDefault } from '../../utils/defaults';
-import { isBoolean } from '../../utils/_';
+import { useCalendarContext } from '../../utils/calendar';
 
 export default {
   name: 'CalendarPane',
-  emits: [
-    'update:page',
-    'update:week',
-    'update:days',
-    'weeknumberclick',
-    'move-prev',
-    'move-next',
-  ],
-  mixins: [childMixin, slotMixin],
+  emits: ['weeknumberclick'],
   inheritAttrs: false,
-  render() {
-    // Header
-    const header =
-      this.safeSlot('header', this.page) ||
-      // Default header
-      h(CalendarHeader, {
-        page: this.page,
-        title: this.page.title,
-        titlePosition: this.page.titlePosition,
-        navVisibility: this.navVisibility,
-        canMovePrev: this.canMovePrev,
-        canMoveNext: this.canMoveNext,
-        onMovePrev: this.onMovePrev,
-        onMoveNext: this.onMoveNext,
-      });
-
-    // Weekday cells
-    const getWeekdayCells = h(
-      'div',
-      { class: 'vc-weekdays' },
-      this.weekdayLabels.map((wl, i) =>
-        h(
-          'div',
-          {
-            key: i + 1,
-            class: 'vc-weekday',
-          },
-          [wl],
-        ),
-      ),
-    );
-
-    // Weeknumber cell
-    const getWeeknumberCell = weeknumber =>
-      h(
-        'div',
-        {
-          class: ['vc-weeknumber', `is-${this.showWeeknumbers_}`],
-        },
-        [
-          h(
-            'span',
-            {
-              class: ['vc-weeknumber-content'],
-              onClick: event => {
-                this.$emit('weeknumberclick', {
-                  weeknumber,
-                  days: this.page.days.filter(
-                    d => d[this.weeknumberKey] === weeknumber,
-                  ),
-                  event,
-                });
-              },
-            },
-            [weeknumber],
-          ),
-        ],
-      );
-
-    // Day cells
-    const getDayCells = () => {
-      return this.page.weeks.map(week => {
-        let cells = [];
-        if (this.showWeeknumbers_) {
-          cells.push(getWeeknumberCell(week.weeknumber));
-        }
-        cells = cells.concat(
-          week.days.map(day =>
-            h(
-              CalendarDay,
-              {
-                ...this.$attrs,
-                day,
-              },
-              this.$slots,
-            ),
-          ),
-        );
-        return h(
-          'div',
-          { key: `weeknumber-${week.weeknumber}`, class: 'vc-week' },
-          cells,
-        );
-      });
-    };
-
-    // Weeks
-    const weeks = h(
-      'div',
-      {
-        class: {
-          'vc-weeks': true,
-          [`vc-show-weeknumbers-${this.showWeeknumbers_}`]: this
-            .showWeeknumbers_,
-        },
-      },
-      [getWeekdayCells, getDayCells()],
-    );
-
-    return h(
-      'div',
-      {
-        class: [
-          'vc-pane',
-          `row-${this.page.row}`,
-          `row-from-end-${this.page.rowFromEnd}`,
-          `column-${this.page.column}`,
-          `column-from-end-${this.page.columnFromEnd}`,
-        ],
-        ref: 'pane',
-      },
-      [header, weeks],
-    );
-  },
+  components: { CalendarHeader, CalendarDay },
   props: {
     page: Object,
-    navVisibility: {
-      type: String,
-      default: getDefault('navVisibility'),
-    },
-    canMovePrev: Boolean,
-    canMoveNext: Boolean,
-    showWeeknumbers: [Boolean, String],
-    showIsoWeeknumbers: [Boolean, String],
   },
-  data() {
+  setup() {
+    const { onWeeknumberClick } = useCalendarContext();
     return {
-      weekTransition: '',
+      onWeeknumberClick,
     };
-  },
-  computed: {
-    weeknumberKey() {
-      return this.showIsoWeeknumbers ? 'isoWeeknumber' : 'weeknumber';
-    },
-    showWeeknumbers_() {
-      const showWeeknumbers = this.showWeeknumbers || this.showIsoWeeknumbers;
-      if (showWeeknumbers == null) return '';
-      if (isBoolean(showWeeknumbers)) {
-        return showWeeknumbers ? 'left' : '';
-      }
-      if (showWeeknumbers.startsWith('right')) {
-        return this.columnFromEnd > 1 ? 'right' : showWeeknumbers;
-      }
-      return this.column > 1 ? 'left' : showWeeknumbers;
-    },
-    weekdayLabels() {
-      return this.page.weeks[0].days.map(d => {
-        return this.format(d.date, this.masks.weekdays);
-      });
-      // return this.locale
-      //   .getWeekdayDates()
-      //   .map(d => this.format(d, this.masks.weekdays));
-    },
-  },
-  watch: {
-    week(val, oldVal) {
-      let transition = '';
-      if (val === oldVal + 1) {
-        transition = 'slide-left';
-      } else if (val === oldVal - 1) {
-        transition = 'slide-right';
-      }
-      this.weekTransition = transition;
-      this.$emit('update:week', val);
-    },
-  },
-  created() {
-    console.log('CalendarPane created');
-  },
-  methods: {
-    onMovePrev() {
-      this.$emit('move-prev');
-    },
-    onMoveNext() {
-      this.$emit('move-next');
-    },
   },
 };
 </script>

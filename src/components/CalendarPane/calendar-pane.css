@@ -37,7 +37,7 @@
   /* overflow: auto; */
   -webkit-overflow-scrolling: touch;
   padding: 6px;
-  min-width: 250px;
+  min-width: 232px;
   &.vc-show-weeknumbers-left {
     margin-left: var(--weeknumber-offset);
   }
