@@ -562,6 +562,8 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
 
   const canMoveNext = computed(() => canMove(step.value));
 
+  const canMoveUp = computed(() => state.view !== 'monthly');
+
   const move = async (
     arg: number | string | Date | PageAddress,
     opts: Partial<MoveOptions> = {},
@@ -600,6 +602,14 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
 
   const moveNext = (opts: Partial<MoveOptions> = {}) => {
     return move(step.value, opts);
+  };
+
+  const moveUp = () => {
+    if (state.view === 'daily') {
+      state.view = 'weekly';
+    } else if (state.view === 'weekly') {
+      state.view = 'monthly';
+    }
   };
 
   const tryFocusDate = (date: Date) => {
@@ -825,12 +835,14 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     navVisibility,
     canMovePrev,
     canMoveNext,
+    canMoveUp,
     showWeeknumbers,
     showIsoWeeknumbers,
     canMove,
     move,
     movePrev,
     moveNext,
+    moveUp,
     onTransitionBeforeEnter,
     onTransitionAfterEnter,
     tryFocusDate,

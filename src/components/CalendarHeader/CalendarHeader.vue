@@ -6,12 +6,12 @@
   >
     <div
       v-if="show.prev"
-      :class="['vc-arrow', 'vc-prev', { 'is-disabled': !context.canMovePrev }]"
+      :class="['vc-arrow', 'vc-prev', { 'is-disabled': !canMovePrev }]"
       role="button"
-      @click="context.movePrev"
-      @keydown.space.enter="context.movePrev"
+      @click="movePrev"
+      @keydown.space.enter="movePrev"
     >
-      <slot name="header-left-button" :click="context.movePrev">
+      <slot name="header-left-button" :click="movePrev">
         <SvgIcon name="left-arrow" />
       </slot>
     </div>
@@ -20,12 +20,12 @@
     </div>
     <div
       v-if="show.next"
-      :class="['vc-arrow', 'vc-next', { 'is-disabled': !context.canMoveNext }]"
+      :class="['vc-arrow', 'vc-next', { 'is-disabled': !canMoveNext }]"
       role="button"
-      @click="context.moveNext"
-      @keydown.space.enter="context.moveNext"
+      @click="moveNext"
+      @keydown.space.enter="moveNext"
     >
-      <slot name="header-right-button" :click="context.moveNext">
+      <slot name="header-right-button" :click="moveNext">
         <SvgIcon name="right-arrow" />
       </slot>
     </div>
@@ -34,8 +34,8 @@
       class="vc-arrow vc-up"
       :class="{ 'is-disabled': !canMoveUp }"
       role="button"
-      @click="onMoveUp"
-      @keydown.space.enter="onMoveUp"
+      @click="moveUp"
+      @keydown.space.enter="moveUp"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -56,9 +56,9 @@
 </template>
 
 <script>
-import { defineComponent, computed, inject } from 'vue';
+import { defineComponent, computed } from 'vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
-import { getDefault } from '../../utils/defaults';
+import { useCalendarContext } from '../../utils/calendar';
 import { getPopoverTriggerEvents } from '../../utils/popovers';
 
 export default defineComponent({
@@ -71,8 +71,17 @@ export default defineComponent({
     isXl: Boolean,
     is2xl: Boolean,
   },
-  setup(props, { emit }) {
-    const context = inject('context');
+  setup(props) {
+    const {
+      navPopoverId,
+      navVisibility,
+      canMovePrev,
+      movePrev,
+      canMoveNext,
+      moveNext,
+      canMoveUp,
+      moveUp,
+    } = useCalendarContext();
     const navPlacement = computed(() => {
       switch (props.page.titlePosition) {
         case 'left':
@@ -86,8 +95,8 @@ export default defineComponent({
     const navPopoverEvents = computed(() => {
       const { page } = props;
       return getPopoverTriggerEvents({
-        id: context.navPopoverId,
-        visibility: context.navVisibility,
+        id: navPopoverId,
+        visibility: navVisibility,
         placement: navPlacement.value,
         modifiers: [
           { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
@@ -105,9 +114,6 @@ export default defineComponent({
       if (titleLeft.value) return 'tu-pn';
       if (titleRight.value) return 'pn-tu';
       return 'p-tu-n;';
-    });
-    const canMoveUp = computed(() => {
-      return context.view !== 'weekly';
     });
     const show = computed(() => {
       return {
@@ -140,24 +146,16 @@ export default defineComponent({
       return { gridTemplateColumns };
     });
     return {
-      context,
       show,
       gridStyle,
       navPopoverEvents,
       navPlacement,
+      canMovePrev,
+      movePrev,
+      canMoveNext,
+      moveNext,
       canMoveUp,
-      onMoveUp() {
-        switch (context.view) {
-          case 'daily': {
-            context.view = 'weekly';
-            break;
-          }
-          case 'weekly': {
-            context.view = 'monthly';
-            break;
-          }
-        }
-      },
+      moveUp,
     };
   },
 });
