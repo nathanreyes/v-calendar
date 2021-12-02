@@ -596,12 +596,12 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     return true;
   };
 
-  const movePrev = (opts: Partial<MoveOptions> = {}) => {
-    return move(-step.value, opts);
+  const movePrev = () => {
+    return move(-step.value);
   };
 
-  const moveNext = (opts: Partial<MoveOptions> = {}) => {
-    return move(step.value, opts);
+  const moveNext = () => {
+    return move(step.value);
   };
 
   const moveUp = () => {
