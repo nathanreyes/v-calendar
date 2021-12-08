@@ -9,7 +9,7 @@ import {
   watch,
   inject,
   ToRefs,
-  nextTick,
+  ComputedRef,
 } from 'vue';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
@@ -33,17 +33,17 @@ import {
   pageIsBetweenPages,
   createGuid,
   arrayHasItems,
-  getPageTransition,
   PageAddress,
 } from './helpers';
-import { isBoolean, isNumber, isObject, hasAny, omit, head, last } from './_';
+import { isBoolean, isObject, hasAny, omit, head, last } from './_';
 import { locales, getDefault } from './defaults';
 import { addHorizontalSwipeHandler } from './touch';
 import { skipWatcher, handleWatcher } from './watchers';
+import { PopoverVisibility } from './popovers';
 
 type CalendarView = 'daily' | 'weekly' | 'monthly';
 
-type NavVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
+type MoveTarget = number | string | Date | PageAddress;
 
 interface MoveOptions {
   page: PageAddress;
@@ -61,7 +61,7 @@ interface CalendarProps {
   columns: number;
   step?: number;
   titlePosition: TitlePosition;
-  navVisibility: NavVisibility;
+  navVisibility: PopoverVisibility;
   isExpanded: boolean;
   showWeeknumbers: boolean | string;
   showIsoWeeknumbers: boolean | string;
@@ -84,6 +84,57 @@ interface CalendarProps {
   firstDayOfWeek: number;
   masks?: Record<string, any>;
   timezone?: string;
+}
+
+interface CalendarState {
+  containerRef: HTMLElement | null;
+  navPopoverRef: typeof Popover | null;
+  lastFocusedDay: CalendarDay | null;
+  focusableDay: number;
+  inTransition: boolean;
+  navPopoverId: string;
+  dayPopoverId: string;
+  view: CalendarView;
+  pages: Page[];
+  store: AttributeStore;
+  transitionName: string;
+  refreshing: boolean;
+}
+
+interface CalendarContext extends ToRefs<CalendarState> {
+  theme: ComputedRef<Theme>;
+  locale: ComputedRef<Locale>;
+  masks: ComputedRef<Record<string, string>>;
+  count: ComputedRef<number>;
+  step: ComputedRef<number>;
+  firstPage: ComputedRef<Page | undefined>;
+  lastPage: ComputedRef<Page | undefined>;
+  minPage: ComputedRef<PageAddress | null>;
+  maxPage: ComputedRef<PageAddress | null>;
+  navVisibility: ComputedRef<PopoverVisibility>;
+  canMovePrev: ComputedRef<boolean>;
+  canMoveNext: ComputedRef<boolean>;
+  canMoveUp: ComputedRef<boolean>;
+  moveUpLabel: ComputedRef<string>;
+  showWeeknumbers: ComputedRef<boolean>;
+  showIsoWeeknumbers: ComputedRef<boolean>;
+  canMove: (target: MoveTarget, opts: Partial<MoveOptions>) => boolean;
+  move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
+  movePrev: () => Promise<boolean>;
+  moveNext: () => Promise<boolean>;
+  moveUp: () => void;
+  onTransitionBeforeEnter: () => void;
+  onTransitionAfterEnter: () => void;
+  tryFocusDate: (date: Date) => boolean;
+  focusDate: (date: Date, opts: Partial<MoveOptions>) => Promise<boolean>;
+  onKeydown: (e: KeyboardEvent) => void;
+  onDayKeydown: (day: CalendarDay, e: KeyboardEvent) => void;
+  onDayClick: (day: CalendarDay, e: MouseEvent) => void;
+  onDayMouseenter: (day: CalendarDay, e: MouseEvent) => void;
+  onDayMouseleave: (day: CalendarDay, e: MouseEvent) => void;
+  onDayFocusin: (day: CalendarDay) => void;
+  onDayFocusout: (day: CalendarDay) => void;
+  onWeeknumberClick: (week: CalendarWeek, e: MouseEvent) => void;
 }
 
 export const props = {
@@ -154,29 +205,10 @@ export const emits = [
   'update:view',
 ];
 
-interface CalendarState {
-  containerRef: HTMLElement | null;
-  navPopoverRef: typeof Popover | null;
-  lastFocusedDay: CalendarDay | null;
-  focusableDay: number;
-  inTransition: boolean;
-  navPopoverId: string;
-  dayPopoverId: string;
-  view: CalendarView;
-  pages: Page[];
-  store: AttributeStore;
-  transitionName: string;
-  refreshing: boolean;
-}
-
-interface CalendarContext extends CalendarState {
-  theme: Theme;
-  locale: Locale;
-  masks: Record<string, any>;
-  count: number;
-}
-
-export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
+export function useCalendar(
+  props: CalendarProps,
+  { emit }: SetupContext,
+): CalendarContext {
   const state = reactive<CalendarState>({
     containerRef: null,
     navPopoverRef: null,
@@ -198,7 +230,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
 
   // #region Computed properties
 
-  const theme = computed(() => {
+  const theme = computed<Theme>(() => {
     // Return the theme prop if it is an instance of the Theme class
     if (props.theme instanceof Theme) return props.theme;
     // Create the theme
@@ -232,7 +264,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
 
   const step = computed(() => props.step || count.value);
 
-  const firstPage = computed(() => head(state.pages));
+  const firstPage = computed(() => head<Page>(state.pages));
 
   const lastPage = computed(() => last(state.pages));
 
@@ -332,18 +364,25 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     );
   };
 
-  const refreshDisabledDays = (pages: Page[]) => {
-    getPageDays(pages).forEach(d => {
-      d.isDisabled =
-        !!disabledAttribute.value && disabledAttribute.value.intersectsDay(d);
-    });
+  const refreshDisabledDay = (day: CalendarDay) => {
+    day.isDisabled =
+      !!disabledAttribute.value && !!disabledAttribute.value.intersectsDay(day);
   };
 
-  const refreshFocusableDays = (pages: Page[]) => {
-    getPageDays(pages).forEach(d => {
-      d.isFocusable =
-        isMonthly.value || (d.inMonth && d.day === state.focusableDay);
-    });
+  const refreshFocusableDay = (day: CalendarDay) => {
+    day.isFocusable =
+      isMonthly.value || (day.inMonth && day.day === state.focusableDay);
+  };
+
+  const forDays = (
+    pages: Page[] = state.pages,
+    fn: (day: CalendarDay) => boolean | void,
+  ) => {
+    for (const page of pages) {
+      for (const day of page.days) {
+        if (fn(day) === false) return;
+      }
+    }
   };
 
   const refreshAttrs = (
@@ -471,6 +510,29 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     return { fromPage, toPage };
   };
 
+  const getPageTransition = (
+    oldPage: Page,
+    newPage: Page,
+    defaultTransition = '',
+  ) => {
+    if (defaultTransition === 'none' || defaultTransition === 'fade')
+      return defaultTransition;
+    // Moving to a different view
+    if (oldPage?.view !== newPage?.view) return 'fade';
+    // Moving to a previous page
+    const moveNext = pageIsAfterPage(newPage, oldPage);
+    const movePrev = pageIsBeforePage(newPage, oldPage);
+    if (!moveNext && !movePrev) {
+      return 'fade';
+    }
+    // Vertical slide
+    if (defaultTransition === 'slide-v') {
+      return movePrev ? 'slide-down' : 'slide-up';
+    }
+    // Horizontal slide
+    return movePrev ? 'slide-right' : 'slide-left';
+  };
+
   const refreshPages = ({
     page,
     position = 1,
@@ -508,10 +570,15 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
           }),
         );
       }
-      // Refresh disabled days for new pages
-      refreshDisabledDays(pages);
-      // Refresh focusable days for new pages
-      refreshFocusableDays(pages);
+      // Refresh state for days
+      forDays(pages, day => {
+        // Refresh disabled state
+        refreshDisabledDay(day);
+        // Refresh focusable state
+        refreshFocusableDay(day);
+      });
+      // Refresh attributes
+      refreshAttrs(pages, state.store.list, [], false);
       // Assign the transition
       state.transitionName = getPageTransition(
         state.pages[0],
@@ -532,10 +599,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     });
   };
 
-  const canMove = (
-    target: number | string | Date | PageAddress,
-    opts: Partial<MoveOptions> = {},
-  ) => {
+  const canMove = (target: MoveTarget, opts: Partial<MoveOptions> = {}) => {
     // Calculate new page range without adjusting to min/max
     Object.assign(
       opts,
@@ -556,10 +620,16 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
 
   const canMoveUp = computed(() => state.view !== 'monthly');
 
-  const move = async (
-    arg: number | string | Date | PageAddress,
-    opts: Partial<MoveOptions> = {},
-  ) => {
+  const moveUpLabel = computed(() => {
+    if (state.view === 'monthly') return '';
+    const page = firstPage.value as Page;
+    if (state.view === 'daily') {
+      return page.weekTitle;
+    }
+    return page.monthTitle;
+  });
+
+  const move = async (arg: MoveTarget, opts: Partial<MoveOptions> = {}) => {
     // Reject if we can't move to this page
     if (!opts.force && !canMove(arg, opts)) {
       return Promise.reject(
@@ -619,7 +689,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     return false;
   };
 
-  const focusDate = (date: Date, opts = {}) => {
+  const focusDate = (date: Date, opts: Partial<MoveOptions> = {}) => {
     if (tryFocusDate(date)) return Promise.resolve(true);
     // Move to the given date
     return move(date, opts).then(() => {
@@ -765,31 +835,27 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
   watch(
     () => locale,
     () => {
-      refreshPages();
       initStore();
+      refreshPages();
     },
   );
 
   watch(
     () => theme,
     () => {
-      // refreshPages();
       initStore();
+      // refreshPages();
     },
   );
 
   watch(
     () => count,
-    () => {
-      refreshPages();
-    },
+    () => refreshPages(),
   );
 
   watch(
     () => props.view,
-    () => {
-      state.view = props.view;
-    },
+    () => (state.view = props.view),
   );
 
   watch(
@@ -815,7 +881,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
 
   // #endregion Watch
 
-  const context = reactive({
+  const context = {
     ...toRefs(state),
     theme,
     locale,
@@ -830,6 +896,7 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     canMovePrev,
     canMoveNext,
     canMoveUp,
+    moveUpLabel,
     showWeeknumbers,
     showIsoWeeknumbers,
     canMove,
@@ -849,17 +916,17 @@ export function useCalendar(props: CalendarProps, { emit }: SetupContext) {
     onDayFocusin,
     onDayFocusout,
     onWeeknumberClick,
-  });
+  };
   provide('context', context);
   return context;
 }
 
-export function useCalendarContext(): ToRefs<CalendarContext> {
+export function useCalendarContext(): CalendarContext {
   const context = inject<CalendarContext>('context');
   if (!context) {
     throw new Error(
       'Calendar context missing. Please verify this component is nexted within a valid context provider.',
     );
   }
-  return toRefs(context);
+  return context;
 }
