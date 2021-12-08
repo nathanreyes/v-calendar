@@ -53,7 +53,6 @@ import { useCalendarContext } from '../../utils/calendar';
 
 export default {
   name: 'CalendarPane',
-  emits: ['weeknumberclick'],
   inheritAttrs: false,
   components: { CalendarHeader, CalendarDay },
   props: {
