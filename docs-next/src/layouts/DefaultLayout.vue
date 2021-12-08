@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="flex w-full max-w-5xl mx-auto">
-      <div><Sidebar /></div>
-      <div><RouterView /></div>
+      <div class="hidden lg:block"><Sidebar /></div>
+      <div class="w-full lg:flex-grow"><RouterView /></div>
     </div>
   </div>
 </template>

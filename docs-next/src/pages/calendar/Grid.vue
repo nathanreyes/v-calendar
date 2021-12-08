@@ -3,6 +3,7 @@
     <CalendarGrid
       :attributes="attributes"
       v-model:view="view"
+      show-weeknumbers
       @will-create-event="onWillCreateEvent"
       @did-create-event="onDidCreateEvent"
       @did-resize-event="onDidResizeEvent"
@@ -64,11 +65,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped lang="postcss"></style>
-
-<style>
-.vc-container {
-  border: none !important;
-}
-</style>
