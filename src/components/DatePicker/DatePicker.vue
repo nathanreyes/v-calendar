@@ -6,7 +6,6 @@ import TimePicker from '../TimePicker/TimePicker.vue';
 import { rootMixin } from '../../utils/mixins';
 import { getDefault } from '../../utils/defaults';
 import {
-  datesAreEqual,
   createGuid,
   elementContains,
   pageIsBetweenPages,
@@ -14,13 +13,13 @@ import {
   off,
 } from '../../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../../utils/_';
+import { DatePatch, adjustTimeForDate, datesAreEqual } from '../../utils/dates';
 import {
   showPopover as sp,
   hidePopover as hp,
   togglePopover as tp,
   getPopoverTriggerEvents,
 } from '../../utils/popovers';
-import { PATCH } from '../../utils/locale';
 
 const _dateConfig = {
   type: 'auto',
@@ -241,10 +240,10 @@ export default {
     },
     inputMaskPatch() {
       if (this.inputMaskHasTime && this.inputMaskHasDate) {
-        return PATCH.DATE_TIME;
+        return DatePatch.DateTime;
       }
-      if (this.inputMaskHasDate) return PATCH.DATE;
-      if (this.inputMaskHasTime) return PATCH.TIME;
+      if (this.inputMaskHasDate) return DatePatch.Date;
+      if (this.inputMaskHasTime) return DatePatch.Time;
       return undefined;
     },
     slotArgs() {
@@ -449,7 +448,7 @@ export default {
     handleDayClick(day) {
       const { keepVisibleOnInput, visibility } = this.popover_;
       const opts = {
-        patch: PATCH.DATE,
+        patch: DatePatch.Date,
         adjustTime: true,
         formatInput: true,
         hidePopover:
@@ -476,7 +475,7 @@ export default {
       if (!this.isDragging) return;
       this.dragTrackingValue.end = day.date;
       this.updateValue(this.dragTrackingValue, {
-        patch: PATCH.DATE,
+        patch: DatePatch.Date,
         adjustTime: true,
         formatInput: true,
         hidePriority: false,
@@ -493,7 +492,7 @@ export default {
         value = parts;
       }
       this.updateValue(value, {
-        patch: PATCH.TIME,
+        patch: DatePatch.Time,
         rangePriority: isStart ? RANGE_PRIORITY.START : RANGE_PRIORITY.END,
       }).then(() => this.adjustPageRange(isStart));
     },
@@ -564,7 +563,7 @@ export default {
       value,
       {
         config = this.modelConfig_,
-        patch = PATCH.DATE_TIME,
+        patch = DatePatch.DateTime,
         notify = true,
         clearIfEqual = false,
         formatInput = true,
@@ -679,14 +678,19 @@ export default {
       if (!this.hasValue(value)) return null;
       if (this.isRange) {
         return {
-          start: this.$locale.adjustTimeForDate(
+          start: adjustTimeForDate(
             value.start,
             config.start || config,
+            this.timezone,
           ),
-          end: this.$locale.adjustTimeForDate(value.end, config.end || config),
+          end: adjustTimeForDate(
+            value.end,
+            config.end || config,
+            this.timezone,
+          ),
         };
       }
-      return this.$locale.adjustTimeForDate(value, config);
+      return adjustTimeForDate(value, config, this.timezone);
     },
     sortRange(range, priority = RANGE_PRIORITY.NONE) {
       const { start, end } = range;

@@ -64,6 +64,7 @@
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
 import { head, last } from '../../utils/_';
 import { onSpaceOrEnter, pad } from '../../utils/helpers';
+import { getMonthDates } from '../../utils/dates';
 
 const _yearGroupCount = 12;
 
@@ -191,14 +192,14 @@ export default {
       const { month: thisMonth, year: thisYear } = this.locale.getPageForDate(
         new Date(),
       );
-      return this.locale.getMonthDates().map((d, i) => {
+      return getMonthDates().map((d, i) => {
         const month = i + 1;
         return {
           month,
           year,
           id: `${year}.${pad(month, 2)}`,
-          label: this.locale.format(d, this.context.masks.navMonths),
-          ariaLabel: this.locale.format(d, 'MMMM YYYY'),
+          label: this.locale.formatDate(d, this.masks.navMonths),
+          ariaLabel: this.locale.formatDate(d, 'MMMM YYYY'),
           isActive: month === this.month && year === this.year,
           isCurrent: month === thisMonth && year === thisYear,
           isDisabled: !this.validator({ month, year }),

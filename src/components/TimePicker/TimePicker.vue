@@ -19,16 +19,16 @@
     <div class="vc-time-content">
       <div v-if="date" class="vc-time-date">
         <span class="vc-time-weekday">
-          {{ locale.format(date, 'WWW') }}
+          {{ locale.formatDate(date, 'WWW') }}
         </span>
         <span class="vc-time-month">
-          {{ locale.format(date, 'MMM') }}
+          {{ locale.formatDate(date, 'MMM') }}
         </span>
         <span class="vc-time-day">
-          {{ locale.format(date, 'D') }}
+          {{ locale.formatDate(date, 'D') }}
         </span>
         <span class="vc-time-year">
-          {{ locale.format(date, 'YYYY') }}
+          {{ locale.formatDate(date, 'YYYY') }}
         </span>
       </div>
       <div class="vc-time-select">

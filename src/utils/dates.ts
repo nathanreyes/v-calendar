@@ -101,6 +101,7 @@ const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const maskMacros = ['L', 'iso'];
 
 // #region Format constants
+
 const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const literal = /\[([^]*?)\]/gm;
 const formatFlags: any = {
@@ -339,6 +340,19 @@ parseFlags.A = parseFlags.a;
 parseFlags.ZZZZ = parseFlags.ZZZ = parseFlags.ZZ = parseFlags.Z;
 
 // #endregion Parse constants
+
+export const roundDate = (dateMs: number, snapMs = 0) => {
+  if (snapMs > 0) return new Date(Math.round(dateMs / snapMs) * snapMs);
+  return new Date(dateMs);
+};
+
+export function datesAreEqual(a: any, b: any): boolean {
+  const aIsDate = isDate(a);
+  const bIsDate = isDate(b);
+  if (!aIsDate && !bIsDate) return true;
+  if (aIsDate !== bIsDate) return false;
+  return a.getTime() === b.getTime();
+}
 
 export function getStartOfWeek(date: Date, firstDayOfWeek: DayOfWeek = 1) {
   const day = date.getDay() + 1;

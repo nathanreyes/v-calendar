@@ -3,6 +3,7 @@ import Locale from '../locale';
 import { isObject, isDate } from '../_';
 import Attribute from '../attribute';
 import { locales, getDefault } from '../defaults';
+import { getDateParts } from '../dates';
 
 export const rootMixin = {
   props: {
@@ -100,7 +101,7 @@ export const rootMixin = {
   // },
   methods: {
     formatDate(date, mask) {
-      return this.$locale ? this.$locale.format(date, mask) : '';
+      return this.$locale ? this.$locale.formatDate(date, mask) : '';
     },
     parseDate(text, mask) {
       if (!this.$locale) return null;
@@ -117,13 +118,10 @@ export const rootMixin = {
     },
     pageForDate(date) {
       if (!date) return null;
-      return this.$locale.getDateParts(this.normalizeDate(date));
+      return getDateParts(this.normalizeDate(date), this.$locale.timezone);
     },
     pageForThisMonth() {
       return this.pageForDate(new Date());
-    },
-    addPages(address, count) {
-      return this.$locale.addPages(address, count);
     },
   },
 };
