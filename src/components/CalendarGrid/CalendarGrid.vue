@@ -207,8 +207,8 @@ export default defineComponent({
       onTransitionAfterEnter,
     } = useCalendar(props, { emit });
 
-    const page = computed<Page>(() => pages.value[0]);
     const gridEl = ref<HTMLElement>();
+    const page = computed<Page>(() => pages.value[0]);
     const days = computed(() => page.value.viewDays);
     const weeks = computed(() => page.value.viewWeeks);
 
