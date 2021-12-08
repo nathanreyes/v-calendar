@@ -1,6 +1,6 @@
 import { CalendarDay } from '../../utils/locale';
 import { Cell } from './Cell';
-import { roundDate } from '../../utils/helpers';
+import { roundDate } from '../../utils/dates';
 import DateInfo from '../../utils/dateInfo';
 
 type GridState =
@@ -145,7 +145,7 @@ export class Grid {
         break;
       }
       case 'RESIZE_MONITOR': {
-        this.handleResizeMonitorEvent(event, day, position);
+        this.handleResizeMonitorEvent(event, position);
         break;
       }
       case 'DRAG_MONITOR': {
@@ -252,25 +252,21 @@ export class Grid {
         const cell = this.createNewCell(this.createOrigin.position, day);
         const position = cell.position + cell.height;
         this.startResizingCells(position, day, cell, false, true);
-        this.updateResizingCells(position, day);
+        this.updateResizingCells(position);
         this.state = 'RESIZE_MONITOR';
         break;
       }
     }
   }
 
-  handleResizeMonitorEvent(
-    event: GridStateEvent,
-    day: CalendarDay,
-    position: number,
-  ) {
+  handleResizeMonitorEvent(event: GridStateEvent, position: number) {
     if (!this.resizeOrigin) return;
     switch (event) {
       case 'EVENT_CURSOR_MOVE':
       case 'EVENT_CURSOR_MOVE_SHIFT':
       case 'GRID_CURSOR_MOVE':
       case 'GRID_CURSOR_MOVE_SHIFT': {
-        this.updateResizingCells(position, day);
+        this.updateResizingCells(position);
         break;
       }
       case 'GRID_CURSOR_UP': {
@@ -349,8 +345,9 @@ export class Grid {
     });
   }
 
-  updateResizingCells(position: number, day: CalendarDay) {
+  updateResizingCells(position: number) {
     if (!this.resizing || !this.resizeOrigin) return;
+    const day = this.resizeOrigin.day;
     const date = this.getDateFromPosition(position, day, 0, 0);
     const offsetMs = date.getTime() - this.resizeOrigin.date.getTime();
     this.forSelectedCells(cell => cell.updateResize(offsetMs));
