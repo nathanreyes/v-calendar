@@ -11,6 +11,8 @@
     user-select: none;
     white-space: nowrap;
     margin: 0 0.75rem;
+    line-height: 30px;
+    pointer-events: auto;
     &:hover {
       opacity: 0.75;
     }
@@ -23,5 +25,33 @@
   }
   &.is-2xl {
     font-size: var(--text-2xl);
+  }
+  .vc-prev {
+    grid-column: prev;
+  }
+  .vc-next {
+    grid-column: next;
+  }
+  .vc-up {
+    grid-column: up;
+  }
+}
+
+.vc-header-move-up-button {
+  display: flex;
+  align-items: center;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--rounded-full);
+  background-color: var(--accent-100);
+  color: var(--accent-700);
+  user-select: none;
+  margin: 0 1rem;
+  * > * {
+    margin-left: 0.2rem;
+  }
+  &:hover {
+    background-color: var(--accent-200);
   }
 }

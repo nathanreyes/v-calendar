@@ -31,31 +31,34 @@
     </div>
     <div
       v-if="show.up"
-      class="vc-arrow vc-up"
+      class="vc-header-move-up-button vc-up"
       :class="{ 'is-disabled': !canMoveUp }"
       role="button"
       @click="moveUp"
       @keydown.space.enter="moveUp"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M5 15l7-7 7 7"
-        />
-      </svg>
+      {{ moveUpLabel }}
+      <div :class="{ 'is-disabled': !canMoveUp }">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-3 w-3"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 15l7-7 7 7"
+          />
+        </svg>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, computed } from 'vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
 import { useCalendarContext } from '../../utils/calendar';
@@ -65,7 +68,7 @@ export default defineComponent({
   components: { SvgIcon },
   emits: ['move-prev', 'move-next'],
   props: {
-    page: Object,
+    page: { type: Object, required: true },
     layout: String,
     isLg: Boolean,
     isXl: Boolean,
@@ -80,6 +83,7 @@ export default defineComponent({
       canMoveNext,
       moveNext,
       canMoveUp,
+      moveUpLabel,
       moveUp,
     } = useCalendarContext();
     const navPlacement = computed(() => {
@@ -95,8 +99,8 @@ export default defineComponent({
     const navPopoverEvents = computed(() => {
       const { page } = props;
       return getPopoverTriggerEvents({
-        id: navPopoverId,
-        visibility: navVisibility,
+        id: navPopoverId.value,
+        visibility: navVisibility.value,
         placement: navPlacement.value,
         modifiers: [
           { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
@@ -155,6 +159,7 @@ export default defineComponent({
       canMoveNext,
       moveNext,
       canMoveUp,
+      moveUpLabel,
       moveUp,
     };
   },
