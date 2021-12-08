@@ -110,9 +110,9 @@ const formatFlags: any = {
   DD(d: DateParts) {
     return pad(d.day, 2);
   },
-  Do(d: DateParts, l: Locale) {
-    return l.DoFn(d.day);
-  },
+  // Do(d: DateParts, l: Locale) {
+  //   return l.DoFn(d.day);
+  // },
   d(d: DateParts) {
     return d.weekday - 1;
   },
