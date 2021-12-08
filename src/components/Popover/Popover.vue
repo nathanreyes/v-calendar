@@ -1,70 +1,56 @@
+<template>
+  <Teleport to="body">
+    <div
+      class="vc-popover-content-wrapper"
+      :class="{ 'is-interactive': isInteractive }"
+      ref="popover"
+    >
+      <Transition
+        :name="`vc-${transition}`"
+        appear
+        @before-enter="beforeEnter"
+        @after-enter="afterEnter"
+        @before-leave="beforeLeave"
+        @after-leave="afterLeave"
+      >
+        <div
+          v-if="isVisible"
+          tabindex="-1"
+          :class="['vc-popover-content', `direction-${direction}`]"
+          :style="contentStyle"
+          v-bind="$attrs"
+        >
+          <slot
+            :direction="direction"
+            :alignment="alignment"
+            :data="data"
+            :update-layout="setupPopper"
+            :hide="hide"
+          />
+          <span
+            :class="[
+              'vc-popover-caret',
+              `direction-${direction}`,
+              `align-${alignment}`,
+            ]"
+          />
+        </div>
+      </Transition>
+    </div>
+  </Teleport>
+</template>
+
 <script>
-import { h } from 'vue';
 import { createPopper } from '@popperjs/core';
 import { on, off, elementContains } from '../../utils/helpers';
-import { isFunction, omit } from '../../utils/_';
-import CustomTransition from '../CustomTransition/CustomTransition.vue';
+import { omit } from '../../utils/_';
 
 export default {
   name: 'Popover',
+  inheritAttrs: false,
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
-  render() {
-    return h(
-      'div',
-      {
-        class: [
-          'vc-popover-content-wrapper',
-          {
-            'is-interactive': this.isInteractive,
-          },
-        ],
-        ref: 'popover',
-      },
-      [
-        h(
-          CustomTransition,
-          {
-            name: this.transition,
-            appear: true,
-            'on-before-enter': this.beforeEnter,
-            'on-after-enter': this.afterEnter,
-            'on-before-leave': this.beforeLeave,
-            'on-after-leave': this.afterLeave,
-          },
-          {
-            default: () =>
-              this.isVisible
-                ? h(
-                    'div',
-                    {
-                      tabindex: -1,
-                      class: [
-                        'vc-popover-content',
-                        `direction-${this.direction}`,
-                        this.contentClass,
-                      ],
-                      style: this.contentStyle,
-                    },
-                    [
-                      this.content,
-                      h('span', {
-                        class: [
-                          'vc-popover-caret',
-                          `direction-${this.direction}`,
-                          `align-${this.alignment}`,
-                        ],
-                      }),
-                    ],
-                  )
-                : null,
-          },
-        ),
-      ],
-    );
-  },
   props: {
     id: { type: String, required: true },
-    contentClass: String,
   },
   data() {
     return {
@@ -87,19 +73,6 @@ export default {
     };
   },
   computed: {
-    content() {
-      return (
-        (isFunction(this.$slots.default) &&
-          this.$slots.default({
-            direction: this.direction,
-            alignment: this.alignment,
-            data: this.data,
-            updateLayout: this.setupPopper,
-            hide: opts => this.hide(opts),
-          })) ||
-        this.$slots.default
-      );
-    },
     contentStyle() {
       return {
         '--slide-translate': this.transitionTranslate,
@@ -123,7 +96,7 @@ export default {
       };
     },
     isVisible() {
-      return !!(this.ref && this.content);
+      return !!(this.$slots.default && this.ref);
     },
     direction() {
       return (this.placement && this.placement.split('-')[0]) || 'bottom';
