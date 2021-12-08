@@ -2,20 +2,17 @@
   <div
     v-if="weeks.length"
     class="vc-grid-container vc-theme"
-    :class="[`vc-${context.theme.color}`]"
+    :class="[`vc-${theme.color}`]"
     ref="containerRef"
-    @keydown="context.onKeydown"
+    @keydown="onKeydown"
   >
     <!--Calendar header-->
-    <CalendarHeader :page="page" layout="pntu-" is-2xl />
+    <CalendarHeader :page="page" layout="pnt-u" is-2xl />
     <!--Grid header-->
     <div class="vc-grid-header">
       <div class="vc-grid-header-days">
-        <div
-          v-if="weeks[0].weeknumberDisplay"
-          class="vc-grid-header-weeknumber"
-        >
-          W{{ weeks[0].weeknumberDisplay }}
+        <div v-if="weeks[0].weeknumberDisplay" class="vc-grid-header-timezone">
+          {{ weeks[0].weeknumberDisplay }}
         </div>
         <template v-for="day in weeks[0].days" :key="day.id">
           <div
@@ -27,7 +24,7 @@
             }"
           >
             <div class="vc-grid-header-day-label">
-              {{ context.locale.format(day.date, 'WWW') }}
+              {{ locale.formatDate(day.date, 'WWW') }}
             </div>
             <span
               tabindex="1"
@@ -46,9 +43,9 @@
     <!--Grid content-->
     <div class="vc-grid">
       <Transition
-        :name="`vc-${context.transitionName}`"
-        @before-enter="context.onTransitionBeforeEnter"
-        @after-enter="context.onTransitionAfterEnter"
+        :name="`vc-${transitionName}`"
+        @before-enter="onTransitionBeforeEnter"
+        @after-enter="onTransitionAfterEnter"
       >
         <div class="vc-grid-inset" :key="page.id">
           <div
@@ -79,12 +76,7 @@
                 align-items: stretch;
               "
             >
-              <svg
-                v-for="n in 24"
-                :key="n"
-                xmlns="http://www.w3.org/2000/svg"
-                class="vc-grid-line-hour"
-              >
+              <svg v-for="n in 25" :key="n" class="vc-grid-line-hour">
                 <line x1="0%" y1="0" x2="100%" y2="0" />
               </svg>
             </div>
@@ -171,7 +163,6 @@ import {
   defineComponent,
   computed,
   reactive,
-  toRef,
   ref,
   watch,
   onMounted,
@@ -202,9 +193,21 @@ export default defineComponent({
   ],
   props,
   setup(props, { emit }) {
-    const context = useCalendar(props, { emit });
-    const containerRef = toRef(context, 'containerRef');
-    const page = computed<Page>(() => context.pages[0]);
+    const {
+      pages,
+      containerRef,
+      locale,
+      onDayFocusin,
+      move,
+      onDayKeydown,
+      theme,
+      onKeydown,
+      transitionName,
+      onTransitionBeforeEnter,
+      onTransitionAfterEnter,
+    } = useCalendar(props, { emit });
+
+    const page = computed<Page>(() => pages.value[0]);
     const gridEl = ref<HTMLElement>();
     const days = computed(() => page.value.viewDays);
     const weeks = computed(() => page.value.viewWeeks);
@@ -260,7 +263,7 @@ export default defineComponent({
       if (!days.value.length) return result;
       for (let i = 0; i < 24; i++) {
         const date = days.value[0].dateFromTime(i, 0, 0, 0);
-        const timeLabel = context.locale.format(date, 'h A');
+        const timeLabel = locale.value.formatDate(date, 'h A');
         if (i === 0) continue;
         result.push({
           key: `${i}-label`,
@@ -322,12 +325,11 @@ export default defineComponent({
       const day = getDayFromPosition(position);
       grid.update(eventName, day, position.y, cell);
       if (stateEvent === 'GRID_CURSOR_DOWN') {
-        context.onDayFocusin(day);
+        onDayFocusin(day);
       }
     };
 
     return {
-      context,
       containerRef,
       page,
       grid,
@@ -336,12 +338,17 @@ export default defineComponent({
       gridEl,
       gridStyle,
       labelCells,
+      transitionName,
+      theme,
+      locale,
+      onTransitionBeforeEnter,
+      onTransitionAfterEnter,
       onDayNumberClick(day: CalendarDay) {
         emit('day-header-click', day);
-        context.move(day, { view: 'daily' });
+        move(day, { view: 'daily' });
       },
       onDayKeydown(day: CalendarDay, event: KeyboardEvent) {
-        context.onDayKeydown(day, event);
+        onDayKeydown(day, event);
       },
       onGridEscapeKeydown() {
         console.log('fired');

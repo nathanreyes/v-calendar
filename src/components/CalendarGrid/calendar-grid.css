@@ -1,7 +1,9 @@
 .vc-grid-container {
   --gutter-left: 50px;
   --gutter-right: 16px;
-  --gutter-height: 8px;
+  --gutter-top: 8px;
+  --gutter-bottom: 8px;
+
   --grid-height: 500px;
 
   width: 900px;
@@ -21,18 +23,20 @@
     padding-right: var(--gutter-right);
   }
 
-  .vc-grid-header-weeknumber {
+  .vc-grid-header-timezone {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     font-size: var(--text-xs);
-    font-weight: var(--font-bold);
-    color: var(--gray-400);
+    font-weight: var(--font-normal);
+    color: var(--gray-500);
     position: absolute;
     left: 0;
+    bottom: 0.25rem;
     width: var(--gutter-left);
     height: 100%;
+    user-select: none;
   }
 
   .vc-grid-header-day {
@@ -77,8 +81,14 @@
         color: var(--accent-600);
       }
       .vc-grid-header-day-number {
-        color: var(--white);
+        background-color: var(--accent-100);
+        color: var(--accent-600);
+      }
+    }
+    &.is-active {
+      .vc-grid-header-day-number {
         background-color: var(--accent-600);
+        color: var(--white);
         &:hover {
           background-color: var(--accent-600);
         }
@@ -98,7 +108,8 @@
 
   .vc-grid-inset {
     padding-left: var(--gutter-left);
-    padding-top: var(--gutter-height);
+    padding-top: var(--gutter-top);
+    padding-bottom: var(--gutter-bottom);
     height: var(--grid-height);
     overflow-y: auto;
   }
@@ -141,6 +152,7 @@
   .vc-grid-line-hour {
     stroke-dasharray: 3 2;
     stroke: var(--gray-400);
+    height: 2px;
   }
 
   .vc-grid-label-cell {
