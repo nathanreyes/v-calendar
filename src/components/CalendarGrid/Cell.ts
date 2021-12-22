@@ -2,16 +2,20 @@ import { reactive } from 'vue';
 import { CalendarDay } from '../../utils/locale';
 import DateInfo from '../../utils/dateInfo';
 import { Constraints } from './Constraints';
-import { createGuid, roundDate, roundTenth } from '../../utils/helpers';
+import { createGuid, roundTenth } from '../../utils/helpers';
+import { roundDate } from '../../utils/dates';
+import { PopoverOptions } from '../../utils/popovers';
 
 interface ResizeOrigin {
-  dateInfo: DateInfo;
+  start: Date;
+  end: Date;
   fromStart: boolean;
 }
 
 interface DragOrigin {
   position: number;
-  dateInfo: DateInfo;
+  start: Date;
+  end: Date;
   durationMs: number;
   weekdayPosition: number;
 }
@@ -23,25 +27,27 @@ const DEFAULT_CONSTRAINTS = new Constraints([{ type: 'OUTSIDE_DAY' }]);
 export class Cell {
   key = createGuid();
   label = '';
+  color = 'indigo';
   day: CalendarDay;
   dateInfo: DateInfo;
   constraints: Constraints = DEFAULT_CONSTRAINTS;
   selected = false;
   draggable = true;
   dragging = false;
-  resizable = true;
   resizing = false;
+  editing = false;
+  order = 0;
   position = 0;
   height = 0;
   snapMinutes = 15;
-  resizeOrigin: ResizeOrigin | null = null;
-  dragOrigin: DragOrigin | null = null;
-  color = 'indigo';
-  style: Record<string, any> | null = null;
-  class: string[] = [];
   pixelsPerHour = 48;
   minDurationMinutes = 15;
   maxDurationMinutes = 0;
+  resizeOrigin: ResizeOrigin | null = null;
+  dragOrigin: DragOrigin | null = null;
+  style: Record<string, any> | null = null;
+  class: string[] = [];
+  popover: Partial<PopoverOptions> | null = null;
 
   static fromDateInfo(
     dateInfo: DateInfo,
@@ -53,7 +59,7 @@ export class Cell {
 
   static fromDate(date: Date, day: CalendarDay, data: Partial<Cell> = {}) {
     const cell = this.fromDateInfo(
-      new DateInfo({ startOn: date, endOn: date }),
+      DateInfo.from({ start: date, end: date }, { isAllDay: false }),
       day,
       data,
     );
@@ -61,8 +67,23 @@ export class Cell {
     return cell;
   }
 
+  constructor(dateInfo: DateInfo, day: CalendarDay, data: Partial<Cell> = {}) {
+    Object.assign(this, data);
+    this.dateInfo = dateInfo;
+    this.day = day;
+    this.init();
+  }
+
+  get isAllDay() {
+    return (
+      this.dateInfo.isAllDay ||
+      this.startDate < this.day.range.start ||
+      this.endDate > this.day.range.end
+    );
+  }
+
   get startDate() {
-    return this.dateInfo.start;
+    return this.dateInfo.start!.date;
   }
 
   get startDateLabel() {
@@ -70,7 +91,7 @@ export class Cell {
   }
 
   get endDate() {
-    return this.dateInfo.end;
+    return this.dateInfo.end!.date;
   }
 
   get endDateLabel() {
@@ -78,13 +99,16 @@ export class Cell {
   }
 
   get durationMinutes() {
-    return (this.endDate - this.startDate) / (60 * 1000);
+    return (this.endDate.getTime() - this.startDate.getTime()) / (60 * 1000);
+  }
+
+  formatDate(date: Date, mask: string) {
+    return this.day.locale.formatDate(date, mask);
   }
 
   formatLabel(date: Date) {
     if (!this.dateInfo) return '';
-    const format = 'h:mma';
-    return this.dateInfo.locale.format(date, format);
+    return this.formatDate(date, 'h:mma');
   }
 
   get snapMs() {
@@ -99,11 +123,8 @@ export class Cell {
     return this.maxDurationMinutes * 60 * 1000;
   }
 
-  constructor(dateInfo: DateInfo, day: CalendarDay, data: Partial<Cell> = {}) {
-    this.dateInfo = dateInfo;
-    this.day = day;
-    Object.assign(this, data);
-    this.init();
+  get resizable() {
+    return !this.isAllDay;
   }
 
   init() {
@@ -115,57 +136,67 @@ export class Cell {
   }
 
   updateLayout() {
-    const { startTime, endTime } = this.dateInfo;
+    this.position = this.getPosition();
+    this.height = this.getHeight();
+  }
+
+  getPosition() {
+    const { start } = this.dateInfo;
     const { range } = this.day;
     const dayStartTime = range.start.getTime();
-    const yHours = (startTime - dayStartTime) / MS_PER_HOUR;
-    this.position = Math.max(roundTenth(yHours * this.pixelsPerHour), 0);
-    const heightHours = (endTime - startTime) / MS_PER_HOUR;
+    const yHours = (start!.dateTime - dayStartTime) / MS_PER_HOUR;
+    return Math.max(roundTenth(yHours * this.pixelsPerHour), 0);
+  }
+
+  getHeight() {
+    if (this.isAllDay) return 20;
+    const { start, end } = this.dateInfo;
+    const heightHours = (end!.dateTime - start!.dateTime) / MS_PER_HOUR;
     const fullHeight = 24 * this.pixelsPerHour;
-    this.height = Math.min(
+    return Math.min(
       heightHours * this.pixelsPerHour,
       fullHeight - this.position,
     );
-    this.style = {
-      top: `${this.position}px`,
-      height: `${this.height}px`,
-    };
-    this.class = [`vc-${this.color}`, this.getClassForHeight(this.height)];
   }
 
-  getClassForHeight(height: number) {
-    if (height <= 15) return 'is-collapsed';
-    if (height <= 30) return 'is-constrained';
-    if (height <= 48) return 'is-small';
-    return '';
+  get size() {
+    if (this.height <= 16) return 'collapsed';
+    if (this.height <= 30) return 'constrained';
+    if (this.height <= 48) return 'small';
+    return 'normal';
+  }
+
+  get refSelector() {
+    return `[data-cell-id="${this.key}"]`;
   }
 
   startResize(fromStart: boolean) {
     if (!this.resizable || this.resizing || this.dragging) return;
     this.resizing = true;
     this.resizeOrigin = {
-      dateInfo: this.dateInfo,
+      start: this.dateInfo.start!.date,
+      end: this.dateInfo.end!.date,
       fromStart,
     };
   }
 
   updateResize(offsetMs: number) {
     if (!this.resizing || !this.resizeOrigin) return;
+    let start: Date | null = null;
+    let end: Date | null = null;
     if (this.resizeOrigin.fromStart) {
-      const startOn = roundDate(
-        this.resizeOrigin.dateInfo.start.getTime() + offsetMs,
+      start = roundDate(
+        this.resizeOrigin.start.getTime() + offsetMs,
         this.snapMs,
       );
-      const endOn = this.resizeOrigin.dateInfo.end;
-      this.dateInfo = new DateInfo({ startOn, endOn });
+      end = this.resizeOrigin.end;
     } else {
-      const startOn = this.resizeOrigin.dateInfo.start;
-      const endOn = roundDate(
-        this.resizeOrigin.dateInfo.end.getTime() + offsetMs,
-        this.snapMs,
-      );
-      this.dateInfo = new DateInfo({ startOn, endOn });
+      start = this.resizeOrigin.start;
+      end = roundDate(this.resizeOrigin.end.getTime() + offsetMs, this.snapMs);
     }
+    if (start! < this.day.range.start) return;
+    if (end! > this.day.range.end) return;
+    this.dateInfo = DateInfo.from({ start, end }, { isAllDay: false });
     this.resizeToConstraints();
   }
 
@@ -178,8 +209,9 @@ export class Cell {
     this.dragging = true;
     this.dragOrigin = {
       position: this.position,
-      dateInfo: this.dateInfo,
-      durationMs: this.dateInfo.endTime - this.dateInfo.startTime,
+      start: this.dateInfo.start!.date,
+      end: this.dateInfo.end!.date,
+      durationMs: this.dateInfo.end!.dateTime - this.dateInfo.start!.dateTime,
       weekdayPosition: this.day.weekdayPosition,
     };
   }
@@ -190,17 +222,19 @@ export class Cell {
     availableDays: CalendarDay[],
   ) {
     if (!this.dragging || !this.dragOrigin) return;
-    const startOn = roundDate(
-      this.dragOrigin.dateInfo.start.getTime() + offsetMs,
+    const start = roundDate(
+      this.dragOrigin.start.getTime() + offsetMs,
       this.snapMs,
     );
-    const endOn = new Date(startOn.getTime() + this.dragOrigin.durationMs);
-    this.dateInfo = new DateInfo({ startOn, endOn });
+    const end = new Date(start.getTime() + this.dragOrigin.durationMs);
     const dayIndex = Math.min(
       Math.max(this.dragOrigin.weekdayPosition + offsetDays - 1, 0),
       availableDays.length - 1,
     );
     this.day = availableDays[dayIndex];
+    if (start < this.day.range.start) return;
+    if (end > this.day.range.end) return;
+    this.dateInfo = DateInfo.from({ start, end }, { isAllDay: false });
     this.resizeToConstraints();
   }
 
@@ -210,7 +244,9 @@ export class Cell {
   }
 
   resizeToConstraints() {
-    let { startTime, endTime } = this.dateInfo;
+    const { start, end } = this.dateInfo;
+    let startTime = start!.dateTime;
+    let endTime = end!.dateTime;
     startTime = roundDate(startTime, this.snapMs).getTime();
     endTime = roundDate(endTime, this.snapMs).getTime();
     if (this.minDurationMs > 0 && endTime - startTime < this.minDurationMs) {
@@ -219,16 +255,13 @@ export class Cell {
     if (this.maxDurationMs > 0 && endTime - startTime > this.maxDurationMs) {
       endTime = startTime + this.maxDurationMs;
     }
-
-    // const dayStart = this.day.range.start.getTime();
-    // const dayEnd = this.day.range.end.getTime();
-    // startTime = Math.max(startTime, dayStart);
-    // endTime = Math.min(endTime, dayEnd);
-
-    this.dateInfo = new DateInfo({
-      startOn: new Date(startTime),
-      endOn: new Date(endTime),
-    });
+    this.dateInfo = DateInfo.from(
+      {
+        start: new Date(startTime),
+        end: new Date(endTime),
+      },
+      { isAllDay: false },
+    );
     this.updateLayout();
   }
 }

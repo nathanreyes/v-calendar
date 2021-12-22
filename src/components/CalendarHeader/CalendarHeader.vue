@@ -15,7 +15,7 @@
         <SvgIcon name="left-arrow" />
       </slot>
     </div>
-    <div v-if="show.title" class="vc-title" v-on="navPopoverEvents">
+    <div v-if="show.title" class="vc-title" v-popover="navPopoverOptions">
       <slot name="header-title">{{ page.title }}</slot>
     </div>
     <div
@@ -34,7 +34,7 @@
       class="vc-header-move-up-button vc-up"
       :class="{ 'is-disabled': !canMoveUp }"
       role="button"
-      @click="moveUp"
+      @click.stop="moveUp"
       @keydown.space.enter="moveUp"
     >
       {{ moveUpLabel }}
@@ -61,12 +61,13 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
-import { useCalendarContext } from '../../utils/calendar';
-import { getPopoverTriggerEvents } from '../../utils/popovers';
+import { useCalendarContext } from '../../use/calendar';
+import { popoverDirective } from '../../utils/popovers';
 
 export default defineComponent({
   components: { SvgIcon },
   emits: ['move-prev', 'move-next'],
+  directives: { popover: popoverDirective },
   props: {
     page: { type: Object, required: true },
     layout: String,
@@ -96,9 +97,9 @@ export default defineComponent({
           return 'bottom';
       }
     });
-    const navPopoverEvents = computed(() => {
+    const navPopoverOptions = computed(() => {
       const { page } = props;
-      return getPopoverTriggerEvents({
+      return {
         id: navPopoverId.value,
         visibility: navVisibility.value,
         placement: navPlacement.value,
@@ -107,7 +108,7 @@ export default defineComponent({
         ],
         data: { page },
         isInteractive: true,
-      });
+      };
     });
     const titleLeft = computed(() => props.page.titlePosition.includes('left'));
     const titleRight = computed(() =>
@@ -152,7 +153,7 @@ export default defineComponent({
     return {
       show,
       gridStyle,
-      navPopoverEvents,
+      navPopoverOptions,
       navPlacement,
       canMovePrev,
       movePrev,

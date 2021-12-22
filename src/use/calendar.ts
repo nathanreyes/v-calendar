@@ -15,16 +15,16 @@ import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Popover from '../Popover/Popover.vue';
-import AttributeStore from './attributeStore';
-import Attribute from './attribute';
+import AttributeStore from '../utils/attributeStore';
+import Attribute from '../utils/attribute';
 import {
   default as Locale,
   CalendarDay,
   CalendarWeek,
   Page,
   TitlePosition,
-} from './locale';
-import Theme from './theme';
+} from '../utils/locale';
+import Theme from '../utils/theme';
 import {
   pageIsValid,
   pageIsEqualToPage,
@@ -34,14 +34,14 @@ import {
   createGuid,
   arrayHasItems,
   PageAddress,
-} from './helpers';
-import { isBoolean, isObject, hasAny, omit, head, last } from './_';
-import { locales, getDefault } from './defaults';
-import { addHorizontalSwipeHandler } from './touch';
-import { skipWatcher, handleWatcher } from './watchers';
-import { PopoverVisibility } from './popovers';
+} from '../utils/helpers';
+import { isBoolean, isObject, hasAny, omit, head, last } from '../utils/_';
+import { locales, getDefault } from '../utils/defaults';
+import { addHorizontalSwipeHandler } from '../utils/touch';
+import { skipWatcher, handleWatcher } from '../utils/watchers';
+import { PopoverVisibility } from '../utils/popovers';
 
-type CalendarView = 'daily' | 'weekly' | 'monthly';
+export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
 type MoveTarget = number | string | Date | PageAddress;
 
@@ -55,7 +55,7 @@ interface MoveOptions {
   toPage: PageAddress;
 }
 
-interface CalendarProps {
+export interface CalendarProps {
   view: CalendarView;
   rows: number;
   columns: number;
@@ -101,12 +101,15 @@ interface CalendarState {
   refreshing: boolean;
 }
 
-interface CalendarContext extends ToRefs<CalendarState> {
+export interface CalendarContext extends ToRefs<CalendarState> {
   theme: ComputedRef<Theme>;
   locale: ComputedRef<Locale>;
   masks: ComputedRef<Record<string, string>>;
   count: ComputedRef<number>;
   step: ComputedRef<number>;
+  isMonthly: ComputedRef<boolean>;
+  isWeekly: ComputedRef<boolean>;
+  isDaily: ComputedRef<boolean>;
   firstPage: ComputedRef<Page | undefined>;
   lastPage: ComputedRef<Page | undefined>;
   minPage: ComputedRef<PageAddress | null>;
@@ -118,6 +121,7 @@ interface CalendarContext extends ToRefs<CalendarState> {
   moveUpLabel: ComputedRef<string>;
   showWeeknumbers: ComputedRef<boolean>;
   showIsoWeeknumbers: ComputedRef<boolean>;
+  // formatDate: (date: DateSource, masks: string | string[]) => string;
   canMove: (target: MoveTarget, opts: Partial<MoveOptions>) => boolean;
   move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
   movePrev: () => Promise<boolean>;
@@ -288,7 +292,7 @@ export function useCalendar(
 
   const disabledDates = computed(() => {
     const dates = locale.value.normalizeDates(props.disabledDates, {
-      isFullDay: true,
+      isAllDay: true,
     });
     // Add disabled range for min date
     if (props.minDateExact || props.minDate) {
@@ -315,7 +319,7 @@ export function useCalendar(
 
   const availableDates = computed(() => {
     return locale.value.normalizeDates(props.availableDates, {
-      isFullDay: false,
+      isAllDay: false,
     });
   });
 
@@ -334,6 +338,8 @@ export function useCalendar(
   });
 
   const isMonthly = computed(() => state.view === 'monthly');
+  const isWeekly = computed(() => state.view === 'weekly');
+  const isDaily = computed(() => state.view === 'daily');
 
   // #endregion Computed properties
 
@@ -355,13 +361,6 @@ export function useCalendar(
 
   const addPages = (address: PageAddress, count: number, view = state.view) => {
     return locale.value.addPages(address, count, view);
-  };
-
-  const getPageDays = (pages: Page[] = state.pages): CalendarDay[] => {
-    return pages.reduce(
-      (prev, curr) => prev.concat(curr.days),
-      [] as CalendarDay[],
-    );
   };
 
   const refreshDisabledDay = (day: CalendarDay) => {
@@ -892,6 +891,9 @@ export function useCalendar(
     lastPage,
     minPage,
     maxPage,
+    isMonthly,
+    isWeekly,
+    isDaily,
     navVisibility,
     canMovePrev,
     canMoveNext,
@@ -925,7 +927,7 @@ export function useCalendarContext(): CalendarContext {
   const context = inject<CalendarContext>('context');
   if (!context) {
     throw new Error(
-      'Calendar context missing. Please verify this component is nexted within a valid context provider.',
+      'Calendar context missing. Please verify this component is nested within a valid context provider.',
     );
   }
   return context;
