@@ -42,17 +42,15 @@
                   {{ locale.formatDate(day.date, 'WWW') }}
                 </div>
                 <!--Day header day-->
-                <div>
-                  <div
-                    tabindex="1"
-                    role="button"
-                    class="vc-grid-day-header-day-number vc-focusable"
-                    @click.stop="onDayNumberClick(day)"
-                    @keydown="onDayKeydown(day, $event)"
-                    @keydown.space.enter="onDayNumberClick(day)"
-                  >
-                    {{ day.day }}
-                  </div>
+                <div
+                  tabindex="1"
+                  role="button"
+                  class="vc-grid-day-header-day-number vc-focusable"
+                  @click.stop="onDayNumberClick(day)"
+                  @keydown="onDayKeydown(day, $event)"
+                  @keydown.space.enter="onDayNumberClick(day)"
+                >
+                  {{ day.day }}
                 </div>
               </div>
             </div>
