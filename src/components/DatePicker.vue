@@ -192,7 +192,7 @@ export default {
       return this.mode.toLowerCase() === MODE.TIME;
     },
     isDragging() {
-      return !!this.dragValue;
+      return !!this.dragValue && this.isRange;
     },
     modelConfig_() {
       if (this.isRange) {
@@ -329,9 +329,10 @@ export default {
     inputMask() {
       this.formatInput();
     },
-    value() {
+    value(newValue) {
       if (!this.watchValue) return;
-      this.forceUpdateValue(this.value, {
+
+      this.forceUpdateValue(newValue, {
         config: this.modelConfig_,
         notify: false,
         formatInput: true,
@@ -390,7 +391,11 @@ export default {
           dateParts.push({});
         }
       } else if (value) {
-        dateParts.push(this.getDateParts(value));
+        if (value && value.start) {
+          dateParts.push(this.getDateParts(value.start));
+        } else {
+          dateParts.push(this.getDateParts(value));
+        }
       } else {
         dateParts.push({});
       }
