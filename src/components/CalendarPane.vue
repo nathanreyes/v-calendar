@@ -219,7 +219,7 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style lang="scss" scoped>
 .vc-pane {
   min-width: 250px;
 }

@@ -365,7 +365,7 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style lang="scss" scoped>
 .vc-popover-content-wrapper {
   --popover-horizontal-content-offset: 8px;
   --popover-vertical-content-offset: 10px;

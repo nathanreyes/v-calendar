@@ -432,7 +432,7 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style lang="scss" scoped>
 .vc-day {
   position: relative;
   min-height: 32px;
