@@ -138,7 +138,7 @@ export default {
     },
     document() {
       const root = (this.$refs.popover).getRootNode();
-      return root.host ? root.host : document;
+      return root;
     },
   },
   watch: {
