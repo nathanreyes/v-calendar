@@ -137,8 +137,11 @@ export default {
       return this.$popovers[this.id];
     },
     document() {
-      this.shadowRoot || document;
-    }
+      if (document.querySelector('vue-app-container')) {
+        return document.querySelector('vue-app-container').shadowRoot;
+      }
+      return document;
+    },
   },
   watch: {
     opts(val, oldVal) {
