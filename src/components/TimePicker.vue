@@ -217,7 +217,7 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style lang="scss" scoped>
 .vc-time-picker {
   display: flex;
   align-items: center;

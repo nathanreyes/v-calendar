@@ -136,6 +136,12 @@ export default {
     state() {
       return this.$popovers[this.id];
     },
+    document() {
+      if (document.querySelector('vue-app-container')) {
+        return document.querySelector('vue-app-container').shadowRoot;
+      }
+      return document;
+    },
   },
   watch: {
     opts(val, oldVal) {
@@ -165,7 +171,7 @@ export default {
       on(this.popoverEl, 'focusin', this.onFocusIn);
       on(this.popoverEl, 'focusout', this.onFocusOut);
       on(document, 'keydown', this.onDocumentKeydown);
-      on(document, 'click', this.onDocumentClick);
+      on(this.document, 'click', this.onDocumentClick);
       on(document, 'show-popover', this.onDocumentShowPopover);
       on(document, 'hide-popover', this.onDocumentHidePopover);
       on(document, 'toggle-popover', this.onDocumentTogglePopover);
@@ -178,7 +184,7 @@ export default {
       off(this.popoverEl, 'focusin', this.onFocusIn);
       off(this.popoverEl, 'focusout', this.onFocusOut);
       off(document, 'keydown', this.onDocumentKeydown);
-      off(document, 'click', this.onDocumentClick);
+      off(this.document, 'click', this.onDocumentClick);
       off(document, 'show-popover', this.onDocumentShowPopover);
       off(document, 'hide-popover', this.onDocumentHidePopover);
       off(document, 'toggle-popover', this.onDocumentTogglePopover);
@@ -362,7 +368,7 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style lang="scss" scoped>
 .vc-popover-content-wrapper {
   --popover-horizontal-content-offset: 8px;
   --popover-vertical-content-offset: 10px;

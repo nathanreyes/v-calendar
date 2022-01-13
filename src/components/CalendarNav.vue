@@ -268,7 +268,7 @@ export default {
 };
 </script>
 
-<style lang="postcss">
+<style lang="scss">
 .vc-nav-header {
   display: flex;
   justify-content: space-between;
