@@ -137,10 +137,8 @@ export default {
       return this.$popovers[this.id];
     },
     document() {
-      if (document.querySelector('vue-app-container')) {
-        return document.querySelector('vue-app-container').shadowRoot;
-      }
-      return document;
+      const root = (this.$refs.popover).getRootNode();
+      return root;
     },
   },
   watch: {
