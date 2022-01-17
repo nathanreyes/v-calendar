@@ -1,13 +1,21 @@
 const path = require('path');
-const postcssPresetEnv = require('postcss-preset-env');
 const tailwindcss = require('tailwindcss');
 
 module.exports = {
   title: 'V-Calendar',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
   plugins: [
-    // Google analytics
-    ['@vuepress/google-analytics', { ga: 'UA-113780759-1' }],
+    // Components
+    [
+      '@vuepress/register-components',
+      {
+        componentsDir: path.resolve(__dirname, './components'),
+      },
+    ],
+    [
+      // Google analytics
+      ('@vuepress/google-analytics', { ga: 'UA-113780759-1' }),
+    ],
   ],
   head: [['link', { rel: 'icon', href: 'favicon.png' }]],
   themeConfig: {
@@ -141,35 +149,22 @@ module.exports = {
     // custom text for edit link. Defaults to "Edit this page"
     editLinkText: 'Help me improve this page!',
   },
-  postcss: {
-    plugins: [
-      require('autoprefixer'),
-      postcssPresetEnv({
-        stage: 3,
-        features: { 'nesting-rules': true, 'custom-properties': true },
-      }),
-    ],
-  },
-  configureWebpack: {
-    module: {
-      rules: [
-        {
-          test: /tailwind\.css$/,
-          use: [
-            {
-              loader: 'postcss-loader',
-              options: {
-                indent: 'postcss',
-                plugins: [tailwindcss('docs/.vuepress/tailwind.config.js')],
-              },
-            },
+  bundlerConfig: {
+    viteOptions: {
+      css: {
+        postcss: {
+          plugins: [
+            require('autoprefixer'),
+            require('postcss-nested'),
+            tailwindcss('./.vuepress/tailwind.config.js'),
           ],
         },
-      ],
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve('src'),
+      },
+      resolve: {
+        alias: {
+          '@': path.resolve(__dirname, '../../src'),
+        },
+        extensions: ['.js', '.ts'],
       },
     },
   },

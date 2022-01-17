@@ -10,13 +10,24 @@
             v-model="range"
             mode="dateTime"
             :masks="masks"
+            :popover="popover"
             is-range
           >
             <template v-slot="{ inputValue, inputEvents, isDragging }">
-              <div class="flex flex-col sm:flex-row justify-start items-center">
+              <div
+                class="flex flex-col sm:flex-row justify-start items-center"
+                popover-ref="date-range"
+              >
                 <div class="relative flex-grow">
                   <svg
-                    class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
+                    class="
+                      text-gray-600
+                      w-4
+                      h-full
+                      mx-2
+                      absolute
+                      pointer-events-none
+                    "
                     fill="none"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -29,7 +40,16 @@
                     ></path>
                   </svg>
                   <input
-                    class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
+                    class="
+                      flex-grow
+                      pl-8
+                      pr-2
+                      py-1
+                      bg-gray-100
+                      border
+                      rounded
+                      w-full
+                    "
                     :class="isDragging ? 'text-gray-600' : 'text-gray-900'"
                     :value="inputValue.start"
                     v-on="inputEvents.start"
@@ -50,7 +70,14 @@
                 </span>
                 <div class="relative flex-grow">
                   <svg
-                    class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
+                    class="
+                      text-gray-600
+                      w-4
+                      h-full
+                      mx-2
+                      absolute
+                      pointer-events-none
+                    "
                     fill="none"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -63,7 +90,16 @@
                     ></path>
                   </svg>
                   <input
-                    class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
+                    class="
+                      flex-grow
+                      pl-8
+                      pr-2
+                      py-1
+                      bg-gray-100
+                      border
+                      rounded
+                      w-full
+                    "
                     :class="isDragging ? 'text-gray-600' : 'text-gray-900'"
                     :value="inputValue.end"
                     v-on="inputEvents.end"
@@ -89,6 +125,7 @@ export default {
       masks: {
         input: 'YYYY-MM-DD h:mm A',
       },
+      popover: {},
     };
   },
 };

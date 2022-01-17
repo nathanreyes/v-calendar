@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style scoped>
-/deep/ .c-day:not(.in-month) {
+:deep(.c-day:not(.in-month)) {
   opacity: 0;
   pointer-events: none;
 }

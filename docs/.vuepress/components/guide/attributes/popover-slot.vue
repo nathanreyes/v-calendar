@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import PopoverRow from '@/components/PopoverRow';
+import PopoverRow from '@/components/PopoverRow/PopoverRow.vue';
 
 export default {
   components: {

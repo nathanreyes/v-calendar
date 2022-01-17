@@ -532,7 +532,7 @@ For a more customized approach you can insert your own `"day-popover"` custom sc
 If you are not familiar with the convention of using scoped slots in Vue.js, you can reference the [Vue docs](https://vuejs.org/v2/guide/components.html#Scoped-Slots) or [this post by alligator.io](https://alligator.io/vuejs/scoped-component-slots/).
 :::
 
-<guide-attributes-popover-slot />
+<!-- <guide-attributes-popover-slot /> -->
 
 ```html
 <v-calendar

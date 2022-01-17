@@ -2,9 +2,19 @@
   <div class="flex flex-col min-h-full overflow-y-auto">
     <Navbar v-if="shouldShowNavbar" @toggle-sidebar="toggleSidebar" />
     <div
-      class="flex-grow relative flex w-full mx-auto text-gray-700 mt-12 md:mt-16 overflow-hidden"
-      @touchstart="onTouchStart"
-      @touchend="onTouchEnd"
+      class="
+        flex-grow
+        relative
+        flex
+        w-full
+        mx-auto
+        text-gray-700
+        mt-12
+        md:mt-16
+        overflow-hidden
+      "
+      @touchstart.passive="onTouchStart"
+      @touchend.passive="onTouchEnd"
     >
       <!--Sidebar mask-->
       <div
@@ -33,7 +43,14 @@
       </div>
       <!--Desktop sidebar-->
       <div
-        class="flex-shrink-0 hidden md:block md:relative z-10 w-72 overflow-y-auto"
+        class="
+          flex-shrink-0
+          hidden
+          md:block md:relative
+          z-10
+          w-72
+          overflow-y-auto
+        "
       >
         <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar" show-ads>
           <template name="sidebar-top">
@@ -150,6 +167,6 @@ export default {
 
 <style lang="stylus">
 body, html, #app {
-	height: 100%;
+  height: 100%;
 }
 </style>

@@ -4,11 +4,12 @@
   </div>
 </template>
 
-<script>
-const Locale = require('@/utils/locale').default;
+<script lang="ts">
+import Locale from '@/utils/locale';
+
 const locale = new Locale();
-let { month: thisMonth, year: thisMonthYear } = locale.getThisMonthComps();
-let { month: nextMonth, year: nextMonthYear } = locale.getNextMonthComps(
+let { month: thisMonth, year: thisMonthYear } = locale.getThisMonthParts();
+let { month: nextMonth, year: nextMonthYear } = locale.getNextMonthParts(
   thisMonth,
   thisMonthYear,
 );

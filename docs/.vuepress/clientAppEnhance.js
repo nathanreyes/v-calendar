@@ -1,12 +1,8 @@
-import VCalendar from '../../src/lib';
-import './styles/tailwind.css';
-import pageComponents from '@internal/page-components';
+import VCalendar from '../../src/index.ts';
+import './theme/styles/tailwind.css';
 
-export default ({ Vue }) => {
-  for (const [name, component] of Object.entries(pageComponents)) {
-    Vue.component(name, component);
-  }
-  Vue.use(VCalendar, {
+export default ({ app }) => {
+  app.use(VCalendar, {
     locales: {
       'pt-PT': {
         firstDayOfWeek: 1,
