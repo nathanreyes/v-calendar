@@ -1,9 +1,8 @@
 import Theme from '../theme';
 import Locale from '../locale';
 import { isObject, isDate } from '../_';
-import Attribute from '../attribute';
+import { Attribute } from '../attribute';
 import { locales, getDefault } from '../defaults';
-import { getDateParts } from '../dates';
 
 export const rootMixin = {
   props: {
@@ -113,15 +112,8 @@ export const rootMixin = {
     },
     normalizeDates(dates) {
       return this.$locale.normalizeDates(dates, {
-        isFullDay: true,
+        isAllDay: true,
       });
-    },
-    pageForDate(date) {
-      if (!date) return null;
-      return getDateParts(this.normalizeDate(date), this.$locale.timezone);
-    },
-    pageForThisMonth() {
-      return this.pageForDate(new Date());
     },
   },
 };

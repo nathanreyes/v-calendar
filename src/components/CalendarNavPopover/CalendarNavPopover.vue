@@ -23,7 +23,7 @@
 import { defineComponent } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
-import { useCalendarContext } from '../../utils/calendar';
+import { useCalendarContext } from '../../use/calendar';
 
 export default defineComponent({
   components: { Popover, CalendarNav },

@@ -49,7 +49,7 @@
 <script>
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
-import { useCalendarContext } from '../../utils/calendar';
+import { useCalendarContext } from '../../use/calendar';
 
 export default {
   name: 'CalendarPane',

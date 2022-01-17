@@ -32,9 +32,11 @@ export const getType = (value: any) =>
   Object.prototype.toString.call(value).slice(8, -1);
 export const isDate = (value: any) => _isDate(value) && !isNaN(value.getTime());
 export const isObject = (value: any) => getType(value) === 'Object';
+
 // Object utils
 export const has = _has;
-export const hasAny = (obj: object, props: [string]) =>
+export const hasAny = (obj: object, props: string[]) =>
   _some(props, p => _has(obj, p));
+
 // Collection utils
 export const some = _some;

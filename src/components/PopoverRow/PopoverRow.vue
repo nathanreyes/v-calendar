@@ -15,23 +15,24 @@
 </template>
 
 <script>
-import { childMixin } from '../../utils/mixins';
+import { defineComponent, computed } from 'vue';
+import { useCalendarContext } from '../../use/calendar';
 
-export default {
+export default defineComponent({
   name: 'PopoverRow',
-  mixins: [childMixin],
   props: {
     attribute: Object,
   },
-  computed: {
-    indicator() {
-      const { highlight, dot, bar, popover } = this.attribute;
+  setup(props) {
+    const { theme } = useCalendarContext();
+    const indicator = computed(() => {
+      const { highlight, dot, bar, popover } = props.attribute;
       if (popover && popover.hideIndicator) return null;
       if (highlight) {
         const { color, isDark } = highlight.start;
         return {
           style: {
-            ...this.theme.bgAccentHigh({
+            ...theme.value.bgAccentHigh({
               color,
               isDark: !isDark,
             }),
@@ -45,7 +46,7 @@ export default {
         const { color, isDark } = dot.start;
         return {
           style: {
-            ...this.theme.bgAccentHigh({
+            ...theme.value.bgAccentHigh({
               color,
               isDark: !isDark,
             }),
@@ -59,7 +60,7 @@ export default {
         const { color, isDark } = bar.start;
         return {
           style: {
-            ...this.theme.bgAccentHigh({
+            ...theme.value.bgAccentHigh({
               color,
               isDark: !isDark,
             }),
@@ -69,9 +70,12 @@ export default {
         };
       }
       return null;
-    },
+    });
+    return {
+      indicator,
+    };
   },
-};
+});
 </script>
 
 <style lang="css">

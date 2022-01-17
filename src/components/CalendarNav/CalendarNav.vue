@@ -74,7 +74,11 @@ export default {
   components: {
     SvgIcon,
   },
-  inject: ['context'],
+  inject: {
+    context: {
+      from: '__vc_calendar_context__',
+    },
+  },
   props: {
     value: { type: Object, default: () => ({ month: 0, year: 0 }) },
     validator: { type: Function, default: () => () => true },
@@ -89,7 +93,10 @@ export default {
   },
   computed: {
     locale() {
-      return this.context.locale;
+      return this.context.locale.value;
+    },
+    masks() {
+      return this.context.masks.value;
     },
     month() {
       return this.value ? this.value.month || 0 : 0;
@@ -208,7 +215,7 @@ export default {
       });
     },
     getYearItems(yearGroupIndex) {
-      const { _, year: thisYear } = this.locale.getPageForDate(new Date());
+      const { year: thisYear } = this.locale.getPageForDate(new Date());
       const startYear = yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
       const items = [];

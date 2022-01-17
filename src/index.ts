@@ -20,3 +20,4 @@ export default install;
 export * from './components';
 export { setup as SetupCalendar };
 export { default as Screens } from './utils/screens';
+export { popoverDirective } from './utils/popovers';

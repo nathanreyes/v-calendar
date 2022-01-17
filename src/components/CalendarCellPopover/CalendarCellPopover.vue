@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, toRefs } from 'vue';
+import { defineComponent, reactive, computed, toRefs } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import CalendarCellEdit from '../CalendarCellEdit/CalendarCellEdit.vue';
 import { Cell } from '../CalendarGrid/Cell';
@@ -20,7 +20,7 @@ interface State {
   cell: Cell | null;
 }
 
-export default {
+export default defineComponent({
   name: 'CalendarCellPopover',
   components: { Popover, CalendarCellEdit },
   inheritAttrs: false,
@@ -70,5 +70,5 @@ export default {
       },
     };
   },
-};
+});
 </script>

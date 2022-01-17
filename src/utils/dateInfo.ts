@@ -1,93 +1,120 @@
-import { addDays } from 'date-fns';
-import { isObject } from './_';
-import Locale, { DateSource, CalendarDay } from './locale';
+import { CalendarDay } from './locale';
 import { DateRecurrence, DateRecurrenceConfig } from './dateRecurrence';
-import { DateParts, getDateParts } from './dates';
+import {
+  DateSource,
+  DateOptions,
+  DateParts,
+  DayOfWeek,
+  getDateParts,
+  isDateSource,
+  normalizeDate,
+} from './dates';
 
-interface DateConfig {
+interface DateConfig extends Partial<DateOptions> {
   date: DateSource;
-  dateTime: DateSource;
-  timeZone?: string;
 }
 
-interface DateRange {
-  start: Date;
-  end: Date;
-}
-
-interface DateInfoConfig {
-  start: DateSource | null;
-  end: DateSource | null;
-  startOn: DateSource | null;
-  endOn: DateSource | null;
+interface DateInfoConfig<DateType> {
+  start: DateType | null;
+  end: DateType | null;
   span: number;
   recurrence: DateRecurrenceConfig;
 }
 
-export type DateInfoSource = DateInfo | Partial<DateInfoConfig> | DateSource;
+export type DateInfoSource =
+  | DateInfo
+  | Partial<DateInfoConfig<DateSource | DateConfig>>
+  | DateSource;
 
 export interface DateInfoOptions {
   order: number;
-  locale: Locale;
-  isFullDay: boolean;
+  isAllDay: boolean;
+  firstDayOfWeek: DayOfWeek;
 }
 
 export default class DateInfo {
-  isDateInfo = true;
-  locale: Locale;
   order: number;
-  firstDayOfWeek: number;
-  isFullDay: boolean;
+  isAllDay: boolean;
+  firstDayOfWeek: DayOfWeek;
 
-  start: Date | null;
-  startTime: number;
-  end: Date | null;
-  endTime: number;
+  start: {
+    date: Date;
+    dateTime: number;
+    parts: DateParts;
+  } | null = null;
+
+  end: {
+    date: Date;
+    dateTime: number;
+    parts: DateParts;
+  } | null = null;
 
   recurrence: DateRecurrence | null = null;
 
+  static toDateConfig(source: DateConfig | DateSource | null): DateConfig {
+    if ((source as DateConfig).date != null) return source as DateConfig;
+    return {
+      date: source as DateSource,
+    };
+  }
+
+  static from(source: DateInfoSource, opts: Partial<DateInfoOptions> = {}) {
+    if (source instanceof DateInfo) return source;
+    opts.isAllDay = opts.isAllDay === false ? false : true;
+    const config: Partial<DateInfoConfig<DateConfig>> = {
+      start: null,
+      end: null,
+    };
+    if (source != null) {
+      if (isDateSource(source)) {
+        config.start = {
+          date: source as DateSource,
+        };
+        config.end = {
+          date: source as DateSource,
+        };
+      } else {
+        Object.assign(config, source);
+      }
+      if (config.start) config.start = this.toDateConfig(config.start);
+      if (config.end) config.end = this.toDateConfig(config.end);
+    }
+    return new DateInfo(config, opts);
+  }
+
   private constructor(
-    config: DateInfoConfig,
-    { order = 0, locale, isFullDay }: DateInfoOptions,
+    config: Partial<DateInfoConfig<DateConfig>>,
+    {
+      order = 0,
+      isAllDay = true,
+      firstDayOfWeek = 1,
+    }: Partial<DateInfoOptions>,
   ) {
     this.order = order;
-    this.locale = locale;
-    this.firstDayOfWeek = this.locale.firstDayOfWeek;
-    this.isFullDay = isFullDay;
+    this.isAllDay = isAllDay;
+    this.firstDayOfWeek = firstDayOfWeek;
 
-    let start = null;
-    let end = null;
     if (config.start) {
-      start = this.locale.normalizeDate(config.start, {
-        ...this.opts,
-        time: '00:00:00',
-      });
-    } else if (config.startOn) {
-      start = this.locale.normalizeDate(config.startOn);
+      const date = normalizeDate(config.start.date, config.start);
+      const dateTime = date.getTime();
+      const parts = getDateParts(date, firstDayOfWeek, config.start.timezone);
+      this.start = {
+        date,
+        parts,
+        dateTime,
+      };
     }
+
     if (config.end) {
-      end = this.locale.normalizeDate(config.end, {
-        ...this.opts,
-        time: '24:00:00',
-      });
-    } else if (config.endOn) {
-      end = this.locale.normalizeDate(config.endOn);
+      const date = normalizeDate(config.end.date, config.end);
+      const dateTime = date.getTime();
+      const parts = getDateParts(date, firstDayOfWeek, config.end.timezone);
+      this.end = {
+        date,
+        dateTime,
+        parts,
+      };
     }
-
-    // Reconfigure start and end dates if needed
-    if (start && end && start > end) {
-      const temp = start;
-      start = end;
-      end = temp;
-    } else if (start && config.span && config.span >= 1) {
-      end = addDays(start, config.span - 1);
-    }
-
-    // Assign start and end dates
-    this.start = start;
-    this.startTime = start ? start.getTime() : NaN;
-    this.end = end;
-    this.endTime = end ? end.getTime() : NaN;
 
     // Assign recurrence if needed
     if (config.recurrence) {
@@ -95,41 +122,9 @@ export default class DateInfo {
         // start: this.start,
         // until: this.end,
         ...config.recurrence,
-        startOfWeek: this.locale.firstDayOfWeek,
+        startOfWeek: this.firstDayOfWeek,
       });
     }
-  }
-
-  static from(source: DateInfoSource, opts: Partial<DateInfoOptions> = {}) {
-    if (source instanceof DateInfo) return source;
-
-    const order = opts.order || 0;
-    const locale =
-      opts.locale instanceof Locale ? opts.locale : new Locale(opts.locale);
-    const isFullDay = opts.isFullDay === false ? false : true;
-    let config: Partial<DateRange> = {};
-    if (isObject(source)) {
-      config = source;
-    } else {
-      const date = locale.normalizeDate(source as DateSource);
-
-      if (isFullDay) {
-        config = {
-          start: date,
-          end: date,
-        };
-      } else {
-        config = {
-          startOn: date,
-          endOn: date,
-        };
-      }
-    }
-    return new DateInfo(config, {
-      order,
-      locale,
-      isFullDay,
-    });
   }
 
   from(date: DateInfoSource) {
@@ -137,14 +132,14 @@ export default class DateInfo {
   }
 
   get opts() {
-    return {
-      order: this.order,
-      locale: this.locale,
-    };
+    const { order, isAllDay, firstDayOfWeek } = this;
+    return { order, isAllDay, firstDayOfWeek };
   }
 
   get isDate() {
-    return this.startTime && this.startTime === this.endTime;
+    return (
+      !!this.start && !!this.end && this.start.dateTime === this.end.dateTime
+    );
   }
 
   get isRange() {
@@ -155,35 +150,26 @@ export default class DateInfo {
     return !!this.recurrence;
   }
 
-  startOfWeek(date: Date) {
-    const day = date.getDay() + 1;
-    const daysToAdd =
-      day >= this.firstDayOfWeek
-        ? this.firstDayOfWeek - day
-        : -(7 - (this.firstDayOfWeek - day));
-    return addDays(date, daysToAdd);
-  }
-
-  iterateDatesInRange({ start, end }, fn) {
-    if (!start || !end || !fn) return null;
-    start = this.locale.normalizeDate(start, {
-      ...this.opts,
-      time: '00:00:00',
-    });
-    const state = {
-      i: 0,
-      date: start,
-      day: getDateParts(start, this.locale.timezone),
-      finished: false,
-    };
-    let result = null;
-    for (; !state.finished && state.date <= end; state.i++) {
-      result = fn(state);
-      state.date = addDays(state.date, 1);
-      state.day = getDateParts(state.date, this.locale.timezone);
-    }
-    return result;
-  }
+  // iterateDatesInRange({ start, end }, fn) {
+  //   if (!start || !end || !fn) return null;
+  //   start = this.locale.normalizeDate(start, {
+  //     ...this.opts,
+  //     time: '00:00:00',
+  //   });
+  //   const state = {
+  //     i: 0,
+  //     date: start,
+  //     day: getDateParts(start, this.locale.timezone),
+  //     finished: false,
+  //   };
+  //   let result = null;
+  //   for (; !state.finished && state.date <= end; state.i++) {
+  //     result = fn(state);
+  //     state.date = addDays(state.date, 1);
+  //     state.day = getDateParts(state.date, this.locale.timezone);
+  //   }
+  //   return result;
+  // }
 
   shallowIntersectingRange(other: DateInfo) {
     return this.rangeShallowIntersectingRange(this, this.from(other));
@@ -244,15 +230,15 @@ export default class DateInfo {
     const date = this.from(other);
     if (!this.shallowIntersectsDate(date)) return null;
     if (!this.recurrence) return this;
-    const range = this.rangeShallowIntersectingRange(this, date);
-    let result = false;
-    this.iterateDatesInRange(range, state => {
-      if (this.matchesDay(state.day)) {
-        result = result || date.matchesDay(state.day);
-        state.finished = result;
-      }
-    });
-    return result;
+    // const range = this.rangeShallowIntersectingRange(this, date);
+    // let result = false;
+    // this.iterateDatesInRange(range, state => {
+    //   if (this.matchesDay(state.day)) {
+    //     result = result || date.matchesDay(state.day);
+    //     state.finished = result;
+    //   }
+    // });
+    // return result;
   }
 
   // ========================================================
@@ -268,17 +254,17 @@ export default class DateInfo {
   dateShallowIntersectsDate(date1: DateInfo, date2: DateInfo) {
     if (date1.isDate) {
       return date2.isDate
-        ? date1.startTime === date2.startTime
+        ? date1.start!.dateTime === date2.start!.dateTime
         : this.dateShallowIncludesDate(date2, date1);
     }
     if (date2.isDate) {
       return this.dateShallowIncludesDate(date1, date2);
     }
     // Both ranges
-    if (date1.start && date2.end && date1.start > date2.end) {
+    if (date1.start && date2.end && date1.start.dateTime > date2.end.dateTime) {
       return false;
     }
-    if (date1.end && date2.start && date1.end < date2.start) {
+    if (date1.end && date2.start && date1.end.dateTime < date2.start.dateTime) {
       return false;
     }
     return true;
@@ -292,18 +278,16 @@ export default class DateInfo {
     if (!this.shallowIncludesDate(date)) {
       return false;
     }
-    if (!this.recurrence) {
-      return true;
-    }
-    const range = this.rangeShallowIntersectingRange(this, date);
-    let result = true;
-    this.iterateDatesInRange(range, state => {
-      if (this.matchesDay(state.day)) {
-        result = result && date.matchesDay(state.day);
-        state.finished = !result;
-      }
-    });
-    return result;
+    if (!this.recurrence) return true;
+    // const range = this.rangeShallowIntersectingRange(this, date);
+    // let result = true;
+    // this.iterateDatesInRange(range, state => {
+    //   if (this.matchesDay(state.day)) {
+    //     result = result && date.matchesDay(state.day);
+    //     state.finished = !result;
+    //   }
+    // });
+    // return result;
   }
 
   // ========================================================
@@ -320,30 +304,37 @@ export default class DateInfo {
     // First date is simple date
     if (date1.isDate) {
       if (date2.isDate) {
-        return date1.startTime === date2.startTime;
+        return date1.start!.dateTime === date2.start!.dateTime;
       }
-      if (!date2.startTime || !date2.endTime) {
+      if (!date2.start!.dateTime || !date2.end!.dateTime) {
         return false;
       }
       return (
-        date1.startTime === date2.startTime && date1.startTime === date2.endTime
+        date1.start!.dateTime === date2.start!.dateTime &&
+        date1.start!.dateTime === date2.end!.dateTime
       );
     }
     // Second date is simple date and first is date range
     if (date2.isDate) {
-      if (date1.start && date2.start! < date1.start) {
+      if (date1.start && date2.start!.dateTime < date1.start!.dateTime) {
         return false;
       }
-      if (date1.end && date2.start! > date1.end) {
+      if (date1.end && date2.start!.dateTime > date1.end!.dateTime) {
         return false;
       }
       return true;
     }
     // Both dates are date ranges
-    if (date1.start && (!date2.start || date2.start < date1.start)) {
+    if (
+      date1.start &&
+      (!date2.start || date2.start!.dateTime < date1.start!.dateTime)
+    ) {
       return false;
     }
-    if (date1.end && (!date2.end || date2.end > date1.end)) {
+    if (
+      date1.end &&
+      (!date2.end || date2.end!.dateTime > date1.end!.dateTime)
+    ) {
       return false;
     }
     return true;
@@ -351,7 +342,7 @@ export default class DateInfo {
 
   intersectsDay(day: CalendarDay) {
     // Date is outside general range - return null
-    if (!this.shallowIntersectsDate(day.range)) return null;
+    if (!this.shallowIntersectsDate(this.from(day.range))) return null;
     // Return this date if patterns match
     return this.matchesDay(day) ? this : null;
   }
@@ -359,6 +350,7 @@ export default class DateInfo {
   matchesDay(day: DateParts | CalendarDay) {
     // No patterns to test
     if (!this.recurrence) return true;
+    console.log('do something with', day);
     // // Fail if 'and' condition fails
     // if (
     //   this.recurrence.and &&

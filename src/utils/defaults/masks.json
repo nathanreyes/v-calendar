@@ -2,6 +2,7 @@
   "title": "MMMM YYYY",
   "weekdays": "W",
   "navMonths": "MMM",
+  "hours": "h A",
   "input": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
   "inputDateTime": ["L h:mm A", "YYYY-MM-DD h:mm A", "YYYY/MM/DD h:mm A"],
   "inputDateTime24hr": ["L HH:mm", "YYYY-MM-DD HH:mm", "YYYY/MM/DD HH:mm"],
@@ -10,5 +11,5 @@
   "dayPopover": "WWW, MMM D, YYYY",
   "data": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
   "model": "iso",
-  "iso": "YYYY-MM-DDTHH:mm:ssXXX"
+  "iso": "YYYY-MM-DDTHH:mm:ssZZ"
 }

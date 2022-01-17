@@ -1,5 +1,4 @@
 import {
-  SetupContext,
   computed,
   reactive,
   toRefs,
@@ -15,14 +14,14 @@ import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Popover from '../Popover/Popover.vue';
-import AttributeStore from '../utils/attributeStore';
-import Attribute from '../utils/attribute';
+import { Attribute, AttributeConfig, DayAttribute } from '../utils/attribute';
 import {
   default as Locale,
   CalendarDay,
   CalendarWeek,
   Page,
   TitlePosition,
+  LocaleConfig,
 } from '../utils/locale';
 import Theme from '../utils/theme';
 import {
@@ -32,10 +31,11 @@ import {
   pageIsAfterPage,
   pageIsBetweenPages,
   createGuid,
-  arrayHasItems,
+  capitalize,
   PageAddress,
+  arrayHasItems,
 } from '../utils/helpers';
-import { isBoolean, isObject, hasAny, omit, head, last } from '../utils/_';
+import { isBoolean, isObject, has, head, last } from '../utils/_';
 import { locales, getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
@@ -72,7 +72,7 @@ export interface CalendarProps {
   maxDate?: Date;
   maxDateExact?: Date;
   transition: string;
-  attributes: AttributeStore | [];
+  attributes: AttributeConfig[];
   disabledDates?: [];
   availableDates?: [];
   trimWeeks: boolean;
@@ -96,15 +96,17 @@ interface CalendarState {
   dayPopoverId: string;
   view: CalendarView;
   pages: Page[];
-  store: AttributeStore;
   transitionName: string;
   refreshing: boolean;
 }
 
 export interface CalendarContext extends ToRefs<CalendarState> {
+  slots: any;
   theme: ComputedRef<Theme>;
   locale: ComputedRef<Locale>;
   masks: ComputedRef<Record<string, string>>;
+  attributes: ComputedRef<Attribute[]>;
+  dayAttributes: ComputedRef<Record<string, DayAttribute[]>>;
   count: ComputedRef<number>;
   step: ComputedRef<number>;
   isMonthly: ComputedRef<boolean>;
@@ -121,7 +123,6 @@ export interface CalendarContext extends ToRefs<CalendarState> {
   moveUpLabel: ComputedRef<string>;
   showWeeknumbers: ComputedRef<boolean>;
   showIsoWeeknumbers: ComputedRef<boolean>;
-  // formatDate: (date: DateSource, masks: string | string[]) => string;
   canMove: (target: MoveTarget, opts: Partial<MoveOptions>) => boolean;
   move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
   movePrev: () => Promise<boolean>;
@@ -136,8 +137,8 @@ export interface CalendarContext extends ToRefs<CalendarState> {
   onDayClick: (day: CalendarDay, e: MouseEvent) => void;
   onDayMouseenter: (day: CalendarDay, e: MouseEvent) => void;
   onDayMouseleave: (day: CalendarDay, e: MouseEvent) => void;
-  onDayFocusin: (day: CalendarDay) => void;
-  onDayFocusout: (day: CalendarDay) => void;
+  onDayFocusin: (day: CalendarDay, e: FocusEvent) => void;
+  onDayFocusout: (day: CalendarDay, e: FocusEvent) => void;
   onWeeknumberClick: (week: CalendarWeek, e: MouseEvent) => void;
 }
 
@@ -209,9 +210,11 @@ export const emits = [
   'update:view',
 ];
 
+const contextKey = '__vc_calendar_context__';
+
 export function useCalendar(
   props: CalendarProps,
-  { emit }: SetupContext,
+  { emit, slots }: any,
 ): CalendarContext {
   const state = reactive<CalendarState>({
     containerRef: null,
@@ -223,7 +226,6 @@ export function useCalendar(
     dayPopoverId: createGuid(),
     view: props.view,
     pages: [],
-    store: null,
     transitionName: '',
     refreshing: false,
   });
@@ -248,13 +250,13 @@ export function useCalendar(
     // Return the locale prop if it is an instance of the Locale class
     if (props.locale instanceof Locale) return props.locale;
     // Build up a base config from component props
-    const config = isObject(props.locale)
+    const config = (isObject(props.locale)
       ? props.locale
       : {
           id: props.locale,
           firstDayOfWeek: props.firstDayOfWeek,
           masks: props.masks,
-        };
+        }) as Partial<LocaleConfig>;
     // Return new locale
     return new Locale(config, {
       locales: locales.value,
@@ -384,63 +386,48 @@ export function useCalendar(
     }
   };
 
-  const refreshAttrs = (
-    pages: Page[] = [],
-    adds: Attribute[] = [],
-    deletes: any = [],
-    reset: boolean,
-  ) => {
-    if (!arrayHasItems(pages)) return;
-    // For each page...
-    pages.forEach(p => {
-      // For each day...
-      p.days.forEach(d => {
-        let shouldRefresh = false;
-        let map: any = {};
-        // If resetting...
-        if (reset) {
-          shouldRefresh = true;
-        } else if (hasAny(d.attributesMap, deletes)) {
-          // Delete attributes from the delete list
-          map = omit(d.attributesMap, deletes);
-          // Flag day for refresh
-          shouldRefresh = true;
-        } else {
-          // Get the existing attributes
-          map = { ...d.attributesMap };
-        }
-        // For each attribute to add...
-        adds.forEach(attr => {
-          // Add it if it includes the current day
-          const targetDate = attr.intersectsDay(d);
-          if (targetDate) {
-            const newAttr = {
-              ...attr,
-              targetDate,
-            };
-            map[attr.key] = newAttr;
-            // Flag day for refresh
-            shouldRefresh = true;
-          }
+  const attributes = computed(() => {
+    const result: Attribute[] = [];
+    (props.attributes || []).forEach((attr, i) => {
+      if (!attr || !attr.dates) return;
+      const key = has(attr, 'key') ? attr.key : i;
+      const order = attr.order || 0;
+      result.push(
+        new Attribute(
+          {
+            ...attr,
+            key,
+            order,
+          },
+          theme.value,
+          locale.value,
+        ),
+      );
+    });
+    return result;
+  });
+
+  const hasAttributes = computed(() => arrayHasItems(attributes.value));
+
+  const dayAttributes = computed(() => {
+    const result: Record<string, DayAttribute[]> = {};
+    state.pages.forEach(page => {
+      page.days.forEach(day => {
+        attributes.value.forEach(attr => {
+          const dayDates = attr.getDayDates(day);
+          if (!dayDates.length) return;
+          const data = result[day.id] || [];
+          data.push({
+            ...attr,
+            dayId: day.id,
+            dayDates,
+          });
+          result[day.id] = data;
         });
-        // Reassign day attributes
-        if (shouldRefresh) {
-          d.attributesMap = map;
-        }
       });
     });
-  };
-
-  const initStore = () => {
-    // Create a new attribute store
-    state.store = new AttributeStore(
-      theme.value,
-      locale.value,
-      props.attributes,
-    );
-    // Refresh attributes for existing pages
-    refreshAttrs(state.pages, state.store.list, [], true);
-  };
+    return result;
+  });
 
   const getWeeknumberPosition = (column: number, columnFromEnd: number) => {
     const showWeeknumbers = props.showWeeknumbers || props.showIsoWeeknumbers;
@@ -455,14 +442,13 @@ export function useCalendar(
   };
 
   const getPageForAttributes = () => {
-    let page = null;
-    const attr = state.store.pinAttr;
-    if (attr && attr.hasDates) {
-      let [date] = attr.dates;
-      date = date.start || date.date;
-      page = locale.value.getPageForDate(date);
-    }
-    return page;
+    if (!hasAttributes.value) return null;
+    const attr = attributes.value.find(attr => attr.pinPage);
+    if (!attr || !attr.hasDates) return null;
+    const [dateInfo] = attr.dates;
+    const date = dateInfo.start?.date || dateInfo.end?.date;
+    if (!date) return null;
+    return locale.value.getPageForDate(date);
   };
 
   const getDefaultInitialPage = () => {
@@ -576,8 +562,6 @@ export function useCalendar(
         // Refresh focusable state
         refreshFocusableDay(day);
       });
-      // Refresh attributes
-      refreshAttrs(pages, state.store.list, [], false);
       // Assign the transition
       state.transitionName = getPageTransition(
         state.pages[0],
@@ -621,11 +605,9 @@ export function useCalendar(
 
   const moveUpLabel = computed(() => {
     if (state.view === 'monthly') return '';
-    const page = firstPage.value as Page;
-    if (state.view === 'daily') {
-      return page.weekTitle;
-    }
-    return page.monthTitle;
+    return capitalize(
+      locale.value.relativeTimeNames[isDaily.value ? 'week' : 'month']!,
+    );
   });
 
   const move = async (arg: MoveTarget, opts: Partial<MoveOptions> = {}) => {
@@ -696,26 +678,26 @@ export function useCalendar(
     });
   };
 
-  const onDayClick = (day: CalendarDay) => {
-    emit('dayclick', day);
+  const onDayClick = (day: CalendarDay, event: MouseEvent) => {
+    emit('dayclick', day, event);
   };
 
-  const onDayMouseenter = (day: CalendarDay) => {
-    emit('daymouseenter', day);
+  const onDayMouseenter = (day: CalendarDay, event: MouseEvent) => {
+    emit('daymouseenter', day, event);
   };
 
-  const onDayMouseleave = (day: CalendarDay) => {
-    emit('daymouseleave', day);
+  const onDayMouseleave = (day: CalendarDay, event: MouseEvent) => {
+    emit('daymouseleave', day, event);
   };
 
-  const onDayFocusin = (day: CalendarDay) => {
+  const onDayFocusin = (day: CalendarDay, event: FocusEvent) => {
     state.lastFocusedDay = day;
-    emit('dayfocusin', day);
+    emit('dayfocusin', day, event);
   };
 
-  const onDayFocusout = (day: CalendarDay) => {
+  const onDayFocusout = (day: CalendarDay, event: FocusEvent) => {
     state.lastFocusedDay = null;
-    emit('dayfocusout', day);
+    emit('dayfocusout', day, event);
   };
 
   const onDayKeydown = (day: CalendarDay, event: KeyboardEvent) => {
@@ -798,12 +780,11 @@ export function useCalendar(
   // #region Lifecycle methods
 
   // Created
-  initStore();
   refreshPages();
 
   // Mounted
   onMounted(() => {
-    if (!props.disablePageSwipe) {
+    if (!props.disablePageSwipe && state.containerRef) {
       // Add swipe handler to move to next and previous pages
       removeHandlers = addHorizontalSwipeHandler(
         state.containerRef,
@@ -822,8 +803,6 @@ export function useCalendar(
   // Unmounted
   onUnmounted(() => {
     state.pages = [];
-    state.store.destroy();
-    state.store = null;
     if (removeHandlers) removeHandlers();
   });
 
@@ -834,16 +813,7 @@ export function useCalendar(
   watch(
     () => locale,
     () => {
-      initStore();
       refreshPages();
-    },
-  );
-
-  watch(
-    () => theme,
-    () => {
-      initStore();
-      // refreshPages();
     },
   );
 
@@ -867,24 +837,17 @@ export function useCalendar(
     },
   );
 
-  watch(
-    () => props.attributes,
-    val => {
-      const { adds, deletes } = state.store.refresh(val);
-      refreshAttrs(state.pages, adds, deletes, false);
-    },
-    {
-      deep: true,
-    },
-  );
-
   // #endregion Watch
 
   const context = {
+    emit,
+    slots,
     ...toRefs(state),
     theme,
     locale,
     masks,
+    attributes,
+    dayAttributes,
     count,
     step,
     firstPage,
@@ -919,12 +882,12 @@ export function useCalendar(
     onDayFocusout,
     onWeeknumberClick,
   };
-  provide('context', context);
+  provide(contextKey, context);
   return context;
 }
 
 export function useCalendarContext(): CalendarContext {
-  const context = inject<CalendarContext>('context');
+  const context = inject<CalendarContext>(contextKey);
   if (!context) {
     throw new Error(
       'Calendar context missing. Please verify this component is nested within a valid context provider.',

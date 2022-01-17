@@ -12,18 +12,8 @@ type MonthNameLength = 'short' | 'long';
 
 export type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type DayOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
-export interface DateObject {
-  year: number;
-  month: number;
-  day: number;
-  hours?: number;
-  minutes?: number;
-  seconds?: number;
-  milliseconds: number;
-}
-
-export type DateSource = Date | string | number | DateObject;
+export type DateSource = Date | string | number | Partial<DateParts>;
+export type TimeNames = Partial<Record<Intl.RelativeTimeFormatUnit, string>>;
 
 export interface DateOptions {
   type: string;
@@ -47,6 +37,7 @@ export interface DateParts extends PageAddress {
   seconds: number;
   minutes: number;
   hours: number;
+  time: number;
   day: number;
   dayFromEnd: number;
   weekday: number;
@@ -99,6 +90,11 @@ export const daysInWeek = 7;
 
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const maskMacros = ['L', 'iso'];
+
+export const MS_PER_SECOND = 1000;
+export const MS_PER_MINUTE = MS_PER_SECOND * 60;
+export const MS_PER_HOUR = MS_PER_MINUTE * 60;
+export const MS_PER_DAY = MS_PER_HOUR * 24;
 
 // #region Format constants
 
@@ -341,10 +337,40 @@ parseFlags.ZZZZ = parseFlags.ZZZ = parseFlags.ZZ = parseFlags.Z;
 
 // #endregion Parse constants
 
-export const roundDate = (dateMs: number, snapMs = 0) => {
+function normalizeMasks(masks: string | string[], locale: Locale): string[] {
+  return (((arrayHasItems(masks) && masks) || [
+    (isString(masks) && masks) || 'YYYY-MM-DD',
+  ]) as string[]).map(m =>
+    maskMacros.reduce(
+      (prev, curr) => prev.replace(curr, locale.masks[curr] || ''),
+      m,
+    ),
+  );
+}
+
+export function isDateParts(date: any) {
+  if (!date) return false;
+  return date.year && date.month && date.day;
+}
+
+export function isDateSource(date: any) {
+  if (date == null) return false;
+  return isString(date) || isNumber(date) || isDate(date) || isDateParts(date);
+}
+
+export function roundDate(dateMs: number, snapMs = 0) {
   if (snapMs > 0) return new Date(Math.round(dateMs / snapMs) * snapMs);
   return new Date(dateMs);
-};
+}
+
+export function startOfWeek(date: Date, firstDayOfWeek: DayOfWeek = 1) {
+  const day = date.getDay() + 1;
+  const daysToAdd =
+    day >= firstDayOfWeek
+      ? firstDayOfWeek - day
+      : -(7 - (firstDayOfWeek - day));
+  return addDays(date, daysToAdd);
+}
 
 export function datesAreEqual(a: any, b: any): boolean {
   const aIsDate = isDate(a);
@@ -412,7 +438,7 @@ export function getTimezoneOffset(parts: Partial<DateParts>, timezone = '') {
 export function getMonthParts(
   month: number,
   year: number,
-  firstDayOfWeek: DayOfWeek = 1,
+  firstDayOfWeek: DayOfWeek,
 ): MonthParts {
   const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   const firstDayOfMonth = new Date(year, month - 1, 1);
@@ -443,7 +469,11 @@ export function getMonthParts(
   };
 }
 
-export function getDateParts(date: Date, timezone = ''): DateParts {
+export function getDateParts(
+  date: Date,
+  firstDayOfWeek: DayOfWeek,
+  timezone = '',
+): DateParts {
   const tzDate = date;
   if (timezone) {
     const tzDate = new Date(
@@ -455,9 +485,14 @@ export function getDateParts(date: Date, timezone = ''): DateParts {
   const seconds = tzDate.getSeconds();
   const minutes = tzDate.getMinutes();
   const hours = tzDate.getHours();
+  const time =
+    milliseconds +
+    seconds * MS_PER_SECOND +
+    minutes * MS_PER_MINUTE +
+    hours * MS_PER_HOUR;
   const month = tzDate.getMonth() + 1;
   const year = tzDate.getFullYear();
-  const monthParts = getMonthParts(month, year);
+  const monthParts = getMonthParts(month, year, firstDayOfWeek);
   const day = tzDate.getDate();
   const dayFromEnd = monthParts.days - day + 1;
   const weekday = tzDate.getDay() + 1;
@@ -472,6 +507,7 @@ export function getDateParts(date: Date, timezone = ''): DateParts {
     seconds,
     minutes,
     hours,
+    time,
     day,
     dayFromEnd,
     weekday,
@@ -489,19 +525,27 @@ export function getDateParts(date: Date, timezone = ''): DateParts {
   return parts;
 }
 
-export function getThisMonthParts(firstDayOfWeek: DayOfWeek = 1) {
+export function getThisMonthParts(firstDayOfWeek: DayOfWeek) {
   const date = new Date();
-  return getMonthParts(date.getMonth() - 1, date.getFullYear(), firstDayOfWeek);
+  return getMonthParts(date.getMonth() + 1, date.getFullYear(), firstDayOfWeek);
 }
 
-export function getPrevMonthParts(month: number, year: number) {
-  if (month === 1) return getMonthParts(12, year - 1);
-  return getMonthParts(month - 1, year);
+export function getPrevMonthParts(
+  month: number,
+  year: number,
+  firstDayOfWeek: DayOfWeek,
+) {
+  if (month === 1) return getMonthParts(12, year - 1, firstDayOfWeek);
+  return getMonthParts(month - 1, year, firstDayOfWeek);
 }
 
-export function getNextMonthParts(month: number, year: number) {
-  if (month === 12) return getMonthParts(1, year + 1);
-  return getMonthParts(month + 1, year);
+export function getNextMonthParts(
+  month: number,
+  year: number,
+  firstDayOfWeek: DayOfWeek,
+) {
+  if (month === 12) return getMonthParts(1, year + 1, firstDayOfWeek);
+  return getMonthParts(month + 1, year, firstDayOfWeek);
 }
 
 export function getWeekdayDates(firstDayOfWeek = 1, timezone = '') {
@@ -537,10 +581,37 @@ export function getDayNames(
   return getWeekdayDates(1).map(d => dtf.format(d));
 }
 
-export function getMonthDates(year = 2000) {
+export function getHourDates() {
+  const dates = [];
+  for (let i = 0; i <= 24; i++) {
+    dates.push(new Date(2000, 0, 1, i));
+  }
+  return dates;
+}
+
+export function getRelativeTimeNames(localeId = undefined): TimeNames {
+  const units: Intl.RelativeTimeFormatUnit[] = [
+    'second',
+    'minute',
+    'hour',
+    'day',
+    'week',
+    'month',
+    'quarter',
+    'year',
+  ];
+  const rtf = new Intl.RelativeTimeFormat(localeId);
+  return units.reduce<TimeNames>((names, unit) => {
+    const parts = rtf.formatToParts(100, unit);
+    names[unit] = parts[1].unit;
+    return names;
+  }, {});
+}
+
+export function getMonthDates() {
   const dates = [];
   for (let i = 0; i < 12; i++) {
-    dates.push(new Date(year, i, 15));
+    dates.push(new Date(2000, i, 15));
   }
   return dates;
 }
@@ -553,36 +624,23 @@ export function getMonthNames(length: MonthNameLength, localeId = undefined) {
   return getMonthDates().map(d => dtf.format(d));
 }
 
-export function adjustTimeForDate(date: Date, time = '', timezone = '') {
-  if (time) {
-    const dateParts = getDateParts(date, timezone);
-    if (time === 'now') {
-      const timeParts = getDateParts(new Date(), timezone);
-      dateParts.hours = timeParts.hours;
-      dateParts.minutes = timeParts.minutes;
-      dateParts.seconds = timeParts.seconds;
-      dateParts.milliseconds = timeParts.milliseconds;
-    } else {
-      const d = new Date(`2000-01-01T${time}Z`);
-      dateParts.hours = d.getUTCHours();
-      dateParts.minutes = d.getUTCMinutes();
-      dateParts.seconds = d.getUTCSeconds();
-      dateParts.milliseconds = d.getUTCMilliseconds();
-    }
-    date = getDateFromParts(dateParts, timezone);
+export function adjustTimeForDate(date: Date, time: string, timezone = '') {
+  if (!time) return date;
+  const dateParts = getDateParts(date, 1, timezone);
+  if (time === 'now') {
+    const timeParts = getDateParts(new Date(), 1, timezone);
+    dateParts.hours = timeParts.hours;
+    dateParts.minutes = timeParts.minutes;
+    dateParts.seconds = timeParts.seconds;
+    dateParts.milliseconds = timeParts.milliseconds;
+  } else {
+    const d = new Date(`2000-01-01T${time}Z`);
+    dateParts.hours = d.getUTCHours();
+    dateParts.minutes = d.getUTCMinutes();
+    dateParts.seconds = d.getUTCSeconds();
+    dateParts.milliseconds = d.getUTCMilliseconds();
   }
-  return date;
-}
-
-function normalizeMasks(masks: string | string[], locale: Locale): string[] {
-  return (((arrayHasItems(masks) && masks) || [
-    (isString(masks) && masks) || 'YYYY-MM-DD',
-  ]) as string[]).map(m =>
-    maskMacros.reduce(
-      (prev, curr) => prev.replace(curr, locale.masks[curr] || ''),
-      m,
-    ),
-  );
+  return getDateFromParts(dateParts, timezone);
 }
 
 export function parseDate(
@@ -594,7 +652,9 @@ export function parseDate(
   } = {},
 ) {
   const locale =
-    options.locale instanceof Locale ? options.locale : new Locale();
+    options.locale instanceof Locale
+      ? options.locale
+      : new Locale(options.locale);
   const masks = normalizeMasks(mask, locale);
   return (
     masks
@@ -683,26 +743,25 @@ export function normalizeDate(
 ) {
   const nullDate = new Date(NaN);
   let result = nullDate;
-  const { fillDate, locale, timezone } = config;
-  const { mask, patch, time } = config;
+  const { fillDate, locale, timezone, mask, patch, time } = config;
   if (isNumber(d)) {
     config.type = 'number';
     result = new Date(+d);
   } else if (isString(d)) {
     config.type = 'string';
     result = d ? parseDate(d, mask || 'iso', { locale, timezone }) : nullDate;
-  } else if (isObject(d)) {
+  } else if (isDate(d) || !isObject(d)) {
+    config.type = 'date';
+    result = new Date((d as Date).getTime());
+  } else {
     config.type = 'object';
     result = getDateFromParts(d as Partial<DateParts>, timezone);
-  } else {
-    config.type = 'date';
-    result = isDate(d) ? new Date((d as Date).getTime()) : nullDate;
   }
 
   if (result && patch) {
     const parts = {
-      ...getDateParts(normalizeDate(fillDate || new Date()), timezone),
-      ...pick(getDateParts(result, timezone), PATCH_KEYS[patch]),
+      ...getDateParts(normalizeDate(fillDate || new Date()), 1, timezone),
+      ...pick(getDateParts(result, 1, timezone), PATCH_KEYS[patch]),
     };
     result = getDateFromParts(parts, timezone);
   }
@@ -724,7 +783,9 @@ export function formatDate(
   } = {},
 ) {
   const locale =
-    options.locale instanceof Locale ? options.locale : new Locale();
+    options.locale instanceof Locale
+      ? options.locale
+      : new Locale(options.locale);
   date = normalizeDate(date, { locale, timezone: options.timezone })!;
   if (!date) return '';
   let mask = normalizeMasks(masks, locale)[0];
@@ -735,7 +796,7 @@ export function formatDate(
     return '??';
   });
   const timezone = /Z$/.test(mask) ? 'utc' : options.timezone;
-  const dateParts = getDateParts(date, timezone);
+  const dateParts = getDateParts(date, locale.firstDayOfWeek, timezone);
   // Apply formatting rules
   mask = mask.replace(token, $0 =>
     $0 in formatFlags

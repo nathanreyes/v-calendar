@@ -1,60 +1,121 @@
 <template>
-  <Teleport to="body">
-    <div
-      class="vc-popover-content-wrapper"
-      :class="{ 'is-interactive': isInteractive }"
-      ref="popover"
+  <!-- <Teleport :to="teleportTo"> -->
+  <div
+    class="vc-popover-content-wrapper"
+    :class="{ 'is-interactive': isInteractive }"
+    ref="popoverRef"
+    teleport-to=".vc-grid-content"
+    @click="onClick"
+    @mouseover="onMouseOver"
+    @mouseleave="onMouseLeave"
+    @focusin="onFocusIn"
+    @focusout="onFocusOut"
+  >
+    <Transition
+      :name="`vc-${transition}`"
+      appear
+      @before-enter="beforeEnter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @after-leave="afterLeave"
     >
-      <Transition
-        :name="`vc-${transition}`"
-        appear
-        @before-enter="beforeEnter"
-        @after-enter="afterEnter"
-        @before-leave="beforeLeave"
-        @after-leave="afterLeave"
+      <div
+        v-if="isVisible"
+        tabindex="-1"
+        :class="['vc-popover-content vc-theme', `direction-${direction}`]"
+        :style="contentStyle"
+        v-bind="$attrs"
       >
-        <div
-          v-if="isVisible"
-          tabindex="-1"
-          :class="['vc-popover-content', `direction-${direction}`]"
-          :style="contentStyle"
-          v-bind="$attrs"
+        <slot
+          :direction="direction"
+          :alignment="alignment"
+          :data="data"
+          :update-layout="setupPopper"
+          :hide="hide"
         >
-          <slot
-            :direction="direction"
-            :alignment="alignment"
-            :data="data"
-            :update-layout="setupPopper"
-            :hide="hide"
-          />
-          <span
-            :class="[
-              'vc-popover-caret',
-              `direction-${direction}`,
-              `align-${alignment}`,
-            ]"
-          />
-        </div>
-      </Transition>
-    </div>
-  </Teleport>
+          {{ data }}
+        </slot>
+        <span
+          :class="[
+            'vc-popover-caret',
+            `direction-${direction}`,
+            `align-${alignment}`,
+          ]"
+        />
+      </div>
+    </Transition>
+  </div>
+  <!-- </Teleport> -->
 </template>
 
-<script>
-import { createPopper } from '@popperjs/core';
+<script lang="ts">
+import {
+  ref,
+  toRefs,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  onUnmounted,
+  defineComponent,
+  nextTick,
+} from 'vue';
+import {
+  State,
+  Instance,
+  Placement,
+  OptionsGeneric,
+  PositioningStrategy,
+  createPopper,
+} from '@popperjs/core';
 import { on, off, elementContains } from '../../utils/helpers';
 import { omit } from '../../utils/_';
+import {
+  PopoverOptions,
+  PopoverVisibility,
+  PopoverEvent,
+} from '../../utils/popovers';
 
-export default {
+interface PopoverState {
+  isVisible: boolean;
+  refSelector: string;
+  opts: PopoverOptions | null;
+  data: any;
+  transition: string;
+  transitionTranslate: string;
+  transitionDuration: string;
+  placement: Placement;
+  positionFixed: false;
+  modifiers: any[];
+  isInteractive: boolean;
+  visibility: PopoverVisibility;
+  isHovered: boolean;
+  isFocused: boolean;
+  showDelay: number;
+  hideDelay: number;
+  autoHide: boolean;
+  showing: boolean;
+  hiding: boolean;
+}
+
+export default defineComponent({
   name: 'Popover',
   inheritAttrs: false,
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   props: {
     id: { type: String, required: true },
+    teleportTo: { type: String, default: '' },
+    boundarySelector: { type: String },
   },
-  data() {
-    return {
-      ref: null,
+  setup(props, { emit }) {
+    let timeout: number | undefined = undefined;
+    const popoverRef = ref<HTMLElement>();
+    let resizeObserver = null;
+    let popper: Instance | null = null;
+
+    const state = reactive<PopoverState>({
+      isVisible: false,
+      refSelector: '',
       opts: null,
       data: null,
       transition: 'slide-fade',
@@ -63,49 +124,84 @@ export default {
       placement: 'bottom',
       positionFixed: false,
       modifiers: [],
-      isInteractive: false,
+      isInteractive: true,
+      visibility: 'click',
       isHovered: false,
       isFocused: false,
       showDelay: 0,
       hideDelay: 110,
       autoHide: false,
-      popperEl: null,
-    };
-  },
-  computed: {
-    contentStyle() {
+      showing: false,
+      hiding: false,
+    });
+
+    function onPopperUpdate(popperState: Partial<State>) {
+      if (popperState.placement) state.placement = popperState.placement;
+    }
+
+    const popperOptions = computed<Partial<OptionsGeneric<any>>>(() => {
       return {
-        '--slide-translate': this.transitionTranslate,
-        '--slide-duration': this.transitionDuration,
-      };
-    },
-    popperOptions() {
-      return {
-        placement: this.placement,
-        strategy: this.positionFixed ? 'fixed' : 'absolute',
+        placement: state.placement,
+        strategy: (state.positionFixed
+          ? 'fixed'
+          : 'absolute') as PositioningStrategy,
+        boundary: '',
         modifiers: [
           {
             name: 'onUpdate',
             enabled: true,
             phase: 'afterWrite',
-            fn: this.onPopperUpdate,
+            fn: onPopperUpdate,
           },
-          ...(this.modifiers || []),
+          ...(state.modifiers || []),
         ],
-        onFirstUpdate: this.onPopperUpdate,
+        onFirstUpdate: onPopperUpdate,
       };
-    },
-    isVisible() {
-      return !!(this.$slots.default && this.ref);
-    },
-    direction() {
-      return (this.placement && this.placement.split('-')[0]) || 'bottom';
-    },
-    alignment() {
+      // if (props.boundarySelector) {
+      //   const boundary = document.querySelector(props.boundarySelector);
+      //   modifiers.push({
+      //     name: 'boundary',
+      //     enabled: true,
+      //     phase: 'main',
+      //     requiresIfExists: ['offset'],
+      //     fn({ state }) {
+      //       console.log(
+      //         detectOverflow(state, {
+      //           boundary,
+      //           altBoundary: true,
+      //         }),
+      //       );
+      //     },
+      //   });
+      // }
+    });
+
+    function destroyPopper() {
+      if (popper) {
+        popper.destroy();
+        popper = null;
+      }
+    }
+
+    const contentStyle = computed(() => {
+      return {
+        '--slide-translate': state.transitionTranslate,
+        '--slide-duration': state.transitionDuration,
+      };
+    });
+
+    const direction = computed(() => {
+      return (state.placement && state.placement.split('-')[0]) || 'bottom';
+    });
+
+    const alignment = computed(() => {
       const isLeftRight =
-        this.direction === 'left' || this.direction === 'right';
-      let alignment = this.placement.split('-');
-      alignment = alignment.length > 1 ? alignment[1] : '';
+        direction.value === 'left' || direction.value === 'right';
+      let alignment = '';
+      if (state.placement) {
+        const parts = state.placement.split('-');
+        if (parts.length > 1) alignment = parts[1];
+      }
       if (['start', 'top', 'left'].includes(alignment)) {
         return isLeftRight ? 'top' : 'left';
       }
@@ -113,231 +209,254 @@ export default {
         return isLeftRight ? 'bottom' : 'right';
       }
       return isLeftRight ? 'middle' : 'center';
-    },
-  },
-  watch: {
-    opts(val, oldVal) {
-      if (oldVal && oldVal.callback) {
-        oldVal.callback({
-          ...oldVal,
-          completed: !val,
-          reason: val ? 'Overridden by action' : null,
-        });
+    });
+
+    function getRef(selector: string | undefined) {
+      if (!selector) return null;
+      return document.querySelector(selector);
+    }
+
+    function setupPopper() {
+      nextTick(() => {
+        const ref = getRef(state.refSelector);
+        if (!ref || !popoverRef.value) return;
+        if (popper && popper.state.elements.reference !== ref) {
+          destroyPopper();
+        }
+        if (!popper) {
+          popper = createPopper(ref, popoverRef.value, popperOptions.value);
+        } else {
+          popper.update();
+        }
+      });
+    }
+
+    function clearState() {
+      state.showing = false;
+      state.hiding = false;
+      clearTimeout(timeout);
+    }
+
+    function show(opts: Partial<PopoverOptions> = {}) {
+      clearState();
+      state.showing = true;
+      const doShow = () => {
+        clearState();
+        Object.assign(state, omit(opts, ['id']), { isVisible: true });
+        setupPopper();
+      };
+      const { showDelay = state.showDelay } = opts;
+      if (showDelay > 0) {
+        timeout = setTimeout(() => doShow(), showDelay);
+      } else {
+        doShow();
       }
-    },
-  },
-  mounted() {
-    this.popoverEl = this.$refs.popover;
-    this.addEvents();
-  },
-  beforeUnmount() {
-    this.destroyPopper();
-    this.removeEvents();
-    this.popoverEl = null;
-  },
-  methods: {
-    addEvents() {
-      on(this.popoverEl, 'click', this.onClick);
-      on(this.popoverEl, 'mouseover', this.onMouseOver);
-      on(this.popoverEl, 'mouseleave', this.onMouseLeave);
-      on(this.popoverEl, 'focusin', this.onFocusIn);
-      on(this.popoverEl, 'focusout', this.onFocusOut);
-      on(document, 'keydown', this.onDocumentKeydown);
-      on(document, 'click', this.onDocumentClick);
-      on(document, 'show-popover', this.onDocumentShowPopover);
-      on(document, 'hide-popover', this.onDocumentHidePopover);
-      on(document, 'toggle-popover', this.onDocumentTogglePopover);
-      on(document, 'update-popover', this.onDocumentUpdatePopover);
-    },
-    removeEvents() {
-      off(this.popoverEl, 'click', this.onClick);
-      off(this.popoverEl, 'mouseover', this.onMouseOver);
-      off(this.popoverEl, 'mouseleave', this.onMouseLeave);
-      off(this.popoverEl, 'focusin', this.onFocusIn);
-      off(this.popoverEl, 'focusout', this.onFocusOut);
-      off(document, 'keydown', this.onDocumentKeydown);
-      off(document, 'click', this.onDocumentClick);
-      off(document, 'show-popover', this.onDocumentShowPopover);
-      off(document, 'hide-popover', this.onDocumentHidePopover);
-      off(document, 'toggle-popover', this.onDocumentTogglePopover);
-      off(document, 'update-popover', this.onDocumentUpdatePopover);
-    },
-    onClick(e) {
-      e.stopPropagation();
-    },
-    onMouseOver() {
-      this.isHovered = true;
-      if (this.isInteractive) this.show();
-    },
-    onMouseLeave() {
-      this.isHovered = false;
-      if (
-        this.autoHide &&
-        !this.isFocused &&
-        (!this.ref || this.ref !== document.activeElement)
-      ) {
-        this.hide();
+    }
+
+    function hide(opts: Partial<PopoverOptions> = {}) {
+      if (state.showing || state.hiding) return;
+      if (!opts.refSelector && state.showing) return;
+      if (opts.refSelector && opts.refSelector !== state.refSelector) return;
+      const doHide = () => {
+        clearState();
+        Object.assign(state, omit(opts, ['id']), { isVisible: false });
+      };
+      clearState();
+      state.hiding = true;
+      const { hideDelay = state.hideDelay } = opts;
+      if (hideDelay > 0) {
+        timeout = setTimeout(doHide, hideDelay);
+      } else {
+        doHide();
       }
-    },
-    onFocusIn() {
-      this.isFocused = true;
-      if (this.isInteractive) this.show();
-    },
-    onFocusOut(e) {
-      if (
-        !e.relatedTarget ||
-        !elementContains(this.popoverEl, e.relatedTarget)
-      ) {
-        this.isFocused = false;
-        if (!this.isHovered && this.autoHide) this.hide();
+    }
+
+    function toggle(opts: Partial<PopoverOptions> = {}) {
+      const refEl = getRef(opts.refSelector);
+      if (state.isVisible && refEl === popper?.state.elements.reference) {
+        hide(opts);
+      } else {
+        show(opts);
       }
-    },
-    onDocumentClick(e) {
-      if (!this.$refs.popover || !this.ref) {
+    }
+
+    function update(opts: Partial<PopoverOptions> = {}) {
+      const ref = getRef(opts.refSelector || state.refSelector);
+      if (!popper || !ref) return;
+      Object.assign(state, omit(opts, ['id']));
+      setupPopper();
+    }
+
+    function onDocumentClick(e: CustomEvent) {
+      if (!popper) return;
+      const popperRef = popper.state.elements.reference;
+      if (!popoverRef.value || !popperRef) {
         return;
       }
       // Don't hide if target element is contained within popover ref or content
+      const { target } = e.detail;
       if (
-        elementContains(this.popoverEl, e.target) ||
-        elementContains(this.ref, e.target)
+        elementContains(popoverRef.value, target as Node) ||
+        elementContains(popperRef as Node, target as Node)
       ) {
         return;
       }
       // Hide the popover
-      this.hide();
-    },
-    onDocumentKeydown(e) {
+      hide();
+    }
+
+    function onDocumentKeydown(e: KeyboardEvent) {
       if (e.key === 'Esc' || e.key === 'Escape') {
-        this.hide();
+        hide();
       }
-    },
-    onDocumentShowPopover({ detail }) {
-      if (!detail.id || detail.id !== this.id) return;
-      this.show(detail);
-    },
-    onDocumentHidePopover({ detail }) {
-      if (!detail.id || detail.id !== this.id) return;
-      this.hide(detail);
-    },
-    onDocumentTogglePopover({ detail }) {
-      if (!detail.id || detail.id !== this.id) return;
-      this.toggle(detail);
-    },
-    onDocumentUpdatePopover({ detail }) {
-      if (!detail.id || detail.id !== this.id) return;
-      this.update(detail);
-    },
-    show(opts = {}) {
-      opts.action = 'show';
-      const ref = opts.ref || this.ref;
-      const delay = opts.showDelay >= 0 ? opts.showDelay : this.showDelay;
-      // Validate options
-      if (!ref) {
-        if (opts.callback) {
-          opts.callback({
-            completed: false,
-            reason: 'Invalid reference element provided',
-          });
+    }
+
+    function onDocumentShowPopover({ detail }: PopoverEvent) {
+      if (!detail.id || detail.id !== props.id) return;
+      show(detail);
+    }
+
+    function onDocumentHidePopover({ detail }: PopoverEvent) {
+      if (!detail.id || detail.id !== props.id) return;
+      hide(detail);
+    }
+
+    function onDocumentTogglePopover({ detail }: PopoverEvent) {
+      if (!detail.id || detail.id !== props.id) return;
+      toggle(detail);
+    }
+
+    function onDocumentUpdatePopover({ detail }: PopoverEvent) {
+      if (!detail.id || detail.id !== props.id) return;
+      update(detail);
+    }
+
+    function addEvents() {
+      on(document, 'keydown', onDocumentKeydown);
+      on(document, 'click-no-move', onDocumentClick);
+      on(document, 'show-popover', onDocumentShowPopover);
+      on(document, 'hide-popover', onDocumentHidePopover);
+      on(document, 'toggle-popover', onDocumentTogglePopover);
+      on(document, 'update-popover', onDocumentUpdatePopover);
+    }
+
+    function removeEvents() {
+      off(document, 'keydown', onDocumentKeydown);
+      off(document, 'click-no-move', onDocumentClick);
+      off(document, 'show-popover', onDocumentShowPopover);
+      off(document, 'hide-popover', onDocumentHidePopover);
+      off(document, 'toggle-popover', onDocumentTogglePopover);
+      off(document, 'update-popover', onDocumentUpdatePopover);
+    }
+
+    function beforeEnter(el: HTMLElement) {
+      emit('before-show', el);
+    }
+
+    function afterEnter(el: HTMLElement) {
+      emit('after-show', el);
+    }
+
+    function beforeLeave(el: HTMLElement) {
+      emit('before-hide', el);
+    }
+
+    function afterLeave(el: HTMLElement) {
+      emit('after-hide', el);
+    }
+
+    function onClick(e: MouseEvent) {
+      e.stopPropagation();
+    }
+
+    function onMouseOver() {
+      state.isHovered = true;
+      if (
+        state.isInteractive &&
+        ['hover', 'hover-focus'].includes(state.visibility)
+      ) {
+        show();
+      }
+    }
+
+    function onMouseLeave() {
+      state.isHovered = false;
+      if (!popper) return;
+      const popperRef = popper.state.elements.reference;
+      if (
+        state.autoHide &&
+        !state.isFocused &&
+        (!popperRef || popperRef !== document.activeElement) &&
+        ['hover', 'hover-focus'].includes(state.visibility)
+      ) {
+        hide();
+      }
+    }
+
+    function onFocusIn() {
+      state.isFocused = true;
+      if (
+        state.isInteractive &&
+        ['focus', 'hover-focus'].includes(state.visibility)
+      ) {
+        show();
+      }
+    }
+
+    function onFocusOut(e: FocusEvent) {
+      if (
+        ['focus', 'hover-focus'].includes(state.visibility) &&
+        (!e.relatedTarget ||
+          !elementContains(popoverRef.value!, e.relatedTarget as Node))
+      ) {
+        state.isFocused = false;
+        if (!state.isHovered && state.autoHide) hide();
+      }
+    }
+
+    watch(
+      () => popoverRef.value,
+      () => {
+        if (!popoverRef.value) {
+          resizeObserver = null;
+          return;
         }
-        return;
-      }
-      clearTimeout(this.timeout);
-      this.opts = opts;
-      const fn = () => {
-        Object.assign(this, omit(opts, ['id']));
-        this.setupPopper();
-        this.opts = null;
-      };
-      if (delay > 0) {
-        this.timeout = setTimeout(() => fn(), delay);
-      } else {
-        fn();
-      }
-    },
-    hide(opts = {}) {
-      opts.action = 'hide';
-      const ref = opts.ref || this.ref;
-      const delay = opts.hideDelay >= 0 ? opts.hideDelay : this.hideDelay;
-      if (!this.ref || ref !== this.ref) {
-        if (opts.callback) {
-          opts.callback({
-            ...opts,
-            completed: false,
-            reason: this.ref
-              ? 'Invalid reference element provided'
-              : 'Popover already hidden',
-          });
-        }
-        return;
-      }
-      const fn = () => {
-        this.ref = null;
-        this.opts = null;
-      };
-      clearTimeout(this.timeout);
-      this.opts = opts;
-      if (delay > 0) {
-        this.timeout = setTimeout(fn, delay);
-      } else {
-        fn();
-      }
-    },
-    toggle(opts = {}) {
-      if (this.isVisible && opts.ref === this.ref) {
-        this.hide(opts);
-      } else {
-        this.show(opts);
-      }
-    },
-    update(opts = {}) {
-      Object.assign(this, omit(opts, ['id']));
-      this.setupPopper();
-    },
-    setupPopper() {
-      this.$nextTick(() => {
-        if (!this.ref || !this.$refs.popover) return;
-        if (this.popper && this.popper.reference !== this.ref) {
-          this.destroyPopper();
-        }
-        if (!this.popper) {
-          this.popper = createPopper(
-            this.ref,
-            this.popoverEl,
-            this.popperOptions,
-          );
-        } else {
-          this.popper.update();
-        }
-      });
-    },
-    onPopperUpdate(args) {
-      if (args.placement) {
-        this.placement = args.placement;
-      } else if (args.state) {
-        this.placement = args.state.placement;
-      }
-    },
-    beforeEnter(e) {
-      this.$emit('before-show', e);
-    },
-    afterEnter(e) {
-      this.$emit('after-show', e);
-    },
-    beforeLeave(e) {
-      this.$emit('before-hide', e);
-    },
-    afterLeave(e) {
-      this.destroyPopper();
-      this.$emit('after-hide', e);
-    },
-    destroyPopper() {
-      if (this.popper) {
-        this.popper.destroy();
-        this.popper = null;
-      }
-    },
+        resizeObserver = new ResizeObserver(() => {
+          if (popper) popper.update();
+        });
+        resizeObserver.observe(popoverRef.value);
+      },
+    );
+
+    onMounted(() => {
+      addEvents();
+    });
+
+    onUnmounted(() => {
+      destroyPopper();
+      removeEvents();
+    });
+
+    return {
+      ...toRefs(state),
+      popoverRef,
+      contentStyle,
+      direction,
+      alignment,
+      hide,
+      setupPopper,
+      beforeEnter,
+      afterEnter,
+      beforeLeave,
+      afterLeave,
+      onClick,
+      onMouseOver,
+      onMouseLeave,
+      onFocusIn,
+      onFocusOut,
+    };
   },
-};
+});
 </script>
 
 <style lang="css">

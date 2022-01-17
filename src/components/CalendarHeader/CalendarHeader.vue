@@ -66,7 +66,6 @@ import { popoverDirective } from '../../utils/popovers';
 
 export default defineComponent({
   components: { SvgIcon },
-  emits: ['move-prev', 'move-next'],
   directives: { popover: popoverDirective },
   props: {
     page: { type: Object, required: true },

@@ -7,52 +7,53 @@ import { arrayHasItems, createGuid } from './helpers';
 import { PopoverVisibility } from './popovers';
 import { isUndefined } from './_';
 import Theme from './theme';
-import Locale from './locale';
+import Locale, { CalendarDay } from './locale';
+import { Placement } from '@popperjs/core';
 
 export type HighlightFillMode = 'solid' | 'light' | 'outline';
+
+export interface Glyph<T> {
+  start: T;
+  base: T;
+  end: T;
+  startEnd?: T;
+}
+
+export interface GlyphProfile {
+  color: string;
+  class: string;
+  style: Record<string, any>;
+}
+
+export interface HighlightProfile extends GlyphProfile {
+  fillMode: HighlightFillMode;
+  contentClass: string;
+  contentStyle: Record<string, any>;
+}
+
+export type Highlight = Glyph<HighlightProfile>;
+
 export type HighlightConfig =
   | boolean
   | string
-  | Partial<{
-      color: string;
-      class: string;
-      style: Record<string, any>;
-      fillMode: HighlightFillMode;
-      contentClass: string;
-      contentStyle: Record<string, any>;
-    }>;
+  | Partial<HighlightProfile | Glyph<HighlightProfile>>;
 
-export type ContentConfig =
+export type GlyphConfig =
   | boolean
   | string
-  | Partial<{
-      color: string;
-      class: string;
-      style: Record<string, any>;
-    }>;
+  | Partial<GlyphProfile | Glyph<GlyphProfile>>;
 
-export type DotConfig =
-  | boolean
-  | string
-  | Partial<{
-      color: string;
-      class: string;
-      style: Record<string, any>;
-    }>;
-
-export type BarConfig =
-  | boolean
-  | string
-  | Partial<{
-      color: string;
-      class: string;
-      style: Record<string, any>;
-    }>;
+export type Content = Glyph<GlyphProfile>;
+export type Dot = Glyph<GlyphProfile>;
+export type Bar = Glyph<GlyphProfile>;
 
 export type PopoverConfig = Partial<{
   label: string;
+  customData: any;
   visibility: PopoverVisibility;
+  placement: Placement;
   hideIndicator: boolean;
+  isInteractive: boolean;
 }>;
 
 export type EventConfig = Partial<{
@@ -61,13 +62,18 @@ export type EventConfig = Partial<{
 
 export type ExcludeMode = 'intersects' | 'includes';
 
+export interface DayAttribute extends Partial<Attribute> {
+  dayId: string;
+  dayDates: DateInfo[];
+}
+
 export interface AttributeConfig {
   key: string | number;
   hashcode: string;
   highlight: HighlightConfig;
-  content: ContentConfig;
-  dot: DotConfig;
-  bar: BarConfig;
+  content: GlyphConfig;
+  dot: GlyphConfig;
+  bar: GlyphConfig;
   popover: PopoverConfig;
   event: EventConfig;
   dates: DateInfo[];
@@ -78,13 +84,13 @@ export interface AttributeConfig {
   pinPage: boolean;
 }
 
-export default class Attribute {
+export class Attribute {
   key: string | number = '';
   hashcode = '';
-  highlight: HighlightConfig | null = null;
-  content: ContentConfig | null = null;
-  dot: DotConfig | null = null;
-  bar: BarConfig | null = null;
+  highlight: Highlight | null = null;
+  content: Content | null = null;
+  dot: Dot | null = null;
+  bar: Bar | null = null;
   event: EventConfig | null = null;
   popover: PopoverConfig | null = null;
   customData: any = null;
@@ -95,12 +101,12 @@ export default class Attribute {
   excludeMode: ExcludeMode = 'intersects';
   order = 0;
   pinPage = false;
-  dateOpts: DateInfoOptions;
+  dateOpts: Partial<DateInfoOptions>;
 
   constructor(
     {
       key,
-      hashcode,
+      hashcode = '',
       highlight,
       content,
       dot,
@@ -111,18 +117,17 @@ export default class Attribute {
       excludeDates,
       excludeMode,
       customData,
-      order,
-      pinPage,
-    }: AttributeConfig,
+      order = 0,
+      pinPage = false,
+    }: Partial<AttributeConfig>,
     theme: Theme,
     locale: Locale,
   ) {
     this.key = isUndefined(key) ? createGuid() : key;
     this.hashcode = hashcode;
     this.customData = customData;
-    this.event = event;
     this.order = order || 0;
-    this.dateOpts = { order, locale };
+    this.dateOpts = { order, firstDayOfWeek: locale.firstDayOfWeek };
     this.pinPage = pinPage;
     // Normalize attribute types
     if (highlight) {
@@ -136,6 +141,9 @@ export default class Attribute {
     }
     if (bar) {
       this.bar = theme.normalizeBar(bar);
+    }
+    if (event) {
+      this.event = event;
     }
     if (popover) {
       this.popover = popover;
@@ -188,14 +196,19 @@ export default class Attribute {
 
   // Accepts: Day object
   // Returns: First attribute date info that occurs on given day.
-  intersectsDay(day) {
+  intersectsDay(day: CalendarDay) {
     return (
       !this.excludesDay(day) &&
       (this.dates.find(d => d.intersectsDay(day)) || false)
     );
   }
 
-  excludesDay(day) {
+  getDayDates(day: CalendarDay) {
+    if (this.excludesDay(day)) return [];
+    return this.dates.filter(d => d.intersectsDay(day));
+  }
+
+  excludesDay(day: CalendarDay) {
     return (
       this.hasExcludeDates &&
       this.excludeDates.find(ed => ed.intersectsDay(day))

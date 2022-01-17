@@ -12,6 +12,12 @@
   display: grid;
 }
 
+.vc-pane-header-wrapper {
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+}
+
 .vc-arrow {
   grid-row: 1;
   display: flex;
@@ -21,20 +27,11 @@
   user-select: none;
   pointer-events: auto;
   color: var(--gray-600);
-  border-width: 2px;
+  border-width: 1px;
   border-style: solid;
   border-radius: var(--rounded);
   border-color: transparent;
   z-index: 1;
-  &.vc-prev {
-    grid-column: prev;
-  }
-  &.vc-next {
-    grid-column: next;
-  }
-  &.vc-up {
-    grid-column: up;
-  }
   &:hover {
     background: var(--gray-200);
   }

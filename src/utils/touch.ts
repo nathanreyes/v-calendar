@@ -1,10 +1,20 @@
 import { on, off } from './helpers';
 import { isFunction } from './_';
 
+interface SwipeHandlerOptions {
+  maxSwipeTime: number;
+  minHorizontalSwipeDistance: number;
+  maxVerticalSwipeDistance: number;
+}
+
 export const addHorizontalSwipeHandler = (
-  element,
-  handler,
-  { maxSwipeTime, minHorizontalSwipeDistance, maxVerticalSwipeDistance },
+  element: HTMLElement,
+  handler: Function,
+  {
+    maxSwipeTime,
+    minHorizontalSwipeDistance,
+    maxVerticalSwipeDistance,
+  }: SwipeHandlerOptions,
 ) => {
   if (!element || !element.addEventListener || !isFunction(handler)) {
     return null;
@@ -12,10 +22,10 @@ export const addHorizontalSwipeHandler = (
   // State variables
   let startX = 0;
   let startY = 0;
-  let startTime = null;
+  let startTime: number | null = null;
   let isSwiping = false;
   // Touch start handler
-  function touchStart(e) {
+  function touchStart(e: TouchEvent) {
     const t = e.changedTouches[0];
     startX = t.screenX;
     startY = t.screenY;
@@ -23,8 +33,8 @@ export const addHorizontalSwipeHandler = (
     isSwiping = true;
   }
   // Touch end handler
-  function touchEnd(e) {
-    if (!isSwiping) return;
+  function touchEnd(e: TouchEvent) {
+    if (!isSwiping || !startTime) return;
     isSwiping = false;
     const t = e.changedTouches[0];
     const deltaX = t.screenX - startX;

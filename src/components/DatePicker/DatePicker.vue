@@ -18,7 +18,7 @@ import {
   showPopover as sp,
   hidePopover as hp,
   togglePopover as tp,
-  getPopoverTriggerEvents,
+  getPopoverEventHandlers,
 } from '../../utils/popovers';
 
 const _dateConfig = {
@@ -265,7 +265,7 @@ export default {
         input: this.onInputInput(isStart),
         change: this.onInputChange(isStart),
         keyup: this.onInputKeyup,
-        ...getPopoverTriggerEvents({
+        ...getPopoverEventHandlers({
           ...this.popover_,
           id: this.datePickerPopoverId,
           callback: e => {
@@ -289,7 +289,7 @@ export default {
         showPopover,
         hidePopover,
         togglePopover,
-        getPopoverTriggerEvents,
+        getPopoverEventHandlers,
       };
     },
     popover_() {
@@ -680,17 +680,17 @@ export default {
         return {
           start: adjustTimeForDate(
             value.start,
-            config.start || config,
+            (config.start || config).timeAdjust,
             this.timezone,
           ),
           end: adjustTimeForDate(
             value.end,
-            config.end || config,
+            (config.end || config).timeAdjust,
             this.timezone,
           ),
         };
       }
-      return adjustTimeForDate(value, config, this.timezone);
+      return adjustTimeForDate(value, config.timeAdjust, this.timezone);
     },
     sortRange(range, priority = RANGE_PRIORITY.NONE) {
       const { start, end } = range;
@@ -798,7 +798,7 @@ export default {
     },
     getPageForValue(isStart) {
       if (this.hasValue(this.value_)) {
-        return this.pageForDate(
+        return this.$locale.getPageForDate(
           this.isRange ? this.value_[isStart ? 'start' : 'end'] : this.value_,
         );
       }

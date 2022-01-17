@@ -1,22 +1,26 @@
 import { reactive } from 'vue';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
-import DateInfo from './dateInfo';
+import DateInfo, { DateInfoOptions } from './dateInfo';
 import {
   DateSource,
   DateOptions,
   DayOfWeek,
+  TimeNames,
   daysInWeek,
   getDateParts,
   getDayNames,
   getMonthNames,
   getMonthParts,
+  getThisMonthParts,
   getPrevMonthParts,
   getNextMonthParts,
   formatDate,
   parseDate,
   normalizeDate,
   denormalizeDate,
+  getHourDates,
+  getRelativeTimeNames,
 } from './dates';
 import defaultLocales from './defaults/locales';
 import { pad, PageAddress, pageIsAfterPage, pageIsValid } from './helpers';
@@ -72,6 +76,7 @@ export interface Page extends PageAddress {
 
 export interface CalendarDay {
   id: string;
+  position: number;
   label: string;
   ariaLabel: string;
   day: number;
@@ -93,7 +98,6 @@ export interface CalendarDay {
     start: Date;
     end: Date;
   };
-  attributesMap: Record<string, any>;
   isToday: boolean;
   isFirstDay: boolean;
   isLastDay: boolean;
@@ -106,12 +110,14 @@ export interface CalendarDay {
   onBottom: boolean;
   onLeft: boolean;
   onRight: boolean;
+  classes: Array<string | Object>;
   dateFromTime: (
     hours: number,
     minutes: number,
     seconds: number,
     milliseconds: number,
   ) => Date;
+  locale: Locale;
 }
 
 export interface CalendarWeek {
@@ -137,7 +143,7 @@ interface LocaleOptions {
 }
 
 export function resolveConfig(
-  config: string | LocaleConfig | undefined,
+  config: string | Partial<LocaleConfig> | undefined,
   locales: any,
 ) {
   // Get the detected locale string
@@ -169,18 +175,20 @@ export default class Locale {
   firstDayOfWeek: DayOfWeek;
   masks: any;
   timezone: string | undefined;
+  hourLabels: string[];
   dayNames: string[];
   dayNamesShort: string[];
   dayNamesShorter: string[];
   dayNamesNarrow: string[];
   monthNames: string[];
   monthNamesShort: string[];
-  amPm: [string, string];
+  relativeTimeNames: TimeNames;
+  amPm: [string, string] = ['am', 'pm'];
   monthCache: any;
   pageCache: any;
 
   constructor(
-    config: LocaleConfig | string | undefined = undefined,
+    config: Partial<LocaleConfig> | string | undefined = undefined,
     { locales = defaultLocales, timezone }: LocaleOptions = {},
   ) {
     const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
@@ -189,13 +197,14 @@ export default class Locale {
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek) as DayOfWeek;
     this.masks = masks;
     this.timezone = timezone || undefined;
+    this.hourLabels = this.getHourLabels();
     this.dayNames = getDayNames('long', this.id, this.timezone);
     this.dayNamesShort = getDayNames('short', this.id, this.timezone);
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
     this.dayNamesNarrow = getDayNames('narrow', this.id, this.timezone);
     this.monthNames = getMonthNames('long', this.id);
     this.monthNamesShort = getMonthNames('short', this.id);
-    this.amPm = ['am', 'pm'];
+    this.relativeTimeNames = getRelativeTimeNames(this.id);
     this.monthCache = {};
     this.pageCache = {};
   }
@@ -230,12 +239,32 @@ export default class Locale {
     });
   }
 
-  normalizeDates(dates: any, opts: any = {}) {
-    opts.locale = this;
+  normalizeDates(dates: any, opts: Partial<DateInfoOptions> = {}) {
+    opts.firstDayOfWeek = this.firstDayOfWeek;
     // Assign dates
     return (isArray(dates) ? dates : [dates])
       .map((d: any) => d && DateInfo.from(d, opts))
       .filter((d: any) => d);
+  }
+
+  getDateParts(date: Date) {
+    return getDateParts(date, this.firstDayOfWeek, this.timezone);
+  }
+
+  getMonthParts(month: number, year: number) {
+    return getMonthParts(month, year, this.firstDayOfWeek);
+  }
+
+  getThisMonthParts() {
+    return getThisMonthParts(this.firstDayOfWeek);
+  }
+
+  getPrevMonthParts(month: number, year: number) {
+    return getPrevMonthParts(month, year, this.firstDayOfWeek);
+  }
+
+  getNextMonthParts(month: number, year: number) {
+    return getNextMonthParts(month, year, this.firstDayOfWeek);
   }
 
   toPage(
@@ -247,15 +276,25 @@ export default class Locale {
       return this.addPages(fromPage || this.getPageForThisMonth()!, arg, view);
     }
     if (isString(arg)) {
-      return getDateParts(this.normalizeDate(arg), this.timezone);
+      return getDateParts(
+        this.normalizeDate(arg),
+        this.firstDayOfWeek,
+        this.timezone,
+      );
     }
     if (isDate(arg)) {
-      return getDateParts(arg as Date, this.timezone);
+      return getDateParts(arg as Date, this.firstDayOfWeek, this.timezone);
     }
     if (isObject(arg)) {
       return arg as PageAddress;
     }
     return null;
+  }
+
+  getHourLabels() {
+    return getHourDates().map(d => {
+      return this.formatDate(d, this.masks.hours);
+    });
   }
 
   getWeekdayLabels(page: Page) {
@@ -284,7 +323,7 @@ export default class Locale {
       const comps = getMonthParts(month, year, this.firstDayOfWeek);
       const date = comps.firstDayOfMonth;
       const newDate = addDays(date, (week - 1 + count) * 7);
-      const parts = getDateParts(newDate, this.timezone);
+      const parts = getDateParts(newDate, this.firstDayOfWeek, this.timezone);
       return {
         week: parts.week,
         month: parts.month,
@@ -322,8 +361,8 @@ export default class Locale {
     if (!page) {
       const date = new Date(year, month - 1, 15);
       const monthComps = getMonthParts(month, year, this.firstDayOfWeek);
-      const prevMonthComps = getPrevMonthParts(month, year);
-      const nextMonthComps = getNextMonthParts(month, year);
+      const prevMonthComps = this.getPrevMonthParts(month, year);
+      const nextMonthComps = this.getNextMonthParts(month, year);
       page = {
         id,
         month,
@@ -417,11 +456,12 @@ export default class Locale {
     let prevMonth = true;
     let thisMonth = false;
     let nextMonth = false;
+    let position = 0;
     // Formatter for aria labels
     const formatter = new Intl.DateTimeFormat(this.id, {
       weekday: 'long',
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
     });
     // Init counters with previous month's data
@@ -485,7 +525,7 @@ export default class Locale {
         const dateFromTime = dft(year, month, day);
         const range = {
           start: dateFromTime(0, 0, 0, 0),
-          end: dateFromTime(24, 0, 0, 0),
+          end: dateFromTime(23, 59, 59, 999),
         };
         const date = range.start;
         const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
@@ -503,10 +543,11 @@ export default class Locale {
         const onRight = i === daysInWeek;
         days.push(
           reactive({
+            locale: this,
             id,
+            position: ++position,
             label: day.toString(),
             ariaLabel: formatter.format(new Date(year, month - 1, day)),
-            attributesMap: {},
             day,
             dayFromEnd,
             weekday,
@@ -623,27 +664,28 @@ export default class Locale {
       const fromDay = week.days[0];
       const toDay = week.days[week.days.length - 1];
       if (fromDay.month === toDay.month) {
-        week.title = `${this.formatDate(
-          fromDay.date,
-          'MMM D',
-        )} - ${this.formatDate(toDay.date, 'MMM D YYYY')}`;
+        week.title = `${this.formatDate(fromDay.date, 'MMMM YYYY')}`;
       } else if (fromDay.year === toDay.year) {
         week.title = `${this.formatDate(
           fromDay.date,
-          'MMM D',
-        )} - ${this.formatDate(toDay.date, 'MMM D')} ${fromDay.year}`;
+          'MMM',
+        )} - ${this.formatDate(toDay.date, 'MMM YYYY')}`;
       } else {
         week.title = `${this.formatDate(
           fromDay.date,
-          'MMM D YYYY',
-        )} - ${this.formatDate(toDay.date, 'MMM D YYYY')}`;
+          'MMM YYYY',
+        )} - ${this.formatDate(toDay.date, 'MMM YYYY')}`;
       }
     });
     return result;
   }
 
   getPageForDate(date: DateSource) {
-    return getDateParts(this.normalizeDate(date), this.timezone);
+    return getDateParts(
+      this.normalizeDate(date),
+      this.firstDayOfWeek,
+      this.timezone,
+    );
   }
 
   getPageForThisMonth() {

@@ -1,4 +1,4 @@
-import { isArray, isObject, isFunction, isDate } from './_';
+import { isArray, isFunction } from './_';
 
 export interface PageAddress {
   day?: number;
@@ -35,67 +35,77 @@ export const mergeEvents = (...args: Array<any>) => {
   return result;
 };
 
-export const pageIsValid = (page: PageAddress | null): boolean =>
+export const roundTenth = (n: number) => {
+  return Math.round(n * 100) / 100;
+};
+
+export const pageIsValid = (page: PageAddress | null | undefined): boolean =>
   !!(page && page.month && page.year);
 
 export const pageIsBeforePage = (
-  page: PageAddress,
-  comparePage: PageAddress,
+  page: PageAddress | null | undefined,
+  comparePage: PageAddress | null | undefined,
 ): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
+  page = page as PageAddress;
+  comparePage = comparePage as PageAddress;
   if (page.year !== comparePage.year) return page.year < comparePage.year;
-  if (page.month !== comparePage.month) return page.month < comparePage.month;
-  if (page.week !== comparePage.week)
-    return (page.week || 0) < (comparePage.week || 0);
-  if (page.day !== comparePage.day)
-    return (page.day || 0) < (comparePage.day || 0);
+  if (page.month && comparePage.month && page.month !== comparePage.month)
+    return page.month < comparePage.month;
+  if (page.week && comparePage.week && page.week !== comparePage.week) {
+    return page.week < comparePage.week;
+  }
+  if (page.day && comparePage.day && page.day !== comparePage.day) {
+    return page.day < comparePage.day;
+  }
   return false;
 };
 
 export const pageIsAfterPage = (
-  page: PageAddress,
-  comparePage: PageAddress,
+  page: PageAddress | null | undefined,
+  comparePage: PageAddress | null | undefined,
 ): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
+  page = page as PageAddress;
+  comparePage = comparePage as PageAddress;
   if (page.year !== comparePage.year) return page.year > comparePage.year;
-  if (page.month !== comparePage.month) return page.month > comparePage.month;
-  if (page.week !== comparePage.week)
-    return (page.week || 0) > (comparePage.week || 0);
-  if (page.day !== comparePage.day)
-    return (page.day || 0) > (comparePage.day || 0);
+  if (page.month && comparePage.month && page.month !== comparePage.month) {
+    return page.month > comparePage.month;
+  }
+  if (page.week && comparePage.week && page.week !== comparePage.week) {
+    return page.week > comparePage.week;
+  }
+  if (page.day && comparePage.day && page.day !== comparePage.day) {
+    return page.day > comparePage.day;
+  }
   return false;
 };
 
 export const pageIsBetweenPages = (
-  page: PageAddress,
-  fromPage: PageAddress,
-  toPage: PageAddress,
+  page: PageAddress | null | undefined,
+  fromPage: PageAddress | null | undefined,
+  toPage: PageAddress | null | undefined,
 ): boolean =>
   (page || false) &&
   !pageIsBeforePage(page, fromPage) &&
   !pageIsAfterPage(page, toPage);
 
 export const pageIsEqualToPage = (
-  aPage: PageAddress,
-  bPage: PageAddress,
+  aPage: PageAddress | null | undefined,
+  bPage: PageAddress | null | undefined,
 ): boolean => {
   if (!aPage && bPage) return false;
   if (aPage && !bPage) return false;
   if (!aPage && !bPage) return true;
+  aPage = aPage as PageAddress;
+  bPage = bPage as PageAddress;
   return (
     aPage.year === bPage.year &&
     aPage.month === bPage.month &&
-    aPage.week === bPage.week
+    aPage.week === bPage.week &&
+    aPage.day === bPage.day
   );
 };
-
-export function datesAreEqual(a: any, b: any): boolean {
-  const aIsDate = isDate(a);
-  const bIsDate = isDate(b);
-  if (!aIsDate && !bIsDate) return true;
-  if (aIsDate !== bIsDate) return false;
-  return a.getTime() === b.getTime();
-}
 
 export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
@@ -105,47 +115,66 @@ export interface ElementPosition {
   left: number;
 }
 
-export const mixinOptionalProps = (source: any, target: any, props: [any]) => {
-  const assigned: Array<string> = [];
-  props.forEach(p => {
-    const name = p.name || p.toString();
-    const mixin = p.mixin;
-    const validate = p.validate;
-    if (Object.prototype.hasOwnProperty.call(source, name)) {
-      const value = validate ? validate(source[name]) : source[name];
-      target[name] = mixin && isObject(value) ? { ...mixin, ...value } : value;
-      assigned.push(name);
-    }
-  });
-  return {
-    target,
-    assigned: assigned.length ? assigned : null,
+interface CustomElement {
+  addEventListener: Function;
+  removeEventListener: Function;
+  dispatchEvent: Function;
+  removeClickNoMove?: Function;
+}
+
+function registerClickNoMoveHandlers(el: CustomElement) {
+  if (el.removeClickNoMove) return;
+  const removeHandlers: Function[] = [];
+  let mousedown = false;
+  let mousemove = false;
+  removeHandlers.push(
+    on(el, 'mousedown', () => {
+      mousedown = true;
+      mousemove = false;
+    }),
+  );
+  removeHandlers.push(
+    on(el, 'mousemove', () => {
+      if (mousedown) mousemove = true;
+      mousedown = false;
+    }),
+  );
+  removeHandlers.push(
+    on(el, 'click', (e: MouseEvent) => {
+      if (!mousemove) {
+        el.dispatchEvent(new CustomEvent('click-no-move', { detail: e }));
+      }
+      mousedown = false;
+    }),
+  );
+  el.removeClickNoMove = () => {
+    removeHandlers.forEach(h => h());
   };
+}
+
+export const off = (
+  element: CustomElement,
+  event: string,
+  handler: (e: any) => void,
+  opts: boolean | EventListenerOptions | undefined = undefined,
+) => {
+  element.removeEventListener(event, handler, opts);
 };
 
 export const on = (
-  element: Element,
+  element: CustomElement,
   event: string,
-  handler: EventListenerOrEventListenerObject,
-  opts: boolean | AddEventListenerOptions | undefined,
+  handler: (e: any) => void,
+  opts: boolean | AddEventListenerOptions | undefined = undefined,
 ) => {
-  if (element && event && handler) {
-    element.addEventListener(event, handler, opts);
+  if (event === 'click-no-move') {
+    registerClickNoMoveHandlers(element);
   }
+  element.addEventListener(event, handler, opts);
+  return () => off(element, event, handler, opts);
 };
 
-export const off = (
-  element: Element,
-  event: string,
-  handler: EventListenerOrEventListenerObject,
-  opts: boolean | EventListenerOptions | undefined,
-) => {
-  if (element && event) {
-    element.removeEventListener(event, handler, opts);
-  }
-};
-
-export const elementContains = (element: Element, child: Element) =>
+export const elementContains = (element: Node, child: Node) =>
   !!element && !!child && (element === child || element.contains(child));
 
 export const onSpaceOrEnter = (
@@ -156,6 +185,10 @@ export const onSpaceOrEnter = (
     handler(event);
     event.preventDefault();
   }
+};
+
+export const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 /* eslint-disable no-bitwise */

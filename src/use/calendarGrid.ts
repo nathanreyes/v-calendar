@@ -1,4 +1,4 @@
-import { SetupContext, ref, computed, provide, inject, watch } from 'vue';
+import { Ref, ComputedRef, ref, computed, provide, inject, watch } from 'vue';
 import {
   CalendarProps,
   CalendarContext,
@@ -7,11 +7,10 @@ import {
 } from './calendar';
 import { CalendarDay, Page } from '../utils/locale';
 import { on } from '../utils/helpers';
-import { Cell } from '../components/CalendarGrid/Cell';
+import { CellContext as Cell, useCell } from './calendarCell';
 import CalendarCellPopover from '../components/CalendarCellPopover/CalendarCellPopover.vue';
-import { roundDate } from '../utils/dates';
+import { roundDate, MS_PER_HOUR } from '../utils/dates';
 import DateInfo from '../utils/dateInfo';
-import { logger } from '../utils/logger';
 
 type GridState =
   | 'NORMAL'
@@ -41,15 +40,21 @@ export interface Point {
   y: number;
 }
 
+export interface DragOffset {
+  weekdays: number;
+  weeks: number;
+  ms: number;
+}
+
 interface DragOriginState {
   position: number;
   date: Date;
   day: CalendarDay;
-  weekdayPosition: number;
   cell: Cell;
   cellSelected: boolean;
   minOffsetDays: number;
   maxOffsetDays: number;
+  ms: number;
 }
 
 interface ResizeOriginState {
@@ -83,14 +88,27 @@ const contextKey = '__vc_grid_context__';
 
 export function useCalendarGrid(
   props: CalendarProps,
-  ctx: SetupContext,
+  ctx: any,
 ): CalendarGridContext {
   const { emit } = ctx;
   const calendar = useCalendar(props, ctx);
-  const gridRef = ref<HTMLElement | null>(null);
   const cellPopoverRef = ref<typeof CalendarCellPopover>();
+  const dailyGridRef = ref<HTMLElement | null>(null);
+  const weeklyGridRef = ref<HTMLElement | null>(null);
+  let activeGridRef = ref<HTMLElement | null>(null);
 
-  const { isMonthly, isDaily, pages, locale, move, onDayFocusin } = calendar;
+  const {
+    view,
+    isDaily,
+    isMonthly,
+    dayAttributes,
+    pages,
+    firstPage,
+    locale,
+    move,
+    onDayFocusin,
+  } = calendar;
+
   const page = computed<Page>(() => pages.value[0]);
   const days = computed(() => page.value.viewDays);
   const weeks = computed(() => page.value.viewWeeks);
@@ -103,27 +121,25 @@ export function useCalendarGrid(
     return 1;
   });
 
-  const snapMinutes = 15;
-  const snapMs = snapMinutes * 60 * 1000;
-  const pixelsPerHour = ref(48);
+  const snapMinutes = ref(15);
+  const snapMs = computed(() => snapMinutes.value * 60 * 10000);
+  const pixelsPerHour = ref(50);
 
   const state = ref<GridState>('NORMAL');
+  const fill = ref('light');
 
-  const cells = ref<Cell[]>([]);
-  const dayCells = ref<Cell[][]>([]);
-  const allDayCells = ref<Cell[]>([]);
-  const weekCells = ref<Cell[][]>([]);
+  const cells: Ref<Cell[]> = ref([]);
+  const weekCells: Ref<Cell[][]> = ref([]);
+  const dayCells: Ref<Cell[][]> = ref([]);
+  const detailCell = ref<Cell | null>(null);
 
   const createOrigin = ref<CreateOriginState | null>(null);
 
   const resizing = ref(false);
-  const resizeOrigin = ref<ResizeOriginState | null>(null);
+  let resizeOrigin: ResizeOriginState | null = null;
 
   const dragging = ref(false);
-  const dragOrigin = ref<DragOriginState | null>(null);
-
-  const createTimer: number | undefined = undefined;
-  // let createTimerDurationMs = 700;
+  let dragOrigin: DragOriginState | null = null;
 
   const isTouch = ref(false);
 
@@ -135,23 +151,23 @@ export function useCalendarGrid(
 
   const hasSelectedCells = computed(() => selectedCellsCount.value > 0);
 
-  const labelCells = computed<Partial<Cell>[]>(() => {
-    const result: Partial<Cell>[] = [];
-    if (!days.value.length) return result;
-    for (let i = 0; i < 24; i++) {
-      const date = days.value[0].dateFromTime(i, 0, 0, 0);
-      const timeLabel = locale.value.formatDate(date, 'h A');
-      if (i === 0) continue;
-      result.push({
-        key: `${i}-label`,
-        label: timeLabel,
-        style: {
-          top: `${i * pixelsPerHour.value}px`,
-        },
-      });
-    }
-    return result;
+  const weekCellsStyle = computed(() => {
+    const numDays = isDaily.value ? '1' : locale.value.daysInWeek;
+    return { gridTemplateColumns: `repeat(${numDays}, 1fr)` };
   });
+
+  function getCellContext() {
+    return {
+      locale,
+      days,
+      dayRows,
+      dayColumns,
+      isDaily,
+      isMonthly,
+      snapMinutes: snapMinutes.value,
+      pixelsPerHour: pixelsPerHour.value,
+    };
+  }
 
   const gridStyle = computed(() => {
     return {
@@ -159,10 +175,10 @@ export function useCalendarGrid(
     };
   });
 
-  // #region Cell popover
+  // #region Cell details
 
   function showCellPopover(cell: Cell) {
-    if (!cellPopoverRef.value) return;
+    if (isDaily.value || !cellPopoverRef.value) return;
     cellPopoverRef.value.show(cell);
   }
 
@@ -172,32 +188,31 @@ export function useCalendarGrid(
   }
 
   function hideCellPopover() {
-    if (!cellPopoverRef.value) return;
+    if (isDaily.value || !cellPopoverRef.value) return;
     cellPopoverRef.value.hide();
   }
 
-  // #endregion Event popover
+  // #endregion Cell details
 
   // #region Util
 
-  function getCellOptions() {
-    return {
-      pixelsPerHour: pixelsPerHour.value,
-      snapMinutes,
-    };
-  }
-
-  function getEventCells(days: CalendarDay[]): Cell[] {
+  function getEventCells(): Cell[] {
     const result: Cell[] = [];
-    days.forEach((day: CalendarDay) => {
-      Object.values(day.attributesMap).forEach(attr => {
+    days.value.forEach((day: CalendarDay) => {
+      const attributes = dayAttributes.value[day.id];
+      if (!attributes) return;
+      attributes.forEach(attr => {
         attr.dates.forEach((dateInfo: DateInfo) => {
-          const existingCell = cells.value.find(c => c.key === attr.key);
-          const cell = Cell.fromDateInfo(dateInfo, day, {
-            key: attr.key,
+          const existingCell = cells.value.find(
+            c => c.key === attr.attribute.key,
+          );
+          const cell = useCell({
+            key: attr.attribute.key,
             ...existingCell,
-            ...attr.event,
-            ...getCellOptions(),
+            ...attr.attribute.event,
+            ...getCellContext(),
+            day,
+            dateInfo,
           });
           result.push(cell);
         });
@@ -206,55 +221,47 @@ export function useCalendarGrid(
     return result;
   }
 
-  function refreshDayCells() {
+  function refreshCells(deep: boolean) {
     const rWeekCells: Cell[][] = weeks.value.map(() => []);
     const rDayCells: Cell[][] = days.value.map(() => []);
-    const rAllDayCells: Cell[] = [];
+    if (deep) cells.value = getEventCells();
     cells.value.forEach(cell => {
-      const wIdx = weeks.value.findIndex(
-        w => w.weekPosition === cell.day.weekPosition,
-      );
-      if (wIdx >= 0) {
-        rWeekCells[wIdx].push(cell);
-        cell.order = rWeekCells[wIdx].length;
-      }
-      if (cell.isAllDay) {
-        rAllDayCells.push(cell);
-        return;
-      }
-      const idx = days.value.findIndex(d => d.id === cell.day.id);
-      if (idx >= 0) {
-        rDayCells[idx].push(cell);
+      if (cell.isAllDay || isMonthly.value) {
+        const wIdx = weeks.value.findIndex(
+          w => w.weeknumber === cell.day.weeknumber,
+        );
+        if (wIdx >= 0) {
+          rWeekCells[wIdx].push(cell);
+          cell.order = rWeekCells[wIdx].length;
+        }
+      } else if (!isMonthly.value) {
+        const idx = days.value.findIndex(d => d.id === cell.day.id);
+        if (idx >= 0) {
+          rDayCells[idx].push(cell);
+        }
       }
     });
-    for (let i = 0; i < rDayCells.length; i++) {
-      rDayCells[i] = rDayCells[i].sort((a, b) => a.position - b.position);
+    for (let i = 0; i < rWeekCells.length; i++) {
+      rWeekCells[i] = rWeekCells[i].sort((a, b) => a.compareTo(b));
     }
-    dayCells.value = rDayCells;
-    allDayCells.value = rAllDayCells;
+    for (let i = 0; i < rDayCells.length; i++) {
+      rDayCells[i] = rDayCells[i].sort((a, b) => a.compareTo(b));
+    }
     weekCells.value = rWeekCells;
+    dayCells.value = rDayCells;
   }
 
-  function doRefreshCells() {
-    cells.value = getEventCells(days.value);
-    refreshDayCells();
-  }
+  watch([firstPage, dayAttributes], () => {
+    refreshCells(true);
+  });
 
-  let refreshTimeout: number | undefined = undefined;
-  function refreshCells() {
-    clearTimeout(refreshTimeout);
-    refreshTimeout = setTimeout(doRefreshCells, 50);
-  }
+  watch([view], () => {
+    deselectAllCells();
+  });
 
-  watch(
-    () => days,
-    () => {
-      refreshCells();
-    },
-    {
-      deep: true,
-    },
-  );
+  function getMsFromPosition(position: number) {
+    return (position / pixelsPerHour.value) * MS_PER_HOUR;
+  }
 
   function getDateFromPosition(
     position: number,
@@ -262,8 +269,10 @@ export function useCalendarGrid(
     offsetMs = 0,
     snapMs = 0,
   ) {
-    const ms = (position / pixelsPerHour.value) * 60 * 60 * 1000;
-    return roundDate(day.range.start.getTime() + ms + offsetMs, snapMs);
+    return roundDate(
+      day.range.start.getTime() + getMsFromPosition(position) + offsetMs,
+      snapMs,
+    );
   }
 
   // #endregion Util
@@ -281,14 +290,18 @@ export function useCalendarGrid(
   }
 
   function createNewCell(position: number, day: CalendarDay) {
-    const cell = Cell.fromDate(
-      getDateFromPosition(position, day),
+    const dateInfo = DateInfo.from(getDateFromPosition(position, day), {
+      isAllDay: isMonthly.value,
+    });
+    const cell = useCell({
+      ...getCellContext(),
       day,
-      getCellOptions(),
-    );
+      dateInfo,
+    });
+    cell.resizeToConstraints();
     emit('will-create-event', cell);
     cells.value.push(cell);
-    refreshDayCells();
+    refreshCells(false);
     return cell;
   }
 
@@ -311,7 +324,7 @@ export function useCalendarGrid(
     if (active.value) return;
     resizing.value = true;
     cell.selected = true;
-    resizeOrigin.value = {
+    resizeOrigin = {
       position,
       day,
       date: getDateFromPosition(position, day, 0, 0),
@@ -326,28 +339,26 @@ export function useCalendarGrid(
   }
 
   function updateResizingCells(position: number) {
-    if (!resizing.value || !resizeOrigin.value) return;
-    const day = resizeOrigin.value.day;
+    if (!resizing.value || !resizeOrigin) return;
+    const day = resizeOrigin.day;
     const date = getDateFromPosition(position, day, 0, 0);
-    const offsetMs = date.getTime() - resizeOrigin.value.date.getTime();
+    const offsetMs = date.getTime() - resizeOrigin.date.getTime();
     forSelectedCells(cell => cell.updateResize(offsetMs));
-    refreshDayCells();
   }
 
   function stopResizingCells() {
-    if (!resizing.value || !resizeOrigin.value) return;
+    if (!resizing.value || !resizeOrigin) return;
     forSelectedCells(cell => {
-      if (resizeOrigin.value!.isNew && cell === resizeOrigin.value!.cell) {
+      if (resizeOrigin!.isNew && cell === resizeOrigin!.cell) {
         emit('did-create-event', cell);
         showCellPopover(cell);
-        // cell.editing = true;
       } else {
         emit('did-resize-event', cell);
       }
       cell.stopResize();
     });
     resizing.value = false;
-    resizeOrigin.value = null;
+    resizeOrigin = null;
   }
 
   // #endregion Resizing
@@ -357,6 +368,7 @@ export function useCalendarGrid(
   function startDraggingCells(position: number, day: CalendarDay, cell: Cell) {
     if (active.value) return;
     dragging.value = true;
+    const date = getDateFromPosition(position, day, 0, 0);
     const cellSelected = cell.selected;
     cell.selected = true;
     const indices = selectedCells.value.map(c =>
@@ -364,15 +376,16 @@ export function useCalendarGrid(
     );
     const minOffsetDays = -Math.min(...indices);
     const maxOffsetDays = days.value.length - Math.max(...indices) - 1;
-    dragOrigin.value = {
+    const ms = getMsFromPosition(position);
+    dragOrigin = {
       position,
-      date: getDateFromPosition(position, day, 0, 0),
-      weekdayPosition: day.weekdayPosition,
-      maxOffsetDays,
-      minOffsetDays,
+      date,
       day,
       cell,
       cellSelected,
+      maxOffsetDays,
+      minOffsetDays,
+      ms,
     };
     selectedCells.value.forEach(cell => {
       emit('will-move-event', cell);
@@ -381,22 +394,22 @@ export function useCalendarGrid(
   }
 
   function updateDraggingCells(position: number, day: CalendarDay) {
-    if (!dragging.value || !dragOrigin.value) return;
-    const date = getDateFromPosition(position, day, 0, 0);
-    const offsetMs = date.getTime() - dragOrigin.value.date.getTime();
-    const { minOffsetDays, maxOffsetDays, weekdayPosition } = dragOrigin.value;
-    const offsetDays = day.weekdayPosition - weekdayPosition;
-    if (offsetDays < minOffsetDays || offsetDays > maxOffsetDays) return;
+    if (!dragging.value || !dragOrigin) return;
+    const offset = {
+      weeks: day.weekPosition - dragOrigin.day.weekPosition,
+      weekdays: day.weekdayPosition - dragOrigin.day.weekdayPosition,
+      ms: getMsFromPosition(position) - dragOrigin.ms,
+    };
     forSelectedCells(cell => {
-      cell.updateDrag(offsetMs, offsetDays, days.value);
+      cell.updateDrag(offset);
     });
-    refreshDayCells();
+    refreshCells(false);
   }
 
   function stopDraggingCells() {
     if (!dragging.value) return;
     dragging.value = false;
-    dragOrigin.value = null;
+    dragOrigin = null;
     forSelectedCells(cell => {
       emit('did-move-event', cell);
       cell.stopDrag();
@@ -404,6 +417,49 @@ export function useCalendarGrid(
   }
 
   // #endregion Dragging
+
+  const getPositionFromMouseEvent = (
+    gridEl: HTMLElement,
+    event: MouseEvent,
+  ): Point => {
+    const rect = gridEl.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    return { x, y };
+  };
+
+  const getPositionFromTouchEvent = (
+    gridEl: HTMLElement,
+    event: TouchEvent,
+  ): Point => {
+    const rect = gridEl.getBoundingClientRect();
+    const touch = event.targetTouches[0] || event.changedTouches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    return { x, y };
+  };
+
+  const getPositionFromUIEvent = (
+    gridEl: HTMLElement,
+    event: UIEvent,
+  ): Point => {
+    if (event.type.startsWith('touch'))
+      return getPositionFromTouchEvent(gridEl, event as TouchEvent);
+    return getPositionFromMouseEvent(gridEl, event as MouseEvent);
+  };
+
+  const getDayFromPosition = (el: HTMLElement, { x, y }: any) => {
+    if (!el) return days.value[0];
+    const rect = el.getBoundingClientRect();
+    const dayWidth = rect.width / dayColumns.value;
+    const dayHeight = rect.height / dayRows.value;
+    const xNorm = Math.max(Math.min(x, rect.width), 0);
+    const yNorm = Math.max(Math.min(y, rect.height), 0);
+    const xIdx = Math.min(Math.floor(xNorm / dayWidth), dayColumns.value - 1);
+    const yIdx = Math.min(Math.floor(yNorm / dayHeight), dayRows.value - 1);
+    const idx = xIdx + yIdx * dayColumns.value;
+    return days.value[idx];
+  };
 
   // #region State management
 
@@ -422,11 +478,6 @@ export function useCalendarGrid(
           day,
         };
         state.value = 'CREATE_MONITOR';
-        hideCellPopover();
-        // createTimer = setTimeout(() => {
-        //   if (state.value !== 'CREATE_MONITOR') return;
-        //   handleCreateMonitorEvent('GRID_CURSOR_UP', day);
-        // }, createTimerDurationMs);
         break;
       }
       case 'EVENT_CURSOR_DOWN': {
@@ -472,7 +523,6 @@ export function useCalendarGrid(
   }
 
   function handleCreateMonitorEvent(event: GridStateEvent, day: CalendarDay) {
-    clearTimeout(createTimer);
     if (!createOrigin.value) return;
 
     switch (event) {
@@ -498,7 +548,7 @@ export function useCalendarGrid(
       case 'EVENT_CURSOR_MOVE_SHIFT':
       case 'GRID_CURSOR_MOVE':
       case 'GRID_CURSOR_MOVE_SHIFT': {
-        if (isTouch.value) {
+        if (isTouch.value || isMonthly.value) {
           state.value = 'NORMAL';
           return;
         }
@@ -514,22 +564,22 @@ export function useCalendarGrid(
   }
 
   function handleResizeMonitorEvent(event: GridStateEvent, position: number) {
-    if (!resizeOrigin.value) return;
+    if (!resizeOrigin) return;
     switch (event) {
       case 'EVENT_CURSOR_MOVE':
       case 'EVENT_CURSOR_MOVE_SHIFT':
       case 'GRID_CURSOR_MOVE':
       case 'GRID_CURSOR_MOVE_SHIFT': {
         updateResizingCells(position);
-        if (!resizeOrigin.value.isNew) {
-          updateCellPopover(resizeOrigin.value.cell);
+        if (!resizeOrigin.isNew) {
+          updateCellPopover(resizeOrigin.cell);
         }
         break;
       }
       case 'GRID_CURSOR_UP': {
-        if (position === resizeOrigin.value.position) {
+        if (position === resizeOrigin.position) {
           deselectAllCells();
-          resizeOrigin.value.cell.selected = true;
+          resizeOrigin.cell.selected = true;
         }
         stopResizingCells();
         state.value = 'NORMAL';
@@ -548,16 +598,16 @@ export function useCalendarGrid(
     day: CalendarDay,
     position: number,
   ) {
-    if (!dragOrigin.value) return;
+    if (!dragOrigin) return;
     switch (event) {
       case 'GRID_CURSOR_MOVE':
       case 'GRID_CURSOR_MOVE_SHIFT': {
         updateDraggingCells(position, day);
-        updateCellPopover(dragOrigin.value.cell);
+        updateCellPopover(dragOrigin.cell);
         break;
       }
       case 'GRID_CURSOR_UP': {
-        const origin = dragOrigin.value;
+        const origin = dragOrigin;
         stopDraggingCells();
         if (position === origin.position) {
           deselectAllCells();
@@ -601,43 +651,11 @@ export function useCalendarGrid(
     }
   }
 
-  const getPositionFromMouseEvent = (event: MouseEvent): Point => {
-    if (!gridRef.value) return { x: NaN, y: NaN };
-
-    const rect = gridRef.value.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    return { x, y };
-  };
-
-  const getPositionFromTouchEvent = (event: TouchEvent): Point => {
-    if (!gridRef.value) return { x: NaN, y: NaN };
-
-    const rect = gridRef.value.getBoundingClientRect();
-    const touch = event.targetTouches[0] || event.changedTouches[0];
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-    return { x, y };
-  };
-
-  const getPositionFromUIEvent = (event: UIEvent): Point => {
-    if (event.type.startsWith('touch'))
-      return getPositionFromTouchEvent(event as TouchEvent);
-    return getPositionFromMouseEvent(event as MouseEvent);
-  };
-
-  const getDayFromPosition = ({ x, y }: any) => {
-    const el = gridRef.value;
-    if (!el) return days.value[0];
-    const rect = el.getBoundingClientRect();
-    const dayWidth = rect.width / dayColumns.value;
-    const dayHeight = rect.height / dayRows.value;
-    const xNorm = Math.max(x, 0);
-    const yNorm = Math.max(y, 0);
-    const idx =
-      Math.floor(yNorm / dayHeight) * dayColumns.value +
-      Math.floor(xNorm / dayWidth);
-    return days.value[idx];
+  const setActiveGrid = (event: MouseEvent | TouchEvent) => {
+    activeGridRef =
+      [dailyGridRef, weeklyGridRef].find(
+        ref => ref.value && ref.value.contains(event.currentTarget as Node),
+      ) || ref(null);
   };
 
   const handleEvent = (
@@ -645,6 +663,7 @@ export function useCalendarGrid(
     event: MouseEvent | TouchEvent | KeyboardEvent,
     cell: Cell | undefined = undefined,
   ) => {
+    if (!activeGridRef.value) return;
     if (event.type.startsWith('touch')) {
       isTouch.value = true;
     } else if (isTouch.value) {
@@ -653,8 +672,8 @@ export function useCalendarGrid(
     const eventName = (event.shiftKey
       ? `${stateEvent}_SHIFT`
       : stateEvent) as GridStateEvent;
-    const position = getPositionFromUIEvent(event);
-    const day = getDayFromPosition(position);
+    const position = getPositionFromUIEvent(activeGridRef.value, event);
+    const day = getDayFromPosition(activeGridRef.value, position);
     updateState(eventName, day, position.y, cell);
     if (stateEvent === 'GRID_CURSOR_DOWN') {
       onDayFocusin(day);
@@ -662,36 +681,39 @@ export function useCalendarGrid(
   };
 
   const startMonitoringGridMove = () => {
-    const offMove = on(document.body, 'mousemove', event => {
+    const offMove = on(window, 'mousemove', event => {
       handleEvent('GRID_CURSOR_MOVE', event as MouseEvent);
     });
-    const offUp = on(document.body, 'mouseup', event => {
+    const offUp = on(window, 'mouseup', event => {
       handleEvent('GRID_CURSOR_UP', event as MouseEvent);
       offMove();
       offUp();
     });
   };
 
-  watch(
-    () => state.value,
-    val => logger.log('state change', val),
-  );
-
   // #endregion State management
 
   const context = {
     ...calendar,
-    gridRef,
+    dailyGridRef,
+    weeklyGridRef,
     cellPopoverRef,
+    dayColumns,
+    dayRows,
+    snapMinutes,
+    snapMs,
+    pixelsPerHour,
     isTouch,
     cells,
+    selectedCells,
     weekCells,
+    weekCellsStyle,
     dayCells,
-    allDayCells,
+    detailCell,
     resizing,
     dragging,
-    labelCells,
     gridStyle,
+    fill,
     page,
     days,
     weeks,
@@ -700,29 +722,32 @@ export function useCalendarGrid(
     // Event handlers
     onDayNumberClick(day: CalendarDay) {
       emit('day-header-click', day);
-      if (isDaily.value) return;
-      move(day, { view: isMonthly.value ? 'weekly' : 'daily' });
+      move(day, { view: 'daily' });
     },
     onGridEscapeKeydown() {
-      console.log('fired');
       updateState('ESCAPE', days.value[0], 0);
     },
     // Mouse event handlers
     onGridMouseDown(event: MouseEvent) {
+      setActiveGrid(event);
       handleEvent('GRID_CURSOR_DOWN', event);
       startMonitoringGridMove();
     },
     onEventMouseDown(event: MouseEvent, cell: Cell) {
+      setActiveGrid(event);
       handleEvent('EVENT_CURSOR_DOWN', event, cell);
     },
     onEventResizeStartMouseDown(event: MouseEvent, cell: Cell) {
+      setActiveGrid(event);
       handleEvent('EVENT_RESIZE_START_CURSOR_DOWN', event, cell);
     },
     onEventResizeEndMouseDown(event: MouseEvent, cell: Cell) {
+      setActiveGrid(event);
       handleEvent('EVENT_RESIZE_END_CURSOR_DOWN', event, cell);
     },
     // Touch event handlers
     onGridTouchStart(event: TouchEvent) {
+      setActiveGrid(event);
       handleEvent('GRID_CURSOR_DOWN', event);
     },
     onGridTouchMove(event: TouchEvent) {
@@ -732,6 +757,7 @@ export function useCalendarGrid(
       handleEvent('GRID_CURSOR_UP', event);
     },
     onEventTouchStart(event: TouchEvent, cell: Cell) {
+      setActiveGrid(event);
       handleEvent('EVENT_CURSOR_DOWN', event, cell);
     },
     onEventTouchMove(event: TouchEvent, cell: Cell) {
@@ -741,9 +767,11 @@ export function useCalendarGrid(
       handleEvent('GRID_CURSOR_UP', event, cell);
     },
     onEventResizeStartTouchStart(event: TouchEvent, cell: Cell) {
+      setActiveGrid(event);
       handleEvent('EVENT_RESIZE_START_CURSOR_DOWN', event, cell);
     },
     onEventResizeEndTouchStart(event: TouchEvent, cell: Cell) {
+      setActiveGrid(event);
       handleEvent('EVENT_RESIZE_END_CURSOR_DOWN', event, cell);
     },
   };
@@ -753,13 +781,18 @@ export function useCalendarGrid(
 }
 
 export interface CalendarGridContext extends CalendarContext {
+  snapMinutes: Ref<number>;
+  dayRows: ComputedRef<number>;
+  dayColumns: ComputedRef<number>;
+  snapMs: ComputedRef<number>;
+  pixelsPerHour: Ref<number>;
   removeCell: (cell: Cell) => void;
   onDayNumberClick: (day: CalendarDay) => void;
-  onGridMouseDown: (event: MouseEvent) => void;
+  onGridMouseDown: (event: MouseEvent, source: string) => void;
   onEventMouseDown: (event: MouseEvent, cell: Cell) => void;
   onEventResizeStartMouseDown: (event: MouseEvent, cell: Cell) => void;
   onEventResizeEndMouseDown: (event: MouseEvent, cell: Cell) => void;
-  onGridTouchStart: (event: TouchEvent) => void;
+  onGridTouchStart: (event: TouchEvent, source: string) => void;
   onGridTouchMove: (event: TouchEvent) => void;
   onGridTouchEnd: (event: TouchEvent) => void;
   onEventTouchStart: (event: TouchEvent, cell: Cell) => void;

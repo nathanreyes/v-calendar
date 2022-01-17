@@ -1,4 +1,6 @@
-.vc-container {
+@import './transitions.css';
+
+.vc-theme {
   --white: #ffffff;
   --black: #000000;
 
@@ -102,127 +104,25 @@
   --pink-800: #97266d;
   --pink-900: #702459;
 
-  &.vc-red {
-    --accent-100: var(--red-100);
-    --accent-200: var(--red-200);
-    --accent-300: var(--red-300);
-    --accent-400: var(--red-400);
-    --accent-500: var(--red-500);
-    --accent-600: var(--red-600);
-    --accent-700: var(--red-700);
-    --accent-800: var(--red-800);
-    --accent-900: var(--red-900);
-  }
-
-  &.vc-orange {
-    --accent-100: var(--orange-100);
-    --accent-200: var(--orange-200);
-    --accent-300: var(--orange-300);
-    --accent-400: var(--orange-400);
-    --accent-500: var(--orange-500);
-    --accent-600: var(--orange-600);
-    --accent-700: var(--orange-700);
-    --accent-800: var(--orange-800);
-    --accent-900: var(--orange-900);
-  }
-
-  &.vc-yellow {
-    --accent-100: var(--yellow-100);
-    --accent-200: var(--yellow-200);
-    --accent-300: var(--yellow-300);
-    --accent-400: var(--yellow-400);
-    --accent-500: var(--yellow-500);
-    --accent-600: var(--yellow-600);
-    --accent-700: var(--yellow-700);
-    --accent-800: var(--yellow-800);
-    --accent-900: var(--yellow-900);
-  }
-
-  &.vc-green {
-    --accent-100: var(--green-100);
-    --accent-200: var(--green-200);
-    --accent-300: var(--green-300);
-    --accent-400: var(--green-400);
-    --accent-500: var(--green-500);
-    --accent-600: var(--green-600);
-    --accent-700: var(--green-700);
-    --accent-800: var(--green-800);
-    --accent-900: var(--green-900);
-  }
-
-  &.vc-teal {
-    --accent-100: var(--teal-100);
-    --accent-200: var(--teal-200);
-    --accent-300: var(--teal-300);
-    --accent-400: var(--teal-400);
-    --accent-500: var(--teal-500);
-    --accent-600: var(--teal-600);
-    --accent-700: var(--teal-700);
-    --accent-800: var(--teal-800);
-    --accent-900: var(--teal-900);
-  }
-
-  &.vc-blue {
-    --accent-100: var(--blue-100);
-    --accent-200: var(--blue-200);
-    --accent-300: var(--blue-300);
-    --accent-400: var(--blue-400);
-    --accent-500: var(--blue-500);
-    --accent-600: var(--blue-600);
-    --accent-700: var(--blue-700);
-    --accent-800: var(--blue-800);
-    --accent-900: var(--blue-900);
-  }
-
-  &.vc-indigo {
-    --accent-100: var(--indigo-100);
-    --accent-200: var(--indigo-200);
-    --accent-300: var(--indigo-300);
-    --accent-400: var(--indigo-400);
-    --accent-500: var(--indigo-500);
-    --accent-600: var(--indigo-600);
-    --accent-700: var(--indigo-700);
-    --accent-800: var(--indigo-800);
-    --accent-900: var(--indigo-900);
-  }
-
-  &.vc-purple {
-    --accent-100: var(--purple-100);
-    --accent-200: var(--purple-200);
-    --accent-300: var(--purple-300);
-    --accent-400: var(--purple-400);
-    --accent-500: var(--purple-500);
-    --accent-600: var(--purple-600);
-    --accent-700: var(--purple-700);
-    --accent-800: var(--purple-800);
-    --accent-900: var(--purple-900);
-  }
-
-  &.vc-pink {
-    --accent-100: var(--pink-100);
-    --accent-200: var(--pink-200);
-    --accent-300: var(--pink-300);
-    --accent-400: var(--pink-400);
-    --accent-500: var(--pink-500);
-    --accent-600: var(--pink-600);
-    --accent-700: var(--pink-700);
-    --accent-800: var(--pink-800);
-    --accent-900: var(--pink-900);
-  }
-
   --font-normal: 400;
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
 
+  --text-2xs: 10px;
   --text-xs: 12px;
   --text-sm: 14px;
   --text-base: 16px;
   --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
 
+  --leading-none: 1;
+  --leading-tight: 1.25;
   --leading-snug: 1.375;
 
   --rounded: 0.25rem;
+  --rounded-md: 0.375rem;
   --rounded-lg: 0.5rem;
   --rounded-full: 9999px;
 
@@ -236,8 +136,118 @@
   --slide-timing: ease;
 
   --day-content-transition-time: 0.13s ease-in;
-  --weeknumber-offset: 34px;
+  --weeknumber-offset: 26px;
+}
 
+.vc-red {
+  --accent-100: var(--red-100);
+  --accent-200: var(--red-200);
+  --accent-300: var(--red-300);
+  --accent-400: var(--red-400);
+  --accent-500: var(--red-500);
+  --accent-600: var(--red-600);
+  --accent-700: var(--red-700);
+  --accent-800: var(--red-800);
+  --accent-900: var(--red-900);
+}
+
+.vc-orange {
+  --accent-100: var(--orange-100);
+  --accent-200: var(--orange-200);
+  --accent-300: var(--orange-300);
+  --accent-400: var(--orange-400);
+  --accent-500: var(--orange-500);
+  --accent-600: var(--orange-600);
+  --accent-700: var(--orange-700);
+  --accent-800: var(--orange-800);
+  --accent-900: var(--orange-900);
+}
+
+.vc-yellow {
+  --accent-100: var(--yellow-100);
+  --accent-200: var(--yellow-200);
+  --accent-300: var(--yellow-300);
+  --accent-400: var(--yellow-400);
+  --accent-500: var(--yellow-500);
+  --accent-600: var(--yellow-600);
+  --accent-700: var(--yellow-700);
+  --accent-800: var(--yellow-800);
+  --accent-900: var(--yellow-900);
+}
+
+.vc-green {
+  --accent-100: var(--green-100);
+  --accent-200: var(--green-200);
+  --accent-300: var(--green-300);
+  --accent-400: var(--green-400);
+  --accent-500: var(--green-500);
+  --accent-600: var(--green-600);
+  --accent-700: var(--green-700);
+  --accent-800: var(--green-800);
+  --accent-900: var(--green-900);
+}
+
+.vc-teal {
+  --accent-100: var(--teal-100);
+  --accent-200: var(--teal-200);
+  --accent-300: var(--teal-300);
+  --accent-400: var(--teal-400);
+  --accent-500: var(--teal-500);
+  --accent-600: var(--teal-600);
+  --accent-700: var(--teal-700);
+  --accent-800: var(--teal-800);
+  --accent-900: var(--teal-900);
+}
+
+.vc-blue {
+  --accent-100: var(--blue-100);
+  --accent-200: var(--blue-200);
+  --accent-300: var(--blue-300);
+  --accent-400: var(--blue-400);
+  --accent-500: var(--blue-500);
+  --accent-600: var(--blue-600);
+  --accent-700: var(--blue-700);
+  --accent-800: var(--blue-800);
+  --accent-900: var(--blue-900);
+}
+
+.vc-indigo {
+  --accent-100: var(--indigo-100);
+  --accent-200: var(--indigo-200);
+  --accent-300: var(--indigo-300);
+  --accent-400: var(--indigo-400);
+  --accent-500: var(--indigo-500);
+  --accent-600: var(--indigo-600);
+  --accent-700: var(--indigo-700);
+  --accent-800: var(--indigo-800);
+  --accent-900: var(--indigo-900);
+}
+
+.vc-purple {
+  --accent-100: var(--purple-100);
+  --accent-200: var(--purple-200);
+  --accent-300: var(--purple-300);
+  --accent-400: var(--purple-400);
+  --accent-500: var(--purple-500);
+  --accent-600: var(--purple-600);
+  --accent-700: var(--purple-700);
+  --accent-800: var(--purple-800);
+  --accent-900: var(--purple-900);
+}
+
+.vc-pink {
+  --accent-100: var(--pink-100);
+  --accent-200: var(--pink-200);
+  --accent-300: var(--pink-300);
+  --accent-400: var(--pink-400);
+  --accent-500: var(--pink-500);
+  --accent-600: var(--pink-600);
+  --accent-700: var(--pink-700);
+  --accent-800: var(--pink-800);
+  --accent-900: var(--pink-900);
+}
+
+.vc-container {
   position: relative;
   display: inline-flex;
   width: max-content;
@@ -247,9 +257,6 @@
     'Helvetica', 'Arial', sans-serif;
   color: var(--gray-900);
   background-color: var(--white);
-  border: 1px solid;
-  border-color: var(--gray-400);
-  border-radius: var(--rounded-lg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
@@ -263,6 +270,11 @@
   & button,
   & [role='button'] {
     cursor: pointer;
+  }
+  &.vc-is-bordered {
+    border: 1px solid;
+    border-color: var(--gray-400);
+    border-radius: var(--rounded-lg);
   }
   &.vc-is-expanded {
     min-width: 100%;
