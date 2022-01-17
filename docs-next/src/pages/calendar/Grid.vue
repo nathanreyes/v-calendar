@@ -8,6 +8,7 @@
       @did-create-event="onDidCreateEvent"
       @did-resize-event="onDidResizeEvent"
       @did-move-event="onDidMoveEvent"
+      @remove-event="onRemoveEvent"
     />
   </div>
 </template>
@@ -35,8 +36,7 @@ export default defineComponent({
       view,
       attributes,
       onWillCreateEvent(cell) {
-        cell.key = attributes.value.length + 1;
-        cell.label = `Event ${cell.key}`;
+        cell.label = `Event ${attributes.value.length + 1}`;
         cell.color = colors[attributes.value.length % colors.length];
       },
       onDidCreateEvent(cell) {
@@ -46,6 +46,9 @@ export default defineComponent({
           event: {
             label: cell.label,
             color: cell.color,
+            popover: {
+              placement: 'right',
+            },
           },
         });
       },
@@ -59,6 +62,12 @@ export default defineComponent({
         const attr = attributes.value.find(a => a.key === cell.key);
         if (attr) {
           attr.dates = cell.dateInfo;
+        }
+      },
+      onRemoveEvent(cell) {
+        const idx = attributes.value.findIndex(a => a.key === cell.key);
+        if (idx >= 0) {
+          attributes.value.splice(idx, 1);
         }
       },
     };
