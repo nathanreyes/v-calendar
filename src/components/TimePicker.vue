@@ -75,6 +75,7 @@ export default {
     minuteIncrement: { type: Number, default: 1 },
     showBorder: Boolean,
     isDisabled: Boolean,
+    validHourRange: Object
   },
   data() {
     return {
@@ -132,7 +133,7 @@ export default {
         { value: 22, label: '22' },
         { value: 23, label: '23' },
       ];
-
+      if(this.validHourRange) return options24.filter(option => validHourRange.min <= option && validHourRange.max >= option)
       if (this.is24hr) return options24;
       return options12;
     },
