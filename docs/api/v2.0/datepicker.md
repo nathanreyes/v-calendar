@@ -50,6 +50,34 @@ sidebarDepth: 2
 
 **Default:** 1
 
+### `validHours`
+
+**Type:** Object, Array, Function
+
+**Description:** Set a range of valid hours, list of valid hours or a function that returns if an hour is valid.
+
+#### Object
+
+An object should configure a `min` and/or `max` prop. For example,
+`{min: 7 max: 22}`.
+
+#### Array
+
+An array should configure any acceptable hours. For example: `[0, 3, 4, 5, 10, 15, 16, 17]`.
+
+#### Function
+
+A function should accept an hour and date parts arguments and return true if the hour is valid.
+
+```js
+hourIsValid(hour: number, dateParts: Object) {
+  // Limit hours from 8 to 12 AM only on weekends
+  return ![1, 7].includes(weekday) || (hour >= 8 && hour <= 12);
+}
+```
+
+**Default:** `undefined`
+
 ### `is-required`
 
 **Type:** Boolean
@@ -167,15 +195,6 @@ Setting `value = null` still allowed through code.
 **Description:** Visibility mode for the input/slot popover (`hover-focus`, `hover`, `focus`, `visible`, `hidden`)
 
 **Default:** `hover-focus`
-### `validHourRange`
-
-**Type:** Object
-
-**Description:** Set a range of valid hours. This object accepts a min and a max prop. For example
-`{min: 7 max: 22}`. *This only works if `this.is24hr` is set to `true`*.
-
-**Default:** `{}`
-
 
 ## Methods
 
