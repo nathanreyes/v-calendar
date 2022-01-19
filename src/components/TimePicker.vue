@@ -33,7 +33,7 @@
       </div>
       <div class="vc-time">
         <time-select v-model.number="hours" :options="hourOptions" />
-        <span style="margin: 0 4px;">:</span>
+        <span style="margin: 0 4px">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
         <div
           v-if="!is24hr"
@@ -41,14 +41,14 @@
           :class="{ 'vc-disabled': !(hours >= 0) }"
         >
           <button
-            :class="{ active: isAM }"
+            :class="{ active: isAM, 'vc-disabled': amDisabled }"
             @click.prevent="isAM = true"
             type="button"
           >
             AM
           </button>
           <button
-            :class="{ active: !isAM }"
+            :class="{ active: !isAM, 'vc-disabled': pmDisabled }"
             @click.prevent="isAM = false"
             type="button"
           >
@@ -62,7 +62,63 @@
 
 <script>
 import TimeSelect from './TimeSelect';
-import { pad } from '../utils/helpers';
+import { arrayHasItems, pad } from '../utils/helpers';
+import { isArray, isObject } from '../utils/_';
+
+const _24HourOptions = [
+  { value: 0, label: '00' },
+  { value: 1, label: '01' },
+  { value: 2, label: '02' },
+  { value: 3, label: '03' },
+  { value: 4, label: '04' },
+  { value: 5, label: '05' },
+  { value: 6, label: '06' },
+  { value: 7, label: '07' },
+  { value: 8, label: '08' },
+  { value: 9, label: '09' },
+  { value: 10, label: '10' },
+  { value: 11, label: '11' },
+  { value: 12, label: '12' },
+  { value: 13, label: '13' },
+  { value: 14, label: '14' },
+  { value: 15, label: '15' },
+  { value: 16, label: '16' },
+  { value: 17, label: '17' },
+  { value: 18, label: '18' },
+  { value: 19, label: '19' },
+  { value: 20, label: '20' },
+  { value: 21, label: '21' },
+  { value: 22, label: '22' },
+  { value: 23, label: '23' },
+];
+const _amOptions = [
+  { value: 0, label: '12' },
+  { value: 1, label: '1' },
+  { value: 2, label: '2' },
+  { value: 3, label: '3' },
+  { value: 4, label: '4' },
+  { value: 5, label: '5' },
+  { value: 6, label: '6' },
+  { value: 7, label: '7' },
+  { value: 8, label: '8' },
+  { value: 9, label: '9' },
+  { value: 10, label: '10' },
+  { value: 11, label: '11' },
+];
+const _pmOptions = [
+  { value: 12, label: '12' },
+  { value: 13, label: '1' },
+  { value: 14, label: '2' },
+  { value: 15, label: '3' },
+  { value: 16, label: '4' },
+  { value: 17, label: '5' },
+  { value: 18, label: '6' },
+  { value: 19, label: '7' },
+  { value: 20, label: '8' },
+  { value: 21, label: '9' },
+  { value: 22, label: '10' },
+  { value: 23, label: '11' },
+];
 
 export default {
   name: 'TimePicker',
@@ -75,7 +131,7 @@ export default {
     minuteIncrement: { type: Number, default: 1 },
     showBorder: Boolean,
     isDisabled: Boolean,
-    validHourRange: Object
+    validHours: [Object, Array, Function],
   },
   data() {
     return {
@@ -92,50 +148,19 @@ export default {
       }
       return date;
     },
+    fullHourOptions() {
+      return this.validateHourOptions(_24HourOptions);
+    },
+    amHourOptions() {
+      return this.validateHourOptions(_amOptions);
+    },
+    pmHourOptions() {
+      return this.validateHourOptions(_pmOptions);
+    },
     hourOptions() {
-      const options12 = [
-        { value: 0, label: '12' },
-        { value: 1, label: '1' },
-        { value: 2, label: '2' },
-        { value: 3, label: '3' },
-        { value: 4, label: '4' },
-        { value: 5, label: '5' },
-        { value: 6, label: '6' },
-        { value: 7, label: '7' },
-        { value: 8, label: '8' },
-        { value: 9, label: '9' },
-        { value: 10, label: '10' },
-        { value: 11, label: '11' },
-      ];
-      const options24 = [
-        { value: 0, label: '00' },
-        { value: 1, label: '01' },
-        { value: 2, label: '02' },
-        { value: 3, label: '03' },
-        { value: 4, label: '04' },
-        { value: 5, label: '05' },
-        { value: 6, label: '06' },
-        { value: 7, label: '07' },
-        { value: 8, label: '08' },
-        { value: 9, label: '09' },
-        { value: 10, label: '10' },
-        { value: 11, label: '11' },
-        { value: 12, label: '12' },
-        { value: 13, label: '13' },
-        { value: 14, label: '14' },
-        { value: 15, label: '15' },
-        { value: 16, label: '16' },
-        { value: 17, label: '17' },
-        { value: 18, label: '18' },
-        { value: 19, label: '19' },
-        { value: 20, label: '20' },
-        { value: 21, label: '21' },
-        { value: 22, label: '22' },
-        { value: 23, label: '23' },
-      ];
-      if(this.validHourRange) return options24.filter(option => validHourRange.min <= option && validHourRange.max >= option)
-      if (this.is24hr) return options24;
-      return options12;
+      if (this.is24hr) return this.fullHourOptions;
+      if (this.isAM) return this.amHourOptions;
+      return this.pmHourOptions;
     },
     minuteOptions() {
       const options = [];
@@ -159,6 +184,12 @@ export default {
         }
       }
       return options;
+    },
+    amDisabled() {
+      return !arrayHasItems(this.amHourOptions);
+    },
+    pmDisabled() {
+      return !arrayHasItems(this.pmHourOptions);
     },
   },
   watch: {
@@ -187,32 +218,50 @@ export default {
     },
     setup() {
       this.protected(() => {
-        let { hours } = this.value;
-        if (hours === 24) hours = 0;
-        let isAM = true;
-        if (!this.is24hr && hours >= 12) {
-          hours -= 12;
-          isAM = false;
-        }
-        this.hours = hours;
+        if (this.value.hours === 24) this.value.hours = 0;
+        this.hours = this.value.hours;
         this.minutes = this.value.minutes;
-        this.isAM = isAM;
+        this.isAM = this.value.hours < 12;
       });
     },
     updateValue() {
       this.protected(() => {
-        let hours = this.hours;
-        if (!this.is24hr && !this.isAM) {
-          hours += 12;
+        if (!this.is24hr) {
+          if (this.isAM && this.hours >= 12) {
+            this.hours -= 12;
+          } else if (!this.isAM && this.hours < 12) {
+            this.hours += 12;
+          }
         }
         this.$emit('input', {
           ...this.value,
-          hours,
+          hours: this.hours,
           minutes: this.minutes,
           seconds: 0,
           milliseconds: 0,
         });
       });
+    },
+    validateHourOptions(options) {
+      const result = [];
+      options.forEach(opt => {
+        if (this.hourIsValid(opt.value)) {
+          result.push({ ...opt });
+        } else if (opt.value === this.hours) {
+          result.push({ ...opt, disabled: true });
+        }
+      });
+      return result;
+    },
+    hourIsValid(hour) {
+      if (!this.validHours) return true;
+      if (isArray(this.validHours)) return this.validHours.includes(hour);
+      if (isObject(this.validHours)) {
+        const min = this.validHours.min || 0;
+        const max = this.validHours.max || 24;
+        return min <= hour && max >= hour;
+      }
+      return this.validHours(hour, this.value);
     },
   },
 };
