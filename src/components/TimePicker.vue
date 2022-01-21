@@ -35,6 +35,25 @@
         <time-select v-model.number="hours" :options="hourOptions" />
         <span style="margin: 0 4px;">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
+        <span
+          v-if="useSeconds || useMilliseconds"
+          style="margin: 0 4px;"
+        >:</span>
+        <time-select
+          v-if="useSeconds || useMilliseconds"
+          v-model.number="seconds"
+          :options="secondOptions"
+        />
+        <span
+          v-if="useMilliseconds"
+          style="margin: 0 4px;"
+        >.</span>
+        <time-select
+          v-if="useMilliseconds"
+          v-model.number="milliseconds"
+          :options="millisecondOptions"
+          class="vc-select-wide"
+        />
         <div
           v-if="!is24hr"
           class="vc-am-pm"
@@ -73,6 +92,10 @@ export default {
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
     minuteIncrement: { type: Number, default: 1 },
+    secondIncrement: { type: Number, default: 1 },
+    millisecondIncrement: { type: Number, default: 1 },
+    useSeconds: { type: Boolean, default: false },
+    useMilliseconds: { type: Boolean, default: false },
     showBorder: Boolean,
     isDisabled: Boolean,
     validHourRange: Object
@@ -81,6 +104,8 @@ export default {
     return {
       hours: 0,
       minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
       isAM: true,
     };
   },
@@ -160,6 +185,52 @@ export default {
       }
       return options;
     },
+    secondOptions() {
+      const options = [];
+      let s = 0;
+      let added = false;
+      while (s <= 59) {
+        options.push({
+          value: s,
+          label: pad(s, 2),
+        });
+        added = added || s === this.seconds;
+        s += this.secondIncrement;
+        // Add disabled option if interval has skipped it
+        if (!added && s > this.seconds) {
+          added = true;
+          options.push({
+            value: this.seconds,
+            label: pad(this.seconds, 2),
+            disabled: true,
+          });
+        }
+      }
+      return options;
+    },
+    millisecondOptions() {
+      const options = [];
+      let s = 0;
+      let added = false;
+      while (s <= 999) {
+        options.push({
+          value: s,
+          label: pad(s, 3),
+        });
+        added = added || s === this.milliseconds;
+        s += this.millisecondIncrement;
+        // Add disabled option if interval has skipped it
+        if (!added && s > this.milliseconds) {
+          added = true;
+          options.push({
+            value: this.milliseconds,
+            label: pad(this.milliseconds, 3),
+            disabled: true,
+          });
+        }
+      }
+      return options;
+    },
   },
   watch: {
     value() {
@@ -169,6 +240,12 @@ export default {
       this.updateValue();
     },
     minutes() {
+      this.updateValue();
+    },
+    seconds() {
+      this.updateValue();
+    },
+    milliseconds() {
       this.updateValue();
     },
     isAM() {
@@ -196,6 +273,8 @@ export default {
         }
         this.hours = hours;
         this.minutes = this.value.minutes;
+        this.seconds = this.value.seconds;
+        this.milliseconds = this.value.milliseconds;
         this.isAM = isAM;
       });
     },
@@ -209,8 +288,8 @@ export default {
           ...this.value,
           hours,
           minutes: this.minutes,
-          seconds: 0,
-          milliseconds: 0,
+          seconds: this.seconds,
+          milliseconds: this.milliseconds,
         });
       });
     },

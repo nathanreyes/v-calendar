@@ -72,6 +72,12 @@ export default {
     }
   }
 }
+.vc-select-wide {
+  & select {
+    width: 64px;
+  }
+}
+
 .vc-select-arrow {
   display: flex;
   align-items: center;
