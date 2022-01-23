@@ -129,6 +129,31 @@ export default {
 };
 ```
 
+#### Valid Hours
+
+Use the `valid-hours` prop to provide an array of valid hours, an object with `min` and/or `max` hours, or a validation function. It works best for pickers in 24-hour mode, but also works with 12-hour mode. 
+
+<guide-datepicker-valid-hours :valid-hours="[0,3,4,5,8,16,20]" is24hr />
+
+```html
+<!-- Array of valid hours -->
+<v-date-picker v-model="date" :valid-hours="[0,3,4,5,8,16,20]" is24hr />
+```
+
+<guide-datepicker-valid-hours :valid-hours="{ min: 4, max: 17 }" is24hr />
+
+```html
+<!-- Object with min/max hours -->
+<v-date-picker v-model="date" :valid-hours="{ min: 4, max: 17 }" is24hr />
+```
+
+<guide-datepicker-valid-hours :valid-hours="(hour, { weekday }) => ![1, 7].includes(weekday) || (hour >= 8 && hour <= 12)" is24hr />
+
+```html
+<!-- 8-12AM only on weekends -->
+<v-date-picker v-model="date" :valid-hours="(hour, { weekday }) => ![1, 7].includes(weekday) || (hour >= 8 && hour <= 12)" />
+```
+
 #### Minute Increments
 
 Use the `minute-increment` prop to set custom intervals for the minute `select` options.
