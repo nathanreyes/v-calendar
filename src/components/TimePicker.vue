@@ -149,13 +149,13 @@ export default {
       return date;
     },
     fullHourOptions() {
-      return this.validateHourOptions(_24HourOptions);
+      return this.filterHourOptions(_24HourOptions);
     },
     amHourOptions() {
-      return this.validateHourOptions(_amOptions);
+      return this.filterHourOptions(_amOptions);
     },
     pmHourOptions() {
-      return this.validateHourOptions(_pmOptions);
+      return this.filterHourOptions(_pmOptions);
     },
     hourOptions() {
       if (this.is24hr) return this.fullHourOptions;
@@ -196,53 +196,80 @@ export default {
     value() {
       this.setup();
     },
-    hours() {
-      this.updateValue();
+    hours(val) {
+      this.updateValue(val, this.minutes);
     },
-    minutes() {
-      this.updateValue();
+    minutes(val) {
+      this.updateValue(this.hours, val);
     },
-    isAM() {
+    isAM(val) {
+      let hours = this.hours;
+      if (!this.is24hr) {
+        if (val && hours >= 12) {
+          hours -= 12;
+        } else if (!val && hours < 12) {
+          hours += 12;
+        }
+      }
+      this.updateValue(hours, this.minutes);
+    },
+    validHours() {
       this.updateValue();
     },
   },
   created() {
-    this.setup();
+    this.setup().then(() => this.updateValue());
   },
   methods: {
-    protected(fn) {
-      if (this.busy) return;
-      this.busy = true;
-      fn();
-      this.$nextTick(() => (this.busy = false));
+    run(fn) {
+      if (!this.busy) {
+        this.busy = new Promise(res => {
+          fn();
+          this.$nextTick(() => {
+            this.busy = null;
+            res();
+          });
+        });
+      }
+      return this.busy;
     },
     setup() {
-      this.protected(() => {
+      return this.run(() => {
         if (this.value.hours === 24) this.value.hours = 0;
         this.hours = this.value.hours;
         this.minutes = this.value.minutes;
         this.isAM = this.value.hours < 12;
       });
     },
-    updateValue() {
-      this.protected(() => {
-        if (!this.is24hr) {
-          if (this.isAM && this.hours >= 12) {
-            this.hours -= 12;
-          } else if (!this.isAM && this.hours < 12) {
-            this.hours += 12;
-          }
+    nearestOptionValue(value, options) {
+      const result = options.reduce((prev, opt) => {
+        if (opt.disabled) return prev;
+        if (isNaN(prev)) return opt.value;
+        const diffPrev = Math.abs(prev - value);
+        const diffCurr = Math.abs(opt.value - value);
+        return diffCurr < diffPrev ? opt.value : prev;
+      }, NaN);
+      return isNaN(result) ? value : result;
+    },
+    updateValue(hours = this.hours, minutes = this.minutes) {
+      this.run(() => {
+        this.hours = this.nearestOptionValue(hours, this.hourOptions);
+        this.minutes = this.nearestOptionValue(minutes, this.minuteOptions);
+        if (
+          this.hours !== this.value.hours ||
+          this.minutes !== this.value.minutes
+        ) {
+          this.$emit('input', {
+            ...this.value,
+            hours: this.hours,
+            minutes: this.minutes,
+            seconds: 0,
+            milliseconds: 0,
+          });
         }
-        this.$emit('input', {
-          ...this.value,
-          hours: this.hours,
-          minutes: this.minutes,
-          seconds: 0,
-          milliseconds: 0,
-        });
       });
     },
-    validateHourOptions(options) {
+    filterHourOptions(options) {
       const result = [];
       options.forEach(opt => {
         if (this.hourIsValid(opt.value)) {
