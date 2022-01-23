@@ -177,7 +177,9 @@ export default {
 ```
 
 :::warning
-If the bound date does not match of the the minute options derived by the `minute-increment` amount, the accurate `minute` amount will be displayed, but this option will be disabled.
+Previous to `v2.4.0`, if the bound date does not match of the the minute options derived by the `minute-increment` amount, the accurate `minute` amount will be displayed, but this option will be disabled.
+
+For `v2.4.0` and after, times are rounded to the nearest available minute and hour.
 :::
 
 ### Time
