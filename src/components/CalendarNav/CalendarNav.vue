@@ -20,9 +20,8 @@
       <span
         role="button"
         class="vc-nav-title vc-grid-focus"
-        :class="{ 'is-disabled': !nextItemsEnabled }"
         :style="{ whiteSpace: 'nowrap' }"
-        :tabindex="nextItemsEnabled ? 0 : undefined"
+        tabindex="0"
         @click="toggleMode"
         @keydown="e => onSpaceOrEnter(e, toggleMode)"
       >
@@ -32,7 +31,8 @@
       <span
         role="button"
         class="vc-nav-arrow is-right"
-        tabindex="0"
+        :class="{ 'is-disabled': !nextItemsEnabled }"
+        :tabindex="nextItemsEnabled ? 0 : undefined"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
       >
