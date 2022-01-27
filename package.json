@@ -8,7 +8,7 @@
   "module": "lib/v-calendar.es.js",
   "exports": {
     ".": {
-      "import": "./lib/v-calendar.js",
+      "import": "./lib/v-calendar.es.js",
       "require": "./lib/v-calendar.umd.js"
     },
     "./lib/style.css": "./lib/style.css"
