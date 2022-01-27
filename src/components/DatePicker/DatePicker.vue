@@ -88,6 +88,7 @@ export default {
                 minuteIncrement: this.minuteIncrement,
                 showBorder: !this.isTime,
                 isDisabled: (this.isDateTime && !dp.isValid) || this.isDragging,
+                validHours: this.validHours,
                 'onUpdate:modelValue': p => this.onTimeInput(p, idx === 0),
               }),
             ),
@@ -182,6 +183,7 @@ export default {
     dragAttribute: Object,
     selectAttribute: Object,
     attributes: Array,
+    validHours: [Object, Array, Function],
   },
   data() {
     return {
