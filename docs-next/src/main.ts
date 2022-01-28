@@ -3,20 +3,12 @@ import App from './App.vue';
 import router from './router';
 import './assets/styles/tailwind.css';
 
+import { SetupCalendar, Calendar, DatePicker } from '../../lib/v-calendar.es';
+import '../../lib/style.css';
+
 const defaults = {
-  // componentPrefix: '',
-  titlePosition: 'left',
+  // titlePosition: 'right',
 };
-
-// // declare const window: any;
-// // window.__vcalendar__ = defaults;
-
-// Method 1
-// import VCalendar from '../../src/index';
-// createApp(App).use(VCalendar, defaults).use(router).mount('#app');
-
-// // Method 2
-import { SetupCalendar, Calendar, DatePicker } from '../../src/index';
 createApp(App)
   .use(SetupCalendar, defaults)
   .component('Calendar', Calendar)
