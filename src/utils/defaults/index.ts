@@ -75,8 +75,7 @@ export const getDefault = (path: string) => {
   return get(state, path);
 };
 
-export default state;
-
-export const setup = (userDefaults: Defaults) => {
-  return defaultsDeep(state, userDefaults);
+export const setupDefaults = (app: any, userDefaults: Defaults | undefined) => {
+  app.config.globalProperties.$VCalendar = state;
+  return Object.assign(state, defaultsDeep(userDefaults, state));
 };

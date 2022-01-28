@@ -275,7 +275,7 @@ export default {
     step: Number,
     titlePosition: {
       type: String,
-      default: getDefault('titlePosition'),
+      default: () => getDefault('titlePosition'),
     },
     isExpanded: Boolean,
     fromDate: Date,

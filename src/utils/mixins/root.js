@@ -8,11 +8,11 @@ export const rootMixin = {
   props: {
     color: {
       type: String,
-      default: getDefault('color'),
+      default: () => getDefault('color'),
     },
     isDark: {
       type: Boolean,
-      default: getDefault('isDark'),
+      default: () => getDefault('isDark'),
     },
     firstDayOfWeek: Number,
     masks: Object,

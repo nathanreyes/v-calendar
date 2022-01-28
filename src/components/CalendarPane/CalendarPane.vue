@@ -148,7 +148,7 @@ export default {
     titlePosition: String,
     navVisibility: {
       type: String,
-      default: getDefault('navVisibility'),
+      default: () => getDefault('navVisibility'),
     },
     showWeeknumbers: [Boolean, String],
     showIsoWeeknumbers: [Boolean, String],

@@ -1,12 +1,9 @@
-import { App } from 'vue';
-import { setup as setupDefaults, Defaults } from './defaults';
+import { Defaults, setupDefaults } from './defaults';
 import screensPlugin from './screens';
 
-export default (app: App, defaults: Defaults) => {
+export default (app: any, defaults: Defaults) => {
   // Setup defaults
-  defaults = setupDefaults(defaults);
+  const { screens } = setupDefaults(app, defaults);
   // Use screens plugin
-  app.use(screensPlugin, defaults.screens);
-
-  return defaults;
+  app.use(screensPlugin, screens);
 };

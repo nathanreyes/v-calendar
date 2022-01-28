@@ -173,11 +173,11 @@ export default {
     isRange: Boolean,
     updateOnInput: {
       type: Boolean,
-      default: getDefault('datePicker.updateOnInput'),
+      default: () => getDefault('datePicker.updateOnInput'),
     },
     inputDebounce: {
       type: Number,
-      default: getDefault('datePicker.inputDebounce'),
+      default: () => getDefault('datePicker.inputDebounce'),
     },
     popover: { type: Object, default: () => ({}) },
     dragAttribute: Object,
