@@ -2,6 +2,7 @@ import * as components from './components/index';
 import setup from './utils/setup';
 import { setVueInstance } from './utils/config/index';
 import { Defaults } from './utils/defaults';
+import './styles/main.css';
 
 const install = (app: any, defaults: Defaults = {}) => {
   setVueInstance(app);

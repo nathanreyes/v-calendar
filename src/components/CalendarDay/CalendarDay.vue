@@ -444,7 +444,3 @@ export default {
   },
 };
 </script>
-
-<style lang="css">
-@import './calendar-day.css';
-</style>

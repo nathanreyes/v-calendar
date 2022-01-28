@@ -38,7 +38,3 @@ export default {
   },
 };
 </script>
-
-<style lang="css">
-@import './custom-transition.css';
-</style>

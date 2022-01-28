@@ -268,7 +268,3 @@ export default {
   },
 };
 </script>
-
-<style lang="css">
-@import './calendar-nav.css';
-</style>
