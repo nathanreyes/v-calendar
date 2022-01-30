@@ -62,6 +62,7 @@ export default {
     text-indent: 0px;
     cursor: pointer;
     -moz-padding-start: 3px;
+    background-image: none;
     &:hover {
       color: var(--gray-600);
     }
