@@ -1,10 +1,17 @@
 import type { UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 const config: UserConfig = {
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    visualizer({
+      open: true,
+      title: 'V-Calendar Visualizer',
+    }),
+  ],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),

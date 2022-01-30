@@ -31,11 +31,13 @@ const PATCH_KEYS = {
   3: ['hours', 'minutes', 'seconds', 'milliseconds'],
 };
 
-const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+const token =
+  /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
 const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
-const word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+const word =
+  /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
 const literal = /\[([^]*?)\]/gm;
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
@@ -185,10 +187,7 @@ const parseFlags = {
     twoDigits,
     (d, v) => {
       const da = new Date();
-      const cent = +da
-        .getFullYear()
-        .toString()
-        .substr(0, 2);
+      const cent = +da.getFullYear().toString().substr(0, 2);
       d.year = `${v > 68 ? cent - 1 : cent}${v}`;
     },
   ],
@@ -726,12 +725,8 @@ export default class Locale {
   // Builds day components for a given page
   getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
-    const {
-      firstDayOfWeek,
-      firstWeekday,
-      isoWeeknumbers,
-      weeknumbers,
-    } = monthComps;
+    const { firstDayOfWeek, firstWeekday, isoWeeknumbers, weeknumbers } =
+      monthComps;
     const prevMonthDaysToShow =
       firstWeekday +
       (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -

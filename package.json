@@ -1,21 +1,12 @@
 {
   "name": "v-calendar",
-  "version": "3.0.0-alpha.6",
-  "private": false,
+  "version": "3.0.0-alpha.7",
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
   "author": "Nathan Reyes <nathanreyes@me.com>",
-  "main": "lib/v-calendar.umd.js",
-  "module": "lib/v-calendar.es.js",
-  "exports": {
-    ".": {
-      "import": "./lib/v-calendar.es.js",
-      "require": "./lib/v-calendar.umd.js"
-    },
-    "./lib/style.css": "./lib/style.css"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanreyes/v-calendar"
   },
-  "unpkg": "lib/vcalendar.min.js",
-  "types": "types/index.d.ts",
-  "license": "MIT",
   "homepage": "https://vcalendar.io",
   "keywords": [
     "vue",
@@ -27,28 +18,38 @@
     "datepicker",
     "date picker"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nathanreyes/v-calendar"
-  },
-  "scripts": {
-    "build:lib": "vite build",
-    "deploy:docs": "vuepress build docs && netlify deploy",
-    "test": "yarn jest",
-    "analyze": "vite build --config analyze.config.js"
-  },
+  "license": "MIT",
   "files": [
     "src",
-    "lib",
+    "dist",
     "types/*.d.ts"
   ],
+  "main": "dist/v-calendar.umd.js",
+  "module": "dist/v-calendar.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/v-calendar.es.js",
+      "require": "./dist/v-calendar.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "unpkg": "dist/vcalendar.min.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "analyze": "vite build --config analyze.config.ts",
+    "test": "yarn jest",
+    "lint": "eslint . --ext .js,.vue"
+  },
   "dependencies": {
     "@popperjs/core": "2.4.0",
     "@types/lodash": "^4.14.165",
     "date-fns": "^2.16.1",
     "date-fns-tz": "^1.0.12",
-    "lodash": "^4.17.20",
-    "vue": "3.1.5"
+    "lodash": "^4.17.20"
+  },
+  "peerDependencies": {
+    "vue": "^3.1.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
@@ -70,7 +71,6 @@
     "postcss": "^8.0.0",
     "postcss-import": "^14.0.2",
     "postcss-inline-svg": "^4.1.0",
-    "postcss-loader": "^4.0.4",
     "postcss-nested": "^4.2.1",
     "postcss-simple-vars": "5.0.2",
     "postcss-url": "^8.0.0",
@@ -81,6 +81,7 @@
     "ts-jest": "^27.1.3",
     "typescript": "3.9.3",
     "vite": "^2.4.3",
+    "vue": "^3.1.0",
     "vue3-jest": "^27.0.0-alpha.1"
   },
   "browserslist": [

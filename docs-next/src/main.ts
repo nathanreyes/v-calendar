@@ -3,7 +3,7 @@ import App from './App.vue';
 import router from './router';
 import './assets/styles/tailwind.css';
 
-import { SetupCalendar, Calendar, DatePicker } from '../../lib/v-calendar.es';
+import { SetupCalendar, Calendar, DatePicker } from '../../dist/v-calendar.es';
 import '../../lib/style.css';
 
 const defaults = {

@@ -1,4 +1,4 @@
-lib/
+dist/
 tests/*
 node_modules/
 src/shims-tsx.d.ts
