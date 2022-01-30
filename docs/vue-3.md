@@ -18,7 +18,9 @@ yarn add v-calendar@next
 
 ### Use Plugin
 
-:warning: **As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
+#### Import Styles
+
+**As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
 
 ```js
 import 'v-calendar/dist/style.css';
@@ -122,14 +124,14 @@ yarn
 git checkout next
 ```
 
-### Build Library
+### Build
 
 ```sh
 # ES, CommonJS, IIFE and CSS
 yarn build
 ```
 
-### Lint and fix files
+### Lint
 
 ```sh
 yarn lint
