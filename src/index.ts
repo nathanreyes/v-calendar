@@ -1,10 +1,11 @@
+import { App } from 'vue';
 import * as components from './components/index';
 import setup from './utils/setup';
 import { setVueInstance } from './utils/config/index';
 import { Defaults } from './utils/defaults';
 import './styles/main.css';
 
-const install = (app: any, defaults: Defaults = {}) => {
+const install = (app: App, defaults: Defaults = {}) => {
   setVueInstance(app);
   app.use(setup, defaults);
   const prefix = app.config.globalProperties.$VCalendar.componentPrefix;
