@@ -246,7 +246,6 @@ export default {
         this.hours !== this.modelValue.hours ||
         this.minutes !== this.modelValue.minutes
       ) {
-        console.log('emit');
         this.$emit('update:modelValue', {
           ...this.modelValue,
           hours: this.hours,
