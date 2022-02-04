@@ -32,20 +32,20 @@
         </span>
       </div>
       <div class="vc-time-select">
-        <time-select v-model.number="hours" :options="hourOptions" />
+        <time-select v-model.number="uiHours" :options="hourOptions" />
         <span style="margin: 0 4px">:</span>
-        <time-select v-model.number="minutes" :options="minuteOptions" />
+        <time-select v-model.number="uiMinutes" :options="minuteOptions" />
         <div v-if="!is24hr" class="vc-am-pm">
           <button
             :class="{ active: isAM, 'vc-disabled': amDisabled }"
-            @click.prevent="isAM = true"
+            @click.prevent="setAM(true)"
             type="button"
           >
             AM
           </button>
           <button
             :class="{ active: !isAM, 'vc-disabled': pmDisabled }"
-            @click.prevent="isAM = false"
+            @click.prevent="setAM(false)"
             type="button"
           >
             PM
@@ -131,9 +131,9 @@ export default {
   },
   data() {
     return {
-      hours: 0,
-      minutes: 0,
-      isAM: true,
+      hours: this.modelValue.hours === 24 ? 0 : this.modelValue.hours,
+      minutes: this.modelValue.minutes,
+      isAM: this.modelValue.hours < 12,
     };
   },
   computed: {
@@ -143,6 +143,24 @@ export default {
         date = new Date(date.getTime() - 1);
       }
       return date;
+    },
+    uiHours: {
+      get() {
+        return this.hours;
+      },
+      set(value) {
+        this.hours = value;
+        this.updateValue(value, this.minutes);
+      },
+    },
+    uiMinutes: {
+      get() {
+        return this.minutes;
+      },
+      set(value) {
+        this.minutes = value;
+        this.updateValue(this.hours, value);
+      },
     },
     fullHourOptions() {
       return this.filterHourOptions(_24HourOptions);
@@ -189,54 +207,29 @@ export default {
     },
   },
   watch: {
-    modelValue() {
-      this.setup();
-    },
-    hours(val) {
-      this.updateValue(val, this.minutes);
-    },
-    minutes(val) {
-      this.updateValue(this.hours, val);
-    },
-    isAM(val) {
-      let hours = this.hours;
-      if (!this.is24hr) {
-        if (val && hours >= 12) {
-          hours -= 12;
-        } else if (!val && hours < 12) {
-          hours += 12;
-        }
-      }
-      this.updateValue(hours, this.minutes);
+    modelValue(value) {
+      this.updateValue(value.hours, value.minutes);
     },
     validHours() {
       this.updateValue();
     },
   },
   created() {
-    this.setup().then(() => this.updateValue());
+    this.updateValue();
   },
   methods: {
-    run(fn) {
-      if (!this.busy) {
-        this.busy = new Promise(res => {
-          fn();
-          this.$nextTick(() => {
-            this.busy = null;
-            res();
-          });
-        });
+    setAM(am) {
+      this.isAM = am;
+      let hours = this.hours;
+      if (am && hours >= 12) {
+        hours -= 12;
+      } else if (!am && hours < 12) {
+        hours += 12;
       }
-      return this.busy;
-    },
-    setup() {
-      return this.run(() => {
-        this.hours = this.modelValue.hours === 24 ? 0 : this.modelValue.hours;
-        this.minutes = this.modelValue.minutes;
-        this.isAM = this.modelValue.hours < 12;
-      });
+      this.updateValue(hours, this.minutes);
     },
     nearestOptionValue(value, options) {
+      if (value == null) return value;
       const result = options.reduce((prev, opt) => {
         if (opt.disabled) return prev;
         if (isNaN(prev)) return opt.value;
@@ -247,22 +240,21 @@ export default {
       return isNaN(result) ? value : result;
     },
     updateValue(hours = this.hours, minutes = this.minutes) {
-      this.run(() => {
-        this.hours = this.nearestOptionValue(hours, this.hourOptions);
-        this.minutes = this.nearestOptionValue(minutes, this.minuteOptions);
-        if (
-          this.hours !== this.modelValue.hours ||
-          this.minutes !== this.modelValue.minutes
-        ) {
-          this.$emit('update:modelValue', {
-            ...this.modelValue,
-            hours: this.hours,
-            minutes: this.minutes,
-            seconds: 0,
-            milliseconds: 0,
-          });
-        }
-      });
+      this.hours = this.nearestOptionValue(hours, this.hourOptions);
+      this.minutes = this.nearestOptionValue(minutes, this.minuteOptions);
+      if (
+        this.hours !== this.modelValue.hours ||
+        this.minutes !== this.modelValue.minutes
+      ) {
+        console.log('emit');
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          hours: this.hours,
+          minutes: this.minutes,
+          seconds: 0,
+          milliseconds: 0,
+        });
+      }
     },
     filterHourOptions(options) {
       const result = [];
