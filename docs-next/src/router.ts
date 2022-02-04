@@ -6,6 +6,8 @@ import Home from '@/pages/Home.vue';
 import Blank from '@/pages/Blank.vue';
 import Weekly from '@/pages/calendar/Weekly.vue';
 import DatepickerDate from '@/pages/datepicker/Date.vue';
+import Time from '@/pages/datepicker/Time.vue';
+import TimeRange from '@/pages/datepicker/TimeRange.vue';
 
 const routes = [
   {
@@ -27,6 +29,14 @@ const routes = [
       {
         path: 'datepicker/date',
         component: DatepickerDate,
+      },
+      {
+        path: 'datepicker/time',
+        component: Time,
+      },
+      {
+        path: 'datepicker/time-range',
+        component: TimeRange,
       },
     ],
   },
