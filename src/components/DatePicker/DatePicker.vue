@@ -22,20 +22,13 @@ import {
 } from '../../utils/popovers';
 import { PATCH } from '../../utils/locale';
 
-const _dateConfig = {
+const _baseConfig = {
   type: 'auto',
   mask: 'iso', // String mask when `type === 'string'`
   timeAdjust: '', // 'HH:MM:SS', 'now'
 };
 
-const _rangeConfig = {
-  start: {
-    ..._dateConfig,
-  },
-  end: {
-    ..._dateConfig,
-  },
-};
+const _config = [_baseConfig, _baseConfig];
 
 const MODE = {
   DATE: 'date',
@@ -174,7 +167,7 @@ export default {
   props: {
     mode: { type: String, default: MODE.DATE },
     modelValue: { type: null, required: true },
-    modelConfig: { type: Object, default: () => ({ ..._dateConfig }) },
+    modelConfig: { type: Object, default: () => ({}) },
     is24hr: Boolean,
     minuteIncrement: Number,
     isRequired: Boolean,
@@ -219,7 +212,7 @@ export default {
       return !!this.dragValue;
     },
     modelConfig_() {
-      return this.normalizeConfig(this.modelConfig);
+      return this.normalizeConfig(this.modelConfig, _config);
     },
     inputMask() {
       const masks = this.$locale.masks;
@@ -562,31 +555,16 @@ export default {
         }
       });
     },
-    normalizeConfig(config) {
-      if (this.isRange) {
-        return [
-          {
-            ..._rangeConfig.start,
-            validHours: this.validHours,
-            minuteIncrement: this.minuteIncrement,
-            ...(config.start || config),
-          },
-          {
-            ..._rangeConfig.end,
-            validHours: this.validHours,
-            minuteIncrement: this.minuteIncrement,
-            ...(config.end || config),
-          },
-        ];
-      }
-      return [
-        {
-          ..._dateConfig,
-          validHours: this.validHours,
-          minuteIncrement: this.minuteIncrement,
-          ...config,
-        },
-      ];
+    normalizeConfig(config, baseConfig = this.modelConfig_) {
+      config = isArray(config)
+        ? config
+        : [config.start || config, config.end || config];
+      return baseConfig.map((b, i) => ({
+        validHours: this.validHours,
+        minuteIncrement: this.minuteIncrement,
+        ...b,
+        ...config[i],
+      }));
     },
     forceUpdateValue(
       value,
@@ -641,16 +619,11 @@ export default {
         this[valueKey] = normalizedValue;
         // Clear drag value if needed
         if (!isDragging) this.dragValue = null;
-      }
-
-      // 4. Denormalization/Notification
-      if (valueChanged) {
-        // 4A. Denormalization
+        // Denormalization
         const denormalizedValue = this.denormalizeValue(normalizedValue);
-        // 4B. Notification
+        // Notification
         const event = this.isDragging ? 'drag' : 'update:modelValue';
         this.watchValue = false;
-        console.log(event, denormalizedValue);
         this.$emit(event, denormalizedValue);
         this.$nextTick(() => (this.watchValue = true));
       }
@@ -663,7 +636,7 @@ export default {
     },
     hasValue(value) {
       if (this.isRange) {
-        return isObject(value) && value.start && value.end;
+        return isObject(value) && !!value.start && !!value.end;
       }
       return !!value;
     },
