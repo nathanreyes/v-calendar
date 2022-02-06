@@ -10,3 +10,14 @@
 ### Improvements
 
 * Add `valid-hours` prop for time picker
+
+## 3.0.0-alpha.8
+
+### Bug Fixes
+
+* Fix `valid-hours` and `minute-increment` props for input slot usage
+* Fix bug where date picker would reset `null` dates
+
+### Improvements
+
+* Allow separate `valid-hours` and `minute-increment` for range dates
