@@ -74,7 +74,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="css">
-@import '../Calendar/calendar.css';
-</style>

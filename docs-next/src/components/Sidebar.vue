@@ -16,6 +16,10 @@
       </div>
       <div class="flex flex-col space-y-2 mt-2">
         <RouterLink to="/datepicker/date" class="text-sm">Date</RouterLink>
+        <RouterLink to="/datepicker/time" class="text-sm">Time</RouterLink>
+        <RouterLink to="/datepicker/time-range" class="text-sm"
+          >Time Range</RouterLink
+        >
       </div>
     </div>
   </div>

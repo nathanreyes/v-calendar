@@ -34,7 +34,3 @@ export default {
   },
 };
 </script>
-
-<style lang="css">
-@import './time-select.css';
-</style>

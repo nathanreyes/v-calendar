@@ -358,7 +358,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="css">
-@import './calendar-day.css';
-</style>

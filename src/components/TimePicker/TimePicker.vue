@@ -32,19 +32,19 @@
         </span>
       </div>
       <div class="vc-time-select">
-        <time-select v-model.number="hours" :options="hourOptions" />
+        <time-select v-model.number="hours" :options="hourOptions_" />
         <span style="margin: 0 4px">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />
         <div v-if="!is24hr" class="vc-am-pm">
           <button
-            :class="{ active: isAM }"
+            :class="{ active: isAM, 'vc-disabled': amDisabled }"
             @click.prevent="isAM = true"
             type="button"
           >
             AM
           </button>
           <button
-            :class="{ active: !isAM }"
+            :class="{ active: !isAM, 'vc-disabled': pmDisabled }"
             @click.prevent="isAM = false"
             type="button"
           >
@@ -58,7 +58,36 @@
 
 <script>
 import TimeSelect from '../TimeSelect/TimeSelect.vue';
-import { pad } from '../../utils/helpers';
+import { arrayHasItems } from '../../utils/helpers';
+
+const _amOptions = [
+  { value: 0, label: '12' },
+  { value: 1, label: '1' },
+  { value: 2, label: '2' },
+  { value: 3, label: '3' },
+  { value: 4, label: '4' },
+  { value: 5, label: '5' },
+  { value: 6, label: '6' },
+  { value: 7, label: '7' },
+  { value: 8, label: '8' },
+  { value: 9, label: '9' },
+  { value: 10, label: '10' },
+  { value: 11, label: '11' },
+];
+const _pmOptions = [
+  { value: 12, label: '12' },
+  { value: 13, label: '1' },
+  { value: 14, label: '2' },
+  { value: 15, label: '3' },
+  { value: 16, label: '4' },
+  { value: 17, label: '5' },
+  { value: 18, label: '6' },
+  { value: 19, label: '7' },
+  { value: 20, label: '8' },
+  { value: 21, label: '9' },
+  { value: 22, label: '10' },
+  { value: 23, label: '11' },
+];
 
 export default {
   name: 'TimePicker',
@@ -69,15 +98,9 @@ export default {
     locale: { type: Object, required: true },
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
-    minuteIncrement: { type: Number, default: 1 },
     showBorder: Boolean,
-  },
-  data() {
-    return {
-      hours: 0,
-      minutes: 0,
-      isAM: true,
-    };
+    hourOptions: Array,
+    minuteOptions: Array,
   },
   computed: {
     date() {
@@ -87,132 +110,70 @@ export default {
       }
       return date;
     },
-    hourOptions() {
-      const options12 = [
-        { value: 0, label: '12' },
-        { value: 1, label: '1' },
-        { value: 2, label: '2' },
-        { value: 3, label: '3' },
-        { value: 4, label: '4' },
-        { value: 5, label: '5' },
-        { value: 6, label: '6' },
-        { value: 7, label: '7' },
-        { value: 8, label: '8' },
-        { value: 9, label: '9' },
-        { value: 10, label: '10' },
-        { value: 11, label: '11' },
-      ];
-      const options24 = [
-        { value: 0, label: '00' },
-        { value: 1, label: '01' },
-        { value: 2, label: '02' },
-        { value: 3, label: '03' },
-        { value: 4, label: '04' },
-        { value: 5, label: '05' },
-        { value: 6, label: '06' },
-        { value: 7, label: '07' },
-        { value: 8, label: '08' },
-        { value: 9, label: '09' },
-        { value: 10, label: '10' },
-        { value: 11, label: '11' },
-        { value: 12, label: '12' },
-        { value: 13, label: '13' },
-        { value: 14, label: '14' },
-        { value: 15, label: '15' },
-        { value: 16, label: '16' },
-        { value: 17, label: '17' },
-        { value: 18, label: '18' },
-        { value: 19, label: '19' },
-        { value: 20, label: '20' },
-        { value: 21, label: '21' },
-        { value: 22, label: '22' },
-        { value: 23, label: '23' },
-      ];
-
-      if (this.is24hr) return options24;
-      return options12;
+    hours: {
+      get() {
+        return this.modelValue.hours;
+      },
+      set(value) {
+        this.updateValue(value, this.minutes);
+      },
     },
-    minuteOptions() {
-      const options = [];
-      let m = 0;
-      let added = false;
-      while (m <= 59) {
-        options.push({
-          value: m,
-          label: pad(m, 2),
-        });
-        added = added || m === this.minutes;
-        m += this.minuteIncrement;
-        // Add disabled option if interval has skipped it
-        if (!added && m > this.minutes) {
-          added = true;
-          options.push({
-            value: this.minutes,
-            label: pad(this.minutes, 2),
-            disabled: true,
-          });
-        }
-      }
-      return options;
+    minutes: {
+      get() {
+        return this.modelValue.minutes;
+      },
+      set(value) {
+        this.updateValue(this.hours, value);
+      },
     },
-  },
-  watch: {
-    modelValue() {
-      this.setup();
-    },
-    hours() {
-      this.updateValue();
-    },
-    minutes() {
-      this.updateValue();
-    },
-    isAM() {
-      this.updateValue();
-    },
-  },
-  created() {
-    this.setup();
-  },
-  methods: {
-    protected(fn) {
-      if (this.busy) return;
-      this.busy = true;
-      fn();
-      this.$nextTick(() => (this.busy = false));
-    },
-    setup() {
-      this.protected(() => {
-        let { hours } = this.modelValue;
-        if (hours === 24) hours = 0;
-        let isAM = true;
-        if (!this.is24hr && hours >= 12) {
-          hours -= 12;
-          isAM = false;
-        }
-        this.hours = hours;
-        this.minutes = this.modelValue.minutes;
-        this.isAM = isAM;
-      });
-    },
-    updateValue() {
-      this.protected(() => {
+    isAM: {
+      get() {
+        return this.modelValue.hours < 12;
+      },
+      set(value) {
         let hours = this.hours;
-        if (!this.is24hr && !this.isAM) {
+        if (value && hours >= 12) {
+          hours -= 12;
+        } else if (!value && hours < 12) {
           hours += 12;
         }
+        this.updateValue(hours, this.minutes);
+      },
+    },
+    amHourOptions() {
+      return _amOptions.filter(opt =>
+        this.hourOptions.some(ho => ho.value === opt.value),
+      );
+    },
+    pmHourOptions() {
+      return _pmOptions.filter(opt =>
+        this.hourOptions.some(ho => ho.value === opt.value),
+      );
+    },
+    hourOptions_() {
+      if (this.is24hr) return this.hourOptions;
+      if (this.isAM) return this.amHourOptions;
+      return this.pmHourOptions;
+    },
+    amDisabled() {
+      return !arrayHasItems(this.amHourOptions);
+    },
+    pmDisabled() {
+      return !arrayHasItems(this.pmHourOptions);
+    },
+  },
+  methods: {
+    updateValue(hours, minutes = this.minutes) {
+      if (hours !== this.hours || minutes !== this.minutes) {
         this.$emit('update:modelValue', {
           ...this.modelValue,
           hours,
-          minutes: this.minutes,
+          minutes,
           seconds: 0,
           milliseconds: 0,
         });
-      });
+      }
     },
   },
 };
 </script>
-
-<style lang="css" scoped>
-@import './time-picker.css';
-</style>

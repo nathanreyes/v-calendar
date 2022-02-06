@@ -66,7 +66,3 @@ export default {
   },
 };
 </script>
-
-<style lang="css">
-@import './calendar-pane.css';
-</style>

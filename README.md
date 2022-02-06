@@ -9,23 +9,24 @@ yarn add v-calendar@next
 ```
 
 ### Use Plugin
+
+:warning: **As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
+
+```js
+import 'v-calendar/dist/style.css';
+```
+
 #### Method 1: Use Globally
 
 ```js
-import { createApp } from 'vue';
 import VCalendar from 'v-calendar';
 
-// Method 1
-import VCalendar from 'v-calendar';
-// Create the app
-createApp(App)
-  // Use the plugin with optional defaults
-  .use(VCalendar, {})
-  // Mount the app
-  .mount('#app');
+// Use plugin with defaults
+app.use(VCalendar, {})
 ```
 
 ```html
+<!-- Component.vue template -->
 <template>
   <v-calendar />
   <v-date-picker v-model="date" />
@@ -35,21 +36,18 @@ createApp(App)
 ### Method 2: Use Components Globally
 
 ```js
-import { createApp } from 'vue';
+// main.js
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 
-// Create the app
-createApp(App)
-  // Setup the plugin with optional defaults
-  .use(SetupCalendar, {})
-  // Use the components
-  .component('Calendar', Calendar)
-  .component('DatePicker', DatePicker)
-  // Mount the app
-  .mount('#app');
+// Setup plugin for defaults or `$screens` (optional)
+app.use(SetupCalendar, {})
+// Use the components
+app.component('Calendar', Calendar)
+app.component('DatePicker', DatePicker)
 ```
 
 ```html
+<!-- Component.vue template -->
 <template>
   <Calendar />
   <DatePicker v-model="date" />
@@ -58,7 +56,16 @@ createApp(App)
 
 ### Method 3: Use Components As Needed
 
+```js
+// main.js
+import { SetupCalendar } from 'v-calendar';
+
+// Setup plugin for defaults or `$screens` (optional)
+app.use(SetupCalendar, {})
+```
+
 ```html
+<!-- Component.vue template -->
 <template>
   <Calendar />
   <DatePicker v-model="date">
@@ -66,6 +73,7 @@ createApp(App)
 ```
 
 ```js
+// Component.vue script
 import { Calendar, DatePicker } from 'v-calendar';
 
 export default {
@@ -83,11 +91,11 @@ export default {
 
 ## Source setup
 
-Please follow below mentioned step to run this project:
+Please follow below mentioned steps to clone and build this project:
 
 ### Clone the repo
 
-```shell
+```sh
 git clone https://github.com/nathanreyes/v-calendar
 
 # Move to directory
@@ -96,43 +104,25 @@ cd v-calendar
 
 ### Install dependencies
 
-```shell
+```sh
 yarn
 ```
 
 ### Switch to `/next` branch
 
-```shell
+```sh
 git checkout next
-```
-
-### Compile and hot-reload for development
-
-```shell
-yarn serve
-```
-
-### Compile and minify for production
-
-```shell
-yarn build
 ```
 
 ### Build Library
 
-```shell
-# ES
-yarn build:es
-
-# ES, CommonJS and IIFE
-yarn build:lib
-
+```sh
 # ES, CommonJS, IIFE and CSS
-yarn:build:lib_css
+yarn build
 ```
 
 ### Lint and fix files
 
-```shell
+```sh
 yarn lint
 ```

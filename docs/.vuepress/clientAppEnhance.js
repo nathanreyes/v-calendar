@@ -1,8 +1,8 @@
 import VCalendar from '../../src/index.ts';
 import './theme/styles/tailwind.css';
 
-export default ({ Vue }) => {
-  Vue.use(VCalendar, {
+export default ({ app }) => {
+  app.use(VCalendar, {
     locales: {
       'pt-PT': {
         firstDayOfWeek: 1,

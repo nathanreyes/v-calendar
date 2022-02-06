@@ -11,5 +11,5 @@
   "dayPopover": "WWW, MMM D, YYYY",
   "data": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
   "model": "iso",
-  "iso": "YYYY-MM-DDTHH:mm:ssZZ"
+  "iso": "YYYY-MM-DDTHH:mm:ss.SSSZ"
 }

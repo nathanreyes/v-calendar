@@ -458,7 +458,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="css">
-@import './popover.css';
-</style>

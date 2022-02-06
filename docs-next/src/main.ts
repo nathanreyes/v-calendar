@@ -1,16 +1,22 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
-import {
-  SetupCalendar,
-  Calendar,
-  DatePicker,
-  popoverDirective,
-} from '../../src/index';
 import './assets/styles/tailwind.css';
 
+import { SetupCalendar, Calendar, DatePicker, popoverDirective } from '../../src/index.ts';
+import '../../src/styles/main.css';
+// import {
+//   SetupCalendar,
+//   Calendar,
+//   DatePicker,
+// } from '../../dist/v-calendar.es.js';
+// import '../../dist/style.css';
+
+const defaults = {
+  // titlePosition: 'right',
+};
 createApp(App)
-  .use(SetupCalendar, {})
+  .use(SetupCalendar, defaults)
   .component('Calendar', Calendar)
   .component('DatePicker', DatePicker)
   .directive('popover', popoverDirective)
