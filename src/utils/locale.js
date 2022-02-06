@@ -31,11 +31,13 @@ const PATCH_KEYS = {
   3: ['hours', 'minutes', 'seconds', 'milliseconds'],
 };
 
-const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+const token =
+  /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const twoDigits = /\d\d?/;
 const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
-const word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+const word =
+  /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
 const literal = /\[([^]*?)\]/gm;
 const noop = () => {};
 const monthUpdate = arrName => (d, v, l) => {
@@ -50,6 +52,32 @@ const maskMacros = ['L', 'iso'];
 
 const daysInWeek = 7;
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const hourOptions = [
+  { value: 0, label: '00' },
+  { value: 1, label: '01' },
+  { value: 2, label: '02' },
+  { value: 3, label: '03' },
+  { value: 4, label: '04' },
+  { value: 5, label: '05' },
+  { value: 6, label: '06' },
+  { value: 7, label: '07' },
+  { value: 8, label: '08' },
+  { value: 9, label: '09' },
+  { value: 10, label: '10' },
+  { value: 11, label: '11' },
+  { value: 12, label: '12' },
+  { value: 13, label: '13' },
+  { value: 14, label: '14' },
+  { value: 15, label: '15' },
+  { value: 16, label: '16' },
+  { value: 17, label: '17' },
+  { value: 18, label: '18' },
+  { value: 19, label: '19' },
+  { value: 20, label: '20' },
+  { value: 21, label: '21' },
+  { value: 22, label: '22' },
+  { value: 23, label: '23' },
+];
 const formatFlags = {
   D(d) {
     return d.day;
@@ -184,10 +212,7 @@ const parseFlags = {
     twoDigits,
     (d, v) => {
       const da = new Date();
-      const cent = +da
-        .getFullYear()
-        .toString()
-        .substr(0, 2);
+      const cent = +da.getFullYear().toString().substr(0, 2);
       d.year = `${v > 68 ? cent - 1 : cent}${v}`;
     },
   ],
@@ -480,9 +505,51 @@ export default class Locale {
     }
   }
 
-  adjustTimeForDate(date, { timeAdjust }) {
+  hourIsValid(hour, validHours, dateParts) {
+    if (!validHours) return true;
+    if (isArray(validHours)) return validHours.includes(hour);
+    if (isObject(validHours)) {
+      const min = validHours.min || 0;
+      const max = validHours.max || 24;
+      return min <= hour && max >= hour;
+    }
+    return validHours(hour, dateParts);
+  }
+
+  getHourOptions(validHours, dateParts) {
+    return hourOptions.filter(opt =>
+      this.hourIsValid(opt.value, validHours, dateParts),
+    );
+  }
+
+  getMinuteOptions(minuteIncrement) {
+    const options = [];
+    minuteIncrement = minuteIncrement > 0 ? minuteIncrement : 1;
+    for (let i = 0; i <= 59; i += minuteIncrement) {
+      options.push({
+        value: i,
+        label: pad(i, 2),
+      });
+    }
+    return options;
+  }
+
+  nearestOptionValue(value, options) {
+    if (value == null) return value;
+    const result = options.reduce((prev, opt) => {
+      if (opt.disabled) return prev;
+      if (isNaN(prev)) return opt.value;
+      const diffPrev = Math.abs(prev - value);
+      const diffCurr = Math.abs(opt.value - value);
+      return diffCurr < diffPrev ? opt.value : prev;
+    }, NaN);
+    return isNaN(result) ? value : result;
+  }
+
+  adjustTimeForDate(date, { timeAdjust, validHours, minuteIncrement }) {
+    if (!timeAdjust && !validHours && !minuteIncrement) return date;
+    const dateParts = this.getDateParts(date);
     if (timeAdjust) {
-      const dateParts = this.getDateParts(date);
       if (timeAdjust === 'now') {
         const timeParts = this.getDateParts(new Date());
         dateParts.hours = timeParts.hours;
@@ -496,8 +563,19 @@ export default class Locale {
         dateParts.seconds = d.getUTCSeconds();
         dateParts.milliseconds = d.getUTCMilliseconds();
       }
-      date = this.getDateFromParts(dateParts);
     }
+    if (validHours) {
+      const hourOptions = this.getHourOptions(validHours, dateParts);
+      dateParts.hours = this.nearestOptionValue(dateParts.hours, hourOptions);
+    }
+    if (minuteIncrement) {
+      const minuteOptions = this.getMinuteOptions(minuteIncrement);
+      dateParts.minutes = this.nearestOptionValue(
+        dateParts.minutes,
+        minuteOptions,
+      );
+    }
+    date = this.getDateFromParts(dateParts);
     return date;
   }
 
@@ -725,12 +803,8 @@ export default class Locale {
   // Builds day components for a given page
   getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
-    const {
-      firstDayOfWeek,
-      firstWeekday,
-      isoWeeknumbers,
-      weeknumbers,
-    } = monthComps;
+    const { firstDayOfWeek, firstWeekday, isoWeeknumbers, weeknumbers } =
+      monthComps;
     const prevMonthDaysToShow =
       firstWeekday +
       (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -
