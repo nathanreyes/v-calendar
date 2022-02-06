@@ -16,8 +16,9 @@
             v-for="issue in issues"
             :key="issue.componentName"
             :value="issue"
-            >{{ `${issue.componentName}: ${issue.componentTitle}` }}</option
           >
+            {{ `${issue.componentName}: ${issue.componentTitle}` }}
+          </option>
         </select>
         <div
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
@@ -73,7 +74,8 @@ const issues = requireComponent
       componentName,
       componentTitle: component.default.githubTitle,
     };
-  });
+  })
+  .sort((a, b) => parseInt(a.componentName) - parseInt(b.componentName));
 
 export default {
   data() {
