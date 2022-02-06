@@ -356,7 +356,7 @@ export default {
     this.value_ = this.normalizeValue(
       this.modelValue,
       this.modelConfig_,
-      PATCH.DATE_TIME,
+      DatePatch.DateTime,
       RANGE_PRIORITY.BOTH,
     );
     this.forceUpdateValue(this.modelValue, {
@@ -667,19 +667,11 @@ export default {
       if (!this.hasValue(value)) return null;
       if (this.isRange) {
         return {
-          start: this.$locale.adjustTimeForDate(
-            value.start,
-            config[0],
-            this.timezone,
-          ),
-          end: this.$locale.adjustTimeForDate(
-            value.end,
-            config[1],
-            this.timezone,
-          ),
+          start: adjustTimeForDate(value.start, config[0], this.timezone),
+          end: adjustTimeForDate(value.end, config[1], this.timezone),
         };
       }
-      return this.$locale.adjustTimeForDate(value, config[0], this.timezone);
+      return adjustTimeForDate(value, config[0], this.timezone);
     },
     sortRange(range, priority = RANGE_PRIORITY.NONE) {
       const { start, end } = range;
