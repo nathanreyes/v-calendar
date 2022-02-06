@@ -43,7 +43,7 @@ const literal = /\[([^]*?)\]/gm;
 const noop = () => {};
 const monthUpdate = arrName => (d, v, l) => {
   const index = l[arrName].indexOf(
-    v.charAt(0).toUpperCase() + v.substr(1).toLowerCase(),
+    v.charAt(0).toUpperCase() + v.substring(1).toLowerCase(),
   );
   if (~index) {
     d.month = index;
@@ -120,7 +120,7 @@ const formatFlags = {
     return l.monthNames[d.month - 1];
   },
   YY(d) {
-    return String(d.year).substr(2);
+    return String(d.year).substring(2);
   },
   YYYY(d) {
     return pad(d.year, 4);
@@ -213,7 +213,7 @@ const parseFlags = {
     twoDigits,
     (d, v) => {
       const da = new Date();
-      const cent = +da.getFullYear().toString().substr(0, 2);
+      const cent = +da.getFullYear().toString().substring(0, 2);
       d.year = `${v > 68 ? cent - 1 : cent}${v}`;
     },
   ],
@@ -386,7 +386,7 @@ export default class Locale {
               } else {
                 str.replace(info[0], result => {
                   info[1](dateInfo, result, this);
-                  str = str.substr(index + result.length);
+                  str = str.substring(index + result.length);
                   return result;
                 });
               }
