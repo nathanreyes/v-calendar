@@ -4,11 +4,11 @@
   </div>
 </template>
 
-<script>
-const Locale = require('@/utils/locale').default;
+<script lang="ts">
+import Locale from '@/utils/locale';
 const locale = new Locale();
-let { month: thisMonth, year: thisMonthYear } = locale.getThisMonthComps();
-let { month: nextMonth, year: nextMonthYear } = locale.getNextMonthComps(
+let { month: thisMonth, year: thisMonthYear } = locale.getThisMonthParts();
+let { month: nextMonth, year: nextMonthYear } = locale.getNextMonthParts(
   thisMonth,
   thisMonthYear,
 );
@@ -18,7 +18,6 @@ nextMonth--;
 const meetings = [
   {
     description: 'Bi-weekly staff meeting.',
-    // Every other Monday morning :(
     dates: {
       weeklyInterval: 2,
       weekdays: 2,
@@ -47,7 +46,7 @@ const todos = [
   {
     description: 'Take Noah to basketball practice.',
     isComplete: false,
-    dates: { weekdays: 6 }, // Every Friday
+    dates: { weekdays: 6 },
     color: 'orange',
   },
   {
@@ -73,7 +72,6 @@ export default {
   computed: {
     attributes() {
       return [
-        // Today attribute
         {
           highlight: {
             fillMode: 'outline',
@@ -86,7 +84,6 @@ export default {
           dates: new Date(),
           order: 100,
         },
-        // Attributes for meetings
         ...this.meetings.map(({ description, dates, color }) => ({
           dates,
           highlight: color,
@@ -94,7 +91,6 @@ export default {
             label: description,
           },
         })),
-        // Attributes for todos
         ...this.todos.map(todo => ({
           dates: todo.dates,
           dot: {

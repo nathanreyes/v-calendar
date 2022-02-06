@@ -9,7 +9,7 @@
   background-color: #1a202c;
 }
 
-/deep/ .vc-container {
+:deep(.vc-container) {
   background-image: url('../../images/dark-woods.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -42,4 +42,3 @@
   }
 }
 </style>
-
