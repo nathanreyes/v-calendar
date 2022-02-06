@@ -566,15 +566,12 @@ export default class Locale {
       }
     }
     if (validHours) {
-      const hourOptions = this.getHourOptions(validHours, dateParts);
-      dateParts.hours = this.nearestOptionValue(dateParts.hours, hourOptions);
+      const options = this.getHourOptions(validHours, dateParts);
+      dateParts.hours = this.nearestOptionValue(dateParts.hours, options);
     }
     if (minuteIncrement) {
-      const minuteOptions = this.getMinuteOptions(minuteIncrement);
-      dateParts.minutes = this.nearestOptionValue(
-        dateParts.minutes,
-        minuteOptions,
-      );
+      const options = this.getMinuteOptions(minuteIncrement);
+      dateParts.minutes = this.nearestOptionValue(dateParts.minutes, options);
     }
     date = this.getDateFromParts(dateParts);
     return date;
