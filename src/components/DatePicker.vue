@@ -610,13 +610,9 @@ export default {
         this.$set(this, valueKey, normalizedValue);
         // Clear drag value if needed
         if (!isDragging) this.dragValue = null;
-      }
-
-      // 4. Denormalization/Notification
-      if (valueChanged) {
-        // 4A. Denormalization
+        // Denormalization
         const denormalizedValue = this.denormalizeValue(normalizedValue);
-        // 4B. Notification
+        // Notification
         const event = this.isDragging ? 'drag' : 'input';
         this.watchValue = false;
         this.$emit(event, denormalizedValue);
@@ -631,7 +627,7 @@ export default {
     },
     hasValue(value) {
       if (this.isRange) {
-        return isObject(value) && value.start && value.end;
+        return isObject(value) && !!value.start && !!value.end;
       }
       return !!value;
     },
