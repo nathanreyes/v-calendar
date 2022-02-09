@@ -13,7 +13,7 @@ yarn add v-calendar@next
 :warning: **As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
 
 ```js
-import 'v-calendar/dist/style.css';
+import '~v-calendar';
 ```
 
 #### Method 1: Use Globally

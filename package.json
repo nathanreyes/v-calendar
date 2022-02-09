@@ -33,6 +33,7 @@
     },
     "./dist/style.css": "./dist/style.css"
   },
+  "style": "./dist/style.css",
   "unpkg": "dist/vcalendar.min.js",
   "types": "types/index.d.ts",
   "scripts": {
