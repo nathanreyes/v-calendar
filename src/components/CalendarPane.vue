@@ -245,6 +245,7 @@ export default {
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
+  text-transform: capitalize;
   &:hover {
     opacity: 0.75;
   }
