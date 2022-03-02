@@ -6,6 +6,7 @@
       <!--Move prev button-->
       <span
         role="button"
+        aria-label="previous year"
         class="vc-nav-arrow is-left"
         :class="{ 'is-disabled': !prevItemsEnabled }"
         :tabindex="prevItemsEnabled ? 0 : undefined"
@@ -30,6 +31,7 @@
       <!--Move next button-->
       <span
         role="button"
+        aria-label="next year"
         class="vc-nav-arrow is-right"
         :class="{ 'is-disabled': !nextItemsEnabled }"
         :tabindex="nextItemsEnabled ? 0 : undefined"
