@@ -90,6 +90,7 @@ export default {
           ],
           attrs: {
             role: 'button',
+            tabindex: 0,
           },
           on: {
             click,
