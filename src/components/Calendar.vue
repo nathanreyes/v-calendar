@@ -91,6 +91,7 @@ export default {
           attrs: {
             role: 'button',
             tabindex: 0,
+            'aria-label': `${isPrev ? 'Previous Month' : 'Next Month'}`,
           },
           on: {
             click,
