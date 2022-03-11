@@ -24,6 +24,9 @@ export default {
             {
               class: 'vc-title',
               on: this.navPopoverEvents,
+              attrs: {
+                'aria-live': 'polite',
+              },
             },
             [this.safeScopedSlot('header-title', this.page, this.page.title)],
           ),
