@@ -62,7 +62,6 @@ export function getPopoverTriggerEvents(opts) {
       if (click) {
         opts.ref = e.target;
         togglePopover(opts);
-        e.stopPropagation();
       }
     },
     [events.mousemove](e) {
