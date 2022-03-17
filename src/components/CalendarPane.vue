@@ -66,24 +66,31 @@ export default {
           class: ['vc-weeknumber'],
         },
         [
-          h(
-            'span',
-            {
-              class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
-              on: {
-                click: event => {
-                  this.$emit('weeknumberclick', {
-                    weeknumber,
-                    days: this.page.days.filter(
-                      d => d[this.weeknumberKey] === weeknumber,
-                    ),
-                    event,
-                  });
+          this.safeScopedSlot('weeknumber', {
+            classes: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
+            weeknumber,
+            days: this.page.days.filter(
+              d => d[this.weeknumberKey] === weeknumber,
+            ),
+          }) ||
+            h(
+              'span',
+              {
+                class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
+                on: {
+                  click: event => {
+                    this.$emit('weeknumberclick', {
+                      weeknumber,
+                      days: this.page.days.filter(
+                        d => d[this.weeknumberKey] === weeknumber,
+                      ),
+                      event,
+                    });
+                  },
                 },
               },
-            },
-            [weeknumber],
-          ),
+              [weeknumber],
+            ),
         ],
       );
 
