@@ -150,10 +150,10 @@ export default {
               id: this.datePickerPopoverId,
               placement: 'bottom-start',
               contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
-              'on-before-show': e => this.$emit('popover-will-show', e),
-              'on-after-show': e => this.$emit('popover-did-show', e),
-              'on-before-hide': e => this.$emit('popover-will-hide', e),
-              'on-after-hide': e => this.$emit('popover-did-hide', e),
+              onBeforeShow: this.onBeforeShowHandler,
+              onAfterShow: this.onAfterShowHandler,
+              onBeforeHide: this.onBeforeHideHandler,
+              onAfterHide: this.onAfterHideHandler,
               ref: 'popover',
             },
             {
@@ -379,6 +379,18 @@ export default {
     off(document, 'click', this.onDocumentClick);
   },
   methods: {
+    onBeforeShowHandler(event) {
+      this.$emit('popover-will-show', event);
+    },
+    onAfterShowHandler(event) {
+      this.$emit('popover-did-show', event);
+    },
+    onBeforeHideHandler(event) {
+      this.$emit('popover-will-hide', event);
+    },
+    onAfterHideHandler(event) {
+      this.$emit('popover-did-hide', event);
+    },
     getDateParts(date) {
       return this.$locale.getDateParts(date);
     },
