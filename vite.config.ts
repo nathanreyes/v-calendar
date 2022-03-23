@@ -1,14 +1,36 @@
 import type { UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
+import typescript from 'rollup-plugin-typescript2';
 
 // https://vitejs.dev/config/
 const config: UserConfig = {
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    typescript({
+      check: false,
+      include: ['src/components/*.vue'],
+      tsconfigOverride: {
+        compilerOptions: {
+          sourceMap: true,
+          declaration: true,
+          declarationMap: true,
+        },
+      },
+      exclude: ['vite.config.ts', 'tests'],
+    }),
+  ],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'v-calendar',
+      name: 'vcalendar',
+      formats: ['es', 'cjs', 'umd', 'iife'],
+      fileName: format =>
+        format === 'es'
+          ? 'index.js'
+          : format === 'cjs'
+          ? 'index.cjs'
+          : `v-calendar.${format}.js`,
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
