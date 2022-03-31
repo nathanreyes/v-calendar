@@ -1,1 +1,1 @@
-import 'regenerator-runtime/runtime';
+global.ResizeObserver = require('resize-observer-polyfill');
