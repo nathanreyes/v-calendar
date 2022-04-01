@@ -9,11 +9,12 @@
     ]"
     ref="pane"
   >
-    <CalendarHeader :page="page" layout="-t-" is-lg />
+    <CalendarHeader :page="page" is-lg hide-arrows />
     <div
       class="vc-weeks"
       :class="{
-        [`vc-show-weeknumbers-${page.weeknumberPosition}`]: page.weeknumberPosition,
+        [`vc-show-weeknumbers-${page.weeknumberPosition}`]:
+          page.weeknumberPosition,
       }"
     >
       <div class="vc-weekdays">

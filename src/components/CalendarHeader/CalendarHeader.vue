@@ -73,6 +73,8 @@ export default defineComponent({
     isLg: Boolean,
     isXl: Boolean,
     is2xl: Boolean,
+    hideTitle: Boolean,
+    hideArrows: Boolean,
   },
   setup(props) {
     const {
@@ -121,9 +123,9 @@ export default defineComponent({
     });
     const show = computed(() => {
       return {
-        prev: layout_.value.includes('p'),
-        title: layout_.value.includes('t'),
-        next: layout_.value.includes('n'),
+        prev: layout_.value.includes('p') && !props.hideArrows,
+        title: layout_.value.includes('t') && !props.hideTitle,
+        next: layout_.value.includes('n') && !props.hideArrows,
         up: layout_.value.includes('u') && canMoveUp.value,
       };
     });

@@ -20,7 +20,7 @@
     <!--Calendar Container-->
     <div :class="['vc-pane-container', { 'in-transition': inTransition }]">
       <div class="vc-pane-header-wrapper">
-        <CalendarHeader :page="firstPage" layout="p-n" is-lg />
+        <CalendarHeader :page="firstPage" is-lg hide-title />
       </div>
       <Transition
         :name="`vc-${transitionName}`"
@@ -47,7 +47,7 @@
   <!--Day popover-->
   <CalendarDayPopover
     ><template #default="props"
-      ><slot name="day-popover" v-bind="props"/></template
+      ><slot name="day-popover" v-bind="props" /></template
   ></CalendarDayPopover>
 </template>
 
