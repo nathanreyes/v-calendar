@@ -704,7 +704,7 @@ export function useCalendar(
   };
 
   const onDayKeydown = (day: CalendarDay, event: KeyboardEvent) => {
-    emit('daykeydown', day);
+    emit('daykeydown', day, event);
     const { dateFromTime } = day;
     // Set to noon to offset any daylight savings time offset
     const date = dateFromTime(12, 0, 0, 0);

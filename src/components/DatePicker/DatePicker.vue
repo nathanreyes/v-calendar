@@ -420,17 +420,17 @@ export default {
         this.formatInput();
       }
     },
-    onDayClick(day) {
+    onDayClick(day, event) {
       this.handleDayClick(day);
       // Re-emit event
-      this.$emit('dayclick', day);
+      this.$emit('dayclick', day, event);
     },
-    onDayKeydown(day) {
-      switch (day.event.key) {
+    onDayKeydown(day, event) {
+      switch (event.key) {
         case ' ':
         case 'Enter': {
           this.handleDayClick(day);
-          day.event.preventDefault();
+          event.preventDefault();
           break;
         }
         case 'Escape': {
@@ -438,7 +438,7 @@ export default {
         }
       }
       // Re-emit event
-      this.$emit('daykeydown', day);
+      this.$emit('daykeydown', day, event);
     },
     handleDayClick(day) {
       const { keepVisibleOnInput, visibility } = this.popover_;
