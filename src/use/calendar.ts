@@ -63,6 +63,8 @@ export interface CalendarProps {
   titlePosition: TitlePosition;
   navVisibility: PopoverVisibility;
   isExpanded: boolean;
+  initialPage?: PageAddress;
+  initialPagePosition: number;
   showWeeknumbers: boolean | string;
   showIsoWeeknumbers: boolean | string;
   minPage?: PageAddress;
@@ -178,6 +180,8 @@ export const props = {
   showWeeknumbers: [Boolean, String],
   showIsoWeeknumbers: [Boolean, String],
   isExpanded: Boolean,
+  initialPage: Object,
+  initialPagePosition: { type: Number, default: 1 },
   minPage: Object,
   maxPage: Object,
   transition: String,
@@ -250,13 +254,15 @@ export function useCalendar(
     // Return the locale prop if it is an instance of the Locale class
     if (props.locale instanceof Locale) return props.locale;
     // Build up a base config from component props
-    const config = (isObject(props.locale)
-      ? props.locale
-      : {
-          id: props.locale,
-          firstDayOfWeek: props.firstDayOfWeek,
-          masks: props.masks,
-        }) as Partial<LocaleConfig>;
+    const config = (
+      isObject(props.locale)
+        ? props.locale
+        : {
+            id: props.locale,
+            firstDayOfWeek: props.firstDayOfWeek,
+            masks: props.masks,
+          }
+    ) as Partial<LocaleConfig>;
     // Return new locale
     return new Locale(config, {
       locales: locales.value,
@@ -465,10 +471,7 @@ export function useCalendar(
     target: number | string | Date | PageAddress | undefined,
     opts: Partial<MoveOptions> = {},
   ) => {
-    let fromPage = null;
-    let toPage = null;
     const { view = state.view, position = 1, force } = opts;
-
     let page;
     if (isObject(target)) {
       page = target;
@@ -480,13 +483,13 @@ export function useCalendar(
     page = page as PageAddress;
 
     const pagesToAdd = position > 0 ? 1 - position : -(count.value + position);
-    fromPage = addPages(page, pagesToAdd, view);
-    toPage = addPages(fromPage!, count.value - 1, view);
+    let fromPage = addPages(page, pagesToAdd, view);
+    let toPage = addPages(fromPage!, count.value - 1, view);
 
     // Adjust range for min/max if not forced
     if (!force) {
       if (pageIsBeforePage(fromPage, minPage.value)) {
-        fromPage = minPage.value;
+        fromPage = minPage.value!;
       } else if (pageIsAfterPage(toPage, maxPage.value)) {
         fromPage = addPages(maxPage.value!, 1 - count.value);
       }
@@ -780,7 +783,10 @@ export function useCalendar(
   // #region Lifecycle methods
 
   // Created
-  refreshPages();
+  refreshPages({
+    page: props.initialPage,
+    position: props.initialPagePosition,
+  });
 
   // Mounted
   onMounted(() => {
