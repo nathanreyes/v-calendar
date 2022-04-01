@@ -39,7 +39,6 @@
   &.is-disabled {
     opacity: 0.25;
     pointer-events: none;
-    cursor: not-allowed;
   }
 }
 
