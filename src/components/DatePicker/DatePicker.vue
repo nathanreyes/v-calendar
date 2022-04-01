@@ -376,10 +376,8 @@ export default {
       }
     },
     onDocumentClick(e) {
-      if (
-        document.body.contains(e.target) &&
-        !elementContains(this.$el, e.target)
-      ) {
+      const el = this.$refs.calendar?.$refs.containerRef;
+      if (document.body.contains(e.target) && !elementContains(el, e.target)) {
         this.dragValue = null;
         this.formatInput();
       }
