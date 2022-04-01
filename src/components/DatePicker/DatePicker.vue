@@ -13,7 +13,7 @@ import {
   off,
 } from '../../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../../utils/_';
-import { DatePatch, adjustTimeForDate, datesAreEqual } from '../../utils/dates';
+import { DatePatch, datesAreEqual } from '../../utils/dates';
 import {
   showPopover as sp,
   hidePopover as hp,
@@ -24,7 +24,6 @@ import {
 const _baseConfig = {
   type: 'auto',
   mask: 'iso', // String mask when `type === 'string'`
-  timeAdjust: '', // 'HH:MM:SS', 'now'
 };
 
 const _config = [_baseConfig, _baseConfig];
@@ -63,8 +62,8 @@ export default {
 
     // Timepicker renderer
     const timePicker = () => {
-      if (!this.dateParts) return null;
-      const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
+      const parts = this.getDateParts(this.dragValue || this.value_);
+      if (!parts) return null;
       return h(
         'div',
         {},
@@ -72,14 +71,6 @@ export default {
           ...this.$slots,
           default: () =>
             parts.map((dp, idx) => {
-              const hourOptions = this.$locale.getHourOptions(
-                this.modelConfig_[idx].validHours,
-                dp,
-              );
-              const minuteOptions = this.$locale.getMinuteOptions(
-                this.modelConfig_[idx].minuteIncrement,
-                dp,
-              );
               return h(TimePicker, {
                 modelValue: dp,
                 locale: this.$locale,
@@ -87,8 +78,7 @@ export default {
                 is24hr: this.is24hr,
                 showBorder: !this.isTime,
                 isDisabled: (this.isDateTime && !dp.isValid) || this.isDragging,
-                hourOptions,
-                minuteOptions,
+                rules: this.modelConfig_[idx].rules,
                 'onUpdate:modelValue': p => this.onTimeInput(p, idx === 0),
               });
             }),
@@ -166,9 +156,10 @@ export default {
   props: {
     mode: { type: String, default: MODE.DATE },
     modelValue: { type: null, required: true },
+    time: String,
+    rules: { type: Object, default: () => ({}) },
     modelConfig: { type: Object, default: () => ({}) },
     is24hr: Boolean,
-    minuteIncrement: Number,
     isRequired: Boolean,
     isRange: Boolean,
     updateOnInput: {
@@ -183,12 +174,10 @@ export default {
     dragAttribute: Object,
     selectAttribute: Object,
     attributes: Array,
-    validHours: [Object, Array, Function],
   },
   data() {
     return {
       value_: null,
-      dateParts: null,
       activeDate: '',
       dragValue: null,
       inputValues: ['', ''],
@@ -336,35 +325,25 @@ export default {
     modelValue(val) {
       if (!this.watchValue) return;
       this.forceUpdateValue(val, {
-        config: this.modelConfig_,
         formatInput: true,
         hidePopover: false,
       });
     },
-    value_() {
-      this.refreshDateParts();
-    },
-    dragValue() {
-      this.refreshDateParts();
-    },
     timezone() {
-      this.refreshDateParts();
       this.forceUpdateValue(this.value_, { formatInput: true });
     },
   },
   created() {
-    this.value_ = this.normalizeValue(
-      this.modelValue,
-      this.modelConfig_,
-      DatePatch.DateTime,
-      RANGE_PRIORITY.BOTH,
-    );
+    // this.value_ = this.normalizeValue(
+    //   this.modelValue,
+    //   this.modelConfig_,
+    //   DatePatch.DateTime,
+    //   RANGE_PRIORITY.BOTH,
+    // );
     this.forceUpdateValue(this.modelValue, {
-      config: this.modelConfig_,
       formatInput: true,
       hidePopover: false,
     });
-    this.refreshDateParts();
   },
   mounted() {
     // Handle escape key presses
@@ -378,32 +357,17 @@ export default {
     off(document, 'click', this.onDocumentClick);
   },
   methods: {
-    getDateParts(date) {
-      return this.$locale.getDateParts(date);
+    getDateParts(value) {
+      if (this.isRange) {
+        return [
+          value && value.start ? this.$locale.getDateParts(value.start) : {},
+          value && value.end ? this.$locale.getDateParts(value.end) : {},
+        ];
+      }
+      return [value ? this.$locale.getDateParts(value) : {}];
     },
     getDateFromParts(parts) {
       return this.$locale.getDateFromParts(parts);
-    },
-    refreshDateParts() {
-      const value = this.dragValue || this.value_;
-      const dateParts = [];
-      if (this.isRange) {
-        if (value && value.start) {
-          dateParts.push(this.getDateParts(value.start));
-        } else {
-          dateParts.push({});
-        }
-        if (value && value.end) {
-          dateParts.push(this.getDateParts(value.end));
-        } else {
-          dateParts.push({});
-        }
-      } else if (value) {
-        dateParts.push(this.getDateParts(value));
-      } else {
-        dateParts.push({});
-      }
-      this.$nextTick(() => (this.dateParts = dateParts));
     },
     onDocumentKeyDown(e) {
       // Clear drag on escape keydown
@@ -479,9 +443,10 @@ export default {
     },
     onTimeInput(parts, isStart) {
       let value = null;
+      const dateParts = this.getDateParts(this.dragValue || this.value_);
       if (this.isRange) {
-        const start = isStart ? parts : this.dateParts[0];
-        const end = isStart ? this.dateParts[1] : parts;
+        const start = isStart ? parts : dateParts[0];
+        const end = isStart ? dateParts[1] : parts;
         value = { start, end };
       } else {
         value = parts;
@@ -559,8 +524,8 @@ export default {
         ? config
         : [config.start || config, config.end || config];
       return baseConfig.map((b, i) => ({
-        validHours: this.validHours,
-        minuteIncrement: this.minuteIncrement,
+        time: this.time,
+        rules: this.rules || {},
         ...b,
         ...config[i],
       }));
@@ -590,9 +555,6 @@ export default {
       if (!normalizedValue && this.isRequired) {
         normalizedValue = this.value_;
       }
-
-      // Time Adjustment
-      normalizedValue = this.adjustTimeForValue(normalizedValue, config);
 
       // 2. Validation (date or range)
       const isDisabled = this.valueIsDisabled(normalizedValue);
@@ -662,16 +624,6 @@ export default {
         fillDate: this.value_ || config[0].fillDate,
         patch,
       });
-    },
-    adjustTimeForValue(value, config) {
-      if (!this.hasValue(value)) return null;
-      if (this.isRange) {
-        return {
-          start: adjustTimeForDate(value.start, config[0], this.timezone),
-          end: adjustTimeForDate(value.end, config[1], this.timezone),
-        };
-      }
-      return adjustTimeForDate(value, config[0], this.timezone);
     },
     sortRange(range, priority = RANGE_PRIORITY.NONE) {
       const { start, end } = range;

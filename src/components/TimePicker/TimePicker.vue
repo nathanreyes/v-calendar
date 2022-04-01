@@ -34,7 +34,7 @@
       <div class="vc-time-select">
         <time-select v-model.number="hours" :options="hourOptions_" />
         <span style="margin: 0 4px">:</span>
-        <time-select v-model.number="minutes" :options="minuteOptions" />
+        <time-select v-model.number="minutes" :options="options.minutes" />
         <div v-if="!is24hr" class="vc-am-pm">
           <button
             :class="{ active: isAM }"
@@ -61,6 +61,7 @@
 <script>
 import TimeSelect from '../TimeSelect/TimeSelect.vue';
 import { arrayHasItems } from '../../utils/helpers';
+import { getDatePartsOptions } from '../../utils/dates';
 
 const _amOptions = [
   { value: 0, label: '12' },
@@ -100,9 +101,8 @@ export default {
     locale: { type: Object, required: true },
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
+    rules: { type: Object, default: () => ({}) },
     showBorder: Boolean,
-    hourOptions: Array,
-    minuteOptions: Array,
   },
   computed: {
     date() {
@@ -142,18 +142,21 @@ export default {
         this.updateValue(hours, this.minutes);
       },
     },
+    options() {
+      return getDatePartsOptions(this.modelValue, this.rules);
+    },
     amHourOptions() {
       return _amOptions.filter(opt =>
-        this.hourOptions.some(ho => ho.value === opt.value),
+        this.options.hours.some(ho => ho.value === opt.value),
       );
     },
     pmHourOptions() {
       return _pmOptions.filter(opt =>
-        this.hourOptions.some(ho => ho.value === opt.value),
+        this.options.hours.some(ho => ho.value === opt.value),
       );
     },
     hourOptions_() {
-      if (this.is24hr) return this.hourOptions;
+      if (this.is24hr) return this.options.hours;
       if (this.isAM) return this.amHourOptions;
       return this.pmHourOptions;
     },

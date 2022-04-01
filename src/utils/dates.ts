@@ -1,5 +1,13 @@
 import { pad, arrayHasItems } from './helpers';
-import { isNumber, isString, isObject, isDate, pick } from './_';
+import {
+  isNumber,
+  isString,
+  isObject,
+  isDate,
+  isArray,
+  isFunction,
+  pick,
+} from './_';
 import toDate from 'date-fns-tz/toDate';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
@@ -15,12 +23,51 @@ export type DayOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type DateSource = Date | string | number | Partial<DateParts>;
 export type TimeNames = Partial<Record<Intl.RelativeTimeFormatUnit, string>>;
 
+interface NumberRuleConfig {
+  min?: number;
+  max?: number;
+  interval?: number;
+}
+
+type DatePartsRuleFunction = (part: number, parts: DateParts) => boolean;
+
+type DatePartsRule =
+  | number
+  | Array<number>
+  | NumberRuleConfig
+  | DatePartsRuleFunction;
+
+interface DatePartsRules {
+  hours?: DatePartsRule;
+  minutes?: DatePartsRule;
+  seconds?: DatePartsRule;
+  milliseconds?: DatePartsRule;
+}
+
+interface DatePartOption {
+  value: number;
+  label: string;
+  disabled?: boolean;
+}
+
+interface DatePartsObject<T> {
+  milliseconds: T;
+  seconds: T;
+  minutes: T;
+  hours: T;
+}
+
+export type DatePartsKey = 'hours' | 'minutes' | 'seconds' | 'milliseconds';
+type DatePartsRange = [number, number, number];
+type DatePartsOptions = DatePartsObject<{ value: number; label: string }[]>;
+
 export interface DateOptions {
   type: string;
   fillDate: DateSource;
   mask: string;
   patch: DatePatch;
   time: string;
+  rules: DatePartsRules;
   timezone: string;
   locale: Locale | LocaleConfig | string;
 }
@@ -48,6 +95,7 @@ export interface DateParts extends PageAddress {
   month: number;
   year: number;
   date: Date;
+  dateTime: number;
   isValid: boolean;
   timezoneOffset: number;
   isPm?: boolean;
@@ -88,17 +136,24 @@ const PATCH_KEYS = {
 
 export const daysInWeek = 7;
 
-const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const maskMacros = ['L', 'iso'];
-
 export const MS_PER_SECOND = 1000;
 export const MS_PER_MINUTE = MS_PER_SECOND * 60;
 export const MS_PER_HOUR = MS_PER_MINUTE * 60;
 export const MS_PER_DAY = MS_PER_HOUR * 24;
 
+const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const maskMacros = ['L', 'iso'];
+const DATE_PART_RANGES: DatePartsObject<DatePartsRange> = {
+  milliseconds: [0, 999, 3],
+  seconds: [0, 59, 2],
+  minutes: [0, 59, 2],
+  hours: [0, 23, 2],
+};
+
 // #region Format constants
 
-const token = /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+const token =
+  /d{1,2}|W{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|Z{1,4}|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
 const literal = /\[([^]*?)\]/gm;
 const formatFlags: any = {
   D(d: DateParts) {
@@ -215,7 +270,8 @@ const formatFlags: any = {
 const twoDigits = /\d\d?/;
 const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
-const word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+const word =
+  /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 const monthUpdate = (arrName: string) => (d: DateParts, v: string, l: any) => {
@@ -253,10 +309,7 @@ const parseFlags: any = {
     twoDigits,
     (d: DateParts, v: number) => {
       const da = new Date();
-      const cent = +da
-        .getFullYear()
-        .toString()
-        .substr(0, 2);
+      const cent = +da.getFullYear().toString().substr(0, 2);
       d.year = +`${v > 68 ? cent - 1 : cent}${v}`;
     },
   ],
@@ -338,9 +391,11 @@ parseFlags.ZZZZ = parseFlags.ZZZ = parseFlags.ZZ = parseFlags.Z;
 // #endregion Parse constants
 
 function normalizeMasks(masks: string | string[], locale: Locale): string[] {
-  return (((arrayHasItems(masks) && masks) || [
-    (isString(masks) && masks) || 'YYYY-MM-DD',
-  ]) as string[]).map(m =>
+  return (
+    ((arrayHasItems(masks) && masks) || [
+      (isString(masks) && masks) || 'YYYY-MM-DD',
+    ]) as string[]
+  ).map(m =>
     maskMacros.reduce(
       (prev, curr) => prev.replace(curr, locale.masks[curr] || ''),
       m,
@@ -517,7 +572,8 @@ export function getDateParts(
     weekFromEnd,
     month,
     year,
-    date,
+    date: tzDate,
+    dateTime: tzDate.getTime(),
     timezoneOffset: 0,
     isValid: true,
   };
@@ -624,9 +680,12 @@ export function getMonthNames(length: MonthNameLength, localeId = undefined) {
   return getMonthDates().map(d => dtf.format(d));
 }
 
-export function adjustTimeForDate(date: Date, time: string, timezone = '') {
-  if (!time) return date;
-  const dateParts = getDateParts(date, 1, timezone);
+export function applyTimeForDateParts(
+  dateParts: DateParts,
+  time: string,
+  timezone = '',
+) {
+  if (!time) return dateParts;
   if (time === 'now') {
     const timeParts = getDateParts(new Date(), 1, timezone);
     dateParts.hours = timeParts.hours;
@@ -640,7 +699,88 @@ export function adjustTimeForDate(date: Date, time: string, timezone = '') {
     dateParts.seconds = d.getUTCSeconds();
     dateParts.milliseconds = d.getUTCMilliseconds();
   }
-  return getDateFromParts(dateParts, timezone);
+}
+
+export function datePartIsValid(
+  part: number,
+  rule: DatePartsRule,
+  parts: DateParts,
+): boolean {
+  if (isNumber(rule)) return rule === part;
+  if (isArray(rule)) return (rule as number[]).includes(part);
+  if (isFunction(rule)) return rule(part, parts);
+  if (rule.min) return rule.min <= part;
+  if (rule.max) return rule.max >= part;
+  if (rule.interval) return part % rule.interval === 0;
+  return false;
+}
+
+export function getDatePartOptions(
+  parts: DateParts,
+  range: DatePartsRange,
+  rule: DatePartsRule | undefined,
+) {
+  const options: DatePartOption[] = [];
+  const [min, max, padding] = range;
+  for (let i = min; i <= max; i++) {
+    if (rule == null || datePartIsValid(i, rule, parts)) {
+      options.push({
+        value: i,
+        label: pad(i, padding),
+      });
+    }
+  }
+  return options;
+}
+
+export function getDatePartsOptions(
+  parts: DateParts,
+  rules: DatePartsRules,
+): DatePartsOptions {
+  return {
+    milliseconds: getDatePartOptions(
+      parts,
+      DATE_PART_RANGES.milliseconds,
+      rules.milliseconds,
+    ),
+    seconds: getDatePartOptions(parts, DATE_PART_RANGES.seconds, rules.seconds),
+    minutes: getDatePartOptions(parts, DATE_PART_RANGES.minutes, rules.minutes),
+    hours: getDatePartOptions(parts, DATE_PART_RANGES.hours, rules.hours),
+  };
+}
+
+export function getNearestDatePart(
+  parts: DateParts,
+  range: DatePartsRange,
+  value: number,
+  rule: DatePartsRule,
+) {
+  const options = getDatePartOptions(parts, range, rule);
+  const result = options.reduce((prev, opt) => {
+    if (opt.disabled) return prev;
+    if (isNaN(prev)) return opt.value;
+    const diffPrev = Math.abs(prev - value);
+    const diffCurr = Math.abs(opt.value - value);
+    return diffCurr < diffPrev ? opt.value : prev;
+  }, NaN);
+  return isNaN(result) ? value : result;
+}
+
+export function applyRulesForDateParts(
+  dateParts: DateParts,
+  rules: DatePartsRules,
+) {
+  (['hours', 'minutes', 'seconds', 'milliseconds'] as DatePartsKey[]).forEach(
+    key => {
+      if (!Object.prototype.hasOwnProperty.call(rules, key)) return;
+      dateParts[key] = getNearestDatePart(
+        dateParts,
+        DATE_PART_RANGES[key],
+        dateParts[key],
+        rules[key]!,
+      );
+    },
+  );
 }
 
 export function parseDate(
@@ -743,7 +883,7 @@ export function normalizeDate(
 ) {
   const nullDate = new Date(NaN);
   let result = nullDate;
-  const { fillDate, locale, timezone, mask, patch, time } = config;
+  const { fillDate, locale, timezone, mask, patch, time, rules } = config;
   if (isNumber(d)) {
     config.type = 'number';
     result = new Date(+d);
@@ -758,20 +898,28 @@ export function normalizeDate(
     result = getDateFromParts(d as Partial<DateParts>, timezone);
   }
 
-  if (result && patch) {
-    const parts = {
-      ...getDateParts(normalizeDate(fillDate || new Date()), 1, timezone),
-      ...pick(getDateParts(result, 1, timezone), PATCH_KEYS[patch]),
-    };
+  if (result) {
+    let parts = getDateParts(result, 1, timezone);
+    // Patch date parts
+    if (patch) {
+      const fillParts = getDateParts(
+        normalizeDate(fillDate || new Date()),
+        1,
+        timezone,
+      );
+      parts = { ...fillParts, ...pick(parts, PATCH_KEYS[patch]) };
+    }
+    // Apply time adjustment
+    if (time) {
+      applyTimeForDateParts(parts, time, timezone);
+    }
+    // Apply date part rules
+    if (rules) {
+      applyRulesForDateParts(parts, rules);
+    }
     result = getDateFromParts(parts, timezone);
   }
-  if (result && !isNaN(result.getTime())) {
-    if (time) {
-      result = adjustTimeForDate(result, time, timezone);
-    }
-    return result;
-  }
-  return nullDate;
+  return result || nullDate;
 }
 
 export function formatDate(
