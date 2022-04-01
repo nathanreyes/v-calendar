@@ -37,14 +37,16 @@
         <time-select v-model.number="minutes" :options="minuteOptions" />
         <div v-if="!is24hr" class="vc-am-pm">
           <button
-            :class="{ active: isAM, 'vc-disabled': amDisabled }"
+            :class="{ active: isAM }"
+            :disabled="amDisabled"
             @click.prevent="isAM = true"
             type="button"
           >
             AM
           </button>
           <button
-            :class="{ active: !isAM, 'vc-disabled': pmDisabled }"
+            :class="{ active: !isAM }"
+            :disabled="pmDisabled"
             @click.prevent="isAM = false"
             type="button"
           >

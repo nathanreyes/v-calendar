@@ -80,6 +80,10 @@
     &:focus {
       border-color: var(--accent-400);
     }
+    &:disabled {
+      opacity: 0.25;
+      pointer-events: none;
+    }
     &.active {
       background: var(--accent-600);
       color: var(--white);
