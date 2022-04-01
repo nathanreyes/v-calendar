@@ -20,10 +20,6 @@ function testLocaleKeys(locale) {
     'dayNamesNarrow',
     'monthNames',
     'monthNamesShort',
-    'monthData',
-    'getMonthComps',
-    'parse',
-    'format',
   ];
   expect(keys.every(k => lodash.has(locale, k))).toEqual(true);
 }
@@ -94,6 +90,7 @@ describe('Locale', () => {
   it('should calculate day components correctly', () => {
     const testComponent = c => {
       const locale = new Locale(undefined, { timezone: c.timezone });
+      const date = new Date(c.date);
       const day = locale.getDateParts(new Date(c.date));
       const omitKeys = ['date', 'timezone'];
       return Object.keys(c)

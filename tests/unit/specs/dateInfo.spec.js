@@ -17,7 +17,7 @@ describe('addDays', () => {
 });
 
 describe('DateInfo simple date', () => {
-  const date = new DateInfo(new Date(2018, 0, 1), { isFullDay: true });
+  const date = DateInfo.from(new Date(2018, 0, 1), { isFullDay: true });
   it('should include simple date', () => {
     expect(date.includesDate(new Date(2018, 0, 1))).toEqual(true);
   });
@@ -28,7 +28,7 @@ describe('DateInfo simple date', () => {
   it('should include date range', () => {
     expect(
       date.includesDate(
-        new DateInfo({
+        DateInfo.from({
           start: new Date(2018, 0, 1),
           end: new Date(2018, 0, 1),
         }),
@@ -44,13 +44,13 @@ describe('DateInfo simple date', () => {
       { start: new Date(2017, 11, 1), end: new Date(2018, 0, 31) },
     ];
     ranges.forEach(r =>
-      expect(date.includesDate(new DateInfo(r))).toEqual(false),
+      expect(date.includesDate(DateInfo.from(r))).toEqual(false),
     );
   });
 });
 
 describe('DateInfo date range', () => {
-  const date = new DateInfo({
+  const date = DateInfo.from({
     start: new Date(2018, 0, 1),
     end: new Date(2018, 0, 15),
   });
@@ -60,35 +60,35 @@ describe('DateInfo date range', () => {
         range: { start: null, end: null },
         result: {
           start: new Date(2018, 0, 1),
-          end: new Date(2018, 0, 15, 23, 59, 59),
+          end: new Date(2018, 0, 15, 23, 59, 59, 999),
         },
       },
       {
         range: { start: null, end: new Date(2018, 0, 1) },
         result: {
           start: new Date(2018, 0, 1),
-          end: new Date(2018, 0, 1, 23, 59, 59),
+          end: new Date(2018, 0, 1, 23, 59, 59, 999),
         },
       },
       {
         range: { start: new Date(2017, 11, 31), end: new Date(2018, 0, 1) },
         result: {
           start: new Date(2018, 0, 1),
-          end: new Date(2018, 0, 1, 23, 59, 59),
+          end: new Date(2018, 0, 1, 23, 59, 59, 999),
         },
       },
       {
         range: { start: new Date(2017, 11, 31), end: new Date(2018, 0, 16) },
         result: {
           start: new Date(2018, 0, 1),
-          end: new Date(2018, 0, 15, 23, 59, 59),
+          end: new Date(2018, 0, 15, 23, 59, 59, 999),
         },
       },
       {
         range: { start: new Date(2018, 0, 15), end: null },
         result: {
           start: new Date(2018, 0, 15),
-          end: new Date(2018, 0, 15, 23, 59, 59),
+          end: new Date(2018, 0, 15, 23, 59, 59, 999),
         },
       },
       {

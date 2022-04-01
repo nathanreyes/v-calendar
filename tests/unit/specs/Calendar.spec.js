@@ -4,24 +4,22 @@ import disabledTests from '../util/disabledTests';
 import { pad } from '@/utils/helpers';
 
 describe('Calendar', () => {
-  let wrapper = null;
-
-  beforeEach(() => {
-    wrapper = mount(Calendar);
-  });
-
   describe(':props', () => {
-    it(':from-page renders at given page', async () => {
-      await wrapper.setProps({ fromPage: { month: 1, year: 2000 } });
+    it(':initial-page renders at given page', async () => {
+      const wrapper = mount(Calendar, {
+        props: {
+          initialPage: { month: 1, year: 2000 },
+        },
+      });
       expect(wrapper.find('.vc-day.id-2000-01-01').exists()).toBe(true);
     });
 
     const expectDisabledArrows = (arrows, wrapper) => {
-      ['left', 'right'].forEach(dir => {
+      ['prev', 'next'].forEach(dir => {
         const disabledClass = arrows.includes(dir)
           ? '.is-disabled'
           : ':not(.is-disabled)';
-        const arrowSelector = `.vc-arrow.is-${dir}${disabledClass}`;
+        const arrowSelector = `.vc-arrow.vc-${dir}${disabledClass}`;
         expect(wrapper.find(arrowSelector).exists()).toBe(true);
       });
     };
@@ -78,7 +76,10 @@ describe('Calendar', () => {
 
     for (let test of disabledTests) {
       it(test.it, async () => {
-        await wrapper.setProps(test.props);
+        // Mount calendar component
+        const wrapper = mount(Calendar, {
+          props: test.props,
+        });
         // Test disabled arrows
         if (test.disabledArrows) {
           expectDisabledArrows(test.disabledArrows, wrapper);
@@ -126,16 +127,19 @@ describe('Calendar', () => {
 
   describe(':methods', () => {
     it(':move should move to a date', async () => {
+      const wrapper = mount(Calendar);
       await wrapper.vm.move(new Date(2000, 0, 1), { transition: 'none' });
       expect(wrapper.find('.id-2000-01-01').exists()).toBe(true);
     });
     it(':move should move forward by n months', async () => {
-      await wrapper.setProps({ fromPage: { month: 1, year: 2000 } });
+      const wrapper = mount(Calendar);
+      await wrapper.vm.move({ month: 1, year: 2000 }, { transition: 'none' });
       await wrapper.vm.move(5, { transition: 'none' });
       expect(wrapper.find('.id-2000-06-01').exists()).toBe(true);
     });
     it(':move should move backwards by n months', async () => {
-      await wrapper.setProps({ fromPage: { month: 1, year: 2000 } });
+      const wrapper = mount(Calendar);
+      await wrapper.vm.move({ month: 1, year: 2000 }, { transition: 'none' });
       await wrapper.vm.move(-5, { transition: 'none' });
       expect(wrapper.find('.id-1999-08-01').exists()).toBe(true);
     });
