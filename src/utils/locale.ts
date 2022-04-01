@@ -276,14 +276,10 @@ export default class Locale {
       return this.addPages(fromPage || this.getPageForThisMonth()!, arg, view);
     }
     if (isString(arg)) {
-      return getDateParts(
-        this.normalizeDate(arg),
-        this.firstDayOfWeek,
-        this.timezone,
-      );
+      return this.getDateParts(this.normalizeDate(arg));
     }
     if (isDate(arg)) {
-      return getDateParts(arg as Date, this.firstDayOfWeek, this.timezone);
+      return this.getDateParts(arg as Date);
     }
     if (isObject(arg)) {
       return arg as PageAddress;
@@ -323,7 +319,7 @@ export default class Locale {
       const comps = getMonthParts(month, year, this.firstDayOfWeek);
       const date = comps.firstDayOfMonth;
       const newDate = addDays(date, (week - 1 + count) * 7);
-      const parts = getDateParts(newDate, this.firstDayOfWeek, this.timezone);
+      const parts = this.getDateParts(newDate);
       return {
         week: parts.week,
         month: parts.month,
@@ -443,12 +439,8 @@ export default class Locale {
   getDays(pg: Page): CalendarDay[] {
     const days: CalendarDay[] = [];
     const { weeksCount, monthComps, prevMonthComps, nextMonthComps } = pg;
-    const {
-      firstDayOfWeek,
-      firstWeekday,
-      isoWeeknumbers,
-      weeknumbers,
-    } = monthComps;
+    const { firstDayOfWeek, firstWeekday, isoWeeknumbers, weeknumbers } =
+      monthComps;
     const prevMonthDaysToShow =
       firstWeekday +
       (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -
@@ -478,21 +470,18 @@ export default class Locale {
     const todayDay = today.getDate();
     const todayMonth = today.getMonth() + 1;
     const todayYear = today.getFullYear();
-    const dft = (y: number, m: number, d: number) => (
-      hours: number,
-      minutes: number,
-      seconds: number,
-      milliseconds: number,
-    ) =>
-      this.normalizeDate({
-        year: y,
-        month: m,
-        day: d,
-        hours,
-        minutes,
-        seconds,
-        milliseconds,
-      });
+    const dft =
+      (y: number, m: number, d: number) =>
+      (hours: number, minutes: number, seconds: number, milliseconds: number) =>
+        this.normalizeDate({
+          year: y,
+          month: m,
+          day: d,
+          hours,
+          minutes,
+          seconds,
+          milliseconds,
+        });
     // Cycle through 6 weeks (max in month)
     for (let w = 1; w <= weeksCount; w++) {
       // Cycle through days in week
@@ -681,11 +670,7 @@ export default class Locale {
   }
 
   getPageForDate(date: DateSource) {
-    return getDateParts(
-      this.normalizeDate(date),
-      this.firstDayOfWeek,
-      this.timezone,
-    );
+    return this.getDateParts(this.normalizeDate(date));
   }
 
   getPageForThisMonth() {
