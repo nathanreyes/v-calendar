@@ -10,7 +10,7 @@ import {
   normalizeDate,
 } from './dates';
 
-interface DateConfig extends Partial<DateOptions> {
+interface DateInfoDate extends Partial<DateOptions> {
   date: DateSource;
 }
 
@@ -23,8 +23,8 @@ interface DateInfoConfig<DateType> {
 
 export type DateInfoSource =
   | DateInfo
-  | Partial<DateInfoConfig<DateSource | DateConfig>>
-  | DateSource;
+  | DateSource
+  | Partial<DateInfoConfig<DateSource | DateInfoDate>>;
 
 export interface DateInfoOptions {
   order: number;
@@ -36,23 +36,15 @@ export default class DateInfo {
   order: number;
   isAllDay: boolean;
   firstDayOfWeek: DayOfWeek;
-
-  start: {
-    date: Date;
-    dateTime: number;
-    parts: DateParts;
-  } | null = null;
-
-  end: {
-    date: Date;
-    dateTime: number;
-    parts: DateParts;
-  } | null = null;
-
+  start: DateParts | null = null;
+  end: DateParts | null = null;
   recurrence: DateRecurrence | null = null;
 
-  static toDateConfig(source: DateConfig | DateSource | null): DateConfig {
-    if ((source as DateConfig).date != null) return source as DateConfig;
+  static toDateInfoDate(
+    source: DateInfoDate | DateSource | null | undefined,
+  ): DateInfoDate | null {
+    if (!source) return null;
+    if ((source as DateInfoDate).date != null) return source as DateInfoDate;
     return {
       date: source as DateSource,
     };
@@ -61,29 +53,25 @@ export default class DateInfo {
   static from(source: DateInfoSource, opts: Partial<DateInfoOptions> = {}) {
     if (source instanceof DateInfo) return source;
     opts.isAllDay = opts.isAllDay === false ? false : true;
-    const config: Partial<DateInfoConfig<DateConfig>> = {
+    const config: Partial<DateInfoConfig<DateInfoDate>> = {
       start: null,
       end: null,
     };
     if (source != null) {
-      if (isDateSource(source)) {
-        config.start = {
-          date: source as DateSource,
-        };
-        config.end = {
-          date: source as DateSource,
-        };
-      } else {
-        Object.assign(config, source);
-      }
-      if (config.start) config.start = this.toDateConfig(config.start);
-      if (config.end) config.end = this.toDateConfig(config.end);
+      const start = isDateSource(source)
+        ? (source as DateSource)
+        : (source as DateInfoConfig<DateSource>).start;
+      const end = isDateSource(source)
+        ? (source as DateSource)
+        : (source as DateInfoConfig<DateSource>).end;
+      config.start = this.toDateInfoDate(start);
+      config.end = this.toDateInfoDate(end);
     }
     return new DateInfo(config, opts);
   }
 
   private constructor(
-    config: Partial<DateInfoConfig<DateConfig>>,
+    config: Partial<DateInfoConfig<DateInfoDate>>,
     {
       order = 0,
       isAllDay = true,
@@ -95,25 +83,15 @@ export default class DateInfo {
     this.firstDayOfWeek = firstDayOfWeek;
 
     if (config.start) {
+      if (isAllDay) config.start.time = '00:00:00';
       const date = normalizeDate(config.start.date, config.start);
-      const dateTime = date.getTime();
-      const parts = getDateParts(date, firstDayOfWeek, config.start.timezone);
-      this.start = {
-        date,
-        parts,
-        dateTime,
-      };
+      this.start = getDateParts(date, firstDayOfWeek, config.start.timezone);
     }
 
     if (config.end) {
+      if (isAllDay) config.end.time = '23:59:59.999';
       const date = normalizeDate(config.end.date, config.end);
-      const dateTime = date.getTime();
-      const parts = getDateParts(date, firstDayOfWeek, config.end.timezone);
-      this.end = {
-        date,
-        dateTime,
-        parts,
-      };
+      this.end = getDateParts(date, firstDayOfWeek, config.end.timezone);
     }
 
     // Assign recurrence if needed
@@ -171,7 +149,7 @@ export default class DateInfo {
   //   return result;
   // }
 
-  shallowIntersectingRange(other: DateInfo) {
+  shallowIntersectingRange(other: DateInfoSource) {
     return this.rangeShallowIntersectingRange(this, this.from(other));
   }
 
@@ -183,41 +161,41 @@ export default class DateInfo {
     if (!this.dateShallowIntersectsDate(date1, date2)) {
       return null;
     }
-    const thisRange = date1.toRange();
-    const otherRange = date2.toRange();
+    const start1 = date1.start?.date;
+    const end1 = date1.end?.date;
+    const start2 = date2.start?.date;
+    const end2 = date2.end?.date;
+
     // Start with infinite start and end dates
     let start = null;
     let end = null;
     // This start date exists
-    if (thisRange.start) {
+    if (start1) {
       // Use this definite start date if other start date is infinite
-      if (!otherRange.start) {
-        start = thisRange.start;
+      if (!start2) {
+        start = start1;
       } else {
         // Otherwise, use the latest start date
-        start =
-          thisRange.start > otherRange.start
-            ? thisRange.start
-            : otherRange.start;
+        start = start1 > start2 ? start1 : start2;
       }
       // Other start date exists
-    } else if (otherRange.start) {
+    } else if (start2) {
       // Use other definite start date as this one is infinite
-      start = otherRange.start;
+      start = start2;
     }
     // This end date exists
-    if (thisRange.end) {
+    if (end1) {
       // Use this definite end date if other end date is infinite
-      if (!otherRange.end) {
-        end = thisRange.end;
+      if (!end2) {
+        end = end1;
       } else {
         // Otherwise, use the earliest end date
-        end = thisRange.end < otherRange.end ? thisRange.end : otherRange.end;
+        end = end1 < end2 ? end1 : end2;
       }
       // Other end date exists
-    } else if (otherRange.end) {
+    } else if (end2) {
       // Use other definite end date as this one is infinite
-      end = otherRange.end;
+      end = end2;
     }
     // Return calculated range
     return { start, end };
@@ -367,13 +345,6 @@ export default class DateInfo {
     // }
     // Patterns match
     return true;
-  }
-
-  toRange() {
-    return this.from({
-      start: this.start,
-      end: this.end,
-    });
   }
 
   // Build the 'compare to other' function
