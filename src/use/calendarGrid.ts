@@ -5,7 +5,7 @@ import {
   emits as calendarEmits,
   useCalendar,
 } from './calendar';
-import { CalendarDay, Page } from '../utils/locale';
+import { CalendarDay, CalendarWeek, Page } from '../utils/locale';
 import { on } from '../utils/helpers';
 import { CellContext as Cell, useCell } from './calendarCell';
 import CalendarCellPopover from '../components/CalendarCellPopover/CalendarCellPopover.vue';
@@ -669,9 +669,9 @@ export function useCalendarGrid(
     } else if (isTouch.value) {
       return;
     }
-    const eventName = (event.shiftKey
-      ? `${stateEvent}_SHIFT`
-      : stateEvent) as GridStateEvent;
+    const eventName = (
+      event.shiftKey ? `${stateEvent}_SHIFT` : stateEvent
+    ) as GridStateEvent;
     const position = getPositionFromUIEvent(activeGridRef.value, event);
     const day = getDayFromPosition(activeGridRef.value, position);
     updateState(eventName, day, position.y, cell);
@@ -786,13 +786,27 @@ export interface CalendarGridContext extends CalendarContext {
   dayColumns: ComputedRef<number>;
   snapMs: ComputedRef<number>;
   pixelsPerHour: Ref<number>;
+  isTouch: Ref<boolean>;
+  cells: Ref<Cell[]>;
+  selectedCells: ComputedRef<Cell[]>;
+  weekCells: Ref<Cell[][]>;
+  weekCellsStyle: ComputedRef<Object>;
+  dayCells: Ref<Cell[][]>;
+  detailCell: Ref<Cell | null>;
+  resizing: Ref<boolean>;
+  dragging: Ref<boolean>;
+  gridStyle: ComputedRef<Object>;
+  page: ComputedRef<Page>;
+  days: ComputedRef<CalendarDay[]>;
+  weeks: ComputedRef<CalendarWeek[]>;
   removeCell: (cell: Cell) => void;
   onDayNumberClick: (day: CalendarDay) => void;
-  onGridMouseDown: (event: MouseEvent, source: string) => void;
+  onGridEscapeKeydown: () => void;
+  onGridMouseDown: (event: MouseEvent) => void;
   onEventMouseDown: (event: MouseEvent, cell: Cell) => void;
   onEventResizeStartMouseDown: (event: MouseEvent, cell: Cell) => void;
   onEventResizeEndMouseDown: (event: MouseEvent, cell: Cell) => void;
-  onGridTouchStart: (event: TouchEvent, source: string) => void;
+  onGridTouchStart: (event: TouchEvent) => void;
   onGridTouchMove: (event: TouchEvent) => void;
   onGridTouchEnd: (event: TouchEvent) => void;
   onEventTouchStart: (event: TouchEvent, cell: Cell) => void;
