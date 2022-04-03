@@ -3,7 +3,6 @@
     :data-cell-id="cell.key"
     class="vc-grid-event"
     :class="[
-      cell.class,
       `vc-${cell.color}`,
       `is-${cell.size}`,
       {
@@ -22,7 +21,7 @@
     @touchend.passive="onEventTouchEnd($event, cell)"
   >
     <div class="vc-grid-event-content-wrapper">
-      <div class="vc-grid-event-content" :style="cell.contentStyle">
+      <div class="vc-grid-event-content">
         <span
           v-if="isMonthly && !cell.isAllDay"
           class="vc-grid-event-indicator"
@@ -53,15 +52,17 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import { popoverDirective } from '../../utils/popovers';
 import { useCalendarGridContext } from '../../use/calendarGrid';
+import { CellContext } from '../../use/calendarCell';
 
-export default {
+export default defineComponent({
   name: 'CalendarCell',
   directives: { popover: popoverDirective },
   props: {
     cell: {
-      type: Object,
+      type: Object as PropType<CellContext>,
       required: true,
     },
   },
@@ -74,6 +75,8 @@ export default {
       onEventTouchEnd,
       onEventResizeStartMouseDown,
       onEventResizeEndMouseDown,
+      onEventResizeStartTouchStart,
+      onEventResizeEndTouchStart,
     } = useCalendarGridContext();
     return {
       isMonthly,
@@ -83,7 +86,9 @@ export default {
       onEventTouchEnd,
       onEventResizeStartMouseDown,
       onEventResizeEndMouseDown,
+      onEventResizeStartTouchStart,
+      onEventResizeEndTouchStart,
     };
   },
-};
+});
 </script>
