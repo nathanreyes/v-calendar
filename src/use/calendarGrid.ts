@@ -202,14 +202,13 @@ export function useCalendarGrid(
       const attributes = dayAttributes.value[day.id];
       if (!attributes) return;
       attributes.forEach(attr => {
+        if (!attr.dates) return;
         attr.dates.forEach((dateInfo: DateInfo) => {
-          const existingCell = cells.value.find(
-            c => c.key === attr.attribute.key,
-          );
+          const existingCell = cells.value.find(c => c.key === attr.key);
           const cell = useCell({
-            key: attr.attribute.key,
+            key: attr.key,
             ...existingCell,
-            ...attr.attribute.event,
+            ...attr.event,
             ...getCellContext(),
             day,
             dateInfo,
