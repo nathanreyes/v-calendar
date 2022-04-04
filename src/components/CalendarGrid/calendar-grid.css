@@ -81,6 +81,9 @@
         }
       }
     }
+    .vc-grid-event {
+      margin: 0 2px;
+    }
   }
 
   &:not(.vc-monthly) {
@@ -154,6 +157,9 @@
       height: 100%;
       margin: 0 2px 0 0;
     }
+    .vc-grid-event {
+      width: 100%;
+    }
   }
 
   .vc-grid-header {
@@ -189,7 +195,6 @@
   .vc-grid-event {
     position: absolute;
     min-height: 5px;
-    width: 100%;
     cursor: pointer;
     border-radius: 5px;
     border-width: 2px;
