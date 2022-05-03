@@ -134,10 +134,10 @@ export default {
               contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
             },
             on: {
-              beforeShow: e => this.$emit('popoverWillShow', e),
-              afterShow: e => this.$emit('popoverDidShow', e),
-              beforeHide: e => this.$emit('popoverWillHide', e),
-              afterHide: e => this.$emit('popoverDidHide', e),
+              beforeShow: e => this.$emit('popover-will-show', e),
+              afterShow: e => this.$emit('popover-did-show', e),
+              beforeHide: e => this.$emit('popover-will-hide', e),
+              afterHide: e => this.$emit('popover-did-hide', e),
             },
             scopedSlots: {
               default() {
