@@ -91,6 +91,7 @@ const _pmOptions = [
 
 export default {
   name: 'TimePicker',
+  compatConfig: { MODE: 3 },
   components: { TimeSelect },
   emits: ['update:modelValue'],
   props: {

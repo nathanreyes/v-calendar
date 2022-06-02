@@ -8,6 +8,7 @@ import { isBoolean } from '../../utils/_';
 
 export default {
   name: 'CalendarPane',
+  compatConfig: { MODE: 3 },
   emits: ['update:page', 'weeknumberclick'],
   mixins: [childMixin, slotMixin],
   inheritAttrs: false,

@@ -26,6 +26,7 @@
 
 <script>
 export default {
+  compatConfig: { MODE: 3 },
   inheritAttrs: false,
   emits: ['update:modelValue'],
   props: {

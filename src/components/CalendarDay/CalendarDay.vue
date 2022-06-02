@@ -7,6 +7,7 @@ import { last, get, defaults } from '../../utils/_';
 
 export default {
   name: 'CalendarDay',
+  compatConfig: { MODE: 3 },
   emits: [
     'dayclick',
     'daymouseenter',

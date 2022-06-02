@@ -37,6 +37,7 @@ import {
 
 export default {
   name: 'Calendar',
+  compatConfig: { MODE: 3 },
   emits: [
     'dayfocusin',
     'dayfocusout',

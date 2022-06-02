@@ -11,6 +11,7 @@
 <script>
 export default {
   name: 'CustomTransition',
+  compatConfig: { MODE: 3 },
   emits: [
     'before-enter',
     'before-transition',

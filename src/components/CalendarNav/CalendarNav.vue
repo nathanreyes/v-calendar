@@ -70,6 +70,7 @@ const _yearGroupCount = 12;
 
 export default {
   name: 'CalendarNav',
+  compatConfig: { MODE: 3 },
   emits: ['input'],
   components: {
     SvgIcon,

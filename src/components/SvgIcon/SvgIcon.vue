@@ -21,6 +21,7 @@ const icons = {
 
 export default {
   props: ['name'],
+  compatConfig: { MODE: 3 },
   data() {
     return {
       width: _defSize,

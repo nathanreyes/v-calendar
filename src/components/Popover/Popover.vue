@@ -7,6 +7,7 @@ import CustomTransition from '../CustomTransition/CustomTransition.vue';
 
 export default {
   name: 'Popover',
+  compatConfig: { MODE: 3 },
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   render() {
     return h(
