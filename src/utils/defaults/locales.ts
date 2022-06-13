@@ -87,7 +87,7 @@ const locales: any = {
   // Turkish
   tr: { dow: 2, L: 'DD.MM.YYYY' },
   // Ukrainian
-  uk: { dow: 2, L: 'DD.MM.YYYY' },
+  ua: { dow: 2, L: 'DD.MM.YYYY' },
   // Vietnam
   vi: { dow: 2, L: 'DD/MM/YYYY' },
 };
