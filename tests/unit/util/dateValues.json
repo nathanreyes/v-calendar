@@ -61,7 +61,7 @@
         "type": "string",
         "mask": "iso"
       },
-      "timezone": "Europe/Kiev"
+      "timezone": "Europe/Kyiv"
     },
     "time": {
       "hours": 6,
@@ -79,7 +79,7 @@
         "type": "string",
         "mask": "YYYY-MM-DDTHH:mm:ss.SSSZ"
       },
-      "timezone": "Europe/Kiev"
+      "timezone": "Europe/Kyiv"
     },
     "time": {
       "hours": 6,
@@ -97,7 +97,7 @@
         "type": "string",
         "mask": "YYYY-MM-DDTHH:mm:ssZ"
       },
-      "timezone": "Europe/Kiev"
+      "timezone": "Europe/Kyiv"
     },
     "time": {
       "hours": 6,
