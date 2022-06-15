@@ -404,14 +404,14 @@ export function useCalendarGrid(
 
   function stopResizingEvents() {
     if (!resizing.value || !resizeOrigin) return;
-    forSelectedEvents(cell => {
-      if (resizeOrigin!.isNew && cell === resizeOrigin!.event) {
-        emit('did-create-event', cell);
-        showCellPopover(cell);
+    forSelectedEvents(event => {
+      if (resizeOrigin!.isNew && event === resizeOrigin!.event) {
+        emit('did-create-event', event);
+        showCellPopover(event);
       } else {
-        emit('did-resize-event', cell);
+        emit('did-resize-event', event);
       }
-      cell.stopResize();
+      event.stopResize();
     });
     resizing.value = false;
     resizeOrigin = null;

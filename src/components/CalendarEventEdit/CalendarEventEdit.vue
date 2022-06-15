@@ -4,26 +4,18 @@
     <div class="flex justify-end items-center justify-between py-1 px-2">
       <!--Label-->
       <input
-        v-if="cell.editing"
-        v-model="cell.label"
+        v-if="event.editing"
+        v-model="event.label"
         v-focus
         placeholder="Add event label"
-        class="
-          color-white
-          placeholder-gray-300
-          bg-gray-600
-          px-2
-          py-1
-          rounded
-          border border-gray-500
-        "
+        class="color-white placeholder-gray-300 bg-gray-600 px-2 py-1 rounded border border-gray-500"
       />
-      <h3 v-else class="text-lg">{{ cell.label }}</h3>
+      <h3 v-else class="text-lg">{{ event.label }}</h3>
       <!--Buttons-->
       <div class="flex justify-end items-center space-x-3">
         <!--Edit button-->
         <button
-          v-if="!cell.editing"
+          v-if="!event.editing"
           class="w-5 h-5 hover:opacity-50"
           @click="onToggleEditing()"
         >
@@ -75,33 +67,15 @@
         </button>
       </div>
     </div>
-    <div v-if="cell.editing">
+    <div v-if="event.editing">
       <div class="flex justify-end items-center space-x-2 mt-3 mb-1">
         <button
-          class="
-            flex
-            justify-center
-            items-center
-            bg-blue-200
-            text-blue-800
-            hover:bg-blue-300
-            px-2
-            py-1
-            rounded
-          "
+          class="flex justify-center items-center bg-blue-200 text-blue-800 hover:bg-blue-300 px-2 py-1 rounded"
           @click="onSave"
         >
           Save</button
         ><button
-          class="
-            flex
-            justify-center
-            items-center
-            px-2
-            py-1
-            rounded
-            hover:bg-gray-500
-          "
+          class="flex justify-center items-center px-2 py-1 rounded hover:bg-gray-500"
           @click="onCancel"
         >
           Cancel
@@ -125,7 +99,7 @@
           />
         </svg>
         <div class="ml-2 text-gray-200">
-          {{ cell.formatDate(cell.startDate, 'WWWW, MMMM D') }}
+          {{ event.formatDate(event.startDate, 'WWWW, MMMM D') }}
         </div>
       </div>
       <div class="flex items-center">
@@ -144,8 +118,10 @@
           />
         </svg>
         <div class="ml-2 block text-sm text-gray-200">
-          <span v-if="cell.isAllDay"> All Day </span>
-          <span v-else>{{ cell.startDateLabel }}-{{ cell.endDateLabel }}</span>
+          <span v-if="event.isAllDay"> All Day </span>
+          <span v-else
+            >{{ event.startDateLabel }}-{{ event.endDateLabel }}</span
+          >
         </div>
       </div>
     </div>
@@ -157,10 +133,10 @@ import { defineComponent, reactive, toRefs } from 'vue';
 import { useCalendarGridContext } from '../../use/calendarGrid';
 
 export default defineComponent({
-  name: 'CalendarCellEdit',
+  name: 'CalendarEventEdit',
   emits: ['close'],
   props: {
-    cell: { type: Object, required: true },
+    event: { type: Object, required: true },
   },
   directives: {
     focus: {
@@ -170,7 +146,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { removeCell } = useCalendarGridContext();
+    const { removeEvent } = useCalendarGridContext();
 
     const state = reactive({
       // editing: false,
@@ -178,16 +154,16 @@ export default defineComponent({
     return {
       ...toRefs(state),
       onRemove() {
-        removeCell(this.cell);
+        removeEvent(this.event);
       },
       onToggleEditing() {
-        props.cell.editing = !props.cell.editing;
+        props.event.editing = !props.event.editing;
       },
       onSave() {
-        props.cell.editing = false;
+        props.event.editing = false;
       },
       onCancel() {
-        props.cell.editing = false;
+        props.event.editing = false;
       },
     };
   },

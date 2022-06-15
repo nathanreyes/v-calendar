@@ -1,14 +1,19 @@
 <template>
   <Popover :id="popoverId" @after-hide="onAfterHide" ref="popoverRef">
-    <CalendarCellEdit v-if="cell" :cell="cell" v-bind="$attrs" @close="hide" />
+    <CalendarEventEdit
+      v-if="event"
+      :event="event"
+      v-bind="$attrs"
+      @close="hide"
+    />
   </Popover>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, reactive, computed, toRefs } from 'vue';
 import Popover from '../Popover/Popover.vue';
-import CalendarCellEdit from '../CalendarCellEdit/CalendarCellEdit.vue';
-import { CellContext as Cell } from '../../use/calendarCell';
+import CalendarEventEdit from '../CalendarEventEdit/CalendarEventEdit.vue';
+import { Event } from '../../utils/calendar/event';
 import {
   PopoverOptions,
   showPopover,
@@ -17,12 +22,12 @@ import {
 } from '../../utils/popovers';
 
 interface State {
-  cell: Cell | null;
+  event: Event | null;
 }
 
 export default defineComponent({
   name: 'CalendarCellPopover',
-  components: { Popover, CalendarCellEdit },
+  components: { Popover, CalendarEventEdit },
   inheritAttrs: false,
   props: {
     popoverId: { type: String, default: 'vc-grid-popover' },
@@ -30,7 +35,7 @@ export default defineComponent({
   setup(props) {
     const popoverRef = ref(null);
     const state = reactive<State>({
-      cell: null,
+      event: null,
     });
 
     const popoverOptions = computed<Partial<PopoverOptions>>(() => ({
@@ -38,20 +43,20 @@ export default defineComponent({
       placement: 'right',
     }));
 
-    function show(cell: Cell) {
-      state.cell = cell;
+    function show(event: Event) {
+      state.event = event;
       showPopover({
         ...popoverOptions.value,
-        refSelector: cell.refSelector,
+        refSelector: event.refSelector,
       });
     }
 
-    function update(cell: Cell) {
-      cell.editing = false;
-      state.cell = cell;
+    function update(event: Event) {
+      event.editing = false;
+      state.event = event;
       updatePopover({
         ...popoverOptions.value,
-        refSelector: cell.refSelector,
+        refSelector: event.refSelector,
       });
     }
 
@@ -73,7 +78,7 @@ export default defineComponent({
       hide,
       isVisible,
       onAfterHide() {
-        state.cell = null;
+        state.event = null;
       },
     };
   },
