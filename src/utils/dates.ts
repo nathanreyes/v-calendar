@@ -92,6 +92,7 @@ export interface DateParts extends PageAddress {
   weekdayOrdinalFromEnd: number;
   week: number;
   weekFromEnd: number;
+  weeknumber: number;
   month: number;
   year: number;
   date: Date;
@@ -557,6 +558,7 @@ export function getDateParts(
     (day + Math.abs(monthParts.firstWeekday - monthParts.firstDayOfWeek)) / 7,
   );
   const weekFromEnd = monthParts.weeks - week + 1;
+  const weeknumber = monthParts.weeknumbers[week];
   const parts: DateParts = {
     milliseconds,
     seconds,
@@ -570,6 +572,7 @@ export function getDateParts(
     weekdayOrdinalFromEnd,
     week,
     weekFromEnd,
+    weeknumber,
     month,
     year,
     date: tzDate,

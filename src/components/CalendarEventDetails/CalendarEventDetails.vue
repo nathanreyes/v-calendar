@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-calendar-cell-details">
+  <div class="vc-calendar-event-details">
     <template v-if="single">
       <div class="vc-field">
         <div class="vc-label">Title</div>
@@ -14,8 +14,8 @@
         </DatePicker>
       </div>
     </template>
-    <div v-else-if="cells.length">
-      <div class="vc-label">{{ cells.length }} events selected</div>
+    <div v-else-if="events.length">
+      <div class="vc-label">{{ events.length }} events selected</div>
     </div>
     <div v-else>
       <div class="vc-label">No event selected</div>
@@ -32,12 +32,13 @@ export default defineComponent({
     DatePicker,
   },
   props: {
-    cells: Array,
+    events: Array,
   },
   setup(props) {
     const single = computed(() => {
-      if (!props.cells.length || props.cells.length > 1) return null;
-      return props.cells[0];
+      if (!props.events.length || props.events.length > 1) return null;
+      console.log('return');
+      return props.events[0];
     });
     const startDate = ref(new Date());
     return {
@@ -49,5 +50,5 @@ export default defineComponent({
 </script>
 
 <style lang="css">
-@import './calendar-cell-details.css';
+@import './calendar-event-details.css';
 </style>

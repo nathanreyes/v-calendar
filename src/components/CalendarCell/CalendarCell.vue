@@ -5,8 +5,8 @@
     :class="[
       `vc-${cell.color}`,
       `is-${cell.size}`,
+      `is-${cell.fill}`,
       {
-        [`is-${cell.fill}`]: cell.isAllDay || !isMonthly,
         'is-all-day': cell.isAllDay,
         'is-dragging': cell.dragging,
         'is-selected': cell.selected,
@@ -15,10 +15,10 @@
     ]"
     :style="cell.style"
     :tabindex="1"
-    @mousedown.prevent="onEventMouseDown($event, cell)"
-    @touchstart.passive="onEventTouchStart($event, cell)"
-    @touchmove.passive="onEventTouchMove($event, cell)"
-    @touchend.passive="onEventTouchEnd($event, cell)"
+    @mousedown.prevent="onEventMouseDown($event, cell.event)"
+    @touchstart.passive="onEventTouchStart($event, cell.event)"
+    @touchmove.passive="onEventTouchMove($event, cell.event)"
+    @touchend.passive="onEventTouchEnd($event, cell.event)"
   >
     <div class="vc-grid-event-content-wrapper">
       <div class="vc-grid-event-content">
@@ -35,60 +35,57 @@
       <div
         v-if="cell.resizable"
         class="vc-grid-event-resizer is-start"
+        :class="{
+          'is-horizontal': cell.resizableHorizontal,
+          'is-vertical': cell.resizableVertical,
+        }"
         @click.prevent
-        @mousedown="onEventResizeStartMouseDown($event, cell)"
-        @touchstart.passive="onEventResizeStartTouchStart($event, cell)"
+        @mousedown="onEventResizeStartMouseDown($event, cell.event)"
+        @touchstart.passive="onEventResizeStartTouchStart($event, cell.event)"
       />
       <!--Resize end-->
       <div
         v-if="cell.resizable"
         class="vc-grid-event-resizer is-end"
+        :class="{
+          'is-horizontal': cell.resizableHorizontal,
+          'is-vertical': cell.resizableVertical,
+        }"
         @click.prevent
-        @mousedown="onEventResizeEndMouseDown($event, cell)"
-        @touchstart.passive="onEventResizeEndTouchStart($event, cell)"
+        @mousedown="onEventResizeEndMouseDown($event, cell.event)"
+        @touchstart.passive="onEventResizeEndTouchStart($event, cell.event)"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, watch } from 'vue';
 import { popoverDirective } from '../../utils/popovers';
-import { useCalendarGridContext } from '../../use/calendarGrid';
-import { CellContext } from '../../use/calendarCell';
+import { Cell } from '../../use/calendarCell';
 
 export default defineComponent({
   name: 'CalendarCell',
   directives: { popover: popoverDirective },
-  props: {
-    cell: {
-      type: Object as PropType<CellContext>,
-      required: true,
-    },
-  },
-  setup() {
-    const {
-      isMonthly,
-      onEventMouseDown,
-      onEventTouchStart,
-      onEventTouchMove,
-      onEventTouchEnd,
-      onEventResizeStartMouseDown,
-      onEventResizeEndMouseDown,
-      onEventResizeStartTouchStart,
-      onEventResizeEndTouchStart,
-    } = useCalendarGridContext();
-    return {
-      isMonthly,
-      onEventMouseDown,
-      onEventTouchStart,
-      onEventTouchMove,
-      onEventTouchEnd,
-      onEventResizeStartMouseDown,
-      onEventResizeEndMouseDown,
-      onEventResizeStartTouchStart,
-      onEventResizeEndTouchStart,
-    };
-  },
 });
+</script>
+
+<script setup lang="ts">
+import { useCalendarGridContext } from '../../use/calendarGrid';
+
+defineProps<{
+  cell: Cell;
+}>();
+
+const {
+  isMonthly,
+  onEventMouseDown,
+  onEventTouchStart,
+  onEventTouchMove,
+  onEventTouchEnd,
+  onEventResizeStartMouseDown,
+  onEventResizeEndMouseDown,
+  onEventResizeStartTouchStart,
+  onEventResizeEndTouchStart,
+} = useCalendarGridContext();
 </script>

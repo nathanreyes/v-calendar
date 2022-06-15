@@ -10,13 +10,13 @@
     <CalendarHeader :page="page" layout="pnt-u" is-2xl />
     <div class="vc-grid-layout">
       <div class="vc-grid-layout-left">
+        <!--Monthly grid-->
         <template v-if="isMonthly">
           <Transition
             :name="`vc-${transitionName}`"
             @before-enter="onTransitionBeforeEnter"
             @after-enter="onTransitionAfterEnter"
           >
-            <!--Month grid-->
             <div
               class="vc-grid-content"
               @mousedown="onGridMouseDown"
@@ -41,14 +41,14 @@
                     <div v-if="day.day === 1" class="vc-grid-day-header-month">
                       {{ locale.formatDate(day.date, 'MMM') }}
                     </div>
-                    <!--Day header weekday label-->
+                    <!--Day header weekday label (every day in first week)-->
                     <div
                       v-if="week.weekPosition === 1"
                       class="vc-grid-day-header-weekday"
                     >
                       {{ locale.formatDate(day.date, 'WWW') }}
                     </div>
-                    <!--Day header day-->
+                    <!--Day header day (every day)-->
                     <div
                       tabindex="1"
                       role="button"
@@ -63,21 +63,15 @@
                   </div>
                 </div>
                 <!--Week events-->
-                <div class="vc-grid-week-cells" :style="weekCellsStyle">
-                  <CalendarCell
-                    v-for="cell in weekCells[i]"
-                    :key="cell.key"
-                    :cell="cell"
-                  />
-                </div>
+                <CalendarGridWeek :days="week.days" :events="weekEvents[i]" />
               </div>
               <!--Cell popover-->
-              <CalendarCellPopover ref="cellPopoverRef" />
+              <CalendarCellPopover ref="cellPopoverRef" @mousedown.stop />
             </div>
           </Transition>
         </template>
+        <!--Weekly/Daily grid-->
         <template v-else>
-          <!--Weekly/Daily header-->
           <div class="vc-grid-header">
             <div class="vc-grid-header-days">
               <div
@@ -112,7 +106,6 @@
               </template>
             </div>
           </div>
-          <!--Weekly/Daily grid-->
           <div class="vc-grid">
             <Transition
               :name="`vc-${transitionName}`"
@@ -120,6 +113,7 @@
               @after-enter="onTransitionAfterEnter"
             >
               <div class="vc-grid-inset" :key="page.id">
+                <!--All-day/Multi-day event cells-->
                 <div
                   class="vc-grid-content"
                   :class="{
@@ -133,16 +127,10 @@
                   @keydown.escape="onGridEscapeKeydown"
                   ref="weeklyGridRef"
                 >
-                  <!--All day cells-->
-                  <div class="vc-grid-week-cells" :style="weekCellsStyle">
-                    <CalendarCell
-                      v-for="cell in weekCells[0]"
-                      :key="cell.key"
-                      :cell="cell"
-                    />
-                  </div>
+                  <CalendarGridWeek :days="days" :events="weekEvents[0]" />
                   <div class="vc-grid-label vc-all-day">All-Day</div>
                 </div>
+                <!--Partial-day event cells-->
                 <div
                   class="vc-grid-content"
                   :class="{
@@ -173,12 +161,12 @@
                         {{ label }}
                       </div>
                     </div>
-                    <!--Event cells-->
+                    <!--Daily event cells-->
                     <div class="vc-grid-layer vc-events-layer">
                       <div
+                        class="vc-grid-day"
                         v-for="(cells, i) in dayCells"
                         :key="i"
-                        class="vc-grid-day"
                       >
                         <CalendarCell
                           v-for="cell in cells"
@@ -190,14 +178,14 @@
                   </div>
                 </div>
                 <!--Cell popover-->
-                <CalendarCellPopover ref="cellPopoverRef" />
+                <CalendarCellPopover ref="cellPopoverRef" @mousedown.prevent />
               </div>
             </Transition>
           </div>
         </template>
       </div>
       <div v-if="isDaily" class="vc-grid-layout-right">
-        <CalendarCellDetails :cells="selectedCells" />
+        <CalendarEventDetails :events="selectedEvents" />
       </div>
     </div>
   </div>
@@ -209,9 +197,10 @@
 import { defineComponent } from 'vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
+import CalendarGridWeek from '../CalendarGridWeek/CalendarGridWeek.vue';
 import CalendarCell from '../CalendarCell/CalendarCell.vue';
 import CalendarCellPopover from '../CalendarCellPopover/CalendarCellPopover.vue';
-import CalendarCellDetails from '../CalendarCellDetails/CalendarCellDetails.vue';
+import CalendarEventDetails from '../CalendarEventDetails/CalendarEventDetails.vue';
 import { CalendarProps, props } from '../../use/calendar';
 import { emits, useCalendarGrid } from '../../use/calendarGrid';
 
@@ -220,9 +209,10 @@ export default defineComponent({
   components: {
     CalendarNavPopover,
     CalendarHeader,
+    CalendarGridWeek,
     CalendarCell,
     CalendarCellPopover,
-    CalendarCellDetails,
+    CalendarEventDetails,
   },
   emits,
   props,

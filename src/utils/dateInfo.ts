@@ -2,7 +2,6 @@ import { CalendarDay } from './locale';
 import { DateRecurrence, DateRecurrenceConfig } from './dateRecurrence';
 import {
   DateSource,
-  DateOptions,
   DateParts,
   DayOfWeek,
   getDateParts,
@@ -10,88 +9,75 @@ import {
   normalizeDate,
 } from './dates';
 
-interface DateInfoDate extends Partial<DateOptions> {
-  date: DateSource;
-}
-
-interface DateInfoConfig<DateType> {
-  start: DateType | null;
-  end: DateType | null;
+interface DateInfoConfig {
+  start: DateSource | null;
+  startAt: DateSource | null;
+  end: DateSource | null;
+  endAt: DateSource | null;
+  isAllDay: boolean;
   span: number;
   recurrence: DateRecurrenceConfig;
 }
 
-export type DateInfoSource =
-  | DateInfo
-  | DateSource
-  | Partial<DateInfoConfig<DateSource | DateInfoDate>>;
+export type DateInfoSource = DateInfo | DateSource | Partial<DateInfoConfig>;
 
 export interface DateInfoOptions {
   order: number;
-  isAllDay: boolean;
   firstDayOfWeek: DayOfWeek;
+  timezone: string;
 }
 
 export default class DateInfo {
   order: number;
-  isAllDay: boolean;
   firstDayOfWeek: DayOfWeek;
+  timezone: string | undefined = undefined;
   start: DateParts | null = null;
   end: DateParts | null = null;
   recurrence: DateRecurrence | null = null;
 
-  static toDateInfoDate(
-    source: DateInfoDate | DateSource | null | undefined,
-  ): DateInfoDate | null {
-    if (!source) return null;
-    if ((source as DateInfoDate).date != null) return source as DateInfoDate;
-    return {
-      date: source as DateSource,
-    };
-  }
-
   static from(source: DateInfoSource, opts: Partial<DateInfoOptions> = {}) {
     if (source instanceof DateInfo) return source;
-    opts.isAllDay = opts.isAllDay === false ? false : true;
-    const config: Partial<DateInfoConfig<DateInfoDate>> = {
+    const config: Partial<DateInfoConfig> = {
       start: null,
+      startAt: null,
       end: null,
+      endAt: null,
     };
-    if (source != null) {
-      const start = isDateSource(source)
-        ? (source as DateSource)
-        : (source as DateInfoConfig<DateSource>).start;
-      const end = isDateSource(source)
-        ? (source as DateSource)
-        : (source as DateInfoConfig<DateSource>).end;
-      config.start = this.toDateInfoDate(start);
-      config.end = this.toDateInfoDate(end);
+    if (isDateSource(source)) {
+      config.start = source as DateSource;
+      config.end = source as DateSource;
+    } else if (source != null) {
+      Object.assign(config, source);
     }
     return new DateInfo(config, opts);
   }
 
   private constructor(
-    config: Partial<DateInfoConfig<DateInfoDate>>,
+    config: Partial<DateInfoConfig>,
     {
       order = 0,
-      isAllDay = true,
       firstDayOfWeek = 1,
+      timezone = undefined,
     }: Partial<DateInfoOptions>,
   ) {
     this.order = order;
-    this.isAllDay = isAllDay;
     this.firstDayOfWeek = firstDayOfWeek;
+    this.timezone = timezone;
 
-    if (config.start) {
-      if (isAllDay) config.start.time = '00:00:00';
-      const date = normalizeDate(config.start.date, config.start);
-      this.start = getDateParts(date, firstDayOfWeek, config.start.timezone);
+    if (config.start || config.startAt) {
+      const opts =
+        config.startAt || config.isAllDay === false ? {} : { time: '00:00:00' };
+      const date = normalizeDate((config.startAt ?? config.start)!, opts);
+      this.start = getDateParts(date, firstDayOfWeek, timezone);
     }
 
-    if (config.end) {
-      if (isAllDay) config.end.time = '23:59:59.999';
-      const date = normalizeDate(config.end.date, config.end);
-      this.end = getDateParts(date, firstDayOfWeek, config.end.timezone);
+    if (config.end || config.endAt) {
+      const opts =
+        config.endAt || config.isAllDay === false
+          ? {}
+          : { time: '23:59:59.999' };
+      const date = normalizeDate((config.endAt ?? config.end)!, opts);
+      this.end = getDateParts(date, firstDayOfWeek, timezone);
     }
 
     // Assign recurrence if needed
@@ -110,8 +96,8 @@ export default class DateInfo {
   }
 
   get opts() {
-    const { order, isAllDay, firstDayOfWeek } = this;
-    return { order, isAllDay, firstDayOfWeek };
+    const { order, firstDayOfWeek, timezone } = this;
+    return { order, firstDayOfWeek, timezone };
   }
 
   get isDate() {
@@ -126,6 +112,36 @@ export default class DateInfo {
 
   get hasRecurrence() {
     return !!this.recurrence;
+  }
+
+  get isAllDay() {
+    const { start, end } = this;
+    if (start != null) {
+      const { hours, minutes, seconds, milliseconds } = start;
+      if (hours > 0 || minutes > 0 || seconds > 0 || milliseconds > 0)
+        return false;
+    }
+    if (end != null) {
+      const { hours, minutes, seconds, milliseconds } = end;
+      if (hours < 23 || minutes < 59 || seconds < 59 || milliseconds < 999)
+        return false;
+    }
+    return true;
+  }
+
+  get isSingleDay() {
+    const { start, end } = this;
+    return (
+      start &&
+      end &&
+      start.year === end.year &&
+      start.month === end.month &&
+      start.day === end.day
+    );
+  }
+
+  get isMultiDay() {
+    return !this.isSingleDay;
   }
 
   // iterateDatesInRange({ start, end }, fn) {
@@ -239,10 +255,18 @@ export default class DateInfo {
       return this.dateShallowIncludesDate(date1, date2);
     }
     // Both ranges
-    if (date1.start && date2.end && date1.start.dateTime > date2.end.dateTime) {
+    if (
+      date1.start &&
+      date2.end &&
+      date1.start.dateTime >= date2.end.dateTime
+    ) {
       return false;
     }
-    if (date1.end && date2.start && date1.end.dateTime < date2.start.dateTime) {
+    if (
+      date1.end &&
+      date2.start &&
+      date1.end.dateTime <= date2.start.dateTime
+    ) {
       return false;
     }
     return true;

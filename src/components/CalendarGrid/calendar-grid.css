@@ -315,15 +315,29 @@
     }
     .vc-grid-event-resizer {
       position: absolute;
-      width: 100%;
-      left: 0px;
-      cursor: ns-resize;
-      height: 7px;
-      &.is-start {
-        top: -5px;
+      &.is-horizontal {
+        top: 0px;
+        height: 100%;
+        width: 7px;
+        cursor: ew-resize;
+        &.is-start {
+          left: -5px;
+        }
+        &.is-end {
+          right: -5px;
+        }
       }
-      &.is-end {
-        bottom: -5px;
+      &.is-vertical {
+        left: 0px;
+        width: 100%;
+        height: 7px;
+        cursor: ns-resize;
+        &.is-start {
+          top: -5px;
+        }
+        &.is-end {
+          bottom: -5px;
+        }
       }
     }
   }
