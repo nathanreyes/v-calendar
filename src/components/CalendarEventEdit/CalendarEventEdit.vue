@@ -1,7 +1,7 @@
 <template>
   <div class="w-80">
     <!--Header-->
-    <div class="flex justify-end items-center justify-between py-1 px-2">
+    <div class="flex items-center justify-between py-1 px-2">
       <!--Label-->
       <input
         v-if="event.editing"
