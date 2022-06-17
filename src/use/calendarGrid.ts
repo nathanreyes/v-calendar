@@ -268,10 +268,9 @@ export function useCalendarGrid(
     return { map, groupedList };
   }
 
-  function refreshEventCells(fromAttrs = false) {
+  function doRefreshEventCells(fromAttrs = false) {
     const rWeekEvents: Set<Event>[] = weeks.value.map(() => new Set());
     const rDayCells: Cell[][] = days.value.map(() => []);
-    const weeknumber: number = weeks.value[0].weeknumber;
     const { map, groupedList } = fromAttrs
       ? getEventsFromAttrs()
       : getExistingEvents();
@@ -282,7 +281,7 @@ export function useCalendarGrid(
           event.dateInfo.isAllDay ||
           event.dateInfo.isMultiDay
         ) {
-          const wIdx = day.weeknumber - weeknumber;
+          const wIdx = day.weekPosition - weeks.value[0].weekPosition;
           rWeekEvents[wIdx].add(event);
         } else {
           rDayCells[dayIdx].push(
@@ -294,6 +293,10 @@ export function useCalendarGrid(
     eventsMap.value = map;
     weekEvents.value = sortEvents(rWeekEvents.map(wc => [...wc]));
     dayCells.value = sortCells(rDayCells);
+  }
+
+  function refreshEventCells(fromAttrs = false) {
+    requestAnimationFrame(() => doRefreshEventCells(fromAttrs));
   }
 
   watch(
