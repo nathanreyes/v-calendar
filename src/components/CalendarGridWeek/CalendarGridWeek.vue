@@ -25,11 +25,12 @@ const props = defineProps<{
 
 const { isDaily, isMonthly } = useCalendarGridContext();
 
-const cells = computed(() =>
-  props.events.map(e =>
+const cells = computed(() => {
+  if (!props.events) return [];
+  return props.events.map(e =>
     createWeekCell(e, { days: props.days, isDaily, isMonthly }),
-  ),
-);
+  );
+});
 
 const weekCellsStyle = computed(() => {
   const numDays = props.days.length;
