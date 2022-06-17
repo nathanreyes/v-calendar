@@ -62,7 +62,7 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue';
 import { popoverDirective } from '../../utils/popovers';
-import { Cell } from '../../use/calendarCell';
+import { Cell } from '../../utils/calendar/cell';
 
 export default defineComponent({
   name: 'CalendarCell',

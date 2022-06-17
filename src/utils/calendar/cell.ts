@@ -1,4 +1,4 @@
-import { ComputedRef, Ref, StyleValue, computed, reactive, ref } from 'vue';
+import { ComputedRef, Ref, computed, reactive, ref } from 'vue';
 import { CalendarDay } from '../locale';
 import { roundTenth } from '../helpers';
 import DateInfo from '../dateInfo';
@@ -38,7 +38,7 @@ export interface Cell {
   isXs: boolean;
   isSm: boolean;
   isMd: boolean;
-  style: StyleValue;
+  style: any;
   label: string;
   dateLabel: string;
   resizing: boolean;
