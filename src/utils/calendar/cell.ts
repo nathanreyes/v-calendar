@@ -163,8 +163,8 @@ export function createWeekCell(event: Event, ctx: WeekCellContext) {
 
   const style = computed(() => {
     if (!range.value.intersectsDate(event.dateInfo)) return '';
-    let gridColumnStart = -1;
-    let gridColumnEnd = days.length;
+    let gridColumnStart = 1;
+    let gridColumnEnd = days.length + 1;
     const { start, end } = event.dateInfo;
 
     for (let i = 0; i < days.length; i++) {
