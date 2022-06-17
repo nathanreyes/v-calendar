@@ -520,8 +520,8 @@ export default class Locale {
         const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
-        const weeknumber = weeknumbers[w - 1];
-        const isoWeeknumber = isoWeeknumbers[w - 1];
+        const weeknumber = weeknumbers[0] + w - 1;
+        const isoWeeknumber = isoWeeknumbers[0] + w - 1;
         const isToday =
           day === todayDay && month === todayMonth && year === todayYear;
         const isFirstDay = thisMonth && day === 1;
