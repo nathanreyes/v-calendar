@@ -364,7 +364,7 @@ export function useCalendarGrid(
 
   // #region Resizing
 
-  function startResizingCells(
+  function startResizingEvents(
     position: number,
     day: CalendarDay,
     event: Event,
@@ -389,9 +389,9 @@ export function useCalendarGrid(
       isNew,
       ms,
     };
-    forSelectedEvents(selectedCell => {
-      emit('will-resize-event', selectedCell);
-      selectedCell.startResize(day, isStart);
+    forSelectedEvents(event => {
+      emit('will-resize-event', event);
+      event.startResize(day, isStart);
     });
   }
 
@@ -466,9 +466,9 @@ export function useCalendarGrid(
     if (!dragging.value) return;
     dragging.value = false;
     dragOrigin = null;
-    forSelectedEvents(cell => {
-      emit('did-move-event', cell);
-      cell.stopDrag();
+    forSelectedEvents(event => {
+      emit('did-move-event', event);
+      event.stopDrag();
     });
   }
 
@@ -552,26 +552,26 @@ export function useCalendarGrid(
       case 'EVENT_RESIZE_START_CURSOR_DOWN': {
         if (!evt) return;
         if (!evt.selected) deselectAllEvents();
-        startResizingCells(position, day, evt, true, false);
+        startResizingEvents(position, day, evt, true, false);
         state.value = 'RESIZE_MONITOR';
         break;
       }
       case 'EVENT_RESIZE_START_CURSOR_DOWN_SHIFT': {
         if (!evt) return;
-        startResizingCells(position, day, evt, true, false);
+        startResizingEvents(position, day, evt, true, false);
         state.value = 'RESIZE_MONITOR';
         break;
       }
       case 'EVENT_RESIZE_END_CURSOR_DOWN': {
         if (!evt) return;
         if (!evt.selected) deselectAllEvents();
-        startResizingCells(position, day, evt, false, false);
+        startResizingEvents(position, day, evt, false, false);
         state.value = 'RESIZE_MONITOR';
         break;
       }
       case 'EVENT_RESIZE_END_CURSOR_DOWN_SHIFT': {
         if (!evt) return;
-        startResizingCells(position, day, evt, false, false);
+        startResizingEvents(position, day, evt, false, false);
         state.value = 'RESIZE_MONITOR';
         break;
       }
@@ -610,7 +610,7 @@ export function useCalendarGrid(
         deselectAllEvents();
         const { position } = createOrigin.value;
         const evt = createNewEvent(position, day);
-        startResizingCells(position, day, evt, false, true);
+        startResizingEvents(position, day, evt, false, true);
         updateResizingEvents(position, day);
         state.value = 'RESIZE_MONITOR';
         break;
