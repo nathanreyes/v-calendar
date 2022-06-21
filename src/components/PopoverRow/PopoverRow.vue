@@ -19,6 +19,7 @@ import { childMixin } from '../../utils/mixins';
 
 export default {
   name: 'PopoverRow',
+  compatConfig: { MODE: 3 },
   mixins: [childMixin],
   props: {
     attribute: Object,

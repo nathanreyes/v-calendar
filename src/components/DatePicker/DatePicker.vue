@@ -44,6 +44,7 @@ const RANGE_PRIORITY = {
 
 export default {
   name: 'DatePicker',
+  compatConfig: { MODE: 3 },
   emits: [
     'update:modelValue',
     'drag',

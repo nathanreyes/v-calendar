@@ -20,6 +20,7 @@ const icons = {
 };
 
 export default {
+  compatConfig: { MODE: 3 },
   props: ['name'],
   data() {
     return {
