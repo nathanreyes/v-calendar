@@ -56,7 +56,7 @@ export default {
 If you would still like to provide [plugin defaults](../api/defaults.md), call `setupCalendar` before using any components.
 
 ```js
-import { setupCalendar} from 'v-calendar'
+import { setupCalendar } from 'v-calendar'
 
 // main.js
 setupCalendar({
