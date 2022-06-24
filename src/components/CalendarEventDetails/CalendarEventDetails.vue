@@ -37,7 +37,6 @@ export default defineComponent({
   setup(props) {
     const single = computed(() => {
       if (!props.events.length || props.events.length > 1) return null;
-      console.log('return');
       return props.events[0];
     });
     const startDate = ref(new Date());

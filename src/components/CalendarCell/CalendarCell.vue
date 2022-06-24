@@ -22,14 +22,16 @@
   >
     <div class="vc-grid-event-content-wrapper">
       <div class="vc-grid-event-content">
-        <span
-          v-if="isMonthly && !cell.isAllDay"
-          class="vc-grid-event-indicator"
-        />
-        <div class="vc-grid-event-label">{{ cell.label }}</div>
-        <div v-if="!cell.isAllDay" class="vc-grid-event-date-label">
-          {{ cell.dateLabel }}
-        </div>
+        <template v-if="cell.isWeekly">
+          <div class="vc-grid-event-summary">{{ cell.summary }}</div>
+        </template>
+        <template v-else>
+          <span v-if="isMonthly" class="vc-grid-event-indicator" />
+          <div class="vc-grid-event-summary">{{ cell.summary }}</div>
+          <div class="vc-grid-event-date-label">
+            {{ cell.dateLabel }}
+          </div>
+        </template>
       </div>
       <!--Resize start-->
       <div
@@ -60,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
 import { popoverDirective } from '../../utils/popovers';
 import { Cell } from '../../utils/calendar/cell';
 

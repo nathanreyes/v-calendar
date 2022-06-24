@@ -1,17 +1,33 @@
-import { Ref, ComputedRef, ref, computed, provide, inject, watch } from 'vue';
+import {
+  Ref,
+  ComputedRef,
+  PropType,
+  ref,
+  computed,
+  provide,
+  inject,
+  watch,
+  nextTick,
+} from 'vue';
 import {
   CalendarProps,
   CalendarContext,
+  props as calendarProps,
   emits as calendarEmits,
   useCalendar,
 } from './calendar';
 import { CalendarDay, CalendarWeek, Page } from '../utils/locale';
-import { on } from '../utils/helpers';
-import { Event, createEvent as _createEvent } from '../utils/calendar/event';
+import { createGuid, on } from '../utils/helpers';
+import {
+  EventConfig,
+  Event,
+  createEvent as _createEvent,
+} from '../utils/calendar/event';
 import { Cell, createDayCell } from '../utils/calendar/cell';
 import CalendarCellPopover from '../components/CalendarCellPopover/CalendarCellPopover.vue';
 import { roundDate, MS_PER_HOUR } from '../utils/dates';
 import DateInfo from '../utils/dateInfo';
+import { pick } from '../utils/_';
 
 type GridState =
   | 'NORMAL'
@@ -64,9 +80,9 @@ interface DragOriginState {
 
 interface ResizeOriginState {
   position: number;
-  date: Date;
   day: CalendarDay;
   event: Event;
+  isWeekly: boolean;
   isStart: boolean;
   isNew: boolean;
   ms: number;
@@ -76,18 +92,155 @@ interface CreateOriginState {
   position: number;
   date: Date;
   day: CalendarDay;
+  isWeekly: boolean;
 }
+
+export interface CalendarGridProps extends CalendarProps {
+  events: EventConfig[];
+}
+
+export const props = {
+  ...calendarProps,
+  events: {
+    type: Object as PropType<EventConfig[]>,
+  },
+};
+
+// #region Messages
+
+type MessageType =
+  | 'event-create-begin'
+  | 'event-create-end'
+  | 'event-resize-begin'
+  | 'event-resize-update'
+  | 'event-resize-end'
+  | 'event-move-begin'
+  | 'event-move-update'
+  | 'event-move-end'
+  | 'event-remove';
+
+class Messages {
+  static _emit: Function;
+
+  static EventCreateBegin(event: EventConfig) {
+    return new CancellableEventMessage(this._emit, 'event-create-begin', event);
+  }
+
+  static EventCreateEnd(event: Event) {
+    return new EventMessage(this._emit, 'event-create-end', event);
+  }
+
+  static EventResizeBegin(event: Event) {
+    return new CancellableEventMessage(this._emit, 'event-resize-begin', event);
+  }
+
+  static EventResizeUpdate(event: Event, offset: ResizeOffset) {
+    return new EventResizeMessage(
+      this._emit,
+      'event-resize-update',
+      event,
+      offset,
+    );
+  }
+
+  static EventResizeEnd(event: Event) {
+    return new EventMessage(this._emit, 'event-resize-end', event);
+  }
+
+  static EventMoveBegin(event: Event) {
+    return new CancellableEventMessage(this._emit, 'event-move-begin', event);
+  }
+
+  static EventMoveUpdate(event: Event, offset: DragOffset) {
+    return new EventMoveMessage(this._emit, 'event-move-update', event, offset);
+  }
+
+  static EventMoveEnd(event: Event) {
+    return new EventMessage(this._emit, 'event-move-end', event);
+  }
+
+  static EventRemove(event: Event) {
+    return new CancellableEventMessage(this._emit, 'event-remove', event);
+  }
+}
+
+class BaseMessage {
+  private emit: Function;
+  type: MessageType;
+
+  constructor(emit: Function, type: MessageType) {
+    this.emit = emit;
+    this.type = type;
+  }
+
+  send() {
+    this.emit(this.type, this);
+    return this;
+  }
+
+  async sendAsync() {
+    this.emit(this.type, this);
+    await nextTick();
+    return this;
+  }
+}
+
+class EventMessage<T extends Event | EventConfig> extends BaseMessage {
+  event: T;
+  constructor(emit: Function, type: MessageType, event: T) {
+    super(emit, type);
+    this.event = event;
+  }
+}
+
+class CancellableEventMessage<
+  T extends Event | EventConfig,
+> extends EventMessage<T> {
+  cancel = false;
+}
+
+class EventResizeMessage extends CancellableEventMessage<Event> {
+  offset?: ResizeOffset;
+
+  constructor(
+    emit: Function,
+    type: MessageType,
+    event: Event,
+    offset?: ResizeOffset,
+  ) {
+    super(emit, type, event);
+    this.offset = offset;
+  }
+}
+
+class EventMoveMessage extends CancellableEventMessage<Event> {
+  offset?: DragOffset;
+
+  constructor(
+    emit: Function,
+    type: MessageType,
+    event: Event,
+    offset?: ResizeOffset,
+  ) {
+    super(emit, type, event);
+    this.offset = offset;
+  }
+}
+
+// #endregion Messages
 
 export const emits = [
   ...calendarEmits,
   'day-header-click',
-  'will-create-event',
-  'did-create-event',
-  'will-resize-event',
-  'did-resize-event',
-  'will-move-event',
-  'did-move-event',
-  'remove-event',
+  'event-create-begin',
+  'event-create-end',
+  'event-resize-begin',
+  'event-resize-update',
+  'event-resize-end',
+  'event-move-begin',
+  'event-move-update',
+  'event-move-end',
+  'event-remove',
 ];
 
 const SNAP_MINUTES = 15;
@@ -95,7 +248,7 @@ const PIXELS_PER_HOUR = 50;
 const contextKey = '__vc_grid_context__';
 
 export function useCalendarGrid(
-  props: CalendarProps,
+  props: CalendarGridProps,
   ctx: any,
 ): CalendarGridContext {
   const { emit } = ctx;
@@ -104,12 +257,12 @@ export function useCalendarGrid(
   const dailyGridRef = ref<HTMLElement | null>(null);
   const weeklyGridRef = ref<HTMLElement | null>(null);
   let activeGridRef = ref<HTMLElement | null>(null);
+  Messages._emit = emit;
 
   const {
     view,
     isDaily,
     isMonthly,
-    dayAttributes,
     pages,
     firstPage,
     locale,
@@ -160,6 +313,12 @@ export function useCalendarGrid(
 
   const hasSelectedEvents = computed(() => selectedEventsCount.value > 0);
 
+  const gridStyle = computed(() => {
+    return {
+      height: `${24 * pixelsPerHour.value}px`,
+    };
+  });
+
   function getEventContext() {
     return {
       locale,
@@ -172,12 +331,6 @@ export function useCalendarGrid(
       pixelsPerHour: pixelsPerHour.value,
     };
   }
-
-  const gridStyle = computed(() => {
-    return {
-      height: `${24 * pixelsPerHour.value}px`,
-    };
-  });
 
   // #region Event details
 
@@ -206,17 +359,42 @@ export function useCalendarGrid(
 
   // #region Util
 
-  function createEvent(key: string, event: any, dateInfo: DateInfo) {
-    const existingEvent = events.value.find(e => e.key === key);
+  function createEventFromExisting(config: EventConfig, dateInfo?: DateInfo) {
+    const pickProps = ['selected'];
+    const existingEvent = pick(
+      events.value.find(e => e.key === config.key),
+      pickProps,
+    );
     return _createEvent(
       {
-        key,
         ...existingEvent,
-        ...event,
+        ...config,
         dateInfo,
       },
       getEventContext(),
     );
+  }
+
+  function createNewEvent(date: Date, isWeekly: boolean) {
+    const msg = Messages.EventCreateBegin({
+      key: createGuid(),
+      start: date,
+      end: date,
+      isAllDay: isWeekly,
+    }).send();
+    if (msg.cancel || !msg.event) return;
+    const event = _createEvent(msg.event, getEventContext());
+    eventsMap.value[event.key] = event;
+    refreshEventCells();
+    return event;
+  }
+
+  function removeEvent(event: Event) {
+    const msg = Messages.EventRemove(event).send();
+    if (msg.cancel) return;
+    delete eventsMap.value[event.key];
+    refreshEventCells();
+    hideCellPopover();
   }
 
   function sortEvents(e: Event[][]) {
@@ -233,54 +411,33 @@ export function useCalendarGrid(
     return e;
   }
 
-  function getEventsFromAttrs() {
-    const map: Record<string, Event> = {};
-    const groupedList = days.value.map(day => {
-      const group: { day: CalendarDay; events: Event[] } = { day, events: [] };
-      const attrs = dayAttributes.value[day.id];
-      if (!attrs) return group;
-      attrs.forEach(attr => {
-        if (!attr.dates) return;
-        attr.dates.forEach((dateInfo: DateInfo) => {
-          const key = attr.key?.toString() ?? '';
-          map[key] = map[key] || createEvent(key, attr.event, dateInfo);
-          group.events.push(map[key]);
-        });
-      });
-      return group;
-    });
-    return { map, groupedList };
+  function getEventsFromProps() {
+    return props.events.reduce((map, config) => {
+      map[config.key] = map[config.key] || createEventFromExisting(config);
+      return map;
+    }, {} as Record<any, Event>);
   }
 
-  function getExistingEvents() {
-    const map = eventsMap.value;
-    const groupedList = days.value.map(day => {
+  function groupEvents(map: Record<any, Event>, evts: Event[]) {
+    return days.value.map(day => {
       const group: { day: CalendarDay; events: Event[] } = { day, events: [] };
-      events.value.forEach(event => {
-        if (event.dateInfo.intersectsDay(day)) {
-          const key = event.key;
-          map[key] = eventsMap.value[key];
-          if (map[key]) group.events.push(map[key]);
+      evts.forEach(evt => {
+        if (evt.dateInfo.intersectsDay(day) && map[evt.key]) {
+          group.events.push(map[evt.key]);
         }
       });
       return group;
     });
-    return { map, groupedList };
   }
 
-  function doRefreshEventCells(fromAttrs = false) {
+  function doRefreshEventCells() {
     const rWeekEvents: Set<Event>[] = weeks.value.map(() => new Set());
     const rDayCells: Cell[][] = days.value.map(() => []);
-    const { map, groupedList } = fromAttrs
-      ? getEventsFromAttrs()
-      : getExistingEvents();
-    groupedList.forEach(({ day, events: evts }, dayIdx) => {
+
+    const groupedEvents = groupEvents(eventsMap.value, events.value);
+    groupedEvents.forEach(({ day, events: evts }, dayIdx) => {
       evts.forEach(event => {
-        if (
-          isMonthly.value ||
-          event.dateInfo.isAllDay ||
-          event.dateInfo.isMultiDay
-        ) {
+        if (isMonthly.value || event.isWeekly) {
           const wIdx = day.weekPosition - weeks.value[0].weekPosition;
           rWeekEvents[wIdx].add(event);
         } else {
@@ -290,29 +447,17 @@ export function useCalendarGrid(
         }
       });
     });
-    eventsMap.value = map;
     weekEvents.value = sortEvents(rWeekEvents.map(wc => [...wc]));
     dayCells.value = sortCells(rDayCells);
   }
 
-  function refreshEventCells(fromAttrs = false) {
-    requestAnimationFrame(() => doRefreshEventCells(fromAttrs));
+  function refreshEventCells() {
+    requestAnimationFrame(() => doRefreshEventCells());
   }
 
-  watch(
-    [firstPage, dayAttributes],
-    () => {
-      refreshEventCells(true);
-    },
-    { immediate: true },
-  );
-
-  watch([view], () => {
-    deselectAllEvents();
-  });
-
   function getMsFromPosition(position: number) {
-    return (position / pixelsPerHour.value) * MS_PER_HOUR;
+    const hours = Math.max(Math.min(position / pixelsPerHour.value, 24), 0);
+    return hours * MS_PER_HOUR;
   }
 
   function getDateFromPosition(
@@ -323,156 +468,9 @@ export function useCalendarGrid(
   ) {
     const startTime = day.range.start.getTime();
     const ms = getMsFromPosition(position);
-    return roundDate(startTime + ms + offsetMs, snapMs);
+    const date = roundDate(startTime + ms + offsetMs, snapMs);
+    return date;
   }
-
-  // #endregion Util
-
-  // #region Cell Operations
-
-  function forSelectedEvents(fn: (event: Event) => void) {
-    selectedEvents.value.forEach(e => fn(e));
-  }
-
-  function deselectAllEvents() {
-    forSelectedEvents(cell => (cell.selected = false));
-  }
-
-  function createNewEvent(position: number, day: CalendarDay) {
-    const date = getDateFromPosition(position, day);
-    const isAllDay = isMonthly.value;
-    const dateInfo = DateInfo.from({ start: date, end: date, isAllDay });
-    const event = _createEvent(
-      {
-        dateInfo,
-      },
-      getEventContext(),
-    );
-    if (!isAllDay) event.resizeToConstraints();
-    emit('will-create-event', event);
-    eventsMap.value[event.key] = event;
-    refreshEventCells(false);
-    return event;
-  }
-
-  function removeEvent(event: Event) {
-    emit('remove-event', event);
-    hideCellPopover();
-  }
-
-  // #endregion Cell Operations
-
-  // #region Resizing
-
-  function startResizingEvents(
-    position: number,
-    day: CalendarDay,
-    event: Event,
-    isStart = false,
-    isNew = false,
-  ) {
-    if (active.value) return;
-    resizing.value = true;
-    event.selected = true;
-    const date = isMonthly.value
-      ? isStart
-        ? day.range.start
-        : day.range.end
-      : getDateFromPosition(position, day, 0, 0);
-    const ms = getMsFromPosition(position);
-    resizeOrigin = {
-      position,
-      day,
-      date,
-      event,
-      isStart,
-      isNew,
-      ms,
-    };
-    forSelectedEvents(event => {
-      emit('will-resize-event', event);
-      event.startResize(day, isStart);
-    });
-  }
-
-  function updateResizingEvents(position: number, day: CalendarDay) {
-    if (!resizing.value || !resizeOrigin) return;
-    const offset = {
-      weeks: day.weekPosition - resizeOrigin.day.weekPosition,
-      weekdays: day.weekdayPosition - resizeOrigin.day.weekdayPosition,
-      ms: getMsFromPosition(position) - resizeOrigin.ms,
-    };
-    forSelectedEvents(cell => cell.updateResize(offset));
-  }
-
-  function stopResizingEvents() {
-    if (!resizing.value || !resizeOrigin) return;
-    forSelectedEvents(event => {
-      if (resizeOrigin!.isNew && event === resizeOrigin!.event) {
-        emit('did-create-event', event);
-        showCellPopover(event);
-      } else {
-        emit('did-resize-event', event);
-      }
-      event.stopResize();
-    });
-    resizing.value = false;
-    resizeOrigin = null;
-  }
-
-  // #endregion Resizing
-
-  // #region Dragging
-
-  function startDraggingEvents(
-    position: number,
-    day: CalendarDay,
-    event: Event,
-  ) {
-    if (active.value) return;
-    dragging.value = true;
-    const date = getDateFromPosition(position, day, 0, 0);
-    const eventSelected = event.selected;
-    event.selected = true;
-    const ms = getMsFromPosition(position);
-    dragOrigin = {
-      position,
-      date,
-      day,
-      event,
-      eventSelected,
-      ms,
-    };
-    selectedEvents.value.forEach(event => {
-      emit('will-move-event', event);
-      event.startDrag(day);
-    });
-  }
-
-  function updateDraggingEvents(position: number, day: CalendarDay) {
-    if (!dragging.value || !dragOrigin) return;
-    const offset = {
-      weeks: day.weekPosition - dragOrigin.day.weekPosition,
-      weekdays: day.weekdayPosition - dragOrigin.day.weekdayPosition,
-      ms: getMsFromPosition(position) - dragOrigin.ms,
-    };
-    forSelectedEvents(event => {
-      event.updateDrag(offset);
-    });
-    refreshEventCells(false);
-  }
-
-  function stopDraggingEvents() {
-    if (!dragging.value) return;
-    dragging.value = false;
-    dragOrigin = null;
-    forSelectedEvents(event => {
-      emit('did-move-event', event);
-      event.stopDrag();
-    });
-  }
-
-  // #endregion Dragging
 
   const getPositionFromMouseEvent = (
     gridEl: HTMLElement,
@@ -517,6 +515,171 @@ export function useCalendarGrid(
     return days.value[idx];
   };
 
+  // #endregion Util
+
+  // #region Cell Operations
+
+  function forSelectedEvents(fn: (event: Event) => void) {
+    selectedEvents.value.forEach(e => fn(e));
+  }
+
+  function deselectAllEvents() {
+    forSelectedEvents(cell => (cell.selected = false));
+  }
+
+  // #endregion Cell Operations
+
+  // #region Resizing
+
+  function startResizingEvents(
+    position: number,
+    day: CalendarDay,
+    event: Event,
+    isStart: boolean,
+    isNew: boolean,
+  ) {
+    if (active.value) return;
+    resizing.value = true;
+    event.selected = true;
+    const isWeekly = activeGridRef === weeklyGridRef;
+    const ms = getMsFromPosition(position);
+    resizeOrigin = {
+      position,
+      day,
+      event,
+      isWeekly,
+      isStart,
+      isNew,
+      ms,
+    };
+    forSelectedEvents(event => {
+      const msg = Messages.EventResizeBegin(event).send();
+      if (msg.cancel) return;
+      event.startResize(day, isStart);
+    });
+  }
+
+  function updateResizingEvents(position: number, day: CalendarDay) {
+    if (!resizing.value || !resizeOrigin) return;
+    const offset: ResizeOffset = { weeks: 0, weekdays: 0, ms: 0 };
+    if (resizeOrigin.isWeekly) {
+      offset.weeks = day.weekPosition - resizeOrigin.day.weekPosition;
+      offset.weekdays = day.weekdayPosition - resizeOrigin.day.weekdayPosition;
+    } else {
+      offset.ms = getMsFromPosition(position) - resizeOrigin.ms;
+    }
+    forSelectedEvents(event => {
+      const msg = Messages.EventResizeUpdate(event, offset).send();
+      if (msg.cancel) return;
+      event.updateResize(offset);
+    });
+    refreshEventCells();
+  }
+
+  function stopResizingEvents() {
+    if (!resizing.value || !resizeOrigin) return;
+    forSelectedEvents(event => {
+      Messages.EventResizeEnd(event);
+      if (resizeOrigin!.isNew && event === resizeOrigin!.event) {
+        Messages.EventCreateEnd(event);
+        showCellPopover(event);
+      }
+      event.stopResize();
+    });
+    resizing.value = false;
+    resizeOrigin = null;
+  }
+
+  // #endregion Resizing
+
+  // #region Dragging
+
+  function startDraggingEvents(
+    position: number,
+    day: CalendarDay,
+    event: Event,
+  ) {
+    if (active.value) return;
+    dragging.value = true;
+    const date = getDateFromPosition(position, day, 0, 0);
+    const eventSelected = event.selected;
+    event.selected = true;
+    const ms = getMsFromPosition(position);
+    dragOrigin = {
+      position,
+      date,
+      day,
+      event,
+      eventSelected,
+      ms,
+    };
+    selectedEvents.value.forEach(event => {
+      const msg = Messages.EventMoveBegin(event).send();
+      if (msg.cancel) return;
+      event.startDrag(day);
+    });
+  }
+
+  function updateDraggingEvents(position: number, day: CalendarDay) {
+    if (!dragging.value || !dragOrigin) return;
+    const offset = {
+      weeks: day.weekPosition - dragOrigin.day.weekPosition,
+      weekdays: day.weekdayPosition - dragOrigin.day.weekdayPosition,
+      ms: getMsFromPosition(position) - dragOrigin.ms,
+    };
+    forSelectedEvents(event => {
+      const msg = Messages.EventMoveUpdate(event, offset).send();
+      if (msg.cancel) return;
+      event.updateDrag(offset);
+    });
+    refreshEventCells();
+  }
+
+  function stopDraggingEvents() {
+    if (!dragging.value || !dragOrigin) return;
+    dragging.value = false;
+    dragOrigin = null;
+    forSelectedEvents(event => {
+      Messages.EventMoveEnd(event).send();
+      event.stopDrag();
+    });
+  }
+
+  // #endregion Dragging
+
+  // #region Watchers
+
+  watch(
+    [firstPage],
+    () => {
+      refreshEventCells();
+    },
+    {
+      immediate: true,
+    },
+  );
+
+  function refreshEventsFromProps() {
+    eventsMap.value = getEventsFromProps();
+    refreshEventCells();
+  }
+
+  watch(
+    () => props.events,
+    () => {
+      refreshEventsFromProps();
+    },
+    {
+      deep: true,
+    },
+  );
+
+  watch([view], () => {
+    deselectAllEvents();
+  });
+
+  // #endregion Watchers
+
   // #region State management
 
   function handleNormalEvent(
@@ -529,8 +692,9 @@ export function useCalendarGrid(
       case 'GRID_CURSOR_DOWN':
       case 'GRID_CURSOR_DOWN_SHIFT': {
         createOrigin.value = {
-          position,
+          isWeekly: activeGridRef === weeklyGridRef,
           date: getDateFromPosition(position, day),
+          position,
           day,
         };
         state.value = 'CREATE_MONITOR';
@@ -590,10 +754,14 @@ export function useCalendarGrid(
       case 'GRID_CURSOR_UP_SHIFT': {
         deselectAllEvents();
         if (!popoverVisible()) {
-          const evt = createNewEvent(createOrigin.value.position, day);
-          evt.selected = true;
-          emit('did-create-event', evt);
-          showCellPopover(evt);
+          const { position, isWeekly } = createOrigin.value;
+          const date = getDateFromPosition(position, day);
+          const evt = createNewEvent(date, isWeekly);
+          if (evt) {
+            evt.selected = true;
+            emit('did-create-event', evt);
+            showCellPopover(evt);
+          }
         }
         state.value = 'NORMAL';
         break;
@@ -608,11 +776,14 @@ export function useCalendarGrid(
         //   return;
         // }
         deselectAllEvents();
-        const { position } = createOrigin.value;
-        const evt = createNewEvent(position, day);
-        startResizingEvents(position, day, evt, false, true);
-        updateResizingEvents(position, day);
-        state.value = 'RESIZE_MONITOR';
+        const { position, isWeekly } = createOrigin.value;
+        const date = getDateFromPosition(position, day);
+        const evt = createNewEvent(date, isWeekly);
+        if (evt) {
+          startResizingEvents(position, day, evt, false, true);
+          updateResizingEvents(position, day);
+          state.value = 'RESIZE_MONITOR';
+        }
         break;
       }
     }
@@ -752,6 +923,8 @@ export function useCalendarGrid(
 
   // #endregion State management
 
+  refreshEventsFromProps();
+
   const context = {
     ...calendar,
     dailyGridRef,
@@ -847,7 +1020,7 @@ export interface CalendarGridContext extends CalendarContext {
   pixelsPerHour: Ref<number>;
   isTouch: Ref<boolean>;
   events: Ref<Event[]>;
-  eventsMap: Ref<Record<string | number, Event>>;
+  eventsMap: Ref<Record<any, Event>>;
   selectedEvents: ComputedRef<Event[]>;
   weekEvents: Ref<Event[][]>;
   dayCells: Ref<Cell[][]>;

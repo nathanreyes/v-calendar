@@ -19,16 +19,21 @@
           >
             <div
               class="vc-grid-content"
+              :class="{
+                'is-resizing': resizing,
+                'is-dragging': dragging,
+              }"
               @mousedown="onGridMouseDown"
               ref="weeklyGridRef"
             >
+              <!--Weeks-->
               <div
                 v-for="(week, i) in weeks"
                 :key="week.id"
                 class="vc-grid-week"
                 :class="[`week-position-${week.weekPosition}`]"
               >
-                <!--Weekdays-->
+                <!--Week headers-->
                 <div
                   v-for="day in week.days"
                   :key="day.id"
@@ -37,11 +42,11 @@
                 >
                   <!--Day header-->
                   <div class="vc-grid-day-header">
-                    <!--Day header month label (first day)-->
+                    <!--Day header month label (first day in month)-->
                     <div v-if="day.day === 1" class="vc-grid-day-header-month">
                       {{ locale.formatDate(day.date, 'MMM') }}
                     </div>
-                    <!--Day header weekday label (every day in first week)-->
+                    <!--Day header weekday label (first week in month)-->
                     <div
                       v-if="week.weekPosition === 1"
                       class="vc-grid-day-header-weekday"
@@ -63,7 +68,11 @@
                   </div>
                 </div>
                 <!--Week events-->
-                <CalendarGridWeek :days="week.days" :events="weekEvents[i]" />
+                <CalendarGridWeek
+                  v-if="weekEvents[i]"
+                  :days="week.days"
+                  :events="weekEvents[i]"
+                />
               </div>
               <!--Cell popover-->
               <CalendarCellPopover ref="cellPopoverRef" @mousedown.stop />
@@ -106,7 +115,7 @@
               </template>
             </div>
           </div>
-          <div class="vc-grid">
+          <div class="vc-grid-content">
             <Transition
               :name="`vc-${transitionName}`"
               @before-enter="onTransitionBeforeEnter"
@@ -115,7 +124,6 @@
               <div class="vc-grid-inset" :key="page.id">
                 <!--All-day/Multi-day event cells-->
                 <div
-                  class="vc-grid-content"
                   :class="{
                     'is-resizing': resizing,
                     'is-dragging': dragging,
@@ -127,12 +135,15 @@
                   @keydown.escape="onGridEscapeKeydown"
                   ref="weeklyGridRef"
                 >
-                  <CalendarGridWeek :days="days" :events="weekEvents[0]" />
+                  <CalendarGridWeek
+                    v-if="weekEvents.length"
+                    :days="days"
+                    :events="weekEvents[0]"
+                  />
                   <div class="vc-grid-label vc-all-day">All-Day</div>
                 </div>
                 <!--Partial-day event cells-->
                 <div
-                  class="vc-grid-content"
                   :class="{
                     'is-resizing': resizing,
                     'is-dragging': dragging,
@@ -201,8 +212,12 @@ import CalendarGridWeek from '../CalendarGridWeek/CalendarGridWeek.vue';
 import CalendarCell from '../CalendarCell/CalendarCell.vue';
 import CalendarCellPopover from '../CalendarCellPopover/CalendarCellPopover.vue';
 import CalendarEventDetails from '../CalendarEventDetails/CalendarEventDetails.vue';
-import { CalendarProps, props } from '../../use/calendar';
-import { emits, useCalendarGrid } from '../../use/calendarGrid';
+import {
+  CalendarGridProps,
+  props,
+  emits,
+  useCalendarGrid,
+} from '../../use/calendarGrid';
 
 export default defineComponent({
   name: 'CalendarGrid',
@@ -217,7 +232,7 @@ export default defineComponent({
   emits,
   props,
   setup(props, ctx) {
-    return useCalendarGrid(props as CalendarProps, ctx);
+    return useCalendarGrid(props as CalendarGridProps, ctx);
   },
 });
 </script>

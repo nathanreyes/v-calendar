@@ -10,7 +10,7 @@
         placeholder="Add event label"
         class="color-white placeholder-gray-300 bg-gray-600 px-2 py-1 rounded border border-gray-500"
       />
-      <h3 v-else class="text-lg">{{ event.label }}</h3>
+      <h3 v-else class="text-lg">{{ event.summary }}</h3>
       <!--Buttons-->
       <div class="flex justify-end items-center space-x-3">
         <!--Edit button-->
@@ -119,6 +119,9 @@
         </svg>
         <div class="ml-2 block text-sm text-gray-200">
           <span v-if="event.isAllDay"> All Day </span>
+          <span v-else-if="event.isMultiDay"
+            >{{ event.startDateLabel }}-{{ event.endDateLabel }}</span
+          >
           <span v-else
             >{{ event.startDateLabel }}-{{ event.endDateLabel }}</span
           >

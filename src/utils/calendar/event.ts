@@ -1,13 +1,11 @@
 import { ComputedRef, computed, reactive, toRefs } from 'vue';
 import { addDays } from 'date-fns';
 import { DragOffset, ResizeOffset } from '../../use/calendarGrid';
-import { CellType } from './cell';
 import { default as Locale, CalendarDay } from '../locale';
 import { PopoverOptions } from '../popovers';
-import { createGuid } from '../helpers';
 import DateInfo from '../dateInfo';
-import { MS_PER_MINUTE, roundDate } from '../dates';
-import { clamp } from '../_';
+import { DateSource, MS_PER_MINUTE, roundDate } from '../dates';
+import { clamp, defaults } from '../_';
 
 interface ResizeOrigin {
   day: CalendarDay;
@@ -29,13 +27,30 @@ interface DragOrigin {
   durationMs: number;
 }
 
+export interface IDate {
+  date?: DateSource;
+  dateTime?: DateSource;
+  timezone?: string;
+}
+
+export interface EventConfig {
+  key?: any;
+  summary?: string;
+  description?: string;
+  start?: IDate;
+  end?: IDate;
+  isAllDay?: boolean;
+  dateInfo?: DateInfo;
+  color?: string;
+}
+
 export interface EventState {
-  key: string | number;
-  type: CellType;
-  label: string;
+  key: any;
+  summary: string;
+  description: string;
+  dateInfo: DateInfo;
   color: string;
   fill: string;
-  dateInfo: DateInfo;
   selected: boolean;
   draggable: boolean;
   dragging: boolean;
@@ -55,14 +70,18 @@ export interface Event extends EventState {
   refSelector: string;
   isAllDay: boolean;
   isMultiDay: boolean;
+  isWeekly: boolean;
   durationMs: number;
   durationMinutes: number;
   startDate: Date;
+  startDateTime: number;
   startDateLabel: string;
   endDate: Date;
+  endDateTime: number;
   endDateLabel: string;
   resizable: boolean;
   isSolid: boolean;
+  dragIsDirty: boolean;
   resizeToConstraints: () => void;
   formatDate: (date: Date, mask: string) => string;
   formatLabel: (date: Date) => string;
@@ -84,32 +103,36 @@ export interface EventContext {
   locale: ComputedRef<Locale>;
 }
 
-export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
-  if (!config.dateInfo) {
-    throw new Error('Invalid date info provided for cell.');
+export function createEvent(config: EventConfig, ctx: EventContext): Event {
+  if (!config.key) throw new Error('Key required for events');
+  let { start, end, isAllDay: allDay = false, dateInfo } = config;
+  if (!start && !end && !dateInfo) {
+    throw new Error('Start and end dates required for events');
   }
-  const state = reactive<EventState>({
-    key: createGuid(),
-    dateInfo: config.dateInfo,
-    type: 'event',
-    label: '',
-    color: 'indigo',
-    fill: 'light',
-    selected: false,
-    draggable: true,
-    dragging: false,
-    resizable: true,
-    resizing: false,
-    editing: false,
-    order: 0,
-    minDurationMinutes: 15,
-    maxDurationMinutes: 0,
-    snapMinutes: 15,
-    popover: null,
-    resizeOrigin: null,
-    dragOrigin: null,
-    ...config,
-  });
+  dateInfo = dateInfo ?? DateInfo.from({ start, end, isAllDay: allDay });
+  const state = reactive<EventState>(
+    defaults(config, {
+      key: config.key,
+      dateInfo,
+      summary: 'New Event',
+      description: '',
+      color: 'indigo',
+      fill: 'light',
+      selected: false,
+      draggable: true,
+      dragging: false,
+      resizable: true,
+      resizing: false,
+      editing: false,
+      order: 0,
+      minDurationMinutes: 15,
+      maxDurationMinutes: 0,
+      snapMinutes: 15,
+      popover: null,
+      resizeOrigin: null,
+      dragOrigin: null,
+    }),
+  );
 
   function formatDate(date: Date, mask: string) {
     return ctx.locale.value.formatDate(date, mask);
@@ -129,8 +152,10 @@ export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
   );
   const snapMs = computed(() => state.snapMinutes * MS_PER_MINUTE);
   const startDate = computed(() => state.dateInfo.start!.date);
+  const startDateTime = computed(() => startDate.value.getTime());
   const startDateLabel = computed(() => formatLabel(startDate.value));
   const endDate = computed(() => state.dateInfo.end!.date);
+  const endDateTime = computed(() => endDate.value.getTime());
   const endDateLabel = computed(() => formatLabel(endDate.value));
   const durationMs = computed(
     () => endDate.value.getTime() - startDate.value.getTime(),
@@ -139,9 +164,19 @@ export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
 
   const isAllDay = computed(() => state.dateInfo.isAllDay);
   const isMultiDay = computed(() => state.dateInfo.isMultiDay);
+  const isWeekly = computed(() => isAllDay.value || isMultiDay.value);
 
   const isSolid = computed(() => {
     return isAllDay.value || !ctx.isMonthly.value;
+  });
+
+  const dragIsDirty = computed(() => {
+    const { dragging, dragOrigin } = state;
+    if (!dragging || !dragOrigin) return false;
+    return (
+      dragOrigin.start.getTime() !== startDateTime.value ||
+      dragOrigin.end.getTime() !== endDateTime.value
+    );
   });
 
   // #region Resizing
@@ -159,36 +194,26 @@ export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
 
   function updateResize(offset: ResizeOffset) {
     if (!state.resizing || !state.resizeOrigin) return;
-    let start: Date | null = null;
-    let end: Date | null = null;
     const { resizeOrigin } = state;
-    if (ctx.isMonthly.value) {
-      const weeksToAdd = offset.weeks;
-      const weekdaysToAdd = offset.weekdays;
-      const daysToAdd = weeksToAdd * ctx.dayColumns.value + weekdaysToAdd;
-      if (state.resizeOrigin.isStart) {
-        if (daysToAdd > 0) return;
-        start = addDays(state.resizeOrigin.start, daysToAdd);
-        end = state.resizeOrigin.end;
-      } else {
-        if (daysToAdd < 0) return;
-        start = state.resizeOrigin.start;
-        end = addDays(state.resizeOrigin.end, daysToAdd);
+    let { start, end } = resizeOrigin;
+    const weeksToAdd = offset.weeks;
+    const weekdaysToAdd = offset.weekdays;
+    const daysToAdd = weeksToAdd * ctx.dayColumns.value + weekdaysToAdd;
+    const msToAdd = offset.ms;
+    if (resizeOrigin.isStart) {
+      if (daysToAdd !== 0) {
+        start = addDays(resizeOrigin.start, daysToAdd);
+      }
+      if (msToAdd !== 0) {
+        start = new Date(resizeOrigin.start.getTime() + msToAdd);
       }
     } else {
-      if (resizeOrigin.isStart) {
-        start = roundDate(
-          resizeOrigin.start.getTime() + offset.ms,
-          snapMs.value,
-        );
-        end = resizeOrigin.end;
-      } else {
-        start = resizeOrigin.start;
-        end = roundDate(resizeOrigin.end.getTime() + offset.ms, snapMs.value);
+      if (daysToAdd !== 0) {
+        end = addDays(resizeOrigin.end, daysToAdd);
       }
-
-      if (start! < resizeOrigin.day.range.start) return;
-      if (end! > resizeOrigin.day.range.end) return;
+      if (msToAdd !== 0) {
+        end = new Date(resizeOrigin.end.getTime() + msToAdd);
+      }
     }
     state.dateInfo = DateInfo.from({ start, end, isAllDay: isAllDay.value });
     resizeToConstraints();
@@ -254,7 +279,7 @@ export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
     const daysToAdd = weeksToAdd * ctx.dayColumns.value + weekdaysToAdd;
     // Set the new date info
     start = addDays(start, daysToAdd);
-    if (!ctx.isMonthly.value && !isAllDay.value) {
+    if (!ctx.isMonthly.value && !isWeekly.value) {
       const msToAdd = clamp(offset.ms, minOffsetMs, maxOffsetMs);
       start = roundDate(start.getTime() + msToAdd, snapMs.value);
     }
@@ -263,6 +288,7 @@ export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
   }
 
   function stopDrag() {
+    if (!state.dragging || !state.dragOrigin) return false;
     state.dragging = false;
     state.dragOrigin = null;
   }
@@ -290,8 +316,8 @@ export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
   }
 
   function compareTo(b: Event) {
-    if (isAllDay.value && !b.isAllDay) return -1;
-    if (!isAllDay.value && b.isAllDay) return 1;
+    if (state.selected !== b.selected) return state.selected ? -1 : 1;
+    if (isWeekly.value && !b.isWeekly) return isWeekly.value ? -1 : -1;
     return startDate.value.getTime() - b.startDate.getTime();
   }
 
@@ -300,13 +326,17 @@ export function createEvent(config: Partial<Event>, ctx: EventContext): Event {
     refSelector,
     isAllDay,
     isMultiDay,
+    isWeekly,
     durationMs,
     durationMinutes,
     startDate,
+    startDateTime,
     startDateLabel,
     endDate,
+    endDateTime,
     endDateLabel,
     isSolid,
+    dragIsDirty,
     formatDate,
     formatLabel,
     resizeToConstraints,

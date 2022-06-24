@@ -12,6 +12,15 @@
 
   .vc-grid-content {
     position: relative;
+    overflow: hidden;
+    &.is-resizing,
+    .is-resizing {
+      cursor: ns-resize;
+    }
+    &.is-dragging,
+    .is-dragging {
+      cursor: grabbing;
+    }
   }
 
   &.vc-monthly {
@@ -206,10 +215,13 @@
     &:hover {
       background-color: var(--accent-100);
     }
-    &.is-selected,
-    &.is-resizing {
+    &.is-selected {
       background-color: var(--accent-200);
       border-width: 2px;
+    }
+    &.is-resizing,
+    &.is-dragging {
+      pointer-events: none;
     }
     .vc-grid-event-date-label {
       color: var(--gray-500);
@@ -272,7 +284,7 @@
         > * + * {
           margin-left: 3px;
         }
-        .vc-grid-event-label {
+        .vc-grid-event-summary {
           flex-grow: 1;
         }
       }
@@ -288,9 +300,6 @@
     &.is-resizing,
     &.is-selected {
       z-index: 1;
-    }
-    &.is-resizing {
-      cursor: ns-resize;
     }
     .vc-grid-event-content-wrapper {
       width: 100%;
@@ -309,7 +318,7 @@
       border-radius: var(--rounded-full);
       margin-right: 3px;
     }
-    .vc-grid-event-label {
+    .vc-grid-event-summary {
       user-select: none;
       line-height: var(--leading-tight);
     }
@@ -343,20 +352,16 @@
   }
 
   .vc-grid-week-cells {
-    width: 100%;
     display: grid;
     grid-auto-rows: max-content;
     grid-auto-flow: row dense;
+    width: 100%;
+    margin: 2px 0;
     .vc-grid-event {
       position: initial;
       height: 20px;
       margin-top: 2px;
     }
-  }
-
-  .vc-grid {
-    position: relative;
-    overflow: hidden;
   }
 
   .vc-grid-layout {
@@ -371,25 +376,11 @@
 
   .vc-grid-inset {
     padding-left: var(--gutter-left);
+    padding-right: 4px;
     padding-top: var(--gutter-top);
     padding-bottom: var(--gutter-bottom);
     height: var(--grid-height);
     overflow-y: auto;
-  }
-
-  .vc-grid-content {
-    &.is-resizing {
-      cursor: ns-resize;
-    }
-    &.is-dragging {
-      cursor: grabbing;
-    }
-    &.is-resizing,
-    &.is-dragging {
-      .vc-grid-event {
-        pointer-events: none;
-      }
-    }
   }
 
   .vc-grid-day-content {

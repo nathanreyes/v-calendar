@@ -5,7 +5,6 @@ import DateInfo from '../dateInfo';
 import { MS_PER_HOUR } from '../dates';
 import { Event } from './event';
 
-export type CellType = 'event' | 'label';
 export type CellSize = '2xs' | 'xs' | 'sm' | 'md';
 
 interface CellContext {
@@ -29,6 +28,7 @@ export interface Cell {
   fill: string;
   isAllDay: boolean;
   isMultiDay: boolean;
+  isWeekly: boolean;
   selected: boolean;
   resizable: boolean;
   resizableHorizontal: boolean;
@@ -39,7 +39,7 @@ export interface Cell {
   isSm: boolean;
   isMd: boolean;
   style: any;
-  label: string;
+  summary: string;
   dateLabel: string;
   resizing: boolean;
   dragging: boolean;
@@ -51,8 +51,9 @@ function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
 
   const isAllDay = computed(() => event.isAllDay);
   const isMultiDay = computed(() => event.isMultiDay);
+  const isWeekly = computed(() => event.isWeekly);
 
-  const label = computed(() => event.label);
+  const summary = computed(() => event.summary);
   const dateLabel = computed(() => {
     if (isXs.value) return event.startDateLabel;
     return `${event.startDateLabel} - ${event.endDateLabel}`;
@@ -65,13 +66,13 @@ function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
     if (!event.resizable) return false;
     if (ctx.isDaily.value) return false;
     if (ctx.isMonthly.value) return true;
-    if (event.isAllDay || event.isMultiDay) return true;
+    if (event.isWeekly) return true;
     return false;
   });
   const resizableVertical = computed(() => {
     if (!event.resizable) return false;
     if (ctx.isMonthly.value) return false;
-    if (event.isAllDay || event.isMultiDay) return false;
+    if (event.isWeekly) return false;
     return true;
   });
 
@@ -88,7 +89,8 @@ function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
     color,
     isAllDay,
     isMultiDay,
-    label,
+    isWeekly,
+    summary,
     dateLabel,
     selected,
     resizable,
@@ -187,8 +189,7 @@ export function createWeekCell(event: Event, ctx: WeekCellContext) {
   });
 
   const fill = computed(() => {
-    if (ctx.isMonthly && !event.isAllDay && !event.isMultiDay)
-      return 'transparent';
+    if (ctx.isMonthly && !event.isWeekly) return 'transparent';
     return event.fill;
   });
 

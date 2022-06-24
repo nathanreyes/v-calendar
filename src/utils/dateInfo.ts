@@ -9,13 +9,17 @@ import {
   normalizeDate,
 } from './dates';
 
+type DateInfoDate = {
+  date?: DateSource;
+  dateTime?: DateSource;
+  timezone?: string;
+};
+
 interface DateInfoConfig {
-  start: DateSource | null;
-  startAt: DateSource | null;
-  end: DateSource | null;
-  endAt: DateSource | null;
-  isAllDay: boolean;
+  start: DateSource | DateInfoDate | null;
+  end: DateSource | DateInfoDate | null;
   span: number;
+  isAllDay: boolean;
   recurrence: DateRecurrenceConfig;
 }
 
@@ -39,9 +43,7 @@ export default class DateInfo {
     if (source instanceof DateInfo) return source;
     const config: Partial<DateInfoConfig> = {
       start: null,
-      startAt: null,
       end: null,
-      endAt: null,
     };
     if (isDateSource(source)) {
       config.start = source as DateSource;
@@ -50,6 +52,30 @@ export default class DateInfo {
       Object.assign(config, source);
     }
     return new DateInfo(config, opts);
+  }
+
+  static partsFromDateInfoSource(
+    source: DateSource | DateInfoDate,
+    isAllDay: boolean | undefined,
+    isStart: boolean,
+    opts: Partial<DateInfoOptions>,
+  ) {
+    let date = new Date();
+    const time = isStart ? '00:00:00' : '23:59:59.999';
+    if (isDateSource(source)) {
+      date = normalizeDate(source as DateSource, {
+        ...opts,
+        time: isAllDay != null && !isAllDay ? undefined : time,
+      });
+    } else {
+      const di = source as DateInfoDate;
+      date = normalizeDate((di.dateTime || di.date)!, {
+        ...opts,
+        timezone: di.timezone ?? opts.timezone,
+        time: isAllDay != null && isAllDay ? time : undefined,
+      });
+    }
+    return getDateParts(date, opts.firstDayOfWeek!, opts.timezone);
   }
 
   private constructor(
@@ -64,20 +90,22 @@ export default class DateInfo {
     this.firstDayOfWeek = firstDayOfWeek;
     this.timezone = timezone;
 
-    if (config.start || config.startAt) {
-      const opts =
-        config.startAt || config.isAllDay === false ? {} : { time: '00:00:00' };
-      const date = normalizeDate((config.startAt ?? config.start)!, opts);
-      this.start = getDateParts(date, firstDayOfWeek, timezone);
+    if (config.start) {
+      this.start = DateInfo.partsFromDateInfoSource(
+        config.start,
+        config.isAllDay,
+        true,
+        this.opts,
+      );
     }
 
-    if (config.end || config.endAt) {
-      const opts =
-        config.endAt || config.isAllDay === false
-          ? {}
-          : { time: '23:59:59.999' };
-      const date = normalizeDate((config.endAt ?? config.end)!, opts);
-      this.end = getDateParts(date, firstDayOfWeek, timezone);
+    if (config.end) {
+      this.end = DateInfo.partsFromDateInfoSource(
+        config.end,
+        config.isAllDay,
+        false,
+        this.opts,
+      );
     }
 
     // Assign recurrence if needed
