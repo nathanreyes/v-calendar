@@ -1,7 +1,12 @@
 <template>
   <div
     class="vc-time-picker"
-    :class="[{ 'vc-invalid': !modelValue.isValid, 'vc-bordered': showBorder }]"
+    :class="[
+      {
+        'vc-invalid': !modelValue.isValid || isDisabled,
+        'vc-bordered': showBorder,
+      },
+    ]"
   >
     <div>
       <svg
@@ -99,6 +104,7 @@ export default {
     theme: { type: Object, required: true },
     is24hr: { type: Boolean, default: true },
     showBorder: Boolean,
+    isDisabled: Boolean,
     hourOptions: Array,
     minuteOptions: Array,
   },
