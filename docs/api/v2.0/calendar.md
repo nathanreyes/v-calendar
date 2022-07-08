@@ -270,7 +270,7 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Params:** [`page`](./page-object.md)
 
-### `weekday`
+### `weekdayclick`
 
 **Description:** Forwarded from the `click` event for the weekday content element.
 
