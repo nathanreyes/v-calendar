@@ -14,8 +14,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "resize-observer-browser",
-      "@types/jest",
+      "resize-observer-browser"
     ],
     "paths": {
       "@/*": [

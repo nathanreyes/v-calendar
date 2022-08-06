@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import Theme from '../../../src/utils/theme';
 
 function getHighlightResult(

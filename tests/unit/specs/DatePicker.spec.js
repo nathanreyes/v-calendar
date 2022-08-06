@@ -1,7 +1,8 @@
+import { describe, it, expect } from 'vitest';
 import { h } from 'vue';
 import { mount } from '@vue/test-utils';
-import DatePicker from '@/components/DatePicker/DatePicker';
-import TimePicker from '@/components/TimePicker/TimePicker';
+import DatePicker from '@/components/DatePicker/DatePicker.vue';
+import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import dateValues from '../util/dateValues.json';
 import wait from '../util/wait';
 

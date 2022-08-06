@@ -1,5 +1,6 @@
+import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import Calendar from '@/components/Calendar/Calendar';
+import Calendar from '@/components/Calendar/Calendar.vue';
 import disabledTests from '../util/disabledTests';
 import { pad } from '@/utils/helpers';
 
