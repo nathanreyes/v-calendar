@@ -530,11 +530,9 @@ export function getDateParts(
   firstDayOfWeek: DayOfWeek,
   timezone = '',
 ): DateParts {
-  const tzDate = date;
+  let tzDate = date;
   if (timezone) {
-    const tzDate = new Date(
-      date.toLocaleString('en-US', { timeZone: timezone }),
-    );
+    tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
     tzDate.setMilliseconds(date.getMilliseconds());
   }
   const milliseconds = tzDate.getMilliseconds();
