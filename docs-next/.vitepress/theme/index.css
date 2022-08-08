@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.example {
+  @apply bg-gray-100 py-6 px-8 border-y;
+}

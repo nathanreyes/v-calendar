@@ -16,8 +16,9 @@
             v-for="issue in issues"
             :key="issue.componentName"
             :value="issue"
-            >{{ `${issue.componentName}: ${issue.componentTitle}` }}</option
           >
+            {{ `${issue.componentName}: ${issue.componentTitle}` }}
+          </option>
         </select>
         <div
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
@@ -44,16 +45,9 @@
 </template>
 
 <script>
-// https://webpack.js.org/guides/dependency-management/#require-context
-const requireComponent = require.context(
-  // Look for files in the base components directory
-  '../github',
-  // Do not look in subdirectories
-  false,
-);
+const modules = import.meta.globEager('../github/*.vue');
 // For each matching file name...
-const issues = requireComponent
-  .keys()
+const issues = Object.keys(modules)
   .filter(
     filename =>
       /.vue$/.test(filename) &&
@@ -62,11 +56,11 @@ const issues = requireComponent
   )
   .map(filename => {
     // Get the component
-    const component = requireComponent(filename);
+    const component = modules[filename];
     // Get the PascalCase version of the component name
     const componentName = filename
-      // Remove the "./" from the beginning
-      .replace(/^\.\//, '')
+      // Remove the "../github" from the beginning
+      .replace('../github/', '')
       // Remove the file extension from the end
       .replace(/\.\w+$/, '');
     return {
