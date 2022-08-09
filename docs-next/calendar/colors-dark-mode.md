@@ -5,42 +5,62 @@ export default {
       {
         value: 'gray',
         label: 'Gray',
+        class: 'text-gray-800 hover:bg-gray-100 border border-gray-500',
+        selectedClass: 'bg-gray-500 ',
       },
       {
         value: 'red',
         label: 'Red',
+        class: 'text-red-800 hover:bg-red-100 border-red-500',
+        selectedClass: 'bg-red-500 ',
       },
       {
         value: 'orange',
         label: 'Orange',
+        class: 'text-orange-800 hover:bg-orange-100 border-orange-500',
+        selectedClass: 'bg-orange-500 ',
       },
       {
         value: 'yellow',
         label: 'Yellow',
+        class: 'text-yellow-800 hover:bg-yellow-100 border-yellow-500',
+        selectedClass: 'bg-yellow-500 ',
       },
       {
         value: 'green',
         label: 'Green',
+        class: 'text-green-800 hover:bg-green-100 border-green-500',
+        selectedClass: 'bg-green-500 ',
       },
       {
         value: 'teal',
         label: 'Teal',
+        class: 'text-teal-800 hover:bg-teal-100 border-teal-500',
+        selectedClass: 'bg-teal-500 ',
       },
       {
         value: 'blue',
         label: 'Blue',
+        class: 'text-blue-800 hover:bg-blue-100 border-blue-500',
+        selectedClass: 'bg-blue-500 ',
       },
       {
         value: 'indigo',
         label: 'Indigo',
+        class: 'text-indigo-800 hover:bg-indigo-100 border-indigo-500',
+        selectedClass: 'bg-indigo-500 ',
       },
       {
         value: 'purple',
         label: 'Purple',
+        class: 'text-purple-800 hover:bg-purple-100 border-purple-500',
+        selectedClass: 'bg-purple-500 ',
       },
       {
         value: 'pink',
         label: 'Pink',
+        class: 'text-pink-800 hover:bg-pink-100 border-pink-500',
+        selectedClass: 'bg-pink-500 ',
       },
     ];
     return {
@@ -69,17 +89,11 @@ export default {
   },
   methods: {
     colorClass(color) {
-      const sharedClasses = `inline-block text-sm border border-${
-        color.value
-      }-500 rounded py-1 mb-2 focus:outline-none w-16`;
+      const sharedClasses = `inline-block text-sm border rounded py-1 mb-2 focus:outline-none w-16`;
       if (color === this.selectedColor) {
-        return `${sharedClasses} bg-${
-          color.value
-        }-500 text-white font-semibold`;
+        return `${sharedClasses} ${color.selectedClass} text-white font-semibold`;
       }
-      return `${sharedClasses} text-${color.value}-800 hover:bg-${
-        color.value
-      }-100 font-medium`;
+      return `${sharedClasses} ${color.class} font-medium`;
     },
   },
 };
@@ -111,33 +125,33 @@ The following colors are provided out of the box: **gray**, **red**, **orange**,
       :class="colorClass(color)"
       @click="selectedColor = color"
     >{{ color.label}}</button>
-    <!-- <li class="mr-3">
-      <a
-        class="inline-block border border-blue rounded py-1 px-3 bg-blue text-white"
-        href="#"
-      >Active Pill</a>
-    </li>-->
   </div>
-  <button :class="darkClass" @click="isDark = !isDark">Dark</button>
-  <v-calendar
-    :color="selectedColor.value"
-    :is-dark="isDark"
-    :attributes="attrs"
-    :from-page="{ month: 4, year: 2019 }"
-  />
+  <div class="flex justify-center mb-2">
+    <button :class="darkClass" @click="isDark = !isDark">Dark</button>
+  </div>
+  <div class="flex justify-center">
+    <Calendar
+      :color="selectedColor.value"
+      :is-dark="isDark"
+      :attributes="attrs"
+      :from-page="{ month: 4, year: 2019 }"
+    />
+  </div>
 </div>
 
 <div class="example is-dark">
-  <v-date-picker
-    :model-value="null"
-    color="red"
-    is-dark
-    is-range
-    />
+  <div class="flex justify-center">
+    <DatePicker
+      :model-value="null"
+      color="red"
+      is-dark
+      is-range
+      />
+  </div>
 </div>
 
 ```html
-<v-date-picker
+<DatePicker
   :value="null"
   color="red"
   is-dark
