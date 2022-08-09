@@ -5,7 +5,7 @@ export default {
       {
         value: 'gray',
         label: 'Gray',
-        class: 'text-gray-800 hover:bg-gray-100 border border-gray-500',
+        class: 'text-gray-800 hover:bg-gray-100 border-gray-500',
         selectedClass: 'bg-gray-500 ',
       },
       {
@@ -107,7 +107,7 @@ You can apply a color or dark mode by using the `color` and `is-dark` props.
 The following colors are provided out of the box: **gray**, **red**, **orange**, **yellow**, **green**, **teal**, **blue**, **indigo**, **purple**, **pink**.
 :::
 
-<div class="example">
+<Example>
   <div class="flex justify-center mb-1">
     <button
       v-for="color in colors_1"
@@ -137,18 +137,16 @@ The following colors are provided out of the box: **gray**, **red**, **orange**,
       :from-page="{ month: 4, year: 2019 }"
     />
   </div>
-</div>
+</Example>
 
-<div class="example is-dark">
-  <div class="flex justify-center">
-    <DatePicker
-      :model-value="null"
-      color="red"
-      is-dark
-      is-range
-      />
-  </div>
-</div>
+<Example centered dark>
+  <DatePicker
+    :model-value="null"
+    color="red"
+    is-dark
+    is-range
+    />
+</Example>
 
 ```html
 <DatePicker

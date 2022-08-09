@@ -2,7 +2,7 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  content: ['./components/**/*.{js,ts,vue}', './**/*.md'],
+  content: ['./docs/.vitepress/components/**/*.{js,ts,vue}', './docs/**/*.md'],
   theme: {
     extend: {
       colors: {
