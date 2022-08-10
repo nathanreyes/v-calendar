@@ -20,11 +20,11 @@ In addition to the timezones supported, `UTC` may be used for the Coordinated Un
 
 In `v-calendar`, the timezone is used to set the beginning and ending time boundaries for each calendar day. As a result, a calendar attribute that displays for a user in one timezone may display differently in another timezone.
 
-<guide-timezones-range />
+<TimezonesRange />
 
 ```html
 <div>
-  <v-calendar
+  <Calendar
     :from-page="{ month: 10, year: 2020 }"
     :timezone="timezone"
     :attributes="attrs"
@@ -126,7 +126,7 @@ export default {
 
 When using the `timezone` prop with `v-date-picker`, the displayed time will reflect the time associated with the date in the specified timezone.
 
-<guide-timezones-picker-time />
+<TimezonesPickerTime />
 
 ```html
 <div>
@@ -217,7 +217,7 @@ export default {
 
 Similarly, if `mode === 'date'` and the `modelConfig.timeAssign` has been explicitly set, then the assigned time will reflect the assigned `timezone` or the local browser's timezone otherwise.
 
-<guide-timezones-picker-date />
+<TimezonesPickerDate />
 
 ```html
 <v-date-picker

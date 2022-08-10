@@ -14,12 +14,12 @@ There are 2 primary methods for navigating the calendar within the header.
 1. Navigation arrows to move forwards and backwards by a given [`step`](#month-steps) amount.
 2. Navigation popover to more easily skip to a specific month/year.
 
-<div class="example">
-  <v-calendar />
-</div>
+<Example centered>
+  <Calendar />
+</Example>
 
 ```html
-<v-calendar />
+<Calendar />
 ```
 
 ### Month Steps
@@ -28,20 +28,20 @@ By default, the calendar will navigate to the month following the last current d
 
 This default step amount is equal to the number of rows multiplied by the number of columns in a given layout (2 rows x 1 column = 2).
 
-<div class="example">
-  <v-calendar :rows="2" />
-</div>
+<Example centered>
+  <Calendar :rows="2" />
+</Example>
 
 However, the `step` prop can be used to configure a custom month interval.
 
 For example, instead of moving forward by 2 months in the previous example, we can instead force it move by 1 month.
 
-<div class="example">
-  <v-calendar :rows="2" :step="1" />
-</div>
+<Example centered>
+  <Calendar :rows="2" :step="1" />
+</Example>
 
 ```html
-<v-calendar :rows="2" :step="1" />
+<Calendar :rows="2" :step="1" />
 ```
 
 ### Min & Max Dates
@@ -50,27 +50,27 @@ If `min-date` or `max-date` props are assigned, this will disable navigation for
 
 #### Min Date
 
-<div class="example">
-  <v-calendar :min-date="new Date()" />
-</div>
+<Example centered>
+  <Calendar :min-date="new Date()" />
+</Example>
 
 ```html
-<v-calendar :min-date="new Date()" />
+<Calendar :min-date="new Date()" />
 ```
 
 #### Max Date
 
-<div class="example">
-  <v-calendar :max-date="new Date()" />
-</div>
+<Example centered>
+  <Calendar :max-date="new Date()" />
+</Example>
 
 ```html
-<v-calendar :max-date="new Date()" />
+<Calendar :max-date="new Date()" />
 ```
 
 ## Key Commands
 
-Both `v-calendar` and `v-date-picker` now support the following key commands for navigation:
+Both `Calendar` and `DatePicker` now support the following key commands for navigation:
 
 | Command | Action |
 | --- | --- |
@@ -119,19 +119,27 @@ Calling `move(num)` with a **positive** number will move **forwards** by a given
 
 Calling `move(num)` with a **negative** number will move **backwards** by a given number of months.
 
-```html
-<v-calendar ref="calendar">
-```
+<Example centered>
+  <NavigationMoveMonths />
+</Example>
 
-```js
-// Get the calendar ref
-const calendar = this.$refs.calendar
+```vue
+<template>
+  <Calendar ref="calendar">
+</template>
 
-// Move forwards 5 months (wait for transition)
-await calendar.move(5)
+<script setup>
+import { ref } from 'vue';
 
-// Move backwards 5 months (wait for transition)
-await calendar.move(-5)
+const calendar = ref(null);
+
+async function move() {
+  // Move forwards 5 months (wait for transition)
+  await calendar.value.move(5);
+  // Move backwards 5 months (wait for transition)
+  await calendar.value.move(-5);
+}
+</script>
 ```
 
 ### Move to month
@@ -139,11 +147,9 @@ await calendar.move(-5)
 Moves to a given month by calling `move(page)` with a page object with `month` and `year` keys.
 
 ```js
-// Get the calendar ref
-const calendar = this.$refs.calendar
-
+// ...
 // Moves to January, 1983
-await calendar.move({ month: 1, year: 1983 })
+await calendar.value.move({ month: 1, year: 1983 })
 ```
 
 ### Move to a date
@@ -155,18 +161,17 @@ Calling `move(date)` with a **Date** object will move to that date.
 Calling `move(date)` with a **String** will move to the converted date.
 
 ```js
-// Get the calendar ref
-const calendar = this.$refs.calendar
-
+// ...
 // Moves to today's date
-await calendar.move(new Date())
-
+await calendar.value.move(new Date())
 // Moves to my birthday
-await calendar.move(`1983-01-21`)
+await calendar.value.move(`1983-01-21`)
 ```
 
 ::: warning
 Calling `move(date)` will move to the month associated with that date. It will not focus on the date after the transition has occurred. To focus on the date, call `focusDate(date)` instead.
 :::
 
-<guide-navigation-move />
+<Example>
+  <NavigationMove />
+</Example>

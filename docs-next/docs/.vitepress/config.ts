@@ -99,5 +99,9 @@ export default {
         },
       ],
     },
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2017-present Nathan Reyes',
+    },
   },
 };

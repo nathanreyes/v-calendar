@@ -15,7 +15,7 @@ function clearDate() {
 
 # Date Time Range Picker With Rules
 
-<div class="example flex flex-col space-y-2 mt-4">
+<Example class="space-y-2 mt-4">
   <div>{{ date ? date.toISOString() : 'Empty' }}</div>
   <div class="flex">
     <button class="px-2 py-1 bg-gray-100 rounded" @click="clearDate">
@@ -23,4 +23,4 @@ function clearDate() {
     </button>
   </div>
   <DatePicker v-model="date" mode="dateTime" :rules="rules" is-range />
-</div>
+</Example>

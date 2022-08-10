@@ -1,13 +1,12 @@
 ---
 title: 'Attributes'
-sidebarDepth: 2
 ---
 
 # Attributes
 
 Attributes are what bring `v-calendar` to life. They are simply visual decorators that can be applied to specific calendar dates.
 
-<guide-attributes-intro />
+<AttributesIntro />
 
 Attributes are defined as an array of objects (each object is a separate attribute).
 
@@ -19,9 +18,7 @@ A single attribute may be displayed for single dates, date ranges and even compl
 Here is the basic structure of attributes:
 
 ```html
-<v-calendar
-  :attributes='attributes'
-  />
+<Calendar :attributes='attributes' />
 ```
 
 ```js
@@ -75,10 +72,10 @@ If you would like to force an attribute to display above (or before) all others 
 
 Let's start by displaying a simple **highlight** on today's date.
 
-<guide-attributes-highlight/>
+<AttributesHighlight />
 
 ```html
-<v-calendar :attributes='attrs' />
+<Calendar :attributes='attrs' />
 ```
 
 ```js
@@ -111,7 +108,7 @@ When simply assigning `true` to the highlight config (or any other attribute exc
 
 Here is how the default dot config would appear.
 
-<guide-attributes-dot />
+<AttributesDot />
 
 ```js
 export default {
@@ -137,7 +134,7 @@ As mentioned above, if a color is not specifically assigned to an attribute, the
 
 All attributes, except popovers, may be assigned directly to a color.
 
-<guide-attributes-highlight-color/>
+<AttributesHighlightColor />
 
 ```js
 export default {
@@ -194,10 +191,10 @@ The `none` option for `fillMode` is still available but will be deprecated in th
 
 Here is an example using each of the three fill mode types (`solid`, `light` and `outline`, respectively).
 
-<guide-attributes-highlight-custom />
+<AttributesHighlightCustom />
 
 ```html
-<v-calendar :attributes="attrs" />
+<Calendar :attributes="attrs" />
 ```
 
 ```js
@@ -237,10 +234,10 @@ data() {
 
 You may also target the `start`, `base` and `end` sections of the highlight with different configurations.
 
-<guide-attributes-highlight-range />
+<AttributesHighlightRange />
 
 ```html
-<v-calendar :from-page="{ month: 1, year: 2019 }" :attributes="attrs" />
+<Calendar :from-page="{ month: 1, year: 2019 }" :attributes="attrs" />
 ```
 
 ```js
@@ -289,10 +286,10 @@ These are the additional configuration options you may use for further dot custo
 | `class` | String | Class to apply to the dot element. |
 | `style` | Object | Style to apply to the dot element. |
 
-<guide-attributes-dots />
+<AttributesDots />
 
 ```html
-<v-calendar
+<Calendar
   :columns="$screens({ lg: 2 }, 1)"
   :from-date="new Date(2018, 0, 1)"
   :attributes="attributes"
@@ -365,10 +362,10 @@ These are the additional configuration options you may use for further bar custo
 | `class` | String | Class to apply to the bar element. |
 | `style` | Object | Style to apply to the bar element. |
 
-<guide-attributes-bars />
+<AttributesBars />
 
 ```html
-<v-calendar
+<Calendar
   :columns="$screens({ lg: 2 }, 1)"
   :from-date="new Date(2018, 0, 1)"
   :attributes="attributes"
@@ -422,13 +419,11 @@ There are 2 basic approaches to displaying popovers within attributes.
 
 Labels are the basic tooltip-style popover. They are configured as simple strings. By default, these popovers display when the user hovers over the day content and additionaly are not interactive to the user.
 
-<guide-attributes-popover-labels />
+<AttributesPopoverLabels />
 
 ```html
 <template>
-  <v-calendar
-    :attributes='attributes'
-    />
+  <Calendar :attributes='attributes' />
 </template>
 ```
 
@@ -473,7 +468,7 @@ For this example, we simply assigned a string to the `popover.label` property. T
 
 If we want to force the user to click on the day content in order to display the popover, we can set the popover's `visibility` property to `"focus"` or `"click"`.
 
-<guide-attributes-popover-labels visibility="focus" />
+<AttributesPopoverLabels visibility="focus" />
 
 ```js
     ...
@@ -484,7 +479,7 @@ If we want to force the user to click on the day content in order to display the
     ...
 ```
 
-<guide-attributes-popover-labels visibility="click" />
+<AttributesPopoverLabels visibility="click" />
 
 ```js
     ...
@@ -512,7 +507,7 @@ Here is how a bar or highlight would appear, respectively.
 
 If you would like to hide the indicator, just set the `hideIndicator` property to `true`;
 
-<guide-attributes-popover-labels visibility="hover" hide-indicators />
+<AttributesPopoverLabels visibility="hover" hide-indicators />
 
 ```js
     ...
@@ -535,15 +530,13 @@ If you are not familiar with the convention of using scoped slots in Vue.js, you
 <!-- <guide-attributes-popover-slot /> -->
 
 ```html
-<v-calendar
-  :attributes="attributes"
-  >
+<Calendar :attributes="attributes">
   <template #day-popover>
     <div>
       Using my own content now
     </div>
   </template>
-</v-calendar>
+</Calendar>
 ```
 
 ```js
@@ -586,16 +579,16 @@ Now that you are providing your own popover, you need to display the attributes 
 
 Let's walk through the process of customizing the previous example. First, let's add a header to display the date for the popover.
 
-<guide-attributes-popover-slot :step="2" />
+<AttributesPopoverSlot :step="2" />
 
 ```html
-<v-calendar :attributes="attributes">
+<Calendar :attributes="attributes">
   <template #day-popover="{ day, format, masks }">
     <div class="text-xs text-gray-300 font-semibold text-center">
       {{ format(day.date, masks.dayPopover) }}
     </div>
   </template>
-</v-calendar>
+</Calendar>
 ```
 
 For the header, we use the `format` function to format the date for the current `day`, using the default `dayPopover` mask. Note: you could also just use your own custom mask.
@@ -603,21 +596,21 @@ For the header, we use the `format` function to format the date for the current 
 Because this technique for displaying the header is common, you can extract the pre-formatted `dayTitle` property.
 
 ```html
-<v-calendar :attributes="attributes">
+<Calendar :attributes="attributes">
   <template #day-popover="{ day, dayTitle }">
     <div class="text-xs text-gray-300 font-semibold text-center">
       {{ dayTitle }}
     </div>
   </template>
-</v-calendar>
+</Calendar>
 ```
 
 Now, we just need to display the attributes for the day as well. We can do so by extracting the `attributes` array from the slot-scope expression. We'll use a simple list to display the attribute data.
 
-<guide-attributes-popover-slot :step="3" />
+<AttributesPopoverSlot :step="3" />
 
 ```html
-<v-calendar :attributes="attributes">
+<Calendar :attributes="attributes">
   <div
     slot="day-popover"
     slot-scope="{ day, dayTitle, attributes }">
@@ -632,15 +625,15 @@ Now, we just need to display the attributes for the day as well. We can do so by
       </li>
     </ul>
   </div>
-</v-calendar>
+</Calendar>
 ```
 
 Finally, if you wish to display indicators with your custom content, you can use the `v-popover-row` component included with the plugin. Just pass in the attribute for each row.
 
-<guide-attributes-popover-slot :step="4" />
+<AttributesPopoverSlot :step="4" />
 
 ```html
-<v-calendar :attributes="attributes">
+<Calendar :attributes="attributes">
   <template #day-popover="{ day, dayTitle, attributes }">
     <div>
       <div class="text-xs text-gray-300 font-semibold text-center">
@@ -654,7 +647,7 @@ Finally, if you wish to display indicators with your custom content, you can use
       </popover-row>
     </template>
   </template>
-</v-calendar>
+</Calendar>
 ```
 
 ```js

@@ -12,10 +12,10 @@
 
 # Date Time Picker With Rules
 
-<div class="example space-y-2 mt-4">
+<Example class="space-y-2 mt-4">
   <div>{{ date.toISOString() }}</div>
   <DatePicker v-model="date" mode="dateTime" :rules="rules" />
-</div>
+</Example>
 
 ```vue
 <script setup>
