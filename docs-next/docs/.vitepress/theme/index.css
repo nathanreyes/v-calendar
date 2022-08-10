@@ -59,3 +59,13 @@
 
   --vp-c-text-code: var(--vp-c-indigo-lighter);
 }
+
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .content {
+    background: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .dark .VPNavBar.has-sidebar .content {
+    background: rgba(31, 41, 55, 0.7) !important;
+  }
+}
