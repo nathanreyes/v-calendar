@@ -25,7 +25,6 @@ npm install v-calendar
 </template>
 
 <script setup>
-import { createApp } from 'vue';
 import { Calendar, DatePicker } from 'v-calendar';
 </script>
 ```

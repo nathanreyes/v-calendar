@@ -1,7 +1,7 @@
 <template>
   <Example centered>
     <Calendar
-      :from-page="{ month: 10, year: 2020 }"
+      :initial-page="{ month: 10, year: 2020 }"
       :timezone="timezone"
       :attributes="attrs"
     />

@@ -1,6 +1,6 @@
 <template>
   <Example centered>
-    <Calendar :from-page="{ month: 1, year: 2019 }" :attributes="attrs" />
+    <Calendar :initial-page="{ month: 1, year: 2019 }" :attributes="attrs" />
   </Example>
 </template>
 

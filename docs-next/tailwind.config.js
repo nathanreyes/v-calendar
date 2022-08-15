@@ -10,5 +10,5 @@ module.exports = {
       accent: colors.indigo,
     },
   },
-  // plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };

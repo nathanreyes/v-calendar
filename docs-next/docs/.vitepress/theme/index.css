@@ -36,8 +36,9 @@
 }
 
 .dark {
+  --vp-c-black: theme(colors.gray.900);
   --vp-c-bg: theme(colors.gray.800);
-  --vp-c-bg-soft: theme(colors.gray.700);
+  --vp-c-bg-soft: theme(colors.gray.900);
   --vp-c-bg-mute: theme(colors.gray.700);
   --vp-c-bg-alt: theme(colors.gray.900);
 
@@ -66,6 +67,10 @@
   }
 
   .dark .VPNavBar.has-sidebar .content {
+    background: rgba(31, 41, 55, 0.7) !important;
+  }
+
+  .dark .VPNav.no-sidebar {
     background: rgba(31, 41, 55, 0.7) !important;
   }
 }

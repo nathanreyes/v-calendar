@@ -237,7 +237,7 @@ You may also target the `start`, `base` and `end` sections of the highlight with
 <AttributesHighlightRange />
 
 ```html
-<Calendar :from-page="{ month: 1, year: 2019 }" :attributes="attrs" />
+<Calendar :initial-page="{ month: 1, year: 2019 }" :attributes="attrs" />
 ```
 
 ```js
@@ -419,7 +419,7 @@ There are 2 basic approaches to displaying popovers within attributes.
 
 Labels are the basic tooltip-style popover. They are configured as simple strings. By default, these popovers display when the user hovers over the day content and additionaly are not interactive to the user.
 
-<AttributesPopoverLabels />
+<!-- <AttributesPopoverLabels /> -->
 
 ```html
 <template>
@@ -468,7 +468,7 @@ For this example, we simply assigned a string to the `popover.label` property. T
 
 If we want to force the user to click on the day content in order to display the popover, we can set the popover's `visibility` property to `"focus"` or `"click"`.
 
-<AttributesPopoverLabels visibility="focus" />
+<!-- <AttributesPopoverLabels visibility="focus" /> -->
 
 ```js
     ...
@@ -479,7 +479,7 @@ If we want to force the user to click on the day content in order to display the
     ...
 ```
 
-<AttributesPopoverLabels visibility="click" />
+<!-- <AttributesPopoverLabels visibility="click" /> -->
 
 ```js
     ...
@@ -507,7 +507,7 @@ Here is how a bar or highlight would appear, respectively.
 
 If you would like to hide the indicator, just set the `hideIndicator` property to `true`;
 
-<AttributesPopoverLabels visibility="hover" hide-indicators />
+<!-- <AttributesPopoverLabels visibility="hover" hide-indicators /> -->
 
 ```js
     ...
@@ -579,7 +579,7 @@ Now that you are providing your own popover, you need to display the attributes 
 
 Let's walk through the process of customizing the previous example. First, let's add a header to display the date for the popover.
 
-<AttributesPopoverSlot :step="2" />
+<!-- <AttributesPopoverSlot :step="2" /> -->
 
 ```html
 <Calendar :attributes="attributes">
@@ -607,7 +607,7 @@ Because this technique for displaying the header is common, you can extract the 
 
 Now, we just need to display the attributes for the day as well. We can do so by extracting the `attributes` array from the slot-scope expression. We'll use a simple list to display the attribute data.
 
-<AttributesPopoverSlot :step="3" />
+<!-- <AttributesPopoverSlot :step="3" /> -->
 
 ```html
 <Calendar :attributes="attributes">
@@ -630,7 +630,7 @@ Now, we just need to display the attributes for the day as well. We can do so by
 
 Finally, if you wish to display indicators with your custom content, you can use the `v-popover-row` component included with the plugin. Just pass in the attribute for each row.
 
-<AttributesPopoverSlot :step="4" />
+<!-- <AttributesPopoverSlot :step="4" /> -->
 
 ```html
 <Calendar :attributes="attributes">
