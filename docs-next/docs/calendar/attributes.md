@@ -290,8 +290,7 @@ These are the additional configuration options you may use for further dot custo
 
 ```html
 <Calendar
-  :columns="$screens({ lg: 2 }, 1)"
-  :from-date="new Date(2018, 0, 1)"
+  :initial-page="new Date(2018, 0, 1)"
   :attributes="attributes"
   />
 ```
@@ -366,8 +365,7 @@ These are the additional configuration options you may use for further bar custo
 
 ```html
 <Calendar
-  :columns="$screens({ lg: 2 }, 1)"
-  :from-date="new Date(2018, 0, 1)"
+  :initial-page="{ month: 1, year: 2018 }"
   :attributes="attributes"
   />
 ```
