@@ -1,5 +1,5 @@
 import DefaultTheme from 'vitepress/theme';
-import { Calendar, CalendarGrid, DatePicker } from '@/../../src';
+import VCalendar from '@/../../src';
 import './index.css';
 
 // Autoregister components
@@ -16,9 +16,7 @@ for (const path in modules) {
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('Calendar', Calendar);
-    app.component('CalendarGrid', CalendarGrid);
-    app.component('DatePicker', DatePicker);
+    app.use(VCalendar, {});
     components.forEach(component => {
       app.component(component.name, component);
     });

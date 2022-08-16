@@ -20,7 +20,7 @@
             <li
               v-for="{ key, customData } in attributes"
               :key="key"
-              class="text-gray-100"
+              class="text-gray-900 dark:text-gray-100"
             >
               {{ customData.description }}
             </li>

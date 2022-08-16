@@ -13,19 +13,19 @@ import { ref } from 'vue';
 const attributes = ref([
   {
     // Boolean
-    bar: true,
+    content: true,
     dates: [new Date(2018, 0, 1), new Date(2018, 0, 10), new Date(2018, 0, 22)],
   },
   {
     // String
-    bar: 'red',
+    content: 'red',
     dates: [new Date(2018, 0, 4), new Date(2018, 0, 10), new Date(2018, 0, 15)],
   },
   {
     // Object
-    bar: {
+    content: {
       style: {
-        backgroundColor: 'brown',
+        color: 'purple',
       },
     },
     dates: [

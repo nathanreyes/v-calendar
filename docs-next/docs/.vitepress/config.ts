@@ -53,6 +53,10 @@ export default {
               text: 'Custom Defaults',
               link: '/getting-started/custom-defaults',
             },
+            {
+              text: 'Upgrade Guide',
+              link: '/getting-started/upgrade-guide',
+            },
           ],
         },
         {

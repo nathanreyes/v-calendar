@@ -33,10 +33,10 @@ data() {
         // and will most likely be derived from your data object
         key: Any,
         // Attribute type definitions
+        content: 'red',   // Boolean, String, Object
         highlight: true,  // Boolean, String, Object
         dot: true,        // Boolean, String, Object
         bar: true,        // Boolean, String, Object
-        content: 'red',   // Boolean, String, Object
         popover: { ... }, // Only objects allowed
         // Your custom data object for later access, if needed
         customData: { ... },
@@ -61,10 +61,6 @@ The `customData` property is used to link your own custom data object to the att
 ### Using `order`
 
 By default, attributes are ordered to display the most information possible. For example, when attributes with highlighted regions overlap, single date regions appear above date range regions, and date ranges with a later start date appear above those with an earlier start date. 
-
-<p align='center'>
-  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524511198/v-calendar/attributes-order.png' title='Ordering with highlights' width='200'>
-</p>
 
 If you would like to force an attribute to display above (or before) all others and override these rules, assign an order value greater than 0.
 
@@ -154,11 +150,11 @@ export default {
 
 Additionally, when an object is used to configure an attribute, the `color` property may be assigned as part of that configuration.
 
-Click to learn more about the custom properties for [highlights](#highlights), [dots](#dots), [bars](#bars) and [popovers](#popovers).
+Click to learn more about the custom properties for [content](#content), [highlights](#highlights), [dots](#dots), [bars](#bars) and [popovers](#popovers).
 
 ## Highlights
 
-As mentioned before, highlights may be assigned a boolean, string or object value.
+Highlights may be assigned a boolean, string or object value.
 
 ```js
 // Uses the active color (default blue)
@@ -174,7 +170,7 @@ highlight: {
 }
 ```
 
-These are all the configuration options you may use for further highlight customization:
+When using an object value, these are the properties you may use for further highlight customization:
 
 | Property | Type | Description |
 | --- | --- | --- |
@@ -185,78 +181,123 @@ These are all the configuration options you may use for further highlight custom
 | `contentClass` | String | Class to apply to the highlight content element. |
 | `contentStyle` | Object | Style to apply to the highlight content element. |
 
-:::warning
-The `none` option for `fillMode` is still available but will be deprecated in the next major release in favor of the more descriptive `outline` option.
-:::
-
 Here is an example using each of the three fill mode types (`solid`, `light` and `outline`, respectively).
 
 <AttributesHighlightCustom />
 
-```html
-<Calendar :attributes="attrs" />
-```
+```vue
+<template>
+  <Calendar :attributes="attributes" />
+</template>
 
-```js
-data() {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  return {
-    attrs: [
-      {
-        key: 'today',
-        highlight: {
-          color: 'purple',
-          fillMode: 'solid',
-          contentClass: 'italic',
-        },
-        dates: new Date(year, month, 12),
-      },
-      {
-        highlight: {
-          color: 'purple',
-          fillMode: 'light',
-        },
-        dates: new Date(year, month, 13),
-      },
-      {
-        highlight: {
-          color: 'purple',
-          fillMode: 'outline',
-        },
-        dates: new Date(year, month, 14),
-      },
-    ],
-  };
-},
-```
+<script setup>
+import { ref } from 'vue';
 
-You may also target the `start`, `base` and `end` sections of the highlight with different configurations.
-
-<AttributesHighlightRange />
-
-```html
-<Calendar :initial-page="{ month: 1, year: 2019 }" :attributes="attrs" />
-```
-
-```js
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          highlight: {
-            start: { fillMode: 'outline' },
-            base: { fillMode: 'light' },
-            end: { fillMode: 'outline' },
-          },
-          dates: { start: new Date(2019, 0, 14), end: new Date(2019, 0, 18) },
-        },
-      ],
-    };
+const date = new Date();
+const year = date.getFullYear();
+const month = date.getMonth();
+const attributes = ref([
+  {
+    key: 'today',
+    highlight: {
+      color: 'purple',
+      fillMode: 'solid',
+      contentClass: 'italic',
+    },
+    dates: new Date(year, month, 12),
   },
-};
+  {
+    highlight: {
+      color: 'purple',
+      fillMode: 'light',
+    },
+    dates: new Date(year, month, 13),
+  },
+  {
+    highlight: {
+      color: 'purple',
+      fillMode: 'outline',
+    },
+    dates: new Date(year, month, 14),
+  },
+]);
+</script>
+```
+
+## Content
+
+The day content (number label) may be configured with a boolean, string or object value.
+
+```js
+// Uses the active color (default blue)
+content: true   
+
+// Uses the red color
+content: 'red'
+
+// Configuration object
+content: {
+  style: {
+    color: 'brown',
+  }
+}
+```
+
+When using an object value, these are the properties you may use for further content customization:
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `color` | String | Color. |
+| `class` | String | Class to apply to the content element. |
+| `style` | Object | Style to apply to the content element. |
+
+<AttributesContent />
+
+```vue
+<template>
+  <Calendar
+    :initial-page="{ month: 1, year: 2018 }"
+    :attributes="attributes"
+  />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const attributes = ref([
+  {
+    // Boolean
+    content: true,
+    dates: [
+      new Date(2018, 0, 1),
+      new Date(2018, 0, 10),
+      new Date(2018, 0, 22),
+    ],
+  },
+  {
+    // String
+    content: 'red',
+    dates: [
+      new Date(2018, 0, 4),
+      new Date(2018, 0, 10),
+      new Date(2018, 0, 15),
+    ],
+  },
+  {
+    // Object
+    content: {
+      style: {
+        color: 'purple',
+      },
+    },
+    dates: [
+      new Date(2018, 0, 12),
+      new Date(2018, 0, 26),
+      new Date(2018, 0, 15),
+    ],
+  },
+]);
+</script>
 ```
 
 ## Dots
@@ -278,7 +319,7 @@ dot: {
 }
 ```
 
-These are the additional configuration options you may use for further dot customization:
+When using an object value, these are the properties you may use for further dot customization:
 
 | Property | Type | Description |
 | --- | --- | --- |
@@ -288,55 +329,56 @@ These are the additional configuration options you may use for further dot custo
 
 <AttributesDots />
 
-```html
-<Calendar
-  :initial-page="new Date(2018, 0, 1)"
-  :attributes="attributes"
+```vue
+<template>
+  <Calendar
+    :initial-page="{ month: 1, year: 2018 }"
+    :attributes="attributes"
   />
-```
+</template>
 
-```js
-export default {
-  data() {
-    return {
-      attributes: [
-        {
-          dot: true,
-          dates: [
-            new Date(2018, 0, 1), // Jan 1st
-            new Date(2018, 0, 10), // Jan 10th
-            new Date(2018, 0, 22), // Jan 22nd
-          ],
-        },
-        {
-          dot: 'red',
-          dates: [
-            new Date(2018, 0, 4), // Jan 4th
-            new Date(2018, 0, 10), // Jan 10th
-            new Date(2018, 0, 15), // Jan 15th
-          ],
-        },
-        {
-          dot: {
-            style: {
-              background-color: 'brown',
-            },
-          },
-          dates: [
-            new Date(2018, 0, 12), // Jan 12th
-            new Date(2018, 0, 26), // Jan 26th
-            new Date(2018, 0, 15), // Jan 15th
-          ],
-        },
-      ],
-    };
+<script setup>
+import { ref } from 'vue';
+
+const attributes = ref([
+  {
+    // Boolean
+    dot: true,
+    dates: [
+      new Date(2018, 0, 1),
+      new Date(2018, 0, 10),
+      new Date(2018, 0, 22),
+    ],
   },
-};
+  {
+    // String
+    dot: 'red',
+    dates: [
+      new Date(2018, 0, 4),
+      new Date(2018, 0, 10),
+      new Date(2018, 0, 15),
+    ],
+  },
+  {
+    // Object
+    dot: {
+      style: {
+        backgroundColor: 'brown',
+      },
+    },
+    dates: [
+      new Date(2018, 0, 12),
+      new Date(2018, 0, 26),
+      new Date(2018, 0, 15),
+    ],
+  },
+]);
+</script>
 ```
 
 ## Bars
 
-Bars may be assigned a boolean, string or object value. When more than one bar is dislayed per calendar day, they are equally spaced amongst each other. As a result, it might be a good idea to limit displaying up to 2 to 3 bars per day cell, as legibility can suffer.
+Bars may be assigned a boolean, string or object value. When more than one bar is dislayed per calendar day, they are equally spaced amongst each other. Thus, it might be a good idea to limit displaying up to 2 to 3 bars per day cell, as legibility can suffer.
 
 ```js
 // Uses the active color (default blue)
@@ -363,50 +405,75 @@ These are the additional configuration options you may use for further bar custo
 
 <AttributesBars />
 
-```html
-<Calendar
-  :initial-page="{ month: 1, year: 2018 }"
-  :attributes="attributes"
+```vue
+<template>
+  <Calendar
+    :initial-page="{ month: 1, year: 2018 }"
+    :attributes="attributes"
   />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const attributes = ref([
+  {
+    // Boolean
+    bar: true,
+    dates: [new Date(2018, 0, 1), new Date(2018, 0, 10), new Date(2018, 0, 22)],
+  },
+  {
+    // String
+    bar: 'red',
+    dates: [new Date(2018, 0, 4), new Date(2018, 0, 10), new Date(2018, 0, 15)],
+  },
+  {
+    // Object
+    bar: {
+      style: {
+        backgroundColor: 'brown',
+      },
+    },
+    dates: [
+      new Date(2018, 0, 12),
+      new Date(2018, 0, 26),
+      new Date(2018, 0, 15),
+    ],
+  },
+]);
+</script>
 ```
 
-```js
-export default {
-  data() {
-    return {
-      attributes: [
-        {
-          bar: true,
-          dates: [
-            new Date(2018, 0, 1), // Jan 1st
-            new Date(2018, 0, 10), // Jan 10th
-            new Date(2018, 0, 22), // Jan 22nd
-          ],
-        },
-        {
-          bar: 'red',
-          dates: [
-            new Date(2018, 0, 4), // Jan 4th
-            new Date(2018, 0, 10), // Jan 10th
-            new Date(2018, 0, 15), // Jan 15th
-          ],
-        },
-        {
-          bar: {
-            style: {
-              backgroundColor: 'brown',
-            },
-          },
-          dates: [
-            new Date(2018, 0, 12), // Jan 12th
-            new Date(2018, 0, 26), // Jan 26th
-            new Date(2018, 0, 15), // Jan 15th
-          ],
-        },
-      ],
-    };
+## Target Options
+
+Each attribute type allows for targeting separate `start`, `base` and `end` sections with different configurations.
+
+For example, we could style the `fillMode` for the highlight end caps separately from the base section.
+
+<AttributesHighlightRange />
+
+```vue
+<template>
+  <Calendar
+    :initial-page="{ month: 1, year: 2019 }"
+    :attributes="attributes"
+  />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const attributes = ref([
+  {
+    highlight: {
+      start: { fillMode: 'outline' },
+      base: { fillMode: 'light' },
+      end: { fillMode: 'outline' },
+    },
+    dates: { start: new Date(2019, 0, 14), end: new Date(2019, 0, 18) },
   },
-};
+]);
+</script>
 ```
 
 ## Popovers
