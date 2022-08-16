@@ -2,7 +2,6 @@ import { App, reactive, computed } from 'vue';
 import { defaultsDeep, mapValues, get, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
-import screens from './screens.json';
 import locales from './locales';
 
 declare const window: any;
@@ -29,7 +28,6 @@ export interface Defaults {
   transition?: string;
   touch?: object;
   masks?: object;
-  screens?: object;
   locales?: any;
   datePicker?: DatePickerDefaults;
 }
@@ -43,7 +41,6 @@ const defaultConfig: Defaults = {
   transition: 'slide-h',
   touch,
   masks,
-  screens,
   locales,
   datePicker: {
     updateOnInput: true,
