@@ -90,7 +90,7 @@ For this example, we can use the `mapCurrent` function to display 2 `columns` fo
 import { useScreens } from 'vue-screen-utils';
 
 const { mapCurrent } = useScreens({ xs: '0px', sm: '640px', md: '768px', lg: '1024px' });
-const columns = mapCurrent({ xs: 1, lg: 2 });
+const columns = mapCurrent({ lg: 2 }, 1);
 </script>
 ```
 
@@ -113,8 +113,8 @@ const { mapCurrent } = useScreens({
   md: '768px',
   lg: '1024px',
 });
-const columns = mapCurrent({ xs: 1, lg: 2 });
-const isExpanded = mapCurrent({ xs: true, lg: false });
+const columns = mapCurrent({ lg: 2 }, 1);
+const isExpanded = mapCurrent({ lg: false }, true);
 </script>
 ```
 

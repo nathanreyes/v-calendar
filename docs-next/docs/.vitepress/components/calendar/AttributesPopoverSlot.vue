@@ -5,13 +5,13 @@
         <div>
           <span v-if="step === 1">Using my own content now</span>
           <div
-            class="text-xs text-gray-300 font-semibold text-center"
+            class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
             v-else-if="step === 2"
           >
             {{ format(day.date, `${masks.dayPopover}`) }}
           </div>
           <div
-            class="text-xs text-gray-300 font-semibold text-center"
+            class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
             v-else-if="step >= 3"
           >
             {{ dayTitle }}
@@ -25,13 +25,13 @@
               {{ customData.description }}
             </li>
           </ul>
-          <popover-row
+          <PopoverRow
             v-if="step === 4"
             v-for="attr in attributes"
             :key="attr.key"
             :attribute="attr"
             >{{ attr.customData.description }}
-          </popover-row>
+          </PopoverRow>
         </div>
       </template>
     </Calendar>

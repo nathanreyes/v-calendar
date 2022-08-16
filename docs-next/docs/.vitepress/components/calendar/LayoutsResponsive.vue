@@ -10,5 +10,5 @@ const { mapCurrent } = useScreens({
   md: '768px',
   lg: '1024px',
 });
-const columns = mapCurrent({ xs: 1, lg: 2 });
+const columns = mapCurrent({ lg: 2 }, 1);
 </script>
