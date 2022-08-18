@@ -24,17 +24,17 @@
   cursor: pointer;
   user-select: none;
   pointer-events: auto;
-  color: var(--gray-600);
+  color: var(--vc-header-arrow-color);
   border-width: 1px;
   border-style: solid;
   border-radius: var(--rounded);
   border-color: transparent;
   z-index: 1;
   &:hover {
-    background: var(--gray-200);
+    background: var(--vc-header-arrow-hover-bg);
   }
   &:focus {
-    border-color: var(--gray-300);
+    border-color: var(--vc-header-arrow-focus-border);
   }
   &.is-disabled {
     opacity: 0.25;
@@ -43,10 +43,10 @@
 }
 
 .vc-day-popover-container {
-  color: var(--white);
-  background-color: var(--gray-800);
+  /* color: var(--vc-day-popover-container-color); */
+  /* background-color: var(--vc-day-popover-container-bg); */
   border: 1px solid;
-  border-color: var(--gray-700);
+  /* border-color: var(--vc-day-popover-container-border); */
   border-radius: var(--rounded);
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
@@ -56,27 +56,7 @@
 
 .vc-day-popover-header {
   font-size: var(--text-xs);
-  color: var(--gray-300);
+  color: var(--vc-day-popover-header-color);
   font-weight: var(--font-semibold);
   text-align: center;
-}
-
-.vc-is-dark {
-  & .vc-arrow {
-    color: var(--white);
-    &:hover {
-      background: var(--gray-800);
-    }
-    &:focus {
-      border-color: var(--gray-700);
-    }
-  }
-  & .vc-day-popover-container {
-    color: var(--gray-800);
-    background-color: var(--white);
-    border-color: var(--gray-100);
-  }
-  & .vc-day-popover-header {
-    color: var(--gray-700);
-  }
 }

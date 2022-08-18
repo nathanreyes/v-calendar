@@ -50,7 +50,7 @@
 <script>
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
-import { useCalendarContext } from '../../use/calendar';
+import { useCurrentCalendar } from '../../use/calendar';
 
 export default {
   name: 'CalendarPane',
@@ -60,7 +60,7 @@ export default {
     page: Object,
   },
   setup() {
-    const { onWeeknumberClick } = useCalendarContext();
+    const { onWeeknumberClick } = useCurrentCalendar();
     return {
       onWeeknumberClick,
     };

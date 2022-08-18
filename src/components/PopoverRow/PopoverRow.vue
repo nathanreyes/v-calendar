@@ -6,7 +6,7 @@
       <span :style="indicator.style" :class="indicator.class" />
     </div>
     <!-- Content -->
-    <div class="vc-day-popover-row-content">
+    <div class="vc-day-popover-row-label">
       <slot>{{
         attribute.popover ? attribute.popover.label : 'No content provided'
       }}</slot>
@@ -16,57 +16,35 @@
 
 <script>
 import { defineComponent, computed } from 'vue';
-import { useCalendarContext } from '../../use/calendar';
 
 export default defineComponent({
   name: 'PopoverRow',
   props: {
     attribute: Object,
+    day: Object,
   },
   setup(props) {
-    const { theme } = useCalendarContext();
     const indicator = computed(() => {
-      const { highlight, dot, bar, popover } = props.attribute;
+      const { content, highlight, dot, bar, popover } = props.attribute;
       if (popover && popover.hideIndicator) return null;
-      if (highlight) {
-        const { color, isDark } = highlight.start;
+      if (content) {
         return {
-          style: {
-            ...theme.value.bgAccentHigh({
-              color,
-              isDark: !isDark,
-            }),
-            width: '10px',
-            height: '5px',
-            borderRadius: '3px',
-          },
+          class: `vc-bar vc-day-popover-row-bar vc-theme vc-${content.base.color}`,
+        };
+      }
+      if (highlight) {
+        return {
+          class: `vc-highlight-bg-solid vc-day-popover-row-highlight vc-theme vc-${highlight.base.color}`,
         };
       }
       if (dot) {
-        const { color, isDark } = dot.start;
         return {
-          style: {
-            ...theme.value.bgAccentHigh({
-              color,
-              isDark: !isDark,
-            }),
-            width: '5px',
-            height: '5px',
-            borderRadius: '50%',
-          },
+          class: `vc-dot vc-theme vc-${dot.base.color}`,
         };
       }
       if (bar) {
-        const { color, isDark } = bar.start;
         return {
-          style: {
-            ...theme.value.bgAccentHigh({
-              color,
-              isDark: !isDark,
-            }),
-            width: '10px',
-            height: '3px',
-          },
+          class: `vc-bar vc-day-popover-row-bar vc-theme vc-${bar.base.color}`,
         };
       }
       return null;

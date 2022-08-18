@@ -116,11 +116,7 @@ export default {
         return h(
           'div',
           {
-            class: [
-              'vc-container',
-              `vc-${this.$theme.color}`,
-              { 'vc-is-dark': this.$theme.isDark },
-            ],
+            class: ['vc-container', `vc-${this.$theme.color}`],
           },
           footer(timePicker(), 'div'),
         );
@@ -138,7 +134,7 @@ export default {
             {
               id: this.datePickerPopoverId,
               placement: 'bottom-start',
-              contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
+              contentClass: `vc-container`,
               'on-before-show': e => this.$emit('popover-will-show', e),
               'on-after-show': e => this.$emit('popover-did-show', e),
               'on-before-hide': e => this.$emit('popover-will-hide', e),

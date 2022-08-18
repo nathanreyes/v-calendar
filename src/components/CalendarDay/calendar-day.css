@@ -62,30 +62,25 @@
   user-select: none;
   cursor: pointer;
   &:hover {
-    background-color: hsla(211, 25%, 84%, 0.3);
+    background-color: var(--vc-day-content-hover-bg);
   }
   &:focus {
     font-weight: var(--font-bold);
-    background-color: hsla(211, 25%, 84%, 0.4);
+    background-color: var(--vc-day-content-focus-bg);
   }
   &.is-disabled {
-    color: var(--gray-400);
+    color: var(--vc-day-content-disabled-color);
   }
 }
 
-.vc-is-dark {
-  & .vc-day-content {
-    &:hover {
-      background-color: hsla(216, 15%, 52%, 0.3);
-    }
-    &:focus {
-      background-color: hsla(216, 15%, 52%, 0.4);
-    }
-    &.is-disabled {
-      color: var(--gray-600);
-    }
-  }
+/* ----Content---- */
+
+.vc-content {
+  font-weight: var(--font-bold);
+  color: var(--vc-content-color);
 }
+
+/* ----Highlights---- */
 
 .vc-highlights {
   overflow: hidden;
@@ -115,6 +110,38 @@
   }
 }
 
+.vc-highlight-bg-outline,
+.vc-highlight-bg-none {
+  background-color: var(--vc-highlight-outline-bg);
+  border: 2px solid;
+  border-color: var(--vc-highlight-outline-border);
+  border-radius: var(--rounded-full);
+}
+.vc-highlight-bg-light {
+  background-color: var(--vc-highlight-light-bg);
+  border-radius: var(--rounded-full);
+}
+.vc-highlight-bg-solid {
+  background-color: var(--vc-highlight-solid-bg);
+  border-radius: var(--rounded-full);
+}
+
+.vc-highlight-content-outline,
+.vc-highlight-content-none {
+  font-weight: var(--font-bold);
+  color: var(--vc-highlight-outline-content-color);
+}
+.vc-highlight-content-light {
+  font-weight: var(--font-bold);
+  color: var(--vc-highlight-light-content-color);
+}
+.vc-highlight-content-solid {
+  font-weight: var(--font-bold);
+  color: var(--vc-highlight-solid-content-color);
+}
+
+/* ----Dots---- */
+
 .vc-dots {
   display: flex;
   justify-content: center;
@@ -124,12 +151,14 @@
 .vc-dot {
   width: 5px;
   height: 5px;
-  border-radius: 50%;
+  border-radius: 9999px;
   transition: all var(--day-content-transition-time);
   &:not(:last-child) {
     margin-right: 3px;
   }
 }
+
+/* ----Bars---- */
 
 .vc-bars {
   display: flex;
@@ -142,4 +171,11 @@
   flex-grow: 1;
   height: 3px;
   transition: all var(--day-content-transition-time);
+}
+
+.vc-dot {
+  background-color: var(--vc-dot-bg);
+}
+.vc-bar {
+  background-color: var(--vc-bar-bg);
 }

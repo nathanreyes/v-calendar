@@ -9,10 +9,10 @@
     font-size: var(--text-base);
     font-weight: var(--font-medium);
     text-align: left;
-    background-color: var(--gray-200);
+    color: var(--vc-select-color);
+    background-color: var(--vc-select-bg);
     border: 2px solid;
-    border-color: var(--gray-200);
-    color: var(--gray-900);
+    border-color: var(--vc-select-border);
     padding: 0 20px 0 8px;
     border-radius: var(--rounded);
     line-height: var(--leading-tight);
@@ -21,12 +21,12 @@
     -moz-padding-start: 3px;
     background-image: none;
     &:hover {
-      color: var(--gray-600);
+      color: var(--vc-select-hover-color);
     }
     &:focus {
       outline: 0;
-      border-color: var(--accent-400);
-      background-color: var(--white);
+      border-color: var(--vc-select-focus-border);
+      background-color: var(--vc-select-focus-bg);
     }
   }
 }
@@ -44,19 +44,5 @@
     width: 16px;
     height: 16px;
     fill: currentColor;
-  }
-}
-.vc-is-dark {
-  & select {
-    background: var(--gray-700);
-    color: var(--gray-100);
-    border-color: var(--gray-700);
-    &:hover {
-      color: var(--gray-400);
-    }
-    &:focus {
-      border-color: var(--accent-500);
-      background-color: var(--gray-800);
-    }
   }
 }

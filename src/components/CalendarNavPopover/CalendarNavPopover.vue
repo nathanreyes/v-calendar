@@ -5,7 +5,7 @@
       'vc-nav-popover-container',
       'vc-theme',
       `vc-${theme.color}`,
-      { 'vc-is-dark': theme.isDark },
+      `vc-${theme.displayMode}`,
     ]"
     ref="navPopoverRef"
   >
@@ -19,23 +19,11 @@
   </Popover>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script setup>
 import Popover from '../Popover/Popover.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
-import { useCalendarContext } from '../../use/calendar';
+import { useCurrentCalendar } from '../../use/calendar';
 
-export default defineComponent({
-  components: { Popover, CalendarNav },
-  setup() {
-    const {
-      navPopoverId,
-      theme,
-      navPopoverRef,
-      canMove,
-      move,
-    } = useCalendarContext();
-    return { navPopoverId, theme, navPopoverRef, canMove, move };
-  },
-});
+const { navPopoverId, theme, navPopoverRef, canMove, move } =
+  useCurrentCalendar();
 </script>

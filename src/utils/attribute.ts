@@ -1,3 +1,4 @@
+import { Placement } from '@popperjs/core';
 import {
   default as DateInfo,
   DateInfoSource,
@@ -5,47 +6,25 @@ import {
 } from './dateInfo';
 import { arrayHasItems, createGuid } from './helpers';
 import { PopoverVisibility } from './popovers';
-import { isUndefined } from './_';
 import Theme from './theme';
 import Locale, { CalendarDay } from './locale';
-import { Placement } from '@popperjs/core';
 
-export type HighlightFillMode = 'solid' | 'light' | 'outline';
-
-export interface Glyph<T> {
-  start: T;
-  base: T;
-  end: T;
-  startEnd?: T;
-}
+import {
+  ContentConfig,
+  HighlightConfig,
+  DotConfig,
+  BarConfig,
+  ContentProfile,
+  HighlightProfile,
+  DotProfile,
+  BarProfile,
+} from './glyph';
 
 export interface GlyphProfile {
   color: string;
   class: string;
   style: Record<string, any>;
 }
-
-export interface HighlightProfile extends GlyphProfile {
-  fillMode: HighlightFillMode;
-  contentClass: string;
-  contentStyle: Record<string, any>;
-}
-
-export type Highlight = Glyph<HighlightProfile>;
-
-export type HighlightConfig =
-  | boolean
-  | string
-  | Partial<HighlightProfile | Glyph<HighlightProfile>>;
-
-export type GlyphConfig =
-  | boolean
-  | string
-  | Partial<GlyphProfile | Glyph<GlyphProfile>>;
-
-export type Content = Glyph<GlyphProfile>;
-export type Dot = Glyph<GlyphProfile>;
-export type Bar = Glyph<GlyphProfile>;
 
 export type PopoverConfig = Partial<{
   label: string;
@@ -70,10 +49,10 @@ export interface DayAttribute extends Partial<Attribute> {
 export interface AttributeConfig {
   key: string | number;
   hashcode: string;
+  content: ContentConfig;
   highlight: HighlightConfig;
-  content: GlyphConfig;
-  dot: GlyphConfig;
-  bar: GlyphConfig;
+  dot: DotConfig;
+  bar: BarConfig;
   popover: PopoverConfig;
   event: EventConfig;
   dates: DateInfo[];
@@ -87,10 +66,10 @@ export interface AttributeConfig {
 export class Attribute {
   key: string | number = '';
   hashcode = '';
-  highlight: Highlight | null = null;
-  content: Content | null = null;
-  dot: Dot | null = null;
-  bar: Bar | null = null;
+  highlight: HighlightProfile | null = null;
+  content: ContentProfile | null = null;
+  dot: DotProfile | null = null;
+  bar: BarProfile | null = null;
   event: EventConfig | null = null;
   popover: PopoverConfig | null = null;
   customData: any = null;
@@ -103,51 +82,16 @@ export class Attribute {
   pinPage = false;
   dateOpts: Partial<DateInfoOptions>;
 
-  constructor(
-    {
-      key,
-      hashcode = '',
-      highlight,
-      content,
-      dot,
-      bar,
-      popover,
-      event,
-      dates,
-      excludeDates,
-      excludeMode,
-      customData,
-      order = 0,
-      pinPage = false,
-    }: Partial<AttributeConfig>,
-    theme: Theme,
-    locale: Locale,
-  ) {
-    this.key = isUndefined(key) ? createGuid() : key;
-    this.hashcode = hashcode;
-    this.customData = customData;
-    this.order = order || 0;
+  constructor(config: Partial<AttributeConfig>, theme: Theme, locale: Locale) {
+    const { order, dates, excludeDates, excludeMode } = Object.assign(
+      this,
+      { hashcode: '', order: 0, pinPage: false },
+      config,
+    );
+    if (!this.key) this.key = createGuid();
     this.dateOpts = { order, firstDayOfWeek: locale.firstDayOfWeek };
-    this.pinPage = pinPage;
-    // Normalize attribute types
-    if (highlight) {
-      this.highlight = theme.normalizeHighlight(highlight);
-    }
-    if (content) {
-      this.content = theme.normalizeContent(content);
-    }
-    if (dot) {
-      this.dot = theme.normalizeDot(dot);
-    }
-    if (bar) {
-      this.bar = theme.normalizeBar(bar);
-    }
-    if (event) {
-      this.event = event;
-    }
-    if (popover) {
-      this.popover = popover;
-    }
+    // Normalize attribute
+    theme.normalizeGlyphs(this);
     // Assign dates
     this.dates = locale.normalizeDates(dates, this.dateOpts);
     this.hasDates = !!arrayHasItems(this.dates);

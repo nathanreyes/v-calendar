@@ -6,11 +6,11 @@
       'vc-container',
       `vc-${view}`,
       'vc-theme',
-      'vc-is-bordered',
+      'vc-bordered',
       `vc-${theme.color}`,
+      `vc-${theme.displayMode}`,
       {
-        'vc-is-expanded': isExpanded,
-        'vc-is-dark': theme.isDark,
+        'vc-expanded': isExpanded,
       },
     ]"
     @keydown="handleKeydown"

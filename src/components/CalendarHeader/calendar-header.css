@@ -5,7 +5,7 @@
   .vc-title {
     grid-row: 1;
     grid-column: title;
-    color: var(--gray-900);
+    color: var(--vc-header-title-color);
     font-weight: var(--font-semibold);
     cursor: pointer;
     user-select: none;

@@ -1,8 +1,8 @@
-import Theme from '../theme';
 import Locale from '../locale';
 import { isObject, isDate } from '../_';
 import { Attribute } from '../attribute';
 import { locales, getDefault } from '../defaults';
+import { useTheme } from '../../use/theme';
 
 export const rootMixin = {
   props: {
@@ -28,13 +28,7 @@ export const rootMixin = {
   },
   computed: {
     $theme() {
-      // Return the theme prop if it is an instance of the Theme class
-      if (this.theme instanceof Theme) return this.theme;
-      // Create the theme
-      return new Theme({
-        color: this.color,
-        isDark: this.isDark,
-      });
+      return useTheme({ color: this.color, isDark: this.isDark });
     },
     $locale() {
       // Return the locale prop if it is an instance of the Locale class

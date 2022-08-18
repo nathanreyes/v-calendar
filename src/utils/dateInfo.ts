@@ -31,6 +31,15 @@ export interface DateInfoOptions {
   timezone: string;
 }
 
+export interface DateInfoDayContext {
+  isDate: boolean;
+  hasRecurrence: boolean;
+  onStart: boolean;
+  onEnd: boolean;
+  onStartAndEnd: boolean;
+  onStartOrEnd: boolean;
+}
+
 export default class DateInfo {
   order: number;
   firstDayOfWeek: DayOfWeek;
@@ -170,6 +179,25 @@ export default class DateInfo {
 
   get isMultiDay() {
     return !this.isSingleDay;
+  }
+
+  getDayContext(day: CalendarDay): DateInfoDayContext {
+    const dayRange = day.range;
+    const { isDate, hasRecurrence, start, end } = this;
+    const startTime = start ? start.dateTime : null;
+    const endTime = end ? end.dateTime : null;
+    const onStart = startTime ? dayRange.start.getTime() <= startTime : false;
+    const onEnd = endTime ? dayRange.end.getTime() >= endTime : false;
+    const onStartAndEnd = onStart && onEnd;
+    const onStartOrEnd = onStart || onEnd;
+    return {
+      isDate,
+      hasRecurrence,
+      onStart,
+      onEnd,
+      onStartAndEnd,
+      onStartOrEnd,
+    };
   }
 
   // iterateDatesInRange({ start, end }, fn) {

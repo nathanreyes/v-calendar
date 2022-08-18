@@ -7,14 +7,14 @@
     opacity: 0.5;
   }
   &.vc-bordered {
-    border-top: 1px solid var(--gray-400);
+    border-top: 1px solid var(--vc-time-picker-border);
   }
 }
 
 .vc-time-icon {
   width: 16px;
   height: 16px;
-  color: var(--gray-600);
+  color: var(--vc-time-icon-color);
 }
 
 .vc-time-content {
@@ -33,22 +33,22 @@
 }
 
 .vc-time-weekday {
-  color: var(--gray-700);
+  color: var(--vc-time-weekday-color);
   letter-spacing: var(--tracking-wide);
 }
 
 .vc-time-month {
-  color: var(--accent-600);
+  color: var(--vc-time-month-color);
   margin-left: 8px;
 }
 
 .vc-time-day {
-  color: var(--accent-600);
+  color: var(--vc-time-day-color);
   margin-left: 4px;
 }
 
 .vc-time-year {
-  color: var(--gray-500);
+  color: var(--vc-time-year-color);
   margin-left: 8px;
 }
 
@@ -60,8 +60,8 @@
 .vc-am-pm {
   display: flex;
   align-items: center;
-  background: var(--gray-200);
-  color: var(--gray-800);
+  color: var(--vc-am-pm-color);
+  background: var(--vc-am-pm-bg);
   margin-left: 8px;
   padding: 4px;
   border-radius: var(--rounded);
@@ -75,69 +75,23 @@
     border-radius: var(--rounded);
     line-height: var(--leading-snug);
     &:hover {
-      color: var(--gray-600);
+      color: var(--vc-am-pm-button-hover-color);
     }
     &:focus {
-      border-color: var(--accent-400);
+      border-color: var(--vc-am-pm-focus-border);
     }
     &:disabled {
       opacity: 0.25;
       pointer-events: none;
     }
     &.active {
-      background: var(--accent-600);
-      color: var(--white);
+      color: var(--vc-am-pm-button-active-color);
+      background: var(--vc-am-pm-button-active-bg);
       &:hover {
-        background: var(--accent-500);
+        background: var(--vc-am-pm-button-active-hover-bg);
       }
       &:focus {
-        border-color: var(--accent-400);
-      }
-    }
-  }
-}
-
-.vc-is-dark {
-  & .vc-time-picker {
-    border-color: var(--gray-700);
-  }
-  & .vc-time-icon {
-    color: var(--gray-400);
-  }
-  & .vc-time-weekday {
-    color: var(--gray-400);
-  }
-  & .vc-time-month {
-    color: var(--accent-400);
-  }
-  & .vc-time-day {
-    color: var(--accent-400);
-  }
-  & .vc-time-year {
-    color: var(--gray-500);
-  }
-  & .vc-am-pm {
-    background: var(--gray-700);
-    &:focus {
-      border-color: var(--accent-500);
-    }
-    & button {
-      color: var(--gray-100);
-      &:hover {
-        color: var(--gray-400);
-      }
-      &:focus {
-        border-color: var(--accent-500);
-      }
-      &.active {
-        background: var(--accent-500);
-        color: var(--white);
-        &:hover {
-          background: var(--accent-600);
-        }
-        &:focus {
-          border-color: var(--accent-500);
-        }
+        border-color: var(--vc-am-pm-button-active-focus-border);
       }
     }
   }

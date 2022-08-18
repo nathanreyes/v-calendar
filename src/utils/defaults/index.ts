@@ -3,6 +3,7 @@ import { defaultsDeep, mapValues, get, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
 import locales from './locales';
+import { DarkModeConfig } from '../../use/darkMode';
 
 declare const window: any;
 
@@ -22,7 +23,7 @@ interface DatePickerDefaults {
 export interface Defaults {
   componentPrefix?: string;
   color?: string;
-  isDark?: boolean;
+  isDark?: DarkModeConfig;
   navVisibility?: string;
   titlePosition?: string;
   transition?: string;
@@ -35,7 +36,6 @@ export interface Defaults {
 const defaultConfig: Defaults = {
   componentPrefix: 'v',
   color: 'blue',
-  isDark: false,
   navVisibility: 'click',
   titlePosition: 'center',
   transition: 'slide-h',

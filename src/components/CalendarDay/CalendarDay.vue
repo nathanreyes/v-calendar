@@ -50,9 +50,9 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useCalendarContext } from '../../use/calendar';
+import { useCurrentCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
-import { Attribute, DayAttribute, PopoverConfig } from '../../utils/attribute';
+import { DayAttribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
 import { last, get, defaults } from '../../utils/_';
@@ -65,6 +65,7 @@ export default defineComponent({
   setup(props, { slots }) {
     const {
       locale,
+      theme,
       dayAttributes,
       dayPopoverId,
       onDayClick,
@@ -73,138 +74,13 @@ export default defineComponent({
       onDayFocusin,
       onDayFocusout,
       onDayKeydown,
-    } = useCalendarContext();
+    } = useCurrentCalendar();
 
     const day = computed(() => props.day as CalendarDay);
     const attributes = computed(() => dayAttributes.value[day.value.id] || []);
 
-    function processHighlight(
-      { key, highlight }: Attribute,
-      {
-        isDate,
-        hasRecurrence,
-        onStart,
-        onEnd,
-        onStartAndEnd,
-      }: {
-        isDate: boolean;
-        hasRecurrence: boolean;
-        onStart: boolean;
-        onEnd: boolean;
-        onStartAndEnd: boolean;
-      },
-      { highlights, content },
-    ) {
-      if (!highlight) return;
-      const { base, start, end } = highlight;
-      if (isDate || hasRecurrence) {
-        highlights.push({
-          key,
-          wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: ['vc-highlight', start.class],
-          style: start.style,
-        });
-        content.push({
-          key: `${key}-content`,
-          class: start.contentClass,
-          style: start.contentStyle,
-        });
-      } else if (onStartAndEnd) {
-        highlights.push({
-          key,
-          wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: ['vc-highlight', start.class],
-          style: start.style,
-        });
-        content.push({
-          key: `${key}-content`,
-          class: start.contentClass,
-          style: start.contentStyle,
-        });
-      } else if (onStart) {
-        highlights.push({
-          key: `${key}-base`,
-          wrapperClass: 'vc-day-layer vc-day-box-right-center',
-          class: ['vc-highlight vc-highlight-base-start', base.class],
-          style: base.style,
-        });
-        highlights.push({
-          key,
-          wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: ['vc-highlight', start.class],
-          style: start.style,
-        });
-        content.push({
-          key: `${key}-content`,
-          class: start.contentClass,
-          style: start.contentStyle,
-        });
-      } else if (onEnd) {
-        highlights.push({
-          key: `${key}-base`,
-          wrapperClass: 'vc-day-layer vc-day-box-left-center',
-          class: ['vc-highlight vc-highlight-base-end', base.class],
-          style: base.style,
-        });
-        highlights.push({
-          key,
-          wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: ['vc-highlight', end.class],
-          style: end.style,
-        });
-        content.push({
-          key: `${key}-content`,
-          class: end.contentClass,
-          style: end.contentStyle,
-        });
-      } else {
-        highlights.push({
-          key: `${key}-middle`,
-          wrapperClass: 'vc-day-layer vc-day-box-center-center',
-          class: ['vc-highlight vc-highlight-base-middle', base.class],
-          style: base.style,
-        });
-        content.push({
-          key: `${key}-content`,
-          class: base.contentClass,
-          style: base.contentStyle,
-        });
-      }
-    }
-
-    function processNonHighlight(
-      attr: DayAttribute,
-      itemKey,
-      { isDate, onStart, onEnd },
-      list,
-    ) {
-      if (!attr[itemKey]) return;
-      const { key } = attr;
-      const className = `vc-${itemKey}`;
-      const { base, start, end } = attr[itemKey];
-      if (isDate || onStart) {
-        list.push({
-          key,
-          class: [className, start.class],
-          style: start.style,
-        });
-      } else if (onEnd) {
-        list.push({
-          key,
-          class: [className, end.class],
-          style: end.style,
-        });
-      } else {
-        list.push({
-          key,
-          class: [className, base.class],
-          style: base.style,
-        });
-      }
-    }
-
     function processPopover(
-      attribute: Attribute,
+      attribute: DayAttribute,
       { popovers }: { popovers: PopoverConfig[] },
     ) {
       const { key, customData, popover } = attribute;
@@ -225,38 +101,13 @@ export default defineComponent({
       popovers.splice(0, 0, resolvedPopover);
     }
 
-    const glyphs = computed(() => {
-      const result = {
-        highlights: [],
-        dots: [],
-        bars: [],
+    const glyphs = computed<any>(() => {
+      const result = theme.prepareRender({
         popovers: [],
-        content: [],
-      };
+      });
       attributes.value.forEach(attr => {
-        const dayRange = day.value.range;
-        const targetDate = attr.dayDates[0];
-        const { isDate, hasRecurrence, start, end } = targetDate;
-        const startTime = start ? start.dateTime : null;
-        const endTime = end ? end.dateTime : null;
-        const onStart = startTime
-          ? dayRange.start.getTime() <= startTime
-          : false;
-        const onEnd = endTime ? dayRange.end.getTime() >= endTime : false;
-        const onStartAndEnd = onStart && onEnd;
-        const onStartOrEnd = onStart || onEnd;
-        const dateInfo = {
-          isDate,
-          hasRecurrence,
-          onStart,
-          onEnd,
-          onStartAndEnd,
-          onStartOrEnd,
-        };
-        processHighlight(attr, dateInfo, result);
-        processNonHighlight(attr, 'content', dateInfo, result.content);
-        processNonHighlight(attr, 'dot', dateInfo, result.dots);
-        processNonHighlight(attr, 'bar', dateInfo, result.bars);
+        const dayContext = attr.dayDates[0].getDayContext(day.value);
+        theme.render(attr, dayContext, result);
         processPopover(attr, result);
       });
       return result;
@@ -313,7 +164,7 @@ export default defineComponent({
         tabindex = '-1';
       }
       const classes = [
-        'vc-day-content vc-focusable',
+        'vc-day-content vc-focusable vc-theme',
         { 'is-disabled': day.value.isDisabled },
         get(last(glyphs.value.content), 'class') || '',
       ];
@@ -334,7 +185,6 @@ export default defineComponent({
       return defaults(
         {
           id: dayPopoverId.value,
-          // data: { day: day.value, attributes: attributes.value },
           data: { day, attributes },
         },
         ...popovers.value,

@@ -15,16 +15,14 @@
 
 .vc-popover-content {
   position: relative;
-
-  color: var(--white);
+  color: var(--vc-popover-content-color);
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
-  background-color: var(--gray-800);
+  background-color: var(--vc-popover-content-bg);
   border: 1px solid;
-  border-color: var(--gray-700);
+  border-color: var(--vc-popover-content-border);
   border-radius: var(--rounded-lg);
   padding: 4px;
-
   outline: none;
   z-index: 10;
   box-shadow: var(--shadow-lg);

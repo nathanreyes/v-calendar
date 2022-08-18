@@ -5,7 +5,7 @@
       'vc-day-popover-container',
       'vc-theme',
       `vc-${theme.color}`,
-      { 'vc-is-dark': theme.isDark },
+      `vc-${theme.displayMode}`,
     ]"
   >
     <template #default="{ data: { day, attributes }, hide }">
@@ -30,34 +30,21 @@
   </Popover>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import PopoverRow from '../PopoverRow/PopoverRow.vue';
-import { useCalendarContext } from '../../use/calendar';
+import { useCurrentCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
 
-export default defineComponent({
-  components: { Popover, PopoverRow },
-  setup() {
-    const context = useCalendarContext();
-    const { dayPopoverId, theme, masks, locale } = context;
-    const format = computed(() => {
-      return (date: Date, mask: string) => {
-        return locale.value.formatDate(date, mask);
-      };
-    });
-
-    return {
-      dayPopoverId,
-      theme,
-      masks,
-      locale,
-      format,
-      dayTitle(day: CalendarDay) {
-        return locale.value.formatDate(day.date, masks.value.dayPopover);
-      },
-    };
-  },
+const { dayPopoverId, theme, masks, locale } = useCurrentCalendar();
+const format = computed(() => {
+  return (date: Date, mask: string) => {
+    return locale.value.formatDate(date, mask);
+  };
 });
+
+function dayTitle(day: CalendarDay) {
+  return locale.value.formatDate(day.date, masks.value.dayPopover);
+}
 </script>

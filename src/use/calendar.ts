@@ -9,6 +9,7 @@ import {
   inject,
   ToRefs,
   ComputedRef,
+  PropType,
 } from 'vue';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
@@ -23,7 +24,6 @@ import {
   TitlePosition,
   LocaleConfig,
 } from '../utils/locale';
-import Theme from '../utils/theme';
 import {
   pageIsValid,
   pageIsEqualToPage,
@@ -40,6 +40,8 @@ import { locales, getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 import { PopoverVisibility } from '../utils/popovers';
+import { Theme, useTheme } from './theme';
+import { DarkModeConfig, DarkModeConfigObj } from './darkMode';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -80,8 +82,8 @@ export interface CalendarProps {
   trimWeeks: boolean;
   disablePageSwipe: boolean;
   color: string;
-  isDark: boolean;
-  theme?: string | Theme;
+  isDark?: DarkModeConfig;
+  theme?: string;
   locale?: string | Record<string, any> | Locale;
   firstDayOfWeek: number;
   masks?: Record<string, any>;
@@ -104,7 +106,7 @@ interface CalendarState {
 
 export interface CalendarContext extends ToRefs<CalendarState> {
   slots: any;
-  theme: ComputedRef<Theme>;
+  theme: Theme;
   locale: ComputedRef<Locale>;
   masks: ComputedRef<Record<string, string>>;
   attributes: ComputedRef<Attribute[]>;
@@ -147,11 +149,11 @@ export interface CalendarContext extends ToRefs<CalendarState> {
 export const props = {
   color: {
     type: String,
-    default: getDefault('color'),
+    default: () => getDefault('color'),
   },
   isDark: {
-    type: Boolean,
-    default: getDefault('isDark'),
+    type: [Boolean, Object as PropType<DarkModeConfigObj>],
+    default: () => getDefault('isDark'),
   },
   view: {
     type: String,
@@ -171,11 +173,11 @@ export const props = {
   step: Number,
   titlePosition: {
     type: String,
-    default: getDefault('titlePosition'),
+    default: () => getDefault('titlePosition'),
   },
   navVisibility: {
     type: String,
-    default: getDefault('navVisibility'),
+    default: () => getDefault('navVisibility'),
   },
   showWeeknumbers: [Boolean, String],
   showIsoWeeknumbers: [Boolean, String],
@@ -216,7 +218,7 @@ export const emits = [
 
 const contextKey = '__vc_calendar_context__';
 
-export function useCalendar(
+function createCalendar(
   props: CalendarProps,
   { emit, slots }: any,
 ): CalendarContext {
@@ -240,15 +242,7 @@ export function useCalendar(
 
   // #region Computed properties
 
-  const theme = computed<Theme>(() => {
-    // Return the theme prop if it is an instance of the Theme class
-    if (props.theme instanceof Theme) return props.theme;
-    // Create the theme
-    return new Theme({
-      color: props.color,
-      isDark: props.isDark,
-    });
-  });
+  const theme = useTheme(props);
 
   const locale = computed(() => {
     // Return the locale prop if it is an instance of the Locale class
@@ -340,7 +334,7 @@ export function useCalendar(
         excludeMode: 'includes',
         order: 100,
       },
-      theme.value,
+      theme,
       locale.value,
     );
   });
@@ -405,7 +399,7 @@ export function useCalendar(
             key,
             order,
           },
-          theme.value,
+          theme,
           locale.value,
         ),
       );
@@ -817,14 +811,14 @@ export function useCalendar(
   // #region Watch
 
   watch(
-    () => locale,
+    () => locale.value,
     () => {
       refreshPages();
     },
   );
 
   watch(
-    () => count,
+    () => count.value,
     () => refreshPages(),
   );
 
@@ -892,12 +886,22 @@ export function useCalendar(
   return context;
 }
 
-export function useCalendarContext(): CalendarContext {
-  const context = inject<CalendarContext>(contextKey);
-  if (!context) {
-    throw new Error(
-      'Calendar context missing. Please verify this component is nested within a valid context provider.',
-    );
-  }
+export function useCalendar(
+  props: CalendarProps,
+  { emit, slots }: any,
+): CalendarContext {
+  let context = inject<CalendarContext>(
+    contextKey,
+    createCalendar(props, { emit, slots }),
+  );
+  provide(contextKey, context);
   return context;
+}
+
+export function useCurrentCalendar(): CalendarContext {
+  let context = inject<CalendarContext>(contextKey);
+  if (context) return context;
+  throw new Error(
+    'Calendar context missing. Please verify this component is nested within a valid context provider.',
+  );
 }
