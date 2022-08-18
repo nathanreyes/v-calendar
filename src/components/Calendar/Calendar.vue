@@ -5,7 +5,6 @@
     :class="[
       'vc-container',
       `vc-${view}`,
-      'vc-theme',
       'vc-bordered',
       `vc-${theme.color}`,
       `vc-${theme.displayMode}`,

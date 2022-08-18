@@ -164,8 +164,8 @@ export default defineComponent({
         tabindex = '-1';
       }
       const classes = [
-        'vc-day-content vc-focusable vc-theme',
-        { 'is-disabled': day.value.isDisabled },
+        'vc-day-content vc-focusable vc-attr',
+        { 'vc-disabled': day.value.isDisabled },
         get(last(glyphs.value.content), 'class') || '',
       ];
       const style = get(last(glyphs.value.content), 'style');

@@ -6,7 +6,7 @@
   >
     <div
       v-if="show.prev"
-      :class="['vc-arrow', 'vc-prev', { 'is-disabled': !canMovePrev }]"
+      :class="['vc-arrow', 'vc-prev', { 'vc-disabled': !canMovePrev }]"
       role="button"
       @click="movePrev"
       @keydown.space.enter="movePrev"
@@ -20,7 +20,7 @@
     </div>
     <div
       v-if="show.next"
-      :class="['vc-arrow', 'vc-next', { 'is-disabled': !canMoveNext }]"
+      :class="['vc-arrow', 'vc-next', { 'vc-disabled': !canMoveNext }]"
       role="button"
       @click="moveNext"
       @keydown.space.enter="moveNext"
@@ -32,13 +32,13 @@
     <div
       v-if="show.up"
       class="vc-header-move-up-button vc-up"
-      :class="{ 'is-disabled': !canMoveUp }"
+      :class="{ 'vc-disabled': !canMoveUp }"
       role="button"
       @click.stop="moveUp"
       @keydown.space.enter="moveUp"
     >
       {{ moveUpLabel }}
-      <div :class="{ 'is-disabled': !canMoveUp }">
+      <div :class="{ 'vc-disabled': !canMoveUp }">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-3 w-3"

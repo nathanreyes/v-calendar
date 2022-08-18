@@ -29,22 +29,22 @@ export default defineComponent({
       if (popover && popover.hideIndicator) return null;
       if (content) {
         return {
-          class: `vc-bar vc-day-popover-row-bar vc-theme vc-${content.base.color}`,
+          class: `vc-bar vc-day-popover-row-bar vc-attr vc-${content.base.color}`,
         };
       }
       if (highlight) {
         return {
-          class: `vc-highlight-bg-solid vc-day-popover-row-highlight vc-theme vc-${highlight.base.color}`,
+          class: `vc-highlight-bg-solid vc-day-popover-row-highlight vc-attr vc-${highlight.base.color}`,
         };
       }
       if (dot) {
         return {
-          class: `vc-dot vc-theme vc-${dot.base.color}`,
+          class: `vc-dot vc-attr vc-${dot.base.color}`,
         };
       }
       if (bar) {
         return {
-          class: `vc-bar vc-day-popover-row-bar vc-theme vc-${bar.base.color}`,
+          class: `vc-bar vc-day-popover-row-bar vc-attr vc-${bar.base.color}`,
         };
       }
       return null;

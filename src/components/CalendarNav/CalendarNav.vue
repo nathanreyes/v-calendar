@@ -7,7 +7,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-left"
-        :class="{ 'is-disabled': !prevItemsEnabled }"
+        :class="{ 'vc-disabled': !prevItemsEnabled }"
         :tabindex="prevItemsEnabled ? 0 : undefined"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
@@ -31,7 +31,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-right"
-        :class="{ 'is-disabled': !nextItemsEnabled }"
+        :class="{ 'vc-disabled': !nextItemsEnabled }"
         :tabindex="nextItemsEnabled ? 0 : undefined"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
@@ -173,7 +173,7 @@ export default {
       this.$nextTick(() => {
         // Set focus on the first enabled nav item
         const focusableEl = this.$refs.navContainer.querySelector(
-          '.vc-nav-item:not(.is-disabled)',
+          '.vc-nav-item:not(.vc-disabled)',
         );
         if (focusableEl) {
           focusableEl.focus();
@@ -188,7 +188,7 @@ export default {
         classes.push('is-current');
       }
       if (isDisabled) {
-        classes.push('is-disabled');
+        classes.push('vc-disabled');
       }
       return classes;
     },

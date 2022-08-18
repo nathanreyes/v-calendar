@@ -3,7 +3,6 @@
     :id="dayPopoverId"
     :class="[
       'vc-day-popover-container',
-      'vc-theme',
       `vc-${theme.color}`,
       `vc-${theme.displayMode}`,
     ]"

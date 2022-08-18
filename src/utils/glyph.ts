@@ -167,7 +167,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       highlights.push({
         key,
         color: start.color,
-        wrapperClass: `vc-day-layer vc-day-box-center-center vc-theme vc-${start.color}`,
+        wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${start.color}`,
         class: [
           `vc-highlight vc-highlight-start vc-highlight-bg-${start.fillMode}`,
           start.class,
@@ -184,7 +184,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       highlights.push({
         key,
         color: start.color,
-        wrapperClass: `vc-day-layer vc-day-box-center-center vc-theme vc-${start.color}`,
+        wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${start.color}`,
         class: [`vc-highlight vc-highlight-bg-${start.fillMode}`, start.class],
         style: start.style,
       });
@@ -198,7 +198,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       highlights.push({
         key: `${key}-base`,
         color: base.color,
-        wrapperClass: `vc-day-layer vc-day-box-right-center vc-theme vc-${base.color}`,
+        wrapperClass: `vc-day-layer vc-day-box-right-center vc-attr vc-${base.color}`,
         class: [
           `vc-highlight vc-highlight-base-start vc-highlight-bg-${base.fillMode}`,
           base.class,
@@ -208,7 +208,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       highlights.push({
         key,
         color: start.color,
-        wrapperClass: `vc-day-layer vc-day-box-center-center vc-theme vc-${start.color}`,
+        wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${start.color}`,
         class: [
           `vc-highlight vc-highlight-start vc-highlight-bg-${start.fillMode}`,
           start.class,
@@ -224,7 +224,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
     } else if (onEnd) {
       highlights.push({
         key: `${key}-base`,
-        wrapperClass: `vc-day-layer vc-day-box-left-center vc-theme vc-${base.color}`,
+        wrapperClass: `vc-day-layer vc-day-box-left-center vc-attr vc-${base.color}`,
         class: [
           `vc-highlight vc-highlight-base-end vc-highlight-bg-${base.fillMode}`,
           base.class,
@@ -233,7 +233,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       });
       highlights.push({
         key,
-        wrapperClass: `vc-day-layer vc-day-box-center-center vc-theme vc-${end.color}`,
+        wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${end.color}`,
         class: [
           `vc-highlight vc-highlight-end vc-highlight-bg-${end.fillMode}`,
           end.class,
@@ -250,7 +250,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       highlights.push({
         key: `${key}-middle`,
         color: base.color,
-        wrapperClass: `vc-day-layer vc-day-box-center-center vc-theme vc-${base.color}`,
+        wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${base.color}`,
         class: [
           `vc-highlight vc-highlight-base-middle vc-highlight-bg-${base.fillMode}`,
           base.class,
@@ -299,7 +299,7 @@ export class BaseRenderer<T> implements GlyphRenderer<T> {
         key,
         color: start.color,
         class: [
-          `vc-${this.type} vc-${this.type}-start vc-${start.color} vc-theme`,
+          `vc-${this.type} vc-${this.type}-start vc-${start.color} vc-attr`,
           start.class,
         ],
         style: start.style,
@@ -309,7 +309,7 @@ export class BaseRenderer<T> implements GlyphRenderer<T> {
         key,
         color: end.color,
         class: [
-          `vc-${this.type} vc-${this.type}-end vc-${end.color} vc-theme`,
+          `vc-${this.type} vc-${this.type}-end vc-${end.color} vc-attr`,
           end.class,
         ],
         style: end.style,
@@ -319,7 +319,7 @@ export class BaseRenderer<T> implements GlyphRenderer<T> {
         key,
         color: base.color,
         class: [
-          `vc-${this.type} vc-${this.type}-base vc-${base.color} vc-theme`,
+          `vc-${this.type} vc-${this.type}-base vc-${base.color} vc-attr`,
           base.class,
         ],
         style: base.style,

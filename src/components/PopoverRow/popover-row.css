@@ -1,8 +1,7 @@
 .vc-day-popover-row {
-  --day-content-transition-time: 0.13s ease-in;
   display: flex;
   align-items: center;
-  transition: all var(--day-content-transition-time);
+  transition: var(--vc-day-content-transition);
   &:not(:first-child) {
     margin-top: 3px;
   }
@@ -16,7 +15,7 @@
   width: 15px;
   margin-right: 2px;
   & span {
-    transition: all var(--day-content-transition-time);
+    transition: var(--vc-day-content-transition);
   }
 }
 

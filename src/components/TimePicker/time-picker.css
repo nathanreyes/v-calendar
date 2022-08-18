@@ -24,8 +24,8 @@
 .vc-time-date {
   display: flex;
   align-items: center;
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
+  font-size: var(--vc-text-sm);
+  font-weight: var(--vc-font-semibold);
   text-transform: uppercase;
   padding: 0 0 4px 4px;
   margin-top: -4px;
@@ -64,16 +64,16 @@
   background: var(--vc-am-pm-bg);
   margin-left: 8px;
   padding: 4px;
-  border-radius: var(--rounded);
+  border-radius: var(--vc-rounded);
   height: 30px;
   & button {
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
+    font-size: var(--vc-text-sm);
+    font-weight: var(--vc-font-medium);
     padding: 0 4px;
     background: transparent;
     border: 2px solid transparent;
-    border-radius: var(--rounded);
-    line-height: var(--leading-snug);
+    border-radius: var(--vc-rounded);
+    line-height: var(--vc-leading-snug);
     &:hover {
       color: var(--vc-am-pm-button-hover-color);
     }

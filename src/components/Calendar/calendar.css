@@ -27,7 +27,7 @@
   color: var(--vc-header-arrow-color);
   border-width: 1px;
   border-style: solid;
-  border-radius: var(--rounded);
+  border-radius: var(--vc-rounded);
   border-color: transparent;
   z-index: 1;
   &:hover {
@@ -36,7 +36,7 @@
   &:focus {
     border-color: var(--vc-header-arrow-focus-border);
   }
-  &.is-disabled {
+  &.vc-disabled {
     opacity: 0.25;
     pointer-events: none;
   }
@@ -47,16 +47,16 @@
   /* background-color: var(--vc-day-popover-container-bg); */
   border: 1px solid;
   /* border-color: var(--vc-day-popover-container-border); */
-  border-radius: var(--rounded);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
+  border-radius: var(--vc-rounded);
+  font-size: var(--vc-text-xs);
+  font-weight: var(--vc-font-medium);
   padding: 4px 8px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--vc-shadow);
 }
 
 .vc-day-popover-header {
-  font-size: var(--text-xs);
+  font-size: var(--vc-text-xs);
   color: var(--vc-day-popover-header-color);
-  font-weight: var(--font-semibold);
+  font-weight: var(--vc-font-semibold);
   text-align: center;
 }

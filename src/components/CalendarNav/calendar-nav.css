@@ -13,7 +13,7 @@
     border-color: var(--vc-nav-focus-border);
     outline: none;
   }
-  &.is-disabled {
+  &.vc-disabled {
     opacity: 0.25;
     pointer-events: none;
   }
@@ -21,10 +21,10 @@
 
 .vc-nav-title {
   color: var(--vc-nav-title-color);
-  font-weight: var(--font-bold);
-  line-height: var(--leading-snug);
+  font-weight: var(--vc-font-bold);
+  line-height: var(--vc-leading-snug);
   padding: 4px 8px;
-  border-radius: var(--rounded);
+  border-radius: var(--vc-rounded);
   border-width: 2px;
   border-style: solid;
   border-color: transparent;
@@ -37,11 +37,11 @@
   align-items: center;
   cursor: pointer;
   user-select: none;
-  line-height: var(--leading-snug);
+  line-height: var(--vc-leading-snug);
   border-width: 2px;
   border-style: solid;
   border-color: transparent;
-  border-radius: var(--rounded);
+  border-radius: var(--vc-rounded);
   &.is-left {
     margin-right: auto;
   }
@@ -60,20 +60,20 @@
 .vc-nav-item {
   width: 48px;
   text-align: center;
-  line-height: var(--leading-snug);
-  font-weight: var(--font-semibold);
+  line-height: var(--vc-leading-snug);
+  font-weight: var(--vc-font-semibold);
   padding: 4px 0;
   cursor: pointer;
   border-width: 2px;
   border-style: solid;
   border-color: transparent;
-  border-radius: var(--rounded);
+  border-radius: var(--vc-rounded);
   user-select: none;
   &.is-active {
     color: var(--vc-nav-item-active-color);
     background-color: var(--vc-nav-item-active-bg);
     box-shadow: var(--vc-nav-item-active-box-shadow);
-    font-weight: var(--font-bold);
+    font-weight: var(--vc-font-bold);
   }
   &.is-current {
     color: var(--vc-nav-item-current-color);

@@ -10,11 +10,11 @@
   height: 100%;
   &.is-left,
   &.is-left-outside {
-    left: calc(var(--weeknumber-offset) * -1);
+    left: calc(var(--vc-weeknumber-offset) * -1);
   }
   &.is-right,
   &.is-right-outside {
-    right: calc(var(--weeknumber-offset) * -1);
+    right: calc(var(--vc-weeknumber-offset) * -1);
   }
 }
 
@@ -22,13 +22,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
+  font-size: var(--vc-text-xs);
+  font-weight: var(--vc-font-medium);
   font-style: italic;
   width: 28px;
   height: 28px;
   margin-top: 2px;
-  color: var(--gray-500);
+  color: var(--vc-weeknumber-color);
   user-select: none;
 }
 
@@ -39,18 +39,18 @@
   padding: 6px;
   min-width: 232px;
   &.vc-show-weeknumbers-left {
-    margin-left: var(--weeknumber-offset);
+    margin-left: var(--vc-weeknumber-offset);
   }
   &.vc-show-weeknumbers-right {
-    margin-right: var(--weeknumber-offset);
+    margin-right: var(--vc-weeknumber-offset);
   }
 }
 
 .vc-weekday {
   text-align: center;
   color: var(--vc-weekday-color);
-  font-size: var(--text-sm);
-  font-weight: var(--font-bold);
+  font-size: var(--vc-text-sm);
+  font-weight: var(--vc-font-bold);
   line-height: 14px;
   padding-top: 4px;
   padding-bottom: 8px;

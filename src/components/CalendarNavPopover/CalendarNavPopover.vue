@@ -3,7 +3,6 @@
     :id="navPopoverId"
     :class="[
       'vc-nav-popover-container',
-      'vc-theme',
       `vc-${theme.color}`,
       `vc-${theme.displayMode}`,
     ]"

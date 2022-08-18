@@ -1,12 +1,17 @@
 import { ref, computed, onUnmounted, watch, Ref } from 'vue';
-import { isBoolean } from '../utils/_';
+import { isString, isObject } from '../utils/_';
 
 export interface DarkModeConfigObj {
   selector: string;
   darkClass: string;
 }
 
-export type DarkModeConfig = undefined | null | boolean | DarkModeConfigObj;
+export type DarkModeConfig =
+  | undefined
+  | null
+  | boolean
+  | string
+  | DarkModeConfigObj;
 
 export function useDarkMode(config: Ref<DarkModeConfig>) {
   const isDark = ref(false);
@@ -19,7 +24,7 @@ export function useDarkMode(config: Ref<DarkModeConfig>) {
     isDark.value = ev.matches;
   }
 
-  function setupMq() {
+  function setupSystem() {
     if (window && 'matchMedia' in window) {
       mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       mediaQuery.addEventListener('change', mqListener);
@@ -51,12 +56,12 @@ export function useDarkMode(config: Ref<DarkModeConfig>) {
 
   function setup() {
     stopObservers();
-    if (config.value == null) {
-      setupMq();
-    } else if (isBoolean(config.value)) {
-      isDark.value = config.value;
+    if (isString(config.value) && config.value.toLowerCase() === 'system') {
+      setupSystem();
+    } else if (isObject(config.value)) {
+      setupClass(config.value as DarkModeConfigObj);
     } else {
-      setupClass(config.value);
+      isDark.value = !!config.value;
     }
   }
 

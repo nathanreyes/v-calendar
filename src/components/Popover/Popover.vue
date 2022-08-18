@@ -22,7 +22,7 @@
       <div
         v-if="isVisible"
         tabindex="-1"
-        :class="['vc-popover-content vc-theme', `direction-${direction}`]"
+        :class="['vc-popover-content', `direction-${direction}`]"
         :style="contentStyle"
         v-bind="$attrs"
       >
@@ -185,8 +185,8 @@ export default defineComponent({
 
     const contentStyle = computed(() => {
       return {
-        '--slide-translate': state.transitionTranslate,
-        '--slide-duration': state.transitionDuration,
+        '--vc-slide-translate': state.transitionTranslate,
+        '--vc-slide-duration': state.transitionDuration,
       };
     });
 

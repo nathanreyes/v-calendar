@@ -1,6 +1,7 @@
 import {
   computed,
   reactive,
+  toRef,
   toRefs,
   provide,
   onMounted,
@@ -152,7 +153,7 @@ export const props = {
     default: () => getDefault('color'),
   },
   isDark: {
-    type: [Boolean, Object as PropType<DarkModeConfigObj>],
+    type: [Boolean, String, Object as PropType<DarkModeConfigObj>],
     default: () => getDefault('isDark'),
   },
   view: {
@@ -242,7 +243,7 @@ function createCalendar(
 
   // #region Computed properties
 
-  const theme = useTheme(props);
+  const theme = useTheme(toRef(props, 'color'), toRef(props, 'isDark'));
 
   const locale = computed(() => {
     // Return the locale prop if it is an instance of the Locale class

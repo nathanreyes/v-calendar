@@ -1,4 +1,4 @@
-import { ref, computed, reactive, toRef } from 'vue';
+import { reactive, Ref } from 'vue';
 import { Attribute } from '../utils/attribute';
 import { DateInfoDayContext } from '../utils/dateInfo';
 import {
@@ -20,17 +20,17 @@ export type Glyphs = Record<string, Glyph[]>;
 
 export interface Theme {
   color: string;
-  isDark: DarkModeConfig;
   displayMode: string;
   normalizeGlyphs(attr: Attribute): void;
   prepareRender(glyphs: Glyphs): Glyphs;
   render(attr: Attribute, ctx: DateInfoDayContext, glyphs: Glyphs): void;
 }
 
-export function useTheme(config: ThemeConfig): Theme {
-  const color = ref(config.color || 'blue');
-  const darkConfig = toRef(config, 'isDark');
-  const { isDark, displayMode } = useDarkMode(darkConfig);
+export function useTheme(
+  color: Ref<string>,
+  isDark: Ref<DarkModeConfig>,
+): Theme {
+  const { displayMode } = useDarkMode(isDark);
 
   const renderers: GlyphRenderer<Glyph>[] = [
     new ContentRenderer(),
@@ -63,7 +63,6 @@ export function useTheme(config: ThemeConfig): Theme {
 
   return reactive({
     color,
-    isDark,
     displayMode,
     normalizeGlyphs,
     prepareRender,

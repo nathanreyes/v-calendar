@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="weeks.length"
-    class="vc-grid-container vc-theme"
+    class="vc-grid-container"
     :class="[`vc-${theme.color}`, `vc-${view}`]"
     ref="containerRef"
     @keydown="onKeydown"

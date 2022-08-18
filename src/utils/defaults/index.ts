@@ -36,6 +36,7 @@ export interface Defaults {
 const defaultConfig: Defaults = {
   componentPrefix: '',
   color: 'blue',
+  isDark: false,
   navVisibility: 'click',
   titlePosition: 'center',
   transition: 'slide-h',

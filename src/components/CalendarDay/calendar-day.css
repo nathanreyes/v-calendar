@@ -53,22 +53,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
+  font-size: var(--vc-text-sm);
+  font-weight: var(--vc-font-medium);
   width: 28px;
   height: 28px;
   line-height: 28px;
-  border-radius: var(--rounded-full);
+  border-radius: var(--vc-rounded-full);
   user-select: none;
   cursor: pointer;
   &:hover {
     background-color: var(--vc-day-content-hover-bg);
   }
   &:focus {
-    font-weight: var(--font-bold);
+    font-weight: var(--vc-font-bold);
     background-color: var(--vc-day-content-focus-bg);
   }
-  &.is-disabled {
+  &.vc-disabled {
     color: var(--vc-day-content-disabled-color);
   }
 }
@@ -76,7 +76,7 @@
 /* ----Content---- */
 
 .vc-content {
-  font-weight: var(--font-bold);
+  font-weight: var(--vc-font-bold);
   color: var(--vc-content-color);
 }
 
@@ -115,28 +115,28 @@
   background-color: var(--vc-highlight-outline-bg);
   border: 2px solid;
   border-color: var(--vc-highlight-outline-border);
-  border-radius: var(--rounded-full);
+  border-radius: var(--vc-rounded-full);
 }
 .vc-highlight-bg-light {
   background-color: var(--vc-highlight-light-bg);
-  border-radius: var(--rounded-full);
+  border-radius: var(--vc-rounded-full);
 }
 .vc-highlight-bg-solid {
   background-color: var(--vc-highlight-solid-bg);
-  border-radius: var(--rounded-full);
+  border-radius: var(--vc-rounded-full);
 }
 
 .vc-highlight-content-outline,
 .vc-highlight-content-none {
-  font-weight: var(--font-bold);
+  font-weight: var(--vc-font-bold);
   color: var(--vc-highlight-outline-content-color);
 }
 .vc-highlight-content-light {
-  font-weight: var(--font-bold);
+  font-weight: var(--vc-font-bold);
   color: var(--vc-highlight-light-content-color);
 }
 .vc-highlight-content-solid {
-  font-weight: var(--font-bold);
+  font-weight: var(--vc-font-bold);
   color: var(--vc-highlight-solid-content-color);
 }
 
@@ -152,7 +152,7 @@
   width: 5px;
   height: 5px;
   border-radius: 9999px;
-  transition: all var(--day-content-transition-time);
+  transition: var(--vc-day-content-transition);
   &:not(:last-child) {
     margin-right: 3px;
   }
@@ -170,7 +170,7 @@
 .vc-bar {
   flex-grow: 1;
   height: 3px;
-  transition: all var(--day-content-transition-time);
+  transition: var(--vc-day-content-transition);
 }
 
 .vc-dot {

@@ -15,7 +15,7 @@
   display: inline-flex;
   width: max-content;
   height: max-content;
-  font-family: var(--font-family);
+  font-family: var(--vc-font-family);
   color: var(--vc-color);
   background-color: var(--vc-bg);
   -webkit-font-smoothing: antialiased;
@@ -35,7 +35,7 @@
   &.vc-bordered {
     border: 1px solid;
     border-color: var(--vc-border);
-    border-radius: var(--rounded-lg);
+    border-radius: var(--vc-rounded-lg);
   }
   &.vc-expanded {
     min-width: 100%;
