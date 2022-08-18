@@ -170,7 +170,8 @@ export default {
   },
   methods: {
     focusFirstItem() {
-      this.$nextTick(() => {
+      // Use setTimeout instead of $nextTick so it plays nice with popperjs
+      setTimeout(() => {
         // Set focus on the first enabled nav item
         const focusableEl = this.$refs.navContainer.querySelector(
           '.vc-nav-item:not(.vc-disabled)',
@@ -178,7 +179,7 @@ export default {
         if (focusableEl) {
           focusableEl.focus();
         }
-      });
+      }, 10);
     },
     getItemClasses({ isActive, isCurrent, isDisabled }) {
       const classes = ['vc-nav-item'];
