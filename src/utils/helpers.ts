@@ -119,37 +119,6 @@ interface CustomElement {
   addEventListener: Function;
   removeEventListener: Function;
   dispatchEvent: Function;
-  removeClickNoMove?: Function;
-}
-
-function registerClickNoMoveHandlers(el: CustomElement) {
-  if (el.removeClickNoMove) return;
-  const removeHandlers: Function[] = [];
-  let mousedown = false;
-  let mousemove = false;
-  removeHandlers.push(
-    on(el, 'mousedown', () => {
-      mousedown = true;
-      mousemove = false;
-    }),
-  );
-  removeHandlers.push(
-    on(el, 'mousemove', () => {
-      if (mousedown) mousemove = true;
-      mousedown = false;
-    }),
-  );
-  removeHandlers.push(
-    on(el, 'click', (e: MouseEvent) => {
-      if (!mousemove) {
-        el.dispatchEvent(new CustomEvent('click-no-move', { detail: e }));
-      }
-      mousedown = false;
-    }),
-  );
-  el.removeClickNoMove = () => {
-    removeHandlers.forEach(h => h());
-  };
 }
 
 export const off = (
@@ -167,9 +136,6 @@ export const on = (
   handler: (e: any) => void,
   opts: boolean | AddEventListenerOptions | undefined = undefined,
 ) => {
-  if (event === 'click-no-move') {
-    registerClickNoMoveHandlers(element);
-  }
   element.addEventListener(event, handler, opts);
   return () => off(element, event, handler, opts);
 };

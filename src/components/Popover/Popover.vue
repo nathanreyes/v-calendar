@@ -333,7 +333,7 @@ export default defineComponent({
 
     function addEvents() {
       on(document, 'keydown', onDocumentKeydown);
-      on(document, 'click-no-move', onDocumentClick);
+      on(document, 'click', onDocumentClick);
       on(document, 'show-popover', onDocumentShowPopover);
       on(document, 'hide-popover', onDocumentHidePopover);
       on(document, 'toggle-popover', onDocumentTogglePopover);
@@ -342,7 +342,7 @@ export default defineComponent({
 
     function removeEvents() {
       off(document, 'keydown', onDocumentKeydown);
-      off(document, 'click-no-move', onDocumentClick);
+      off(document, 'click', onDocumentClick);
       off(document, 'show-popover', onDocumentShowPopover);
       off(document, 'hide-popover', onDocumentHidePopover);
       off(document, 'toggle-popover', onDocumentTogglePopover);
