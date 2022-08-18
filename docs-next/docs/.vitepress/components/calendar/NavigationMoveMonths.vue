@@ -10,8 +10,6 @@ async function move() {
 }
 </script>
 <template>
-  <div>
-    <button @click="move">Move</button>
-  </div>
+  <BaseButton @click="move" class="mb-4"> Move </BaseButton>
   <Calendar ref="calendar" />
 </template>

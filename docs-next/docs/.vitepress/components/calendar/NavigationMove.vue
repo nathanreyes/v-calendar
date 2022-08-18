@@ -87,53 +87,55 @@
     </div>
     <div class="mt-3"></div>
   </div>
-  <div class="flex flex-col sm:flex-row w-full">
-    <div class="w-64 flex sm:flex-col flex-wrap space-y-2">
+  <div
+    class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 w-full"
+  >
+    <div class="flex-col space-y-2">
       <!--Move by number of months-->
       <template v-if="moveBy === 'numMonths'">
-        <button
+        <BaseButton
           v-for="step in steps"
-          :class="buttonClass"
+          class="w-32"
           @click="() => onMove(step)"
         >
           Move {{ `${step > 0 ? '+' : ''}${step}` }}
-        </button>
+        </BaseButton>
       </template>
       <!--Move to month-->
       <template v-if="moveBy === 'toMonth'">
-        <button
-          :class="buttonClass"
+        <BaseButton
           v-for="{ name, month: { month, year } } in months"
           :key="name"
+          class="w-32"
           @click="() => onMove({ month, year })"
         >
           {{ name }}
-        </button>
+        </BaseButton>
       </template>
       <!--Move to date-->
       <template v-if="moveBy === 'toDate'">
-        <button
-          :class="buttonClass"
+        <BaseButton
           v-for="date in dates"
           :key="date.toString()"
+          class="w-32"
           @click="() => onMove(date)"
         >
           {{ date.toLocaleDateString() }}
-        </button>
+        </BaseButton>
       </template>
       <!--Move to date and focus-->
       <template v-if="moveBy === 'toDateFocus'">
-        <button
-          :class="buttonClass"
+        <BaseButton
           v-for="date in dates"
           :key="date.toString()"
+          class="w-32"
           @click="() => onMoveFocus(date)"
         >
           {{ date.toLocaleDateString() }}
-        </button>
+        </BaseButton>
       </template>
     </div>
-    <div>
+    <div class="flex-shrink-0">
       <Calendar
         :rows="2"
         ref="calendar"
@@ -214,8 +216,6 @@ export default {
       position: 1,
       positionOptions: [1, 2],
       transitioning: false,
-      buttonClass:
-        'block px-4 py-1 bg-indigo-100 dark:bg-gray-600 text-indigo-800 dark:text-gray-200 rounded w-48',
     };
   },
   methods: {

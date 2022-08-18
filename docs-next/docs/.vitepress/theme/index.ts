@@ -16,7 +16,9 @@ for (const path in modules) {
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.use(VCalendar, {});
+    app.use(VCalendar, {
+      isDark: {},
+    });
     components.forEach(component => {
       app.component(component.name, component);
     });

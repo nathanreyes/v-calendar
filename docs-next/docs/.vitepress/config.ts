@@ -44,6 +44,7 @@ export default {
         },
       ],
       '/': [
+        // Getting Started
         {
           text: 'Getting Started',
           collapsible: true,
@@ -59,13 +60,14 @@ export default {
             },
           ],
         },
+        // Calendar
         {
           text: 'Calendar',
           collapsible: true,
           items: [
             {
-              text: 'Colors & Dark Mode',
-              link: '/calendar/colors-dark-mode',
+              text: 'Theme',
+              link: '/calendar/theme',
             },
             {
               text: 'Layouts',
