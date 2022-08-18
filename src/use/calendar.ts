@@ -141,7 +141,7 @@ export interface CalendarContext extends ToRefs<CalendarState> {
   onDayClick: (day: CalendarDay, e: MouseEvent) => void;
   onDayMouseenter: (day: CalendarDay, e: MouseEvent) => void;
   onDayMouseleave: (day: CalendarDay, e: MouseEvent) => void;
-  onDayFocusin: (day: CalendarDay, e: FocusEvent) => void;
+  onDayFocusin: (day: CalendarDay, e: FocusEvent | null) => void;
   onDayFocusout: (day: CalendarDay, e: FocusEvent) => void;
   onWeeknumberClick: (week: CalendarWeek, e: MouseEvent) => void;
 }
@@ -687,7 +687,7 @@ function createCalendar(
     emit('daymouseleave', day, event);
   };
 
-  const onDayFocusin = (day: CalendarDay, event: FocusEvent) => {
+  const onDayFocusin = (day: CalendarDay, event: FocusEvent | null) => {
     state.lastFocusedDay = day;
     emit('dayfocusin', day, event);
   };

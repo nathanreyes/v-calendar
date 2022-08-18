@@ -34,7 +34,7 @@ export interface Defaults {
 }
 
 const defaultConfig: Defaults = {
-  componentPrefix: 'v',
+  componentPrefix: '',
   color: 'blue',
   navVisibility: 'click',
   titlePosition: 'center',
