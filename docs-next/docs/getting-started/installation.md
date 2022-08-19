@@ -4,9 +4,9 @@ title: 'Installation'
 
 # Installation
 
-:::tip
-[Vue.js](https://vuejs.org) version 3.2+ is required.
-:::
+<BaseAlert title="Requirement">
+  [Vue.js](https://vuejs.org) version 3.2+ is required.
+</BaseAlert>
 
 ## NPM
 

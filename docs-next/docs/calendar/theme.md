@@ -8,9 +8,9 @@ V-Calendar supports a variety of dark mode strategies to ensure compatibility wi
 
 First, you can pass a boolean value for `isDark` to set the dark mode manually.
 
-:::info
+<BaseAlert info>
 By default, `is-dark` is `false`, so if left unassigned, the calendar will always display in light mode.
-:::
+</BaseAlert>
 
 <ThemeDarkModeManual />
 
@@ -46,7 +46,7 @@ For example, to view the effect on the Mac, you can navigate to  **System Prefer
 
 ### Class Strategy
 
-Finally, VCalendar can be configured to apply dark mode if a class is present on an element. Any class updates made on the element are watched with a `MutationObserver` to detect future changes made by the user.
+Finally, dark mode can be activated if a class is present on an element. Any class updates made on the element are watched with a `MutationObserver` to detect future changes made by the user.
 
 To use the class strategy, pass an object with the element `selector` and `darkClass` to check against.
 
@@ -104,4 +104,68 @@ const attrs = ref([
 </script>
 ```
 
-## Custom Colors
+## Custom Theme
+
+Colors and other styles for both light and dark modes may be customized by overriding css variables defined within your own custom theme stylesheet.
+
+Use the [default stylesheet]() as a guide.
+
+### Adding a custom color
+
+Custom colors may be added by creating a color class prefixed with `vc-` in your stylesheet or SFC `style` block. For example, to add a sky blue color, create a `vc-sky-blue` class that overrides the accent color scale.
+
+```css
+/* Sky blue */
+.vc-sky-blue {
+  --vc-accent-50: #f0f9ff;
+  --vc-accent-100: #e0f2fe;
+  --vc-accent-200: #bae6fd;
+  --vc-accent-300: #7dd3fc;
+  --vc-accent-400: #38bdf8;
+  --vc-accent-500: #0ea5e9;
+  --vc-accent-600: #0284c7;
+  --vc-accent-700: #0369a1;
+  --vc-accent-800: #075985;
+  --vc-accent-900: #0c4a6e;
+}
+```
+
+Once the color is defined, it may be used anywhere colors are referenced, including the `Calendar.color` prop or as an [attribute](./attributes#colors) color.
+
+<ThemeCustomColors />
+
+```vue
+<script setup>
+import { ref } from 'vue';
+
+const attrs = ref([
+  {
+    highlight: true,
+    dates: new Date(),
+  },
+]);
+</script>
+<template>
+  <Calendar color="sky-blue" :attributes="attrs" />
+</template>
+```
+
+### Editing an existing color
+
+We can also use the same approach to update an existing color. For example, we may want to override the built-in blue color with sky blue.
+
+```css
+/* Replace blue with sky blue palette */
+.vc-blue {
+  --vc-accent-50: #f0f9ff;
+  --vc-accent-100: #e0f2fe;
+  --vc-accent-200: #bae6fd;
+  --vc-accent-300: #7dd3fc;
+  --vc-accent-400: #38bdf8;
+  --vc-accent-500: #0ea5e9;
+  --vc-accent-600: #0284c7;
+  --vc-accent-700: #0369a1;
+  --vc-accent-800: #075985;
+  --vc-accent-900: #0c4a6e;
+}
+```

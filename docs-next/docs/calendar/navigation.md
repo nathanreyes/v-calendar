@@ -70,6 +70,10 @@ If `min-date` or `max-date` props are assigned, this will disable navigation for
 
 ## Key Commands
 
+<BaseAlert warning>
+  A calendar day must be in focus in order for commands to be recognized
+</BaseAlert>
+
 Both `Calendar` and `DatePicker` now support the following key commands for navigation:
 
 | Command | Action |
@@ -84,10 +88,6 @@ Both `Calendar` and `DatePicker` now support the following key commands for navi
 | **PgDown** | Move to the same day of the next month |
 | ***Alt*** + **PgUp** | Move to the same month and day of the previous year |
 | ***Alt*** + **PgDown** | Move to the same month and day of the next year |
-
-::: tip
-A calendar day must be in focus in order for commands to be recognized
-:::
 
 ## *Move* Method
 
@@ -168,9 +168,9 @@ await calendar.value.move(new Date())
 await calendar.value.move(`1983-01-21`)
 ```
 
-::: warning
-Calling `move(date)` will move to the month associated with that date. It will not focus on the date after the transition has occurred. To focus on the date, call `focusDate(date)` instead.
-:::
+<BaseAlert warning>
+  Calling `move(date)` will move to the month associated with that date. It will not focus on the date after the transition has occurred. To focus on the date, call `focusDate(date)` instead.
+</BaseAlert>
 
 <Example>
   <NavigationMove />

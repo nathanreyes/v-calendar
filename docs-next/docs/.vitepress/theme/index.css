@@ -8,11 +8,16 @@
   --vp-c-bg-mute: theme(colors.gray.200);
   --vp-c-bg-alt: theme(colors.gray.50);
 
-  --vp-c-divider: theme(colors.gray.400);
-  --vp-c-divider-light: theme(colors.gray.300);
+  --vp-c-divider: theme(colors.gray.300);
+  --vp-c-divider-light: theme(colors.gray.200);
 
   --vp-c-divider-inverse: var(--vp-c-divider-dark-1);
   --vp-c-divider-inverse-light: var(--vp-c-divider-dark-2);
+
+  --vp-c-text-light-1: theme(colors.gray.800);
+  --vp-c-text-light-2: theme(colors.gray.600);
+  --vp-c-text-light-3: theme(colors.gray.500);
+  --vp-c-text-light-4: theme(colors.gray.400);
 
   --vp-c-text-1: var(--vp-c-text-light-1);
   --vp-c-text-2: var(--vp-c-text-light-2);
@@ -26,13 +31,11 @@
 
   --vp-c-text-code: var(--vp-c-indigo-soft);
 
-  --vp-c-brand: theme(colors.accent.500);
+  --vp-c-brand: theme(colors.accent.600);
   --vp-c-brand-light: theme(colors.accent.300);
   --vp-c-brand-lighter: theme(colors.accent.100);
   --vp-c-brand-dark: theme(colors.accent.700);
   --vp-c-brand-darker: theme(colors.accent.900);
-
-  --vp-c-sponsor: #fd1d7c;
 }
 
 .dark {
@@ -48,6 +51,11 @@
   --vp-c-divider-inverse: var(--vp-c-divider-light-1);
   --vp-c-divider-inverse-light: var(--vp-c-divider-light-2);
 
+  --vp-c-text-dark-1: theme(colors.gray.100);
+  --vp-c-text-dark-2: theme(colors.gray.300);
+  --vp-c-text-dark-3: theme(colors.gray.400);
+  --vp-c-text-dark-4: theme(colors.gray.500);
+
   --vp-c-text-1: var(--vp-c-text-dark-1);
   --vp-c-text-2: var(--vp-c-text-dark-2);
   --vp-c-text-3: var(--vp-c-text-dark-3);
@@ -59,6 +67,12 @@
   --vp-c-text-inverse-4: var(--vp-c-text-light-4);
 
   --vp-c-text-code: var(--vp-c-indigo-lighter);
+
+  --vp-c-brand: theme(colors.accent.400);
+  --vp-c-brand-light: theme(colors.accent.300);
+  --vp-c-brand-lighter: theme(colors.accent.100);
+  --vp-c-brand-dark: theme(colors.accent.700);
+  --vp-c-brand-darker: theme(colors.accent.900);
 }
 
 @media (min-width: 960px) {
@@ -75,6 +89,7 @@
   }
 }
 
+/* Markdown style overrides */
 .vp-doc {
   color: var(--tw-prose-body);
   font-size: 1rem;
@@ -113,13 +128,13 @@
     font-size: 0.9em;
   }
   h4 {
-    margintop: 1.5em;
-    marginbottom: 0.5em;
-    lineheight: 1.5;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.5;
   }
   p {
     margin-top: 1.25em;
-    marginbottom: 1.25em;
+    margin-bottom: 1.25em;
   }
   img {
     margin-top: 2em;

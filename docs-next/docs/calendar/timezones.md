@@ -4,9 +4,9 @@ title: 'Timezones (Beta)'
 
 # Timezones (Beta)
 
-:::warning
-While multiple tests have been written for timezone support, it still may be supported differently across different browsers.
-:::
+<BaseAlert warning title="Browser support">
+  While multiple tests have been written for timezone support, it still may be supported differently across different browsers.
+</BaseAlert>
 
 Timezones are supported for both `v-date-picker` and `v-calendar` via the [Internationalization API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl). To assign a timezone, pass the `timezone: String` prop with the desired timezone setting. Reference this [stack overflow](https://stackoverflow.com/questions/38399465/how-to-get-list-of-all-timezones-in-javascript) question for a base list of available timezones.
 
