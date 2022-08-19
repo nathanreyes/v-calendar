@@ -70,24 +70,22 @@ Let's start by displaying a simple **highlight** on today's date.
 
 <AttributesHighlight />
 
-```html
-<Calendar :attributes='attrs' />
-```
+```vue
+<template>
+  <Calendar :attributes='attrs' />
+</template>
 
-```js
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          key: 'today',
-          highlight: true,
-          dates: new Date(),
-        },
-      ],
-    };
+<script setup>
+import { ref } from 'vue';
+
+const attrs = ref([
+  {
+    key: 'today',
+    highlight: true,
+    dates: new Date(),
   },
-};
+]);
+</script>
 ```
 
 For the simple example above, we used the following properties to build the attribute:
@@ -106,20 +104,18 @@ Here is how the default dot config would appear.
 
 <AttributesDot />
 
-```js
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          key: 'today',
-          dot: true,
-          dates: new Date(),
-        },
-      ],
-    };
+```vue
+<script setup>
+import { ref } from 'vue';
+
+const attrs = ref([
+  {
+    key: 'today',
+    dot: true,
+    dates: new Date(),
   },
-};
+]);
+</script>
 ```
 
 ## Colors
@@ -132,20 +128,18 @@ All attributes, except popovers, may be assigned directly to a color.
 
 <AttributesHighlightColor />
 
-```js
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          key: 'today',
-          highlight: 'red',
-          dates: new Date(),
-        },
-      ],
-    };
+```vue
+<script setup>
+import { ref } from 'vue';
+
+const attrs = ref([
+  {
+    key: 'today',
+    highlight: 'red',
+    dates: new Date(),
   },
-};
+]);
+</script>
 ```
 
 Additionally, when an object is used to configure an attribute, the `color` property may be assigned as part of that configuration.
@@ -446,7 +440,7 @@ const attributes = ref([
 
 ## Target Options
 
-Each attribute type allows for targeting separate `start`, `base` and `end` sections with different configurations.
+Each attribute type allows for targeting `start`, `base` and `end` sections with separate configurations.
 
 For example, we could style the `fillMode` for the highlight end caps separately from the base section.
 

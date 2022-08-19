@@ -4,18 +4,14 @@
   </Example>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      attrs: [
-        {
-          key: 'today',
-          highlight: true,
-          dates: new Date(),
-        },
-      ],
-    };
+<script setup>
+import { ref } from 'vue';
+
+const attrs = ref([
+  {
+    key: 'today',
+    highlight: true,
+    dates: new Date(),
   },
-};
+]);
 </script>

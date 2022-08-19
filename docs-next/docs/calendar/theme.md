@@ -50,7 +50,7 @@ Finally, VCalendar can be configured to apply dark mode if a class is present on
 
 To use the class strategy, pass an object with the element `selector` and `darkClass` to check against.
 
-For example, most calendars present on this site sync with this site's dark mode by watching for the `dark` class on the `:root` element.
+For example, most calendars on this site sync with this site's dark mode by watching for the `dark` class on the `:root` element.
 
 <Example centered>
   <Calendar :is-dark="{ selector: ':root', darkClass: 'dark' }" />

@@ -7,7 +7,7 @@ defineProps({
 <template>
   <div :class="{ dark }">
     <div
-      class="py-6 px-8 my-4 bg-gray-50 dark:bg-gray-900 dark:border-gray-600 rounded-lg"
+      class="py-6 px-8 my-4 bg-gray-100 border dark:bg-black dark:border-gray-600 rounded-lg"
       :class="[{ 'flex flex-col justify-center items-center': centered }]"
     >
       <slot />
