@@ -24,8 +24,9 @@ const attributes = ref([
   {
     // Object
     content: {
+      color: 'purple',
       style: {
-        color: 'purple',
+        fontStyle: 'italic',
       },
     },
     dates: [

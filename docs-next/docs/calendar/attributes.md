@@ -96,7 +96,7 @@ For the simple example above, we used the following properties to build the attr
 | **`highlight`** | Config for the highlighted region displayed on each date. |
 | **`dates`** | Dates used to display the attribute. |
 
-<BaseAlert title="Color assignment">
+<BaseAlert title="Attribute defaults">
   When simply assigning `true` to the highlight config (or any other attribute except popovers), the currently active color is used to display it. In this example, the `color` prop is not specified, so the default `color` (`"blue"`) and `fillMode` (`"solid"`) are used.
 </BaseAlert>
 
@@ -120,11 +120,9 @@ const attrs = ref([
 
 ## Colors
 
-There are 8 pre-defined color sets available (`gray`, `red`, `orange`, `yellow`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`).
+Attributes inherit the default color from the `Calendar.color` prop (which is blue by default).
 
-As mentioned above, if a color is not specifically assigned to an attribute, the `color` prop passed to the component is used. If this color is not provided, the default `blue` color is used.
-
-All attributes, except popovers, may be assigned directly to a color.
+However, all attributes except popovers may be assigned directly to a color.
 
 <AttributesHighlightColor />
 
@@ -280,8 +278,9 @@ const attributes = ref([
   {
     // Object
     content: {
+      color: 'purple',
       style: {
-        color: 'purple',
+        fontStyle: 'italic',
       },
     },
     dates: [
