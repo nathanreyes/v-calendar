@@ -548,20 +548,7 @@ If we want to force the user to click on the day content in order to display the
     ...
 ```
 
-Also, you'll notice there is a small indicator next to the popover content row for the attribute. This is a simple indicator provided in order to help the user match up the popover content rows to the indicators in the calendar day cell. The indicator will try to coordinate the colors and shapes as closely as possible.
-
-In the previous example, because a red dot was used, the indicator displays the same.
-
-<p align='center'>
-  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-dot.png' title='Popover dot indicator' width='100'>
-</p>
-
-Here is how a bar or highlight would appear, respectively.
-
-<p align='center'>
-  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-bar.png' title='Popover bar indicator' width='100'>
-  <img src='https://res.cloudinary.com/dqgcfqzpk/image/upload/v1524521268/v-calendar/popover-indicator-highlight.png' title='Popover highlight indicator' width='105'>
-</p>
+Also, you'll notice there is a small indicator next to the popover content row for the attribute. This is a simple indicator provided in order to help the user match up the popover content rows to the indicators in the calendar day cell.
 
 If you would like to hide the indicator, just set the `hideIndicator` property to `true`;
 
@@ -684,40 +671,6 @@ Now, we just need to display the attributes for the day as well. We can do so by
     </ul>
   </div>
 </Calendar>
-```
-
-Finally, if you wish to display indicators with your custom content, you can use the `v-popover-row` component included with the plugin. Just pass in the attribute for each row.
-
-<AttributesPopoverSlot :step="4" />
-
-```html
-<Calendar :attributes="attributes">
-  <template #day-popover="{ day, dayTitle, attributes }">
-    <div>
-      <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
-        {{ dayTitle }}
-      </div>
-      <popover-row
-        v-for="attr in attributes"
-        :key="attr.key"
-        :attribute="attr">
-        {{ attr.customData.description }}
-      </popover-row>
-    </template>
-  </template>
-</Calendar>
-```
-
-```js
-// Import popover row component from plugin
-import PopoverRow from 'v-calendar/lib/components/popover-row.umd.min'
-
-export default {
-  components: {
-    PopoverRow,
-  },
-  ...
-}
 ```
 
 ### Additional Options

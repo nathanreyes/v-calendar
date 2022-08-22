@@ -16,7 +16,7 @@ const theme = computed(() => {
       icon: 'IconAlertTriangle',
       title: 'Success',
       wrapperClass:
-        'bg-green-50 border border-green-200 dark:bg-gray-700 dark:border-gray-500',
+        'bg-green-50 border border-green-200 dark:bg-gray-700 dark:border-green-500',
       iconClass: 'text-green-600 dark:text-green-400',
       titleClass: 'text-green-700 dark:text-green-400',
       slotClass: 'text-green-600 dark:text-green-200',
@@ -26,7 +26,7 @@ const theme = computed(() => {
       icon: 'IconAlertTriangle',
       title: 'Warning',
       wrapperClass:
-        'bg-yellow-50 border border-yellow-200 dark:bg-gray-700 dark:border-gray-500',
+        'bg-yellow-50 border border-yellow-200 dark:bg-gray-700 dark:border-yellow-500',
       iconClass: 'text-yellow-600 dark:text-yellow-400',
       titleClass: 'text-yellow-700 dark:text-yellow-400',
       slotClass: 'text-yellow-600 dark:text-yellow-200',
@@ -36,7 +36,7 @@ const theme = computed(() => {
       icon: 'IconAlertTriangle',
       title: 'Error',
       wrapperClass:
-        'bg-red-50 border border-red-200 dark:bg-gray-700 dark:border-gray-500',
+        'bg-red-50 border border-red-200 dark:bg-gray-700 dark:border-red-500',
       iconClass: 'text-red-600 dark:text-red-400',
       titleClass: 'text-red-700 dark:text-red-400',
       slotClass: 'text-red-600 dark:text-red-200',
@@ -46,7 +46,7 @@ const theme = computed(() => {
       icon: 'IconInfo',
       title: 'Tip',
       wrapperClass:
-        'bg-blue-50 border border-blue-200 dark:bg-gray-700 dark:border-gray-500',
+        'bg-blue-50 border border-blue-200 dark:bg-gray-700 dark:border-blue-500',
       iconClass: 'text-blue-600 dark:text-blue-400',
       titleClass: 'text-blue-700 dark:text-blue-400',
       slotClass: 'text-blue-600 dark:text-blue-200',

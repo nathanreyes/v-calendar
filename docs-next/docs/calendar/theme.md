@@ -46,11 +46,11 @@ For example, to view the effect on the Mac, you can navigate to  **System Prefer
 
 ### Class Strategy
 
-Finally, dark mode can be activated if a class is present on an element. Any class updates made on the element are watched with a `MutationObserver` to detect future changes made by the user.
-
-To use the class strategy, pass an object with the element `selector` and `darkClass` to check against.
+Finally, dark mode can be activated if a class is present on an element.
 
 For example, most calendars on this site sync with this site's dark mode by watching for the `dark` class on the `:root` element.
+
+To use the class strategy, pass an object with the element `selector` and `darkClass` to check against. Any class updates made on the element are watched with a `MutationObserver` to detect future changes made by the user.
 
 <Example centered>
   <Calendar :is-dark="{ selector: ':root', darkClass: 'dark' }" />

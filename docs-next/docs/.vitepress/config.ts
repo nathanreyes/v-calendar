@@ -94,7 +94,28 @@ export default {
         {
           text: 'Date Picker',
           collapsible: true,
-          items: [],
+          items: [
+            {
+              text: 'Introduction',
+              link: '/datepicker/intro',
+            },
+            {
+              text: 'Selection Modes',
+              link: '/datepicker/selection-modes',
+            },
+            {
+              text: 'Date Types',
+              link: '/datepicker/date-types',
+            },
+            {
+              text: 'Input Popover',
+              link: '/datepicker/input-popover',
+            },
+            {
+              text: 'Custom Attributes',
+              link: '/datepicker/custom-attributes',
+            },
+          ],
         },
         {
           text: 'Event Calendar',
