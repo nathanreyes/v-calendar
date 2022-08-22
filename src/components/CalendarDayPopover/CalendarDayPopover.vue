@@ -33,10 +33,10 @@
 import { computed } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import PopoverRow from '../PopoverRow/PopoverRow.vue';
-import { useCurrentCalendar } from '../../use/calendar';
+import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
 
-const { dayPopoverId, theme, masks, locale } = useCurrentCalendar();
+const { dayPopoverId, theme, masks, locale } = useCalendar();
 const format = computed(() => {
   return (date: Date, mask: string) => {
     return locale.value.formatDate(date, mask);

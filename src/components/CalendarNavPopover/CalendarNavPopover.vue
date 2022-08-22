@@ -21,8 +21,7 @@
 <script setup>
 import Popover from '../Popover/Popover.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
-import { useCurrentCalendar } from '../../use/calendar';
+import { useCalendar } from '../../use/calendar';
 
-const { navPopoverId, theme, navPopoverRef, canMove, move } =
-  useCurrentCalendar();
+const { navPopoverId, theme, navPopoverRef, canMove, move } = useCalendar();
 </script>

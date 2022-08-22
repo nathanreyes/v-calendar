@@ -56,7 +56,7 @@ import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import CalendarPane from '../CalendarPane/CalendarPane.vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarDayPopover from '../CalendarDayPopover/CalendarDayPopover.vue';
-import { emits, props, useCalendar } from '../../use/calendar';
+import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
 export default defineComponent({
   name: 'Calendar',
@@ -66,10 +66,10 @@ export default defineComponent({
     CalendarNavPopover,
     CalendarDayPopover,
   },
-  emits,
-  props,
+  emits: emitsDef,
+  props: propsDef,
   setup(props, ctx) {
-    return useCalendar(props, ctx);
+    return createCalendar(props, ctx);
   },
 });
 </script>

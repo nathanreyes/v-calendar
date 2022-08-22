@@ -61,7 +61,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
-import { useCurrentCalendar } from '../../use/calendar';
+import { useCalendar } from '../../use/calendar';
 import { popoverDirective } from '../../utils/popovers';
 
 export default defineComponent({
@@ -87,7 +87,7 @@ export default defineComponent({
       canMoveUp,
       moveUpLabel,
       moveUp,
-    } = useCurrentCalendar();
+    } = useCalendar();
     const navPlacement = computed(() => {
       switch (props.page.titlePosition) {
         case 'left':

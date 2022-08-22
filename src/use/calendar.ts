@@ -1,7 +1,6 @@
 import {
   computed,
   reactive,
-  toRef,
   toRefs,
   provide,
   onMounted,
@@ -23,7 +22,6 @@ import {
   CalendarWeek,
   Page,
   TitlePosition,
-  LocaleConfig,
 } from '../utils/locale';
 import {
   pageIsValid,
@@ -37,12 +35,13 @@ import {
   arrayHasItems,
 } from '../utils/helpers';
 import { isBoolean, isObject, has, head, last } from '../utils/_';
-import { locales, getDefault } from '../utils/defaults';
+import { getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 import { PopoverVisibility } from '../utils/popovers';
-import { Theme, useTheme } from './theme';
+import { Theme } from './theme';
 import { DarkModeConfig, DarkModeConfigObj } from './darkMode';
+import { propsDef as basePropsDef, createBase } from './base';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -105,57 +104,8 @@ interface CalendarState {
   refreshing: boolean;
 }
 
-export interface CalendarContext extends ToRefs<CalendarState> {
-  slots: any;
-  theme: Theme;
-  locale: ComputedRef<Locale>;
-  masks: ComputedRef<Record<string, string>>;
-  attributes: ComputedRef<Attribute[]>;
-  dayAttributes: ComputedRef<Record<string, DayAttribute[]>>;
-  count: ComputedRef<number>;
-  step: ComputedRef<number>;
-  isMonthly: ComputedRef<boolean>;
-  isWeekly: ComputedRef<boolean>;
-  isDaily: ComputedRef<boolean>;
-  firstPage: ComputedRef<Page | undefined>;
-  lastPage: ComputedRef<Page | undefined>;
-  minPage: ComputedRef<PageAddress | null>;
-  maxPage: ComputedRef<PageAddress | null>;
-  navVisibility: ComputedRef<PopoverVisibility>;
-  canMovePrev: ComputedRef<boolean>;
-  canMoveNext: ComputedRef<boolean>;
-  canMoveUp: ComputedRef<boolean>;
-  moveUpLabel: ComputedRef<string>;
-  showWeeknumbers: ComputedRef<boolean>;
-  showIsoWeeknumbers: ComputedRef<boolean>;
-  canMove: (target: MoveTarget, opts: Partial<MoveOptions>) => boolean;
-  move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
-  movePrev: () => Promise<boolean>;
-  moveNext: () => Promise<boolean>;
-  moveUp: () => void;
-  onTransitionBeforeEnter: () => void;
-  onTransitionAfterEnter: () => void;
-  tryFocusDate: (date: Date) => boolean;
-  focusDate: (date: Date, opts: Partial<MoveOptions>) => Promise<boolean>;
-  onKeydown: (e: KeyboardEvent) => void;
-  onDayKeydown: (day: CalendarDay, e: KeyboardEvent) => void;
-  onDayClick: (day: CalendarDay, e: MouseEvent) => void;
-  onDayMouseenter: (day: CalendarDay, e: MouseEvent) => void;
-  onDayMouseleave: (day: CalendarDay, e: MouseEvent) => void;
-  onDayFocusin: (day: CalendarDay, e: FocusEvent | null) => void;
-  onDayFocusout: (day: CalendarDay, e: FocusEvent) => void;
-  onWeeknumberClick: (week: CalendarWeek, e: MouseEvent) => void;
-}
-
-export const props = {
-  color: {
-    type: String,
-    default: () => getDefault('color'),
-  },
-  isDark: {
-    type: [Boolean, String, Object as PropType<DarkModeConfigObj>],
-    default: () => getDefault('isDark'),
-  },
+export const propsDef = {
+  ...basePropsDef,
   view: {
     type: String,
     default: 'monthly',
@@ -190,20 +140,10 @@ export const props = {
   transition: String,
   attributes: [Object, Array],
   trimWeeks: Boolean,
-  firstDayOfWeek: Number,
-  masks: Object,
-  locale: [String, Object],
-  timezone: String,
-  minDate: null,
-  maxDate: null,
-  minDateExact: null,
-  maxDateExact: null,
-  disabledDates: null,
-  availableDates: null,
   disablePageSwipe: Boolean,
 };
 
-export const emits = [
+export const emitsDef = [
   'dayclick',
   'daymouseenter',
   'daymouseleave',
@@ -219,7 +159,7 @@ export const emits = [
 
 const contextKey = '__vc_calendar_context__';
 
-function createCalendar(
+export function createCalendar(
   props: CalendarProps,
   { emit, slots }: any,
 ): CalendarContext {
@@ -241,31 +181,9 @@ function createCalendar(
   let transitionPromise: any = null;
   let removeHandlers: any = null;
 
-  // #region Computed properties
+  // #region Computed
 
-  const theme = useTheme(toRef(props, 'color'), toRef(props, 'isDark'));
-
-  const locale = computed(() => {
-    // Return the locale prop if it is an instance of the Locale class
-    if (props.locale instanceof Locale) return props.locale;
-    // Build up a base config from component props
-    const config = (
-      isObject(props.locale)
-        ? props.locale
-        : {
-            id: props.locale,
-            firstDayOfWeek: props.firstDayOfWeek,
-            masks: props.masks,
-          }
-    ) as Partial<LocaleConfig>;
-    // Return new locale
-    return new Locale(config, {
-      locales: locales.value,
-      timezone: props.timezone,
-    });
-  });
-
-  const masks = computed(() => locale.value.masks);
+  const { theme, locale, masks, disabledAttribute } = createBase(props, {});
 
   const count = computed(() => props.rows * props.columns);
 
@@ -293,58 +211,11 @@ function createCalendar(
 
   const showIsoWeeknumbers = computed(() => !!props.showIsoWeeknumbers);
 
-  const disabledDates = computed(() => {
-    const dates = locale.value.normalizeDates(props.disabledDates, {
-      isAllDay: true,
-    });
-    // Add disabled range for min date
-    if (props.minDateExact || props.minDate) {
-      const end = props.minDateExact
-        ? locale.value.normalizeDate(props.minDateExact)
-        : locale.value.normalizeDate(props.minDate!, { time: '00:00:00' });
-      dates.push({
-        start: null,
-        end: new Date(end.getTime() - 1000),
-      });
-    }
-    // Add disabled range for min date
-    if (props.maxDateExact || props.maxDate) {
-      const start = props.maxDateExact
-        ? locale.value.normalizeDate(props.maxDateExact)
-        : locale.value.normalizeDate(props.maxDate!, { time: '23:59:59' });
-      dates.push({
-        start: new Date(start.getTime() + 1000),
-        end: null,
-      });
-    }
-    return dates;
-  });
-
-  const availableDates = computed(() => {
-    return locale.value.normalizeDates(props.availableDates, {
-      isAllDay: false,
-    });
-  });
-
-  const disabledAttribute = computed(() => {
-    return new Attribute(
-      {
-        key: 'disabled',
-        dates: disabledDates.value,
-        excludeDates: availableDates.value,
-        excludeMode: 'includes',
-        order: 100,
-      },
-      theme,
-      locale.value,
-    );
-  });
-
   const isMonthly = computed(() => state.view === 'monthly');
   const isWeekly = computed(() => state.view === 'weekly');
   const isDaily = computed(() => state.view === 'daily');
 
-  // #endregion Computed properties
+  // #endregion Computed
 
   // #region Methods
 
@@ -590,9 +461,10 @@ function createCalendar(
       }),
     );
     // Verify we can move to any pages in the target range
-    return locale.value
+    const pagesInRange = locale.value
       .pageRangeToArray(opts.fromPage!, opts.toPage!, state.view)
-      .some(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
+      .map(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
+    return pagesInRange.every(val => val);
   };
 
   const canMovePrev = computed(() => canMove(-step.value));
@@ -848,6 +720,7 @@ function createCalendar(
     locale,
     masks,
     attributes,
+    disabledAttribute,
     dayAttributes,
     count,
     step,
@@ -887,19 +760,50 @@ function createCalendar(
   return context;
 }
 
-export function useCalendar(
-  props: CalendarProps,
-  { emit, slots }: any,
-): CalendarContext {
-  let context = inject<CalendarContext>(
-    contextKey,
-    createCalendar(props, { emit, slots }),
-  );
-  provide(contextKey, context);
-  return context;
+export interface CalendarContext extends ToRefs<CalendarState> {
+  slots: any;
+  theme: Theme;
+  locale: ComputedRef<Locale>;
+  masks: ComputedRef<Record<string, string>>;
+  attributes: ComputedRef<Attribute[]>;
+  disabledAttribute: ComputedRef<Attribute>;
+  dayAttributes: ComputedRef<Record<string, DayAttribute[]>>;
+  count: ComputedRef<number>;
+  step: ComputedRef<number>;
+  isMonthly: ComputedRef<boolean>;
+  isWeekly: ComputedRef<boolean>;
+  isDaily: ComputedRef<boolean>;
+  firstPage: ComputedRef<Page | undefined>;
+  lastPage: ComputedRef<Page | undefined>;
+  minPage: ComputedRef<PageAddress | null>;
+  maxPage: ComputedRef<PageAddress | null>;
+  navVisibility: ComputedRef<PopoverVisibility>;
+  canMovePrev: ComputedRef<boolean>;
+  canMoveNext: ComputedRef<boolean>;
+  canMoveUp: ComputedRef<boolean>;
+  moveUpLabel: ComputedRef<string>;
+  showWeeknumbers: ComputedRef<boolean>;
+  showIsoWeeknumbers: ComputedRef<boolean>;
+  canMove: (target: MoveTarget, opts: Partial<MoveOptions>) => boolean;
+  move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
+  movePrev: () => Promise<boolean>;
+  moveNext: () => Promise<boolean>;
+  moveUp: () => void;
+  onTransitionBeforeEnter: () => void;
+  onTransitionAfterEnter: () => void;
+  tryFocusDate: (date: Date) => boolean;
+  focusDate: (date: Date, opts: Partial<MoveOptions>) => Promise<boolean>;
+  onKeydown: (e: KeyboardEvent) => void;
+  onDayKeydown: (day: CalendarDay, e: KeyboardEvent) => void;
+  onDayClick: (day: CalendarDay, e: MouseEvent) => void;
+  onDayMouseenter: (day: CalendarDay, e: MouseEvent) => void;
+  onDayMouseleave: (day: CalendarDay, e: MouseEvent) => void;
+  onDayFocusin: (day: CalendarDay, e: FocusEvent | null) => void;
+  onDayFocusout: (day: CalendarDay, e: FocusEvent) => void;
+  onWeeknumberClick: (week: CalendarWeek, e: MouseEvent) => void;
 }
 
-export function useCurrentCalendar(): CalendarContext {
+export function useCalendar(): CalendarContext {
   let context = inject<CalendarContext>(contextKey);
   if (context) return context;
   throw new Error(

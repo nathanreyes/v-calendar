@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useCurrentCalendar } from '../../use/calendar';
+import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
 import { DayAttribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems } from '../../utils/helpers';
@@ -74,7 +74,7 @@ export default defineComponent({
       onDayFocusin,
       onDayFocusout,
       onDayKeydown,
-    } = useCurrentCalendar();
+    } = useCalendar();
 
     const day = computed(() => props.day as CalendarDay);
     const attributes = computed(() => dayAttributes.value[day.value.id] || []);

@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-time-picker"
-    :class="[{ 'vc-invalid': !modelValue.isValid, 'vc-bordered': showBorder }]"
+    :class="[{ 'vc-invalid': !(parts as DateParts).isValid, 'vc-bordered': showBorder }]"
   >
     <div>
       <svg
@@ -32,9 +32,9 @@
         </span>
       </div>
       <div class="vc-time-select">
-        <time-select v-model.number="hours" :options="hourOptions_" />
+        <TimeSelect v-model.number="hours" :options="hourOptions" />
         <span style="margin: 0 4px">:</span>
-        <time-select v-model.number="minutes" :options="options.minutes" />
+        <TimeSelect v-model.number="minutes" :options="options.minutes" />
         <div v-if="!is24hr" class="vc-am-pm">
           <button
             :class="{ active: isAM }"
@@ -58,10 +58,13 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from 'vue';
 import TimeSelect from '../TimeSelect/TimeSelect.vue';
 import { arrayHasItems } from '../../utils/helpers';
-import { getDatePartsOptions } from '../../utils/dates';
+import { DateParts, DatePatch, getDatePartsOptions } from '../../utils/dates';
+import { useBase } from '../../use/base';
+import { RangePriority, useDatePicker } from '../../use/datePicker';
 
 const _amOptions = [
   { value: 0, label: '12' },
@@ -92,93 +95,112 @@ const _pmOptions = [
   { value: 23, label: '11' },
 ];
 
-export default {
-  name: 'TimePicker',
-  components: { TimeSelect },
-  emits: ['update:modelValue'],
-  props: {
-    modelValue: { type: Object, required: true },
-    locale: { type: Object, required: true },
-    theme: { type: Object, required: true },
-    is24hr: { type: Boolean, default: true },
-    rules: { type: Object, default: () => ({}) },
-    showBorder: Boolean,
+const props = defineProps<{
+  position: number;
+}>();
+
+const { locale } = useBase();
+const {
+  isRange,
+  isTime,
+  dateParts,
+  modelConfig,
+  is24hr,
+  updateValue: updateDpValue,
+} = useDatePicker();
+
+function updateValue(hValue = hours.value, mValue = minutes.value) {
+  if (hValue !== hours.value || mValue !== minutes.value) {
+    const newParts = {
+      ...parts.value,
+      hours: hValue,
+      minutes: mValue,
+      seconds: 0,
+      milliseconds: 0,
+    };
+    let newValue = null;
+    if (isRange.value) {
+      const start = isStart.value ? newParts : dateParts.value[0];
+      const end = isStart.value ? dateParts.value[1] : newParts;
+      newValue = { start, end };
+    } else {
+      newValue = newParts;
+    }
+    updateDpValue(newValue, {
+      patch: DatePatch.Time,
+      rangePriority: isStart.value ? RangePriority.Start : RangePriority.End,
+      adjustPageRange: isStart.value,
+    });
+  }
+}
+
+const isStart = computed(() => props.position === 0);
+const rules = computed(() => modelConfig.value[props.position].rules);
+const parts = computed(() => dateParts.value[props.position]);
+const showBorder = computed(() => !isTime.value);
+const date = computed(() => {
+  let date = locale.value.normalizeDate(parts.value);
+  if ((parts.value as DateParts).hours === 24) {
+    date = new Date(date.getTime() - 1);
+  }
+  return date;
+});
+
+const hours = computed<number>({
+  get() {
+    return (parts.value as DateParts).hours;
   },
-  computed: {
-    date() {
-      let date = this.locale.normalizeDate(this.modelValue);
-      if (this.modelValue.hours === 24) {
-        date = new Date(date.getTime() - 1);
-      }
-      return date;
-    },
-    hours: {
-      get() {
-        return this.modelValue.hours;
-      },
-      set(value) {
-        this.updateValue(value, this.minutes);
-      },
-    },
-    minutes: {
-      get() {
-        return this.modelValue.minutes;
-      },
-      set(value) {
-        this.updateValue(this.hours, value);
-      },
-    },
-    isAM: {
-      get() {
-        return this.modelValue.hours < 12;
-      },
-      set(value) {
-        let hours = this.hours;
-        if (value && hours >= 12) {
-          hours -= 12;
-        } else if (!value && hours < 12) {
-          hours += 12;
-        }
-        this.updateValue(hours, this.minutes);
-      },
-    },
-    options() {
-      return getDatePartsOptions(this.modelValue, this.rules);
-    },
-    amHourOptions() {
-      return _amOptions.filter(opt =>
-        this.options.hours.some(ho => ho.value === opt.value),
-      );
-    },
-    pmHourOptions() {
-      return _pmOptions.filter(opt =>
-        this.options.hours.some(ho => ho.value === opt.value),
-      );
-    },
-    hourOptions_() {
-      if (this.is24hr) return this.options.hours;
-      if (this.isAM) return this.amHourOptions;
-      return this.pmHourOptions;
-    },
-    amDisabled() {
-      return !arrayHasItems(this.amHourOptions);
-    },
-    pmDisabled() {
-      return !arrayHasItems(this.pmHourOptions);
-    },
+  set(value) {
+    updateValue(value, minutes.value);
   },
-  methods: {
-    updateValue(hours, minutes = this.minutes) {
-      if (hours !== this.hours || minutes !== this.minutes) {
-        this.$emit('update:modelValue', {
-          ...this.modelValue,
-          hours,
-          minutes,
-          seconds: 0,
-          milliseconds: 0,
-        });
-      }
-    },
+});
+
+const minutes = computed<number>({
+  get() {
+    return (parts.value as DateParts).minutes;
   },
-};
+  set(value) {
+    updateValue(hours.value, value);
+  },
+});
+
+const isAM = computed({
+  get() {
+    return (parts.value as DateParts).hours < 12;
+  },
+  set(value) {
+    let hValue = hours.value;
+    if (value && hValue >= 12) {
+      hValue -= 12;
+    } else if (!value && hValue < 12) {
+      hValue += 12;
+    }
+    updateValue(hValue, minutes.value);
+  },
+});
+
+const options = computed(() =>
+  getDatePartsOptions(parts.value as DateParts, rules.value),
+);
+
+const amHourOptions = computed(() => {
+  return _amOptions.filter(opt =>
+    options.value.hours.some(ho => ho.value === opt.value),
+  );
+});
+
+const pmHourOptions = computed(() => {
+  return _pmOptions.filter(opt =>
+    options.value.hours.some(ho => ho.value === opt.value),
+  );
+});
+
+const hourOptions = computed(() => {
+  if (is24hr.value) return options.value.hours;
+  if (isAM.value) return amHourOptions.value;
+  return pmHourOptions.value;
+});
+
+const amDisabled = computed(() => !arrayHasItems(amHourOptions.value));
+const pmDisabled = computed(() => !arrayHasItems(pmHourOptions.value));
 </script>

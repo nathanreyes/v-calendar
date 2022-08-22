@@ -6,7 +6,7 @@ import {
 } from './dateInfo';
 import { arrayHasItems, createGuid } from './helpers';
 import { PopoverVisibility } from './popovers';
-import Theme from './theme';
+import { Theme } from '../use/theme';
 import Locale, { CalendarDay } from './locale';
 
 import {
