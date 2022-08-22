@@ -215,7 +215,7 @@
   --vc-popover-content-bg: var(--vc-gray-50);
   --vc-popover-content-border: var(--vc-gray-300);
   /* Time picker */
-  --vc-time-picker-border: var(--vc-gray-400);
+  --vc-time-picker-border: var(--vc-gray-300);
   --vc-time-icon-color: var(--vc-gray-600);
   --vc-time-weekday-color: var(--vc-gray-700);
   --vc-time-month-color: var(--vc-accent-600);
@@ -308,7 +308,7 @@
   --vc-select-color: var(--vc-gray-100);
   --vc-select-bg: var(--vc-gray-700);
   --vc-select-border: var(--vc-gray-700);
-  --vc-select-hover-color: var(--vc-gray-700);
+  --vc-select-hover-color: var(--vc-gray-400);
   --vc-select-focus-border: var(--vc-accent-500);
   --vc-select-focus-bg: var(--vc-gray-800);
   --vc-select-arrow-color: var(--vc-gray-500);
