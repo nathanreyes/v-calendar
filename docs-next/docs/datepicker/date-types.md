@@ -10,7 +10,7 @@ The `model-config` prop is used to provide information about the date bound to `
 
 In short, the `model-config` and `timezone` props help provide a no-hassle approach to working with your data.
 
-### Strings
+## Strings
 
 To bind to a string value, provide a `model-config` with the necessary `type: 'string'` and `mask` properties.
 
@@ -41,7 +41,7 @@ export default {
 };
 ```
 
-### Numbers
+## Numbers
 
 To bind to a number value, provide a `model-config` with the necessary `type: 'number'` property.
 
@@ -67,7 +67,7 @@ export default {
 };
 ```
 
-### Time Adjust
+## Time Adjust
 
 By default, when the user selects a new date, it leaves the existing time value. To auto-adjust the time for selected dates, provide a `model-config` with the desired `timeAdjust` setting in `HH:mm:ss` format. All times use the specified `timezone`, or local timezone if none is provided.
 
@@ -100,7 +100,7 @@ data() {
 | *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
 | `now` | Assign to the instant of date selection. |
 
-#### Adjust Date Range Times
+### Adjust Date Range Times
 
 When used with date ranges, the `modelConfig` may be specified as an object with `start` and `end` properties. For example, when the users selects a date range, we might want to set the selected range to start at the very beginning of the first day until the end of the last day.
 

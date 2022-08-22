@@ -19,7 +19,6 @@ In short, it was built build to handle most date picker needs.
 ```vue
 <template>
   <DatePicker v-model="date" />
-  <div>{{ date ? date.toISOString() : 'Empty' }}</div>
 </template>
 
 <script setup>
@@ -32,12 +31,11 @@ const date = ref(new Date());
 
 Bind to a date range with `start` and `end` dates by setting the `is-range` prop.
 
-<DateRange />
+<DateWithValue is-range />
 
 ```vue
 <template>
   <DatePicker v-model="range" is-range />
-  <div>{{ JSON.stringify(range) }}</div>
 </template>
 <script setup>
 import { ref } from 'vue';

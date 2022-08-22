@@ -89,6 +89,11 @@
   }
 }
 
+input,
+button {
+  border-style: solid;
+}
+
 /* Markdown style overrides */
 .vp-doc {
   color: var(--tw-prose-body);
