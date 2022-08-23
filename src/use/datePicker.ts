@@ -153,7 +153,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     datePickerPopoverId: createGuid(),
   });
   const elOrComp = ref<HTMLElement | CalendarContext | null>(null);
-  const { locale, masks, disabledAttribute } = createBase(props, ctx);
   const baseCtx = createBase(props, ctx);
   const { locale, masks, disabledAttribute } = baseCtx;
 
