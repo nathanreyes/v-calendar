@@ -1,4 +1,4 @@
-import { Directive, DirectiveBinding } from 'vue';
+import { ComponentPublicInstance, Directive, DirectiveBinding } from 'vue';
 import { elementContains, on, createGuid } from './helpers';
 import { Placement } from '@popperjs/core';
 
@@ -9,7 +9,7 @@ export interface PopoverOptions {
   visibility: PopoverVisibility;
   isInteractive: boolean;
   autoHide: boolean;
-  ref?: HTMLElement;
+  ref?: HTMLElement | ComponentPublicInstance;
   refSelector: string;
   placement: Placement;
   modifiers: any;
@@ -35,8 +35,9 @@ const attributeName = 'data-popover-ref-id';
 
 const setRefSelector = (opts: Partial<PopoverOptions>) => {
   if (opts.ref && !opts.refSelector) {
-    const attributeValue = opts.ref.getAttribute(attributeName) || createGuid();
-    opts.ref.setAttribute(attributeName, attributeValue);
+    const el = (opts.ref as ComponentPublicInstance).$el || opts.ref;
+    const attributeValue = el.getAttribute(attributeName) || createGuid();
+    el.setAttribute(attributeName, attributeValue);
     opts.refSelector = `[${attributeName}="${attributeValue}"]`;
   }
   delete opts.ref;
