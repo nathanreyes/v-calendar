@@ -22,6 +22,7 @@ export default {
           'div',
           {
             class: 'vc-title',
+            role: 'button',
             ...this.navPopoverEvents,
           },
           [this.safeSlot('header-title', this.page, this.page.title)],
