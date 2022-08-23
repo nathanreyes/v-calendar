@@ -1,1 +1,0 @@
-export { rootMixin } from './root';
