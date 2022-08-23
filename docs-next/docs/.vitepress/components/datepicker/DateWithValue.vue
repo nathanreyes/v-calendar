@@ -22,6 +22,7 @@
     <!--Date Picker-->
     <DatePicker
       v-if="!isRange"
+      v-bind="$attrs"
       :mode="mode"
       v-model="date"
       :is24hr="is24hr"
@@ -59,7 +60,9 @@
           class="text-gray-500 dark:text-gray-400 font-semibold tracking-wide"
           >Date (ISO):</span
         >
-        <span class="font-medium ml-2">{{ date && date.toISOString() }}</span>
+        <span class="font-medium ml-2">{{
+          date ? date.toISOString() : 'null'
+        }}</span>
       </div>
     </template>
     <!--Date (ISO)-->
@@ -86,6 +89,7 @@
 
 <script>
 export default {
+  inheritAttrs: false,
   props: {
     mode: {
       type: String,

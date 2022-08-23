@@ -14,7 +14,7 @@ In short, it was built build to handle most date picker needs.
 
 `DatePicker` can bind to single dates using the `v-model` directive.
 
-<SingleDate />
+<DateWithValue />
 
 ```vue
 <template>

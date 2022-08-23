@@ -104,12 +104,16 @@ export default {
               link: '/datepicker/selection-modes',
             },
             {
+              text: 'Time Rules',
+              link: '/datepicker/time-rules',
+            },
+            {
               text: 'Date Types',
               link: '/datepicker/date-types',
             },
             {
-              text: 'Input Popover',
-              link: '/datepicker/input-popover',
+              text: 'Popovers',
+              link: '/datepicker/popovers',
             },
             {
               text: 'Custom Attributes',

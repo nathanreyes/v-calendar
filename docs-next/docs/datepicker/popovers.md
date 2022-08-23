@@ -1,43 +1,32 @@
-## Popovers
+# Popovers
 
 To display the picker as a popover, provide your own content as the default slot. Most often this will be an `input` element.
 
-:::warning
-As of `v2.0.0`, `v-date-picker` no longer provides an `input` element as the default slot. This slot **must** be provided by the developer. Additionally, the `inputProps` prop as been deprecated in favor of simply binding the input value to the `inputValue` slot prop.
-:::
+## Date Input
 
-### Input
-
-To allow for user date text entry, provide a custom `input` element as the default slot. `v-date-picker` provides formatting, parsing and event handling out of the box via the following slot props:
+To allow for user date text entry, provide a custom `input` element as the default slot. `DatePicker` provides formatting, parsing and event handling out of the box via the following slot props:
 
 - `inputValue`: The is the value you should bind to your input. This value will update as new dates are assigned and validated by the component.
 - `inputEvents`: These events include handlers for events that ultimately assign new dates and manage the appearance of the popover (as specified via the `popover` prop).
 
-<!-- <guide-datepicker-intro-popover /> -->
+<PopoverIntro />
 
-```html
-<v-date-picker v-model="date">
-  <template v-slot="{ inputValue, inputEvents }">
-    <input
-      class="bg-white border px-2 py-1 rounded"
-      :value="inputValue"
-      v-on="inputEvents"
-    />
-  </template>
-</v-date-picker>
+```vue
+<template>
+  <DatePicker v-model="date">
+    <template v-slot="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DatePicker>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+</script>
 ```
 
-```js
-export default {
-  data() {
-    return {
-      date: new Date(),
-    };
-  },
-};
-```
-
-### Range Inputs
+## Range Inputs
 
 When binding to a date range and providing custom `input` elements, the `inputValue` and `inputEvents` are split into separate `start` and `end` sub-properties. 
 

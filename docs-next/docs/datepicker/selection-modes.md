@@ -12,8 +12,15 @@ To limit user selection to only date components (month, day, year), use `mode: '
 
 <DateWithValue mode="date" />
 
-```html
-<DatePicker mode="date" v-model="date" />
+```vue
+<template>
+  <DatePicker v-model="date" mode="date" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+</script>
 ```
 
 ## Date & Time
@@ -45,7 +52,7 @@ To limit user selection to only time components (hours, minutes, seconds), use `
 
 ```vue
 <template>
-  <DatePicker mode="time" v-model="date" :timezone="timezone" />
+  <DatePicker v-model="date" mode="time" :timezone="timezone" />
 </template>
 
 <script setup>
@@ -56,7 +63,7 @@ const date = ref(new Date());
 
 ## 24-hr
 
-When `mode` is `time` or `dateTime`, use the `is24hr` prop to use 24-hr selections.
+When `mode` is `dateTime` or `time`, use the `is24hr` prop to use 24-hr selections.
 
 <DateWithValue mode="dateTime" is24hr />
 
@@ -71,28 +78,8 @@ const date = ref(new Date())
 </script>
 ```
 
-### Minute Increments
+## Sub-minute
 
-Use the `minute-increment` prop to set custom intervals for the minute `select` options.
+Use the `show-seconds` and `show-milliseconds` props to allow selection of `seconds` and `milliseconds`.
 
-<!-- <guide-datepicker-minute-increment /> -->
-
-```html
-<v-date-picker v-model="date" mode="dateTime" :minute-increment="5" />
-```
-
-```js
-export default {
-  data() {
-    let date = new Date();
-    date.setMinutes(0, 0, 0);
-    return {
-      date,
-    };
-  },
-};
-```
-
-<BaseAlert warning>
-If the bound date does not match of the the minute options derived by the `minute-increment` amount, the accurate `minute` amount will be displayed, but this option will be disabled.
-</BaseAlert>
+<DateWithValue mode="dateTime" is24hr show-seconds show-milliseconds />
