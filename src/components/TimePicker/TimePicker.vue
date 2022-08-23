@@ -3,19 +3,17 @@
     class="vc-time-picker"
     :class="[{ 'vc-invalid': !(parts as DateParts).isValid, 'vc-bordered': showBorder }]"
   >
-    <div>
-      <svg
-        fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        viewBox="0 0 24 24"
-        class="vc-time-icon"
-        stroke="currentColor"
-      >
-        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    </div>
+    <svg
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      class="vc-time-icon"
+      stroke="currentColor"
+    >
+      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
     <div class="vc-time-content">
       <div v-if="date" class="vc-time-date">
         <span class="vc-time-weekday">
@@ -109,29 +107,28 @@ const {
   updateValue: updateDpValue,
 } = useDatePicker();
 
-function updateValue(hValue = hours.value, mValue = minutes.value) {
-  if (hValue !== hours.value || mValue !== minutes.value) {
-    const newParts = {
-      ...parts.value,
-      hours: hValue,
-      minutes: mValue,
-      seconds: 0,
-      milliseconds: 0,
-    };
-    let newValue = null;
-    if (isRange.value) {
-      const start = isStart.value ? newParts : dateParts.value[0];
-      const end = isStart.value ? dateParts.value[1] : newParts;
-      newValue = { start, end };
-    } else {
-      newValue = newParts;
-    }
-    updateDpValue(newValue, {
-      patch: DatePatch.Time,
-      rangePriority: isStart.value ? RangePriority.Start : RangePriority.End,
-      adjustPageRange: isStart.value,
-    });
+interface TimeParts {
+  hours: number;
+  minutes: number;
+  seconds: number;
+  milliseconds: number;
+}
+
+function updateParts(newParts: Partial<TimeParts>) {
+  newParts = Object.assign(parts.value, newParts);
+  let newValue = null;
+  if (isRange.value) {
+    const start = isStart.value ? newParts : dateParts.value[0];
+    const end = isStart.value ? dateParts.value[1] : newParts;
+    newValue = { start, end };
+  } else {
+    newValue = newParts;
   }
+  updateDpValue(newValue, {
+    patch: DatePatch.Time,
+    rangePriority: isStart.value ? RangePriority.Start : RangePriority.End,
+    adjustPageRange: isStart.value,
+  });
 }
 
 const isStart = computed(() => props.position === 0);
@@ -150,8 +147,8 @@ const hours = computed<number>({
   get() {
     return (parts.value as DateParts).hours;
   },
-  set(value) {
-    updateValue(value, minutes.value);
+  set(val) {
+    updateParts({ hours: val });
   },
 });
 
@@ -159,8 +156,8 @@ const minutes = computed<number>({
   get() {
     return (parts.value as DateParts).minutes;
   },
-  set(value) {
-    updateValue(hours.value, value);
+  set(val) {
+    updateParts({ minutes: val });
   },
 });
 
@@ -175,7 +172,7 @@ const isAM = computed({
     } else if (!value && hValue < 12) {
       hValue += 12;
     }
-    updateValue(hValue, minutes.value);
+    updateParts({ hours: hValue });
   },
 });
 
