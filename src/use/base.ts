@@ -133,7 +133,7 @@ export function createBase(props: BaseProps, ctx: any) {
   return context;
 }
 
-interface BaseContext {
+export interface BaseContext {
   theme: Theme;
   locale: ComputedRef<Locale>;
   masks: ComputedRef<Record<string, string>>;

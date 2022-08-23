@@ -22,7 +22,7 @@
       <div
         v-if="isVisible"
         tabindex="-1"
-        :class="['vc-popover-content', `direction-${direction}`]"
+        :class="`vc-popover-content direction-${direction}`"
         :style="contentStyle"
         v-bind="$attrs"
       >

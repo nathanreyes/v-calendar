@@ -1,7 +1,7 @@
 <script>
-import { propsDef, emits, createDatePicker } from '../../use/datePicker';
 import Popover from '../Popover/Popover.vue';
 import DatePickerContent from './DatePickerContent.vue';
+import { propsDef, emits, createDatePicker } from '../../use/datePicker';
 
 export default {
   name: 'DatePicker',
@@ -21,7 +21,7 @@ export default {
     <Popover
       :id="datePickerPopoverId"
       placement="bottom-start"
-      contentClass="vc-container"
+      :class="`vc-date-picker-content vc-${theme.displayMode} vc-${theme.color}`"
       ref="popover"
     >
       <DatePickerContent v-bind="$attrs" />

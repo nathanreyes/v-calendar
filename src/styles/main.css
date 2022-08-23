@@ -45,3 +45,11 @@
     border: none;
   }
 }
+
+.vc-date-picker-content {
+  padding: 0;
+  background-color: var(--vc-bg);
+  .vc-container {
+    border: 0;
+  }
+}

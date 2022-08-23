@@ -34,7 +34,12 @@ import {
   togglePopover as tp,
   getPopoverEventHandlers,
 } from '../utils/popovers';
-import { BaseProps, propsDef as basePropsDef, createBase } from './base';
+import {
+  BaseContext,
+  BaseProps,
+  propsDef as basePropsDef,
+  createBase,
+} from './base';
 import { CalendarContext } from './calendar';
 
 const _baseConfig = {
@@ -150,6 +155,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   });
   const elOrComp = ref<HTMLElement | CalendarContext | null>(null);
   const { locale, masks, disabledAttribute } = createBase(props, ctx);
+  const baseCtx = createBase(props, ctx);
+  const { locale, masks, disabledAttribute } = baseCtx;
 
   // #region Computed
 
@@ -749,6 +756,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   // #endregion Lifecycle
 
   const context = {
+    ...baseCtx,
     ...toRefs(state),
     elOrComp,
     calendarRef,
@@ -770,7 +778,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   return context;
 }
 
-export interface DatePickerContext extends ToRefs<DatePickerLocalState> {
+export interface DatePickerContext
+  extends ToRefs<DatePickerLocalState>,
+    ToRefs<BaseContext> {
   elOrComp: Ref<null | HTMLElement | CalendarContext>;
   calendarRef: Ref<null | CalendarContext>;
   isRange: Ref<boolean>;
