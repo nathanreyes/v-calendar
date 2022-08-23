@@ -2,7 +2,6 @@ import {
   Ref,
   ComputedRef,
   ToRefs,
-  ComponentPublicInstance,
   ref,
   computed,
   reactive,
@@ -159,12 +158,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   const { locale, masks, disabledAttribute } = baseCtx;
 
   // #region Computed
-
-  const calendarRef = computed(() => {
-    if (elOrComp.value == null || elOrComp.value instanceof HTMLElement)
-      return null;
-    return elOrComp.value as CalendarContext;
-  });
 
   const valueStart = computed(() =>
     props.isRange && state.value != null
@@ -684,8 +677,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function adjustPageRange(isStart: boolean) {
     nextTick(() => {
-      if (!calendarRef.value) return;
-      const { firstPage, lastPage, move } = calendarRef.value;
+      if (elOrComp.value == null || elOrComp.value instanceof HTMLElement)
+        return;
+      const { firstPage, lastPage, move } = elOrComp.value;
       const page = getPageForValue(isStart);
       const position = isStart ? 1 : -1;
       if (page && !pageIsBetweenPages(page, firstPage.value, lastPage.value)) {
@@ -759,7 +753,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     ...baseCtx,
     ...toRefs(state),
     elOrComp,
-    calendarRef,
     isRange: toRef(props, 'isRange'),
     isTime,
     isDateTime,
@@ -782,7 +775,6 @@ export interface DatePickerContext
   extends ToRefs<DatePickerLocalState>,
     ToRefs<BaseContext> {
   elOrComp: Ref<null | HTMLElement | CalendarContext>;
-  calendarRef: Ref<null | CalendarContext>;
   isRange: Ref<boolean>;
   isTime: ComputedRef<boolean>;
   isDateTime: ComputedRef<boolean>;
