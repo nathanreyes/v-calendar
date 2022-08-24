@@ -216,27 +216,21 @@
   --vc-popover-content-border: var(--vc-gray-300);
   /* Time picker */
   --vc-time-picker-border: var(--vc-gray-300);
-  --vc-time-icon-color: var(--vc-gray-600);
   --vc-time-weekday-color: var(--vc-gray-700);
   --vc-time-month-color: var(--vc-accent-600);
   --vc-time-day-color: var(--vc-accent-600);
   --vc-time-year-color: var(--vc-gray-500);
-  --vc-am-pm-color: var(--vc-gray-800);
-  --vc-am-pm-bg: var(--vc-gray-200);
-  --vc-am-pm-button-hover-color: var(--vc-gray-600);
-  --vc-am-pm-button-focus-border: var(--vc-accent-400);
-  --vc-am-pm-button-active-color: var(--vc-white);
-  --vc-am-pm-button-active-bg: var(--vc-accent-600);
-  --vc-am-pm-button-active-hover-bg: var(--vc-accent-500);
-  --vc-am-pm-button-active-focus-border: var(--vc-accent-400);
-  /* Select element */
-  --vc-select-color: var(--vc-gray-900);
-  --vc-select-bg: var(--vc-gray-200);
-  --vc-select-border: var(--vc-gray-200);
-  --vc-select-hover-color: var(--vc-gray-600);
-  --vc-select-focus-border: var(--vc-accent-400);
-  --vc-select-focus-bg: var(--vc-white);
-  --vc-select-arrow-color: var(--vc-gray-500);
+  --vc-time-select-group-bg: var(--vc-gray-200);
+  --vc-time-select-group-border: var(--vc-gray-200);
+  --vc-time-select-group-icon-color: var(--vc-accent-500);
+  --vc-time-select-color: var(--vc-gray-900);
+  --vc-time-select-bg: transparent;
+  --vc-time-select-border: var(--vc-gray-200);
+  --vc-time-select-hover-color: var(--vc-gray-600);
+  --vc-time-select-focus-border: var(--vc-accent-400);
+  --vc-time-select-focus-bg: var(--vc-accent-600);
+  --vc-time-select-focus-color: var(--vc-white);
+
   &.vc-attr,
   & .vc-attr {
     /* Calendar day */
@@ -291,27 +285,20 @@
   --vc-popover-content-border: var(--vc-gray-700);
   /* Time picker */
   --vc-time-picker-border: var(--vc-gray-700);
-  --vc-time-icon-color: var(--vc-gray-400);
   --vc-time-weekday-color: var(--vc-gray-400);
   --vc-time-month-color: var(--vc-accent-400);
   --vc-time-day-color: var(--vc-accent-400);
   --vc-time-year-color: var(--vc-gray-500);
-  --vc-am-pm-color: var(--vc-gray-100);
-  --vc-am-pm-bg: var(--vc-gray-700);
-  --vc-am-pm-button-hover-color: var(--vc-gray-400);
-  --vc-am-pm-button-focus-border: var(--vc-accent-500);
-  --vc-am-pm-button-active-color: var(--vc-white);
-  --vc-am-pm-button-active-bg: var(--vc-accent-500);
-  --vc-am-pm-button-active-hover-bg: var(--vc-accent-600);
-  --vc-am-pm-button-active-focus-border: var(--vc-accent-500);
-  /* Select element */
-  --vc-select-color: var(--vc-gray-100);
-  --vc-select-bg: var(--vc-gray-700);
-  --vc-select-border: var(--vc-gray-700);
-  --vc-select-hover-color: var(--vc-gray-400);
-  --vc-select-focus-border: var(--vc-accent-500);
-  --vc-select-focus-bg: var(--vc-gray-800);
-  --vc-select-arrow-color: var(--vc-gray-500);
+  --vc-time-select-group-bg: var(--vc-gray-700);
+  --vc-time-select-group-border: var(--vc-gray-700);
+  --vc-time-select-group-icon-color: var(--vc-accent-400);
+  --vc-time-select-color: var(--vc-gray-100);
+  --vc-time-select-bg: transparent;
+  --vc-time-select-border: var(--vc-gray-700);
+  --vc-time-select-hover-color: var(--vc-gray-400);
+  --vc-time-select-focus-border: var(--vc-accent-500);
+  --vc-time-select-focus-bg: var(--vc-accent-500);
+
   &.vc-attr,
   & .vc-attr {
     /* Calendar day */

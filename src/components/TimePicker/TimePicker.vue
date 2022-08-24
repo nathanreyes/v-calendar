@@ -3,55 +3,49 @@
     class="vc-time-picker"
     :class="[{ 'vc-invalid': !(parts as DateParts).isValid, 'vc-bordered': showBorder }]"
   >
-    <svg
-      fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      viewBox="0 0 24 24"
-      class="vc-time-icon"
-      stroke="currentColor"
-    >
-      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <div class="vc-time-content">
-      <div v-if="date" class="vc-time-date">
-        <span class="vc-time-weekday">
-          {{ locale.formatDate(date, 'WWW') }}
-        </span>
-        <span class="vc-time-month">
-          {{ locale.formatDate(date, 'MMM') }}
-        </span>
-        <span class="vc-time-day">
-          {{ locale.formatDate(date, 'D') }}
-        </span>
-        <span class="vc-time-year">
-          {{ locale.formatDate(date, 'YYYY') }}
-        </span>
-      </div>
-      <div class="vc-time-select">
-        <TimeSelect v-model.number="hours" :options="hourOptions" />
-        <span style="margin: 0 4px">:</span>
+    <div v-if="showHeader" class="vc-time-header">
+      <span class="vc-time-weekday">
+        {{ locale.formatDate(date, 'WWW') }}
+      </span>
+      <span class="vc-time-month">
+        {{ locale.formatDate(date, 'MMM') }}
+      </span>
+      <span class="vc-time-day">
+        {{ locale.formatDate(date, 'D') }}
+      </span>
+      <span class="vc-time-year">
+        {{ locale.formatDate(date, 'YYYY') }}
+      </span>
+    </div>
+    <div class="vc-time-select-group">
+      <svg
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        class="vc-time-select-group-icon"
+        stroke="currentColor"
+      >
+        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <TimeSelect v-model.number="hours" :options="hourOptions" />
+      <template v-if="timeAccuracy > 1">
+        <span class="vc-time-colon">:</span>
         <TimeSelect v-model.number="minutes" :options="options.minutes" />
-        <div v-if="!is24hr" class="vc-am-pm">
-          <button
-            :class="{ active: isAM }"
-            :disabled="amDisabled"
-            @click.prevent="isAM = true"
-            type="button"
-          >
-            AM
-          </button>
-          <button
-            :class="{ active: !isAM }"
-            :disabled="pmDisabled"
-            @click.prevent="isAM = false"
-            type="button"
-          >
-            PM
-          </button>
-        </div>
-      </div>
+      </template>
+      <template v-if="timeAccuracy > 2 && hasValue">
+        <span class="vc-time-colon">:</span>
+        <TimeSelect v-model.number="seconds" :options="options.seconds" />
+      </template>
+      <template v-if="timeAccuracy > 3 && hasValue">
+        <span class="vc-time-decimal">.</span>
+        <TimeSelect
+          v-model.number="milliseconds"
+          :options="options.milliseconds"
+        />
+      </template>
+      <TimeSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions" />
     </div>
   </div>
 </template>
@@ -104,6 +98,8 @@ const {
   dateParts,
   modelConfig,
   is24hr,
+  hideTimeHeader,
+  timeAccuracy,
   updateValue: updateDpValue,
 } = useDatePicker();
 
@@ -135,6 +131,13 @@ const isStart = computed(() => props.position === 0);
 const rules = computed(() => modelConfig.value[props.position].rules);
 const parts = computed(() => dateParts.value[props.position]);
 const showBorder = computed(() => !isTime.value);
+const hasValue = computed(
+  () => parts.value && (parts.value as DateParts).hours != null,
+);
+const showHeader = computed(() => {
+  return !hideTimeHeader.value && hasValue.value;
+});
+
 const date = computed(() => {
   let date = locale.value.normalizeDate(parts.value);
   if ((parts.value as DateParts).hours === 24) {
@@ -158,6 +161,24 @@ const minutes = computed<number>({
   },
   set(val) {
     updateParts({ minutes: val });
+  },
+});
+
+const seconds = computed<number>({
+  get() {
+    return (parts.value as DateParts).seconds;
+  },
+  set(val) {
+    updateParts({ seconds: val });
+  },
+});
+
+const milliseconds = computed<number>({
+  get() {
+    return (parts.value as DateParts).milliseconds;
+  },
+  set(val) {
+    updateParts({ milliseconds: val });
   },
 });
 
@@ -198,6 +219,18 @@ const hourOptions = computed(() => {
   return pmHourOptions.value;
 });
 
-const amDisabled = computed(() => !arrayHasItems(amHourOptions.value));
-const pmDisabled = computed(() => !arrayHasItems(pmHourOptions.value));
+const isAMOptions = computed(() => {
+  return [
+    {
+      value: true,
+      label: 'AM',
+      disabled: !arrayHasItems(amHourOptions.value),
+    },
+    {
+      value: false,
+      label: 'PM',
+      disabled: !arrayHasItems(pmHourOptions.value),
+    },
+  ];
+});
 </script>

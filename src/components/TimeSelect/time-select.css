@@ -1,49 +1,30 @@
-.vc-select {
+.vc-time-select {
   position: relative;
   & select {
     flex-grow: 1;
     display: block;
     appearance: none;
-    width: 52px;
-    height: 30px;
+    height: 28px;
     font-size: var(--vc-text-base);
     font-weight: var(--vc-font-medium);
-    text-align: left;
-    color: var(--vc-select-color);
-    background-color: var(--vc-select-bg);
-    border: 2px solid;
-    border-color: var(--vc-select-border);
-    padding: 0 20px 0 8px;
+    text-align: center;
+    color: var(--vc-time-select-color);
+    background-color: var(--vc-time-select-bg);
+    padding: 0px 4px;
+    margin: 0;
     border-radius: var(--vc-rounded);
-    line-height: var(--leading-tight);
+    line-height: var(--leading-none);
     text-indent: 0px;
     cursor: pointer;
-    -moz-padding-start: 3px;
     background-image: none;
     &:hover {
-      color: var(--vc-select-hover-color);
+      color: var(--vc-time-select-hover-color);
     }
     &:focus {
       outline: 0;
-      border-color: var(--vc-select-focus-border);
-      background-color: var(--vc-select-focus-bg);
+      color: var(--vc-time-select-focus-color);
+      border-color: var(--vc-time-select-focus-border);
+      background-color: var(--vc-time-select-focus-bg);
     }
-  }
-}
-
-.vc-select-arrow {
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  padding: 0 4px 0 0;
-  color: var(--vc-select-arrow-color);
-  & svg {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
   }
 }

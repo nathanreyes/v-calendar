@@ -1,7 +1,8 @@
 .vc-time-picker {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 8px;
+  padding: 8px 4px;
   &.vc-invalid {
     pointer-events: none;
     opacity: 0.5;
@@ -9,26 +10,20 @@
   &.vc-bordered {
     border-top: 1px solid var(--vc-time-picker-border);
   }
+  > * + * {
+    margin-top: 4px;
+  }
 }
 
-.vc-time-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--vc-time-icon-color);
-}
-
-.vc-time-content {
-  margin-left: 8px;
-}
-
-.vc-time-date {
+.vc-time-header {
   display: flex;
   align-items: center;
   font-size: var(--vc-text-sm);
   font-weight: var(--vc-font-semibold);
   text-transform: uppercase;
-  padding: 0 0 4px 4px;
   margin-top: -4px;
+  padding-left: 4px;
+  padding-right: 4px;
   line-height: 21px;
 }
 
@@ -52,47 +47,27 @@
   margin-left: 8px;
 }
 
-.vc-time-select {
-  display: flex;
+.vc-time-select-group {
+  display: inline-flex;
   align-items: center;
+  height: 30px;
+  padding: 0 4px;
+  background: var(--vc-time-select-group-bg);
+  border: 1px solid var(--vc-time-select-group-border);
+  border-radius: var(--vc-rounded-md);
 }
 
-.vc-am-pm {
-  display: flex;
-  align-items: center;
-  color: var(--vc-am-pm-color);
-  background: var(--vc-am-pm-bg);
-  margin-left: 8px;
-  padding: 4px;
-  border-radius: var(--vc-rounded);
-  height: 30px;
-  & button {
-    font-size: var(--vc-text-sm);
-    font-weight: var(--vc-font-medium);
-    padding: 0 4px;
-    background: transparent;
-    border: 2px solid transparent;
-    border-radius: var(--vc-rounded);
-    line-height: var(--vc-leading-snug);
-    &:hover {
-      color: var(--vc-am-pm-button-hover-color);
-    }
-    &:focus {
-      border-color: var(--vc-am-pm-focus-border);
-    }
-    &:disabled {
-      opacity: 0.25;
-      pointer-events: none;
-    }
-    &.active {
-      color: var(--vc-am-pm-button-active-color);
-      background: var(--vc-am-pm-button-active-bg);
-      &:hover {
-        background: var(--vc-am-pm-button-active-hover-bg);
-      }
-      &:focus {
-        border-color: var(--vc-am-pm-button-active-focus-border);
-      }
-    }
-  }
+.vc-time-select-group-icon {
+  width: 18px;
+  height: 18px;
+  margin: 0 4px 0 2px;
+  color: var(--vc-time-select-group-icon-color);
+}
+
+.vc-time-colon {
+  margin: 0 2px 2px 2px;
+}
+
+.vc-time-decimal {
+  margin: 0 0 0 1px;
 }

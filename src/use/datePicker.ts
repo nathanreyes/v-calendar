@@ -71,6 +71,8 @@ export const propsDef = {
   rules: { type: Object, default: () => ({}) },
   modelConfig: { type: Object, default: () => ({}) },
   is24hr: Boolean,
+  hideTimeHeader: Boolean,
+  timeAccuracy: { type: Number, default: 2 },
   isRequired: Boolean,
   isRange: Boolean,
   updateOnInput: {
@@ -94,6 +96,8 @@ interface DatePickerProps extends BaseProps {
   rules?: any;
   modelConfig?: any;
   is24hr: boolean;
+  hideTimeHeader: boolean;
+  timeAccuracy: number;
   isRequired: boolean;
   isRange: boolean;
   updateOnInput: boolean;
@@ -756,6 +760,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     isTime,
     isDateTime,
     is24hr: toRef(props, 'is24hr'),
+    hideTimeHeader: toRef(props, 'hideTimeHeader'),
+    timeAccuracy: toRef(props, 'timeAccuracy'),
     isDragging,
     slotArgs,
     dateParts,
@@ -778,6 +784,8 @@ export interface DatePickerContext
   isTime: ComputedRef<boolean>;
   isDateTime: ComputedRef<boolean>;
   is24hr: Ref<boolean>;
+  hideTimeHeader: Ref<boolean>;
+  timeAccuracy: Ref<number>;
   isDragging: ComputedRef<boolean>;
   slotArgs: any;
   dateParts: ComputedRef<(object | DateParts)[]>;
