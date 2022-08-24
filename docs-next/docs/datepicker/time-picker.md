@@ -23,16 +23,6 @@ const date = ref(new Date())
 </script>
 ```
 
-## Accuracy
-
-The `time-accuracy` prop can be used to limit what components are allowed for selection.
-
-The time accuracy is a number mapping to the most accurate time component allowed (`1`: hours, `2`: minutes, `3`: seconds, `4`: milliseconds). The default value is `2`: minutes.
-
-<Example centered>
-  <DateTimeAccuracy />
-</Example>
-
 ## Hide Header
 
 The time header may be hidden via the `hide-time-header` prop.
@@ -188,7 +178,24 @@ const rules = ref({
 </script>
 ```
 
+## Accuracy
+
+The `time-accuracy` prop can be used to limit what components are allowed for selection.
+
+The time accuracy is a number mapping to the most accurate time component allowed (`1`: hours, `2`: minutes, `3`: seconds, `4`: milliseconds). The default value is `2`: minutes.
+
+<Example centered>
+  <DateTimeAccuracy />
+</Example>
+
+<BaseAlert title="Time accuracy and default rules">
+If `rules` are not explicitly provided, the `time-accuracy` prop will determine the default set of rules that are applied. For example, a `time-accuracy` of `1: hours` will zero out the `minutes`, `seconds` and `milliseconds`.
+</BaseAlert>
+
 ## Custom Slot
+
+<BaseAlert title="Coming soon..." success>
+</BaseAlert>
 
 ## Date Mode
 

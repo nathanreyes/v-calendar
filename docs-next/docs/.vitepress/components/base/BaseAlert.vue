@@ -13,7 +13,7 @@ const props = defineProps<{
 const theme = computed(() => {
   if (props.success) {
     return {
-      icon: 'IconAlertTriangle',
+      icon: 'IconCheckCircle',
       title: 'Success',
       wrapperClass:
         'bg-green-50 border border-green-200 dark:bg-gray-700 dark:border-green-500',
@@ -33,7 +33,7 @@ const theme = computed(() => {
     };
   } else if (props.error) {
     return {
-      icon: 'IconAlertTriangle',
+      icon: 'IconXOctagon',
       title: 'Error',
       wrapperClass:
         'bg-red-50 border border-red-200 dark:bg-gray-700 dark:border-red-500',
@@ -69,6 +69,7 @@ const theme = computed(() => {
         {{ title || theme.title }}
       </div>
       <div
+        v-if="$slots.default"
         class="font-medium mt-0 mb-0 p-0 leading-relaxed"
         :class="theme.slotClass"
       >
