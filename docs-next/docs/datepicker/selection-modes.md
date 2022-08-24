@@ -10,7 +10,9 @@ Use the `mode` prop to switch between 3 different date selection modes: `date`, 
 
 To limit user selection to only date components (month, day, year), use `mode: 'date'`. This is the default prop value, so it isn't explicitly required.
 
-<DateWithValue mode="date" />
+<Example centered>
+  <DateWithValue mode="date" />
+</Example>
 
 ```vue
 <template>
@@ -31,7 +33,9 @@ To allow user selection of date and time components, use `mode: 'dateTime'`. A t
   Time components are set using the current timezone setting set by the `timezone` prop. By default, this value is `undefined`, which specifies the local timezone.
 </BaseAlert>
 
-<DateWithValue mode="dateTime" />
+<Example centered>
+  <DateWithValue mode="dateTime" />
+</Example>
 
 ```vue
 <template>
@@ -48,7 +52,9 @@ const date = ref(new Date());
 
 To limit user selection to only time components (hours, minutes, seconds), use `mode: 'time'`.
 
-<DateWithValue mode="time" />
+<Example centered>
+  <DateWithValue mode="time" />
+</Example>
 
 ```vue
 <template>
@@ -65,7 +71,9 @@ const date = ref(new Date());
 
 When `mode` is `dateTime` or `time`, use the `is24hr` prop to use 24-hr selections.
 
-<DateWithValue mode="dateTime" is24hr />
+<Example centered>
+  <DateWithValue mode="dateTime" is24hr />
+</Example>
 
 ```vue
 <template>
@@ -78,8 +86,33 @@ const date = ref(new Date())
 </script>
 ```
 
-## Sub-minute
+## Time Accuracy
 
-Use the `show-seconds` and `show-milliseconds` props to allow selection of `seconds` and `milliseconds`.
+The `time-accuracy` prop can be used to limit what components are allowed for selection.
 
-<DateWithValue mode="dateTime" is24hr show-seconds show-milliseconds />
+The time accuracy is a number mapping to the most accurate time component allowed (`1`: hours, `2`: minutes, `3`: seconds, `4`: milliseconds). The default value is `2`: minutes.
+
+<Example centered>
+  <DateTimeAccuracy />
+</Example>
+
+## Time Header
+
+The time header may be hidden via the `hide-time-header` prop.
+
+<Example centered>
+  <DateWithValue mode="dateTime" hide-time-header />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="date" mode="dateTime" hide-time-header />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date())
+</script>
+```
+
+## Time Slot

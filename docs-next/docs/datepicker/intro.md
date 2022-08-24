@@ -14,7 +14,9 @@ In short, it was built build to handle most date picker needs.
 
 `DatePicker` can bind to single dates using the `v-model` directive.
 
-<DateWithValue />
+<Example centered>
+  <DateWithValue />
+</Example>
 
 ```vue
 <template>
@@ -31,7 +33,9 @@ const date = ref(new Date());
 
 Bind to a date range with `start` and `end` dates by setting the `is-range` prop.
 
-<DateWithValue is-range />
+<Example centered>
+  <DateWithValue is-range />
+</Example>
 
 ```vue
 <template>
