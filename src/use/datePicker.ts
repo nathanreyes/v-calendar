@@ -1,4 +1,5 @@
 import {
+  PropType,
   Ref,
   ComputedRef,
   ToRefs,
@@ -25,7 +26,12 @@ import {
   off,
 } from '../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../utils/_';
-import { DatePatch, DateParts, datesAreEqual } from '../utils/dates';
+import {
+  DatePatch,
+  DateParts,
+  DatePartsRules,
+  datesAreEqual,
+} from '../utils/dates';
 import {
   PopoverOptions,
   showPopover as sp,
@@ -68,7 +74,7 @@ export const propsDef = {
   mode: { type: String, default: MODE.DATE },
   modelValue: { type: null, required: true },
   time: String,
-  rules: { type: Object, default: () => ({}) },
+  rules: Object as PropType<DatePartsRules>,
   modelConfig: { type: Object, default: () => ({}) },
   is24hr: Boolean,
   hideTimeHeader: Boolean,
@@ -93,7 +99,7 @@ interface DatePickerProps extends BaseProps {
   mode: string;
   modelValue: any;
   time?: string;
-  rules?: any;
+  rules?: DatePartsRules;
   modelConfig?: any;
   is24hr: boolean;
   hideTimeHeader: boolean;
@@ -291,6 +297,24 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return attrs;
   });
 
+  const rules = computed(() => {
+    if (isObject(props.rules)) return props.rules;
+    switch (props.timeAccuracy) {
+      case 1:
+        return {
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        };
+      case 3:
+        return { milliseconds: 0 };
+      case 4:
+        return {};
+      default:
+        return { seconds: 0, milliseconds: 0 };
+    }
+  });
+
   // #endregion Computed
 
   // #region Methods
@@ -301,7 +325,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       : [config.start || config, config.end || config];
     return baseConfig.map((b, i) => ({
       time: props.time,
-      rules: props.rules || {},
+      rules: rules.value,
       ...b,
       ...config[i],
     }));
