@@ -22,9 +22,7 @@
   <DatePicker
     v-if="!isRange"
     v-bind="$attrs"
-    :mode="mode"
     v-model="date"
-    :is24hr="is24hr"
     :timezone="timezone"
   >
     <template v-slot="{ inputValue, inputEvents }" v-if="showInput">
@@ -36,14 +34,7 @@
     </template>
   </DatePicker>
   <!--Date Range Picker-->
-  <DatePicker
-    v-else
-    :mode="mode"
-    v-model="dateRange"
-    :timezone="timezone"
-    :is24hr="is24hr"
-    is-range
-  >
+  <DatePicker v-else v-model="dateRange" :timezone="timezone" is-range>
     <template v-slot="{ inputValue, inputEvents }" v-if="showInput">
       <input
         class="bg-white border px-2 py-1 rounded"
@@ -88,13 +79,8 @@
 export default {
   inheritAttrs: false,
   props: {
-    mode: {
-      type: String,
-      default: 'date',
-    },
     isRange: Boolean,
     showInput: Boolean,
-    is24hr: Boolean,
     timezone: {
       type: String,
       default: '',

@@ -1,8 +1,58 @@
 ---
-title: Date Picker | Time Rules
+title: Date Picker | Time Picker
 ---
 
-# Time Rules
+# Time Picker
+
+## 24-hr
+
+When `mode` is `dateTime` or `time`, use the `is24hr` prop to use 24-hr selections.
+
+<Example centered>
+  <DateWithValue mode="dateTime" is24hr />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="date" mode="dateTime" is24hr />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date())
+</script>
+```
+
+## Accuracy
+
+The `time-accuracy` prop can be used to limit what components are allowed for selection.
+
+The time accuracy is a number mapping to the most accurate time component allowed (`1`: hours, `2`: minutes, `3`: seconds, `4`: milliseconds). The default value is `2`: minutes.
+
+<Example centered>
+  <DateTimeAccuracy />
+</Example>
+
+## Hide Header
+
+The time header may be hidden via the `hide-time-header` prop.
+
+<Example centered>
+  <DateWithValue mode="dateTime" hide-time-header />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="date" mode="dateTime" hide-time-header />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date())
+</script>
+```
+
+## Rules
 
 <BaseAlert warning>
 Used in versions previous to v3.0-beta.0, the `minute-increment` and `valid-hours` props have been deprecated in favor of using `rules`.
@@ -37,7 +87,7 @@ const rules = ref({
 Rules will adjust dates to the nearest allowed time component.
 </BaseAlert>
 
-## Rules Definition
+### Rules Definition
 
 The `rules` prop is defined as an object with optional rules specified for each time component key.
 
@@ -60,7 +110,7 @@ type DatePartsRule =
   | DatePartsRuleFunction;
 ```
 
-## Number Rules
+### Number Rules
 
 A rule with a single number will limit selection to that value. For example, most often you might want to zero out seconds and milliseconds from the date value.
 
@@ -83,7 +133,7 @@ const rules = ref({
 </script>
 ```
 
-## Number List Rules
+### Number List Rules
 
 A rule with an array of numbers will limit selection to values in the list.
 
@@ -105,7 +155,7 @@ const rules = ref({
 </script>
 ```
 
-## Object Rules
+### Object Rules
 
 Finally, a rule may be an object with the following definition.
 
@@ -138,7 +188,9 @@ const rules = ref({
 </script>
 ```
 
-## Date Selection Mode
+## Custom Slot
+
+## Date Mode
 
 Since rules can modify the bound date if it does not meet the rule requirements, they can be used in simple `date` selection mode.
 

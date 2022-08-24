@@ -10,17 +10,23 @@ It supports binding to both single dates and dates ranges. It can be configured 
 
 In short, it was built build to handle most date picker needs.
 
-## Single Date
+## Selection modes
+
+Use the `mode` prop to switch between 3 different date selection modes: `date`, `dateTime` and `time`.
+
+### Date Mode
 
 `DatePicker` can bind to single dates using the `v-model` directive.
 
+To limit user selection to only date components (month, day, year), use `mode: 'date'`. This is the default prop value, so it isn't explicitly required.
+
 <Example centered>
-  <DateWithValue />
+  <DateWithValue mode="date" />
 </Example>
 
 ```vue
 <template>
-  <DatePicker v-model="date" />
+  <DatePicker v-model="date" mode="date" />
 </template>
 
 <script setup>
@@ -29,17 +35,69 @@ const date = ref(new Date());
 </script>
 ```
 
-## Date Range
+### Date Time Mode
 
-Bind to a date range with `start` and `end` dates by setting the `is-range` prop.
+To allow user selection of date and time components, use `mode: 'dateTime'`. A time picker now appears below the calendar.
+
+<BaseAlert info>
+  Time components are set using the current timezone setting set by the `timezone` prop. By default, this value is `undefined`, which specifies the local timezone.
+</BaseAlert>
 
 <Example centered>
-  <DateWithValue is-range />
+  <DateWithValue mode="dateTime" />
 </Example>
 
 ```vue
 <template>
-  <DatePicker v-model="range" is-range />
+  <DatePicker v-model="date" mode="dateTime" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+</script>
+```
+
+### Time Mode
+
+To limit user selection to only time components (hours, minutes, seconds), use `mode: 'time'`.
+
+<Example centered>
+  <DateWithValue mode="time" />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="date" mode="time" :timezone="timezone" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+</script>
+```
+
+## Required date
+
+When selecting dates, the default behavior is to allow the user to reset the date value to `null` be re-selecting a date.
+
+To prevent this, set the `is-required` prop.
+
+<Example centered>
+  <DateWithValue mode="dateTime" is-required />
+</Example>
+
+## Date range
+
+Bind to a date range with `start` and `end` dates by setting the `is-range` prop.
+
+<Example centered>
+  <DateWithValue mode="dateTime" is-range />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="range" mode="dateTime" is-range />
 </template>
 <script setup>
 import { ref } from 'vue';

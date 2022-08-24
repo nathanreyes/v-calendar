@@ -100,12 +100,8 @@ export default {
               link: '/datepicker/intro',
             },
             {
-              text: 'Selection Modes',
-              link: '/datepicker/selection-modes',
-            },
-            {
-              text: 'Time Rules',
-              link: '/datepicker/time-rules',
+              text: 'Time Picker',
+              link: '/datepicker/time-picker',
             },
             {
               text: 'Date Types',
