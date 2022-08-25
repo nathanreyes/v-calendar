@@ -1,11 +1,7 @@
 <template>
   <Popover
     :id="dayPopoverId"
-    :class="[
-      'vc-day-popover-container',
-      `vc-${theme.color}`,
-      `vc-${theme.displayMode}`,
-    ]"
+    :class="[`vc-${theme.color}`, `vc-${theme.displayMode}`]"
   >
     <template #default="{ data: { day, attributes }, hide }">
       <slot
@@ -16,14 +12,16 @@
         :masks="masks"
         :hide="hide"
       >
-        <div v-if="masks.dayPopover" class="vc-day-popover-header">
-          {{ dayTitle(day) }}
+        <div class="vc-day-popover-container">
+          <div v-if="masks.dayPopover" class="vc-day-popover-header">
+            {{ dayTitle(day) }}
+          </div>
+          <PopoverRow
+            v-for="attribute in attributes"
+            :key="attribute.key"
+            :attribute="attribute"
+          />
         </div>
-        <PopoverRow
-          v-for="attribute in attributes"
-          :key="attribute.key"
-          :attribute="attribute"
-        />
       </slot>
     </template>
   </Popover>

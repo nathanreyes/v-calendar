@@ -2,9 +2,6 @@
   display: flex;
   align-items: center;
   transition: var(--vc-day-content-transition);
-  &:not(:first-child) {
-    margin-top: 3px;
-  }
 }
 
 .vc-day-popover-row-indicator {
@@ -13,7 +10,6 @@
   align-items: center;
   flex-grow: 0;
   width: 15px;
-  margin-right: 2px;
   & span {
     transition: var(--vc-day-content-transition);
   }
@@ -25,7 +21,10 @@
   flex-wrap: none;
   flex-grow: 1;
   width: max-content;
+  margin-left: 4px;
   margin-right: 4px;
+  font-size: var(--vc-text-sm);
+  line-height: var(--vc-leading-normal);
 }
 
 .vc-day-popover-row-highlight {

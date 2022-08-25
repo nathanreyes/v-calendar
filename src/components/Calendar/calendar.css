@@ -43,15 +43,8 @@
 }
 
 .vc-day-popover-container {
-  /* color: var(--vc-day-popover-container-color); */
-  /* background-color: var(--vc-day-popover-container-bg); */
-  border: 1px solid;
-  /* border-color: var(--vc-day-popover-container-border); */
-  border-radius: var(--vc-rounded);
   font-size: var(--vc-text-xs);
   font-weight: var(--vc-font-medium);
-  padding: 4px 8px;
-  box-shadow: var(--vc-shadow);
 }
 
 .vc-day-popover-header {
