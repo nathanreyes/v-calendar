@@ -34,7 +34,7 @@
     background: var(--vc-header-arrow-hover-bg);
   }
   &:focus {
-    border-color: var(--vc-header-arrow-focus-border);
+    box-shadow: var(--vc-focus-ring);
   }
   &.vc-disabled {
     opacity: 0.25;

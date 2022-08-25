@@ -160,7 +160,7 @@ export default defineComponent({
       let tabindex;
       if (day.value.isFocusable) {
         tabindex = '0';
-      } else if (day.value.inMonth) {
+      } else {
         tabindex = '-1';
       }
       const classes = [

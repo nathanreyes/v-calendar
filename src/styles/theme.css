@@ -188,10 +188,11 @@
   --vc-color: var(--vc-gray-900);
   --vc-bg: var(--vc-white);
   --vc-border: var(--vc-gray-300);
+  --vc-hover-bg: hsla(211, 25%, 84%, 0.3);
+  --vc-focus-ring: 0 0 0 2px rgb(59 130 246 / 0.5);
   /* Calendar header */
   --vc-header-arrow-color: var(--vc-gray-600);
   --vc-header-arrow-hover-bg: var(--vc-gray-200);
-  --vc-header-arrow-focus-border: var(--vc-gray-300);
   --vc-header-title-color: var(--vc-gray-900);
   /* Calendar weekdays */
   --vc-weekday-color: var(--vc-gray-500);
@@ -199,7 +200,6 @@
   --vc-weeknumber-color: var(--vc-gray-500);
   /* Calendar nav */
   --vc-nav-hover-bg: var(--vc-gray-200);
-  --vc-nav-focus-border: var(--vc-accent-400);
   --vc-nav-title-color: var(--vc-gray-900);
   --vc-nav-item-hover-box-shadow: none;
   --vc-nav-item-active-color: var(--vc-white);
@@ -231,14 +231,12 @@
   --vc-time-select-focus-border: var(--vc-accent-400);
   --vc-time-select-focus-bg: var(--vc-accent-600);
   --vc-time-select-focus-color: var(--vc-white);
-
+  /* Calendar day */
+  --vc-day-content-hover-bg: var(--vc-hover-bg);
+  --vc-day-content-disabled-color: var(--vc-gray-400);
+  /* Calendar attributes */
   &.vc-attr,
   & .vc-attr {
-    /* Calendar day */
-    --vc-day-content-hover-bg: hsla(211, 25%, 84%, 0.3);
-    --vc-day-content-focus-bg: hsla(211, 25%, 84%, 0.4);
-    --vc-day-content-disabled-color: var(--vc-gray-400);
-    /* Calendar attributes */
     --vc-content-color: var(--vc-accent-600);
     --vc-highlight-outline-bg: var(--vc-white);
     --vc-highlight-outline-border: var(--vc-accent-600);
@@ -257,10 +255,11 @@
   --vc-color: var(--vc-white);
   --vc-bg: var(--vc-gray-900);
   --vc-border: var(--vc-gray-700);
+  --vc-hover-bg: hsla(216, 15%, 52%, 0.3);
+  --vc-focus-ring: 0 0 0 2px rgb(59 130 246 / 0.5);
   /* Calendar header */
   --vc-header-arrow-color: var(--vc-white);
   --vc-header-arrow-hover-bg: var(--vc-gray-800);
-  --vc-header-arrow-focus-border: var(--vc-gray-700);
   --vc-header-title-color: var(--vc-gray-100);
   /* Calendar weekdays */
   --vc-weekday-color: var(--vc-accent-200);
@@ -268,7 +267,6 @@
   --vc-weeknumber-color: var(--vc-gray-500);
   /* Calendar nav */
   --vc-nav-hover-bg: var(--vc-gray-900);
-  --vc-nav-focus-border: var(--vc-accent-600);
   --vc-nav-title-color: var(--vc-gray-100);
   --vc-nav-item-hover-box-shadow: var(--vc-shadow-inner);
   --vc-nav-item-active-color: var(--vc-white);
@@ -299,14 +297,13 @@
   --vc-time-select-hover-color: var(--vc-gray-400);
   --vc-time-select-focus-border: var(--vc-accent-500);
   --vc-time-select-focus-bg: var(--vc-accent-500);
-
+  --vc-time-select-focus-color: var(--vc-white);
+  /* Calendar day */
+  --vc-day-content-hover-bg: var(--vc-hover-bg);
+  --vc-day-content-disabled-color: var(--vc-gray-600);
+  /* Calendar attributes */
   &.vc-attr,
   & .vc-attr {
-    /* Calendar day */
-    --vc-day-content-hover-bg: hsla(216, 15%, 52%, 0.3);
-    --vc-day-content-focus-bg: hsla(216, 15%, 52%, 0.4);
-    --vc-day-content-disabled-color: var(--vc-gray-600);
-    /* Calendar attributes */
     --vc-content-color: var(--vc-accent-500);
     --vc-highlight-outline-bg: var(--vc-gray-900);
     --vc-highlight-outline-border: var(--vc-accent-300);

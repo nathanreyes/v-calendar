@@ -9,7 +9,6 @@ import {
   inject,
   ToRefs,
   ComputedRef,
-  PropType,
 } from 'vue';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
@@ -243,8 +242,7 @@ export function createCalendar(
   };
 
   const refreshFocusableDay = (day: CalendarDay) => {
-    day.isFocusable =
-      isMonthly.value || (day.inMonth && day.day === state.focusableDay);
+    day.isFocusable = day.inMonth && day.day === state.focusableDay;
   };
 
   const forDays = (
@@ -549,6 +547,7 @@ export function createCalendar(
   };
 
   const onDayClick = (day: CalendarDay, event: MouseEvent) => {
+    state.focusableDay = day.day;
     emit('dayclick', day, event);
   };
 
@@ -561,6 +560,7 @@ export function createCalendar(
   };
 
   const onDayFocusin = (day: CalendarDay, event: FocusEvent | null) => {
+    state.focusableDay = day.day;
     state.lastFocusedDay = day;
     emit('dayfocusin', day, event);
   };
@@ -707,6 +707,13 @@ export function createCalendar(
         refreshPages();
       });
       emit('update:view', state.view);
+    },
+  );
+
+  watch(
+    () => state.focusableDay,
+    () => {
+      forDays(state.pages, day => refreshFocusableDay(day));
     },
   );
 

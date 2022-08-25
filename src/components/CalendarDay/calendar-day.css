@@ -65,8 +65,7 @@
     background-color: var(--vc-day-content-hover-bg);
   }
   &:focus {
-    font-weight: var(--vc-font-bold);
-    background-color: var(--vc-day-content-focus-bg);
+    box-shadow: var(--vc-focus-ring);
   }
   &.vc-disabled {
     color: var(--vc-day-content-disabled-color);

@@ -3,6 +3,7 @@
     <select
       v-bind="$attrs"
       :value="modelValue"
+      class="vc-focus-bg"
       @change="$emit('update:modelValue', $event.target.value)"
     >
       <option
