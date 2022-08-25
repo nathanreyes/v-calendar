@@ -137,7 +137,7 @@ export default {
 
 By default, the localized format will be used to format and parse the input text.
 
-Just like the `v-calendar` component, `v-date-picker` accepts an explicit `locale` prop. This might be preferred if you store your user's locale in a database or want to force all user's to a specific locale.
+Just like the `Calendar` component, `v-date-picker` accepts an explicit `locale` prop. This might be preferred if you store your user's locale in a database or want to force all user's to a specific locale.
 
 <!-- <guide-datepicker-input-format-parse /> -->
 

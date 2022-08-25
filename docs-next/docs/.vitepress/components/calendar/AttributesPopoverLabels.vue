@@ -1,59 +1,51 @@
 <template>
   <Example centered>
-    <p
+    <div
       class="text-lg text-gray-800 font-semibold mb-2 mt-0"
       v-if="visibility === 'focus'"
     >
       Focus
-    </p>
-    <p
+    </div>
+    <div
       class="text-lg text-gray-800 font-semibold mb-2 mt-0"
       v-if="visibility === 'click'"
     >
       Click
-    </p>
-    <Calendar :attributes="attributes"></Calendar>
+    </div>
+    <Calendar :attributes="attributes" />
   </Example>
 </template>
 
-<script>
-export default {
-  props: {
-    visibility: { type: String, default: 'hover' },
-    hideIndicators: Boolean,
+<script setup>
+import { ref, computed } from 'vue';
+
+const props = defineProps({
+  visibility: { type: String, default: 'hover' },
+  hideIndicators: Boolean,
+});
+
+const todos = ref([
+  {
+    description: 'Take Noah to basketball practice.',
+    isComplete: false,
+    dates: { weekdays: 6 }, // Every Friday
+    color: 'red',
   },
-  data() {
-    const todos = [
-      {
-        description: 'Take Noah to basketball practice.',
-        isComplete: false,
-        dates: { weekdays: 6 }, // Every Friday
-        color: 'red',
-      },
-    ];
-    return {
-      incId: todos.length,
-      todos,
-    };
-  },
-  computed: {
-    attributes() {
-      return [
-        // Attributes for todos
-        ...this.todos.map(todo => ({
-          dates: todo.dates,
-          dot: {
-            color: todo.color,
-            class: todo.isComplete ? 'opacity-75' : '',
-          },
-          popover: {
-            label: todo.description,
-            visibility: this.visibility,
-            hideIndicator: this.hideIndicators,
-          },
-        })),
-      ];
+]);
+
+const attributes = computed(() => [
+  // Attributes for todos
+  ...todos.value.map(todo => ({
+    dates: todo.dates,
+    dot: {
+      color: todo.color,
+      class: todo.isComplete ? 'opacity-75' : '',
     },
-  },
-};
+    popover: {
+      label: todo.description,
+      visibility: props.visibility,
+      hideIndicator: props.hideIndicators,
+    },
+  })),
+]);
 </script>

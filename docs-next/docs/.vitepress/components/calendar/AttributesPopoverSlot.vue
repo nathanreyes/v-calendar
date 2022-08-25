@@ -2,7 +2,7 @@
   <Example centered>
     <Calendar :attributes="attributes">
       <template #day-popover="{ day, format, masks, dayTitle, attributes }">
-        <div>
+        <div class="px-1">
           <span v-if="step === 1">Using my own content now</span>
           <div
             class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
@@ -25,64 +25,44 @@
               {{ customData.description }}
             </li>
           </ul>
-          <PopoverRow
-            v-if="step === 4"
-            v-for="attr in attributes"
-            :key="attr.key"
-            :attribute="attr"
-            >{{ attr.customData.description }}
-          </PopoverRow>
         </div>
       </template>
     </Calendar>
   </Example>
 </template>
 
-<script>
-import PopoverRow from '@plugin/components/PopoverRow/PopoverRow.vue';
+<script setup>
+import { ref, computed } from 'vue';
 
-export default {
-  components: {
-    PopoverRow,
+const props = defineProps({
+  visibility: { type: String, default: 'hover' },
+  hideIndicators: Boolean,
+  step: { type: Number, default: 1 },
+});
+
+const todos = ref([
+  {
+    description: 'Take Noah to basketball practice.',
+    isComplete: false,
+    dates: { weekdays: 6 }, // Every Friday
+    color: 'red',
   },
-  props: {
-    visibility: { type: String, default: 'hover' },
-    hideIndicators: Boolean,
-    step: { type: Number, default: 1 },
-  },
-  data() {
-    const todos = [
-      {
-        description: 'Take Noah to basketball practice.',
-        isComplete: false,
-        dates: { weekdays: 6 }, // Every Friday
-        color: 'red',
-      },
-    ];
-    return {
-      incId: todos.length,
-      todos,
-    };
-  },
-  computed: {
-    attributes() {
-      return [
-        // Attributes for todos
-        ...this.todos.map(todo => ({
-          dates: todo.dates,
-          dot: {
-            color: todo.color,
-            class: todo.isComplete ? 'opacity-75' : '',
-          },
-          popover: {
-            label: todo.description,
-            visibility: this.visibility,
-            hideIndicator: this.hideIndicators,
-          },
-          customData: todo,
-        })),
-      ];
+]);
+
+const attributes = computed(() => [
+  // Attributes for todos
+  ...todos.value.map(todo => ({
+    dates: todo.dates,
+    dot: {
+      color: todo.color,
+      class: todo.isComplete ? 'opacity-75' : '',
     },
-  },
-};
+    popover: {
+      label: todo.description,
+      visibility: props.visibility,
+      hideIndicator: props.hideIndicators,
+    },
+    customData: todo,
+  })),
+]);
 </script>

@@ -4,7 +4,7 @@ title: 'Attributes'
 
 # Attributes
 
-Attributes are what bring `v-calendar` to life. They are simply visual decorators that can be applied to specific calendar dates.
+Attributes are visual decorators that can be applied to specific calendar dates.
 
 <AttributesIntro />
 
@@ -475,54 +475,44 @@ There are 2 basic approaches to displaying popovers within attributes.
 
 ### 1. Labels
 
-Labels are the basic tooltip-style popover. They are configured as simple strings. By default, these popovers display when the user hovers over the day content and additionaly are not interactive to the user.
+Labels are the basic tooltip-style popover, configured as simple strings. By default, these popovers display when the user hovers over the day content and are not interactive to the user.
 
 <AttributesPopoverLabels />
 
-```html
+```vue
 <template>
-  <Calendar :attributes='attributes' />
+  <Calendar :attributes="attributes" />
 </template>
-```
 
-```js
-export default {
-  data() {
-    const todos = [
-      {
-        description: 'Take Noah to basketball practice.',
-        isComplete: false,
-        dates: { weekdays: 6 }, // Every Friday
-        color: 'red',
-      },
-    ];
-    return {
-      incId: todos.length,
-      todos,
-    };
+<script setup>
+import { ref, computed } from 'vue';
+
+const todos = ref([
+  {
+    description: 'Take Noah to basketball practice.',
+    isComplete: false,
+    dates: { weekdays: 6 }, // Every Friday
+    color: 'red',
   },
-  computed: {
-    attributes() {
-      return [
-        // Attributes for todos
-        ...this.todos.map(todo => ({
-          dates: todo.dates,
-          dot: {
-            color: todo.color,
-            class: todo.isComplete ? 'opacity-75' : '',
-          },
-          popover: {
-            label: todo.description,
-          },
-          customData: todo,
-        })),
-      ];
+]);
+
+const attributes = computed(() => [
+  // Attributes for todos
+  ...todos.value.map(todo => ({
+    dates: todo.dates,
+    dot: {
+      color: todo.color,
+      class: todo.isComplete ? 'opacity-75' : '',
     },
-  },
-};
+    popover: {
+      label: todo.description,
+    },
+  })),
+]);
+</script>
 ```
 
-For this example, we simply assigned a string to the `popover.label` property. This signals to `v-calendar` that it needs to display the label in a popover whenever the user hovers over the day content (or taps on mobile).
+For this example, we simply assigned a string to the `popover.label` property. Now, the label displays in a popover whenever the user hovers over the day content (or taps on mobile).
 
 If we want to force the user to click on the day content in order to display the popover, we can set the popover's `visibility` property to `"focus"` or `"click"`.
 
@@ -566,7 +556,7 @@ If you would like to hide the indicator, just set the `hideIndicator` property t
 
 ### 2. Scoped Slot
 
-For a more customized approach you can insert your own `"day-popover"` custom scoped slot within `v-calendar`.
+For a more customized approach you can insert your own `"day-popover"` custom scoped slot within `Calendar`.
 
 <BaseAlert title="Scoped slots">
   If you are not familiar with the convention of using scoped slots in Vue.js, you can reference the [Vue docs](https://vuejs.org/v2/guide/components.html#Scoped-Slots) or [this post by alligator.io](https://alligator.io/vuejs/scoped-component-slots/).
@@ -574,42 +564,44 @@ For a more customized approach you can insert your own `"day-popover"` custom sc
 
 <AttributesPopoverSlot />
 
-```html
-<Calendar :attributes="attributes">
-  <template #day-popover>
-    <div>
-      Using my own content now
-    </div>
-  </template>
-</Calendar>
-```
+```vue{3-7,31-33}
+<template>
+  <Calendar :attributes="attributes">
+    <template #day-popover>
+      <div class="px-1">
+        Using my own content now
+      </div>
+    </template>
+  </Calendar>
+</template>
 
-```js
-// ...Continued from previous example
-export default {
-  ...
-  computed: {
-    attributes() {
-      return [
-        // Attributes for todos
-        ...this.todos.map(todo => ({
-          dates: todo.dates,
-          dot: {
-            color: todo.color,
-            class: todo.isComplete ? 'opacity-75' : '',
-          },
-          // We need to at least pass a truthy value for the popover to appear
-          // Pass an object to customize popover settings like visibility, placement, etc.
-          popover: true,
-          customData: todo,
-        })),
-      ];
-    },
+<script setup>
+import { ref, computed } from 'vue';
+
+const todos = ref([
+  {
+    description: 'Take Noah to basketball practice.',
+    isComplete: false,
+    dates: { weekdays: 6 }, // Every Friday
+    color: 'red',
   },
-}
-```
+]);
 
-Notice that displaying static content here probably isn't going to help you much.
+const attributes = computed(() => [
+  // Attributes for todos
+  ...todos.value.map(todo => ({
+    dates: todo.dates,
+    dot: {
+      color: todo.color,
+      class: todo.isComplete ? 'opacity-75' : '',
+    },
+    // We need to at least pass a truthy value for the popover to appear
+    // Pass an object to customize popover settings like visibility, placement, etc.
+    popover: true,
+    customData: todo,
+  })),
+]);
+```
 
 Now that you are providing your own popover, you need to display the attributes on your own. Fortunately, the following `slot-scope` props should provide you with everything you need to help you display content for your custom data.
 
@@ -629,8 +621,10 @@ Let's walk through the process of customizing the previous example. First, let's
 ```html
 <Calendar :attributes="attributes">
   <template #day-popover="{ day, format, masks }">
-    <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
-      {{ format(day.date, masks.dayPopover) }}
+    <div class="px-1">
+      <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
+        {{ format(day.date, masks.dayPopover) }}
+      </div>
     </div>
   </template>
 </Calendar>
@@ -640,11 +634,13 @@ For the header, we use the `format` function to format the date for the current 
 
 Because this technique for displaying the header is common, you can extract the pre-formatted `dayTitle` property.
 
-```html
+```html{5}
 <Calendar :attributes="attributes">
   <template #day-popover="{ day, dayTitle }">
-    <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
-      {{ dayTitle }}
+    <div class="px-1">
+      <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
+        {{ dayTitle }}
+      </div>
     </div>
   </template>
 </Calendar>
@@ -654,22 +650,20 @@ Now, we just need to display the attributes for the day as well. We can do so by
 
 <AttributesPopoverSlot :step="3" />
 
-```html
+```html{7-11}
 <Calendar :attributes="attributes">
-  <div
-    slot="day-popover"
-    slot-scope="{ day, dayTitle, attributes }">
-    <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
-      {{ dayTitle }}
+  <template #day-popover="{ dayTitle, attributes }">
+    <div class="px-2">
+      <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
+        {{ dayTitle }}
+      </div>
+      <ul>
+        <li v-for="{key, customData} in attributes" :key="key">
+          {{ customData.description }}
+        </li>
+      </ul>
     </div>
-    <ul>
-      <li
-        v-for="{key, customData} in attributes"
-        :key="key">
-        {{ customData.description }}
-      </li>
-    </ul>
-  </div>
+  </template>
 </Calendar>
 ```
 

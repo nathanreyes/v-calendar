@@ -94,6 +94,22 @@ button {
   border-style: solid;
 }
 
+.vp-doc {
+  .vp-reset {
+    ul,
+    ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    p {
+      margin-top: initial;
+      margin-bottom: initial;
+      padding: 0;
+    }
+  }
+}
+
 /* Markdown style overrides */
 .vp-doc {
   color: var(--tw-prose-body);
