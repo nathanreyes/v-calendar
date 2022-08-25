@@ -163,24 +163,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
     if (!highlight) return;
     const { highlights, content } = glyphs;
     const { base, start, end } = highlight;
-    if (isDate || hasRecurrence) {
-      highlights.push({
-        key,
-        color: start.color,
-        wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${start.color}`,
-        class: [
-          `vc-highlight vc-highlight-start vc-highlight-bg-${start.fillMode}`,
-          start.class,
-        ],
-        style: start.style,
-      });
-      content.push({
-        key: `${key}-content`,
-        color: start.color,
-        class: [`vc-highlight-content-${start.fillMode}`, start.contentClass],
-        style: start.contentStyle,
-      });
-    } else if (onStartAndEnd) {
+    if (isDate || onStartAndEnd || hasRecurrence) {
       highlights.push({
         key,
         color: start.color,
@@ -191,7 +174,10 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       content.push({
         key: `${key}-content`,
         color: start.color,
-        class: [`vc-highlight-content-${start.fillMode}`, start.contentClass],
+        class: [
+          `vc-attr vc-highlight-content-${start.fillMode} vc-${start.color}`,
+          start.contentClass,
+        ],
         style: start.contentStyle,
       });
     } else if (onStart) {
@@ -209,16 +195,16 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
         key,
         color: start.color,
         wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${start.color}`,
-        class: [
-          `vc-highlight vc-highlight-start vc-highlight-bg-${start.fillMode}`,
-          start.class,
-        ],
+        class: [`vc-highlight vc-highlight-bg-${start.fillMode}`, start.class],
         style: start.style,
       });
       content.push({
         key: `${key}-content`,
         color: start.color,
-        class: [`vc-highlight-content-${start.fillMode}`, start.contentClass],
+        class: [
+          `vc-attr vc-highlight-content-${start.fillMode} vc-${start.color}`,
+          start.contentClass,
+        ],
         style: start.contentStyle,
       });
     } else if (onEnd) {
@@ -234,16 +220,16 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       highlights.push({
         key,
         wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${end.color}`,
-        class: [
-          `vc-highlight vc-highlight-end vc-highlight-bg-${end.fillMode}`,
-          end.class,
-        ],
+        class: [`vc-highlight vc-highlight-bg-${end.fillMode}`, end.class],
         style: end.style,
       });
       content.push({
         key: `${key}-content`,
         color: end.color,
-        class: [`vc-highlight-content-${end.fillMode}`, end.contentClass],
+        class: [
+          `vc-attr vc-highlight-content-${end.fillMode} vc-${end.color}`,
+          end.contentClass,
+        ],
         style: end.contentStyle,
       });
     } else {
@@ -260,7 +246,10 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       content.push({
         key: `${key}-content`,
         color: base.color,
-        class: [`vc-highlight-content-${base.fillMode}`, base.contentClass],
+        class: [
+          `vc-attr vc-highlight-content-${base.fillMode} vc-${base.color}`,
+          base.contentClass,
+        ],
         style: base.contentStyle,
       });
     }

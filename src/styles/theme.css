@@ -240,8 +240,8 @@
     /* Calendar attributes */
     --vc-content-color: var(--vc-accent-600);
     --vc-highlight-outline-bg: var(--vc-white);
-    --vc-highlight-outline-border: var(--vc-accent-700);
-    --vc-highlight-outline-content-color: var(--vc-accent-900);
+    --vc-highlight-outline-border: var(--vc-accent-600);
+    --vc-highlight-outline-content-color: var(--vc-accent-700);
     --vc-highlight-light-bg: var(--vc-accent-200);
     --vc-highlight-light-content-color: var(--vc-accent-900);
     --vc-highlight-solid-bg: var(--vc-accent-600);
@@ -308,8 +308,8 @@
     /* Calendar attributes */
     --vc-content-color: var(--vc-accent-500);
     --vc-highlight-outline-bg: var(--vc-gray-900);
-    --vc-highlight-outline-border: var(--vc-accent-200);
-    --vc-highlight-outline-content-color: var(--vc-accent-100);
+    --vc-highlight-outline-border: var(--vc-accent-300);
+    --vc-highlight-outline-content-color: var(--vc-accent-200);
     --vc-highlight-light-bg: var(--vc-accent-800);
     --vc-highlight-light-content-color: var(--vc-accent-100);
     --vc-highlight-solid-bg: var(--vc-accent-500);
