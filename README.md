@@ -1,6 +1,6 @@
 # VCalendar Plugin for Vue 3
 
-A Vue plugin for for attributed calendars date pickers using Vue 3, Typescript and Rollup.
+A calendar and date picker plugin for Vue.js.
 
 ### Install Plugin
 
