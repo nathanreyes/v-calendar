@@ -5,10 +5,12 @@ import DateInfo, { DateInfoOptions } from './dateInfo';
 import {
   DateSource,
   DateOptions,
+  DateParts,
   DayOfWeek,
   TimeNames,
   daysInWeek,
   getDateParts,
+  getDateFromParts,
   getDayNames,
   getMonthNames,
   getMonthParts,
@@ -249,6 +251,10 @@ export default class Locale {
 
   getDateParts(date: Date) {
     return getDateParts(date, this.firstDayOfWeek, this.timezone);
+  }
+
+  getDateFromParts(parts: Partial<DateParts>) {
+    return getDateFromParts(parts, this.timezone);
   }
 
   getMonthParts(month: number, year: number) {
