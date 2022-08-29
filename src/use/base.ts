@@ -80,7 +80,13 @@ export function createBase(props: BaseProps, ctx: any) {
     if (props.minDateExact || props.minDate) {
       const end = props.minDateExact
         ? locale.value.normalizeDate(props.minDateExact)
-        : locale.value.normalizeDate(props.minDate!, { time: '00:00:00' });
+        : locale.value.normalizeDate(props.minDate!, {
+            rules: {
+              hours: 0,
+              minutes: 0,
+              seconds: 0,
+            },
+          });
       dates.push({
         start: null,
         end: new Date(end.getTime() - 1000),
@@ -90,7 +96,13 @@ export function createBase(props: BaseProps, ctx: any) {
     if (props.maxDateExact || props.maxDate) {
       const start = props.maxDateExact
         ? locale.value.normalizeDate(props.maxDateExact)
-        : locale.value.normalizeDate(props.maxDate!, { time: '23:59:59' });
+        : locale.value.normalizeDate(props.maxDate!, {
+            rules: {
+              hours: 23,
+              minutes: 59,
+              seconds: 59,
+            },
+          });
       dates.push({
         start: new Date(start.getTime() + 1000),
         end: null,
@@ -148,4 +160,8 @@ export function useBase() {
   throw new Error(
     'Base context missing. Please verify this component is nested within a valid context provider.',
   );
+}
+
+export function useOrCreateBase(props: BaseProps, ctx: any) {
+  return inject<BaseContext>(contextKey, createBase(props, ctx));
 }

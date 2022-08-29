@@ -47,12 +47,22 @@ import {
 } from './base';
 import { CalendarContext } from './calendar';
 
-const _baseConfig = {
+interface ModelConfig {
+  type: 'auto' | 'date' | 'string' | 'number';
+  mask?: string;
+}
+
+interface DateRange {
+  start: Date;
+  end: Date;
+}
+
+const _baseConfig: ModelConfig = {
   type: 'auto',
   mask: 'iso', // String mask when `type === 'string'`
 };
 
-const _config = [_baseConfig, _baseConfig];
+const _config: ModelConfig[] = [_baseConfig, _baseConfig];
 
 const contextKey = '__vc_date_picker_context__';
 
@@ -230,11 +240,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       ...getPopoverEventHandlers({
         ...popover.value,
         id: state.datePickerPopoverId,
-        callback: e => {
-          if (e.action === 'show' && e.completed) {
-            onInputShow(isStart);
-          }
-        },
       }),
     }));
     const inputEvents = props.isRange
@@ -319,12 +324,14 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   // #region Methods
 
-  function normalizeConfig(config: any, baseConfig = modelConfig.value): any {
+  function normalizeConfig(
+    config: any,
+    baseConfig: ModelConfig[] = modelConfig.value,
+  ): ModelConfig[] {
     config = isArray(config)
       ? config
       : [config.start || config, config.end || config];
     return baseConfig.map((b, i) => ({
-      time: props.time,
       rules: rules.value,
       ...b,
       ...config[i],
@@ -333,9 +340,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function hasValue(value: any) {
     if (props.isRange) {
-      return isObject(value) && !!value.start && !!value.end;
+      return isObject(value) && value.start != null && value.end != null;
     }
-    return !!value;
+    return value != null;
   }
 
   function valuesAreEqual(a: any, b: any) {
@@ -362,7 +369,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     config: any,
     patch: DatePatch,
     rangePriority: RangePriority,
-  ) {
+  ): Date | DateRange | null {
     if (!hasValue(value)) return null;
     if (props.isRange) {
       let start = value.start > value.end ? value.end : value.start;

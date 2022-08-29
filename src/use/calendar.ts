@@ -39,8 +39,7 @@ import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 import { PopoverVisibility } from '../utils/popovers';
 import { Theme } from './theme';
-import { DarkModeConfig, DarkModeConfigObj } from './darkMode';
-import { propsDef as basePropsDef, createBase } from './base';
+import { BaseProps, propsDef as basePropsDef, useOrCreateBase } from './base';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -56,7 +55,7 @@ interface MoveOptions {
   toPage: PageAddress;
 }
 
-export interface CalendarProps {
+export interface CalendarProps extends BaseProps {
   view: CalendarView;
   rows: number;
   columns: number;
@@ -69,24 +68,11 @@ export interface CalendarProps {
   showWeeknumbers: boolean | string;
   showIsoWeeknumbers: boolean | string;
   minPage?: PageAddress;
-  minDate?: Date;
-  minDateExact?: Date;
   maxPage?: PageAddress;
-  maxDate?: Date;
-  maxDateExact?: Date;
   transition: string;
   attributes: AttributeConfig[];
-  disabledDates?: [];
-  availableDates?: [];
   trimWeeks: boolean;
   disablePageSwipe: boolean;
-  color: string;
-  isDark?: DarkModeConfig;
-  theme?: string;
-  locale?: string | Record<string, any> | Locale;
-  firstDayOfWeek: number;
-  masks?: Record<string, any>;
-  timezone?: string;
 }
 
 interface CalendarState {
@@ -182,7 +168,10 @@ export function createCalendar(
 
   // #region Computed
 
-  const { theme, locale, masks, disabledAttribute } = createBase(props, {});
+  const { theme, locale, masks, disabledAttribute } = useOrCreateBase(props, {
+    emit,
+    slots,
+  });
 
   const count = computed(() => props.rows * props.columns);
 

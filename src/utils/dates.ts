@@ -37,7 +37,7 @@ type DatePartsRule =
   | NumberRuleConfig
   | DatePartsRuleFunction;
 
-interface DatePartsRules {
+export interface DatePartsRules {
   hours?: DatePartsRule;
   minutes?: DatePartsRule;
   seconds?: DatePartsRule;
@@ -66,7 +66,6 @@ export interface DateOptions {
   fillDate: DateSource;
   mask: string;
   patch: DatePatch;
-  time: string;
   rules: DatePartsRules;
   timezone: string;
   locale: Locale | LocaleConfig | string;
@@ -530,11 +529,9 @@ export function getDateParts(
   firstDayOfWeek: DayOfWeek,
   timezone = '',
 ): DateParts {
-  const tzDate = date;
+  let tzDate = new Date(date.getTime());
   if (timezone) {
-    const tzDate = new Date(
-      date.toLocaleString('en-US', { timeZone: timezone }),
-    );
+    tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
     tzDate.setMilliseconds(date.getMilliseconds());
   }
   const milliseconds = tzDate.getMilliseconds();
@@ -681,27 +678,6 @@ export function getMonthNames(length: MonthNameLength, localeId = undefined) {
     timeZone: 'UTC',
   });
   return getMonthDates().map(d => dtf.format(d));
-}
-
-export function applyTimeForDateParts(
-  dateParts: DateParts,
-  time: string,
-  timezone = '',
-) {
-  if (!time) return dateParts;
-  if (time === 'now') {
-    const timeParts = getDateParts(new Date(), 1, timezone);
-    dateParts.hours = timeParts.hours;
-    dateParts.minutes = timeParts.minutes;
-    dateParts.seconds = timeParts.seconds;
-    dateParts.milliseconds = timeParts.milliseconds;
-  } else {
-    const d = new Date(`2000-01-01T${time}Z`);
-    dateParts.hours = d.getUTCHours();
-    dateParts.minutes = d.getUTCMinutes();
-    dateParts.seconds = d.getUTCSeconds();
-    dateParts.milliseconds = d.getUTCMilliseconds();
-  }
 }
 
 export function datePartIsValid(
@@ -911,10 +887,6 @@ export function normalizeDate(
         timezone,
       );
       parts = { ...fillParts, ...pick(parts, PATCH_KEYS[patch]) };
-    }
-    // Apply time adjustment
-    if (time) {
-      applyTimeForDateParts(parts, time, timezone);
     }
     // Apply date part rules
     if (rules) {
