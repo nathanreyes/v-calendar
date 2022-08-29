@@ -1,5 +1,5 @@
 import { PropType, ComputedRef, toRef, computed, provide, inject } from 'vue';
-import { locales, getDefault } from '../utils/defaults';
+import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/_';
@@ -64,10 +64,7 @@ export function createBase(props: BaseProps, ctx: any) {
           }
     ) as Partial<LocaleConfig>;
     // Return new locale
-    return new Locale(config, {
-      locales: locales.value,
-      timezone: props.timezone,
-    });
+    return new Locale(config, props.timezone);
   });
 
   const masks = computed(() => locale.value.masks);

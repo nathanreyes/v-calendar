@@ -61,6 +61,11 @@ export type DatePartsKey = 'hours' | 'minutes' | 'seconds' | 'milliseconds';
 type DatePartsRange = [number, number, number];
 type DatePartsOptions = DatePartsObject<{ value: number; label: string }[]>;
 
+export interface FormatParseOptions {
+  locale?: Locale | LocaleConfig | string;
+  timezone?: string;
+}
+
 export interface DateOptions {
   type: string;
   fillDate: DateSource;
@@ -604,22 +609,19 @@ export function getNextMonthParts(
   return getMonthParts(month + 1, year, firstDayOfWeek);
 }
 
-export function getWeekdayDates(firstDayOfWeek = 1, timezone = '') {
+export function getWeekdayDates() {
   const dates = [];
   const year = 2020;
   const month = 1;
-  const day = 5 + firstDayOfWeek - 1;
+  const day = 5;
   for (let i = 0; i < daysInWeek; i++) {
     dates.push(
-      getDateFromParts(
-        {
-          year,
-          month,
-          day: day + i,
-          hours: 12,
-        },
-        timezone,
-      ),
+      getDateFromParts({
+        year,
+        month,
+        day: day + i,
+        hours: 12,
+      }),
     );
   }
   return dates;
@@ -628,13 +630,11 @@ export function getWeekdayDates(firstDayOfWeek = 1, timezone = '') {
 export function getDayNames(
   length: DayNameLength,
   localeId: string | undefined = undefined,
-  timezone: string | undefined = undefined,
 ) {
   const dtf = new Intl.DateTimeFormat(localeId, {
     weekday: length,
-    timeZone: timezone,
   });
-  return getWeekdayDates(1).map(d => dtf.format(d));
+  return getWeekdayDates().map(d => dtf.format(d));
 }
 
 export function getHourDates() {
@@ -765,15 +765,13 @@ export function applyRulesForDateParts(
 export function parseDate(
   dateString: string,
   mask: string | string[],
-  options: {
-    locale?: Locale | LocaleConfig | string;
-    timezone?: string;
-  } = {},
+  options: FormatParseOptions = {},
 ) {
+  const { timezone } = options;
   const locale =
     options.locale instanceof Locale
       ? options.locale
-      : new Locale(options.locale);
+      : new Locale(options.locale, timezone);
   const masks = normalizeMasks(mask, locale);
   return (
     masks
@@ -847,7 +845,7 @@ export function parseDate(
               seconds: dp.seconds || 0,
               milliseconds: dp.milliseconds || 0,
             },
-            options.timezone,
+            timezone,
           );
         }
         return date;
@@ -862,7 +860,7 @@ export function normalizeDate(
 ) {
   const nullDate = new Date(NaN);
   let result = nullDate;
-  const { fillDate, locale, timezone, mask, patch, time, rules } = config;
+  const { fillDate, locale, timezone, mask, patch, rules } = config;
   if (isNumber(d)) {
     config.type = 'number';
     result = new Date(+d);
@@ -900,17 +898,15 @@ export function normalizeDate(
 export function formatDate(
   date: DateSource,
   masks: string | string[],
-  options: {
-    locale?: Locale | LocaleConfig | string;
-    timezone?: string;
-  } = {},
+  options: FormatParseOptions = {},
 ) {
+  const { timezone } = options;
   const locale =
     options.locale instanceof Locale
       ? options.locale
-      : new Locale(options.locale);
-  date = normalizeDate(date, { locale, timezone: options.timezone })!;
-  if (!date) return '';
+      : new Locale(options.locale, timezone);
+  date = normalizeDate(date, { locale, timezone })!;
+  if (date == null) return '';
   let mask = normalizeMasks(masks, locale)[0];
   const literals: string[] = [];
   // Make literals inactive by replacing them with ??
@@ -918,8 +914,11 @@ export function formatDate(
     literals.push($1);
     return '??';
   });
-  const timezone = /Z$/.test(mask) ? 'utc' : options.timezone;
-  const dateParts = getDateParts(date, locale.firstDayOfWeek, timezone);
+  const dateParts = getDateParts(
+    date,
+    locale.firstDayOfWeek,
+    /Z$/.test(mask) ? 'utc' : timezone,
+  );
   // Apply formatting rules
   mask = mask.replace(token, $0 =>
     $0 in formatFlags

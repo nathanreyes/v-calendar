@@ -24,7 +24,7 @@ import {
   getHourDates,
   getRelativeTimeNames,
 } from './dates';
-import defaultLocales from './defaults/locales';
+import { defaultLocales } from './defaults';
 import { pad, PageAddress, pageIsAfterPage, pageIsValid } from './helpers';
 import {
   isDate,
@@ -139,11 +139,6 @@ export interface LocaleConfig {
   masks: any;
 }
 
-interface LocaleOptions {
-  locales?: any;
-  timezone?: string | undefined;
-}
-
 export function resolveConfig(
   config: string | Partial<LocaleConfig> | undefined,
   locales: any,
@@ -191,19 +186,22 @@ export default class Locale {
 
   constructor(
     config: Partial<LocaleConfig> | string | undefined = undefined,
-    { locales = defaultLocales, timezone }: LocaleOptions = {},
+    timezone?: string,
   ) {
-    const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
+    const { id, firstDayOfWeek, masks } = resolveConfig(
+      config,
+      defaultLocales.value,
+    );
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek) as DayOfWeek;
     this.masks = masks;
     this.timezone = timezone || undefined;
     this.hourLabels = this.getHourLabels();
-    this.dayNames = getDayNames('long', this.id, this.timezone);
-    this.dayNamesShort = getDayNames('short', this.id, this.timezone);
+    this.dayNames = getDayNames('long', this.id);
+    this.dayNamesShort = getDayNames('short', this.id);
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
-    this.dayNamesNarrow = getDayNames('narrow', this.id, this.timezone);
+    this.dayNamesNarrow = getDayNames('narrow', this.id);
     this.monthNames = getMonthNames('long', this.id);
     this.monthNamesShort = getMonthNames('short', this.id);
     this.relativeTimeNames = getRelativeTimeNames(this.id);
@@ -303,9 +301,6 @@ export default class Locale {
     return page.weeks[0].days.map(d => {
       return this.formatDate(d.date, this.masks.weekdays);
     });
-    // return this.locale
-    //   .getWeekdayDates()
-    //   .map(d => this.format(d, this.masks.weekdays));
   }
 
   addPages(

@@ -57,14 +57,14 @@ const defaultConfig: Defaults = {
 
 const state = reactive(defaultConfig);
 
-const computedLocales = computed(() => {
-  return mapValues(state.locales, (v: any) => {
-    v.masks = defaultsDeep(v.masks, state.masks);
-    return v;
+const defaultLocales = computed(() => {
+  return mapValues(state.locales, (l: any) => {
+    l.masks = defaultsDeep(l.masks, state.masks);
+    return l;
   });
 });
 
-export { computedLocales as locales };
+export { defaultLocales };
 
 export const getDefault = (path: string) => {
   if (window && has(window.__vcalendar__, path)) {
