@@ -33,7 +33,7 @@ When binding to a date range and providing custom `input` elements, the `inputVa
 <!-- <guide-datepicker-range-input /> -->
 
 ```html
-<v-date-picker v-model="range" is-range>
+<DatePicker v-model="range" is-range>
   <template v-slot="{ inputValue, inputEvents }">
     <div class="flex justify-center items-center">
       <input
@@ -61,7 +61,7 @@ When binding to a date range and providing custom `input` elements, the `inputVa
       />
     </div>
   </template>
-</v-date-picker>
+</DatePicker>
 ```
 
 ```js
@@ -84,7 +84,7 @@ Use the `input-debounce` prop (in milliseconds) to set a custom debounce duratio
 <!-- <guide-datepicker-input-debounce /> -->
 
 ```html
-<v-date-picker v-model="date" :input-debounce="500">
+<DatePicker v-model="date" :input-debounce="500">
   <template v-slot="{ inputValue, inputEvents }">
     <input
       class="bg-white border px-2 py-1 rounded"
@@ -92,7 +92,7 @@ Use the `input-debounce` prop (in milliseconds) to set a custom debounce duratio
       v-on="inputEvents"
     />
   </template>
-</v-date-picker>
+</DatePicker>
 ```
 
 ```javascript
@@ -112,7 +112,7 @@ To completely disable value updates as the user types, set the `update-on-input`
 <!-- <guide-datepicker-disable-update /> -->
 
 ```html
-<v-date-picker v-model="date" :update-on-input="false">
+<DatePicker v-model="date" :update-on-input="false">
   <template v-slot="{ inputValue, inputEvents }">
     <input
       class="bg-white border px-2 py-1 rounded"
@@ -120,7 +120,7 @@ To completely disable value updates as the user types, set the `update-on-input`
       v-on="inputEvents"
     />
   </template>
-</v-date-picker>
+</DatePicker>
 ```
 
 ```javascript
@@ -137,12 +137,12 @@ export default {
 
 By default, the localized format will be used to format and parse the input text.
 
-Just like the `Calendar` component, `v-date-picker` accepts an explicit `locale` prop. This might be preferred if you store your user's locale in a database or want to force all user's to a specific locale.
+Just like the `Calendar` component, `DatePicker` accepts an explicit `locale` prop. This might be preferred if you store your user's locale in a database or want to force all user's to a specific locale.
 
 <!-- <guide-datepicker-input-format-parse /> -->
 
 ```html
-<v-date-picker v-model="date" :locale="locale">
+<DatePicker v-model="date" :locale="locale">
   <template v-slot="{ inputValue, inputEvents }">
     <input
       class="bg-white border px-2 py-1 rounded"
@@ -150,7 +150,7 @@ Just like the `Calendar` component, `v-date-picker` accepts an explicit `locale`
       v-on="inputEvents"
     />
   </template>
-</v-date-picker>
+</DatePicker>
 ```
 
 ```js
@@ -171,7 +171,7 @@ To use a custom mask that overrides the `locale`, assign the `masks.input` prop.
 <!-- <guide-datepicker-input-mask /> -->
 
 ```html
-<v-date-picker v-model="date" :masks="masks">
+<DatePicker v-model="date" :masks="masks">
   <template v-slot="{ inputValue, inputEvents }">
     <input
       class="bg-white border px-2 py-1 rounded"
@@ -179,7 +179,7 @@ To use a custom mask that overrides the `locale`, assign the `masks.input` prop.
       v-on="inputEvents"
     />
   </template>
-</v-date-picker>
+</DatePicker>
 ```
 
 ```js
@@ -208,7 +208,7 @@ Here is a more complex example using a custom input with a validation message an
       >Select Date</label
     >
     <div class="flex w-full">
-      <v-date-picker v-model="date" class="flex-grow">
+      <DatePicker v-model="date" class="flex-grow">
         <template v-slot="{ inputValue, inputEvents }">
           <input
             id="date"
@@ -218,7 +218,7 @@ Here is a more complex example using a custom input with a validation message an
             v-on="inputEvents"
           />
         </template>
-      </v-date-picker>
+      </DatePicker>
       <button
         type="button"
         class="text-white font-bold py-2 px-4 rounded-r user-select-none focus:outline-none"
@@ -268,7 +268,7 @@ Here is a comprehensive list of the available slot props.
 | Prop | Type | Description |
 | --- | --- | --- |
 | `inputValue` | Object | Input text value. |
-| `inputEvents` | Object   | Events that are configured based on the props provided to `v-date-picker`, including `input`, `change` and `keyup`. Props like `update-on-input` and `input-debounce` are handled appropriately. |
+| `inputEvents` | Object   | Events that are configured based on the props provided to `DatePicker`, including `input`, `change` and `keyup`. Props like `update-on-input` and `input-debounce` are handled appropriately. |
 | `isDragging` | Boolean  | Set when the user is dragging a new range selection. |
 | `updateValue` | Function | Call to update the value at the time of your choosing. |
 | `showPopover` | Function | Call to manually show the popover. |
@@ -303,7 +303,7 @@ Setting the `is-required` prop will prevent clearing the date value by deleting 
 <!-- <guide-datepicker-is-required /> -->
 
 ```html
-<v-date-picker v-model="date" is-required>
+<DatePicker v-model="date" is-required>
   <template v-slot="{ inputValue, inputEvents }">
     <input
       class="bg-white border px-2 py-1 rounded"
@@ -311,7 +311,7 @@ Setting the `is-required` prop will prevent clearing the date value by deleting 
       v-on="inputEvents"
     />
   </template>
-</v-date-picker>
+</DatePicker>
 ```
 
 ```js

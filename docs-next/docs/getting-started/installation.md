@@ -81,8 +81,8 @@ app.component('DatePicker', DatePicker)
   </head>
   <body>
     <div id='app'>
-      <v-calendar></v-calendar>
-      <v-date-picker v-model='selectedDate' />
+      <Calendar />
+      <DatePicker v-model='selectedDate' />
     </div>
 
     <!-- 1. Link Vue Javascript -->

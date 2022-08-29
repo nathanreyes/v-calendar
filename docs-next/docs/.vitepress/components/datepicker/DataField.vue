@@ -1,10 +1,10 @@
 <template>
   <div class="flex items-baseline space-x-2">
     <span
-      class="text-gray-500 dark:text-gray-400 font-semibold tracking-wide w-24 text-right"
+      class="flex-shrink-0 text-gray-500 dark:text-gray-400 font-semibold tracking-wide"
       >{{ label }}</span
     >
-    <span class="font-medium"><slot /></span>
+    <span class="flex-grow font-medium"><slot /></span>
   </div>
 </template>
 
