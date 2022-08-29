@@ -1,15 +1,9 @@
 <template>
   <Example centered>
-    <div
-      class="text-lg text-gray-800 font-semibold mb-2 mt-0"
-      v-if="visibility === 'focus'"
-    >
+    <div class="text-lg font-semibold mb-2 mt-0" v-if="visibility === 'focus'">
       Focus
     </div>
-    <div
-      class="text-lg text-gray-800 font-semibold mb-2 mt-0"
-      v-if="visibility === 'click'"
-    >
+    <div class="text-lg font-semibold mb-2 mt-0" v-if="visibility === 'click'">
       Click
     </div>
     <Calendar :attributes="attributes" />

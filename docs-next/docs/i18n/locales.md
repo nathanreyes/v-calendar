@@ -1,13 +1,8 @@
 ---
-title: 'i18n'
-sidebarDepth: 2
+title: 'Locales'
 ---
 
-# i18n
-
-VCalendar utilizes the [well supported](https://caniuse.com/#feat=internationalization) Internationalization API to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
-
-## Locales
+# Locales
 
 A locale includes multiple settings that are typically assigned on a per region basis. This currently includes the following:
 
@@ -24,7 +19,11 @@ A locale includes multiple settings that are typically assigned on a per region 
 
 There are multiple ways which you can configure the locale for a specific calendar. Locales may be configured globally via the defaults object as well as on a per-calendar basis with the `locale` prop.
 
-#### **No specified locale**
+<BaseAlert success>
+The [well supported](https://caniuse.com/#feat=internationalization) Internationalization API is used to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
+</BaseAlert>
+
+## Default Locale
 
 ```html
 <Calendar />
@@ -32,7 +31,7 @@ There are multiple ways which you can configure the locale for a specific calend
 
 With no locale specified, the locale detected by the Internationalization API is used.
 
-#### **No specified locale w/ override props**
+## Default w/ Props
 
 ```html
 <Calendar :first-day-of-week="2" :masks="{ title: 'MMM YYYY' }" />
@@ -44,7 +43,7 @@ With no locale specified, the locale detected by the Internationalization API is
 
 Uses the detected locale with customized `firstDayOfWeek` or `masks` that will override the built-in locale settings. When using a customized `masks` prop, the default masks will supply any masks that are missing, so you are free to provide single overrides.
 
-#### **String Locale**
+## String Locale
 
 ```html
 <Calendar locale="es" />
@@ -56,7 +55,7 @@ Uses the detected locale with customized `firstDayOfWeek` or `masks` that will o
 
 With a string locale, the locale with the matching identifier is used. The Internationalization API is used to generate the `dayNames`, `dayNamesShort`, `dayNamesShorter`, `dayNamesNarrow`, `monthNames` and `monthNamesShort` properties. Because the API does not provide common values for the `firstDayOfWeek` or `masks` these are loaded from the plugin defaults (unless specifically provided via props).
 
-#### **Object Locale**
+## Object Locale
 
 ```html
 <Calendar :locale="{ id: 'da', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }" />
@@ -69,7 +68,7 @@ With a string locale, the locale with the matching identifier is used. The Inter
 With an object locale, you can simply provide all the settings you need together in a single object.
 Note that `firstDayOfWeek` and `masks` props will override this object.
 
-#### **Providing default locales for all calendars**
+## Custom Defaults
 
 More conveniently, you may override or provide missing locale information via the `locales` property of the defaults object when using VCalendar. This should be an object with the locale identifier as the key and an object with the locale settings.
 

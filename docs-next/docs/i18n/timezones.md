@@ -1,8 +1,8 @@
 ---
-title: 'Timezones (Beta)'
+title: 'Timezones'
 ---
 
-# Timezones (Beta)
+# Timezones
 
 To assign a timezone, pass the `timezone: String` prop with the desired timezone setting for either `DatePicker` or `Calendar`.
 

@@ -24,12 +24,8 @@ export default {
           text: 'Date Picker',
           items: [
             {
-              text: 'Date Time Picker With Rules',
-              link: '/examples/date-time-rules',
-            },
-            {
-              text: 'Date Time Range Picker With Rules',
-              link: '/examples/date-time-range-rules',
+              text: 'Time Rules',
+              link: '/examples/time-rules',
             },
           ],
         },
@@ -81,16 +77,9 @@ export default {
               text: 'Attributes',
               link: '/calendar/attributes',
             },
-            {
-              text: 'Timezones',
-              link: '/calendar/timezones',
-            },
-            {
-              text: 'i18n',
-              link: '/calendar/i18n',
-            },
           ],
         },
+        // Date Picker
         {
           text: 'Date Picker',
           collapsible: true,
@@ -114,6 +103,20 @@ export default {
             {
               text: 'Custom Attributes',
               link: '/datepicker/custom-attributes',
+            },
+          ],
+        },
+        {
+          text: 'i18n',
+          collapsible: true,
+          items: [
+            {
+              text: 'Locales',
+              link: '/i18n/locales',
+            },
+            {
+              text: 'Timezones',
+              link: '/i18n/timezones',
             },
           ],
         },

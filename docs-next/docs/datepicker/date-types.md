@@ -4,27 +4,25 @@ title: Date Picker | Date Types
 
 # Date Types
 
-`DatePicker` supports binding to different data types, including strings, dates and numbers via the `model-config` prop.
+`DatePicker` supports binding to different data types, including dates, strings and numbers via the `model-config` prop.
 
 For example, if the date you provide is stored in a database as a string, this string value can be bound to directly, without any extra conversion logic required by your application.
-
-In short, the `model-config` and `timezone` props help provide a no-hassle approach to working with your data.
 
 ## Strings
 
 To bind to a string value, provide a `model-config` with the necessary `type: 'string'` property. In this example, the date is provided in ISO 8601 format with the Z designator (zero UTC offset).
 
 <Example centered>
-  <!-- <DateTypeString /> -->
+  <DateTypeString />
 </Example>
 
 ```vue
 <template>
-  <DatePicker v-model="date" :model-config="modelConfig" />
+  <DatePicker v-model="isoDate" :model-config="modelConfig" />
 </template>
 <script setup>
 import { ref } from 'vue';
-const date = ref('2000-01-01T12:00:00.000Z');
+const isoDate = ref('2000-01-01T12:00:00.000Z');
 const modelConfig = ref({
   type: 'string',
 });
@@ -34,7 +32,7 @@ const modelConfig = ref({
 If an alternate format is needed, provide the `mask` property with the desired format.
 
 <Example centered>
-  <!-- <DateTypeStringMask /> -->
+  <DateTypeStringMask />
 </Example>
 
 ```vue

@@ -44,19 +44,7 @@
           class="flex sm:inline-flex items-center font-semibold mb-1"
           >Position:
           <div class="flex-grow relative">
-            <select
-              class="inline-block appearance-none w-full bg-gray-200 dark:bg-gray-700 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 ml-2"
-              id="position"
-              v-model="position"
-            >
-              <option
-                v-for="position in positionOptions"
-                :key="position"
-                :value="position"
-              >
-                {{ position }}
-              </option>
-            </select>
+            <BaseSelect v-model="position" :options="positionOptions" />
           </div>
         </label>
         <label
@@ -64,15 +52,7 @@
           class="flex sm:inline-flex items-center font-semibold mb-1 ml-0 sm:ml-4"
           >Transition:
           <div class="flex-grow relative">
-            <select
-              class="inline-block appearance-none w-full border border-gray-200 dark:bg-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 ml-2"
-              id="transition"
-              v-model="transition"
-            >
-              <option v-for="to in transitionOptions" :key="to" :value="to">
-                {{ to }}
-              </option>
-            </select>
+            <BaseSelect v-model="transition" :options="transitionOptions" />
           </div>
           <span
             class="inline-block w-4 h-4 bg-green-400 rounded-full ml-4"
@@ -212,9 +192,14 @@ export default {
         new Date(),
       ],
       transition: 'slide-h',
-      transitionOptions: ['slide-h', 'slide-v', 'fade', 'none'],
+      transitionOptions: [
+        { value: 'slide-h' },
+        { value: 'slide-v' },
+        { value: 'fade' },
+        { value: 'none' },
+      ],
       position: 1,
-      positionOptions: [1, 2],
+      positionOptions: [{ value: 1 }, { value: 2 }],
       transitioning: false,
     };
   },
