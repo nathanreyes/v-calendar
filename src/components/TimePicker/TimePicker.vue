@@ -3,20 +3,22 @@
     class="vc-time-picker"
     :class="[{ 'vc-invalid': !(parts as DateParts).isValid, 'vc-bordered': showBorder }]"
   >
-    <div v-if="showHeader" class="vc-time-header">
-      <span class="vc-time-weekday">
-        {{ locale.formatDate(date, 'WWW') }}
-      </span>
-      <span class="vc-time-month">
-        {{ locale.formatDate(date, 'MMM') }}
-      </span>
-      <span class="vc-time-day">
-        {{ locale.formatDate(date, 'D') }}
-      </span>
-      <span class="vc-time-year">
-        {{ locale.formatDate(date, 'YYYY') }}
-      </span>
-    </div>
+    <slot name="time-header">
+      <div v-if="showHeader" class="vc-time-header">
+        <span class="vc-time-weekday">
+          {{ locale.formatDate(date, 'WWW') }}
+        </span>
+        <span class="vc-time-month">
+          {{ locale.formatDate(date, 'MMM') }}
+        </span>
+        <span class="vc-time-day">
+          {{ locale.formatDate(date, 'D') }}
+        </span>
+        <span class="vc-time-year">
+          {{ locale.formatDate(date, 'YYYY') }}
+        </span>
+      </div>
+    </slot>
     <div class="vc-time-select-group">
       <svg
         fill="none"
