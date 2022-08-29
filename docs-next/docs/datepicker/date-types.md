@@ -4,127 +4,78 @@ title: Date Picker | Date Types
 
 # Date Types
 
-*Introduced in **`v2.0.0`***
+`DatePicker` supports binding to different data types, including strings, dates and numbers via the `model-config` prop.
 
-The `model-config` prop is used to provide information about the date bound to `v-date-picker`. For example, if the date you provide is stored in a database as a string, this string value can be bound to `v-date-picker` directly, without any extra conversion logic required by your application.
+For example, if the date you provide is stored in a database as a string, this string value can be bound to directly, without any extra conversion logic required by your application.
 
 In short, the `model-config` and `timezone` props help provide a no-hassle approach to working with your data.
 
 ## Strings
 
-To bind to a string value, provide a `model-config` with the necessary `type: 'string'` and `mask` properties.
+To bind to a string value, provide a `model-config` with the necessary `type: 'string'` property. In this example, the date is provided in ISO 8601 format with the Z designator (zero UTC offset).
 
-<!-- <guide-datepicker-model-string /> -->
+<Example centered>
+  <!-- <DateTypeString /> -->
+</Example>
 
-```html
-<v-date-picker
-  v-model="customer.birthday"
-  :model-config="modelConfig"
-  is-required
-  />
+```vue
+<template>
+  <DatePicker v-model="date" :model-config="modelConfig" />
+</template>
+<script setup>
+import { ref } from 'vue';
+const date = ref('2000-01-01T12:00:00.000Z');
+const modelConfig = ref({
+  type: 'string',
+});
+</script>
 ```
 
-```js
-export default {
-  data() {
-    return {
-      customer: {
-        name: 'Nathan Reyes',
-        birthday: '1983-01-21',
-      },
-      modelConfig: {
-        type: 'string',
-        mask: 'YYYY-MM-DD', // Uses 'iso' if missing
-      },
-    }
-  }
-};
+If an alternate format is needed, provide the `mask` property with the desired format.
+
+<Example centered>
+  <!-- <DateTypeStringMask /> -->
+</Example>
+
+```vue
+<template>
+  <DatePicker
+    v-model="customer.birthday"
+    :model-config="modelConfig"
+    is-required
+  />
+</template>
+<script setup>
+import { ref } from 'vue';
+const customer = reactive({
+  name: 'Nathan Reyes',
+  birthday: '1983-01-21',
+});
+const modelConfig = ref({
+  type: 'string',
+  mask: 'YYYY-MM-DD',
+});
+</script>
 ```
 
 ## Numbers
 
-To bind to a number value, provide a `model-config` with the necessary `type: 'number'` property.
+To bind to a number value, provide a `model-config` with the necessary `type: 'number'` property. The number provided should be an integer value representing the number of milliseconds since January 1, 1970, 00:00:00 UTC (the ECMAScript epoch, equivalent to the UNIX epoch).
 
-<!-- <guide-datepicker-model-number /> -->
+<Example centered>
+  <DateTypeNumber />
+</Example>
 
-```html
-<v-date-picker v-model="customer.birthday" :model-config="modelConfig" />
-```
+```vue
+<template>
+  <DatePicker v-model="date" :model-config="modelConfig" timezone="utc" />
+</template>
 
-```js
-export default {
-  data() {
-    return {
-      customer: {
-        name: 'Nathan Reyes',
-        birthday: 411976800000, // Milliseconds since 1 January 1970 
-      },
-      modelConfig: {
-        type: 'number',
-      },
-    }
-  }
-};
-```
-
-## Time Adjust
-
-By default, when the user selects a new date, it leaves the existing time value. To auto-adjust the time for selected dates, provide a `model-config` with the desired `timeAdjust` setting in `HH:mm:ss` format. All times use the specified `timezone`, or local timezone if none is provided.
-
-This example assigns the time of selected dates to noon in the browser's local timezone.
-
-<!-- <guide-datepicker-time-adjust /> -->
-
-```html
-<v-date-picker v-model="date" :model-config="modelConfig">
-```
-
-```js
-data() {
-  return {
-    customer: {
-      name: 'Nathan Reyes',
-      birthday: '1983-01-21T02:30:00-5:00',
-    },
-    modelConfig: {
-      type: 'string',
-      mask: 'YYYY-MM-DDTHH:mm:ssXXX',
-      timeAdjust: '12:00:00',
-    },
-  }
-}
-```
-
-| Time Setting | Description |
-| --- | --- |
-| *`HH:MM:SS`* | Custom time in `HH:MM:SS` format |
-| `now` | Assign to the instant of date selection. |
-
-### Adjust Date Range Times
-
-When used with date ranges, the `modelConfig` may be specified as an object with `start` and `end` properties. For example, when the users selects a date range, we might want to set the selected range to start at the very beginning of the first day until the end of the last day.
-
-<!-- <guide-datepicker-time-adjust-range /> -->
-
-```html
-<v-date-picker v-model="range" :model-config="modelConfig">
-```
-
-```js
-data() {
-  return {
-    range: {
-      start: new Date(2020, 0, 6),
-      end: new Date(2020, 0, 9),
-    },
-    modelConfig: {
-      start: {
-        timeAdjust: '00:00:00',
-      },
-      end: {
-        timeAdjust: '23:59:59',
-      },
-    },
-  }
-}
+<script setup>
+import { ref } from 'vue';
+const date = ref(0);
+const modelConfig = ref({
+  type: 'number',
+});
+</script>
 ```

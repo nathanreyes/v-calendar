@@ -1,5 +1,5 @@
 <template>
-  <DateWithValue v-model="date" :rules="rules" />
+  <DateDisplay v-model="date" :rules="rules" />
 </template>
 
 <script setup>

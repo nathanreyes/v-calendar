@@ -16,6 +16,18 @@ To expand the component to the full width of its container, set the `is-expanded
 <Calendar is-expanded />
 ```
 
+## Weekly View
+
+Set the `view` prop to display the calendar in 'weekly' view.
+
+<Example centered>
+  <Calendar view="weekly" />
+</Example>
+
+```html
+<Calendar view="weekly" />
+```
+
 ## Title Positioning
 
 To make the title header left or right aligned, use the `title-position` prop.

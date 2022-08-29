@@ -17,7 +17,7 @@
       </label>
     </div>
   </div>
-  <DateWithValue v-model="date" mode="dateTime" :time-accuracy="timeAccuracy" />
+  <DateDisplay v-model="date" mode="dateTime" :time-accuracy="timeAccuracy" />
 </template>
 <script setup>
 import { ref } from 'vue';

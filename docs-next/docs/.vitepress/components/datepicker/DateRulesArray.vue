@@ -1,5 +1,5 @@
 <template>
-  <DateWithValue v-model="date" mode="dateTime" :rules="rules" is24hr />
+  <DateDisplay v-model="date" mode="dateTime" :rules="rules" is24hr />
 </template>
 
 <script setup>
