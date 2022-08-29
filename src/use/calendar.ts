@@ -302,7 +302,8 @@ export function createCalendar(
 
   const getPageForAttributes = () => {
     if (!hasAttributes.value) return null;
-    const attr = attributes.value.find(attr => attr.pinPage);
+    const attr =
+      attributes.value.find(attr => attr.pinPage) || attributes.value[0];
     if (!attr || !attr.hasDates) return null;
     const [dateInfo] = attr.dates;
     const date = dateInfo.start?.date || dateInfo.end?.date;
