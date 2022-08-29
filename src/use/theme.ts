@@ -1,5 +1,5 @@
 import { reactive, Ref } from 'vue';
-import { Attribute } from '../utils/attribute';
+import { DayAttribute } from '../utils/attribute';
 import { DateInfoDayContext } from '../utils/dateInfo';
 import {
   GlyphRenderer,
@@ -21,9 +21,9 @@ export type Glyphs = Record<string, Glyph[]>;
 export interface Theme {
   color: string;
   displayMode: string;
-  normalizeGlyphs(attr: Attribute): void;
+  normalizeGlyphs(attr: DayAttribute): void;
   prepareRender(glyphs: Glyphs): Glyphs;
-  render(attr: Attribute, ctx: DateInfoDayContext, glyphs: Glyphs): void;
+  render(attr: DayAttribute, ctx: DateInfoDayContext, glyphs: Glyphs): void;
 }
 
 export function useTheme(
@@ -39,10 +39,10 @@ export function useTheme(
     new BarRenderer(),
   ];
 
-  function normalizeGlyphs(attr: Attribute) {
+  function normalizeGlyphs(attr: DayAttribute) {
     renderers.forEach(renderer => {
-      const { type } = renderer;
-      if (attr.hasOwnProperty(type) && attr[type]) {
+      const type = renderer.type as keyof DayAttribute;
+      if (attr.hasOwnProperty(type) && attr[type] != null) {
         attr[type] = renderer.normalizeConfig(color.value, attr[type]);
       }
     });
@@ -55,7 +55,7 @@ export function useTheme(
     return glyphs;
   }
 
-  function render(attr: Attribute, ctx: DateInfoDayContext, glyphs: Glyphs) {
+  function render(attr: DayAttribute, ctx: DateInfoDayContext, glyphs: Glyphs) {
     renderers.forEach(renderer => {
       renderer.render(attr, ctx, glyphs);
     });
