@@ -18,8 +18,8 @@ The `timezone` prop is used to set the beginning and ending time boundaries for 
 
 ```vue
 <template>
-  <Calendar :attributes="attrs" :timezone="timezone" />
   <TimezonePicker v-model="timezone" />
+  <Calendar :attributes="attrs" :timezone="timezone" />
 </template>
 
 <script setup>
@@ -67,8 +67,8 @@ When using the `timezone` prop with `DatePicker`, the displayed time will reflec
 
 ```vue
 <template>
-  <DatePicker mode="dateTime" v-model="range" :timezone="timezone" is-range />
   <TimezonePicker v-model="timezone" />
+  <DatePicker mode="dateTime" v-model.range="range" :timezone="timezone" />
 </template>
 
 <script>
@@ -92,7 +92,7 @@ Similarly, if `rules` are provided, then the assigned time will reflect the assi
 
 ```vue
 <template>
-  <DatePicker v-model="range" :rules="rules" timezone="UTC" is-range />
+  <DatePicker v-model.range="range" :rules="rules" timezone="UTC" />
 </template>
 
 <script setup>

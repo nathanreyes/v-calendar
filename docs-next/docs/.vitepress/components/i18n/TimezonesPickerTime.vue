@@ -1,12 +1,12 @@
 <template>
   <Example centered>
-    <DatePicker mode="dateTime" v-model="range" :timezone="timezone" is-range />
     <TimezonePicker v-model="timezone" />
+    <DatePicker mode="dateTime" v-model.range="range" :timezone="timezone" />
   </Example>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 const timezone = ref('UTC');
 const range = {

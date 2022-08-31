@@ -1,7 +1,7 @@
 <template>
   <Example centered>
     <DatePicker v-model="date" :popover="{ visibility: 'click' }">
-      <template v-slot="{ inputValue, inputEvents }">
+      <template #default="{ inputValue, inputEvents }">
         <BaseInput :value="inputValue" v-on="inputEvents" />
       </template>
     </DatePicker>

@@ -26,12 +26,28 @@ The default component prefix of `v` has been removed when using [plugin](./insta
 
 The included screens mixin that supplied the `$screens` function has been removed. Read more about how to achive [responsive calendar layouts](../calendar/layouts#responsive-layouts) using a [dedicated screen utility plugin](https://github.com/nathanreyes/vue-screen-utils).
 
-## Deprecated Calendar Props
+## Calendar
 
-### `from-page`, `to-page`, `from-date`, and `to-date`
+### Deprecated `from-page`, `to-page`, `from-date`, and `to-date` props
 
 Use the `initial-page` and `initial-page-position` props to correctly initial the starting month for a calendar or date picker.
 
-## Deprecated Highlight Fill Mode
+### Deprecated Highlight Fill Mode
 
-The `none` option for `fillMode` has been deprecated in favor of the more descriptive `outline` option.
+The `none` option for `attribute.highlight.fillMode` has been deprecated in favor of the more descriptive `outline` option.
+
+## DatePicker
+
+### Deprecate `modelConfig` prop
+
+To bind to numbers or strings, use the `number` and `string` model modifiers in favor of the `modelConfig` prop. Provide the `masks.modelValue` prop is a string mask is needed. More details [here](../datepicker/basics#string-dates).
+
+### Soft-Deprecate `is-range`
+
+To bind to date ranges, use the `range` model modifier. More details [here](../datepicker/basics#date-range).
+
+## Pre-Alpha v8
+
+<BaseAlert warning>
+Used in versions previous to v3.0-beta.0, the `minute-increment` and `valid-hours` props have been deprecated in favor of using `rules`.
+</BaseAlert>

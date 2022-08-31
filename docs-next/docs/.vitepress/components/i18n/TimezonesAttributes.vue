@@ -1,7 +1,7 @@
 <template>
   <Example centered>
     <Calendar :attributes="attrs" :timezone="timezone" />
-    <TimezonePicker v-model="timezone" />
+    <FullTimezonePicker v-model="timezone" />
   </Example>
 </template>
 

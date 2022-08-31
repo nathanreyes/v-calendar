@@ -14,7 +14,7 @@ To allow for user date text entry, provide a custom `input` element as the defau
 ```vue
 <template>
   <DatePicker v-model="date">
-    <template v-slot="{ inputValue, inputEvents }">
+    <template #default="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
   </DatePicker>
@@ -30,172 +30,152 @@ const date = ref(new Date());
 
 When binding to a date range and providing custom `input` elements, the `inputValue` and `inputEvents` are split into separate `start` and `end` sub-properties. 
 
-<!-- <guide-datepicker-range-input /> -->
+<Example centered>
+  <DateRangeInput />
+</Example>
 
-```html
-<DatePicker v-model="range" is-range>
-  <template v-slot="{ inputValue, inputEvents }">
-    <div class="flex justify-center items-center">
-      <input
-        :value="inputValue.start"
-        v-on="inputEvents.start"
-        class="border px-2 py-1 w-32 rounded focus:outline-none focus:border-indigo-300"
-      />
-      <svg
-        class="w-4 h-4 mx-2"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M14 5l7 7m0 0l-7 7m7-7H3"
-        />
-      </svg>
-      <input
-        :value="inputValue.end"
-        v-on="inputEvents.end"
-        class="border px-2 py-1 w-32 rounded focus:outline-none focus:border-indigo-300"
-      />
-    </div>
-  </template>
-</DatePicker>
+```vue
+<template>
+  <DatePicker v-model="range" is-range>
+    <template #default="{ inputValue, inputEvents }">
+      <div class="flex justify-center items-center">
+        <BaseInput :value="inputValue.start" v-on="inputEvents.start" />
+        <svg
+          class="text-gray-400 dark:text-gray-500 w-4 h-4 mx-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M14 5l7 7m0 0l-7 7m7-7H3"
+          />
+        </svg>
+        <BaseInput :value="inputValue.end" v-on="inputEvents.end" />
+      </div>
+    </template>
+  </DatePicker>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const range = ref({
+  start: new Date(2020, 9, 12),
+  end: new Date(2020, 9, 16),
+});
+</script>
 ```
 
-```js
-export default {
-  data() {
-    return {
-      range: {
-        start: new Date(2020, 9, 12),
-        end: new Date(2020, 9, 16),
-      },
-    };
-  },
-};
-```
-
-### Debounce
+## Debounce
 
 Use the `input-debounce` prop (in milliseconds) to set a custom debounce duration. This example makes the input a little more responsive to text input by using a debounce of `500ms` rather than the default `1000ms`.
 
-<!-- <guide-datepicker-input-debounce /> -->
+<Example centered>
+  <DateInputDebounce />
+</Example>
 
-```html
-<DatePicker v-model="date" :input-debounce="500">
-  <template v-slot="{ inputValue, inputEvents }">
-    <input
-      class="bg-white border px-2 py-1 rounded"
-      :value="inputValue"
-      v-on="inputEvents"
-    />
-  </template>
-</DatePicker>
+```vue
+<template>
+  <DatePicker v-model="date" :input-debounce="500">
+    <template #default="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DatePicker>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+</script>
 ```
 
-```javascript
-export default {
-  data() {
-    return {
-      date: new Date(),
-    };
-  },
-};
-```
-
-### Disable Update On Input
+## Disable Update On Input
 
 To completely disable value updates as the user types, set the `update-on-input` prop to false. This will defer updates until the input's `change` event occurs.
 
-<!-- <guide-datepicker-disable-update /> -->
+<Example centered>
+  <DateInputDisableUpdate />
+</Example>
 
-```html
-<DatePicker v-model="date" :update-on-input="false">
-  <template v-slot="{ inputValue, inputEvents }">
-    <input
-      class="bg-white border px-2 py-1 rounded"
-      :value="inputValue"
-      v-on="inputEvents"
-    />
-  </template>
-</DatePicker>
+```vue
+<template>
+  <DatePicker v-model="date" :update-on-input="false">
+    <template v-slot="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DatePicker>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+</script>
 ```
 
-```javascript
-export default {
-  data() {
-    return {
-      date: new Date(),
-    };
-  },
-};
+## Input Format
+
+### Locale
+
+By default, the browser's detected locale will be used to format and parse the input text.
+
+However, a `locale` prop can be provided to override this setting. This could be helpful if you store your user's locale in a database or want to force all user's to a specific locale.
+
+<Example centered>
+  <DateInputLocale />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="date" :locale="locale">
+    <template v-slot="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DatePicker>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const date = ref(new Date());
+const locale = ref(null);
+
+// Fetch user's locale using custom API (eg. 'en-ZA')
+locale.value = await api.getUserLocale();
+</script>
 ```
 
-### Format & Parse
+### Mask
 
-By default, the localized format will be used to format and parse the input text.
+Alternatively, if you wish to keep the locale, but just override the locale's input format, provide a custom mask via  the `masks.input` prop.
 
-Just like the `Calendar` component, `DatePicker` accepts an explicit `locale` prop. This might be preferred if you store your user's locale in a database or want to force all user's to a specific locale.
+<Example centered>
+  <DateInputMask />
+</Example>
 
-<!-- <guide-datepicker-input-format-parse /> -->
+```vue
+<template>
+  <DatePicker v-model="date" :masks="masks">
+    <template v-slot="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DatePicker>
+</template>
 
-```html
-<DatePicker v-model="date" :locale="locale">
-  <template v-slot="{ inputValue, inputEvents }">
-    <input
-      class="bg-white border px-2 py-1 rounded"
-      :value="inputValue"
-      v-on="inputEvents"
-    />
-  </template>
-</DatePicker>
-```
-
-```js
-data() {
-  return {
-    date: new Date(),
-    locale: null,
-  };
-},
-created() {
-  // Fetch user's locale using custom API (eg. 'en-ZA')
-  this.locale = await api.getUserLocale();
-}
-```
-
-To use a custom mask that overrides the `locale`, assign the `masks.input` prop.
-
-<!-- <guide-datepicker-input-mask /> -->
-
-```html
-<DatePicker v-model="date" :masks="masks">
-  <template v-slot="{ inputValue, inputEvents }">
-    <input
-      class="bg-white border px-2 py-1 rounded"
-      :value="inputValue"
-      v-on="inputEvents"
-    />
-  </template>
-</DatePicker>
-```
-
-```js
-data() {
-  return {
-    date: new Date(),
-    masks: {
-      input: 'YYYY-MM-DD',
-    },
-  };
-},
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+const masks = ref({
+  input: 'YYYY-MM-DD',
+});
+</script>
 ```
 
 Please reference the [formatting & parsing section](./i18n.md#formatting-parsing-dates) for a complete list of available mask tokens.
 
-### Form Example
+## Form Example
 
 Here is a more complex example using a custom input with a validation message and **Clear** button to clear out the date.
 
@@ -255,7 +235,7 @@ export default {
 };
 ```
 
-### Advanced Slots
+## Advanced Slots
 
 Besides `input`s, other elements may be effectively used as the default slot. When doing so, there are other slot variables that you may use to further customize date selection behavior.
 

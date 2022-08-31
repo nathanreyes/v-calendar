@@ -1,66 +1,37 @@
 <template>
-  <!--Timezone select-->
-  <div class="flex mb-2 space-x-4" v-if="showTimezone">
-    <label class="text-gray-600 dark:text-gray-300 font-medium"
-      ><input
-        class="mr-2"
-        type="radio"
-        value=""
-        v-model="timezone"
-      />Local</label
-    >
-    <label class="text-gray-600 dark:text-gray-300 font-medium"
-      ><input
-        class="mr-2"
-        type="radio"
-        value="utc"
-        v-model="timezone"
-      />UTC</label
-    >
-  </div>
-  <div class="w-full flex space-x-4">
-    <!--Date Picker-->
-    <div class="flex-shrink-0">
-      <DatePicker v-if="!isRange" v-bind="$attrs" :timezone="timezone">
-        <template v-slot="{ inputValue, inputEvents }" v-if="showInput">
-          <input
-            class="bg-white border px-2 py-1 rounded"
-            :value="inputValue"
-            v-on="inputEvents"
-          />
-        </template>
-      </DatePicker>
-      <!--Date Range Picker-->
-      <DatePicker v-else v-bind="$attrs" :timezone="timezone" is-range>
-        <template v-slot="{ inputValue, inputEvents }" v-if="showInput">
-          <input
-            class="bg-white border px-2 py-1 rounded"
-            :value="inputValue"
-            v-on="inputEvents"
-          />
-        </template>
-      </DatePicker>
-    </div>
-    <div class="flex-grow">
+  <div class="flex flex-col items-center">
+    <div class="space-y-2 mb-4">
+      <slot />
       <!--Date Display (ISO)-->
-      <div v-if="!isRange">
-        <DataField label="Date" />
-        <DataField label="Type:">{{ dateType(value) }}</DataField>
-        <DataField label="Value:">{{ dateLabel(value) }}</DataField>
+      <div class="flex space-x-6" v-if="!isRange">
+        <BaseField label="Date Type:">{{ dateType(value) }}</BaseField>
+        <BaseField label="Date Value:">{{ dateLabel(value) }}</BaseField>
       </div>
       <!--Date Range Display (ISO)-->
-      <div v-else>
-        <DataField v-if="value == null" label="Date Value"> Null </DataField>
+      <template v-else>
+        <BaseField v-if="value == null" label="Date Value"> null </BaseField>
         <template v-else>
-          <DataField label="Start Date" />
-          <DataField label="Type:">{{ dateType(value.start) }}</DataField>
-          <DataField label="Value:">{{ dateLabel(value.start) }}</DataField>
-          <DataField label="End Date" class="mt-4" />
-          <DataField label="Type:">{{ dateType(value.end) }}</DataField>
-          <DataField label="Value:">{{ dateLabel(value.end) }}</DataField>
+          <div class="flex space-x-4">
+            <BaseField label="Start Type:">{{
+              dateType(value.start)
+            }}</BaseField>
+            <BaseField label="Start Value:">{{
+              dateLabel(value.start)
+            }}</BaseField>
+          </div>
+          <div class="flex space-x-4">
+            <BaseField label="End Type:">{{ dateType(value.end) }}</BaseField>
+            <BaseField label="End Value:">{{ dateLabel(value.end) }}</BaseField>
+          </div>
         </template>
-      </div>
+      </template>
     </div>
+    <!--Date Picker-->
+    <DatePicker v-bind="$attrs">
+      <template #default="{ inputValue, inputEvents }" v-if="showInput">
+        <BaseInput :value="inputValue" v-on="inputEvents" />
+      </template>
+    </DatePicker>
   </div>
 </template>
 
@@ -70,17 +41,15 @@ import { ref, computed, watch } from 'vue';
 export default {
   inheritAttrs: false,
   props: {
-    isRange: Boolean,
     showInput: Boolean,
-    timezone: {
-      type: String,
-      default: '',
-    },
-    showTimezone: Boolean,
   },
   setup(props, { attrs }) {
     const value = computed(() => {
       return attrs.modelValue;
+    });
+    const isRange = computed(() => {
+      if (!attrs.modelModifiers) return false;
+      return attrs.modelModifiers.range === true;
     });
     function dateType(val) {
       if (val == null) return 'null';
@@ -94,6 +63,7 @@ export default {
     }
     return {
       value,
+      isRange,
       dateType,
       dateLabel,
     };

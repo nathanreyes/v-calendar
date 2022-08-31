@@ -25,7 +25,11 @@ export default {
           items: [
             {
               text: 'Time Rules',
-              link: '/examples/time-rules',
+              link: '/examples/date-picker-time-rules',
+            },
+            {
+              text: 'Footer Content',
+              link: '/examples/date-picker-footer',
             },
           ],
         },
@@ -85,16 +89,16 @@ export default {
           collapsible: true,
           items: [
             {
-              text: 'Introduction',
-              link: '/datepicker/intro',
+              text: 'Basics',
+              link: '/datepicker/basics',
             },
             {
               text: 'Time Picker',
               link: '/datepicker/time-picker',
             },
             {
-              text: 'Date Types',
-              link: '/datepicker/date-types',
+              text: 'Time Rules',
+              link: '/datepicker/time-rules',
             },
             {
               text: 'Popovers',
@@ -113,6 +117,10 @@ export default {
             {
               text: 'Locales',
               link: '/i18n/locales',
+            },
+            {
+              text: 'Masks',
+              link: '/i18n/masks',
             },
             {
               text: 'Timezones',

@@ -55,10 +55,9 @@ We'll first try to display the dragged range, then fall back to the selected ran
 
 ```html
 <DatePicker
-  v-model="range"
+  v-model.range="range"
   :select-attribute="selectDragAttribute"
   :drag-attribute="selectDragAttribute"
-  is-range
   @drag="dragValue = $event"
 >
   <template v-slot:day-popover="{ format }">

@@ -9,6 +9,7 @@
     "serve": "vitepress serve docs"
   },
   "dependencies": {
+    "short-uuid": "^4.2.0",
     "vue-screen-utils": "^1.0.0-beta.5"
   },
   "devDependencies": {

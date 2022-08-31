@@ -32,13 +32,13 @@ const rules = {
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" :rules="rules" is-range />
+  <DatePicker v-model.range="date" mode="dateTime" :rules="rules" />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
-const date = ref({
+const range = ref({
   start: new Date(2022, 7, 15),
   end: new Date(2022, 7, 19)
 });

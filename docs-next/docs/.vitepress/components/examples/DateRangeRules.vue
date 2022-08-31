@@ -1,11 +1,11 @@
 <template>
-  <DateDisplay v-model="date" mode="dateTime" :rules="rules" is-range />
+  <DateDisplay v-model.range="range" mode="dateTime" :rules="rules" />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
-const date = ref({
+const range = ref({
   start: new Date(2022, 7, 15),
   end: new Date(2022, 7, 19),
 });

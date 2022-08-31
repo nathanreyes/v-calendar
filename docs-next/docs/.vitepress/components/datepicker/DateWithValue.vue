@@ -1,6 +1,6 @@
 <template>
   <DateDisplay v-if="!isRange" v-model="date" />
-  <DateDisplay v-else v-model="range" is-range />
+  <DateDisplay v-else v-model.range="range" />
 </template>
 
 <script setup>

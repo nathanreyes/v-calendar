@@ -7,9 +7,10 @@
 <script setup>
 import { ref } from 'vue';
 const date = ref(new Date());
-const mode = ref('dateTime');
+const mode = ref('date');
 const rules = ref({
-  hours: 12,
+  hours: 0,
+  minutes: 0,
   seconds: 0,
   milliseconds: 0,
 });

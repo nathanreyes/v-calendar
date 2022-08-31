@@ -1,5 +1,5 @@
 <template>
-  <DateDisplay v-model="range" :rules="rules" timezone="UTC" is-range />
+  <DateDisplay v-model.range="range" :rules="rules" timezone="UTC" />
 </template>
 
 <script setup>

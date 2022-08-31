@@ -1,12 +1,12 @@
 <template>
-  <DateDisplay v-model="date" :rules="rules" />
+  <DateDisplay v-model="date" :rules="rules" timezone="utc" />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 const date = ref(new Date());
 const rules = ref({
-  hours: [15, 18, 20],
+  hours: 12,
   minutes: {
     interval: 5,
   },
