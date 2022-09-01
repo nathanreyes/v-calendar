@@ -1,4 +1,4 @@
-# Popovers
+# Input Popover
 
 To display the picker as a popover, provide your own content as the default slot. Most often this will be an `input` element.
 

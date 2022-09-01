@@ -101,8 +101,8 @@ export default {
               link: '/datepicker/time-rules',
             },
             {
-              text: 'Popovers',
-              link: '/datepicker/popovers',
+              text: 'Input Popover',
+              link: '/datepicker/input-popover',
             },
             {
               text: 'Custom Attributes',
