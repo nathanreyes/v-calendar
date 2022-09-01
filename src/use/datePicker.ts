@@ -47,8 +47,10 @@ import {
 } from './base';
 import { CalendarContext, MoveTarget, MoveOptions } from './calendar';
 
-interface ModelConfig {
-  type: 'auto' | 'date' | 'string' | 'number';
+type DateType = 'date' | 'string' | 'number';
+
+interface DateConfig {
+  type: DateType;
   mask?: string;
 }
 
@@ -56,13 +58,6 @@ interface DateRange {
   start: Date;
   end: Date;
 }
-
-const _baseConfig: ModelConfig = {
-  type: 'auto',
-  mask: 'iso', // String mask when `type === 'string'`
-};
-
-const _config: ModelConfig[] = [_baseConfig, _baseConfig];
 
 const contextKey = '__vc_date_picker_context__';
 
@@ -89,8 +84,9 @@ export const propsDef = {
   ...basePropsDef,
   mode: { type: String, default: MODE.DATE },
   modelValue: { type: null, required: true },
+  modelModifiers: { default: () => ({}) },
   time: String,
-  rules: Object as PropType<DatePartsRules>,
+  rules: [String as PropType<'auto'>, Object as PropType<DatePartsRules>],
   modelConfig: { type: Object, default: () => ({}) },
   is24hr: Boolean,
   hideTimeHeader: Boolean,
@@ -111,9 +107,16 @@ export const propsDef = {
   attributes: [Object, Array],
 };
 
+interface ModelModifiers {
+  number?: boolean;
+  string?: boolean;
+  range?: boolean;
+}
+
 interface DatePickerProps extends BaseProps {
   mode: string;
   modelValue: any;
+  modelModifiers: ModelModifiers;
   time?: string;
   rules?: DatePartsRules;
   modelConfig?: any;
@@ -184,28 +187,43 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   // #region Computed
 
+  const isRange = computed(() => {
+    return props.isRange || props.modelModifiers.range === true;
+  });
+
   const valueStart = computed(() =>
-    props.isRange && state.value != null
+    isRange.value && state.value != null
       ? (state.value as DateRangeValue).start
       : null,
   );
+
   const valueEnd = computed(() =>
-    props.isRange && state.value != null
+    isRange.value && state.value != null
       ? (state.value as DateRangeValue).end
       : null,
   );
+
   const isDate = computed(() => props.mode.toLowerCase() === MODE.DATE);
+
   const isDateTime = computed(
     () => props.mode.toLowerCase() === MODE.DATE_TIME,
   );
   const isTime = computed(() => props.mode.toLowerCase() === MODE.TIME);
+
   const isDragging = computed(() => !!state.dragValue);
-  const modelConfig = computed(() =>
-    normalizeConfig(props.modelConfig, _config),
-  );
+
+  const modelConfig = computed(() => {
+    let type: DateType = 'date';
+    if (props.modelModifiers.number) type = 'number';
+    if (props.modelModifiers.string) type = 'string';
+    const mask = masks.value.modelValue || 'iso';
+    return normalizeDateConfig({ type, mask });
+  });
+
   const dateParts = computed(() =>
     getDateParts(state.dragValue ?? state.value),
   );
+
   const inputMask = computed(() => {
     if (isTime.value) {
       return props.is24hr ? masks.value.inputTime24hr : masks.value.inputTime;
@@ -217,10 +235,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
     return masks.value.input;
   });
+
   const inputMaskHasTime = computed(() => /[Hh]/g.test(inputMask.value));
+
   const inputMaskHasDate = computed(() =>
     /[dD]{1,2}|Do|W{1,4}|M{1,4}|YY(?:YY)?/g.test(inputMask.value),
   );
+
   const inputMaskPatch = computed(() => {
     if (inputMaskHasTime.value && inputMaskHasDate.value) {
       return DatePatch.DateTime;
@@ -229,11 +250,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     if (inputMaskHasTime.value) return DatePatch.Time;
     return undefined;
   });
+
   const popover = computed(() =>
     defaultsDeep(props.popover, getDefault('datePicker.popover')),
   );
+
   const slotArgs = computed(() => {
-    const inputValue = props.isRange
+    const inputValue = isRange.value
       ? {
           start: state.inputValues[0],
           end: state.inputValues[1],
@@ -248,7 +271,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         id: state.datePickerPopoverId,
       }),
     }));
-    const inputEvents = props.isRange
+    const inputEvents = isRange.value
       ? {
           start: events[0],
           end: events[1],
@@ -265,6 +288,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       getPopoverEventHandlers,
     };
   });
+
   const selectAttribute = computed(() => {
     if (!hasValue(state.value)) return null;
     const attribute = {
@@ -279,8 +303,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
     return attribute;
   });
+
   const dragAttribute = computed(() => {
-    if (!props.isRange || !hasValue(state.dragValue)) {
+    if (!isRange.value || !hasValue(state.dragValue)) {
       return null;
     }
     const attribute = {
@@ -298,6 +323,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
     return attribute;
   });
+
   const attributes = computed(() => {
     const attrs = isArray(props.attributes) ? [...props.attributes] : [];
     if (dragAttribute.value) {
@@ -308,51 +334,73 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return attrs;
   });
 
-  const rules = computed(() => {
-    if (isObject(props.rules)) return props.rules;
-    switch (props.timeAccuracy) {
-      case 1:
-        return {
-          minutes: 0,
-          seconds: 0,
-          milliseconds: 0,
-        };
-      case 3:
-        return { milliseconds: 0 };
-      case 4:
-        return {};
-      default:
-        return { seconds: 0, milliseconds: 0 };
-    }
+  const rules = computed<DatePartsRules[]>(() => {
+    return normalizeConfig(
+      props.rules === 'auto' ? getAutoRules() : props.rules ?? {},
+    );
   });
 
   // #endregion Computed
 
-  // #region Methods
+  function getAutoRules() {
+    const _rules = {
+      ms: [0, 999],
+      sec: [0, 59],
+      min: [0, 59],
+      hr: [0, 23],
+    };
+    const accuracy = isDate.value ? 0 : props.timeAccuracy;
+    return [0, 1].map(i => {
+      switch (accuracy) {
+        case 0:
+          return {
+            hours: _rules.hr[i],
+            minutes: _rules.min[i],
+            seconds: _rules.sec[i],
+            milliseconds: _rules.ms[i],
+          };
+        case 1:
+          return {
+            minutes: _rules.min[i],
+            seconds: _rules.sec[i],
+            milliseconds: _rules.ms[i],
+          };
+        case 3:
+          return { milliseconds: _rules.ms[i] };
+        case 4:
+          return {};
+        default:
+          return { seconds: _rules.sec[i], milliseconds: _rules.ms[i] };
+      }
+    });
+  }
 
-  function normalizeConfig(
-    config: any,
-    baseConfig: ModelConfig[] = modelConfig.value,
-  ): ModelConfig[] {
-    config = isArray(config)
-      ? config
-      : [config.start || config, config.end || config];
-    return baseConfig.map((b, i) => ({
-      rules: rules.value,
-      ...b,
-      ...config[i],
+  function normalizeConfig<T>(config: T | T[]): T[] {
+    if (isArray(config)) {
+      if (config.length === 1) return [config[0], config[0]];
+      return config;
+    }
+    return [config, config];
+  }
+
+  function normalizeDateConfig(
+    config: DateConfig | DateConfig[],
+  ): DateConfig[] {
+    return normalizeConfig(config).map((c, i) => ({
+      rules: rules.value[i],
+      ...c,
     }));
   }
 
   function hasValue(value: any) {
-    if (props.isRange) {
+    if (isRange.value) {
       return isObject(value) && value.start != null && value.end != null;
     }
     return value != null;
   }
 
   function valuesAreEqual(a: any, b: any) {
-    if (props.isRange) {
+    if (isRange.value) {
       const aHasValue = hasValue(a);
       const bHasValue = hasValue(b);
       if (!aHasValue && !bHasValue) return true;
@@ -372,35 +420,35 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function normalizeValue(
     value: any,
-    config: any,
+    config: DateConfig[],
     patch: DatePatch,
     rangePriority: RangePriority,
   ): Date | DateRange | null {
     if (!hasValue(value)) return null;
-    if (props.isRange) {
+    if (isRange.value) {
       let start = value.start > value.end ? value.end : value.start;
       start = locale.value.normalizeDate(start, {
         ...config[0],
-        fillDate: valueStart.value ?? config[0].fillDate,
+        fillDate: valueStart.value ?? undefined,
         patch,
       });
       let end = value.start > value.end ? value.start : value.end;
       end = locale.value.normalizeDate(end, {
         ...config[1],
-        fillDate: valueEnd.value ?? config[1].fillDate,
+        fillDate: valueEnd.value ?? undefined,
         patch,
       });
       return sortRange({ start, end }, rangePriority);
     }
     return locale.value.normalizeDate(value, {
       ...config[0],
-      fillDate: state.value ?? config[0].fillDate,
+      fillDate: state.value,
       patch,
     });
   }
 
-  function denormalizeValue(value: any, config = modelConfig.value) {
-    if (props.isRange) {
+  function denormalizeValue(value: any, config: DateConfig[]) {
+    if (isRange.value) {
       if (!hasValue(value)) return null;
       return {
         start: locale.value.denormalizeDate(value.start, config[0]),
@@ -440,7 +488,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }: Partial<UpdateOptions> = {},
   ) {
     // 1. Normalization
-    let normalizedConfig = normalizeConfig(config);
+    let normalizedConfig = normalizeDateConfig(config);
     let normalizedValue = normalizeValue(
       value,
       normalizedConfig,
@@ -478,7 +526,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       // Clear drag value if needed
       if (!dragging) state.dragValue = null;
       // Denormalization
-      const denormalizedValue = denormalizeValue(normalizedValue);
+      const denormalizedValue = denormalizeValue(
+        normalizedValue,
+        normalizedConfig,
+      );
       // Notification
       const event = isDragging.value ? 'drag' : 'update:modelValue';
       state.watchValue = false;
@@ -500,12 +551,12 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function formatInput() {
     nextTick(() => {
-      const config = normalizeConfig({
+      const config = normalizeDateConfig({
         type: 'string',
         mask: inputMask.value,
       });
       const value = denormalizeValue(state.dragValue || state.value, config);
-      if (props.isRange) {
+      if (isRange.value) {
         state.inputValues = [value && value.start, value && value.end];
       } else {
         state.inputValues = [value, ''];
@@ -519,7 +570,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     opts: Partial<UpdateOptions>,
   ) {
     state.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
-    const value = props.isRange
+    const value = isRange.value
       ? {
           start: state.inputValues[0],
           end: state.inputValues[1] || state.inputValues[0],
@@ -572,7 +623,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function getDateParts(value: any): (object | DateParts)[] {
-    if (props.isRange) {
+    if (isRange.value) {
       return [
         value && value.start ? locale.value.getDateParts(value.start) : {},
         value && value.end ? locale.value.getDateParts(value.end) : {},
@@ -608,7 +659,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       hidePopover:
         isDate.value && !keepVisibleOnInput && visibility !== 'visible',
     };
-    if (props.isRange) {
+    if (isRange.value) {
       const dragging = !isDragging.value;
       if (dragging) {
         state.dragTrackingValue = { ...day.range };
@@ -707,7 +758,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function getPageForValue(isStart: boolean) {
     if (hasValue(state.value)) {
-      const date = props.isRange
+      const date = isRange.value
         ? isStart
           ? valueStart.value
           : valueEnd.value
@@ -749,6 +800,17 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   // #region Watch
 
   watch(
+    () => props.isRange,
+    val => {
+      if (val) {
+        console.warn(
+          'The `is-range` prop will be deprecated in future releases. Please use the `range` modifier.',
+        );
+      }
+    },
+    { immediate: true },
+  );
+  watch(
     () => inputMask.value,
     () => formatInput(),
   );
@@ -760,6 +822,17 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         formatInput: true,
         hidePopover: false,
       });
+    },
+  );
+  watch(
+    () => rules.value,
+    () => {
+      if (isObject(props.rules)) {
+        forceUpdateValue(props.modelValue, {
+          formatInput: true,
+          hidePopover: false,
+        });
+      }
     },
   );
   watch(
@@ -795,11 +868,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   // Waiting a tick allows calendar to initialize page
   nextTick(() => (state.showCalendar = true));
 
-  // forceUpdateValue(props.modelValue, {
-  //   formatInput: true,
-  //   hidePopover: false,
-  // });
-
   // #endregion Lifecycle
 
   const context = {
@@ -818,6 +886,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     dateParts,
     modelConfig,
     attributes,
+    rules,
     move,
     updateValue,
     onDayClick,
