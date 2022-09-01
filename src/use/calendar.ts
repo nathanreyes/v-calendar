@@ -43,9 +43,9 @@ import { BaseProps, propsDef as basePropsDef, useOrCreateBase } from './base';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
-type MoveTarget = number | string | Date | PageAddress;
+export type MoveTarget = number | string | Date | PageAddress;
 
-interface MoveOptions {
+export interface MoveOptions {
   page: PageAddress;
   position: number;
   view: CalendarView;

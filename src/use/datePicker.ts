@@ -45,7 +45,7 @@ import {
   propsDef as basePropsDef,
   createBase,
 } from './base';
-import { CalendarContext } from './calendar';
+import { CalendarContext, MoveTarget, MoveOptions } from './calendar';
 
 interface ModelConfig {
   type: 'auto' | 'date' | 'string' | 'number';
@@ -77,6 +77,12 @@ export enum RangePriority {
   Start,
   End,
   Both,
+}
+
+export enum ValueTarget {
+  None = 0,
+  Start,
+  End,
 }
 
 export const propsDef = {
@@ -148,7 +154,7 @@ interface DatePickerLocalState {
   datePickerPopoverId: string;
 }
 
-interface UpdateOptions {
+export interface UpdateOptions {
   config: any;
   patch: DatePatch;
   debounce: number;
@@ -157,7 +163,7 @@ interface UpdateOptions {
   hidePopover: boolean;
   dragging: boolean;
   rangePriority: RangePriority;
-  adjustPageRange: boolean;
+  moveToValue: ValueTarget;
 }
 
 export function createDatePicker(props: DatePickerProps, ctx: any) {
@@ -417,10 +423,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         forceUpdateValue(value, args);
         resolve(state.value);
       }
-    }).then(() => {
-      if (opts.adjustPageRange != null) {
-        adjustPageRange(opts.adjustPageRange);
-      }
     });
   }
 
@@ -434,6 +436,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       hidePopover: hPopover = false,
       dragging = isDragging.value,
       rangePriority = RangePriority.Both,
+      moveToValue: mValue = ValueTarget.None,
     }: Partial<UpdateOptions> = {},
   ) {
     // 1. Normalization
@@ -488,6 +491,11 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
     // 6. Format inputs if needed
     if (fInput) formatInput();
+
+    // 7. Move to range target if needed
+    if (mValue !== ValueTarget.None) {
+      nextTick(() => moveToValue(mValue));
+    }
   }
 
   function formatInput() {
@@ -526,7 +534,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       config,
       patch: inputMaskPatch.value,
       rangePriority: isStart ? RangePriority.Start : RangePriority.End,
-      adjustPageRange: isStart,
+      moveToValue: isStart ? ValueTarget.Start : ValueTarget.End,
     });
   }
 
@@ -551,7 +559,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function onInputShow(isStart: boolean) {
-    adjustPageRange(isStart);
+    moveToValue(isStart ? ValueTarget.Start : ValueTarget.End);
   }
 
   function onInputKeyup(e: KeyboardEvent) {
@@ -709,19 +717,30 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return null;
   }
 
-  function adjustPageRange(isStart: boolean) {
-    nextTick(() => {
-      if (elOrComp.value == null || elOrComp.value instanceof HTMLElement)
-        return;
-      const { firstPage, lastPage, move } = elOrComp.value;
-      const page = getPageForValue(isStart);
-      const position = isStart ? 1 : -1;
-      if (page && !pageIsBetweenPages(page, firstPage.value, lastPage.value)) {
-        move(page, {
-          position,
-          transition: 'fade',
-        });
-      }
+  const calendarRef = computed(() => {
+    if (elOrComp.value == null || elOrComp.value instanceof HTMLElement)
+      return null;
+    return elOrComp.value as CalendarContext;
+  });
+
+  async function move(target: MoveTarget, opts: Partial<MoveOptions> = {}) {
+    if (calendarRef.value == null) return false;
+    return calendarRef.value.move(target, opts);
+  }
+
+  async function moveToValue(
+    target: ValueTarget,
+    opts: Partial<MoveOptions> = {},
+  ) {
+    if (calendarRef.value == null || target === ValueTarget.None) return false;
+    const { firstPage, lastPage, move } = calendarRef.value;
+    const start = target === ValueTarget.Start;
+    const page = getPageForValue(start);
+    const position = start ? 1 : -1;
+    if (!page || pageIsBetweenPages(page, firstPage, lastPage)) return false;
+    return move(page, {
+      position,
+      ...opts,
     });
   }
 
@@ -787,6 +806,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     ...baseCtx,
     ...toRefs(state),
     elOrComp,
+    calendarRef,
     isRange: toRef(props, 'isRange'),
     isTime,
     isDateTime,
@@ -798,6 +818,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     dateParts,
     modelConfig,
     attributes,
+    move,
     updateValue,
     onDayClick,
     onDayKeydown,
@@ -822,6 +843,11 @@ export interface DatePickerContext
   dateParts: ComputedRef<(object | DateParts)[]>;
   modelConfig: ComputedRef<any>;
   attributes: ComputedRef<AttributeConfig[]>;
+  move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
+  moveToValue: (
+    target: ValueTarget,
+    opts: Partial<MoveOptions>,
+  ) => Promise<boolean>;
   updateValue: (value: any, opts: Partial<UpdateOptions>) => Promise<void>;
   onDayClick: (day: CalendarDay, event: MouseEvent) => void;
   onDayKeydown: (day: CalendarDay, event: KeyboardEvent) => void;
