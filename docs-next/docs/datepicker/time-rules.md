@@ -4,42 +4,38 @@ title: Date Picker | Time Rules
 
 # Time Rules
 
-## Date Selection
+## Introduction
 
-Rules can be enforced for time components, including `hours`, `minutes`, `seconds` and `milliseconds`. There are no restriction for their use, including all selection mode types (`date`, `dateTime` and `time`) and may be applied for both 12 and 24-hour modes.
+Rules can be defined for time components, including `hours`, `minutes`, `seconds` and `milliseconds`. They can be used for all selection mode types (`date`, `dateTime` and `time`) and both 12 and 24-hour modes.
 
 ### Default bahavior
 
-First, it would be good to discuss the default behavior of `DatePicker` with no rules applied.
+First, it's important to note that, with no rules present, `DatePicker` will **not** apply any time modifications to a bound date during the mounting phase. This ensures data consistency throughout your web application.
 
-To ensure data consistency, `DatePicker` will **not** apply any time modifications to the initially bound date. 
-
-If the user selects new dates in the calendar, only the year, month and day components are updated. 
+After initial mount, if the user selects new dates in the calendar, only the year, month and day components are updated. If the user selects a new time component in the time picker, only those components are updated, respectively.
 
 <Example centered>
-  <DateWithValue />
+  <DateRulesIntroDefault />
 </Example>
 
 ```vue
 <template>
-  <DatePicker v-model="date" />
+  <DateModePicker v-model="mode" />
+  <DatePicker v-model="date" :mode="mode" />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 const date = ref(new Date());
+const mode = ref('date');
 </script>
 ```
 
-However, we can normalize (or zero-out) the time components by setting a `rules` prop object with hard-coded values for the time component keys.
+## Date Example
 
-<BaseAlert title="When are rules applied?">
-Rules are applied to date values on initial mount **and** future updates.
-</BaseAlert>
+Let's start with a simple example to show how rules work. We can zero-out time components by setting a `rules` prop object with hard-coded values for the time component keys.
 
-<BaseAlert title="What timezone are rules applied">
-Rules are applied respective of the current timezone, unless the `timezone` prop is explicitly provided.
-</BaseAlert>
+Note how the `Date Value` displayed below shows the zero-ed out time components. A date was passed in (`new Date()`) and the `DatePicker` applied the rules on mount and re-emitted the new date value.
 
 <Example centered>
   <DateRulesIntroDate />
@@ -63,13 +59,22 @@ const rules = ref({
 </script>
 
 ```
-<BaseAlert title="Time picker">
-Rules can limit what time component selections are available in the time picker.
+
+<BaseAlert title="When are rules applied?">
+Rules are applied to date values on initial mount **and** future updates.
+</BaseAlert>
+
+<BaseAlert title="Do timezones affect how rules are applied?">
+Rules are applied respective of the browser's current timezone, unless the `timezone` prop is explicitly provided.
+</BaseAlert>
+
+<BaseAlert title="Do rules affect the time picker?">
+Rules do limit what time component selections are available in the time picker.
 </BaseAlert>
 
 ## Date Range Selection
 
-For date ranges, we could normalize the start time to the start of day and the end time to the end of day. Pass an array of rule objects (`[startRules, endRules]`) to target start and end dates.
+For date ranges, we can normalize the start time to the start of day and the end time to the end of day. Pass an array of rule objects (`[startRules, endRules]`) to target start and end dates.
 
 <Example centered>
   <DateRulesIntroDateRange />
@@ -83,7 +88,10 @@ For date ranges, we could normalize the start time to the start of day and the e
 
 <script setup>
 import { ref } from 'vue';
-const range = ref({ start: new Date(2020, 0, 6), end: new Date(2020, 0, 10) });
+const range = ref({
+  start: new Date(2020, 0, 6),
+  end: new Date(2020, 0, 10)
+});
 const mode = ref('date');
 const rules = ref([
   {
@@ -101,6 +109,8 @@ const rules = ref([
 ]);
 </script>
 ```
+
+Now that we've briefly been introduced to a few simple rules, we can explore what kind of rules can be defined.
 
 ## Rules Definition
 
@@ -208,8 +218,29 @@ const rules = ref({
 
 If accounting for date modes, date ranges and time accuracy is too much, pass `rules: 'auto'`, and `DatePicker` will make a "best guess" for what rules to apply.
 
-For example, for `mode: 'date'`, then hours, minutes, seconds and milliseconds will zero-out. Otherwise, the `time-accuracy` prop will only zero-out components more accurate than the current setting. Finally, more adjustments could be made when using the `range` modifier.
+For example, using `mode: 'date'` will zero-out hours, minutes, seconds and milliseconds. Otherwise, the `time-accuracy` prop will only zero-out components more accurate than the current setting. Finally, more adjustments could be made when using the `range` modifier.
 
 <Example centered>
   <DateRulesAuto />
 </Example>
+
+```vue
+<template>
+  <DateModePicker v-model="mode" />
+  <TimeAccuracyPicker v-model="timeAccuracy" />
+  <DatePicker
+    v-model="date"
+    :mode="mode"
+    :time-accuracy="timeAccuracy"
+    rules="auto"
+    />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const date = ref(new Date());
+const mode = ref('date');
+const timeAccuracy = ref(2);
+</script>
+```
