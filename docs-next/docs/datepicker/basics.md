@@ -79,7 +79,7 @@ const date = ref(new Date());
 
 ## Required date
 
-When selecting dates, the default behavior is to allow the user to reset the date value to `null` be re-selecting a date.
+When selecting dates, the default behavior is to allow the user to reset the date value to `null` be re-selecting it.
 
 To prevent this, set the `is-required` prop.
 
@@ -151,7 +151,7 @@ const dateNum = ref(0);
 </script>
 ```
 
-## Date range
+## Date ranges
 
 To bind to a date range with `start` and `end` dates, set the `range` modifier.
 

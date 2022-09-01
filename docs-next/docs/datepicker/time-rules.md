@@ -26,6 +26,7 @@ After initial mount, if the user selects new dates in the calendar, only the yea
 
 <script setup>
 import { ref } from 'vue';
+
 const date = ref(new Date());
 const mode = ref('date');
 </script>
@@ -48,6 +49,7 @@ Note how the `Date Value` displayed below shows the zero-ed out time components.
 
 <script setup>
 import { ref } from 'vue';
+
 const date = ref(new Date());
 // Remember, rules are applied in the browser's local timezone!
 const rules = ref({
@@ -88,6 +90,7 @@ For date ranges, we can normalize the start time to the start of day and the end
 
 <script setup>
 import { ref } from 'vue';
+
 const range = ref({
   start: new Date(2020, 0, 6),
   end: new Date(2020, 0, 10)
@@ -150,6 +153,7 @@ A rule with a single number will limit selection to that value. For example, may
 
 <script setup>
 import { ref } from 'vue';
+
 const date = ref(new Date());
 const rules = ref({
   hours: 12,
@@ -174,6 +178,7 @@ A rule with an array of numbers will limit selection to values in the list.
 
 <script setup>
 import { ref } from 'vue';
+
 const date = ref(new Date());
 const rules = ref({
   hours: [12, 15, 18, 22],
@@ -206,6 +211,7 @@ All of the properties are optional and may be used in any combination. For examp
 
 <script setup>
 import { ref } from 'vue';
+
 const date = ref(new Date());
 const rules = ref({
   hours: { min: 12 },

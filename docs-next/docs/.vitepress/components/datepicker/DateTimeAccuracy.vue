@@ -1,6 +1,7 @@
 <template>
-  <TimeAccuracyPicker v-model="timeAccuracy" />
-  <DateDisplay v-model="date" mode="dateTime" :time-accuracy="timeAccuracy" />
+  <DateDisplay v-model="date" mode="dateTime" :time-accuracy="timeAccuracy">
+    <TimeAccuracyPicker v-model="timeAccuracy" />
+  </DateDisplay>
 </template>
 
 <script setup>

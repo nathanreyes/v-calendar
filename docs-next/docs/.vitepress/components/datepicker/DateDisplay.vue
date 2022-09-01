@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col items-center">
     <div class="space-y-2 mb-4">
-      <slot />
       <!--Date Display (ISO)-->
       <div class="flex space-x-6" v-if="!isRange">
         <BaseField label="Date Type:">{{ dateType(value) }}</BaseField>
@@ -25,6 +24,7 @@
           </div>
         </template>
       </template>
+      <slot />
     </div>
     <!--Date Picker-->
     <DatePicker v-bind="$attrs">
