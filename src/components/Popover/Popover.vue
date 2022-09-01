@@ -294,10 +294,10 @@ export default defineComponent({
         return;
       }
       // Don't hide if target element is contained within popover ref or content
-      const { target } = e.detail;
+      const target = e.target as Node;
       if (
-        elementContains(popoverRef.value, target as Node) ||
-        elementContains(popperRef as Node, target as Node)
+        elementContains(popoverRef.value, target) ||
+        elementContains(popperRef as Node, target)
       ) {
         return;
       }
