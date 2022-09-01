@@ -226,17 +226,11 @@ const hourOptions = computed(() => {
 });
 
 const isAMOptions = computed(() => {
-  return [
-    {
-      value: true,
-      label: 'AM',
-      disabled: !arrayHasItems(amHourOptions.value),
-    },
-    {
-      value: false,
-      label: 'PM',
-      disabled: !arrayHasItems(pmHourOptions.value),
-    },
-  ];
+  const result = [];
+  if (arrayHasItems(amHourOptions.value))
+    result.push({ value: true, label: 'AM' });
+  if (arrayHasItems(pmHourOptions.value))
+    result.push({ value: false, label: 'PM' });
+  return result;
 });
 </script>

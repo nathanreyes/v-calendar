@@ -26,5 +26,8 @@
       border-color: var(--vc-time-select-focus-border);
       background-color: var(--vc-time-select-focus-bg);
     }
+    &.vc-non-multi {
+      pointer-events: none;
+    }
   }
 }
