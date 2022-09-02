@@ -18,13 +18,7 @@ import {
 import { getDefault } from '../utils/defaults';
 import { CalendarDay } from '../utils/locale';
 import { AttributeConfig } from '../utils/attribute';
-import {
-  createGuid,
-  elementContains,
-  pageIsBetweenPages,
-  on,
-  off,
-} from '../utils/helpers';
+import { createGuid, pageIsBetweenPages, on, off } from '../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../utils/_';
 import {
   DatePatch,
@@ -647,15 +641,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function onDocumentClick(e: MouseEvent) {
-    // TODO: Fix this!!
-    // const el = this.$refs.calendar?.$refs.containerRef;
-    // if (
-    //   document.body.contains(e.target as Node) &&
-    //   !elementContains(el, e.target as Node)
-    // ) {
-    //   state.dragValue = null;
-    //   formatInput();
-    // }
+    state.dragValue = null;
+    formatInput();
   }
 
   function handleDayClick(day: CalendarDay) {
