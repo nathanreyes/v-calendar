@@ -9,9 +9,10 @@ As mentioned in the [locales](./locales) section,  masks are used to properly fo
 | `title` | Calendar header title | `"MMMM YYYY"` |
 | `weekdays` | Calendar weekday headers | `"W"` |
 | `navMonths` | Month labels in navigation dropdown | `"MMM"` |
-| `dayPopover` | Date header in day popover when user hovers selected date. | `"WWW, MMM D, YYYY"` |
-| `input` | Input element text when `is-inline === false`. (*`DatePicker` only*) | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
+| `dayPopover` | Date header in day popover when user hovers selected date | `"WWW, MMM D, YYYY"` |
 | `data` | Parses attribute dates, if needed | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
+| `modelValue` | `DatePicker`: Model value when using `v-model.string` modifier | `"iso"` |
+| `input` | `DatePicker`: Input element text when `is-inline === false` | `["L", "YYYY-MM-DD", "YYYY/MM/DD"]` |
 
 ### Parsing using multiple masks
 

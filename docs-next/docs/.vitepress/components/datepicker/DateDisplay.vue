@@ -28,8 +28,20 @@
     </div>
     <!--Date Picker-->
     <DatePicker v-bind="$attrs">
-      <template #default="{ inputValue, inputEvents }" v-if="showInput">
-        <BaseInput :value="inputValue" v-on="inputEvents" />
+      <template
+        #default="{ inputValue, inputEvents, ...props }"
+        v-if="showInput"
+      >
+        <slot name="popover" v-bind="{ inputValue, inputEvents, ...props }">
+          <template v-if="isRange">
+            <div class="flex justify-center items-center">
+              <BaseInput :value="inputValue.start" v-on="inputEvents.start" />
+              <IconArrowRight />
+              <BaseInput :value="inputValue.end" v-on="inputEvents.end" />
+            </div>
+          </template>
+          <BaseInput v-else :value="inputValue" v-on="inputEvents" />
+        </slot>
       </template>
     </DatePicker>
   </div>

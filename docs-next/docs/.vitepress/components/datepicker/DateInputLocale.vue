@@ -1,9 +1,5 @@
 <template>
-  <DatePicker v-model="date" :locale="locale">
-    <template v-slot="{ inputValue, inputEvents }">
-      <BaseInput :value="inputValue" v-on="inputEvents" />
-    </template>
-  </DatePicker>
+  <DateDisplay v-model="date" :locale="locale" show-input />
 </template>
 
 <script setup>

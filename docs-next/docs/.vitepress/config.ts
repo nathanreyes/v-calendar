@@ -28,6 +28,10 @@ export default {
               link: '/examples/date-picker-time-rules',
             },
             {
+              text: 'Popovers',
+              link: '/examples/date-picker-popovers',
+            },
+            {
               text: 'Footer Content',
               link: '/examples/date-picker-footer',
             },

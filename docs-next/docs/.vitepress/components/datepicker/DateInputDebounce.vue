@@ -1,9 +1,5 @@
 <template>
-  <DatePicker v-model="date" :input-debounce="500">
-    <template #default="{ inputValue, inputEvents }">
-      <BaseInput :value="inputValue" v-on="inputEvents" />
-    </template>
-  </DatePicker>
+  <DateDisplay v-model="date" :input-debounce="500" show-input />
 </template>
 
 <script setup>
