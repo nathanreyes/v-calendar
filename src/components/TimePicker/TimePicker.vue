@@ -58,11 +58,7 @@ import TimeSelect from '../TimeSelect/TimeSelect.vue';
 import { arrayHasItems } from '../../utils/helpers';
 import { DateParts, DatePatch, getDatePartsOptions } from '../../utils/dates';
 import { useBase } from '../../use/base';
-import {
-  RangePriority,
-  ValueTarget,
-  useDatePicker,
-} from '../../use/datePicker';
+import { ValueTarget, useDatePicker } from '../../use/datePicker';
 
 const _amOptions = [
   { value: 0, label: '12' },
@@ -128,7 +124,7 @@ function updateParts(newParts: Partial<TimeParts>) {
   }
   updateDpValue(newValue, {
     patch: DatePatch.Time,
-    rangePriority: isStart.value ? RangePriority.Start : RangePriority.End,
+    rangePriority: isStart.value ? ValueTarget.Start : ValueTarget.End,
     moveToValue: isStart.value ? ValueTarget.Start : ValueTarget.End,
   });
 }

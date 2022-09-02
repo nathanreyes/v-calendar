@@ -47,14 +47,14 @@ import {
 } from './base';
 import { CalendarContext, MoveTarget, MoveOptions } from './calendar';
 
-type DateType = 'date' | 'string' | 'number';
+export type DateType = 'date' | 'string' | 'number';
 
-interface DateConfig {
+export interface DateConfig {
   type: DateType;
   mask?: string;
 }
 
-interface DateRange {
+export interface DateRange {
   start: Date;
   end: Date;
 }
@@ -67,17 +67,73 @@ const MODE = {
   TIME: 'time',
 };
 
-export enum RangePriority {
+export enum ValueTarget {
   None = 0,
   Start,
   End,
   Both,
 }
 
-export enum ValueTarget {
-  None = 0,
-  Start,
-  End,
+export interface UpdateOptions {
+  config: any;
+  patch: DatePatch;
+  debounce: number;
+  clearIfEqual: boolean;
+  formatInput: boolean;
+  hidePopover: boolean;
+  dragging: boolean;
+  targetPriority: ValueTarget;
+  moveToValue: boolean;
+}
+
+export interface DatePickerSlotProps {
+  inputValue: string | { start: string; end: string };
+  inputEvents: object;
+  isDragging: ComputedRef<boolean>;
+  updateValue: (
+    value: any,
+    opts?: Partial<UpdateOptions>,
+  ) => Promise<Date | DateRange | null>;
+  showPopover: (opts?: Partial<PopoverOptions>) => void;
+  hidePopover: (opts?: Partial<PopoverOptions>) => void;
+  togglePopover: (opts: Partial<PopoverOptions>) => void;
+}
+
+interface DatePickerLocalState {
+  showCalendar: boolean;
+  value: null | Date | DateRange;
+  dragValue: null | DateRange;
+  dragTrackingValue: null | DateRange;
+  inputValues: string[];
+  updateTimeout: undefined | number;
+  watchValue: boolean;
+  datePickerPopoverId: string;
+}
+
+interface ModelModifiers {
+  number?: boolean;
+  string?: boolean;
+  range?: boolean;
+}
+
+interface DatePickerProps extends BaseProps {
+  mode: string;
+  modelValue: any;
+  modelModifiers: ModelModifiers;
+  time?: string;
+  rules?: DatePartsRules;
+  modelConfig?: any;
+  is24hr: boolean;
+  hideTimeHeader: boolean;
+  timeAccuracy: number;
+  isRequired: boolean;
+  isRange: boolean;
+  updateOnInput: boolean;
+  inputDebounce: number;
+  popover: Partial<PopoverOptions>;
+  dragAttribute: any;
+  selectAttribute: any;
+  attributes: AttributeConfig[];
 }
 
 export const propsDef = {
@@ -101,37 +157,14 @@ export const propsDef = {
     type: Number,
     default: () => getDefault('datePicker.inputDebounce'),
   },
-  popover: { type: Object, default: () => ({}) },
+  popover: {
+    type: Object as PropType<Partial<PopoverOptions>>,
+    default: () => ({}),
+  },
   dragAttribute: Object,
   selectAttribute: Object,
   attributes: [Object, Array],
 };
-
-interface ModelModifiers {
-  number?: boolean;
-  string?: boolean;
-  range?: boolean;
-}
-
-interface DatePickerProps extends BaseProps {
-  mode: string;
-  modelValue: any;
-  modelModifiers: ModelModifiers;
-  time?: string;
-  rules?: DatePartsRules;
-  modelConfig?: any;
-  is24hr: boolean;
-  hideTimeHeader: boolean;
-  timeAccuracy: number;
-  isRequired: boolean;
-  isRange: boolean;
-  updateOnInput: boolean;
-  inputDebounce: number;
-  popover: any;
-  dragAttribute: any;
-  selectAttribute: any;
-  attributes: AttributeConfig[];
-}
 
 export const emits = [
   'update:modelValue',
@@ -143,31 +176,6 @@ export const emits = [
   'popover-will-hide',
   'popover-did-hide',
 ];
-
-type DateRangeValue = { start: Date; end: Date };
-
-interface DatePickerLocalState {
-  showCalendar: boolean;
-  value: null | Date | DateRangeValue;
-  dragValue: null | DateRangeValue;
-  dragTrackingValue: null | DateRangeValue;
-  inputValues: string[];
-  updateTimeout: undefined | number;
-  watchValue: boolean;
-  datePickerPopoverId: string;
-}
-
-export interface UpdateOptions {
-  config: any;
-  patch: DatePatch;
-  debounce: number;
-  clearIfEqual: boolean;
-  formatInput: boolean;
-  hidePopover: boolean;
-  dragging: boolean;
-  rangePriority: RangePriority;
-  moveToValue: ValueTarget;
-}
 
 export function createDatePicker(props: DatePickerProps, ctx: any) {
   const { emit } = ctx;
@@ -193,13 +201,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   const valueStart = computed(() =>
     isRange.value && state.value != null
-      ? (state.value as DateRangeValue).start
+      ? (state.value as DateRange).start
       : null,
   );
 
   const valueEnd = computed(() =>
     isRange.value && state.value != null
-      ? (state.value as DateRangeValue).end
+      ? (state.value as DateRange).end
       : null,
   );
 
@@ -255,16 +263,16 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     defaultsDeep(props.popover, getDefault('datePicker.popover')),
   );
 
-  const slotArgs = computed(() => {
+  const slotArgs = computed<DatePickerSlotProps>(() => {
     const inputValue = isRange.value
       ? {
           start: state.inputValues[0],
           end: state.inputValues[1],
         }
       : state.inputValues[0];
-    const events = [true, false].map(isStart => ({
-      input: onInputInput(isStart),
-      change: onInputChange(isStart),
+    const events = [1, 2].map(target => ({
+      input: onInputInput(target),
+      change: onInputChange(target),
       keyup: onInputKeyup,
       ...getPopoverEventHandlers({
         ...popover.value,
@@ -422,7 +430,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     value: any,
     config: DateConfig[],
     patch: DatePatch,
-    rangePriority: RangePriority,
+    targetPriority: ValueTarget,
   ): Date | DateRange | null {
     if (!hasValue(value)) return null;
     if (isRange.value) {
@@ -438,7 +446,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         fillDate: valueEnd.value ?? undefined,
         patch,
       });
-      return sortRange({ start, end }, rangePriority);
+      return sortRange({ start, end }, targetPriority);
     }
     return locale.value.normalizeDate(value, {
       ...config[0],
@@ -458,7 +466,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return locale.value.denormalizeDate(value, config[0]);
   }
 
-  function updateValue(value: any, opts: Partial<UpdateOptions> = {}) {
+  function updateValue(
+    value: any,
+    opts: Partial<UpdateOptions> = {},
+  ): Promise<Date | DateRange | null> {
     clearTimeout(state.updateTimeout);
     return new Promise(resolve => {
       const { debounce = 0, ...args } = opts;
@@ -483,8 +494,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       formatInput: fInput = true,
       hidePopover: hPopover = false,
       dragging = isDragging.value,
-      rangePriority = RangePriority.Both,
-      moveToValue: mValue = ValueTarget.None,
+      targetPriority = ValueTarget.Both,
+      moveToValue: mValue = false,
     }: Partial<UpdateOptions> = {},
   ) {
     // 1. Normalization
@@ -493,7 +504,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       value,
       normalizedConfig,
       patch,
-      rangePriority,
+      targetPriority,
     );
 
     // Reset to previous value if it was cleared but is required
@@ -544,8 +555,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     if (fInput) formatInput();
 
     // 7. Move to range target if needed
-    if (mValue !== ValueTarget.None) {
-      nextTick(() => moveToValue(mValue));
+    if (mValue) {
+      nextTick(() => moveToValue(targetPriority));
     }
   }
 
@@ -566,10 +577,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function onInputUpdate(
     inputValue: string,
-    isStart: boolean,
+    target: ValueTarget,
     opts: Partial<UpdateOptions>,
   ) {
-    state.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
+    state.inputValues.splice(target - 1, 1, inputValue);
     const value = isRange.value
       ? {
           start: state.inputValues[0],
@@ -584,15 +595,15 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       ...opts,
       config,
       patch: inputMaskPatch.value,
-      rangePriority: isStart ? RangePriority.Start : RangePriority.End,
-      moveToValue: isStart ? ValueTarget.Start : ValueTarget.End,
+      targetPriority: target,
+      moveToValue: true,
     });
   }
 
-  function onInputInput(isStart: boolean) {
+  function onInputInput(target: ValueTarget) {
     return (e: InputEvent) => {
       if (!props.updateOnInput) return;
-      onInputUpdate((<HTMLInputElement>e.currentTarget).value, isStart, {
+      onInputUpdate((<HTMLInputElement>e.currentTarget).value, target, {
         formatInput: false,
         hidePopover: false,
         debounce: props.inputDebounce,
@@ -600,17 +611,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     };
   }
 
-  function onInputChange(isStart: boolean) {
+  function onInputChange(target: ValueTarget) {
     return (e: InputEvent) => {
-      onInputUpdate((<HTMLInputElement>e.currentTarget).value, isStart, {
+      onInputUpdate((<HTMLInputElement>e.currentTarget).value, target, {
         formatInput: true,
         hidePopover: false,
       });
     };
-  }
-
-  function onInputShow(isStart: boolean) {
-    moveToValue(isStart ? ValueTarget.Start : ValueTarget.End);
   }
 
   function onInputKeyup(e: KeyboardEvent) {
@@ -669,7 +676,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       updateValue(state.dragTrackingValue, {
         ...opts,
         dragging,
-        rangePriority: dragging ? RangePriority.None : RangePriority.Both,
+        targetPriority: dragging ? ValueTarget.None : ValueTarget.Both,
         hidePopover: opts.hidePopover && !dragging,
       });
     } else {
@@ -708,7 +715,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     updateValue(state.dragTrackingValue, {
       patch: DatePatch.Date,
       formatInput: true,
-      rangePriority: RangePriority.None,
+      targetPriority: ValueTarget.None,
     });
   }
 
@@ -741,15 +748,15 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     });
   }
 
-  function sortRange(range: any, priority = RangePriority.None) {
+  function sortRange(range: any, priority = ValueTarget.None) {
     const { start, end } = range;
     if (start > end) {
       switch (priority) {
-        case RangePriority.Start:
+        case ValueTarget.Start:
           return { start, end: start };
-        case RangePriority.End:
+        case ValueTarget.End:
           return { start: end, end };
-        case RangePriority.Both:
+        case ValueTarget.Both:
           return { start: end, end: start };
       }
     }
@@ -785,7 +792,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   ) {
     if (calendarRef.value == null || target === ValueTarget.None) return false;
     const { firstPage, lastPage, move } = calendarRef.value;
-    const start = target === ValueTarget.Start;
+    const start = target !== ValueTarget.End;
     const page = getPageForValue(start);
     const position = start ? 1 : -1;
     if (!page || pageIsBetweenPages(page, firstPage, lastPage)) return false;
