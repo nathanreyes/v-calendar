@@ -1,31 +1,94 @@
 <script>
+import { h } from 'vue';
 import Popover from '../Popover/Popover.vue';
-import DatePickerContent from './DatePickerContent.vue';
+import Calendar from '../Calendar/Calendar.vue';
+import TimePicker from '../TimePicker/TimePicker.vue';
 import { propsDef, emits, createDatePicker } from '../../use/datePicker';
 
 export default {
   name: 'DatePicker',
   inheritAttrs: false,
-  components: { Popover, DatePickerContent },
   emits,
   props: propsDef,
   setup(props, ctx) {
-    return createDatePicker(props, ctx);
+    const {
+      isTime,
+      isDateTime,
+      theme,
+      dateParts,
+      slotArgs,
+      datePickerPopoverId,
+      attributes,
+      elOrComp,
+      showCalendar,
+      onDayClick: onDayclick,
+      onDayMouseEnter: onDaymouseenter,
+      onDayKeydown: onDaykeydown,
+    } = createDatePicker(props, ctx);
+    const { slots, attrs } = ctx;
+
+    // Timepicker renderer
+    const timePicker = () => {
+      if (!dateParts.value) return null;
+      return dateParts.value.map((_, i) => h(TimePicker, { position: i }));
+    };
+
+    // Calendar renderer
+    const calendar = () => {
+      return h(
+        Calendar,
+        {
+          ...attrs,
+          attributes: attributes.value,
+          ref: elOrComp,
+          onDayclick,
+          onDaymouseenter,
+          onDaykeydown,
+        },
+        {
+          ...slots,
+          footer: isDateTime.value ? timePicker : slots.footer,
+        },
+      );
+    };
+
+    // Content renderer
+    const content = () => {
+      if (isTime.value) {
+        return h(
+          'div',
+          {
+            class: `vc-container vc-bordered vc${theme.color} vc-${theme.displayMode}`,
+          },
+          [timePicker()],
+        );
+      }
+      if (showCalendar.value) {
+        return calendar();
+      }
+      return undefined;
+    };
+
+    // Return content for no popover
+    if (!slots.default) return content;
+
+    // Return popover with nested content
+    return [
+      // Popover trigger
+      slots.default(slotArgs),
+      // Popover content
+      h(
+        Popover,
+        {
+          id: datePickerPopoverId.value,
+          placement: 'bottom-start',
+          class: `vc-date-picker-content vc-${theme.color} vc-${theme.displayMode}`,
+        },
+        {
+          default: content,
+        },
+      ),
+    ];
   },
 };
 </script>
-
-<template>
-  <template v-if="$slots.default">
-    <slot v-bind="slotArgs" />
-    <Popover
-      :id="datePickerPopoverId"
-      placement="bottom-start"
-      :class="`vc-date-picker-content vc-${theme.displayMode} vc-${theme.color}`"
-      ref="popover"
-    >
-      <DatePickerContent v-bind="$attrs" />
-    </Popover>
-  </template>
-  <DatePickerContent v-else v-bind="$attrs" />
-</template>
