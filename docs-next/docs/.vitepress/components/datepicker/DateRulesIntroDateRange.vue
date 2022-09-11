@@ -1,6 +1,8 @@
 <template>
   <DateDisplay v-model.range="range" :mode="mode" :rules="rules">
-    <DateModePicker v-model="mode" />
+    <template #header>
+      <DateModePicker v-model="mode" />
+    </template>
   </DateDisplay>
 </template>
 

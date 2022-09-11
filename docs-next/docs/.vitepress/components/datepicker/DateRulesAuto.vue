@@ -5,8 +5,10 @@
     :time-accuracy="timeAccuracy"
     rules="auto"
   >
-    <DateModePicker v-model="mode" />
-    <TimeAccuracyPicker v-model="timeAccuracy" />
+    <template #header>
+      <DateModePicker v-model="mode" />
+      <TimeAccuracyPicker v-model="timeAccuracy" />
+    </template>
   </DateDisplay>
 </template>
 

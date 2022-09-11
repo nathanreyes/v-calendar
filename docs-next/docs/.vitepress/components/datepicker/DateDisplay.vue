@@ -24,7 +24,7 @@
           </div>
         </template>
       </template>
-      <slot />
+      <slot name="header" />
     </div>
     <!--Date Picker-->
     <DatePicker v-bind="$attrs">
@@ -42,6 +42,9 @@
           </template>
           <BaseInput v-else :value="inputValue" v-on="inputEvents" />
         </slot>
+      </template>
+      <template v-for="(index, name) in $slots" v-slot:[name]="props">
+        <slot :name="name" v-bind="props" />
       </template>
     </DatePicker>
   </div>
