@@ -73,9 +73,9 @@ export default {
     if (!slots.default) return content;
 
     // Return popover with nested content
-    return [
+    return () => [
       // Popover trigger
-      slots.default(slotArgs),
+      slots.default(slotArgs.value),
       // Popover content
       h(
         Popover,
