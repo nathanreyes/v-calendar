@@ -1,5 +1,9 @@
 <template>
-  <DateDisplay v-model="date" :locale="locale" show-input />
+  <DateDisplay v-model="date" :locale="locale">
+    <template #default="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DateDisplay>
 </template>
 
 <script setup>

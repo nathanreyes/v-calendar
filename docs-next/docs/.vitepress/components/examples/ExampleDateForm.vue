@@ -10,7 +10,7 @@
         >Select Date</label
       >
       <div class="flex w-full">
-        <DatePicker v-model="date" class="flex-grow">
+        <DatePicker v-model="date" :popover="popover">
           <template v-slot="{ inputValue, inputEvents }">
             <input
               id="date"
@@ -51,5 +51,8 @@ const date = ref(null);
 const errorMessage = computed(() => {
   if (!date.value) return 'Date is required';
   return '';
+});
+const popover = ref({
+  visibility: 'hover',
 });
 </script>

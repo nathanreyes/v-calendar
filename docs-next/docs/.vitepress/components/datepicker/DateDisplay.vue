@@ -28,21 +28,6 @@
     </div>
     <!--Date Picker-->
     <DatePicker v-bind="$attrs">
-      <template
-        #default="{ inputValue, inputEvents, ...props }"
-        v-if="showInput"
-      >
-        <slot name="popover" v-bind="{ inputValue, inputEvents, ...props }">
-          <template v-if="isRange">
-            <div class="flex justify-center items-center">
-              <BaseInput :value="inputValue.start" v-on="inputEvents.start" />
-              <IconArrowRight />
-              <BaseInput :value="inputValue.end" v-on="inputEvents.end" />
-            </div>
-          </template>
-          <BaseInput v-else :value="inputValue" v-on="inputEvents" />
-        </slot>
-      </template>
       <template v-for="(index, name) in $slots" v-slot:[name]="props">
         <slot :name="name" v-bind="props" />
       </template>
@@ -55,9 +40,6 @@ import { ref, computed, watch } from 'vue';
 
 export default {
   inheritAttrs: false,
-  props: {
-    showInput: Boolean,
-  },
   setup(props, { attrs }) {
     const value = computed(() => {
       return attrs.modelValue;

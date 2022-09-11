@@ -1,8 +1,8 @@
 <template>
-  <DateDisplay v-model="date" show-input>
-    <!-- <template #default="{ inputValue, inputEvents }">
+  <DateDisplay v-model="date">
+    <template #default="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
-    </template> -->
+    </template>
   </DateDisplay>
 </template>
 

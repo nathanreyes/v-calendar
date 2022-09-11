@@ -1,5 +1,9 @@
 <template>
-  <DateDisplay v-model.range="range" show-input />
+  <DateDisplay v-model.range="range">
+    <template #default="props">
+      <BaseRangeInput v-bind="props" />
+    </template>
+  </DateDisplay>
 </template>
 
 <script setup>

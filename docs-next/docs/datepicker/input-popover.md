@@ -4,7 +4,7 @@ To display the picker as a popover, provide your own content as the default slot
 
 ## Date Input
 
-To allow for user date text entry, provide a custom `input` element as the default slot. `DatePicker` provides formatting, parsing and event handling out of the box via the following slot props:
+To support date text entry, provide a custom `input` element as the default slot. `DatePicker` provides formatting, parsing and event handling out of the box via the following slot props:
 
 - `inputValue`: The is the value you should bind to your input. This value will update as new dates are assigned and validated by the component.
 - `inputEvents`: These events include handlers for events that ultimately assign new dates and manage the appearance of the popover (as specified via the `popover` prop).
@@ -163,7 +163,7 @@ const masks = ref({
 </script>
 ```
 
-Please reference the [formatting & parsing section](./i18n/locales) for a complete list of available mask tokens.
+Please reference the [masks section](../i18n/masks#mask-tokens) for a complete list of available mask tokens.
 
 ## Custom Slot
 
@@ -172,6 +172,41 @@ Besides `input`s, other elements may be effectively used as the default slot.
 <Example centered>
   <DateCustomSlot />
 </Example>
+
+```vue
+<template>
+  <DateDisplay v-model="date" :popover="popover">
+    <template #popover="{ togglePopover, inputValue, inputEvents }">
+      <div
+        class="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden"
+      >
+        <button
+          class="popover-ref flex justify-center items-center px-2 bg-accent-100 hover:bg-accent-200 text-accent-700 border-r border-gray-300 dark:bg-gray-700 dark:text-accent-300 dark:border-gray-600 dark:hover:bg-gray-600"
+          @click="() => togglePopover({ refSelector: '.popover-ref' })"
+        >
+          <IconCalendar class="w-5 h-5" />
+        </button>
+        <input
+          :value="inputValue"
+          v-on="inputEvents"
+          class="flex-grow px-2 py-1 bg-white dark:bg-gray-700"
+        />
+      </div>
+    </template>
+  </DateDisplay>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const date = ref(new Date());
+const popover = ref({ visibility: 'hidden' });
+</script>
+```
+
+<BaseAlert>
+When choosing to control popover visibility, be sure to reset the input popover visibility to `hidden` to turn off input popover events.
+</BaseAlert>
 
 When doing so, there are other slot variables that you may use to further customize date selection behavior.
 
