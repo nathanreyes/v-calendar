@@ -652,7 +652,7 @@ Finally, if you wish to display indicators with your custom content, you can use
         :attribute="attr">
         {{ attr.customData.description }}
       </popover-row>
-    </template>
+    </div>
   </template>
 </v-calendar>
 ```
