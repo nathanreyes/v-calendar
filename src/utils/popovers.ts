@@ -1,6 +1,13 @@
-import { ComponentPublicInstance, Directive, DirectiveBinding } from 'vue';
-import { elementContains, on, createGuid } from './helpers';
+import {
+  ComponentPublicInstance,
+  Directive,
+  DirectiveBinding,
+  Ref,
+  watch,
+} from 'vue';
 import { Placement } from '@popperjs/core';
+import { elementContains, on, createGuid } from './helpers';
+import { pick } from './_';
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
 
@@ -9,6 +16,7 @@ export interface PopoverOptions {
   visibility: PopoverVisibility;
   isInteractive: boolean;
   autoHide: boolean;
+  force: boolean;
   ref?: HTMLElement | ComponentPublicInstance;
   refSelector: string;
   placement: Placement;
@@ -17,6 +25,25 @@ export interface PopoverOptions {
   renderFn: boolean;
   showDelay: number;
   hideDelay: number;
+}
+
+export interface PopoverState {
+  isVisible: boolean;
+  refSelector: string;
+  data: any;
+  transition: string;
+  placement: Placement;
+  direction: string;
+  positionFixed: false;
+  modifiers: any[];
+  isInteractive: boolean;
+  visibility: PopoverVisibility;
+  isHovered: boolean;
+  isFocused: boolean;
+  showDelay: number;
+  hideDelay: number;
+  autoHide: boolean;
+  force: boolean;
 }
 
 export interface PopoverEvent {
@@ -77,9 +104,10 @@ export function updatePopover(opts: Partial<PopoverOptions>) {
 
 export function hidePopover(opts: Partial<PopoverOptions>) {
   if (document) {
+    const detail = pick(opts, ['id', 'hideDelay', 'force']);
     document.dispatchEvent(
       new CustomEvent('hide-popover', {
-        detail: opts,
+        detail,
       }),
     );
   }
@@ -165,14 +193,19 @@ export function getPopoverEventHandlers(
   return handlers;
 }
 
-const removeHandlers = (el: any) => {
+const removeHandlers = (elOrComp: Element | ComponentPublicInstance) => {
+  const el = (elOrComp as ComponentPublicInstance).$el ?? elOrComp;
   const handlers = el.popoverHandlers;
   if (!handlers || !handlers.length) return;
   handlers.forEach((handler: Function) => handler());
   delete el.popoverHandlers;
 };
 
-const addHandlers = (el: any, opts: Partial<PopoverOptions>) => {
+const addHandlers = (
+  elOrComp: Element | ComponentPublicInstance,
+  opts: Partial<PopoverOptions>,
+) => {
+  const el = (elOrComp as ComponentPublicInstance).$el ?? elOrComp;
   const remove: Function[] = [];
   const handlers = getPopoverEventHandlers(opts);
   Object.entries(handlers).forEach(([event, handler]) => {
@@ -205,4 +238,22 @@ export const popoverDirective: Directive = {
   unmounted(el: Element) {
     removeHandlers(el);
   },
+};
+
+export const usePopover = (
+  ref: Ref<Element | ComponentPublicInstance | null>,
+  opts: Partial<PopoverOptions>,
+) => {
+  const cleanup = () => {
+    if (ref.value) removeHandlers(ref.value);
+    unwatch();
+  };
+  const unwatch = watch(
+    () => ref.value,
+    (val, oldVal) => {
+      if (oldVal != null) removeHandlers(oldVal);
+      if (val != null) addHandlers(val, opts);
+    },
+  );
+  return { cleanup };
 };

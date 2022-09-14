@@ -1,10 +1,8 @@
 <template>
-  <!-- <Teleport :to="teleportTo"> -->
   <div
     class="vc-popover-content-wrapper"
     :class="{ 'is-interactive': isInteractive }"
     ref="popoverRef"
-    teleport-to=".vc-grid-content"
     @click="onClick"
     @mouseover="onMouseOver"
     @mouseleave="onMouseLeave"
@@ -23,7 +21,6 @@
         v-if="isVisible"
         tabindex="-1"
         :class="`vc-popover-content direction-${direction}`"
-        :style="contentStyle"
         v-bind="$attrs"
       >
         <slot
@@ -45,7 +42,6 @@
       </div>
     </Transition>
   </div>
-  <!-- </Teleport> -->
 </template>
 
 <script lang="ts">
@@ -61,9 +57,8 @@ import {
   nextTick,
 } from 'vue';
 import {
-  State,
+  State as PopperState,
   Instance,
-  Placement,
   OptionsGeneric,
   PositioningStrategy,
   createPopper,
@@ -72,31 +67,9 @@ import { on, off, elementContains } from '../../utils/helpers';
 import { omit } from '../../utils/_';
 import {
   PopoverOptions,
-  PopoverVisibility,
+  PopoverState,
   PopoverEvent,
 } from '../../utils/popovers';
-
-interface PopoverState {
-  isVisible: boolean;
-  refSelector: string;
-  opts: PopoverOptions | null;
-  data: any;
-  transition: string;
-  transitionTranslate: string;
-  transitionDuration: string;
-  placement: Placement;
-  positionFixed: false;
-  modifiers: any[];
-  isInteractive: boolean;
-  visibility: PopoverVisibility;
-  isHovered: boolean;
-  isFocused: boolean;
-  showDelay: number;
-  hideDelay: number;
-  autoHide: boolean;
-  showing: boolean;
-  hiding: boolean;
-}
 
 export default defineComponent({
   name: 'Popover',
@@ -104,7 +77,6 @@ export default defineComponent({
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   props: {
     id: { type: String, required: true },
-    teleportTo: { type: String, default: '' },
     boundarySelector: { type: String },
   },
   setup(props, { emit }) {
@@ -116,12 +88,10 @@ export default defineComponent({
     const state = reactive<PopoverState>({
       isVisible: false,
       refSelector: '',
-      opts: null,
       data: null,
       transition: 'slide-fade',
-      transitionTranslate: '15px',
-      transitionDuration: '0.15s',
       placement: 'bottom',
+      direction: '',
       positionFixed: false,
       modifiers: [],
       isInteractive: true,
@@ -131,12 +101,13 @@ export default defineComponent({
       showDelay: 0,
       hideDelay: 110,
       autoHide: false,
-      showing: false,
-      hiding: false,
+      force: false,
     });
 
-    function onPopperUpdate(popperState: Partial<State>) {
-      if (popperState.placement) state.placement = popperState.placement;
+    function onPopperUpdate({ placement, options }: Partial<PopperState>) {
+      console.log('onPopperUpdate', placement, options);
+      placement ||= options?.placement;
+      if (placement) state.direction = placement.split('-')[0];
     }
 
     const popperOptions = computed<Partial<OptionsGeneric<any>>>(() => {
@@ -150,7 +121,7 @@ export default defineComponent({
           {
             name: 'onUpdate',
             enabled: true,
-            phase: 'afterWrite',
+            phase: 'main',
             fn: onPopperUpdate,
           },
           ...(state.modifiers || []),
@@ -176,27 +147,9 @@ export default defineComponent({
       // }
     });
 
-    function destroyPopper() {
-      if (popper) {
-        popper.destroy();
-        popper = null;
-      }
-    }
-
-    const contentStyle = computed(() => {
-      return {
-        '--vc-slide-translate': state.transitionTranslate,
-        '--vc-slide-duration': state.transitionDuration,
-      };
-    });
-
-    const direction = computed(() => {
-      return (state.placement && state.placement.split('-')[0]) || 'bottom';
-    });
-
     const alignment = computed(() => {
       const isLeftRight =
-        direction.value === 'left' || direction.value === 'right';
+        state.direction === 'left' || state.direction === 'right';
       let alignment = '';
       if (state.placement) {
         const parts = state.placement.split('-');
@@ -216,6 +169,13 @@ export default defineComponent({
       return document.querySelector(selector);
     }
 
+    function destroyPopper() {
+      if (popper) {
+        popper.destroy();
+        popper = null;
+      }
+    }
+
     function setupPopper() {
       nextTick(() => {
         const ref = getRef(state.refSelector);
@@ -231,44 +191,48 @@ export default defineComponent({
       });
     }
 
-    function clearState() {
-      state.showing = false;
-      state.hiding = false;
-      clearTimeout(timeout);
+    function updateState(newState: Partial<PopoverState>) {
+      Object.assign(state, omit(newState, ['id', 'force']));
     }
 
-    function show(opts: Partial<PopoverOptions> = {}) {
-      clearState();
-      state.showing = true;
-      const doShow = () => {
-        clearState();
-        Object.assign(state, omit(opts, ['id']), { isVisible: true });
-        setupPopper();
-      };
-      const { showDelay = state.showDelay } = opts;
-      if (showDelay > 0) {
-        timeout = setTimeout(() => doShow(), showDelay);
+    function setTimer(delay: number, fn: Function) {
+      clearTimeout(timeout);
+      if (delay > 0) {
+        timeout = setTimeout(fn, delay);
       } else {
-        doShow();
+        fn();
       }
+    }
+
+    async function show(opts: Partial<PopoverOptions> = {}) {
+      if (state.force) return;
+      if (opts.force) state.force = true;
+
+      setTimer(opts.showDelay ?? state.showDelay, () => {
+        if (state.isVisible) {
+          state.force = false;
+          emit('after-show');
+        }
+        updateState({
+          ...opts,
+          isVisible: true,
+        });
+        setupPopper();
+      });
     }
 
     function hide(opts: Partial<PopoverOptions> = {}) {
-      if (state.showing || state.hiding) return;
-      if (!opts.refSelector && state.showing) return;
       if (opts.refSelector && opts.refSelector !== state.refSelector) return;
-      const doHide = () => {
-        clearState();
-        Object.assign(state, omit(opts, ['id']), { isVisible: false });
-      };
-      clearState();
-      state.hiding = true;
-      const { hideDelay = state.hideDelay } = opts;
-      if (hideDelay > 0) {
-        timeout = setTimeout(doHide, hideDelay);
-      } else {
-        doHide();
-      }
+      if (state.force) return;
+      if (opts.force) state.force = true;
+
+      setTimer(opts.hideDelay ?? state.hideDelay, () => {
+        if (!state.isVisible) state.force = false;
+        updateState({
+          ...opts,
+          isVisible: false,
+        });
+      });
     }
 
     function toggle(opts: Partial<PopoverOptions> = {}) {
@@ -283,7 +247,7 @@ export default defineComponent({
     function update(opts: Partial<PopoverOptions> = {}) {
       const ref = getRef(opts.refSelector || state.refSelector);
       if (!popper || !ref) return;
-      Object.assign(state, omit(opts, ['id']));
+      updateState(opts);
       setupPopper();
     }
 
@@ -354,6 +318,7 @@ export default defineComponent({
     }
 
     function afterEnter(el: HTMLElement) {
+      state.force = false;
       emit('after-show', el);
     }
 
@@ -362,6 +327,8 @@ export default defineComponent({
     }
 
     function afterLeave(el: HTMLElement) {
+      state.force = false;
+      destroyPopper();
       emit('after-hide', el);
     }
 
@@ -440,8 +407,6 @@ export default defineComponent({
     return {
       ...toRefs(state),
       popoverRef,
-      contentStyle,
-      direction,
       alignment,
       hide,
       setupPopper,
