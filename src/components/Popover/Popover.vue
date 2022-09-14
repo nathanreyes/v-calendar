@@ -104,9 +104,12 @@ export default defineComponent({
       force: false,
     });
 
-    function onPopperUpdate({ placement, options }: Partial<PopperState>) {
-      placement ||= options?.placement;
+    function updateDirection(placement?: string) {
       if (placement) state.direction = placement.split('-')[0];
+    }
+
+    function onPopperUpdate({ placement, options }: Partial<PopperState>) {
+      updateDirection(placement || options?.placement);
     }
 
     const popperOptions = computed<Partial<OptionsGeneric<any>>>(() => {
@@ -120,7 +123,7 @@ export default defineComponent({
           {
             name: 'onUpdate',
             enabled: true,
-            phase: 'main',
+            phase: 'afterWrite',
             fn: onPopperUpdate,
           },
           ...(state.modifiers || []),
@@ -393,6 +396,10 @@ export default defineComponent({
         resizeObserver.observe(popoverRef.value);
       },
     );
+
+    watch(() => state.placement, updateDirection, {
+      immediate: true,
+    });
 
     onMounted(() => {
       addEvents();
