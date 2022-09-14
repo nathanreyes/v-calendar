@@ -105,7 +105,6 @@ export default defineComponent({
     });
 
     function onPopperUpdate({ placement, options }: Partial<PopperState>) {
-      console.log('onPopperUpdate', placement, options);
       placement ||= options?.placement;
       if (placement) state.direction = placement.split('-')[0];
     }
