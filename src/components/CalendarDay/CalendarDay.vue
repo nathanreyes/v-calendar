@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { PropType, defineComponent, computed, watch } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
 import { DayAttribute, PopoverConfig } from '../../utils/attribute';
@@ -60,7 +60,7 @@ import { last, get, defaults } from '../../utils/_';
 export default defineComponent({
   directives: { popover: popoverDirective },
   props: {
-    day: { type: Object, required: true },
+    day: { type: Object as PropType<CalendarDay>, required: true },
   },
   setup(props, { slots }) {
     const {
@@ -76,7 +76,7 @@ export default defineComponent({
       onDayKeydown,
     } = useCalendar();
 
-    const day = computed(() => props.day as CalendarDay);
+    const day = computed(() => props.day);
     const attributes = computed(() => dayAttributes.value[day.value.id] || []);
 
     function processPopover(
@@ -102,9 +102,10 @@ export default defineComponent({
     }
 
     const glyphs = computed<any>(() => {
-      const result = theme.prepareRender({
+      const result = {
+        ...theme.prepareRender({}),
         popovers: [],
-      });
+      };
       attributes.value.forEach(attr => {
         const dayContext = attr.dayDates[0].getDayContext(day.value);
         theme.render(attr, dayContext, result);
