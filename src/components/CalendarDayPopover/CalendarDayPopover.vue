@@ -28,18 +28,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import PopoverRow from '../PopoverRow/PopoverRow.vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
 
 const { dayPopoverId, theme, masks, locale } = useCalendar();
-const format = computed(() => {
-  return (date: Date, mask: string) => {
-    return locale.value.formatDate(date, mask);
-  };
-});
+
+function format(date: Date, mask: string) {
+  return locale.value.formatDate(date, mask);
+}
 
 function dayTitle(day: CalendarDay) {
   return locale.value.formatDate(day.date, masks.value.dayPopover);
