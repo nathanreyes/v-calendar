@@ -55,6 +55,7 @@ import {
   onUnmounted,
   defineComponent,
   nextTick,
+  ComponentPublicInstance,
 } from 'vue';
 import {
   State as PopperState,
@@ -63,7 +64,7 @@ import {
   PositioningStrategy,
   createPopper,
 } from '@popperjs/core';
-import { on, off, elementContains } from '../../utils/helpers';
+import { on, off, elementContains, resolveEl } from '../../utils/helpers';
 import { omit } from '../../utils/_';
 import {
   PopoverOptions,
@@ -87,7 +88,7 @@ export default defineComponent({
 
     const state = reactive<PopoverState>({
       isVisible: false,
-      refSelector: '',
+      target: null,
       data: null,
       transition: 'slide-fade',
       placement: 'bottom',
@@ -166,11 +167,6 @@ export default defineComponent({
       return isLeftRight ? 'middle' : 'center';
     });
 
-    function getRef(selector: string | undefined) {
-      if (!selector) return null;
-      return document.querySelector(selector);
-    }
-
     function destroyPopper() {
       if (popper) {
         popper.destroy();
@@ -180,13 +176,13 @@ export default defineComponent({
 
     function setupPopper() {
       nextTick(() => {
-        const ref = getRef(state.refSelector);
-        if (!ref || !popoverRef.value) return;
-        if (popper && popper.state.elements.reference !== ref) {
+        const el = resolveEl(state.target);
+        if (!el || !popoverRef.value) return;
+        if (popper && popper.state.elements.reference !== el) {
           destroyPopper();
         }
         if (!popper) {
-          popper = createPopper(ref, popoverRef.value, popperOptions.value);
+          popper = createPopper(el, popoverRef.value, popperOptions.value);
         } else {
           popper.update();
         }
@@ -204,6 +200,14 @@ export default defineComponent({
       } else {
         fn();
       }
+    }
+
+    function isCurrentTarget(
+      target: Element | ComponentPublicInstance | string | null | undefined,
+    ) {
+      if (!target || !popper) return false;
+      const el = resolveEl(target);
+      return el === popper.state.elements.reference;
     }
 
     async function show(opts: Partial<PopoverOptions> = {}) {
@@ -224,7 +228,9 @@ export default defineComponent({
     }
 
     function hide(opts: Partial<PopoverOptions> = {}) {
-      if (opts.refSelector && opts.refSelector !== state.refSelector) return;
+      if (!popper) return;
+      if (opts.target && !isCurrentTarget(opts.target)) return;
+
       if (state.force) return;
       if (opts.force) state.force = true;
 
@@ -238,8 +244,8 @@ export default defineComponent({
     }
 
     function toggle(opts: Partial<PopoverOptions> = {}) {
-      const refEl = getRef(opts.refSelector);
-      if (state.isVisible && refEl === popper?.state.elements.reference) {
+      if (opts.target == null) return;
+      if (state.isVisible && isCurrentTarget(opts.target)) {
         hide(opts);
       } else {
         show(opts);
@@ -247,8 +253,7 @@ export default defineComponent({
     }
 
     function update(opts: Partial<PopoverOptions> = {}) {
-      const ref = getRef(opts.refSelector || state.refSelector);
-      if (!popper || !ref) return;
+      if (!isCurrentTarget(opts.target)) return;
       updateState(opts);
       setupPopper();
     }

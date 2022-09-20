@@ -14,7 +14,9 @@ import {
   toRefs,
   inject,
   provide,
+  ComponentPublicInstance,
 } from 'vue';
+import Calendar from '../components/Calendar.vue';
 import { getDefault } from '../utils/defaults';
 import { CalendarDay } from '../utils/locale';
 import { AttributeConfig } from '../utils/attribute';
@@ -39,7 +41,7 @@ import {
   propsDef as basePropsDef,
   createBase,
 } from './base';
-import { CalendarContext, MoveTarget, MoveOptions } from './calendar';
+import { MoveTarget, MoveOptions } from './calendar';
 
 export type DateType = 'date' | 'string' | 'number';
 
@@ -183,7 +185,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     watchValue: true,
     datePickerPopoverId: createGuid(),
   });
-  const elOrComp = ref<HTMLElement | CalendarContext | null>(null);
+  const elOrComp = ref<HTMLElement | ComponentPublicInstance | null>(null);
   const baseCtx = createBase(props, ctx);
   const { locale, masks, disabledAttribute } = baseCtx;
 
@@ -253,17 +255,24 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return undefined;
   });
 
-  const popover = computed(() =>
-    defaultsDeep(props.popover, getDefault('datePicker.popover')),
+  const popover = computed(
+    () =>
+      defaultsDeep(
+        props.popover,
+        getDefault('datePicker.popover'),
+      ) as Partial<PopoverOptions>,
   );
 
-  const slotArgs = computed<DatePickerSlotProps>(() => {
-    const inputValue = isRange.value
+  const inputValue = computed(() => {
+    return isRange.value
       ? {
           start: state.inputValues[0],
           end: state.inputValues[1],
         }
       : state.inputValues[0];
+  });
+
+  const inputEvents = computed(() => {
     const events = [1, 2].map(target => ({
       input: onInputInput(target),
       change: onInputChange(target),
@@ -273,15 +282,18 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         id: state.datePickerPopoverId,
       }),
     }));
-    const inputEvents = isRange.value
+    return isRange.value
       ? {
           start: events[0],
           end: events[1],
         }
       : events[0];
+  });
+
+  const slotArgs = computed<DatePickerSlotProps>(() => {
     return {
-      inputValue,
-      inputEvents,
+      inputValue: inputValue.value,
+      inputEvents: inputEvents.value,
       isDragging,
       updateValue,
       showPopover,
@@ -444,7 +456,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
     return locale.value.normalizeDate(value, {
       ...config[0],
-      fillDate: state.value,
+      fillDate: state.value as Date,
       patch,
     });
   }
@@ -543,7 +555,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
 
     // 5. Hide popover if needed
-    if (hPopover) hidePopover();
+    if (hPopover && !dragging) hidePopover();
 
     // 6. Format inputs if needed
     if (fInput) formatInput();
@@ -646,12 +658,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function handleDayClick(day: CalendarDay) {
-    const { keepVisibleOnInput, visibility } = popover.value;
     const opts: Partial<UpdateOptions> = {
       patch: DatePatch.Date,
       formatInput: true,
-      hidePopover:
-        isDate.value && !keepVisibleOnInput && visibility !== 'visible',
+      hidePopover: true,
     };
     if (isRange.value) {
       const dragging = !isDragging.value;
@@ -664,7 +674,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         ...opts,
         dragging,
         targetPriority: dragging ? ValueTarget.None : ValueTarget.Both,
-        hidePopover: opts.hidePopover && !dragging,
       });
     } else {
       updateValue(day.date, {
@@ -708,7 +717,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function showPopover(opts: Partial<PopoverOptions> = {}) {
     sp({
-      ref: elOrComp.value,
+      target: elOrComp.value,
       ...popover.value,
       ...opts,
       isInteractive: true,
@@ -719,6 +728,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   function hidePopover(opts: Partial<PopoverOptions> = {}) {
     hp({
       hideDelay: 10,
+      force: true,
       ...popover.value,
       ...opts,
       id: state.datePickerPopoverId,
@@ -727,7 +737,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function togglePopover(opts: Partial<PopoverOptions>) {
     tp({
-      ref: elOrComp.value,
+      target: elOrComp.value,
       ...popover.value,
       ...opts,
       isInteractive: true,
@@ -765,7 +775,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   const calendarRef = computed(() => {
     if (elOrComp.value == null || elOrComp.value instanceof HTMLElement)
       return null;
-    return elOrComp.value as CalendarContext;
+    return elOrComp.value as InstanceType<typeof Calendar>;
   });
 
   async function move(target: MoveTarget, opts: Partial<MoveOptions> = {}) {
@@ -883,6 +893,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     rules,
     move,
     updateValue,
+    showPopover,
+    hidePopover,
+    togglePopover,
     onDayClick,
     onDayKeydown,
     onDayMouseEnter,
@@ -894,7 +907,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 export interface DatePickerContext
   extends ToRefs<DatePickerLocalState>,
     ToRefs<BaseContext> {
-  elOrComp: Ref<null | HTMLElement | CalendarContext>;
+  elOrComp: Ref<null | HTMLElement | InstanceType<typeof Calendar>>;
   isRange: Ref<boolean>;
   isTime: ComputedRef<boolean>;
   isDateTime: ComputedRef<boolean>;
@@ -912,6 +925,9 @@ export interface DatePickerContext
     opts: Partial<MoveOptions>,
   ) => Promise<boolean>;
   updateValue: (value: any, opts: Partial<UpdateOptions>) => Promise<void>;
+  showPopover: (opts?: Partial<PopoverOptions>) => void;
+  hidePopover: (opts?: Partial<PopoverOptions>) => void;
+  togglePopover: (opts: Partial<PopoverOptions>) => void;
   onDayClick: (day: CalendarDay, event: MouseEvent) => void;
   onDayKeydown: (day: CalendarDay, event: KeyboardEvent) => void;
   onDayMouseEnter: (day: CalendarDay, event: MouseEvent) => void;

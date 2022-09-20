@@ -1,4 +1,5 @@
-import { isArray, isFunction } from './_';
+import { ComponentPublicInstance } from 'vue';
+import { isArray, isFunction, isString } from './_';
 
 export interface PageAddress {
   day?: number;
@@ -109,6 +110,14 @@ export const pageIsEqualToPage = (
 
 export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
+
+export const resolveEl = (
+  target: Element | ComponentPublicInstance | string | null,
+): Element | null => {
+  if (target == null) return target;
+  if (document && isString(target)) return document.querySelector(target);
+  return (target as ComponentPublicInstance).$el ?? target;
+};
 
 export interface ElementPosition {
   top: number;

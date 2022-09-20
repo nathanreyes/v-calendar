@@ -6,7 +6,7 @@ import {
   watch,
 } from 'vue';
 import { Placement } from '@popperjs/core';
-import { elementContains, on, createGuid } from './helpers';
+import { elementContains, on, resolveEl } from './helpers';
 import { pick } from './_';
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
@@ -17,8 +17,7 @@ export interface PopoverOptions {
   isInteractive: boolean;
   autoHide: boolean;
   force: boolean;
-  ref?: HTMLElement | ComponentPublicInstance;
-  refSelector: string;
+  target: HTMLElement | ComponentPublicInstance | string | null;
   placement: Placement;
   modifiers: any;
   data: any;
@@ -29,7 +28,7 @@ export interface PopoverOptions {
 
 export interface PopoverState {
   isVisible: boolean;
-  refSelector: string;
+  target: HTMLElement | ComponentPublicInstance | string | null;
   data: any;
   transition: string;
   placement: Placement;
@@ -58,21 +57,8 @@ interface PopoverEventHandlers {
   focusout: (e: MouseEvent) => void;
 }
 
-const attributeName = 'data-popover-ref-id';
-
-const setRefSelector = (opts: Partial<PopoverOptions>) => {
-  if (opts.ref && !opts.refSelector) {
-    const el = (opts.ref as ComponentPublicInstance).$el || opts.ref;
-    const attributeValue = el.getAttribute(attributeName) || createGuid();
-    el.setAttribute(attributeName, attributeValue);
-    opts.refSelector = `[${attributeName}="${attributeValue}"]`;
-  }
-  delete opts.ref;
-};
-
 export function showPopover(opts: Partial<PopoverOptions>) {
   if (document) {
-    setRefSelector(opts);
     document.dispatchEvent(
       new CustomEvent('show-popover', {
         detail: opts,
@@ -81,9 +67,19 @@ export function showPopover(opts: Partial<PopoverOptions>) {
   }
 }
 
+export function hidePopover(opts: Partial<PopoverOptions>) {
+  if (document) {
+    const detail = pick(opts, ['id', 'hideDelay', 'force']);
+    document.dispatchEvent(
+      new CustomEvent('hide-popover', {
+        detail,
+      }),
+    );
+  }
+}
+
 export function togglePopover(opts: Partial<PopoverOptions>) {
   if (document) {
-    setRefSelector(opts);
     document.dispatchEvent(
       new CustomEvent('toggle-popover', {
         detail: opts,
@@ -97,17 +93,6 @@ export function updatePopover(opts: Partial<PopoverOptions>) {
     document.dispatchEvent(
       new CustomEvent('update-popover', {
         detail: opts,
-      }),
-    );
-  }
-}
-
-export function hidePopover(opts: Partial<PopoverOptions>) {
-  if (document) {
-    const detail = pick(opts, ['id', 'hideDelay', 'force']);
-    document.dispatchEvent(
-      new CustomEvent('hide-popover', {
-        detail,
       }),
     );
   }
@@ -127,8 +112,10 @@ export function getPopoverEventHandlers(
 
   const clickHandler = (e: MouseEvent) => {
     if (click) {
-      opts.ref = e.currentTarget as HTMLElement;
-      togglePopover(opts);
+      togglePopover({
+        ...opts,
+        target: opts.target || (e.currentTarget as HTMLElement),
+      });
       e.stopPropagation();
     }
   };
@@ -136,8 +123,10 @@ export function getPopoverEventHandlers(
     if (!hovered) {
       hovered = true;
       if (hover || hoverFocus) {
-        opts.ref = e.currentTarget as HTMLElement;
-        showPopover(opts);
+        showPopover({
+          ...opts,
+          target: opts.target || (e.currentTarget as HTMLElement),
+        });
       }
     }
   };
@@ -153,8 +142,10 @@ export function getPopoverEventHandlers(
     if (!focused) {
       focused = true;
       if (focus || hoverFocus) {
-        opts.ref = e.currentTarget as HTMLElement;
-        showPopover(opts);
+        showPopover({
+          ...opts,
+          target: opts.target || (e.currentTarget as HTMLElement),
+        });
       }
     }
   };
@@ -193,32 +184,33 @@ export function getPopoverEventHandlers(
   return handlers;
 }
 
-const removeHandlers = (elOrComp: Element | ComponentPublicInstance) => {
-  const el = (elOrComp as ComponentPublicInstance).$el ?? elOrComp;
-  const handlers = el.popoverHandlers;
+const removeHandlers = (target: Element | ComponentPublicInstance | string) => {
+  const el = resolveEl(target);
+  if (el == null) return;
+  const handlers = (el as any).popoverHandlers;
   if (!handlers || !handlers.length) return;
   handlers.forEach((handler: Function) => handler());
-  delete el.popoverHandlers;
+  delete (el as any).popoverHandlers;
 };
 
 const addHandlers = (
-  elOrComp: Element | ComponentPublicInstance,
+  target: Element | ComponentPublicInstance | string,
   opts: Partial<PopoverOptions>,
 ) => {
-  const el = (elOrComp as ComponentPublicInstance).$el ?? elOrComp;
+  const el = resolveEl(target);
+  if (el == null) return;
   const remove: Function[] = [];
   const handlers = getPopoverEventHandlers(opts);
   Object.entries(handlers).forEach(([event, handler]) => {
     remove.push(on(el, event, handler as EventListener));
   });
-  el.popoverHandlers = remove;
+  (el as any).popoverHandlers = remove;
 };
 
 export const popoverDirective: Directive = {
   mounted(el: any, binding: DirectiveBinding<PopoverOptions>) {
     const { value } = binding;
     if (!value) return;
-    value.ref = el;
     addHandlers(el, value);
   },
   updated(el: any, binding: DirectiveBinding<PopoverOptions>) {
@@ -241,7 +233,7 @@ export const popoverDirective: Directive = {
 };
 
 export const usePopover = (
-  ref: Ref<Element | ComponentPublicInstance | null>,
+  ref: Ref<Element | ComponentPublicInstance | string | null>,
   opts: Partial<PopoverOptions>,
 ) => {
   const cleanup = () => {
