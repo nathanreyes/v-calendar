@@ -231,21 +231,3 @@ export const popoverDirective: Directive = {
     removeHandlers(el);
   },
 };
-
-export const usePopover = (
-  ref: Ref<Element | ComponentPublicInstance | string | null>,
-  opts: Partial<PopoverOptions>,
-) => {
-  const cleanup = () => {
-    if (ref.value) removeHandlers(ref.value);
-    unwatch();
-  };
-  const unwatch = watch(
-    () => ref.value,
-    (val, oldVal) => {
-      if (oldVal != null) removeHandlers(oldVal);
-      if (val != null) addHandlers(val, opts);
-    },
-  );
-  return { cleanup };
-};
