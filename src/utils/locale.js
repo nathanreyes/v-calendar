@@ -523,7 +523,18 @@ export default class Locale {
     );
   }
 
-  getMinuteOptions(minuteIncrement) {
+  minuteIsValid(minute, validMinutes, dateParts) {
+    if (!validMinutes) return true;
+    if (isArray(validMinutes)) return validMinutes.includes(minute);
+    if (isObject(validMinutes)) {
+      const min = validMinutes.min || 0;
+      const max = validMinutes.max || 59;
+      return min <= minute && max >= minute;
+    }
+    return validMinutes(minute, dateParts);
+  }
+
+  getMinuteOptions(validMinutes, minuteIncrement, dateParts) {
     const options = [];
     minuteIncrement = minuteIncrement > 0 ? minuteIncrement : 1;
     for (let i = 0; i <= 59; i += minuteIncrement) {
@@ -532,7 +543,9 @@ export default class Locale {
         label: pad(i, 2),
       });
     }
-    return options;
+    return options.filter(opt =>
+      this.minuteIsValid(opt.value, validMinutes, dateParts),
+    );
   }
 
   nearestOptionValue(value, options) {

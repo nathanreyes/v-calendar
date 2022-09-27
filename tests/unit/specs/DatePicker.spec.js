@@ -177,6 +177,25 @@ describe('DatePicker', () => {
     //   const hours = [8, 9, 10, 11, 12];
     //   checkValidHours(prop, hours);
     // });
+
+
+    it(':valid-minutes - limits minutes to array', async () => {
+      const minutes = [0, 3, 5, 8, 10, 11, 15, 19, 23];
+      checkValidMinutes(minutes, minutes);
+    });
+
+    it(':valid-minutes - limits minutes to min/max', async () => {
+      const prop = { min: 4, max: 15 };
+      const minutes = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+      checkValidMinutes(prop, minutes);
+    });
+
+    it(':valid-minutes - limits minutes to function', async () => {
+      const prop = (minute, { weekday }) =>
+        ![1, 7].includes(weekday) || (minute >= 0 && minute <= 5);
+      const minutes = [0, 1, 2, 3, 4, 5];
+      checkValidMinutes(prop, minutes);
+    });
   });
 });
 
@@ -196,6 +215,25 @@ async function checkValidHours(prop, hours) {
   expect(options.length).toEqual(hours.length);
   hours.forEach((hour, i) => {
     expect(options[i].value).toEqual(hour.toString());
+  });
+}
+
+async function checkValidMinutes(prop, minutes) {
+  const dp = mount(DatePicker, {
+    props: {
+      modelValue: new Date(2000, 0, 15),
+      mode: 'dateTime',
+      is24hr: true,
+      validMinutes: prop,
+    },
+  });
+  await dp.vm.$nextTick();
+  await dp.vm.$nextTick();
+  const selector = dp.find('.vc-select:nth-of-type(2) select');
+  const options = selector.element.options;
+  expect(options.length).toEqual(minutes.length);
+  minutes.forEach((minute, i) => {
+    expect(options[i].value).toEqual(minute.toString());
   });
 }
 

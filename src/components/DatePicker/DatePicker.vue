@@ -78,6 +78,7 @@ export default {
                 dp,
               );
               const minuteOptions = this.$locale.getMinuteOptions(
+                this.modelConfig_[idx].validMinutes,
                 this.modelConfig_[idx].minuteIncrement,
                 dp,
               );
@@ -185,6 +186,7 @@ export default {
     selectAttribute: Object,
     attributes: Array,
     validHours: [Object, Array, Function],
+    validMinutes: [Object, Array, Function],
   },
   data() {
     return {
@@ -561,6 +563,7 @@ export default {
         : [config.start || config, config.end || config];
       return baseConfig.map((b, i) => ({
         validHours: this.validHours,
+        validMinutes: this.validMinutes,
         minuteIncrement: this.minuteIncrement,
         ...b,
         ...config[i],
