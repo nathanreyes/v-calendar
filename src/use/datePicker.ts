@@ -14,13 +14,19 @@ import {
   toRefs,
   inject,
   provide,
-  ComponentPublicInstance,
 } from 'vue';
 import Calendar from '../components/Calendar.vue';
+import Popover from '../components/Popover.vue';
 import { getDefault } from '../utils/defaults';
 import { CalendarDay } from '../utils/locale';
 import { AttributeConfig } from '../utils/attribute';
-import { createGuid, pageIsBetweenPages, on, off } from '../utils/helpers';
+import {
+  createGuid,
+  pageIsBetweenPages,
+  on,
+  off,
+  elementContains,
+} from '../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../utils/_';
 import {
   DatePatch,
@@ -126,7 +132,7 @@ interface DatePickerProps extends BaseProps {
   isRange: boolean;
   updateOnInput: boolean;
   inputDebounce: number;
-  popover: Partial<PopoverOptions>;
+  popover: boolean | Partial<PopoverOptions>;
   dragAttribute: any;
   selectAttribute: any;
   attributes: AttributeConfig[];
@@ -154,7 +160,7 @@ export const propsDef = {
     default: () => getDefault('datePicker.inputDebounce'),
   },
   popover: {
-    type: Object as PropType<Partial<PopoverOptions>>,
+    type: [Boolean, Object as PropType<Partial<PopoverOptions>>],
     default: () => ({}),
   },
   dragAttribute: Object,
@@ -185,7 +191,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     watchValue: true,
     datePickerPopoverId: createGuid(),
   });
-  const elOrComp = ref<HTMLElement | ComponentPublicInstance | null>(null);
+  const popoverRef = ref<InstanceType<typeof Popover> | null>(null);
+  const calendarRef = ref<InstanceType<typeof Calendar> | null>(null);
   const baseCtx = createBase(props, ctx);
   const { locale, masks, disabledAttribute } = baseCtx;
 
@@ -255,13 +262,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return undefined;
   });
 
-  const popover = computed(
-    () =>
-      defaultsDeep(
-        props.popover,
-        getDefault('datePicker.popover'),
-      ) as Partial<PopoverOptions>,
-  );
+  const popover = computed(() => {
+    if (props.popover === false) return null;
+    const target = popoverRef.value?.$el.previousElementSibling ?? undefined;
+    return defaultsDeep({}, props.popover, getDefault('datePicker.popover'), {
+      target,
+    }) as Partial<PopoverOptions>;
+  });
 
   const inputValue = computed(() => {
     return isRange.value
@@ -277,10 +284,11 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       input: onInputInput(target),
       change: onInputChange(target),
       keyup: onInputKeyup,
-      ...getPopoverEventHandlers({
-        ...popover.value,
-        id: state.datePickerPopoverId,
-      }),
+      ...(popover.value &&
+        getPopoverEventHandlers({
+          ...popover.value,
+          id: state.datePickerPopoverId,
+        })),
     }));
     return isRange.value
       ? {
@@ -719,7 +727,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function showPopover(opts: Partial<PopoverOptions> = {}) {
     sp({
-      target: elOrComp.value,
       ...popover.value,
       ...opts,
       isInteractive: true,
@@ -739,7 +746,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function togglePopover(opts: Partial<PopoverOptions>) {
     tp({
-      target: elOrComp.value,
       ...popover.value,
       ...opts,
       isInteractive: true,
@@ -773,12 +779,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
     return null;
   }
-
-  const calendarRef = computed(() => {
-    if (elOrComp.value == null || elOrComp.value instanceof HTMLElement)
-      return null;
-    return elOrComp.value as InstanceType<typeof Calendar>;
-  });
 
   async function move(target: MoveTarget, opts: Partial<MoveOptions> = {}) {
     if (calendarRef.value == null) return false;
@@ -879,7 +879,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   const context = {
     ...baseCtx,
     ...toRefs(state),
-    elOrComp,
+    popoverRef,
     calendarRef,
     isRange: toRef(props, 'isRange'),
     isTime,
@@ -909,7 +909,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 export interface DatePickerContext
   extends ToRefs<DatePickerLocalState>,
     ToRefs<BaseContext> {
-  elOrComp: Ref<null | HTMLElement | InstanceType<typeof Calendar>>;
+  popoverRef: Ref<InstanceType<typeof Popover> | null>;
+  calendarRef: Ref<InstanceType<typeof Calendar> | null>;
   isRange: Ref<boolean>;
   isTime: ComputedRef<boolean>;
   isDateTime: ComputedRef<boolean>;

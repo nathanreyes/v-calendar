@@ -11,6 +11,9 @@ export default {
   emits,
   props: propsDef,
   setup(props, ctx) {
+    const datePicker = createDatePicker(props, ctx);
+    const { slots, attrs } = ctx;
+
     const {
       isTime,
       isDateTime,
@@ -19,13 +22,13 @@ export default {
       slotArgs,
       datePickerPopoverId,
       attributes,
-      elOrComp,
+      calendarRef,
+      popoverRef,
       showCalendar,
       onDayClick: onDayclick,
       onDayMouseEnter: onDaymouseenter,
       onDayKeydown: onDaykeydown,
-    } = createDatePicker(props, ctx);
-    const { slots, attrs } = ctx;
+    } = datePicker;
 
     // Timepicker renderer
     const timePicker = () => {
@@ -35,12 +38,13 @@ export default {
 
     // Calendar renderer
     const calendar = () => {
+      if (!dateParts.value) return null;
       return h(
         Calendar,
         {
           ...attrs,
           attributes: attributes.value,
-          ref: elOrComp,
+          ref: calendarRef,
           onDayclick,
           onDaymouseenter,
           onDaykeydown,
@@ -83,6 +87,7 @@ export default {
           id: datePickerPopoverId.value,
           placement: 'bottom-start',
           class: `vc-date-picker-content vc-${theme.color} vc-${theme.displayMode}`,
+          ref: popoverRef,
         },
         {
           default: content,
