@@ -653,6 +653,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function onDocumentClick(e: MouseEvent) {
+    const cal = calendarRef.value?.containerRef;
+    if (cal && elementContains(cal, e.target as Node)) return;
     state.dragValue = null;
     formatInput();
   }
