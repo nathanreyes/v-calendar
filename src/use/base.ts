@@ -1,10 +1,10 @@
-import { PropType, ComputedRef, toRef, computed, provide, inject } from 'vue';
+import { PropType, ComputedRef, computed, provide, inject, toRef } from 'vue';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/_';
 import { Theme, useTheme } from './theme';
-import { DarkModeConfig, DarkModeConfigObj } from './darkMode';
+import { DarkModeConfig, DarkModeClassConfig } from 'vue-screen-utils';
 
 export interface BaseProps {
   color: string;
@@ -30,7 +30,7 @@ export const propsDef = {
     default: () => getDefault('color'),
   },
   isDark: {
-    type: [Boolean, String, Object as PropType<DarkModeConfigObj>],
+    type: [Boolean, String, Object as PropType<DarkModeClassConfig>],
     default: () => getDefault('isDark'),
   },
   firstDayOfWeek: Number,
@@ -48,7 +48,8 @@ export const propsDef = {
 export function createBase(props: BaseProps, ctx: any) {
   // #region Computed
 
-  const theme = useTheme(toRef(props, 'color'), toRef(props, 'isDark'));
+  const isDark = computed(() => props.isDark ?? false);
+  const theme = useTheme(toRef(props, 'color'), isDark);
 
   const locale = computed(() => {
     // Return the locale prop if it is an instance of the Locale class

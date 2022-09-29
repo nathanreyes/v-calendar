@@ -1,5 +1,6 @@
 import { reactive, Ref } from 'vue';
 import { DayAttribute } from '../utils/attribute';
+import { DarkModeConfig, useDarkMode } from 'vue-screen-utils';
 import { DateInfoDayContext } from '../utils/dateInfo';
 import {
   GlyphRenderer,
@@ -9,12 +10,6 @@ import {
   DotRenderer,
   BarRenderer,
 } from '../utils/glyph';
-import { DarkModeConfig, useDarkMode } from './darkMode';
-
-export interface ThemeConfig {
-  color?: string;
-  isDark?: DarkModeConfig;
-}
 
 export type Glyphs = Record<string, Glyph[]>;
 

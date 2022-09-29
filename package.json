@@ -42,12 +42,13 @@
     "lint": "eslint . --ext .js,.vue"
   },
   "dependencies": {
-    "@popperjs/core": "2.4.0",
+    "@popperjs/core": "2.9.0",
     "@types/lodash": "^4.14.165",
     "@types/resize-observer-browser": "^0.1.7",
     "date-fns": "^2.16.1",
     "date-fns-tz": "^1.0.12",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "vue-screen-utils": "^1.0.0-beta.9"
   },
   "peerDependencies": {
     "vue": "^3.2.0"
