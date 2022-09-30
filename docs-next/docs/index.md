@@ -1,5 +1,5 @@
 ---
-title: V-Calendar
+title: VCalendar
 layout: page
 ---
 

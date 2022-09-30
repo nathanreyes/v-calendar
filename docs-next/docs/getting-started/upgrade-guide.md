@@ -4,7 +4,11 @@ title: 'Upgrade Guide'
 
 # Upgrade Guide
 
-This document outlines how to upgrade V-Calendar from v2 to v3.
+This document outlines how to upgrade VCalendar from v2 to v3.
+
+Some changes introduced in versions previous to `3.0.0-alpha.8` have also been rolled back. They will be noted with the following warning:
+
+<BaseAlert title="Pre 3.0.0-alpha.8" warning />
 
 ## New Component Prefix
 
@@ -30,7 +34,7 @@ The included screens mixin that supplied the `$screens` function has been remove
 
 ### Deprecated `from-page`, `to-page`, `from-date`, and `to-date` props
 
-Use the `initial-page` and `initial-page-position` props to correctly initial the starting month for a calendar or date picker.
+Use the `initial-page` and `initial-page-position` props to correctly set the current months for a calendar.
 
 ### Deprecated Highlight Fill Mode
 
@@ -40,14 +44,18 @@ The `none` option for `attribute.highlight.fillMode` has been deprecated in favo
 
 ### Deprecate `modelConfig` prop
 
-To bind to numbers or strings, use the `number` and `string` model modifiers in favor of the `modelConfig` prop. Provide the `masks.modelValue` prop is a string mask is needed. More details [here](../datepicker/basics#string-dates).
+To bind to numbers or strings, use the `number` and `string` model modifiers in favor of the `modelConfig` prop. Provide the `masks.modelValue` prop if a string mask is desired.
+
+[Click here](../datepicker/basics#string-dates) for more details.
 
 ### Soft-Deprecate `is-range`
 
 To bind to date ranges, use the `range` model modifier. More details [here](../datepicker/basics#date-range).
 
-## Pre-Alpha v8
+### Deprecate `minute-increment` and `valid-hours` props
 
-<BaseAlert warning>
-Used in versions previous to v3.0-beta.0, the `minute-increment` and `valid-hours` props have been deprecated in favor of using `rules`.
-</BaseAlert>
+<BaseAlert warning title="Pre 3.0.0-alpha.8" />
+
+The `minute-increment` and `valid-hours` props have been deprecated in favor of using the `rules` prop.
+
+[Click here](../datepicker/time-rules) for more details.

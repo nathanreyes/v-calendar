@@ -154,7 +154,6 @@ export const propsDef = {
   },
   popover: {
     type: [Boolean, Object as PropType<Partial<PopoverOptions>>],
-    default: () => ({}),
   },
   dragAttribute: Object,
   selectAttribute: Object,
@@ -273,7 +272,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   });
 
   const popover = computed(() => {
-    if (props.popover === false) return null;
     const target = popoverRef.value?.$el.previousElementSibling ?? undefined;
     return defaultsDeep({}, props.popover, getDefault('datePicker.popover'), {
       target,

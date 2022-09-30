@@ -1,12 +1,12 @@
 <template>
-  <DateDisplay v-model="date" :popover="popover">
+  <DateDisplay v-model="date" :popover="false">
     <template #default="{ togglePopover, inputValue, inputEvents }">
       <div
         class="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden"
       >
         <button
-          class="popover-ref flex justify-center items-center px-2 bg-accent-100 hover:bg-accent-200 text-accent-700 border-r border-gray-300 dark:bg-gray-700 dark:text-accent-300 dark:border-gray-600 dark:hover:bg-gray-600"
-          @click="() => togglePopover({ refSelector: '.popover-ref' })"
+          class="flex justify-center items-center px-2 bg-accent-100 hover:bg-accent-200 text-accent-700 border-r border-gray-300 dark:bg-gray-700 dark:text-accent-300 dark:border-gray-600 dark:hover:bg-gray-600"
+          @click="() => togglePopover()"
         >
           <IconCalendar class="w-5 h-5" />
         </button>
@@ -22,5 +22,4 @@
 <script setup>
 import { ref } from 'vue';
 const date = ref(new Date());
-const popover = ref({ visibility: 'hidden' });
 </script>

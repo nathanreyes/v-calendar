@@ -98,7 +98,3 @@ Then, all you need to do is reference your locale when using the calendar compon
 <Example centered>
   <Calendar locale="pt-PT" />
 </Example>
-
-## Mask Targets & Tokens
-
-Refer to the [masks](./masks) page for more details.

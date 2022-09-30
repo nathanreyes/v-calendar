@@ -2,7 +2,7 @@
 
 ## Dark Mode
 
-V-Calendar supports a variety of dark mode strategies to ensure compatibility with your application. They are all configured by the `is-dark` prop.
+VCalendar supports a variety of dark mode strategies to ensure compatibility with your application. They are all configured by the `is-dark` prop.
 
 ### Manual Strategy
 
@@ -150,7 +150,7 @@ const attrs = ref([
 </template>
 ```
 
-### Editing an existing color
+### Replace an existing color
 
 We can also use the same approach to update an existing color. For example, we may want to override the built-in blue color with sky blue.
 

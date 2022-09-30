@@ -1,7 +1,10 @@
 <template>
   <Example centered>
-    <TimezonePicker v-model="timezone" />
-    <DatePicker mode="dateTime" v-model.range="range" :timezone="timezone" />
+    <DateDisplay mode="dateTime" v-model.range="range" :timezone="timezone">
+      <template #header>
+        <TimezonePicker v-model="timezone" />
+      </template>
+    </DateDisplay>
   </Example>
 </template>
 

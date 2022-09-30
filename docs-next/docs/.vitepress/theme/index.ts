@@ -1,14 +1,18 @@
 import DefaultTheme from 'vitepress/theme';
+import { ComponentOptions } from 'vue';
 import VCalendar from '@/../../src';
 import './index.css';
 
 // Autoregister components
-const modules = import.meta.globEager('../components/**/*.vue');
+const modules = import.meta.glob('../components/**/*.vue', {
+  eager: true,
+  import: 'default',
+});
 const components: any[] = [];
 for (const path in modules) {
   const pathParts = path.split('/');
   const defName = pathParts[pathParts.length - 1].split('.')[0];
-  const component = modules[path].default;
+  const component = modules[path] as ComponentOptions;
   component.name ||= defName;
   components.push(component);
 }

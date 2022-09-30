@@ -1,8 +1,10 @@
-# Input Popover
+# Slot Content
 
-To display the picker as a popover, provide your own content as the default slot. Most often this will be an `input` element.
+## Default slot
 
-## Date Input
+When a default slot is used with `DatePicker`, that slot content will display instead of the calendar picker.
+
+## Input element
 
 To support date text entry, provide a custom `input` element as the default slot. `DatePicker` provides formatting, parsing and event handling out of the box via the following slot props:
 
@@ -28,7 +30,7 @@ const date = ref(new Date());
 </script>
 ```
 
-## Range Inputs
+### Range Inputs
 
 When binding to a date range and providing custom `input` elements, the `inputValue` and `inputEvents` are split into separate `start` and `end` sub-properties. 
 
@@ -59,7 +61,7 @@ const range = ref({
 </script>
 ```
 
-## Debounce
+### Debounce
 
 Use the `input-debounce` prop (in milliseconds) to set a custom debounce duration. This example makes the input a little more responsive to text input by using a debounce of `500ms` rather than the default `1000ms`.
 
@@ -82,7 +84,7 @@ const date = ref(new Date());
 </script>
 ```
 
-## Disable Update On Input
+### Disable Update On Input
 
 To completely disable value updates as the user types, set the `update-on-input` prop to false. This will defer updates until the input's `change` event occurs.
 
@@ -105,9 +107,9 @@ const date = ref(new Date());
 </script>
 ```
 
-## Input Format
+### Input Format
 
-### Locale
+#### Locale
 
 By default, the browser's detected locale will be used to format and parse the input text.
 
@@ -137,7 +139,7 @@ locale.value = await api.getUserLocale();
 </script>
 ```
 
-### Mask
+#### Mask
 
 Alternatively, if you wish to keep the locale, but just override the locale's input format, provide a custom mask via  the `masks.input` prop.
 
@@ -165,9 +167,22 @@ const masks = ref({
 
 Please reference the [masks section](../i18n/masks#mask-tokens) for a complete list of available mask tokens.
 
-## Custom Slot
+## Popover
 
-Besides `input`s, other elements may be effectively used as the default slot.
+### Default behavior
+
+The `popover` prop determines how popover events are included in the `inputEvents` slot prop. If this prop is `true` (default), and the `inputEvents` have been properly bound to an `input` element, then the popover will display as the user interacts with the input popover.
+
+### Custom behavior
+
+The `popover` prop also accepts an object with custom popover settings.
+
+### Manual Control
+
+You may choose to not bind popover behavior to the `inputEvents`, or you may not be using an `input` element at all. In that case, you can manually show/hide the popover by using the provided slot prop functions. 
+
+1. Assign a falsy value to the `popover` prop.
+2. Extract the relevant popover methods needed (`togglePopover`, `showPopover`, `hidePopover`) to show/hide the popover manually.
 
 <Example centered>
   <DateCustomSlot />
@@ -175,14 +190,14 @@ Besides `input`s, other elements may be effectively used as the default slot.
 
 ```vue
 <template>
-  <DateDisplay v-model="date" :popover="popover">
-    <template #popover="{ togglePopover, inputValue, inputEvents }">
+  <DatePicker v-model="date" :popover="false">
+    <template #default="{ togglePopover, inputValue, inputEvents }">
       <div
         class="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden"
       >
         <button
-          class="popover-ref flex justify-center items-center px-2 bg-accent-100 hover:bg-accent-200 text-accent-700 border-r border-gray-300 dark:bg-gray-700 dark:text-accent-300 dark:border-gray-600 dark:hover:bg-gray-600"
-          @click="() => togglePopover({ refSelector: '.popover-ref' })"
+          class="flex justify-center items-center px-2 bg-accent-100 hover:bg-accent-200 text-accent-700 border-r border-gray-300 dark:bg-gray-700 dark:text-accent-300 dark:border-gray-600 dark:hover:bg-gray-600"
+          @click="() => togglePopover()"
         >
           <IconCalendar class="w-5 h-5" />
         </button>
@@ -193,20 +208,15 @@ Besides `input`s, other elements may be effectively used as the default slot.
         />
       </div>
     </template>
-  </DateDisplay>
+  </DatePicker>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
 const date = ref(new Date());
-const popover = ref({ visibility: 'hidden' });
 </script>
 ```
-
-<BaseAlert>
-When choosing to control popover visibility, be sure to reset the input popover visibility to `hidden` to turn off input popover events.
-</BaseAlert>
 
 When doing so, there are other slot variables that you may use to further customize date selection behavior.
 
@@ -230,22 +240,21 @@ interface UpdateOptions {
   moveToValue: boolean, // Side effect: Move calendar to display updated value, Default: false
 }
 
-interface PopoverOptions {
-  visibility: PopoverVisibility;
-  isInteractive: boolean;
-  autoHide: boolean;
-  ref?: HTMLElement | ComponentPublicInstance;
-  refSelector: string;
-  placement: Placement;
-  modifiers: any;
-  showDelay: number;
-  hideDelay: number;
-}
-
 enum DatePatch {
   DateTime = 0,
   Date,
   Time,
+}
+
+interface PopoverOptions {
+  visibility: PopoverVisibility;
+  isInteractive: boolean;
+  autoHide: boolean;
+  target: string | HTMLElement | ComponentPublicInstance;
+  placement: Placement;
+  modifiers: any;
+  showDelay: number;
+  hideDelay: number;
 }
 ```
 

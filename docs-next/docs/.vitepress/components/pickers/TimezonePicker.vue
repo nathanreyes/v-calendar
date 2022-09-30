@@ -11,7 +11,7 @@ const options = ref([
     label: 'Local',
   },
   {
-    value: 'utc',
+    value: 'UTC',
     label: 'UTC',
   },
 ]);

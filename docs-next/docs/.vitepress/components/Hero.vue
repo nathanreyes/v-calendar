@@ -3,7 +3,7 @@
     <div class="flex space-x-16">
       <div>
         <h1 class="text-5xl font-bold text-accent-600 dark:text-accent-400">
-          V-Calendar
+          VCalendar
         </h1>
         <p class="text-5xl font-bold text-gray-800 dark:text-gray-100 mt-4">
           A calendar and date picker plugin for Vue.js.

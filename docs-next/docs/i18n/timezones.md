@@ -84,7 +84,7 @@ const range = {
 
 ## Time Rules
 
-Similarly, if `rules` are provided, then the assigned time will reflect the assigned `timezone`, or the local browser's timezone otherwise.
+Assigned `rules` will respect the assigned `timezone`, or the local browser's timezone otherwise.
 
 <Example centered>
   <TimezonesRules />
