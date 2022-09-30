@@ -8,7 +8,6 @@ import {
   reactive,
   watch,
   onMounted,
-  onBeforeUnmount,
   nextTick,
   toRef,
   toRefs,
@@ -20,13 +19,7 @@ import Popover from '../components/Popover.vue';
 import { getDefault } from '../utils/defaults';
 import { CalendarDay } from '../utils/locale';
 import { AttributeConfig } from '../utils/attribute';
-import {
-  createGuid,
-  pageIsBetweenPages,
-  on,
-  off,
-  elementContains,
-} from '../utils/helpers';
+import { createGuid, pageIsBetweenPages } from '../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../utils/_';
 import {
   DatePatch,
@@ -195,6 +188,23 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   const calendarRef = ref<InstanceType<typeof Calendar> | null>(null);
   const baseCtx = createBase(props, ctx);
   const { locale, masks, disabledAttribute } = baseCtx;
+
+  function onPopoverBeforeShow(el: HTMLElement) {
+    emit('popover-will-show', el);
+  }
+
+  function onPopoverAfterShow(el: HTMLElement) {
+    emit('popover-did-show', el);
+  }
+
+  function onPopoverBeforeHide(el: HTMLElement) {
+    cancelDrag();
+    emit('popover-will-hide', el);
+  }
+
+  function onPopoverAfterHide(el: HTMLElement) {
+    emit('popover-did-hide', el);
+  }
 
   // #region Computed
 
@@ -660,9 +670,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
   }
 
-  function onDocumentClick(e: MouseEvent) {
-    const cal = calendarRef.value?.containerRef;
-    if (cal && elementContains(cal, e.target as Node)) return;
+  function cancelDrag() {
     state.dragValue = null;
     formatInput();
   }
@@ -854,20 +862,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   onMounted(() => {
     // Handle escape key presses
-    on(document, 'keydown', onDocumentKeyDown);
-    // Clear drag on background click
-    on(document, 'click', onDocumentClick);
-
     forceUpdateValue(props.modelValue, {
       formatInput: true,
       hidePopover: false,
     });
-  });
-
-  onBeforeUnmount(() => {
-    // Clean up handlers
-    off(document, 'keydown', onDocumentKeyDown);
-    off(document, 'click', onDocumentClick);
   });
 
   // Created
@@ -901,6 +899,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     onDayClick,
     onDayKeydown,
     onDayMouseEnter,
+    onPopoverBeforeShow,
+    onPopoverAfterShow,
+    onPopoverBeforeHide,
+    onPopoverAfterHide,
   };
   provide(contextKey, context);
   return context;
@@ -934,6 +936,10 @@ export interface DatePickerContext
   onDayClick: (day: CalendarDay, event: MouseEvent) => void;
   onDayKeydown: (day: CalendarDay, event: KeyboardEvent) => void;
   onDayMouseEnter: (day: CalendarDay, event: MouseEvent) => void;
+  onPopoverBeforeShow: (el: HTMLElement) => void;
+  onPopoverAfterShow: (el: HTMLElement) => void;
+  onPopoverBeforeHide: (el: HTMLElement) => void;
+  onPopoverAfterHide: (el: HTMLElement) => void;
 }
 
 export function useDatePicker() {

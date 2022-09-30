@@ -28,6 +28,10 @@ export default {
       onDayClick: onDayclick,
       onDayMouseEnter: onDaymouseenter,
       onDayKeydown: onDaykeydown,
+      onPopoverBeforeShow,
+      onPopoverAfterShow,
+      onPopoverBeforeHide,
+      onPopoverAfterHide,
     } = datePicker;
 
     // Timepicker renderer
@@ -88,6 +92,10 @@ export default {
           placement: 'bottom-start',
           class: `vc-date-picker-content vc-${theme.color} vc-${theme.displayMode}`,
           ref: popoverRef,
+          'onBefore-show': onPopoverBeforeShow,
+          'onAfter-show': onPopoverAfterShow,
+          'onBefore-hide': onPopoverBeforeHide,
+          'onAfter-hide': onPopoverAfterHide,
         },
         {
           default: content,
