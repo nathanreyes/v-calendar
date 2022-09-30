@@ -879,7 +879,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     ...toRefs(state),
     popoverRef,
     calendarRef,
-    isRange: toRef(props, 'isRange'),
+    isRange,
     isTime,
     isDateTime,
     is24hr: toRef(props, 'is24hr'),
