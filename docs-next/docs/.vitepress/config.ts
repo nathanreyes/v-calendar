@@ -108,8 +108,8 @@ function sidebar() {
             link: '/datepicker/time-rules',
           },
           {
-            text: 'Input Popover',
-            link: '/datepicker/input-popover',
+            text: 'Slot Content',
+            link: '/datepicker/slot-content',
           },
           {
             text: 'Custom Attributes',
