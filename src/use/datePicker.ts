@@ -626,13 +626,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return [value ? locale.value.getDateParts(value) : {}];
   }
 
-  function onDocumentKeyDown(e: KeyboardEvent) {
-    // Clear drag on escape keydown
-    if (state.dragValue && e.key === 'Escape') {
-      state.dragValue = null;
-    }
-  }
-
   function cancelDrag() {
     dragValue.value = null;
     formatInput();
