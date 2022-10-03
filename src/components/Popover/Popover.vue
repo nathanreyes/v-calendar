@@ -64,8 +64,7 @@ import {
   PositioningStrategy,
   createPopper,
 } from '@popperjs/core';
-import { on, off, elementContains, resolveEl } from '../../utils/helpers';
-import { omit } from '../../utils/_';
+import { on, off, elementContains, resolveEl, omit } from '../../utils/helpers';
 import {
   PopoverOptions,
   PopoverState,
@@ -190,7 +189,7 @@ export default defineComponent({
     }
 
     function updateState(newState: Partial<PopoverState>) {
-      Object.assign(state, omit(newState, ['id', 'force']));
+      Object.assign(state, omit(newState, 'force'));
     }
 
     function setTimer(delay: number, fn: Function) {

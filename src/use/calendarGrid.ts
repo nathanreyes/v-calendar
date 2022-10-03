@@ -17,7 +17,7 @@ import {
   useCalendar,
 } from './calendar';
 import { CalendarDay, CalendarWeek, Page } from '../utils/locale';
-import { createGuid, on } from '../utils/helpers';
+import { createGuid, on, pick } from '../utils/helpers';
 import {
   EventConfig,
   Event,
@@ -27,7 +27,6 @@ import { Cell, createDayCell } from '../utils/calendar/cell';
 import CalendarCellPopover from '../components/CalendarCellPopover/CalendarCellPopover.vue';
 import { roundDate, MS_PER_HOUR } from '../utils/dates';
 import DateInfo from '../utils/dateInfo';
-import { pick } from '../utils/_';
 
 type GridState =
   | 'NORMAL'

@@ -1,13 +1,5 @@
-import { pad, arrayHasItems } from './helpers';
-import {
-  isNumber,
-  isString,
-  isObject,
-  isDate,
-  isArray,
-  isFunction,
-  pick,
-} from './_';
+import { pad, pick, arrayHasItems } from './helpers';
+import { isNumber, isString, isObject, isDate, isArray, isFunction } from './_';
 import toDate from 'date-fns-tz/toDate';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
@@ -125,7 +117,7 @@ export enum DatePatch {
   Time,
 }
 
-const PATCH_KEYS = {
+const PATCH_KEYS: Record<DatePatch, (keyof DateParts)[]> = {
   [DatePatch.DateTime]: [
     'year',
     'month',

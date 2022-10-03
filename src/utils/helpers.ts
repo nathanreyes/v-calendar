@@ -166,6 +166,30 @@ export const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+export const omit = <T extends object, K extends [...(keyof T)[]]>(
+  obj: T,
+  ...keys: K
+) => {
+  const ret = {} as {
+    [K in keyof typeof obj]: typeof obj[K];
+  };
+  let key: keyof typeof obj;
+  for (key in obj) {
+    if (!keys.includes(key)) {
+      ret[key] = obj[key];
+    }
+  }
+  return ret;
+};
+
+export const pick = <T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
+  const ret: any = {};
+  keys.forEach(key => {
+    ret[key] = obj[key];
+  });
+  return ret;
+};
+
 /* eslint-disable no-bitwise */
 
 export const createGuid = () => {

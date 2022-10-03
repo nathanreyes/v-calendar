@@ -17,8 +17,6 @@ export { default as mapValues } from 'lodash/mapValues';
 export { default as toPairs } from 'lodash/toPairs';
 export { default as defaults } from 'lodash/defaults';
 export { default as defaultsDeep } from 'lodash/defaultsDeep';
-export { default as pick } from 'lodash/pick';
-export { default as omit } from 'lodash/omit';
 import _has from 'lodash/has';
 
 // Collection utils

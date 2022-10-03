@@ -6,8 +6,7 @@ import {
   watch,
 } from 'vue';
 import { Placement } from '@popperjs/core';
-import { elementContains, on, resolveEl } from './helpers';
-import { pick } from './_';
+import { elementContains, on, resolveEl, pick } from './helpers';
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
 
