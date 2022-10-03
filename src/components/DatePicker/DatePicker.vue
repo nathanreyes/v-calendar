@@ -19,7 +19,6 @@ export default {
       isDateTime,
       theme,
       dateParts,
-      slotArgs,
       datePickerPopoverId,
       attributes,
       calendarRef,
@@ -33,6 +32,10 @@ export default {
       onPopoverBeforeHide,
       onPopoverAfterHide,
     } = datePicker;
+
+    const slotCtx = reactive(
+      omit(datePicker, 'modelConfig', 'calendarRef', 'popoverRef'),
+    );
 
     // Timepicker renderer
     const timePicker = () => {
@@ -83,7 +86,7 @@ export default {
     // Return popover with nested content
     return () => [
       // Popover trigger
-      slots.default(slotArgs.value),
+      slots.default!(slotCtx),
       // Popover content
       h(
         Popover,

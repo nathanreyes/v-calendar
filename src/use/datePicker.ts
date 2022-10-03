@@ -10,7 +10,6 @@ import {
   onMounted,
   nextTick,
   toRef,
-  toRefs,
   inject,
   provide,
 } from 'vue';
@@ -81,30 +80,6 @@ export interface UpdateOptions {
   moveToValue: boolean;
 }
 
-export interface DatePickerSlotProps {
-  inputValue: string | { start: string; end: string };
-  inputEvents: object;
-  isDragging: ComputedRef<boolean>;
-  updateValue: (
-    value: any,
-    opts?: Partial<UpdateOptions>,
-  ) => Promise<Date | DateRange | null>;
-  showPopover: (opts?: Partial<PopoverOptions>) => void;
-  hidePopover: (opts?: Partial<PopoverOptions>) => void;
-  togglePopover: (opts: Partial<PopoverOptions>) => void;
-}
-
-interface DatePickerLocalState {
-  showCalendar: boolean;
-  value: null | Date | DateRange;
-  dragValue: null | DateRange;
-  dragTrackingValue: null | DateRange;
-  inputValues: string[];
-  updateTimeout: undefined | number;
-  watchValue: boolean;
-  datePickerPopoverId: string;
-}
-
 interface ModelModifiers {
   number?: boolean;
   string?: boolean;
@@ -172,21 +147,21 @@ export const emits = [
 ];
 
 export function createDatePicker(props: DatePickerProps, ctx: any) {
-  const { emit } = ctx;
-  const state = reactive<DatePickerLocalState>({
-    showCalendar: false,
-    value: null,
-    dragValue: null,
-    dragTrackingValue: null,
-    inputValues: ['', ''],
-    updateTimeout: undefined,
-    watchValue: true,
-    datePickerPopoverId: createGuid(),
-  });
-  const popoverRef = ref<InstanceType<typeof Popover> | null>(null);
-  const calendarRef = ref<InstanceType<typeof Calendar> | null>(null);
   const baseCtx = createBase(props, ctx);
   const { locale, masks, disabledAttribute } = baseCtx;
+  const { emit } = ctx;
+
+  const showCalendar = ref(false);
+  const datePickerPopoverId = ref(createGuid());
+  const dateValue = ref<null | Date | DateRange>(null);
+  const dragValue = ref<null | DateRange>(null);
+  const inputValues = ref<string[]>(['', '']);
+  const popoverRef = ref<InstanceType<typeof Popover> | null>(null);
+  const calendarRef = ref<InstanceType<typeof Calendar> | null>(null);
+
+  let updateTimeout: undefined | number = undefined;
+  let dragTrackingValue: null | DateRange;
+  let watchValue = true;
 
   function onPopoverBeforeShow(el: HTMLElement) {
     emit('popover-will-show', el);
@@ -212,14 +187,14 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   });
 
   const valueStart = computed(() =>
-    isRange.value && state.value != null
-      ? (state.value as DateRange).start
+    isRange.value && dateValue.value != null
+      ? (dateValue.value as DateRange).start
       : null,
   );
 
   const valueEnd = computed(() =>
-    isRange.value && state.value != null
-      ? (state.value as DateRange).end
+    isRange.value && dateValue.value != null
+      ? (dateValue.value as DateRange).end
       : null,
   );
 
@@ -230,7 +205,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   );
   const isTime = computed(() => props.mode.toLowerCase() === MODE.TIME);
 
-  const isDragging = computed(() => !!state.dragValue);
+  const isDragging = computed(() => !!dragValue.value);
 
   const modelConfig = computed(() => {
     let type: DateType = 'date';
@@ -241,7 +216,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   });
 
   const dateParts = computed(() =>
-    getDateParts(state.dragValue ?? state.value),
+    getDateParts(dragValue.value ?? dateValue.value),
   );
 
   const inputMask = computed(() => {
@@ -281,10 +256,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   const inputValue = computed(() => {
     return isRange.value
       ? {
-          start: state.inputValues[0],
-          end: state.inputValues[1],
+          start: inputValues.value[0],
+          end: inputValues.value[1],
         }
-      : state.inputValues[0];
+      : inputValues.value[0];
   });
 
   const inputEvents = computed(() => {
@@ -295,7 +270,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       ...(popover.value &&
         getPopoverEventHandlers({
           ...popover.value,
-          id: state.datePickerPopoverId,
+          id: datePickerPopoverId.value,
         })),
     }));
     return isRange.value
@@ -306,25 +281,12 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       : events[0];
   });
 
-  const slotArgs = computed<DatePickerSlotProps>(() => {
-    return {
-      inputValue: inputValue.value,
-      inputEvents: inputEvents.value,
-      isDragging,
-      updateValue,
-      showPopover,
-      hidePopover,
-      togglePopover,
-      getPopoverEventHandlers,
-    };
-  });
-
   const selectAttribute = computed(() => {
-    if (!hasValue(state.value)) return null;
+    if (!hasValue(dateValue.value)) return null;
     const attribute = {
       key: 'select-drag',
       ...props.selectAttribute,
-      dates: state.value,
+      dates: dateValue.value,
       pinPage: true,
     };
     const { dot, bar, highlight, content } = attribute;
@@ -335,13 +297,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   });
 
   const dragAttribute = computed(() => {
-    if (!isRange.value || !hasValue(state.dragValue)) {
+    if (!isRange.value || !hasValue(dragValue.value)) {
       return null;
     }
     const attribute = {
       key: 'select-drag',
       ...props.dragAttribute,
-      dates: state.dragValue,
+      dates: dragValue.value,
     };
     const { dot, bar, highlight, content } = attribute;
     if (!dot && !bar && !highlight && !content) {
@@ -472,7 +434,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }
     return locale.value.normalizeDate(value, {
       ...config[0],
-      fillDate: state.value as Date,
+      fillDate: dateValue.value as Date,
       patch,
     });
   }
@@ -492,17 +454,17 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     value: any,
     opts: Partial<UpdateOptions> = {},
   ): Promise<Date | DateRange | null> {
-    clearTimeout(state.updateTimeout);
+    clearTimeout(updateTimeout);
     return new Promise(resolve => {
       const { debounce = 0, ...args } = opts;
       if (debounce > 0) {
-        state.updateTimeout = setTimeout(() => {
+        updateTimeout = setTimeout(() => {
           forceUpdateValue(value, args);
-          resolve(state.value);
+          resolve(dateValue.value);
         }, debounce);
       } else {
         forceUpdateValue(value, args);
-        resolve(state.value);
+        resolve(dateValue.value);
       }
     });
   }
@@ -531,21 +493,21 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
     // Reset to previous value if it was cleared but is required
     if (!normalizedValue && props.isRequired) {
-      normalizedValue = state.value;
+      normalizedValue = dateValue.value;
     }
 
     // 2. Validation (date or range)
     const isDisabled = valueIsDisabled(normalizedValue);
     if (isDisabled) {
       if (dragging) return;
-      normalizedValue = state.value;
+      normalizedValue = dateValue.value;
       // Don't allow hiding popover
       hPopover = false;
     }
 
     // 3. Assignment
-    const valueKey = dragging ? 'dragValue' : 'value';
-    let valueChanged = !valuesAreEqual(state[valueKey], normalizedValue);
+    const valueRef = dragging ? dragValue : dateValue;
+    let valueChanged = !valuesAreEqual(valueRef.value, normalizedValue);
 
     // Clear value if same value selected and clearIfEqual is set
     if (!isDisabled && !valueChanged && clearIfEqual) {
@@ -555,9 +517,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
     // Assign value
     if (valueChanged) {
-      state[valueKey] = normalizedValue;
+      valueRef.value = normalizedValue;
       // Clear drag value if needed
-      if (!dragging) state.dragValue = null;
+      if (!dragging) dragValue.value = null;
       // Denormalization
       const denormalizedValue = denormalizeValue(
         normalizedValue,
@@ -565,9 +527,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       );
       // Notification
       const event = isDragging.value ? 'drag' : 'update:modelValue';
-      state.watchValue = false;
+      watchValue = false;
       emit(event, denormalizedValue);
-      nextTick(() => (state.watchValue = true));
+      nextTick(() => (watchValue = true));
     }
 
     // 5. Hide popover if needed
@@ -588,11 +550,14 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         type: 'string',
         mask: inputMask.value,
       });
-      const value = denormalizeValue(state.dragValue || state.value, config);
+      const value = denormalizeValue(
+        dragValue.value || dateValue.value,
+        config,
+      );
       if (isRange.value) {
-        state.inputValues = [value && value.start, value && value.end];
+        inputValues.value = [value && value.start, value && value.end];
       } else {
-        state.inputValues = [value, ''];
+        inputValues.value = [value as string, ''];
       }
     });
   }
@@ -602,11 +567,11 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     target: ValueTarget,
     opts: Partial<UpdateOptions>,
   ) {
-    state.inputValues.splice(target - 1, 1, inputValue);
+    inputValues.value.splice(target - 1, 1, inputValue);
     const value = isRange.value
       ? {
-          start: state.inputValues[0],
-          end: state.inputValues[1] || state.inputValues[0],
+          start: inputValues.value[0],
+          end: inputValues.value[1] || inputValues.value[0],
         }
       : inputValue;
     const config = {
@@ -645,7 +610,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   function onInputKeyup(e: KeyboardEvent) {
     // Escape key only
     if (e.key !== 'Escape') return;
-    updateValue(state.value, {
+    updateValue(dateValue.value, {
       formatInput: true,
       hidePopover: true,
     });
@@ -669,7 +634,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function cancelDrag() {
-    state.dragValue = null;
+    dragValue.value = null;
     formatInput();
   }
 
@@ -682,11 +647,11 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     if (isRange.value) {
       const dragging = !isDragging.value;
       if (dragging) {
-        state.dragTrackingValue = { ...day.range };
-      } else if (state.dragTrackingValue != null) {
-        state.dragTrackingValue.end = day.date;
+        dragTrackingValue = { ...day.range };
+      } else if (dragTrackingValue != null) {
+        dragTrackingValue.end = day.date;
       }
-      updateValue(state.dragTrackingValue, {
+      updateValue(dragTrackingValue, {
         ...opts,
         dragging,
         targetPriority: dragging ? ValueTarget.None : ValueTarget.Both,
@@ -722,9 +687,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function onDayMouseEnter(day: CalendarDay, event: MouseEvent) {
-    if (!isDragging.value || state.dragTrackingValue == null) return;
-    state.dragTrackingValue.end = day.date;
-    updateValue(state.dragTrackingValue, {
+    if (!isDragging.value || dragTrackingValue == null) return;
+    dragTrackingValue.end = day.date;
+    updateValue(dragTrackingValue, {
       patch: DatePatch.Date,
       formatInput: true,
       targetPriority: ValueTarget.None,
@@ -736,7 +701,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       ...popover.value,
       ...opts,
       isInteractive: true,
-      id: state.datePickerPopoverId,
+      id: datePickerPopoverId.value,
     });
   }
 
@@ -746,7 +711,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       force: true,
       ...popover.value,
       ...opts,
-      id: state.datePickerPopoverId,
+      id: datePickerPopoverId.value,
     });
   }
 
@@ -755,7 +720,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       ...popover.value,
       ...opts,
       isInteractive: true,
-      id: state.datePickerPopoverId,
+      id: datePickerPopoverId.value,
     });
   }
 
@@ -775,13 +740,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function getPageForValue(isStart: boolean) {
-    if (hasValue(state.value)) {
+    if (hasValue(dateValue.value)) {
       const date = isRange.value
         ? isStart
           ? valueStart.value
           : valueEnd.value
-        : state.value;
       return locale.value.getPageForDate(date as Date);
+        : dateValue.value;
     }
     return null;
   }
@@ -829,7 +794,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   watch(
     () => props.modelValue,
     val => {
-      if (!state.watchValue) return;
+      if (!watchValue) return;
       forceUpdateValue(val, {
         formatInput: true,
         hidePopover: false,
@@ -850,7 +815,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   watch(
     () => props.timezone,
     () => {
-      forceUpdateValue(state.value, { formatInput: true });
+      forceUpdateValue(dateValue.value, { formatInput: true });
     },
   );
 
@@ -868,13 +833,14 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   // Created
   // Waiting a tick allows calendar to initialize page
-  nextTick(() => (state.showCalendar = true));
+  nextTick(() => (showCalendar.value = true));
 
   // #endregion Lifecycle
 
   const context = {
     ...baseCtx,
-    ...toRefs(state),
+    showCalendar,
+    datePickerPopoverId,
     popoverRef,
     calendarRef,
     isRange,
@@ -884,7 +850,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     hideTimeHeader: toRef(props, 'hideTimeHeader'),
     timeAccuracy: toRef(props, 'timeAccuracy'),
     isDragging,
-    slotArgs,
+    inputValue,
+    inputEvents,
     dateParts,
     modelConfig,
     attributes,
@@ -906,9 +873,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   return context;
 }
 
-export interface DatePickerContext
-  extends ToRefs<DatePickerLocalState>,
-    ToRefs<BaseContext> {
+export interface DatePickerContext extends ToRefs<BaseContext> {
   popoverRef: Ref<InstanceType<typeof Popover> | null>;
   calendarRef: Ref<InstanceType<typeof Calendar> | null>;
   isRange: Ref<boolean>;
@@ -918,8 +883,15 @@ export interface DatePickerContext
   hideTimeHeader: Ref<boolean>;
   timeAccuracy: Ref<number>;
   isDragging: ComputedRef<boolean>;
-  slotArgs: any;
   dateParts: ComputedRef<(object | DateParts)[]>;
+  inputValue: ComputedRef<
+    | string
+    | {
+        start: string;
+        end: string;
+      }
+  >;
+  inputEvents: ComputedRef<object>;
   modelConfig: ComputedRef<any>;
   attributes: ComputedRef<AttributeConfig[]>;
   move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
