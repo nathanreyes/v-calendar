@@ -1,11 +1,7 @@
 import {
   PropType,
-  Ref,
-  ComputedRef,
-  ToRefs,
   ref,
   computed,
-  reactive,
   watch,
   onMounted,
   nextTick,
@@ -33,12 +29,7 @@ import {
   togglePopover as tp,
   getPopoverEventHandlers,
 } from '../utils/popovers';
-import {
-  BaseContext,
-  BaseProps,
-  propsDef as basePropsDef,
-  createBase,
-} from './base';
+import { BaseProps, propsDef as basePropsDef, createBase } from './base';
 import { MoveTarget, MoveOptions } from './calendar';
 
 export type DateType = 'date' | 'string' | 'number';
@@ -86,7 +77,9 @@ interface ModelModifiers {
   range?: boolean;
 }
 
-interface DatePickerProps extends BaseProps {
+export type DatePickerContext = ReturnType<typeof createDatePicker>;
+
+export interface DatePickerProps extends BaseProps {
   mode: string;
   modelValue: any;
   modelModifiers: ModelModifiers;
@@ -147,7 +140,7 @@ export const emits = [
 ];
 
 export function createDatePicker(props: DatePickerProps, ctx: any) {
-  const baseCtx = createBase(props, ctx);
+  const baseCtx = createBase(props);
   const { locale, masks, disabledAttribute } = baseCtx;
   const { emit } = ctx;
 
@@ -162,23 +155,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   let updateTimeout: undefined | number = undefined;
   let dragTrackingValue: null | DateRange;
   let watchValue = true;
-
-  function onPopoverBeforeShow(el: HTMLElement) {
-    emit('popover-will-show', el);
-  }
-
-  function onPopoverAfterShow(el: HTMLElement) {
-    emit('popover-did-show', el);
-  }
-
-  function onPopoverBeforeHide(el: HTMLElement) {
-    cancelDrag();
-    emit('popover-will-hide', el);
-  }
-
-  function onPopoverAfterHide(el: HTMLElement) {
-    emit('popover-did-hide', el);
-  }
 
   // #region Computed
 
@@ -631,6 +607,23 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     formatInput();
   }
 
+  function onPopoverBeforeShow(el: HTMLElement) {
+    emit('popover-will-show', el);
+  }
+
+  function onPopoverAfterShow(el: HTMLElement) {
+    emit('popover-did-show', el);
+  }
+
+  function onPopoverBeforeHide(el: HTMLElement) {
+    cancelDrag();
+    emit('popover-will-hide', el);
+  }
+
+  function onPopoverAfterHide(el: HTMLElement) {
+    emit('popover-did-hide', el);
+  }
+
   function handleDayClick(day: CalendarDay) {
     const opts: Partial<UpdateOptions> = {
       patch: DatePatch.Date,
@@ -850,6 +843,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     attributes,
     rules,
     move,
+    moveToValue,
     updateValue,
     showPopover,
     hidePopover,
@@ -864,45 +858,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   };
   provide(contextKey, context);
   return context;
-}
-
-export interface DatePickerContext extends ToRefs<BaseContext> {
-  popoverRef: Ref<InstanceType<typeof Popover> | null>;
-  calendarRef: Ref<InstanceType<typeof Calendar> | null>;
-  isRange: Ref<boolean>;
-  isTime: ComputedRef<boolean>;
-  isDateTime: ComputedRef<boolean>;
-  is24hr: Ref<boolean>;
-  hideTimeHeader: Ref<boolean>;
-  timeAccuracy: Ref<number>;
-  isDragging: ComputedRef<boolean>;
-  inputValue: ComputedRef<
-    | string
-    | {
-        start: string;
-        end: string;
-      }
-  >;
-  inputEvents: ComputedRef<object>;
-  dateParts: ComputedRef<Partial<DateParts>[]>;
-  modelConfig: ComputedRef<any>;
-  attributes: ComputedRef<AttributeConfig[]>;
-  move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
-  moveToValue: (
-    target: ValueTarget,
-    opts: Partial<MoveOptions>,
-  ) => Promise<boolean>;
-  updateValue: (value: any, opts: Partial<UpdateOptions>) => Promise<void>;
-  showPopover: (opts?: Partial<PopoverOptions>) => void;
-  hidePopover: (opts?: Partial<PopoverOptions>) => void;
-  togglePopover: (opts: Partial<PopoverOptions>) => void;
-  onDayClick: (day: CalendarDay, event: MouseEvent) => void;
-  onDayKeydown: (day: CalendarDay, event: KeyboardEvent) => void;
-  onDayMouseEnter: (day: CalendarDay, event: MouseEvent) => void;
-  onPopoverBeforeShow: (el: HTMLElement) => void;
-  onPopoverAfterShow: (el: HTMLElement) => void;
-  onPopoverBeforeHide: (el: HTMLElement) => void;
-  onPopoverAfterHide: (el: HTMLElement) => void;
 }
 
 export function useDatePicker() {

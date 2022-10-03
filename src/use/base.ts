@@ -1,9 +1,9 @@
-import { PropType, ComputedRef, computed, provide, inject, toRef } from 'vue';
+import { PropType, computed, provide, inject, toRef } from 'vue';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/_';
-import { Theme, useTheme } from './theme';
+import { useTheme } from './theme';
 import { DarkModeConfig, DarkModeClassConfig } from 'vue-screen-utils';
 
 export interface BaseProps {
@@ -45,7 +45,9 @@ export const propsDef = {
   availableDates: null,
 };
 
-export function createBase(props: BaseProps, ctx: any) {
+export type BaseContext = ReturnType<typeof createBase>;
+
+export function createBase(props: BaseProps) {
   // #region Computed
 
   const isDark = computed(() => props.isDark ?? false);
@@ -141,15 +143,6 @@ export function createBase(props: BaseProps, ctx: any) {
   };
   provide(contextKey, context);
   return context;
-}
-
-export interface BaseContext {
-  theme: Theme;
-  locale: ComputedRef<Locale>;
-  masks: ComputedRef<Record<string, string>>;
-  disabledDates: ComputedRef<any[]>;
-  availableDates: ComputedRef<any[]>;
-  disabledAttribute: ComputedRef<Attribute>;
 }
 
 export function useBase() {

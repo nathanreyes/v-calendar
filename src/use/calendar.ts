@@ -7,8 +7,6 @@ import {
   onUnmounted,
   watch,
   inject,
-  ToRefs,
-  ComputedRef,
 } from 'vue';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
@@ -16,7 +14,6 @@ import addYears from 'date-fns/addYears';
 import Popover from '../Popover/Popover.vue';
 import { Attribute, AttributeConfig, DayAttribute } from '../utils/attribute';
 import {
-  default as Locale,
   CalendarDay,
   CalendarWeek,
   Page,
@@ -38,7 +35,6 @@ import { getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 import { PopoverVisibility } from '../utils/popovers';
-import { Theme } from './theme';
 import { BaseProps, propsDef as basePropsDef, useOrCreateBase } from './base';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
@@ -88,6 +84,8 @@ interface CalendarState {
   transitionName: string;
   refreshing: boolean;
 }
+
+export type CalendarContext = ReturnType<typeof createCalendar>;
 
 export const propsDef = {
   ...basePropsDef,
@@ -144,10 +142,7 @@ export const emitsDef = [
 
 const contextKey = '__vc_calendar_context__';
 
-export function createCalendar(
-  props: CalendarProps,
-  { emit, slots }: any,
-): CalendarContext {
+export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const state = reactive<CalendarState>({
     containerRef: null,
     navPopoverRef: null,
@@ -755,49 +750,6 @@ export function createCalendar(
   };
   provide(contextKey, context);
   return context;
-}
-
-export interface CalendarContext extends ToRefs<CalendarState> {
-  slots: any;
-  theme: Theme;
-  locale: ComputedRef<Locale>;
-  masks: ComputedRef<Record<string, string>>;
-  attributes: ComputedRef<Attribute[]>;
-  disabledAttribute: ComputedRef<Attribute>;
-  dayAttributes: ComputedRef<Record<string, DayAttribute[]>>;
-  count: ComputedRef<number>;
-  step: ComputedRef<number>;
-  isMonthly: ComputedRef<boolean>;
-  isWeekly: ComputedRef<boolean>;
-  isDaily: ComputedRef<boolean>;
-  firstPage: ComputedRef<Page | undefined>;
-  lastPage: ComputedRef<Page | undefined>;
-  minPage: ComputedRef<PageAddress | null>;
-  maxPage: ComputedRef<PageAddress | null>;
-  navVisibility: ComputedRef<PopoverVisibility>;
-  canMovePrev: ComputedRef<boolean>;
-  canMoveNext: ComputedRef<boolean>;
-  canMoveUp: ComputedRef<boolean>;
-  moveUpLabel: ComputedRef<string>;
-  showWeeknumbers: ComputedRef<boolean>;
-  showIsoWeeknumbers: ComputedRef<boolean>;
-  canMove: (target: MoveTarget, opts: Partial<MoveOptions>) => boolean;
-  move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
-  movePrev: () => Promise<boolean>;
-  moveNext: () => Promise<boolean>;
-  moveUp: () => void;
-  onTransitionBeforeEnter: () => void;
-  onTransitionAfterEnter: () => void;
-  tryFocusDate: (date: Date) => boolean;
-  focusDate: (date: Date, opts: Partial<MoveOptions>) => Promise<boolean>;
-  onKeydown: (e: KeyboardEvent) => void;
-  onDayKeydown: (day: CalendarDay, e: KeyboardEvent) => void;
-  onDayClick: (day: CalendarDay, e: MouseEvent) => void;
-  onDayMouseenter: (day: CalendarDay, e: MouseEvent) => void;
-  onDayMouseleave: (day: CalendarDay, e: MouseEvent) => void;
-  onDayFocusin: (day: CalendarDay, e: FocusEvent | null) => void;
-  onDayFocusout: (day: CalendarDay, e: FocusEvent) => void;
-  onWeeknumberClick: (week: CalendarWeek, e: MouseEvent) => void;
 }
 
 export function useCalendar(): CalendarContext {
