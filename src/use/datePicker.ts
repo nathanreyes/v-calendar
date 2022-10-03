@@ -616,7 +616,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     });
   }
 
-  function getDateParts(value: any): (object | DateParts)[] {
+  function getDateParts(value: any): Partial<DateParts>[] {
     if (isRange.value) {
       return [
         value && value.start ? locale.value.getDateParts(value.start) : {},
@@ -876,7 +876,6 @@ export interface DatePickerContext extends ToRefs<BaseContext> {
   hideTimeHeader: Ref<boolean>;
   timeAccuracy: Ref<number>;
   isDragging: ComputedRef<boolean>;
-  dateParts: ComputedRef<(object | DateParts)[]>;
   inputValue: ComputedRef<
     | string
     | {
@@ -885,6 +884,7 @@ export interface DatePickerContext extends ToRefs<BaseContext> {
       }
   >;
   inputEvents: ComputedRef<object>;
+  dateParts: ComputedRef<Partial<DateParts>[]>;
   modelConfig: ComputedRef<any>;
   attributes: ComputedRef<AttributeConfig[]>;
   move: (target: MoveTarget, opts: Partial<MoveOptions>) => Promise<boolean>;
