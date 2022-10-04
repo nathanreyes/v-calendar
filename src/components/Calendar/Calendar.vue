@@ -41,13 +41,13 @@
       <slot name="footer" />
     </div>
   </div>
-  <!--Nav popover-->
-  <CalendarNavPopover />
   <!--Day popover-->
   <CalendarDayPopover
     ><template #default="props"
       ><slot name="day-popover" v-bind="props" /></template
   ></CalendarDayPopover>
+  <!--Nav popover-->
+  <CalendarNavPopover />
 </template>
 
 <script>
