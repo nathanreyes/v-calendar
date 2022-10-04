@@ -122,6 +122,7 @@ export const propsDef = {
   },
   popover: {
     type: [Boolean, Object as PropType<Partial<PopoverOptions>>],
+    default: true,
   },
   dragAttribute: Object,
   selectAttribute: Object,
@@ -229,6 +230,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }) as Partial<PopoverOptions>;
   });
 
+  const popoverEvents = computed(() =>
+    getPopoverEventHandlers({
+      ...popover.value,
+      id: datePickerPopoverId.value,
+    }),
+  );
+
   const inputValue = computed(() => {
     return isRange.value
       ? {
@@ -243,11 +251,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       input: onInputInput(target),
       change: onInputChange(target),
       keyup: onInputKeyup,
-      ...(popover.value &&
-        getPopoverEventHandlers({
-          ...popover.value,
-          id: datePickerPopoverId.value,
-        })),
+      ...(props.popover && popoverEvents.value),
     }));
     return isRange.value
       ? {
@@ -828,6 +832,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     showCalendar,
     datePickerPopoverId,
     popoverRef,
+    popoverEvents,
     calendarRef,
     isRange,
     isTime,
