@@ -4,7 +4,7 @@
       v-bind="$attrs"
       :value="modelValue"
       class="vc-focus-bg"
-      :class="{ 'vc-non-multi': options.length < 2 }"
+      :class="{ 'vc-locked': options.length < 2 }"
       @change="$emit('update:modelValue', $event.target.value)"
     >
       <option
