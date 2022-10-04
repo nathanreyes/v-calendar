@@ -422,7 +422,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
       );
       // Assign the new pages
       state.pages = pages;
-      // Emit page update events
+      // Cache or resolve transition promise
       if (state.transitionName && state.transitionName !== 'none') {
         transitionPromise = {
           resolve,
