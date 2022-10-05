@@ -1,5 +1,4 @@
 import { DayAttribute } from './attribute';
-import { DateInfoDayContext } from './dateInfo';
 import { isObject, isString, hasAny, toPairs, defaults } from './_';
 
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';
@@ -99,7 +98,7 @@ function normalizeConfig<G>(
     defaultProfile,
   );
   // Normalize each target
-  toPairs(result).forEach(([targetType, targetConfig]) => {
+  Object.entries(result).forEach(([targetType, targetConfig]) => {
     let targetColor = rootColor;
     if (targetConfig === true || isString(targetConfig)) {
       targetColor = isString(targetConfig) ? targetConfig : targetColor;

@@ -25,7 +25,14 @@ import {
   getRelativeTimeNames,
 } from './dates';
 import { defaultLocales } from './defaults';
-import { pad, PageAddress, pageIsAfterPage, pageIsValid } from './helpers';
+import {
+  pad,
+  PageAddress,
+  pageIsAfterPage,
+  pageIsValid,
+  pick,
+  clamp,
+} from './helpers';
 import {
   isDate,
   isNumber,
@@ -34,7 +41,6 @@ import {
   isArray,
   has,
   defaultsDeep,
-  clamp,
 } from './_';
 
 export type PageView = 'daily' | 'weekly' | 'monthly';

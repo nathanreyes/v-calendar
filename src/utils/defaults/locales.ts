@@ -1,6 +1,17 @@
-import { toPairs } from '../_';
+interface LocaleConfig {
+  dow: number;
+  L: string;
+}
 
-const locales: any = {
+interface LocaleSetting {
+  id: string;
+  firstDayOfWeek: number;
+  masks: {
+    L: string;
+  };
+}
+
+const locales: Record<string, LocaleConfig> = {
   // Arabic
   ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
   // Bulgarian
@@ -97,12 +108,16 @@ locales.no = locales.nb;
 locales.zh = locales['zh-CN'];
 
 // Remap from abbr. to intuitive property names
-toPairs<any>(locales).forEach(([id, { dow, L }]) => {
-  locales[id] = {
-    id,
-    firstDayOfWeek: dow,
-    masks: { L },
-  };
-});
+const localeSettings = Object.entries(locales).reduce(
+  (res, [id, { dow, L }]) => {
+    res[id] = {
+      id,
+      firstDayOfWeek: dow,
+      masks: { L },
+    };
+    return res;
+  },
+  {} as Record<string, LocaleSetting>,
+);
 
-export default locales;
+export default localeSettings;

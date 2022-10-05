@@ -7,14 +7,10 @@ export { default as isFunction } from 'lodash/isFunction';
 export { default as isUndefined } from 'lodash/isUndefined';
 import _isDate from 'lodash/isDate';
 
-// Number utils
-export { default as clamp } from 'lodash/clamp';
-
 // Object utils
 export { default as get } from 'lodash/get';
 export { default as set } from 'lodash/set';
 export { default as mapValues } from 'lodash/mapValues';
-export { default as toPairs } from 'lodash/toPairs';
 export { default as defaults } from 'lodash/defaults';
 export { default as defaultsDeep } from 'lodash/defaultsDeep';
 import _has from 'lodash/has';

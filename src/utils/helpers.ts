@@ -206,6 +206,10 @@ export function extend<T extends object, E extends object>(
   return new Proxy(value, handler) as T & E;
 }
 
+export function clamp(num: number, min: number, max: number) {
+  return Math.min(Math.max(num, min), max);
+}
+
 /* eslint-disable no-bitwise */
 
 export const createGuid = () => {
