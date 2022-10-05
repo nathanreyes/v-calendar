@@ -52,7 +52,7 @@
 import { PropType, defineComponent, computed, watch } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
-import { DayAttribute, PopoverConfig } from '../../utils/attribute';
+import { Attribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
 import { last, get, defaults } from '../../utils/_';
@@ -80,7 +80,7 @@ export default defineComponent({
     const attributes = computed(() => dayAttributes.value[day.value.id] || []);
 
     function processPopover(
-      attribute: DayAttribute,
+      attribute: Attribute,
       { popovers }: { popovers: PopoverConfig[] },
     ) {
       const { key, customData, popover } = attribute;
@@ -106,10 +106,10 @@ export default defineComponent({
         ...theme.prepareRender({}),
         popovers: [],
       };
-      attributes.value.forEach(attr => {
-        const dayContext = attr.dayDates[0].getDayContext(day.value);
-        theme.render(attr, dayContext, result);
-        processPopover(attr, result);
+      attributes.value.forEach(dayAttr => {
+        if (!dayAttr.dayContext) return;
+        theme.render(dayAttr as Attribute, dayAttr.dayContext, result);
+        processPopover(dayAttr as Attribute, result);
       });
       return result;
     });

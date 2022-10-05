@@ -3,7 +3,6 @@
     <select
       v-bind="$attrs"
       :value="modelValue"
-      class="vc-focus-bg"
       :class="{ 'vc-locked': options.length < 2 }"
       @change="$emit('update:modelValue', $event.target.value)"
     >
