@@ -1,10 +1,10 @@
 import { Placement } from '@popperjs/core';
-import {
-  default as DateInfo,
+import DateInfo, {
   DateInfoSource,
   DateInfoOptions,
+  DateInfoDayContext,
 } from './dateInfo';
-import { arrayHasItems, createGuid } from './helpers';
+import { arrayHasItems, createGuid, extend } from './helpers';
 import { PopoverVisibility } from './popovers';
 import { Theme } from '../use/theme';
 import Locale, { CalendarDay } from './locale';
@@ -41,9 +41,15 @@ export type EventConfig = Partial<{
 
 export type ExcludeMode = 'intersects' | 'includes';
 
-export interface DayAttribute extends Partial<Attribute> {
-  dayId: string;
-  dayDates: DateInfo[];
+export type DayAttribute = ReturnType<typeof createDayAttribute>;
+
+export function createDayAttribute(
+  day: CalendarDay,
+  dayDate: DateInfo,
+  attribute: Attribute,
+) {
+  const dayContext = dayDate.getDayContext(day);
+  return extend(attribute, { dayId: day.id, dayDate, dayContext });
 }
 
 export interface AttributeConfig {

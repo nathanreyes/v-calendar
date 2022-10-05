@@ -3,7 +3,7 @@
   <div class="vc-day-popover-row">
     <!-- Indicator -->
     <div v-if="indicator" class="vc-day-popover-row-indicator">
-      <span :style="indicator.style" :class="indicator.class" />
+      <span :class="indicator.class" />
     </div>
     <!-- Content -->
     <div class="vc-day-popover-row-label">
@@ -14,14 +14,14 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed } from 'vue';
+<script lang="ts">
+import { PropType, defineComponent, computed } from 'vue';
+import { DayAttribute } from '../../utils/attribute';
 
 export default defineComponent({
   name: 'PopoverRow',
   props: {
-    attribute: Object,
-    day: Object,
+    attribute: { type: Object as PropType<DayAttribute>, required: true },
   },
   setup(props) {
     const indicator = computed(() => {

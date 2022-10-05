@@ -1,7 +1,6 @@
 import { reactive, Ref } from 'vue';
-import { DayAttribute } from '../utils/attribute';
+import { Attribute, DayAttribute } from '../utils/attribute';
 import { DarkModeConfig, useDarkMode } from 'vue-screen-utils';
-import { DateInfoDayContext } from '../utils/dateInfo';
 import {
   GlyphRenderer,
   Glyph,
@@ -13,18 +12,9 @@ import {
 
 export type Glyphs = Record<string, Glyph[]>;
 
-export interface Theme {
-  color: string;
-  displayMode: string;
-  normalizeGlyphs(attr: DayAttribute): void;
-  prepareRender(glyphs: Glyphs): Glyphs;
-  render(attr: DayAttribute, ctx: DateInfoDayContext, glyphs: Glyphs): void;
-}
+export type Theme = ReturnType<typeof useTheme>;
 
-export function useTheme(
-  color: Ref<string>,
-  isDark: Ref<DarkModeConfig>,
-): Theme {
+export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
   const { displayMode } = useDarkMode(isDark);
 
   const renderers: GlyphRenderer<Glyph>[] = [
@@ -34,11 +24,11 @@ export function useTheme(
     new BarRenderer(),
   ];
 
-  function normalizeGlyphs(attr: DayAttribute) {
+  function normalizeGlyphs(attr: Attribute) {
     renderers.forEach(renderer => {
-      const type = renderer.type as keyof DayAttribute;
+      const type = renderer.type as keyof Attribute;
       if (attr.hasOwnProperty(type) && attr[type] != null) {
-        attr[type] = renderer.normalizeConfig(color.value, attr[type]);
+        attr[type] = renderer.normalizeConfig(color.value, attr[type]) as never;
       }
     });
   }
@@ -50,9 +40,9 @@ export function useTheme(
     return glyphs;
   }
 
-  function render(attr: DayAttribute, ctx: DateInfoDayContext, glyphs: Glyphs) {
+  function render(attr: DayAttribute, glyphs: Glyphs) {
     renderers.forEach(renderer => {
-      renderer.render(attr, ctx, glyphs);
+      renderer.render(attr, glyphs);
     });
   }
 

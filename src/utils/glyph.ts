@@ -125,11 +125,7 @@ export interface GlyphRenderer<P> {
   type: string;
   normalizeConfig(color: string, config: any): GlyphProfile<P>;
   prepareRender(glyphs: Record<string, Glyph[]>): void;
-  render(
-    attr: DayAttribute,
-    ctx: DateInfoDayContext,
-    glyphs: Record<string, Glyph[]>,
-  ): void;
+  render(attr: DayAttribute, glyphs: Record<string, Glyph[]>): void;
 }
 
 export class HighlightRenderer implements GlyphRenderer<Highlight> {
@@ -148,19 +144,11 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
     if (!glyphs.content) glyphs.content = [];
   }
 
-  render(
-    attr: DayAttribute,
-    {
-      isDate,
-      hasRecurrence,
-      onStart,
-      onEnd,
-      onStartAndEnd,
-    }: DateInfoDayContext,
-    glyphs: Record<string, Glyph[]>,
-  ) {
+  render(attr: DayAttribute, glyphs: Record<string, Glyph[]>) {
     const { key, highlight } = attr;
     if (!highlight) return;
+    const { isDate, hasRecurrence, onStart, onEnd, onStartAndEnd } =
+      attr.dayContext;
     const { highlights, content } = glyphs;
     const { base, start, end } = highlight;
     if (isDate || onStartAndEnd || hasRecurrence) {
@@ -273,14 +261,11 @@ export class BaseRenderer<T> implements GlyphRenderer<T> {
     glyphs[this.collectionType] = [];
   }
 
-  render(
-    attr: DayAttribute,
-    { isDate, onStart, onEnd }: DateInfoDayContext,
-    glyphs: Record<string, Glyph[]>,
-  ) {
+  render(attr: DayAttribute, glyphs: Record<string, Glyph[]>) {
     const { key } = attr;
     const item = attr[this.type as keyof DayAttribute];
     if (!key || !item) return;
+    const { isDate, onStart, onEnd } = attr.dayContext;
     const collection = glyphs[this.collectionType];
     const { base, start, end } = item;
     if (isDate || onStart) {

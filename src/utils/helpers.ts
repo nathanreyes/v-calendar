@@ -190,6 +190,22 @@ export const pick = <T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
   return ret;
 };
 
+export function extend<T extends object, E extends object>(
+  value: T,
+  ext: E,
+): T & E {
+  const handler = {
+    get(target: T, prop: keyof (T | E)) {
+      if ((prop as string) in target) {
+        return target[prop];
+      }
+      return ext[prop];
+    },
+  };
+  // @ts-ignore
+  return new Proxy(value, handler) as T & E;
+}
+
 /* eslint-disable no-bitwise */
 
 export const createGuid = () => {

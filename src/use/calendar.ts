@@ -12,7 +12,12 @@ import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Popover from '../Popover/Popover.vue';
-import { Attribute, AttributeConfig, DayAttribute } from '../utils/attribute';
+import {
+  Attribute,
+  AttributeConfig,
+  createDayAttribute,
+  DayAttribute,
+} from '../utils/attribute';
 import {
   CalendarDay,
   CalendarWeek,
@@ -270,13 +275,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         attributes.value.forEach(attr => {
           const dayDates = attr.getDayDates(day);
           if (!dayDates.length) return;
-          const data = result[day.id] || [];
-          data.push({
-            ...attr,
-            dayId: day.id,
-            dayDates,
-          });
-          result[day.id] = data;
+          result[day.id] ||= [];
+          result[day.id].push(createDayAttribute(day, dayDates[0], attr));
         });
       });
     });

@@ -108,7 +108,7 @@ export default defineComponent({
       };
       attributes.value.forEach(dayAttr => {
         if (!dayAttr.dayContext) return;
-        theme.render(dayAttr as Attribute, dayAttr.dayContext, result);
+        theme.render(dayAttr, result);
         processPopover(dayAttr as Attribute, result);
       });
       return result;
