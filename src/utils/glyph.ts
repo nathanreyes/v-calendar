@@ -1,5 +1,5 @@
 import { DayAttribute } from './attribute';
-import { isObject, isString, hasAny, toPairs, defaults } from './_';
+import { isObject, isString, hasAny, defaults } from './_';
 
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';
 type ThemeProp =
@@ -27,11 +27,11 @@ export interface Glyph {
   style: Record<string, any>;
 }
 
-export interface GlyphProfile<G extends Partial<Glyph>> {
-  start: G;
-  base: G;
-  end: G;
-  startEnd?: G;
+interface Profile<T> {
+  start: T;
+  base: T;
+  end: T;
+  startEnd?: T;
 }
 
 // Highlights
@@ -41,7 +41,7 @@ export interface Highlight extends Glyph {
   contentClass: string;
   contentStyle: Record<string, any>;
 }
-export type HighlightProfile = GlyphProfile<Highlight>;
+export type HighlightProfile = Profile<Highlight>;
 export type HighlightConfig =
   | boolean
   | string
@@ -49,26 +49,26 @@ export type HighlightConfig =
 
 // Dots
 export type Dot = Glyph;
-export type DotProfile = GlyphProfile<Dot>;
+export type DotProfile = Profile<Dot>;
 export type DotConfig = boolean | string | Partial<Dot | DotProfile>;
 
 // Bars
 export type Bar = Glyph;
-export type BarProfile = GlyphProfile<Bar>;
+export type BarProfile = Profile<Bar>;
 export type BarConfig = boolean | string | Partial<Bar | BarProfile>;
 
 // Content
 export type Content = Glyph;
-export type ContentProfile = GlyphProfile<Content>;
+export type ContentProfile = Profile<Content>;
 export type ContentConfig = string | Partial<Content | ContentProfile>;
 
 const _defaultProfile = { base: {}, start: {}, end: {} };
 
-function normalizeConfig<G>(
+function normalizeConfig(
   color: string,
   config: any,
   defaultProfile: any = _defaultProfile,
-): GlyphProfile<G> {
+): Profile<Glyph> {
   let rootColor = color;
   let root: any = {};
   // Get the normalized root config
@@ -90,7 +90,7 @@ function normalizeConfig<G>(
       };
     }
   }
-  const result = root as GlyphProfile<G>;
+  const result = root as Profile<any>;
   // Fill in missing targets
   defaults(
     result,
@@ -103,7 +103,7 @@ function normalizeConfig<G>(
     if (targetConfig === true || isString(targetConfig)) {
       targetColor = isString(targetConfig) ? targetConfig : targetColor;
       // @ts-ignore
-      result[targetType as GlyphTarget] = { color: targetColor };
+      result[targetType] = { color: targetColor };
     } else if (isObject(targetConfig)) {
       if (hasAny(targetConfig, displayProps)) {
         // @ts-ignore
@@ -120,9 +120,9 @@ function normalizeConfig<G>(
   return result;
 }
 
-export interface GlyphRenderer<P> {
+export interface GlyphRenderer<P extends Partial<Glyph>> {
   type: string;
-  normalizeConfig(color: string, config: any): GlyphProfile<P>;
+  normalizeConfig(color: string, config: any): Profile<P>;
   prepareRender(glyphs: Record<string, Glyph[]>): void;
   render(attr: DayAttribute, glyphs: Record<string, Glyph[]>): void;
 }
@@ -243,7 +243,9 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
   }
 }
 
-export class BaseRenderer<T> implements GlyphRenderer<T> {
+export class BaseRenderer<T extends Partial<Glyph>>
+  implements GlyphRenderer<T>
+{
   type = '';
   collectionType = '';
 
@@ -253,7 +255,7 @@ export class BaseRenderer<T> implements GlyphRenderer<T> {
   }
 
   normalizeConfig(color: string, config: any) {
-    return normalizeConfig(color, config) as GlyphProfile<T>;
+    return normalizeConfig(color, config) as Profile<T>;
   }
 
   prepareRender(glyphs: Record<string, Glyph[]>) {

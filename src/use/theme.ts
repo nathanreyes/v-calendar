@@ -28,7 +28,8 @@ export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
     renderers.forEach(renderer => {
       const type = renderer.type as keyof Attribute;
       if (attr.hasOwnProperty(type) && attr[type] != null) {
-        attr[type] = renderer.normalizeConfig(color.value, attr[type]) as never;
+        // @ts-ignore
+        attr[type] = renderer.normalizeConfig(color.value, attr[type]);
       }
     });
   }
