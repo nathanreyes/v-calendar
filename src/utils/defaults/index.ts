@@ -10,7 +10,6 @@ declare const window: any;
 interface DatePickerPopoverDefaults {
   visibility?: string;
   placement?: string;
-  keepVisibleOnInput?: boolean;
   isInteractive?: boolean;
 }
 
@@ -49,7 +48,6 @@ const defaultConfig: Defaults = {
     popover: {
       visibility: 'hover-focus',
       placement: 'bottom-start',
-      keepVisibleOnInput: false,
       isInteractive: true,
     },
   },

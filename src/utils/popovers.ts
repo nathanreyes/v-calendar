@@ -1,12 +1,6 @@
-import {
-  ComponentPublicInstance,
-  Directive,
-  DirectiveBinding,
-  Ref,
-  watch,
-} from 'vue';
+import { ComponentPublicInstance, Directive, DirectiveBinding } from 'vue';
 import { Placement } from '@popperjs/core';
-import { elementContains, on, resolveEl, pick } from './helpers';
+import { elementContains, on, resolveEl } from './helpers';
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
 
@@ -38,8 +32,6 @@ export interface PopoverState {
   visibility: PopoverVisibility;
   isHovered: boolean;
   isFocused: boolean;
-  showDelay: number;
-  hideDelay: number;
   autoHide: boolean;
   force: boolean;
 }
@@ -68,10 +60,9 @@ export function showPopover(opts: Partial<PopoverOptions>) {
 
 export function hidePopover(opts: Partial<PopoverOptions>) {
   if (document) {
-    const detail = pick(opts, ['id', 'hideDelay', 'force']);
     document.dispatchEvent(
       new CustomEvent('hide-popover', {
-        detail,
+        detail: opts,
       }),
     );
   }

@@ -126,16 +126,18 @@ interface DatePartsRules {
   seconds?: DatePartsRule;
   milliseconds?: DatePartsRule;
 }
-```
 
-A rule can be defined in multiple ways.
-
-```ts
 type DatePartsRule =
   | number
   | Array<number>
   | NumberRuleConfig
   | DatePartsRuleFunction;
+
+interface NumberRuleConfig {
+  min?: number;
+  max?: number;
+  interval?: number;
+}
 ```
 
 ## Number Rules

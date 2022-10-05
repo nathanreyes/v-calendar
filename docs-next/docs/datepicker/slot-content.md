@@ -2,14 +2,55 @@
 
 ## Default slot
 
-When a default slot is used with `DatePicker`, that slot content will display instead of the calendar picker.
+When a default slot is used with `DatePicker`, that content will display instead of the calendar picker.
+
+<Example centered>
+  <DateSimpleSlot />
+</Example>
+
+```vue
+<DatePicker v-model="date">
+  <template #default="{ togglePopover }">
+    <button
+      class="px-3 py-2 bg-blue-500 text-sm text-white font-semibold rounded-md"
+      @click="togglePopover"
+    >
+      Select date
+    </button>
+  </template>
+</DatePicker>
+```
+
+In this simple example, we display a `<button />` as the default slot, and use one of the slot props provided to toggle the calendar popover.
+
+## Slot props
+
+The full date picker context is bound to the default slot. Here are a few props that might be useful for you. 
+
+```ts
+interface DatePickerContext {
+  // Value to bind to input element(s)
+  inputValue: string | { start: string; end: string }; 
+  // Events to bind to input element(s)
+  inputEvents: object;
+  // Popover show/hide methods
+  showPopover: (opts?: Partial<PopoverOptions>) => void;
+  hidePopover: (opts?: Partial<PopoverOptions>) => void;
+  togglePopover: (opts: Partial<PopoverOptions>) => void;
+  // ...,
+}
+```
 
 ## Input element
 
 To support date text entry, provide a custom `input` element as the default slot. `DatePicker` provides formatting, parsing and event handling out of the box via the following slot props:
 
 - `inputValue`: The is the value you should bind to your input. This value will update as new dates are assigned and validated by the component.
-- `inputEvents`: These events include handlers for events that ultimately assign new dates and manage the appearance of the popover (as specified via the `popover` prop).
+- `inputEvents`: These events include handlers for events that manage debounce, value updates and showing/hiding the popover (as specified via the `popover` prop).
+
+<BaseAlert title="Popover events" info>
+To exclude popover events from `inputEvents`, assign a falsy value to the `popover` prop.
+</BaseAlert>
 
 <Example centered>
   <DateInputIntro />
@@ -169,13 +210,87 @@ Please reference the [masks section](../i18n/masks#mask-tokens) for a complete l
 
 ## Popover
 
+
+The `popover` prop determines how popover events are generated in the `inputEvents` slot prop.
+
+```ts
+type PopoverProp = boolean | Partial<PopoverOptions>;
+
+interface PopoverOptions {
+  visibility: PopoverVisibility; // When the popover appears
+  placement: Placement; // Where the popover appears
+  autoHide: boolean; // Auto-hide popover based on visibility
+  showDelay: number; // Delay (ms) before popover is shown
+  hideDelay: number; // Delay (ms) before popover is hidden
+}
+
+type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
+```
+
 ### Default behavior
 
-The `popover` prop determines how popover events are included in the `inputEvents` slot prop. If this prop is `true` (default), and the `inputEvents` have been properly bound to an `input` element, then the popover will display as the user interacts with the input popover.
+The `popover` prop is `true` by default, which means that the events will use the following default settings.
+
+```json
+{
+  visibility: 'hover-focus',
+  autoHide: true,
+  placement: 'bottom-start',
+  showDelay: 0,
+  hideDelay: 110,
+}
+```
+
+Now, if the `inputEvents` have been properly bound to an `input` element, then the popover will display as the user interacts with the input popover.
+
+<Example centered>
+  <DatePopoverDefault />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="date" :popover="popover">
+    <template #default="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DatePicker>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const date = ref(new Date());
+const popover = ref(true);
+</script>
+```
 
 ### Custom behavior
 
-The `popover` prop also accepts an object with custom popover settings.
+To customize this behavior, provide a custom `PopoverOptions` object.
+
+<Example centered>
+  <DatePopoverCustom />
+</Example>
+
+```vue
+<template>
+  <DatePicker v-model="date" :popover="popover">
+    <template #default="{ inputValue, inputEvents }">
+      <BaseInput :value="inputValue" v-on="inputEvents" />
+    </template>
+  </DatePicker>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const date = ref(new Date());
+const popover = ref({
+  visibility: 'click',
+  placement: 'right',
+});
+</script>
+```
 
 ### Manual Control
 
@@ -185,7 +300,7 @@ You may choose to not bind popover behavior to the `inputEvents`, or you may not
 2. Extract the relevant popover methods needed (`togglePopover`, `showPopover`, `hidePopover`) to show/hide the popover manually.
 
 <Example centered>
-  <DateCustomSlot />
+  <DatePopoverManual />
 </Example>
 
 ```vue
@@ -216,46 +331,6 @@ import { ref } from 'vue';
 
 const date = ref(new Date());
 </script>
-```
-
-When doing so, there are other slot variables that you may use to further customize date selection behavior.
-
-```ts
-interface DatePickerSlotProps {
-  inputValue: string | { start: string; end: string };
-  inputEvents: object;
-  isDragging: ComputedRef<boolean>;
-  // Call to update date value w/ optional side-effects
-  updateValue: (value: any, opts?: Partial<UpdateOptions>) => Promise<Date | DateRange | null>;
-  showPopover: (opts?: Partial<PopoverOptions>) => void;
-  hidePopover: (opts?: Partial<PopoverOptions>) => void;
-  togglePopover: (opts: Partial<PopoverOptions>) => void;
-}
-
-interface UpdateOptions {
-  patch: DatePatch, // Parts of the current date to update,  Default: DateTime
-  debounce: number, // Debounce rate (ms), Default: 0
-  formatInput: boolean, // Side effect: Format input after update, Default: true
-  hidePopover: boolean, // Side effect: Hide popover after update (if visible), Default: false
-  moveToValue: boolean, // Side effect: Move calendar to display updated value, Default: false
-}
-
-enum DatePatch {
-  DateTime = 0,
-  Date,
-  Time,
-}
-
-interface PopoverOptions {
-  visibility: PopoverVisibility;
-  isInteractive: boolean;
-  autoHide: boolean;
-  target: string | HTMLElement | ComponentPublicInstance;
-  placement: Placement;
-  modifiers: any;
-  showDelay: number;
-  hideDelay: number;
-}
 ```
 
 <BaseAlert>

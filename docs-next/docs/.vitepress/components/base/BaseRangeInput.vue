@@ -6,9 +6,12 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
-  inputValue: Object,
-  inputEvents: Object,
-});
+<script>
+export default {
+  inheritAttrs: false,
+  props: {
+    inputValue: Object,
+    inputEvents: Object,
+  },
+};
 </script>

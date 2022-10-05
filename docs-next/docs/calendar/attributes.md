@@ -658,7 +658,7 @@ Now, we just need to display the attributes for the day as well. We can do so by
         {{ dayTitle }}
       </div>
       <ul>
-        <li v-for="{key, customData} in attributes" :key="key">
+        <li v-for="{ key, customData } in attributes" :key="key">
           {{ customData.description }}
         </li>
       </ul>
