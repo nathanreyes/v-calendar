@@ -78,16 +78,6 @@ export function togglePopover(opts: Partial<PopoverOptions>) {
   }
 }
 
-export function updatePopover(opts: Partial<PopoverOptions>) {
-  if (document) {
-    document.dispatchEvent(
-      new CustomEvent('update-popover', {
-        detail: opts,
-      }),
-    );
-  }
-}
-
 export function getPopoverEventHandlers(
   opts: Partial<PopoverOptions>,
 ): Partial<PopoverEventHandlers> {
@@ -212,9 +202,9 @@ export const popoverDirective: Directive = {
         removeHandlers(el);
         if (!newVisibility) hidePopover(oldValue);
       }
-      if (newVisibility) addHandlers(el, value);
-    } else if (value) {
-      updatePopover(value);
+      if (newVisibility) {
+        addHandlers(el, value);
+      }
     }
   },
   unmounted(el: Element) {

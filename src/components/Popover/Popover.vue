@@ -27,7 +27,6 @@
           :direction="direction"
           :alignment="alignment"
           :data="data"
-          :update-layout="setupPopper"
           :hide="hide"
         >
           {{ data }}
@@ -77,12 +76,14 @@ export default defineComponent({
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   props: {
     id: { type: String, required: true },
+    showDelay: { type: Number, default: 0 },
+    hideDelay: { type: Number, default: 110 },
     boundarySelector: { type: String },
   },
   setup(props, { emit }) {
     let timeout: number | undefined = undefined;
     const popoverRef = ref<HTMLElement>();
-    let resizeObserver = null;
+    let resizeObserver: ResizeObserver | null = null;
     let popper: Instance | null = null;
 
     const state = reactive<PopoverState>({
@@ -98,8 +99,6 @@ export default defineComponent({
       visibility: 'click',
       isHovered: false,
       isFocused: false,
-      showDelay: 0,
-      hideDelay: 110,
       autoHide: false,
       force: false,
     });
@@ -213,7 +212,7 @@ export default defineComponent({
       if (state.force) return;
       if (opts.force) state.force = true;
 
-      setTimer(opts.showDelay ?? state.showDelay, () => {
+      setTimer(opts.showDelay ?? props.showDelay, () => {
         if (state.isVisible) {
           state.force = false;
           emit('after-show');
@@ -233,12 +232,9 @@ export default defineComponent({
       if (state.force) return;
       if (opts.force) state.force = true;
 
-      setTimer(opts.hideDelay ?? state.hideDelay, () => {
+      setTimer(opts.hideDelay ?? props.hideDelay, () => {
         if (!state.isVisible) state.force = false;
-        updateState({
-          ...opts,
-          isVisible: false,
-        });
+        state.isVisible = false;
       });
     }
 
@@ -272,7 +268,7 @@ export default defineComponent({
         return;
       }
       // Hide the popover
-      hide();
+      hide({ force: true });
     }
 
     function onDocumentKeydown(e: KeyboardEvent) {
@@ -296,18 +292,12 @@ export default defineComponent({
       toggle(detail);
     }
 
-    function onDocumentUpdatePopover({ detail }: PopoverEvent) {
-      if (!detail.id || detail.id !== props.id) return;
-      update(detail);
-    }
-
     function addEvents() {
       on(document, 'keydown', onDocumentKeydown);
       on(document, 'click', onDocumentClick);
       on(document, 'show-popover', onDocumentShowPopover);
       on(document, 'hide-popover', onDocumentHidePopover);
       on(document, 'toggle-popover', onDocumentTogglePopover);
-      on(document, 'update-popover', onDocumentUpdatePopover);
     }
 
     function removeEvents() {
@@ -316,7 +306,6 @@ export default defineComponent({
       off(document, 'show-popover', onDocumentShowPopover);
       off(document, 'hide-popover', onDocumentHidePopover);
       off(document, 'toggle-popover', onDocumentTogglePopover);
-      off(document, 'update-popover', onDocumentUpdatePopover);
     }
 
     function beforeEnter(el: HTMLElement) {
@@ -387,17 +376,22 @@ export default defineComponent({
       }
     }
 
+    function cleanupRO() {
+      if (resizeObserver != null) {
+        resizeObserver.disconnect();
+        resizeObserver = null;
+      }
+    }
+
     watch(
       () => popoverRef.value,
-      () => {
-        if (!popoverRef.value) {
-          resizeObserver = null;
-          return;
-        }
+      val => {
+        cleanupRO();
+        if (!val) return;
         resizeObserver = new ResizeObserver(() => {
           if (popper) popper.update();
         });
-        resizeObserver.observe(popoverRef.value);
+        resizeObserver.observe(val);
       },
     );
 
@@ -411,6 +405,7 @@ export default defineComponent({
 
     onUnmounted(() => {
       destroyPopper();
+      cleanupRO();
       removeEvents();
     });
 
