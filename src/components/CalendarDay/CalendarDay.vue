@@ -19,9 +19,13 @@
       :dayEvents="dayContentEvents"
       :locale="locale"
     >
-      <span v-bind="dayContentProps" v-popover="dayPopover">
+      <div
+        v-bind="dayContentProps"
+        v-on="dayContentEvents"
+        v-popover="dayPopover"
+      >
         {{ day.label }}
-      </span>
+      </div>
     </slot>
     <!--Dots-->
     <div v-if="hasDots" class="vc-day-layer vc-day-box-center-bottom">
@@ -49,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, computed, watch } from 'vue';
+import { PropType, defineComponent, computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
 import { Attribute, PopoverConfig } from '../../utils/attribute';
@@ -134,29 +138,6 @@ export default defineComponent({
       ];
     });
 
-    const dayContentEvents = computed(() => {
-      return {
-        onClick(event: MouseEvent) {
-          onDayClick(day.value, event);
-        },
-        onMouseenter(event: MouseEvent) {
-          onDayMouseenter(day.value, event);
-        },
-        onMouseleave(event: MouseEvent) {
-          onDayMouseleave(day.value, event);
-        },
-        onFocusin(event: FocusEvent) {
-          onDayFocusin(day.value, event);
-        },
-        onFocusout(event: FocusEvent) {
-          onDayFocusout(day.value, event);
-        },
-        onKeydown(event: KeyboardEvent) {
-          onDayKeydown(day.value, event);
-        },
-      };
-    });
-
     const dayContentProps = computed(() => {
       let tabindex;
       if (day.value.isFocusable) {
@@ -175,9 +156,31 @@ export default defineComponent({
         style,
         tabindex,
         'aria-label': day.value.ariaLabel,
-        'aria-disabled': day.value.isDisabled ? 'true' : 'false',
+        'aria-disabled': day.value.isDisabled ? true : false,
         role: 'button',
-        ...dayContentEvents.value,
+      };
+    });
+
+    const dayContentEvents = computed(() => {
+      return {
+        click(event: MouseEvent) {
+          onDayClick(day.value, event);
+        },
+        mouseenter(event: MouseEvent) {
+          onDayMouseenter(day.value, event);
+        },
+        mouseleave(event: MouseEvent) {
+          onDayMouseleave(day.value, event);
+        },
+        focusin(event: FocusEvent) {
+          onDayFocusin(day.value, event);
+        },
+        focusout(event: FocusEvent) {
+          onDayFocusout(day.value, event);
+        },
+        keydown(event: KeyboardEvent) {
+          onDayKeydown(day.value, event);
+        },
       };
     });
 
