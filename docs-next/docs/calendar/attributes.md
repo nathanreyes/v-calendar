@@ -608,10 +608,10 @@ Now that you are providing your own popover, you need to display the attributes 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
 | `day` | Object | The [day object](/api/day-object.md) associated with the popover. |
+| `dayTitle` | String | The formatted date title according to the `masks.dayPopover` prop |
 | `attributes` | Array | All the attributes assigned for the associated day. Only attributes with 'truthy' values assigned to their `popover` key are passed in. |
 | `format` | Function | Function for formatting dates. Accepts `date: Date` and `mask: String` arguments, respectively. |
 | `masks` | Object | Set of format masks for the calendar. |
-| `updateLayout` | Function | Call this function to force the popover to recalculate its layout. For example, making changes to elements within popover could cause it to grow or shrink. Calling this function will keep it positioned correctly. |
 | `hide` | Function | Call this function to forcefully hide the popover. |
 
 Let's walk through the process of customizing the previous example. First, let's add a header to display the date for the popover.
@@ -666,7 +666,3 @@ Now, we just need to display the attributes for the day as well. We can do so by
   </template>
 </Calendar>
 ```
-
-### Additional Options
-
-Reference [API](api/v2.0/attribute.html#popover) for a complete list of popover options.

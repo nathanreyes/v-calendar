@@ -3,10 +3,10 @@ import { ref } from 'vue';
 const calendar = ref(null);
 
 async function move() {
-  // Move forwards 5 months (wait for transition)
-  await calendar.value.move(5);
-  // Move backwards 5 months (wait for transition)
-  await calendar.value.move(-5);
+  // Move forwards 1 month (wait for transition)
+  await calendar.value.move(1);
+  // Move backwards 1 month (wait for transition)
+  await calendar.value.move(-1);
 }
 </script>
 <template>

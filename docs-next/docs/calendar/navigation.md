@@ -93,19 +93,31 @@ Both `Calendar` and `DatePicker` now support the following key commands for navi
 
 The base calendar component contains a `move` method that provides more flexible options not provided by the user interface or keyboard navigation. This method is asynchronous which can be `await`ed when a transition is specified.
 
-```js
-async move(arg, opts) => Promise
+```ts
+type move = async (target: MoveTarget, opts: MoveOptions) => Promise<boolean>;
+
+type MoveTarget = number | string | Date | PageAddress;
+
+interface MoveOptions {
+  // Target month position for multi-row or multi-column configurations.
+  // Negative numbers will offset from last position.
+  position: number;
+  view: CalendarView;
+  // Target month position for multi-row or multi-column configurations. Negative numbers will offset from last position.
+  transition: MoveTransition;
+  // Force navigation even if the target months(s) are disabled
+  force: boolean;
+}
+
+interface PageAddress {
+  day?: number;
+  week?: number;
+  month: number;
+  year: number;
+}
+
+type MoveTransition = 'none' | 'fade' | 'slide-v' | 'slide-h';
 ```
-
-#### Parameters
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| **arg** | **Number*, *Date*, *String* or Page *Object* | Target month criteria |
-| **opts** | *Object* | Set of navigation options |
-| **opts.position** | *Number* | Target month position for multi-row or multi-column configurations. Negative numbers will offset from last position. |
-| **opts.transition** | *String* | Transition type (`slide-h`, `slide-v`, `fade`, `none`). Note that this will override the calendar `transition` prop. |
-| **opts.force** | *Boolean* | Force navigation even if the target months(s) are disabled |
 
 #### Returns
   
@@ -134,10 +146,10 @@ import { ref } from 'vue';
 const calendar = ref(null);
 
 async function move() {
-  // Move forwards 5 months (wait for transition)
-  await calendar.value.move(5);
-  // Move backwards 5 months (wait for transition)
-  await calendar.value.move(-5);
+  // Move forwards 1 month (wait for transition)
+  await calendar.value.move(1);
+  // Move backwards 1 month (wait for transition)
+  await calendar.value.move(-1);
 }
 </script>
 ```
