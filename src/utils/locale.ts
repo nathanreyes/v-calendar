@@ -172,6 +172,12 @@ export function resolveConfig(
   return result;
 }
 
+const DATE_PARTS: Record<PageView, (keyof DateParts)[]> = {
+  daily: ['year', 'month', 'day'],
+  weekly: ['year', 'month', 'week'],
+  monthly: ['year', 'month'],
+};
+
 export default class Locale {
   id: any;
   daysInWeek: number;
@@ -277,24 +283,11 @@ export default class Locale {
     return getNextMonthParts(month, year, this.firstDayOfWeek);
   }
 
-  toPage(
-    arg: number | string | Date | PageAddress,
-    fromPage: Page | undefined,
-    view: string,
-  ) {
-    if (isNumber(arg)) {
-      return this.addPages(fromPage || this.getPageForThisMonth()!, arg, view);
-    }
-    if (isString(arg)) {
-      return this.getDateParts(this.normalizeDate(arg));
-    }
-    if (isDate(arg)) {
-      return this.getDateParts(arg as Date);
-    }
-    if (isObject(arg)) {
-      return arg as PageAddress;
-    }
-    return null;
+  getPageForDate(date: DateSource, view: PageView) {
+    return pick(
+      this.getDateParts(this.normalizeDate(date)),
+      DATE_PARTS[view],
+    ) as PageAddress;
   }
 
   getHourLabels() {
@@ -312,7 +305,7 @@ export default class Locale {
   addPages(
     { day, week, month, year }: PageAddress,
     count: number,
-    view: string,
+    view: PageView,
   ): PageAddress {
     if (view === 'daily' && day) {
       const date = new Date(year, month - 1, day);
@@ -342,7 +335,7 @@ export default class Locale {
     }
   }
 
-  pageRangeToArray(from: PageAddress, to: PageAddress, view: string) {
+  pageRangeToArray(from: PageAddress, to: PageAddress, view: PageView) {
     if (!pageIsValid(from) || !pageIsValid(to)) return [];
     const result = [];
     while (!pageIsAfterPage(from, to)) {
@@ -674,13 +667,5 @@ export default class Locale {
       }
     });
     return result;
-  }
-
-  getPageForDate(date: DateSource) {
-    return this.getDateParts(this.normalizeDate(date));
-  }
-
-  getPageForThisMonth() {
-    return this.getPageForDate(new Date());
   }
 }

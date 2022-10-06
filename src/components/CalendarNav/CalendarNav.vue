@@ -197,7 +197,7 @@ export default {
       return Math.floor(year / _yearGroupCount);
     },
     getMonthItems(year) {
-      const { month: thisMonth, year: thisYear } = this.locale.getPageForDate(
+      const { month: thisMonth, year: thisYear } = this.context.getPageForDate(
         new Date(),
       );
       return getMonthDates().map((d, i) => {
@@ -216,7 +216,7 @@ export default {
       });
     },
     getYearItems(yearGroupIndex) {
-      const { year: thisYear } = this.locale.getPageForDate(new Date());
+      const { year: thisYear } = this.context.getPageForDate(new Date());
       const startYear = yearGroupIndex * _yearGroupCount;
       const endYear = startYear + _yearGroupCount;
       const items = [];

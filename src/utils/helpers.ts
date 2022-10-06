@@ -40,8 +40,9 @@ export const roundTenth = (n: number) => {
   return Math.round(n * 100) / 100;
 };
 
-export const pageIsValid = (page: PageAddress | null | undefined): boolean =>
-  !!(page && page.month && page.year);
+export const pageIsValid = (page: PageAddress | null | undefined): boolean => {
+  return page != null && page.month != null && page.year != null;
+};
 
 export const pageIsBeforePage = (
   page: PageAddress | null | undefined,
@@ -69,7 +70,9 @@ export const pageIsAfterPage = (
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
   page = page as PageAddress;
   comparePage = comparePage as PageAddress;
-  if (page.year !== comparePage.year) return page.year > comparePage.year;
+  if (page.year !== comparePage.year) {
+    return page.year > comparePage.year;
+  }
   if (page.month && comparePage.month && page.month !== comparePage.month) {
     return page.month > comparePage.month;
   }

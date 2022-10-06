@@ -17,6 +17,7 @@ import { AttributeConfig } from '../utils/attribute';
 import { createGuid, pageIsBetweenPages } from '../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../utils/_';
 import {
+  DateSource,
   DatePatch,
   DateParts,
   DatePartsRules,
@@ -30,7 +31,7 @@ import {
   getPopoverEventHandlers,
 } from '../utils/popovers';
 import { BaseProps, propsDef as basePropsDef, createBase } from './base';
-import { MoveTarget, MoveOptions } from './calendar';
+import { MoveOptions } from './calendar';
 
 export type DateType = 'date' | 'string' | 'number';
 
@@ -735,15 +736,20 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         ? isStart
           ? valueStart.value
           : valueEnd.value
-      return locale.value.getPageForDate(date as Date);
         : dateValue.value;
+      return locale.value.getPageForDate(date as Date, 'monthly');
     }
     return null;
   }
 
-  async function move(target: MoveTarget, opts: Partial<MoveOptions> = {}) {
+  async function move(target: DateSource, opts: Partial<MoveOptions> = {}) {
     if (calendarRef.value == null) return false;
     return calendarRef.value.move(target, opts);
+  }
+
+  async function moveBy(pages: number, opts: Partial<MoveOptions> = {}) {
+    if (calendarRef.value == null) return false;
+    return calendarRef.value.moveBy(pages, opts);
   }
 
   async function moveToValue(
@@ -848,6 +854,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     attributes,
     rules,
     move,
+    moveBy,
     moveToValue,
     updateValue,
     showPopover,

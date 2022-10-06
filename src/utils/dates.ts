@@ -5,7 +5,11 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
 import getISOWeek from 'date-fns/getISOWeek';
 import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
+import addYears from 'date-fns/addYears';
 import Locale, { LocaleConfig } from './locale';
+
+export { addDays, addMonths, addYears };
 
 type DayNameLength = 'narrow' | 'short' | 'long';
 type MonthNameLength = 'short' | 'long';
@@ -132,7 +136,6 @@ const PATCH_KEYS: Record<DatePatch, (keyof DateParts)[]> = {
 };
 
 export const daysInWeek = 7;
-
 export const MS_PER_SECOND = 1000;
 export const MS_PER_MINUTE = MS_PER_SECOND * 60;
 export const MS_PER_HOUR = MS_PER_MINUTE * 60;
