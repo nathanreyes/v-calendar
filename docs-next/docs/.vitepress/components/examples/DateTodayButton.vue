@@ -18,6 +18,6 @@ import { ref } from 'vue';
 const date = ref(new Date());
 const picker = ref(null);
 function setToday() {
-  picker.value.updateValue(new Date(), { moveToValue: 1 });
+  picker.value.updateValue(new Date(), { moveToValue: true });
 }
 </script>
