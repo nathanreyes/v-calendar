@@ -16,7 +16,7 @@ type MonthNameLength = 'short' | 'long';
 
 export type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type DayOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export type DateSource = Date | string | number | Partial<DateParts>;
+export type DateSource = Date | string | number;
 export type TimeNames = Partial<Record<Intl.RelativeTimeFormatUnit, string>>;
 
 interface NumberRuleConfig {
@@ -410,7 +410,7 @@ export function isDateParts(date: any) {
 
 export function isDateSource(date: any) {
   if (date == null) return false;
-  return isString(date) || isNumber(date) || isDate(date) || isDateParts(date);
+  return isString(date) || isNumber(date) || isDate(date);
 }
 
 export function roundDate(dateMs: number, snapMs = 0) {
@@ -850,9 +850,9 @@ export function parseDate(
 }
 
 export function normalizeDate(
-  d: DateSource,
+  d: DateSource | DateParts,
   config: Partial<DateOptions> = {},
-) {
+): Date {
   const nullDate = new Date(NaN);
   let result = nullDate;
   const { fillDate, locale, timezone, mask, patch, rules } = config;
@@ -862,15 +862,15 @@ export function normalizeDate(
   } else if (isString(d)) {
     config.type = 'string';
     result = d ? parseDate(d, mask || 'iso', { locale, timezone }) : nullDate;
-  } else if (isDate(d) || !isObject(d)) {
+  } else if (isDate(d)) {
     config.type = 'date';
     result = new Date((d as Date).getTime());
-  } else {
+  } else if (isDateParts(d)) {
     config.type = 'object';
-    result = getDateFromParts(d as Partial<DateParts>, timezone);
+    result = getDateFromParts(d as DateParts, timezone);
   }
-
-  if (result) {
+  // Patch parts or apply rules if needed
+  if (result && (patch || rules)) {
     let parts = getDateParts(result, 1, timezone);
     // Patch date parts
     if (patch) {
@@ -933,6 +933,8 @@ export function denormalizeDate(
       return date ? date.getTime() : NaN;
     case 'string':
       return date ? formatDate(date, mask || 'iso', { locale, timezone }) : '';
+    case 'object':
+      return date ? getDateParts(date, 1, timezone) : null;
     default:
       return date ? new Date(date) : null;
   }

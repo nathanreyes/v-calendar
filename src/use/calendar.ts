@@ -42,6 +42,8 @@ import { BaseProps, propsDef as basePropsDef, useOrCreateBase } from './base';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
+export type MoveTarget = DateSource | PageAddress;
+
 export type MoveTransition = 'none' | 'fade' | 'slide-v' | 'slide-h';
 
 export interface MoveOptions {
@@ -53,8 +55,11 @@ export interface MoveOptions {
   toPage: PageAddress;
 }
 
-export interface RefreshOptions extends MoveOptions {
+export interface RefreshOptions {
   page: PageAddress;
+  position: number;
+  force: boolean;
+  transition: MoveTransition;
 }
 
 export interface CalendarProps extends BaseProps {
@@ -178,7 +183,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const step = computed(() => props.step || count.value);
 
-  const firstPage = computed(() => head<Page>(state.pages));
+  const firstPage = computed(() => head<Page>(state.pages) ?? null);
 
   const lastPage = computed(() => last<Page>(state.pages) ?? null);
 
@@ -319,12 +324,10 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const getTargetPageRange = (
-    target: DateSource | undefined,
+    page: PageAddress,
     opts: Partial<MoveOptions> = {},
   ) => {
     const { view = state.view, position = 1, force } = opts;
-    const page =
-      target == null ? getDefaultInitialPage() : getPageForDate(target);
     const pagesToAdd = position > 0 ? 1 - position : -(count.value + position);
     let fromPage = addPages(page, pagesToAdd, view);
     let toPage = addPages(fromPage!, count.value - 1, view);
@@ -364,13 +367,12 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     return movePrev ? 'slide-right' : 'slide-left';
   };
 
-  const refreshPages = ({
-    page,
-    position = 1,
-    force,
-    transition,
-  }: Partial<RefreshOptions> = {}) => {
+  const refreshPages = (opts: Partial<RefreshOptions> = {}) => {
     return new Promise((resolve, reject) => {
+      const { position = 1, force = false, transition } = opts;
+      const page = pageIsValid(opts.page)
+        ? opts.page!
+        : getDefaultInitialPage();
       const { fromPage } = getTargetPageRange(page, {
         position,
         force,
@@ -433,11 +435,14 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     return addPages(fromPage, pages);
   };
 
-  const canMove = (target: DateSource, opts: Partial<MoveOptions> = {}) => {
+  const canMove = (target: MoveTarget, opts: Partial<MoveOptions> = {}) => {
+    const page = pageIsValid(target as PageAddress)
+      ? (target as Page)
+      : getPageForDate(target);
     // Calculate new page range without adjusting to min/max
     Object.assign(
       opts,
-      getTargetPageRange(target, {
+      getTargetPageRange(page, {
         ...opts,
         force: true,
       }),
@@ -466,7 +471,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     );
   });
 
-  const move = async (target: DateSource, opts: Partial<MoveOptions> = {}) => {
+  const move = async (target: MoveTarget, opts: Partial<MoveOptions> = {}) => {
     // Reject if we can't move to this page
     if (!opts.force && !canMove(target, opts)) {
       return Promise.reject(

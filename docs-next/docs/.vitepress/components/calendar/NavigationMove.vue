@@ -59,7 +59,7 @@
             v-if="transitioning"
           />
           <span
-            class="inline-block w-4 h-4 bg-red-400 rounded-full ml-4"
+            class="inline-block w-4 h-4 bg-gray-300 rounded-full ml-4"
             v-else
           />
         </label>
@@ -127,95 +127,99 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
+
+const calendar = ref(null);
 const year = new Date().getFullYear();
-export default {
-  data() {
-    return {
-      moveBy: 'numMonths',
-      steps: [-5, -3, -1, 1, 3, 5],
-      months: [
-        {
-          name: 'January',
-          month: { month: 1, year },
-        },
-        {
-          name: 'February',
-          month: { month: 2, year },
-        },
-        {
-          name: 'March',
-          month: { month: 3, year },
-        },
-        {
-          name: 'April',
-          month: { month: 4, year },
-        },
-        {
-          name: 'May',
-          month: { month: 5, year },
-        },
-        {
-          name: 'June',
-          month: { month: 6, year },
-        },
-        {
-          name: 'July',
-          month: { month: 7, year },
-        },
-        {
-          name: 'August',
-          month: { month: 8, year },
-        },
-        {
-          name: 'September',
-          month: { month: 9, year },
-        },
-        {
-          name: 'October',
-          month: { month: 10, year },
-        },
-        {
-          name: 'November',
-          month: { month: 11, year },
-        },
-        {
-          name: 'December',
-          month: { month: 12, year },
-        },
-      ],
-      dates: [
-        new Date(1944, 5, 6),
-        new Date(1955, 11, 1),
-        new Date(1969, 6, 20),
-        new Date(2001, 8, 11),
-        new Date(),
-      ],
-      transition: 'slide-h',
-      transitionOptions: [
-        { value: 'slide-h' },
-        { value: 'slide-v' },
-        { value: 'fade' },
-        { value: 'none' },
-      ],
-      position: 1,
-      positionOptions: [{ value: 1 }, { value: 2 }],
-      transitioning: false,
-    };
+const moveBy = ref('numMonths');
+const steps = ref([-5, -3, -1, 1, 3, 5]);
+const months = ref([
+  {
+    name: 'January',
+    month: { month: 1, year },
   },
-  methods: {
-    onMove(arg) {
-      this.$refs.calendar.move(arg, {
-        transition: this.transition,
-        position: this.position,
-      });
-    },
-    onMoveFocus(arg) {
-      this.$refs.calendar.focusDate(arg, {
-        transition: this.transition,
-        position: this.position,
-      });
-    },
+  {
+    name: 'February',
+    month: { month: 2, year },
   },
-};
+  {
+    name: 'March',
+    month: { month: 3, year },
+  },
+  {
+    name: 'April',
+    month: { month: 4, year },
+  },
+  {
+    name: 'May',
+    month: { month: 5, year },
+  },
+  {
+    name: 'June',
+    month: { month: 6, year },
+  },
+  {
+    name: 'July',
+    month: { month: 7, year },
+  },
+  {
+    name: 'August',
+    month: { month: 8, year },
+  },
+  {
+    name: 'September',
+    month: { month: 9, year },
+  },
+  {
+    name: 'October',
+    month: { month: 10, year },
+  },
+  {
+    name: 'November',
+    month: { month: 11, year },
+  },
+  {
+    name: 'December',
+    month: { month: 12, year },
+  },
+]);
+const dates = ref([
+  new Date(1944, 5, 6),
+  new Date(1955, 11, 1),
+  new Date(1969, 6, 20),
+  new Date(2001, 8, 11),
+  new Date(),
+]);
+const transition = ref('slide-h');
+const transitionOptions = ref([
+  { value: 'slide-h' },
+  { value: 'slide-v' },
+  { value: 'fade' },
+  { value: 'none' },
+]);
+const position = ref(1);
+const positionOptions = ref([{ value: 1 }, { value: 2 }]);
+const transitioning = ref(false);
+
+function onMove(arg) {
+  if (typeof arg === 'number') {
+    calendar.value.moveBy(arg, {
+      transition: this.transition,
+      position: this.position,
+    });
+  } else {
+    calendar.value.move(arg, {
+      transition: this.transition,
+      position: this.position,
+    });
+  }
+}
+
+function onMoveFocus(arg) {
+  calendar.value.focusDate(arg, {
+    transition: this.transition,
+    position: this.position,
+  });
+}
 </script>

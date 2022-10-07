@@ -89,25 +89,15 @@ Both `Calendar` and `DatePicker` now support the following key commands for navi
 | ***Alt*** + **PgUp** | Move to the same month and day of the previous year |
 | ***Alt*** + **PgDown** | Move to the same month and day of the next year |
 
-## *Move* Method
+## *Move* Methods
 
-The base calendar component contains a `move` method that provides more flexible options not provided by the user interface or keyboard navigation. This method is asynchronous which can be `await`ed when a transition is specified.
+The base calendar component provides the `move` and `moveBy` methods that provide more flexible options not provided by the user interface or keyboard navigation. These methods are asynchronous which can be `await`ed when a transition is specified.
 
 ```ts
-type move = async (target: MoveTarget, opts: MoveOptions) => Promise<boolean>;
+type Move = async (target: MoveTarget, opts: MoveOptions) => Promise<boolean>;
+type MoveBy = async (pages: number, opts: MoveOptions) => Promise<boolean>;
 
-type MoveTarget = number | string | Date | PageAddress;
-
-interface MoveOptions {
-  // Target month position for multi-row or multi-column configurations.
-  // Negative numbers will offset from last position.
-  position: number;
-  view: CalendarView;
-  // Target month position for multi-row or multi-column configurations. Negative numbers will offset from last position.
-  transition: MoveTransition;
-  // Force navigation even if the target months(s) are disabled
-  force: boolean;
-}
+type MoveTarget = Date | string | number | PageAddress;
 
 interface PageAddress {
   day?: number;
@@ -116,20 +106,24 @@ interface PageAddress {
   year: number;
 }
 
-type MoveTransition = 'none' | 'fade' | 'slide-v' | 'slide-h';
+interface MoveOptions {
+  // Target position for multi-row or multi-column layouts.
+  // Negative numbers will offset from last position.
+  position: number;
+  // How the calendar animates to the new target
+  transition: 'none' | 'fade' | 'slide-v' | 'slide-h';
+  // Force navigation even if the target is disabled
+  force: boolean;
+}
 ```
 
-#### Returns
-  
-A **Promise** that *resolves* when the transition to the new set of month(s) is complete or *rejects* if target month(s) are disabled.
-
-### Move by number of months
+### Move by number of pages
 
 Moves a given number of months forwards or backwards.
 
-Calling `move(num)` with a **positive** number will move **forwards** by a given number of months.
+Calling `moveBy(num)` with a **positive** number will move **forwards** by a given number of months.
 
-Calling `move(num)` with a **negative** number will move **backwards** by a given number of months.
+Calling `moveBy(num)` with a **negative** number will move **backwards** by a given number of months.
 
 <Example centered>
   <NavigationMoveMonths />
@@ -147,9 +141,9 @@ const calendar = ref(null);
 
 async function move() {
   // Move forwards 1 month (wait for transition)
-  await calendar.value.move(1);
+  await calendar.value.moveBy(1);
   // Move backwards 1 month (wait for transition)
-  await calendar.value.move(-1);
+  await calendar.value.moveBy(-1);
 }
 </script>
 ```

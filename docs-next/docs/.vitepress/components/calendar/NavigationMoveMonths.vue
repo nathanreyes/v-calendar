@@ -4,9 +4,9 @@ const calendar = ref(null);
 
 async function move() {
   // Move forwards 1 month (wait for transition)
-  await calendar.value.move(1);
+  await calendar.value.moveBy(1);
   // Move backwards 1 month (wait for transition)
-  await calendar.value.move(-1);
+  await calendar.value.moveBy(-1);
 }
 </script>
 <template>
