@@ -142,7 +142,7 @@
 
 <script>
 import { defineComponent, reactive, toRefs } from 'vue';
-import { useCalendarGridContext } from '../../use/calendarGrid';
+import { useCalendarGrid } from '../../use/calendarGrid';
 
 export default defineComponent({
   name: 'CalendarEventEdit',
@@ -158,7 +158,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { removeEvent } = useCalendarGridContext();
+    const { removeEvent } = useCalendarGrid();
 
     const state = reactive({
       // editing: false,

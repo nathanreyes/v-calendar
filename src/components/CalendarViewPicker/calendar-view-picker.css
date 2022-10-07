@@ -1,0 +1,18 @@
+.vc-view-picker {
+  display: flex;
+  align-items: center;
+  font-size: var(--vc-text-xs);
+  font-weight: var(--vc-font-semibold);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--vc-rounded-full);
+  background-color: var(--vc-accent-100);
+  color: var(--vc-accent-700);
+  user-select: none;
+  margin: 0 1rem;
+  * > * {
+    margin-left: 0.2rem;
+  }
+  &:hover {
+    background-color: var(--vc-accent-200);
+  }
+}

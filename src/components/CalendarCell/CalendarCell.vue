@@ -73,7 +73,7 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { useCalendarGridContext } from '../../use/calendarGrid';
+import { useCalendarGrid } from '../../use/calendarGrid';
 
 defineProps<{
   cell: Cell;
@@ -89,5 +89,5 @@ const {
   onEventResizeEndMouseDown,
   onEventResizeStartTouchStart,
   onEventResizeEndTouchStart,
-} = useCalendarGridContext();
+} = useCalendarGrid();
 </script>

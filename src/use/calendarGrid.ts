@@ -1,6 +1,5 @@
 import {
   Ref,
-  ComputedRef,
   PropType,
   ref,
   computed,
@@ -11,12 +10,11 @@ import {
 } from 'vue';
 import {
   CalendarProps,
-  CalendarContext,
-  propsDef,
+  propsDef as basePropsDef,
   emitsDef,
   createCalendar,
 } from './calendar';
-import { CalendarDay, CalendarWeek, Page } from '../utils/locale';
+import { CalendarDay, Page } from '../utils/locale';
 import { createGuid, on } from '../utils/helpers';
 import {
   EventConfig,
@@ -98,8 +96,8 @@ export interface CalendarGridProps extends CalendarProps {
   events: EventConfig[];
 }
 
-export const props = {
-  ...propsDef,
+export const propsDef = {
+  ...basePropsDef,
   events: {
     type: Object as PropType<EventConfig[]>,
   },
@@ -246,12 +244,13 @@ const SNAP_MINUTES = 15;
 const PIXELS_PER_HOUR = 50;
 const contextKey = '__vc_grid_context__';
 
-export function useCalendarGrid(
+export type CalendarGridContext = ReturnType<typeof createCalendarGrid>;
+
+export function createCalendarGrid(
   props: CalendarGridProps,
-  ctx: any,
-): CalendarGridContext {
-  const { emit } = ctx;
-  const calendar = createCalendar(props, ctx);
+  { emit, slots }: any,
+) {
+  const calendar = createCalendar(props, { emit, slots });
   const cellPopoverRef = ref<typeof CalendarCellPopover>();
   const dailyGridRef = ref<HTMLElement | null>(null);
   const weeklyGridRef = ref<HTMLElement | null>(null);
@@ -1007,43 +1006,7 @@ export function useCalendarGrid(
   return context;
 }
 
-export interface CalendarGridContext extends CalendarContext {
-  snapMinutes: Ref<number>;
-  dayRows: ComputedRef<number>;
-  dayColumns: ComputedRef<number>;
-  snapMs: ComputedRef<number>;
-  pixelsPerHour: Ref<number>;
-  isTouch: Ref<boolean>;
-  events: Ref<Event[]>;
-  eventsMap: Ref<Record<any, Event>>;
-  selectedEvents: ComputedRef<Event[]>;
-  weekEvents: Ref<Event[][]>;
-  dayCells: Ref<Cell[][]>;
-  detailEvent: Ref<Event | null>;
-  resizing: Ref<boolean>;
-  dragging: Ref<boolean>;
-  gridStyle: ComputedRef<Object>;
-  page: ComputedRef<Page>;
-  days: ComputedRef<CalendarDay[]>;
-  weeks: ComputedRef<CalendarWeek[]>;
-  removeEvent: (evt: Event) => void;
-  onDayNumberClick: (day: CalendarDay) => void;
-  onGridEscapeKeydown: () => void;
-  onGridMouseDown: (event: MouseEvent) => void;
-  onEventMouseDown: (event: MouseEvent, evt: Event) => void;
-  onEventResizeStartMouseDown: (event: MouseEvent, evt: Event) => void;
-  onEventResizeEndMouseDown: (event: MouseEvent, evt: Event) => void;
-  onGridTouchStart: (event: TouchEvent) => void;
-  onGridTouchMove: (event: TouchEvent) => void;
-  onGridTouchEnd: (event: TouchEvent) => void;
-  onEventTouchStart: (event: TouchEvent, evt: Event) => void;
-  onEventTouchMove: (event: TouchEvent, evt: Event) => void;
-  onEventTouchEnd: (event: TouchEvent, evt: Event) => void;
-  onEventResizeStartTouchStart: (event: TouchEvent, evt: Event) => void;
-  onEventResizeEndTouchStart: (event: TouchEvent, evt: Event) => void;
-}
-
-export function useCalendarGridContext(): CalendarGridContext {
+export function useCalendarGrid() {
   const context = inject<CalendarGridContext>(contextKey);
   if (!context) {
     throw new Error(

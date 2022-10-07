@@ -29,11 +29,10 @@ import {
   pageIsAfterPage,
   pageIsBetweenPages,
   createGuid,
-  capitalize,
   PageAddress,
   arrayHasItems,
 } from '../utils/helpers';
-import { isBoolean, isObject, has, head, last } from '../utils/_';
+import { isBoolean, has, head, last } from '../utils/_';
 import { getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
@@ -438,7 +437,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const canMove = (target: MoveTarget, opts: Partial<MoveOptions> = {}) => {
     const page = pageIsValid(target as PageAddress)
       ? (target as Page)
-      : getPageForDate(target);
+      : getPageForDate(target as DateSource);
     // Calculate new page range without adjusting to min/max
     Object.assign(
       opts,
@@ -461,15 +460,6 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const canMovePrev = computed(() => canMoveBy(-step.value));
 
   const canMoveNext = computed(() => canMoveBy(step.value));
-
-  const canMoveUp = computed(() => state.view !== 'monthly');
-
-  const moveUpLabel = computed(() => {
-    if (state.view === 'monthly') return '';
-    return capitalize(
-      locale.value.relativeTimeNames[isDaily.value ? 'week' : 'month']!,
-    );
-  });
 
   const move = async (target: MoveTarget, opts: Partial<MoveOptions> = {}) => {
     // Reject if we can't move to this page
@@ -510,14 +500,6 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const moveNext = () => {
     return moveBy(step.value);
-  };
-
-  const moveUp = () => {
-    if (state.view === 'daily') {
-      state.view = 'weekly';
-    } else if (state.view === 'weekly') {
-      state.view = 'monthly';
-    }
   };
 
   const tryFocusDate = (date: Date) => {
@@ -741,13 +723,10 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     canMoveBy,
     canMovePrev,
     canMoveNext,
-    canMoveUp,
-    moveUpLabel,
     move,
     moveBy,
     movePrev,
     moveNext,
-    moveUp,
     showWeeknumbers,
     showIsoWeeknumbers,
     onTransitionBeforeEnter,

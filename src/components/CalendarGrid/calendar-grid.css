@@ -172,6 +172,12 @@
     }
   }
 
+  .vc-grid-header-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
   .vc-grid-header {
     background-color: white;
     margin-top: 10px;

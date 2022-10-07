@@ -23,29 +23,19 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, computed } from 'vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 import DatePicker from '../DatePicker/DatePicker.vue';
 
-export default defineComponent({
-  components: {
-    DatePicker,
-  },
-  props: {
-    events: Array,
-  },
-  setup(props) {
-    const single = computed(() => {
-      if (!props.events.length || props.events.length > 1) return null;
-      return props.events[0];
-    });
-    const startDate = ref(new Date());
-    return {
-      single,
-      startDate,
-    };
-  },
+const props = defineProps({
+  events: { type: Array, required: true },
 });
+
+const single = computed(() => {
+  if (!props.events.length || props.events.length > 1) return null;
+  return props.events[0];
+});
+const startDate = ref(new Date());
 </script>
 
 <style lang="css">

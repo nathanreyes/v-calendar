@@ -7,7 +7,10 @@
     @keydown="onKeydown"
   >
     <!--Calendar header-->
-    <CalendarHeader :page="page" layout="pnt-u" is-2xl />
+    <div class="vc-grid-header-layout">
+      <CalendarHeader :page="page" layout="pnt-" is-2xl />
+      <CalendarViewPicker />
+    </div>
     <div class="vc-grid-layout">
       <div class="vc-grid-layout-left">
         <!--Monthly grid-->
@@ -205,35 +208,63 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+export default {
+  name: 'CalendarGrid',
+};
+</script>
+
+<script setup lang="ts">
+import { useSlots } from 'vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
+import CalendarViewPicker from '../CalendarViewPicker/CalendarViewPicker.vue';
 import CalendarGridWeek from '../CalendarGridWeek/CalendarGridWeek.vue';
 import CalendarCell from '../CalendarCell/CalendarCell.vue';
 import CalendarCellPopover from '../CalendarCellPopover/CalendarCellPopover.vue';
 import CalendarEventDetails from '../CalendarEventDetails/CalendarEventDetails.vue';
 import {
   CalendarGridProps,
-  props,
+  propsDef,
   emits,
-  useCalendarGrid,
+  createCalendarGrid,
 } from '../../use/calendarGrid';
 
-export default defineComponent({
-  name: 'CalendarGrid',
-  components: {
-    CalendarNavPopover,
-    CalendarHeader,
-    CalendarGridWeek,
-    CalendarCell,
-    CalendarCellPopover,
-    CalendarEventDetails,
-  },
-  emits,
-  props,
-  setup(props, ctx) {
-    return useCalendarGrid(props as CalendarGridProps, ctx);
-  },
+const emit = defineEmits(emits);
+const props = defineProps(propsDef);
+const slots = useSlots();
+const {
+  containerRef,
+  cellPopoverRef,
+  dailyGridRef,
+  weeklyGridRef,
+  theme,
+  locale,
+  isDaily,
+  isMonthly,
+  gridStyle,
+  transitionName,
+  resizing,
+  dragging,
+  page,
+  weeks,
+  days,
+  view,
+  weekEvents,
+  dayCells,
+  selectedEvents,
+  onKeydown,
+  onDayNumberClick,
+  onDayKeydown,
+  onGridMouseDown,
+  onGridTouchStart,
+  onGridTouchMove,
+  onGridTouchEnd,
+  onGridEscapeKeydown,
+  onTransitionBeforeEnter,
+  onTransitionAfterEnter,
+} = createCalendarGrid(props as CalendarGridProps, {
+  emit,
+  slots,
 });
 </script>
 

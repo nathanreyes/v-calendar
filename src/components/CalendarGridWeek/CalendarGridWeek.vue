@@ -13,7 +13,7 @@ export default {
 <script setup lang="ts">
 import { computed } from 'vue';
 import CalendarCell from '../CalendarCell/CalendarCell.vue';
-import { useCalendarGridContext } from '../../use/calendarGrid';
+import { useCalendarGrid } from '../../use/calendarGrid';
 import { createWeekCell } from '../../utils/calendar/cell';
 import { Event } from '../../utils/calendar/event';
 import { CalendarDay } from '../../utils/locale';
@@ -23,7 +23,7 @@ const props = defineProps<{
   events: Event[];
 }>();
 
-const { isDaily, isMonthly } = useCalendarGridContext();
+const { isDaily, isMonthly } = useCalendarGrid();
 
 const cells = computed(() => {
   if (!props.events) return [];
