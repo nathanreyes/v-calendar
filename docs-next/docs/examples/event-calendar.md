@@ -1,7 +1,6 @@
 ---
 title: Event Calendar Examples
+layout: page
 ---
-
-# Event Calendar Examples
 
 <ExampleGrid />
