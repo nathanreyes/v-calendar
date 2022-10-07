@@ -153,12 +153,17 @@ export default {
     socialLinks: [
       { icon: 'github', link: 'https://github.com/nathanreyes/v-calendar' },
     ],
+    outline: [2, 3],
+    sidebar: sidebar(),
+    algolia: {
+      appId: 'FT5KSHFUG1',
+      apiKey: '47929e4efb7adf753dface031e3ab4ee',
+      indexName: 'vcalendar',
+    },
     carbonAds: {
       code: 'CE7IK53U',
       placement: 'vcalendario',
     },
-    outline: [2, 3],
-    sidebar: sidebar(),
     footer: {
       message: 'Released under the MIT License.',
       copyright: 'Copyright © 2017-present Nathan Reyes',
