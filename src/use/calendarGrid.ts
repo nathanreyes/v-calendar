@@ -12,12 +12,12 @@ import {
 import {
   CalendarProps,
   CalendarContext,
-  props as calendarProps,
-  emits as calendarEmits,
-  useCalendar,
+  propsDef,
+  emitsDef,
+  createCalendar,
 } from './calendar';
 import { CalendarDay, CalendarWeek, Page } from '../utils/locale';
-import { createGuid, on, pick } from '../utils/helpers';
+import { createGuid, on } from '../utils/helpers';
 import {
   EventConfig,
   Event,
@@ -99,7 +99,7 @@ export interface CalendarGridProps extends CalendarProps {
 }
 
 export const props = {
-  ...calendarProps,
+  ...propsDef,
   events: {
     type: Object as PropType<EventConfig[]>,
   },
@@ -121,7 +121,7 @@ type MessageType =
 class Messages {
   static _emit: Function;
 
-  static EventCreateBegin(event: EventConfig) {
+  static EventCreateBegin(event: Event) {
     return new CancellableEventMessage(this._emit, 'event-create-begin', event);
   }
 
@@ -229,7 +229,7 @@ class EventMoveMessage extends CancellableEventMessage<Event> {
 // #endregion Messages
 
 export const emits = [
-  ...calendarEmits,
+  ...emitsDef,
   'day-header-click',
   'event-create-begin',
   'event-create-end',
@@ -251,7 +251,7 @@ export function useCalendarGrid(
   ctx: any,
 ): CalendarGridContext {
   const { emit } = ctx;
-  const calendar = useCalendar(props, ctx);
+  const calendar = createCalendar(props, ctx);
   const cellPopoverRef = ref<typeof CalendarCellPopover>();
   const dailyGridRef = ref<HTMLElement | null>(null);
   const weeklyGridRef = ref<HTMLElement | null>(null);
@@ -359,30 +359,33 @@ export function useCalendarGrid(
   // #region Util
 
   function createEventFromExisting(config: EventConfig, dateInfo?: DateInfo) {
-    const pickProps = ['selected'];
-    const existingEvent = pick(
-      events.value.find(e => e.key === config.key),
-      pickProps,
-    );
-    return _createEvent(
-      {
-        ...existingEvent,
-        ...config,
-        dateInfo,
-      },
-      getEventContext(),
-    );
+    const event = events.value.find(e => e.key === config.key);
+    const ctx = getEventContext();
+    if (event != null) {
+      const { selected } = event;
+      return _createEvent(
+        {
+          ...config,
+          selected,
+        },
+        ctx,
+      );
+    }
+    return _createEvent(config, ctx);
   }
 
   function createNewEvent(date: Date, isWeekly: boolean) {
-    const msg = Messages.EventCreateBegin({
-      key: createGuid(),
-      start: date,
-      end: date,
-      isAllDay: isWeekly,
-    }).send();
+    const event = _createEvent(
+      {
+        key: createGuid(),
+        start: { date },
+        end: { date },
+        isAllDay: isWeekly,
+      },
+      getEventContext(),
+    );
+    const msg = Messages.EventCreateBegin(event).send();
     if (msg.cancel || !msg.event) return;
-    const event = _createEvent(msg.event, getEventContext());
     eventsMap.value[event.key] = event;
     refreshEventCells();
     return event;
@@ -417,12 +420,12 @@ export function useCalendarGrid(
     }, {} as Record<any, Event>);
   }
 
-  function groupEvents(map: Record<any, Event>, evts: Event[]) {
+  function groupEvents(evts: Event[]) {
     return days.value.map(day => {
       const group: { day: CalendarDay; events: Event[] } = { day, events: [] };
       evts.forEach(evt => {
-        if (evt.dateInfo.intersectsDay(day) && map[evt.key]) {
-          group.events.push(map[evt.key]);
+        if (evt.dateInfo.intersectsDay(day)) {
+          group.events.push(evt);
         }
       });
       return group;
@@ -432,12 +435,11 @@ export function useCalendarGrid(
   function doRefreshEventCells() {
     const rWeekEvents: Set<Event>[] = weeks.value.map(() => new Set());
     const rDayCells: Cell[][] = days.value.map(() => []);
-
-    const groupedEvents = groupEvents(eventsMap.value, events.value);
-    groupedEvents.forEach(({ day, events: evts }, dayIdx) => {
+    const firstWeekPosition = weeks.value[0].weekPosition;
+    groupEvents(events.value).forEach(({ day, events: evts }, dayIdx) => {
       evts.forEach(event => {
         if (isMonthly.value || event.isWeekly) {
-          const wIdx = day.weekPosition - weeks.value[0].weekPosition;
+          const wIdx = day.weekPosition - firstWeekPosition;
           rWeekEvents[wIdx].add(event);
         } else {
           rDayCells[dayIdx].push(
@@ -580,7 +582,7 @@ export function useCalendarGrid(
     forSelectedEvents(event => {
       Messages.EventResizeEnd(event);
       if (resizeOrigin!.isNew && event === resizeOrigin!.event) {
-        Messages.EventCreateEnd(event);
+        Messages.EventCreateEnd(event).send();
         showCellPopover(event);
       }
       event.stopResize();
@@ -648,15 +650,9 @@ export function useCalendarGrid(
 
   // #region Watchers
 
-  watch(
-    [firstPage],
-    () => {
-      refreshEventCells();
-    },
-    {
-      immediate: true,
-    },
-  );
+  watch([firstPage], () => refreshEventCells(), {
+    immediate: true,
+  });
 
   function refreshEventsFromProps() {
     eventsMap.value = getEventsFromProps();

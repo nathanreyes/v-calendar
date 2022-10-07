@@ -1,14 +1,14 @@
 import { ComputedRef, computed, reactive, toRefs } from 'vue';
 import { addDays } from 'date-fns';
 import { DragOffset, ResizeOffset } from '../../use/calendarGrid';
-import { default as Locale, CalendarDay } from '../locale';
+import Locale, { CalendarDay } from '../locale';
 import { PopoverOptions } from '../popovers';
 import DateInfo from '../dateInfo';
 import { DateSource, MS_PER_MINUTE, roundDate } from '../dates';
-import { clamp, defaults } from '../_';
+import { clamp } from '../helpers';
+import { defaults } from '../_';
 
 interface ResizeOrigin {
-  day: CalendarDay;
   start: Date;
   end: Date;
   isStart: boolean;
@@ -34,14 +34,15 @@ export interface IDate {
 }
 
 export interface EventConfig {
-  key?: any;
-  summary?: string;
-  description?: string;
-  start?: IDate;
-  end?: IDate;
-  isAllDay?: boolean;
-  dateInfo?: DateInfo;
-  color?: string;
+  key: any;
+  summary: string;
+  description: string;
+  start: IDate;
+  end: IDate;
+  isAllDay: boolean;
+  dateInfo: DateInfo;
+  color: string;
+  selected: boolean;
 }
 
 export interface EventState {
@@ -103,7 +104,10 @@ export interface EventContext {
   locale: ComputedRef<Locale>;
 }
 
-export function createEvent(config: EventConfig, ctx: EventContext): Event {
+export function createEvent(
+  config: Partial<EventConfig>,
+  ctx: EventContext,
+): Event {
   if (!config.key) throw new Error('Key required for events');
   let { start, end, isAllDay: allDay = false, dateInfo } = config;
   if (!start && !end && !dateInfo) {
@@ -185,7 +189,6 @@ export function createEvent(config: EventConfig, ctx: EventContext): Event {
     if (!state.resizable || state.resizing || state.dragging) return;
     state.resizing = true;
     state.resizeOrigin = {
-      day,
       start: state.dateInfo.start!.date,
       end: state.dateInfo.end!.date,
       isStart,
