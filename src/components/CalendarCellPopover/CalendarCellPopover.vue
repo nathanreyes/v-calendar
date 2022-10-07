@@ -1,5 +1,10 @@
 <template>
-  <Popover :id="popoverId" @after-hide="onAfterHide" ref="popoverRef">
+  <Popover
+    :id="popoverId"
+    :class="[`vc-${theme.color}`, `vc-${theme.displayMode}`]"
+    @after-hide="onAfterHide"
+    ref="popoverRef"
+  >
     <CalendarEventEdit
       v-if="event"
       :event="event"
@@ -13,13 +18,9 @@
 import { defineComponent, ref, reactive, computed, toRefs } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import CalendarEventEdit from '../CalendarEventEdit/CalendarEventEdit.vue';
+import { useCalendar } from '../../use/calendar';
 import { Event } from '../../utils/calendar/event';
-import {
-  PopoverOptions,
-  showPopover,
-  hidePopover,
-  updatePopover,
-} from '../../utils/popovers';
+import { PopoverOptions, showPopover, hidePopover } from '../../utils/popovers';
 
 interface State {
   event: Event | null;
@@ -37,6 +38,7 @@ export default defineComponent({
     const state = reactive<State>({
       event: null,
     });
+    const { theme } = useCalendar();
 
     const popoverOptions = computed<Partial<PopoverOptions>>(() => ({
       id: props.popoverId,
@@ -47,17 +49,13 @@ export default defineComponent({
       state.event = event;
       showPopover({
         ...popoverOptions.value,
-        refSelector: event.refSelector,
+        target: event.refSelector,
       });
     }
 
     function update(event: Event) {
       event.editing = false;
       state.event = event;
-      updatePopover({
-        ...popoverOptions.value,
-        refSelector: event.refSelector,
-      });
     }
 
     function hide() {
@@ -73,6 +71,7 @@ export default defineComponent({
     return {
       popoverRef,
       ...toRefs(state),
+      theme,
       show,
       update,
       hide,
