@@ -17,7 +17,6 @@ import { AttributeConfig } from '../utils/attribute';
 import { createGuid, pageIsBetweenPages } from '../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../utils/_';
 import {
-  DateSource,
   DatePatch,
   DateParts,
   DatePartsRules,
@@ -31,7 +30,7 @@ import {
   getPopoverEventHandlers,
 } from '../utils/popovers';
 import { BaseProps, propsDef as basePropsDef, createBase } from './base';
-import { MoveOptions } from './calendar';
+import { MoveTarget, MoveOptions } from './calendar';
 
 export type DateType = 'date' | 'string' | 'number';
 
@@ -742,7 +741,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return null;
   }
 
-  async function move(target: DateSource, opts: Partial<MoveOptions> = {}) {
+  async function move(target: MoveTarget, opts: Partial<MoveOptions> = {}) {
     if (calendarRef.value == null) return false;
     return calendarRef.value.move(target, opts);
   }
