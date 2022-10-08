@@ -13,6 +13,9 @@
   > * + * {
     margin-top: 4px;
   }
+  .vc-base-icon {
+    color: var(--vc-time-select-group-icon-color);
+  }
 }
 
 .vc-time-header {
@@ -45,23 +48,6 @@
 .vc-time-year {
   color: var(--vc-time-year-color);
   margin-left: 8px;
-}
-
-.vc-time-select-group {
-  display: inline-flex;
-  align-items: center;
-  height: 30px;
-  padding: 0 4px;
-  background: var(--vc-time-select-group-bg);
-  border: 1px solid var(--vc-time-select-group-border);
-  border-radius: var(--vc-rounded-md);
-}
-
-.vc-time-select-group-icon {
-  width: 18px;
-  height: 18px;
-  margin: 0 4px 0 2px;
-  color: var(--vc-time-select-group-icon-color);
 }
 
 .vc-time-colon {

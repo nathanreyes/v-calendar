@@ -1,55 +1,43 @@
 <template>
-  <div
-    v-if="canMoveUp"
-    class="vc-view-picker"
-    :class="{ 'vc-disabled': !canMoveUp }"
-    role="button"
-    @click.stop="moveUp"
-    @keydown.space.enter="moveUp"
-  >
-    {{ moveUpLabel }}
-    <div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-3 w-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M5 15l7-7 7 7"
-        />
-      </svg>
-    </div>
-  </div>
+  <BaseSelectGroup>
+    <BaseIcon name="ChevronDown" size="18" />
+    <BaseSelect :options="viewOptions" v-model="view" />
+  </BaseSelectGroup>
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
+import BaseIcon from '../BaseIcon/BaseIcon.vue';
+import BaseSelectGroup from '../BaseSelectGroup/BaseSelectGroup.vue';
+import BaseSelect from '../BaseSelect/BaseSelect.vue';
 import { useCalendar } from '../../use/calendar';
 import { capitalize } from '../../utils/helpers';
 
-const { locale, view, isDaily } = useCalendar();
-const canMoveUp = computed(() => view.value !== 'monthly');
+const { locale, view } = useCalendar();
 
-const moveUp = () => {
-  if (view.value === 'daily') {
-    view.value = 'weekly';
-  } else if (view.value === 'weekly') {
-    view.value = 'monthly';
-  }
-};
-
-const moveUpLabel = computed(() => {
-  if (view.value === 'monthly') return '';
-  return capitalize(
-    locale.value.relativeTimeNames[isDaily.value ? 'week' : 'month']!,
-  );
+const viewOptions = computed(() => {
+  const names = locale.value.relativeTimeNames;
+  return [
+    {
+      value: 'daily',
+      label: capitalize(names.day!),
+    },
+    {
+      value: 'weekly',
+      label: capitalize(names.week!),
+    },
+    {
+      value: 'monthly',
+      label: capitalize(names.month!),
+    },
+  ];
 });
 </script>
 
-<style lang="css">
-@import './calendar-view-picker.css';
+<style lang="css" scoped>
+.vc-base-select-group {
+  margin-right: 1rem;
+}
+.vc-base-select {
+  font-size: var(--vc-text-sm);
+}
 </style>

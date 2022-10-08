@@ -19,41 +19,33 @@
         </span>
       </div>
     </slot>
-    <div class="vc-time-select-group">
-      <svg
-        fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        viewBox="0 0 24 24"
-        class="vc-time-select-group-icon"
-        stroke="currentColor"
-      >
-        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <TimeSelect v-model.number="hours" :options="hourOptions" />
+    <BaseSelectGroup icon="Clock">
+      <BaseIcon name="Clock" size="17" />
+      <BaseSelect v-model.number="hours" :options="hourOptions" />
       <template v-if="timeAccuracy > 1">
         <span class="vc-time-colon">:</span>
-        <TimeSelect v-model.number="minutes" :options="options.minutes" />
+        <BaseSelect v-model.number="minutes" :options="options.minutes" />
       </template>
       <template v-if="timeAccuracy > 2">
         <span class="vc-time-colon">:</span>
-        <TimeSelect v-model.number="seconds" :options="options.seconds" />
+        <BaseSelect v-model.number="seconds" :options="options.seconds" />
       </template>
       <template v-if="timeAccuracy > 3">
         <span class="vc-time-decimal">.</span>
-        <TimeSelect
+        <BaseSelect
           v-model.number="milliseconds"
           :options="options.milliseconds"
         />
       </template>
-      <TimeSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions" />
-    </div>
+      <BaseSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions" />
+    </BaseSelectGroup>
   </div>
 </template>
 
 <script setup lang="ts">
-import TimeSelect from '../TimeSelect/TimeSelect.vue';
+import BaseIcon from '../BaseIcon/BaseIcon.vue';
+import BaseSelectGroup from '../BaseSelectGroup/BaseSelectGroup.vue';
+import BaseSelect from '../BaseSelect/BaseSelect.vue';
 import { createTimePicker } from '../../use/timePicker';
 
 const props = defineProps<{
