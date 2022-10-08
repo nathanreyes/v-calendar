@@ -13,7 +13,7 @@
         @keydown="e => onSpaceOrEnter(e, movePrev)"
       >
         <slot name="nav-left-button">
-          <svg-icon name="left-arrow" width="20px" height="24px" />
+          <BaseIcon name="ChevronLeft" width="20px" height="24px" />
         </slot>
       </span>
       <!--Mode switch button-->
@@ -37,7 +37,7 @@
         @keydown="e => onSpaceOrEnter(e, moveNext)"
       >
         <slot name="nav-right-button">
-          <svg-icon name="right-arrow" width="20px" height="24px" />
+          <BaseIcon name="ChevronRight" width="20px" height="24px" />
         </slot>
       </span>
     </div>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue';
+import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import { head, last } from '../../utils/_';
 import { onSpaceOrEnter, pad } from '../../utils/helpers';
 import { getMonthDates } from '../../utils/dates';
@@ -72,7 +72,7 @@ export default {
   name: 'CalendarNav',
   emits: ['input'],
   components: {
-    SvgIcon,
+    BaseIcon,
   },
   inject: {
     context: {

@@ -12,7 +12,7 @@
       @keydown.space.enter="movePrev"
     >
       <slot name="header-left-button" :click="movePrev">
-        <SvgIcon name="left-arrow" />
+        <BaseIcon name="ChevronLeft" />
       </slot>
     </div>
     <div v-if="show.title" class="vc-title" v-popover="navPopoverOptions">
@@ -26,7 +26,7 @@
       @keydown.space.enter="moveNext"
     >
       <slot name="header-right-button" :click="moveNext">
-        <SvgIcon name="right-arrow" />
+        <BaseIcon name="ChevronRight" />
       </slot>
     </div>
   </div>
@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import SvgIcon from '../SvgIcon/SvgIcon.vue';
+import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import { useCalendar } from '../../use/calendar';
 import { popoverDirective as vPopover } from '../../utils/popovers';
 

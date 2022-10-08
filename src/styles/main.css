@@ -5,7 +5,6 @@
 @import '../components/CalendarPane/calendar-pane.css';
 @import '../components/Popover/popover.css';
 @import '../components/PopoverRow/popover-row.css';
-@import '../components/SvgIcon/svg-icon.css';
 @import '../components/TimePicker/time-picker.css';
 @import '../components/TimeSelect/time-select.css';
 @import './theme.css';
