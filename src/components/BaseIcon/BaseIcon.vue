@@ -1,7 +1,5 @@
 <template>
-  <svg v-if="icon" class="vc-base-icon" :width="width" :height="height">
-    <component :is="icon" />
-  </svg>
+  <component :is="icon" :width="width" :height="height" class="vc-base-icon" />
 </template>
 
 <script setup lang="ts">
@@ -12,14 +10,12 @@ const props = defineProps({
   name: { type: String, required: true },
   width: { type: String },
   height: { type: String },
+  size: { type: String, default: '26' },
   viewBox: { type: String },
 });
 
-const width = computed(() => props.width || icon.value.width || '26');
-
-const height = computed(() => props.height || icon.value.height || '26');
-
-console.log('icons', icons);
+const width = computed(() => props.width || props.size);
+const height = computed(() => props.height || props.size);
 const icon = computed(() => (icons as any)[props.name]);
 </script>
 
