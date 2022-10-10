@@ -6,7 +6,9 @@ title: 'Attributes'
 
 Attributes are visual decorators that can be applied to specific calendar dates.
 
-<AttributesIntro />
+<Example centered>
+  <AttributesIntro />
+</Example>
 
 Attributes are defined as an array of objects (each object is a separate attribute).
 
@@ -68,7 +70,9 @@ If you would like to force an attribute to display above (or before) all others 
 
 Let's start by displaying a simple **highlight** on today's date.
 
-<AttributesHighlight />
+<Example centered>
+  <AttributesHighlight />
+</Example>
 
 ```vue
 <template>
@@ -320,7 +324,9 @@ When using an object value, these are the properties you may use for further dot
 | `class` | String | Class to apply to the dot element. |
 | `style` | Object | Style to apply to the dot element. |
 
-<AttributesDots />
+<Example centered>
+  <AttributesDots />
+</Example>
 
 ```vue
 <template>
@@ -396,7 +402,9 @@ These are the additional configuration options you may use for further bar custo
 | `class` | String | Class to apply to the bar element. |
 | `style` | Object | Style to apply to the bar element. |
 
-<AttributesBars />
+<Example centered>
+  <AttributesBars />
+</Example>
 
 ```vue
 <template>

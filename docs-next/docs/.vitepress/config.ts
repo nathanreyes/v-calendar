@@ -2,7 +2,7 @@ import { version } from '../../../package.json';
 
 function nav() {
   return [
-    { text: 'Guide', link: '/' },
+    { text: 'Guide', link: '/getting-started/installation' },
     { text: 'Examples', link: '/examples/' },
     {
       text: version,
