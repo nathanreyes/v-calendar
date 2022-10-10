@@ -4,31 +4,31 @@
     :class="{ 'is-lg': isLg, 'is-xl': isXl, 'is-2xl': is2xl }"
     :style="gridStyle"
   >
-    <div
-      v-if="show.prev"
-      :class="['vc-arrow', 'vc-prev', { 'vc-disabled': !canMovePrev }]"
-      role="button"
-      @click="movePrev"
-      @keydown.space.enter="movePrev"
-    >
-      <slot name="header-left-button" :click="movePrev">
+    <slot name="header-left-button" :move="movePrev">
+      <button
+        v-if="show.prev"
+        :class="['vc-arrow vc-prev vc-focus', { 'vc-disabled': !canMovePrev }]"
+        role="button"
+        @click="movePrev"
+        @keydown.space.enter="movePrev"
+      >
         <BaseIcon name="ChevronLeft" />
-      </slot>
-    </div>
+      </button>
+    </slot>
     <div v-if="show.title" class="vc-title" v-popover="navPopoverOptions">
       <slot name="header-title">{{ page.title }}</slot>
     </div>
-    <div
-      v-if="show.next"
-      :class="['vc-arrow', 'vc-next', { 'vc-disabled': !canMoveNext }]"
-      role="button"
-      @click="moveNext"
-      @keydown.space.enter="moveNext"
-    >
-      <slot name="header-right-button" :click="moveNext">
+    <slot name="header-right-button" :move="moveNext">
+      <button
+        v-if="show.next"
+        :class="['vc-arrow vc-next vc-focus', { 'vc-disabled': !canMoveNext }]"
+        role="button"
+        @click="moveNext"
+        @keydown.space.enter="moveNext"
+      >
         <BaseIcon name="ChevronRight" />
-      </slot>
-    </div>
+      </button>
+    </slot>
   </div>
 </template>
 

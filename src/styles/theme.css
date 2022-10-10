@@ -183,13 +183,20 @@
   --vc-accent-900: #831843;
 }
 
+.vc-focus {
+  &:focus-within {
+    outline: 0;
+    box-shadow: var(--vc-focus-ring);
+  }
+}
+
 .vc-light {
   /* Base */
   --vc-color: var(--vc-gray-900);
   --vc-bg: var(--vc-white);
   --vc-border: var(--vc-gray-300);
   --vc-hover-bg: hsla(211, 25%, 84%, 0.3);
-  --vc-focus-ring: 0 0 0 2px rgb(59 130 246 / 0.5);
+  --vc-focus-ring: 0 0 0 2px rgb(59, 131, 246, 0.4);
   /* Calendar header */
   --vc-header-arrow-color: var(--vc-gray-600);
   --vc-header-arrow-hover-bg: var(--vc-gray-200);
@@ -221,16 +228,14 @@
   --vc-time-month-color: var(--vc-accent-600);
   --vc-time-day-color: var(--vc-accent-600);
   --vc-time-year-color: var(--vc-gray-500);
-  --vc-time-select-group-bg: var(--vc-gray-200);
+  /* Time select group */
+  --vc-time-select-group-bg: var(--vc-gray-50);
   --vc-time-select-group-border: var(--vc-gray-200);
   --vc-time-select-group-icon-color: var(--vc-accent-500);
-  --vc-time-select-color: var(--vc-gray-900);
-  --vc-time-select-bg: transparent;
-  --vc-time-select-border: var(--vc-gray-200);
-  --vc-time-select-hover-color: var(--vc-gray-600);
-  --vc-time-select-focus-border: var(--vc-accent-400);
-  --vc-time-select-focus-bg: var(--vc-accent-600);
-  --vc-time-select-focus-color: var(--vc-white);
+  /* Base select */
+  --vc-select-color: var(--vc-gray-900);
+  --vc-select-bg: var(--vg-gray-50);
+  --vc-select-hover-bg: var(--vc-gray-200);
   /* Calendar day */
   --vc-day-content-hover-bg: var(--vc-hover-bg);
   --vc-day-content-disabled-color: var(--vc-gray-400);
@@ -256,7 +261,7 @@
   --vc-bg: var(--vc-gray-900);
   --vc-border: var(--vc-gray-700);
   --vc-hover-bg: hsla(216, 15%, 52%, 0.3);
-  --vc-focus-ring: 0 0 0 2px rgb(59 130 246 / 0.4);
+  --vc-focus-ring: 0 0 0 2px rgb(59 130 246 / 0.7);
   /* Calendar header */
   --vc-header-arrow-color: var(--vc-white);
   --vc-header-arrow-hover-bg: var(--vc-gray-800);
@@ -288,16 +293,15 @@
   --vc-time-month-color: var(--vc-accent-400);
   --vc-time-day-color: var(--vc-accent-400);
   --vc-time-year-color: var(--vc-gray-500);
+  /* Time select group */
   --vc-time-select-group-bg: var(--vc-gray-700);
-  --vc-time-select-group-border: var(--vc-gray-700);
+  --vc-time-select-group-border: var(--vc-gray-500);
   --vc-time-select-group-icon-color: var(--vc-accent-400);
-  --vc-time-select-color: var(--vc-gray-100);
-  --vc-time-select-bg: transparent;
-  --vc-time-select-border: var(--vc-gray-700);
-  --vc-time-select-hover-color: var(--vc-gray-400);
-  --vc-time-select-focus-border: var(--vc-accent-500);
-  --vc-time-select-focus-bg: var(--vc-accent-500);
-  --vc-time-select-focus-color: var(--vc-white);
+  /* Base select */
+  --vc-select-color: var(--vc-gray-200);
+  --vc-select-bg: var(--vc-gray-700);
+  --vc-select-hover-bg: var(--vc-gray-600);
+  --vc-select-border: var(--vc-gray-500);
   /* Calendar day */
   --vc-day-content-hover-bg: var(--vc-hover-bg);
   --vc-day-content-disabled-color: var(--vc-gray-600);

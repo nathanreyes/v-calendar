@@ -6,7 +6,7 @@
       <!--Move prev button-->
       <span
         role="button"
-        class="vc-nav-arrow is-left"
+        class="vc-nav-arrow is-left vc-focus"
         :class="{ 'vc-disabled': !prevItemsEnabled }"
         :tabindex="prevItemsEnabled ? 0 : undefined"
         @click="movePrev"
@@ -19,7 +19,7 @@
       <!--Mode switch button-->
       <span
         role="button"
-        class="vc-nav-title"
+        class="vc-nav-title vc-focus"
         :style="{ whiteSpace: 'nowrap' }"
         tabindex="0"
         @click="toggleMode"
@@ -182,7 +182,7 @@ export default {
       }, 10);
     },
     getItemClasses({ isActive, isCurrent, isDisabled }) {
-      const classes = ['vc-nav-item'];
+      const classes = ['vc-nav-item vc-focus'];
       if (isActive) {
         classes.push('is-active');
       } else if (isCurrent) {

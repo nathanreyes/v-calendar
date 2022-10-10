@@ -1,13 +1,8 @@
 <template>
-  <BaseSelectGroup>
-    <BaseIcon name="ChevronDown" size="18" />
-    <BaseSelect :options="viewOptions" v-model="view" />
-  </BaseSelectGroup>
+  <BaseSelect v-model="view" :options="viewOptions" show-icon />
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import BaseIcon from '../BaseIcon/BaseIcon.vue';
-import BaseSelectGroup from '../BaseSelectGroup/BaseSelectGroup.vue';
 import BaseSelect from '../BaseSelect/BaseSelect.vue';
 import { useCalendar } from '../../use/calendar';
 import { capitalize } from '../../utils/helpers';
@@ -32,12 +27,3 @@ const viewOptions = computed(() => {
   ];
 });
 </script>
-
-<style lang="css" scoped>
-.vc-base-select-group {
-  margin-right: 1rem;
-}
-.vc-base-select {
-  font-size: var(--vc-text-sm);
-}
-</style>

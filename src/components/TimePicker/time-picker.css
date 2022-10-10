@@ -13,9 +13,6 @@
   > * + * {
     margin-top: 4px;
   }
-  .vc-base-icon {
-    color: var(--vc-time-select-group-icon-color);
-  }
 }
 
 .vc-time-header {
@@ -28,6 +25,19 @@
   padding-left: 4px;
   padding-right: 4px;
   line-height: 21px;
+}
+
+.vc-time-select-group {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+  background: var(--vc-time-select-group-bg);
+  border-radius: var(--vc-rounded-md);
+  border: 1px solid var(--vc-time-select-group-border);
+  .vc-base-icon {
+    margin-right: 4px;
+    color: var(--vc-time-select-group-icon-color);
+  }
 }
 
 .vc-time-weekday {

@@ -1,23 +1,49 @@
 .vc-base-select {
-  color: var(--vc-select-color);
-  display: block;
-  appearance: none;
-  background-color: transparent;
-  font-size: var(--vc-text-base);
-  font-weight: var(--vc-font-medium);
-  border-radius: var(--vc-rounded);
-  height: 28px;
-  width: max-content;
-  padding: 0px 4px;
-  margin: 0;
-  line-height: var(--leading-none);
-  text-indent: 0px;
-  cursor: pointer;
-  background-image: none;
-  &:hover:not(.vc-locked) {
-    opacity: 0.6;
+  &.has-icon {
+    position: relative;
+    & select {
+      padding: 0px 8px 0 24px;
+    }
   }
-  &.vc-accent {
-    background-color: var(--vc-select-accent-bg);
+  &:not(.transparent) {
+    select {
+      background-color: var(--vc-select-bg);
+      border: 1px solid var(--vc-select-border);
+    }
+  }
+  &.align-right {
+    select {
+      text-align: right;
+    }
+  }
+  & .vc-base-icon {
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  & select {
+    color: var(--vc-select-color);
+    display: block;
+    appearance: none;
+    background-color: transparent;
+    font-size: var(--vc-text-base);
+    font-weight: var(--vc-font-medium);
+    border-radius: var(--vc-rounded);
+    height: 28px;
+    width: max-content;
+    padding: 0px 4px;
+    margin: 0;
+    line-height: var(--leading-none);
+    text-indent: 0px;
+    background-image: none;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--vc-select-hover-bg);
+    }
+    &.vc-accent {
+      background-color: var(--vc-select-accent-bg);
+    }
   }
 }

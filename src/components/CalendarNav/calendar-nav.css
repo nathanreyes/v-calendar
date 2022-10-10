@@ -9,10 +9,6 @@
   &:hover {
     background-color: var(--vc-nav-hover-bg);
   }
-  &:focus {
-    outline: 0;
-    box-shadow: var(--vc-focus-ring);
-  }
   &.vc-disabled {
     opacity: 0.25;
     pointer-events: none;

@@ -19,16 +19,29 @@
         </span>
       </div>
     </slot>
-    <BaseSelectGroup icon="Clock">
+    <div class="vc-time-select-group">
       <BaseIcon name="Clock" size="17" />
-      <BaseSelect v-model.number="hours" :options="hourOptions" />
+      <BaseSelect
+        v-model.number="hours"
+        :options="hourOptions"
+        align-right
+        transparent
+      />
       <template v-if="timeAccuracy > 1">
         <span class="vc-time-colon">:</span>
-        <BaseSelect v-model.number="minutes" :options="options.minutes" />
+        <BaseSelect
+          v-model.number="minutes"
+          :options="options.minutes"
+          transparent
+        />
       </template>
       <template v-if="timeAccuracy > 2">
         <span class="vc-time-colon">:</span>
-        <BaseSelect v-model.number="seconds" :options="options.seconds" />
+        <BaseSelect
+          v-model.number="seconds"
+          :options="options.seconds"
+          transparent
+        />
       </template>
       <template v-if="timeAccuracy > 3">
         <span class="vc-time-decimal">.</span>
@@ -37,14 +50,18 @@
           :options="options.milliseconds"
         />
       </template>
-      <BaseSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions" />
-    </BaseSelectGroup>
+      <BaseSelect
+        v-if="!is24hr"
+        v-model="isAM"
+        :options="isAMOptions"
+        transparent
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
-import BaseSelectGroup from '../BaseSelectGroup/BaseSelectGroup.vue';
 import BaseSelect from '../BaseSelect/BaseSelect.vue';
 import { createTimePicker } from '../../use/timePicker';
 
