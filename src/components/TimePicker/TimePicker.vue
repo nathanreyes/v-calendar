@@ -48,6 +48,7 @@
         <BaseSelect
           v-model.number="milliseconds"
           :options="options.milliseconds"
+          transparent
         />
       </template>
       <BaseSelect
