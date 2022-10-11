@@ -296,7 +296,7 @@ const popover = ref({
 
 You may choose to not bind popover behavior to the `inputEvents`, or you may not be using an `input` element at all. In that case, you can manually show/hide the popover by using the provided slot prop functions. 
 
-1. Assign a falsy value to the `popover` prop.
+1. Assign a falsy value to the `popover` prop to unbind popover events from `inputEvents`.
 2. Extract the relevant popover methods needed (`togglePopover`, `showPopover`, `hidePopover`) to show/hide the popover manually.
 
 <Example centered>
@@ -335,8 +335,4 @@ const date = ref(new Date());
 
 <BaseAlert>
 See the [date picker examples](/examples/datepickers.html) for more guidance on using these slot variables.
-</BaseAlert>
-
-<BaseAlert title="Validation" warning>
-Values passed to `updateValue()` are validated against `disabled-dates`, `available-dates`, `min-date` and `max-date` props. Side-effects perform only if validation passes.
 </BaseAlert>
