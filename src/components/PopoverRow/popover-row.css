@@ -23,7 +23,7 @@
   width: max-content;
   margin-left: 4px;
   margin-right: 4px;
-  font-size: var(--vc-text-sm);
+  font-size: var(--vc-text-xs);
   line-height: var(--vc-leading-normal);
 }
 

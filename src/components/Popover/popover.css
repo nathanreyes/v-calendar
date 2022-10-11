@@ -16,8 +16,7 @@
 .vc-popover-content {
   position: relative;
   color: var(--vc-popover-content-color);
-  font-size: var(--vc-text-sm);
-  font-weight: var(--vc-font-semibold);
+  font-weight: var(--vc-font-medium);
   background-color: var(--vc-popover-content-bg);
   border: 1px solid;
   border-color: var(--vc-popover-content-border);

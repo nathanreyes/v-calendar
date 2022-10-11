@@ -6,6 +6,7 @@
 .vc-nav-title,
 .vc-nav-arrow,
 .vc-nav-item {
+  font-size: var(--vc-text-sm);
   &:hover {
     background-color: var(--vc-nav-hover-bg);
   }
