@@ -75,6 +75,5 @@
   }
   &.is-current {
     color: var(--vc-nav-item-current-color);
-    font-weight: var(--bold);
   }
 }
