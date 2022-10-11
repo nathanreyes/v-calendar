@@ -230,7 +230,7 @@
   --vc-time-year-color: var(--vc-gray-500);
   /* Time select group */
   --vc-time-select-group-bg: var(--vc-gray-50);
-  --vc-time-select-group-border: var(--vc-gray-200);
+  --vc-time-select-group-border: var(--vc-gray-300);
   --vc-time-select-group-icon-color: var(--vc-accent-500);
   /* Base select */
   --vc-select-color: var(--vc-gray-900);
