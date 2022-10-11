@@ -9,7 +9,7 @@
     <!--Calendar header-->
     <div class="vc-grid-header-layout">
       <CalendarHeader :page="page" layout="pnt-" is-2xl />
-      <CalendarViewPicker />
+      <CalendarViewSelect />
     </div>
     <div class="vc-grid-layout">
       <div class="vc-grid-layout-left">
@@ -217,7 +217,7 @@ export default {
 import { useSlots } from 'vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
-import CalendarViewPicker from '../CalendarViewPicker/CalendarViewPicker.vue';
+import CalendarViewSelect from '../CalendarViewSelect/CalendarViewSelect.vue';
 import CalendarGridWeek from '../CalendarGridWeek/CalendarGridWeek.vue';
 import CalendarCell from '../CalendarCell/CalendarCell.vue';
 import CalendarCellPopover from '../CalendarCellPopover/CalendarCellPopover.vue';

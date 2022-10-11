@@ -175,7 +175,7 @@
   .vc-grid-header-layout {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   .vc-grid-header {

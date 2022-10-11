@@ -1,5 +1,11 @@
 <template>
-  <BaseSelect v-model="view" :options="viewOptions" show-icon />
+  <BaseSelect
+    v-model="view"
+    :options="viewOptions"
+    class="vc-view-select"
+    show-icon
+    small
+  />
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
