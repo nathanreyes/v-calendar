@@ -1,13 +1,16 @@
 <template>
-  <div
-    class="vc-base-select"
-    :class="{ 'has-icon': showIcon, 'align-right': alignRight, transparent }"
-  >
-    <BaseIcon v-if="showIcon" name="ChevronDown" size="18" />
+  <div class="vc-base-select">
+    <BaseIcon v-if="showIcon" name="ChevronDown" :size="small ? 16 : 18" />
     <select
       v-bind="$attrs"
       :value="modelValue"
       class="vc-focus"
+      :class="{
+        'has-icon': showIcon,
+        'align-right': alignRight,
+        transparent,
+        small,
+      }"
       @change="$emit('update:modelValue', $event.target.value)"
     >
       <option
@@ -37,6 +40,7 @@ defineProps({
   alignRight: Boolean,
   showIcon: Boolean,
   transparent: Boolean,
+  small: Boolean,
 });
 defineEmits(['update:modelValue']);
 </script>

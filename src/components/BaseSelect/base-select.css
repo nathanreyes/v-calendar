@@ -1,28 +1,5 @@
 .vc-base-select {
-  &.has-icon {
-    position: relative;
-    & select {
-      padding: 0px 8px 0 24px;
-    }
-  }
-  &:not(.transparent) {
-    select {
-      background-color: var(--vc-select-bg);
-      border: 1px solid var(--vc-select-border);
-    }
-  }
-  &.align-right {
-    select {
-      text-align: right;
-    }
-  }
-  & .vc-base-icon {
-    position: absolute;
-    top: 6px;
-    left: 4px;
-    pointer-events: none;
-    opacity: 0.5;
-  }
+  position: relative;
   & select {
     color: var(--vc-select-color);
     display: block;
@@ -31,7 +8,7 @@
     font-size: var(--vc-text-base);
     font-weight: var(--vc-font-medium);
     border-radius: var(--vc-rounded);
-    height: 28px;
+    height: 30px;
     width: max-content;
     padding: 0px 4px;
     margin: 0;
@@ -42,8 +19,29 @@
     &:hover {
       background-color: var(--vc-select-hover-bg);
     }
-    &.vc-accent {
-      background-color: var(--vc-select-accent-bg);
+    &.has-icon {
+      padding: 0px 24px 0 10px;
     }
+    &:not(.transparent) {
+      background-color: var(--vc-select-bg);
+      border: 1px solid var(--vc-select-border);
+    }
+    &.small {
+      font-size: var(--vc-text-sm);
+      height: 28px;
+      &.has-icon {
+        padding: 0 20px 0 8 px;
+      }
+    }
+    &.align-right {
+      text-align: right;
+    }
+  }
+  & .vc-base-icon {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    opacity: 0.5;
+    pointer-events: none;
   }
 }
