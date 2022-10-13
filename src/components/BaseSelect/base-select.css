@@ -28,7 +28,6 @@
     }
     &.small {
       font-size: var(--vc-text-sm);
-      height: 28px;
       &.has-icon {
         padding: 0 20px 0 8 px;
       }

@@ -1,6 +1,6 @@
 <template>
   <div class="vc-base-select">
-    <BaseIcon v-if="showIcon" name="ChevronDown" :size="small ? 16 : 18" />
+    <BaseIcon v-if="showIcon" name="ChevronDown" :size="small ? '16' : '18'" />
     <select
       v-bind="$attrs"
       :value="modelValue"
