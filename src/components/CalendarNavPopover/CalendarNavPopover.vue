@@ -9,11 +9,7 @@
     ref="navPopoverRef"
   >
     <template #default="{ data }">
-      <CalendarNav
-        :value="data.page"
-        :validator="e => canMove(e, { position: data.page.position })"
-        @input="move"
-      />
+      <CalendarNav :value="data.page" @input="move" />
     </template>
   </Popover>
 </template>
@@ -23,5 +19,5 @@ import Popover from '../Popover/Popover.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
 import { useCalendar } from '../../use/calendar';
 
-const { navPopoverId, theme, navPopoverRef, canMove, move } = useCalendar();
+const { navPopoverId, theme, navPopoverRef, move } = useCalendar();
 </script>
