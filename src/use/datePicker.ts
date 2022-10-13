@@ -872,7 +872,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 }
 
 export function useDatePicker() {
-  let context = inject<DatePickerContext>(contextKey);
+  const context = inject<DatePickerContext>(contextKey);
   if (context) return context;
   throw new Error(
     'DatePicker context missing. Please verify this component is nested within a valid context provider.',

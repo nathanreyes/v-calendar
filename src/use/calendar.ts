@@ -747,7 +747,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 }
 
 export function useCalendar(): CalendarContext {
-  let context = inject<CalendarContext>(contextKey);
+  const context = inject<CalendarContext>(contextKey);
   if (context) return context;
   throw new Error(
     'Calendar context missing. Please verify this component is nested within a valid context provider.',
