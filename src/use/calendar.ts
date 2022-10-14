@@ -521,12 +521,11 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     return false;
   };
 
-  const focusDate = (date: Date, opts: Partial<MoveOptions> = {}) => {
+  const focusDate = async (date: Date, opts: Partial<MoveOptions> = {}) => {
     if (tryFocusDate(date)) return Promise.resolve(true);
     // Move to the given date
-    return move(date, opts).then(() => {
-      return Promise.resolve(tryFocusDate(date));
-    });
+    await move(date, opts);
+    return await Promise.resolve(tryFocusDate(date));
   };
 
   const onDayClick = (day: CalendarDay, event: MouseEvent) => {
