@@ -65,6 +65,7 @@ import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 const emit = defineEmits(emitsDef);
 const props = defineProps(propsDef);
 const {
+  containerRef,
   view,
   theme,
   inTransition,
