@@ -1,5 +1,43 @@
 import { ComponentPublicInstance } from 'vue';
-import { isArray, isFunction, isString } from './_';
+
+// Type utils
+import isArray from 'lodash/isArray';
+import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
+
+export { isArray, isFunction, isString };
+export { default as isBoolean } from 'lodash/isBoolean';
+export { default as isNumber } from 'lodash/isNumber';
+export { default as isUndefined } from 'lodash/isUndefined';
+import _isDate from 'lodash/isDate';
+
+// Object utils
+export { default as get } from 'lodash/get';
+export { default as set } from 'lodash/set';
+export { default as mapValues } from 'lodash/mapValues';
+export { default as defaults } from 'lodash/defaults';
+export { default as defaultsDeep } from 'lodash/defaultsDeep';
+import _has from 'lodash/has';
+
+// Collection utils
+export { default as map } from 'lodash/map';
+export { default as head } from 'lodash/head';
+export { default as last } from 'lodash/last';
+import _some from 'lodash/some';
+
+// Type checkers
+export const getType = (value: any) =>
+  Object.prototype.toString.call(value).slice(8, -1);
+export const isDate = (value: any) => _isDate(value) && !isNaN(value.getTime());
+export const isObject = (value: any) => getType(value) === 'Object';
+
+// Object utils
+export const has = _has;
+export const hasAny = (obj: object, props: string[]) =>
+  _some(props, p => _has(obj, p));
+
+// Collection utils
+export const some = _some;
 
 export const pad = (val: string | number, len: number, char = '0') => {
   val = val !== null && val !== undefined ? String(val) : '';

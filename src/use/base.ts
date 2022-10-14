@@ -2,7 +2,7 @@ import { PropType, computed, provide, inject, toRef } from 'vue';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
-import { isObject } from '../utils/_';
+import { isObject } from '../utils/helpers';
 import { useTheme } from './theme';
 import { DarkModeConfig, DarkModeClassConfig } from 'vue-screen-utils';
 

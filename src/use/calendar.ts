@@ -16,8 +16,14 @@ import {
   DayAttribute,
 } from '../utils/attribute';
 import { DateSource, addDays, addMonths, addYears } from '../utils/dates';
-import { createGuid, arrayHasItems } from '../utils/helpers';
-import { isBoolean, has, head, last } from '../utils/_';
+import {
+  createGuid,
+  isBoolean,
+  has,
+  head,
+  last,
+  arrayHasItems,
+} from '../utils/helpers';
 import { getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';

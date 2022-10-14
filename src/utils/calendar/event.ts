@@ -5,8 +5,7 @@ import Locale, { CalendarDay } from '../locale';
 import { PopoverOptions } from '../popovers';
 import DateInfo from '../dateInfo';
 import { DateSource, MS_PER_MINUTE, roundDate } from '../dates';
-import { clamp } from '../helpers';
-import { defaults } from '../_';
+import { clamp, defaults } from '../helpers';
 
 interface ResizeOrigin {
   start: Date;

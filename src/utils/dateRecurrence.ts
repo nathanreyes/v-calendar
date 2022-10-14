@@ -1,4 +1,4 @@
-import { isArray } from './_';
+import { isArray } from './helpers';
 
 type OnWeekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 type OnWeek = -6 | -5 | -4 | -3 | -2 | -1 | 1 | 2 | 3 | 4 | 5 | 6;

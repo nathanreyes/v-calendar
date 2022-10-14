@@ -1,5 +1,4 @@
-import { on, off } from './helpers';
-import { isFunction } from './_';
+import { on, off, isFunction } from './helpers';
 
 interface SwipeHandlerOptions {
   maxSwipeTime: number;

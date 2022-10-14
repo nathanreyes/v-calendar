@@ -23,8 +23,14 @@ import {
   getRelativeTimeNames,
 } from './dates';
 import { defaultLocales } from './defaults';
-import { clamp } from './helpers';
-import { isString, isObject, isArray, has, defaultsDeep } from './_';
+import {
+  isString,
+  isObject,
+  isArray,
+  has,
+  clamp,
+  defaultsDeep,
+} from './helpers';
 
 export interface LocaleConfig {
   id: string;

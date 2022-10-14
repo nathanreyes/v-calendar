@@ -18,8 +18,7 @@ import {
   getPageAddressForDate,
   pageIsBetweenPages,
 } from '../utils/page';
-import { createGuid } from '../utils/helpers';
-import { isObject, isArray, defaultsDeep } from '../utils/_';
+import { isObject, isArray, defaultsDeep, createGuid } from '../utils/helpers';
 import {
   DatePatch,
   DateParts,

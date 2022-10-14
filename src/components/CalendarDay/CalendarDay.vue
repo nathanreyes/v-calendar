@@ -57,9 +57,8 @@ import { PropType, defineComponent, computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/locale';
 import { Attribute, PopoverConfig } from '../../utils/attribute';
-import { arrayHasItems } from '../../utils/helpers';
+import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
-import { last, get, defaults } from '../../utils/_';
 
 export default defineComponent({
   directives: { popover: popoverDirective },

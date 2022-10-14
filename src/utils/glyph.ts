@@ -1,5 +1,5 @@
 import { DayAttribute } from './attribute';
-import { isObject, isString, hasAny, defaults } from './_';
+import { isObject, isString, hasAny, defaults } from './helpers';
 
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';
 type ThemeProp =
