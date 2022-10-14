@@ -8,7 +8,6 @@
   --grid-height: 500px;
 
   width: var(--width);
-  overflow: hidden;
 
   .vc-grid-content {
     position: relative;
@@ -179,7 +178,6 @@
   }
 
   .vc-grid-header {
-    background-color: white;
     margin-top: 10px;
     z-index: 2;
   }
