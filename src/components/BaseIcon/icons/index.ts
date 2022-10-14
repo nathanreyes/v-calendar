@@ -1,4 +1,4 @@
-export { default as ChevronRight } from './ChevronRight.vue';
-export { default as ChevronLeft } from './ChevronLeft.vue';
-export { default as ChevronDown } from './ChevronDown.vue';
-export { default as Clock } from './Clock.vue';
+export { default as IconChevronRight } from './IconChevronRight.vue';
+export { default as IconChevronLeft } from './IconChevronLeft.vue';
+export { default as IconChevronDown } from './IconChevronDown.vue';
+export { default as IconClock } from './IconClock.vue';

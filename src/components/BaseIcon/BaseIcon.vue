@@ -16,7 +16,7 @@ const props = defineProps({
 
 const width = computed(() => props.width || props.size);
 const height = computed(() => props.height || props.size);
-const icon = computed(() => (icons as any)[props.name]);
+const icon = computed(() => (icons as any)[`Icon${props.name}`]);
 </script>
 
 <style lang="css">
