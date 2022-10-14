@@ -173,10 +173,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   // #region Computed
 
-  const { theme, locale, masks, disabledAttribute } = useOrCreateBase(props, {
-    emit,
-    slots,
-  });
+  const { theme, locale, masks, disabledAttribute } = useOrCreateBase(props);
 
   const count = computed(() => props.rows * props.columns);
 

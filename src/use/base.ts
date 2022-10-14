@@ -146,13 +146,13 @@ export function createBase(props: BaseProps) {
 }
 
 export function useBase() {
-  let context = inject<BaseContext>(contextKey);
+  const context = inject<BaseContext>(contextKey);
   if (context) return context;
   throw new Error(
     'Base context missing. Please verify this component is nested within a valid context provider.',
   );
 }
 
-export function useOrCreateBase(props: BaseProps, ctx: any) {
-  return inject<BaseContext>(contextKey, createBase(props, ctx));
+export function useOrCreateBase(props: BaseProps) {
+  return inject<BaseContext>(contextKey, createBase(props));
 }
