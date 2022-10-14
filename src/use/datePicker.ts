@@ -12,9 +12,13 @@ import {
 import Calendar from '../components/Calendar.vue';
 import Popover from '../components/Popover.vue';
 import { getDefault } from '../utils/defaults';
-import { CalendarDay } from '../utils/locale';
 import { AttributeConfig } from '../utils/attribute';
-import { createGuid, pageIsBetweenPages } from '../utils/helpers';
+import {
+  CalendarDay,
+  getPageAddressForDate,
+  pageIsBetweenPages,
+} from '../utils/page';
+import { createGuid } from '../utils/helpers';
 import { isObject, isArray, defaultsDeep } from '../utils/_';
 import {
   DatePatch,
@@ -463,7 +467,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     }: Partial<UpdateOptions> = {},
   ) {
     // 1. Normalization
-    let normalizedConfig = normalizeDateConfig(config);
+    const normalizedConfig = normalizeDateConfig(config);
     let normalizedValue = normalizeValue(
       value,
       normalizedConfig,
@@ -736,7 +740,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
           ? valueStart.value
           : valueEnd.value
         : dateValue.value;
-      return locale.value.getPageForDate(date as Date, 'monthly');
+      return getPageAddressForDate(date as Date, 'monthly', locale.value);
     }
     return null;
   }

@@ -8,7 +8,7 @@ import {
   inject,
 } from 'vue';
 import { useCalendar } from './calendar';
-import { Page } from '../utils/locale';
+import { Page } from '../utils/page';
 import { getMonthDates } from '../utils/dates';
 import { head, last } from '../utils/_';
 import { pad } from '../utils/helpers';
@@ -50,7 +50,7 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
   const yearGroupIndex = ref(0);
   const navContainer = ref<HTMLElement | null>(null);
 
-  const { locale, masks, canMove, getPageForDate } = useCalendar();
+  const { locale, masks, canMove, getDateAddress } = useCalendar();
 
   function focusFirstItem() {
     // Use setTimeout instead of $nextTick so it plays nice with popperjs
@@ -77,7 +77,7 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
   }
 
   function getYearItems(yearGroupIndex: number): YearItem[] {
-    const { year: thisYear } = getPageForDate(new Date());
+    const { year: thisYear } = getDateAddress(new Date());
     const startYear = yearGroupIndex * _yearGroupCount;
     const endYear = startYear + _yearGroupCount;
     const items = [];
@@ -102,7 +102,7 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
   }
 
   function getMonthItems(year: number): MonthItem[] {
-    const { month: thisMonth, year: thisYear } = getPageForDate(new Date());
+    const { month: thisMonth, year: thisYear } = getDateAddress(new Date());
     return getMonthDates().map((d, i: number) => {
       const month = i + 1;
       return {

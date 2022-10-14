@@ -107,8 +107,8 @@ export interface MonthParts {
   firstDayOfMonth: Date;
   inLeapYear: boolean;
   firstWeekday: number;
-  days: number;
-  weeks: number;
+  numDays: number;
+  numWeeks: number;
   month: number;
   year: number;
   weeknumbers: number[];
@@ -136,6 +136,7 @@ const PATCH_KEYS: Record<DatePatch, (keyof DateParts)[]> = {
 };
 
 export const daysInWeek = 7;
+export const weeksInMonth = 6;
 export const MS_PER_SECOND = 1000;
 export const MS_PER_MINUTE = MS_PER_SECOND * 60;
 export const MS_PER_HOUR = MS_PER_MINUTE * 60;
@@ -498,14 +499,14 @@ export function getMonthParts(
   const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   const firstDayOfMonth = new Date(year, month - 1, 1);
   const firstWeekday = firstDayOfMonth.getDay() + 1;
-  const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+  const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
   const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
-  const weeks = getWeeksInMonth(firstDayOfMonth, {
+  const numWeeks = getWeeksInMonth(firstDayOfMonth, {
     weekStartsOn,
   });
   const weeknumbers = [];
   const isoWeeknumbers = [];
-  for (let i = 0; i < weeks; i++) {
+  for (let i = 0; i < numWeeks; i++) {
     const date = addDays(firstDayOfMonth, i * 7);
     weeknumbers.push(getWeek(date, { weekStartsOn }));
     isoWeeknumbers.push(getISOWeek(date));
@@ -515,8 +516,8 @@ export function getMonthParts(
     firstDayOfMonth,
     inLeapYear,
     firstWeekday,
-    days,
-    weeks,
+    numDays,
+    numWeeks,
     month,
     year,
     weeknumbers,
@@ -547,14 +548,14 @@ export function getDateParts(
   const year = tzDate.getFullYear();
   const monthParts = getMonthParts(month, year, firstDayOfWeek);
   const day = tzDate.getDate();
-  const dayFromEnd = monthParts.days - day + 1;
+  const dayFromEnd = monthParts.numDays - day + 1;
   const weekday = tzDate.getDay() + 1;
   const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
-  const weekdayOrdinalFromEnd = Math.floor((monthParts.days - day) / 7 + 1);
+  const weekdayOrdinalFromEnd = Math.floor((monthParts.numDays - day) / 7 + 1);
   const week = Math.ceil(
     (day + Math.abs(monthParts.firstWeekday - monthParts.firstDayOfWeek)) / 7,
   );
-  const weekFromEnd = monthParts.weeks - week + 1;
+  const weekFromEnd = monthParts.numWeeks - week + 1;
   const weeknumber = monthParts.weeknumbers[week];
   const parts: DateParts = {
     milliseconds,

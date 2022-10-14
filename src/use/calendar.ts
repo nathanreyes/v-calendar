@@ -15,28 +15,29 @@ import {
   createDayAttribute,
   DayAttribute,
 } from '../utils/attribute';
-import {
-  CalendarDay,
-  CalendarWeek,
-  Page,
-  TitlePosition,
-} from '../utils/locale';
 import { DateSource, addDays, addMonths, addYears } from '../utils/dates';
-import {
-  pageIsValid,
-  pageIsEqualToPage,
-  pageIsBeforePage,
-  pageIsAfterPage,
-  pageIsBetweenPages,
-  createGuid,
-  PageAddress,
-  arrayHasItems,
-} from '../utils/helpers';
+import { createGuid, arrayHasItems } from '../utils/helpers';
 import { isBoolean, has, head, last } from '../utils/_';
 import { getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 import { PopoverVisibility } from '../utils/popovers';
+import {
+  Page,
+  PageAddress,
+  CalendarDay,
+  CalendarWeek,
+  TitlePosition,
+  createPageCache,
+  pageRangeToArray,
+  pageIsValid,
+  pageIsEqualToPage,
+  pageIsBeforePage,
+  pageIsAfterPage,
+  pageIsBetweenPages,
+  getPageAddressForDate,
+  addPages as _addPages,
+} from '../utils/page';
 import { BaseProps, propsDef as basePropsDef, useOrCreateBase } from './base';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
@@ -185,12 +186,12 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const minPage = computed(
     () =>
-      props.minPage || (props.minDate ? getPageForDate(props.minDate) : null),
+      props.minPage || (props.minDate ? getDateAddress(props.minDate) : null),
   );
 
   const maxPage = computed(
     () =>
-      props.maxPage || (props.maxDate ? getPageForDate(props.maxDate) : null),
+      props.maxPage || (props.maxDate ? getDateAddress(props.maxDate) : null),
   );
 
   const navVisibility = computed(() => props.navVisibility);
@@ -202,6 +203,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const isMonthly = computed(() => state.view === 'monthly');
   const isWeekly = computed(() => state.view === 'weekly');
   const isDaily = computed(() => state.view === 'daily');
+
+  const pageCache = computed(() => createPageCache(locale.value));
 
   // #endregion Computed
 
@@ -222,11 +225,11 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const addPages = (address: PageAddress, count: number, view = state.view) => {
-    return locale.value.addPages(address, count, view);
+    return _addPages(address, count, view, locale.value);
   };
 
-  const getPageForDate = (date: DateSource) => {
-    return locale.value.getPageForDate(date, state.view);
+  const getDateAddress = (date: DateSource) => {
+    return getPageAddressForDate(date, state.view, locale.value);
   };
 
   const refreshDisabledDay = (day: CalendarDay) => {
@@ -306,7 +309,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     if (!attr || !attr.hasDates) return null;
     const [dateInfo] = attr.dates;
     const date = dateInfo.start?.date || dateInfo.end?.date;
-    return date ? getPageForDate(date) : null;
+    return date ? getDateAddress(date) : null;
   };
 
   const getDefaultInitialPage = () => {
@@ -316,7 +319,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     const page = getPageForAttributes();
     if (pageIsValid(page)) return page as PageAddress;
     // 3. Use today's page
-    return getPageForDate(new Date());
+    return getDateAddress(new Date());
   };
 
   const getTargetPageRange = (
@@ -374,7 +377,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         force,
       });
       // Create the new pages
-      const pages = [];
+      const pages: Page[] = [];
       for (let i = 0; i < count.value; i++) {
         const newPage = addPages(fromPage!, i);
         const position = i + 1;
@@ -384,7 +387,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         const columnFromEnd = props.columns - column + 1;
         const weeknumberPosition = getWeeknumberPosition(column, columnFromEnd);
         pages.push(
-          locale.value.getPage(newPage, {
+          pageCache.value.getPage({
+            ...newPage,
             view: state.view,
             titlePosition: props.titlePosition,
             trimWeeks: props.trimWeeks,
@@ -427,14 +431,14 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const targetBy = (pages: number) => {
-    const fromPage = firstPage.value ?? getPageForDate(new Date());
+    const fromPage = firstPage.value ?? getDateAddress(new Date());
     return addPages(fromPage, pages);
   };
 
   const canMove = (target: MoveTarget, opts: Partial<MoveOptions> = {}) => {
     const page = pageIsValid(target as PageAddress)
       ? (target as Page)
-      : getPageForDate(target as DateSource);
+      : getDateAddress(target as DateSource);
     // Calculate new page range without adjusting to min/max
     Object.assign(
       opts,
@@ -444,9 +448,12 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
       }),
     );
     // Verify we can move to any pages in the target range
-    const pagesInRange = locale.value
-      .pageRangeToArray(opts.fromPage!, opts.toPage!, state.view)
-      .map(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
+    const pagesInRange = pageRangeToArray(
+      opts.fromPage!,
+      opts.toPage!,
+      state.view,
+      locale.value,
+    ).map(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
     return pagesInRange.every(val => val);
   };
 
@@ -715,7 +722,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     isWeekly,
     isDaily,
     navVisibility,
-    getPageForDate,
+    getDateAddress,
     canMove,
     canMoveBy,
     canMovePrev,

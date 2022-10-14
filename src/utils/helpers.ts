@@ -1,13 +1,6 @@
 import { ComponentPublicInstance } from 'vue';
 import { isArray, isFunction, isString } from './_';
 
-export interface PageAddress {
-  day?: number;
-  week?: number;
-  month: number;
-  year: number;
-}
-
 export const pad = (val: string | number, len: number, char = '0') => {
   val = val !== null && val !== undefined ? String(val) : '';
   len = len || 2;
@@ -38,77 +31,6 @@ export const mergeEvents = (...args: Array<any>) => {
 
 export const roundTenth = (n: number) => {
   return Math.round(n * 100) / 100;
-};
-
-export const pageIsValid = (page: PageAddress | null | undefined): boolean => {
-  return page != null && page.month != null && page.year != null;
-};
-
-export const pageIsBeforePage = (
-  page: PageAddress | null | undefined,
-  comparePage: PageAddress | null | undefined,
-): boolean => {
-  if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
-  page = page as PageAddress;
-  comparePage = comparePage as PageAddress;
-  if (page.year !== comparePage.year) return page.year < comparePage.year;
-  if (page.month && comparePage.month && page.month !== comparePage.month)
-    return page.month < comparePage.month;
-  if (page.week && comparePage.week && page.week !== comparePage.week) {
-    return page.week < comparePage.week;
-  }
-  if (page.day && comparePage.day && page.day !== comparePage.day) {
-    return page.day < comparePage.day;
-  }
-  return false;
-};
-
-export const pageIsAfterPage = (
-  page: PageAddress | null | undefined,
-  comparePage: PageAddress | null | undefined,
-): boolean => {
-  if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
-  page = page as PageAddress;
-  comparePage = comparePage as PageAddress;
-  if (page.year !== comparePage.year) {
-    return page.year > comparePage.year;
-  }
-  if (page.month && comparePage.month && page.month !== comparePage.month) {
-    return page.month > comparePage.month;
-  }
-  if (page.week && comparePage.week && page.week !== comparePage.week) {
-    return page.week > comparePage.week;
-  }
-  if (page.day && comparePage.day && page.day !== comparePage.day) {
-    return page.day > comparePage.day;
-  }
-  return false;
-};
-
-export const pageIsBetweenPages = (
-  page: PageAddress | null | undefined,
-  fromPage: PageAddress | null | undefined,
-  toPage: PageAddress | null | undefined,
-): boolean =>
-  (page || false) &&
-  !pageIsBeforePage(page, fromPage) &&
-  !pageIsAfterPage(page, toPage);
-
-export const pageIsEqualToPage = (
-  aPage: PageAddress | null | undefined,
-  bPage: PageAddress | null | undefined,
-): boolean => {
-  if (!aPage && bPage) return false;
-  if (aPage && !bPage) return false;
-  if (!aPage && !bPage) return true;
-  aPage = aPage as PageAddress;
-  bPage = bPage as PageAddress;
-  return (
-    aPage.year === bPage.year &&
-    aPage.month === bPage.month &&
-    aPage.week === bPage.week &&
-    aPage.day === bPage.day
-  );
 };
 
 export const arrayHasItems = (array: any): boolean =>
