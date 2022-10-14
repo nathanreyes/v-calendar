@@ -1,7 +1,8 @@
 import { ComputedRef, computed, reactive, toRefs } from 'vue';
 import { addDays } from 'date-fns';
 import { DragOffset, ResizeOffset } from '../../use/calendarGrid';
-import Locale, { CalendarDay } from '../locale';
+import Locale from '../locale';
+import { CalendarDay } from '../page';
 import { PopoverOptions } from '../popovers';
 import DateInfo from '../dateInfo';
 import { DateSource, MS_PER_MINUTE, roundDate } from '../dates';

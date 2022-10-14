@@ -55,7 +55,7 @@
 <script lang="ts">
 import { PropType, defineComponent, computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
-import { CalendarDay } from '../../utils/locale';
+import { CalendarDay } from '../../utils/page';
 import { Attribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
