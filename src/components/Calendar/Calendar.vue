@@ -12,14 +12,13 @@
         'vc-expanded': isExpanded,
       },
     ]"
-    @keydown="handleKeydown"
     @mouseup.prevent
     ref="containerRef"
   >
     <!--Calendar Container-->
     <div :class="['vc-pane-container', { 'in-transition': inTransition }]">
       <div class="vc-pane-header-wrapper">
-        <CalendarHeader :page="firstPage" is-lg hide-title />
+        <CalendarHeader :page="firstPage!" is-lg hide-title />
       </div>
       <Transition
         :name="`vc-${transitionName}`"
@@ -31,7 +30,7 @@
           :key="pages[0].id"
           class="vc-pane-layout"
           :style="{
-            gridTemplateColumns: `repeat(${this.columns}, 1fr)`,
+            gridTemplateColumns: `repeat(${columns}, 1fr)`,
           }"
         >
           <!--Calendar Panes-->
@@ -50,26 +49,31 @@
   <CalendarNavPopover />
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script lang="ts">
+export default {
+  name: 'Calendar',
+};
+</script>
+
+<script setup lang="ts">
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import CalendarPane from '../CalendarPane/CalendarPane.vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarDayPopover from '../CalendarDayPopover/CalendarDayPopover.vue';
 import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
-export default defineComponent({
-  name: 'Calendar',
-  components: {
-    CalendarHeader,
-    CalendarPane,
-    CalendarNavPopover,
-    CalendarDayPopover,
-  },
-  emits: emitsDef,
-  props: propsDef,
-  setup(props, ctx) {
-    return createCalendar(props, ctx);
-  },
+const emit = defineEmits(emitsDef);
+const props = defineProps(propsDef);
+const {
+  view,
+  theme,
+  inTransition,
+  firstPage,
+  pages,
+  transitionName,
+  onTransitionBeforeEnter,
+  onTransitionAfterEnter,
+} = createCalendar(props, {
+  emit,
 });
 </script>
