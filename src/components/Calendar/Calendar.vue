@@ -64,6 +64,10 @@ import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
 const emit = defineEmits(emitsDef);
 const props = defineProps(propsDef);
+const calendar = createCalendar(props, {
+  emit,
+});
+defineExpose(calendar);
 const {
   containerRef,
   view,
@@ -74,7 +78,5 @@ const {
   transitionName,
   onTransitionBeforeEnter,
   onTransitionAfterEnter,
-} = createCalendar(props, {
-  emit,
-});
+} = calendar;
 </script>
