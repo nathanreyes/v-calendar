@@ -7,6 +7,7 @@ import {
   onUnmounted,
   watch,
   inject,
+  watchEffect,
 } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import {
@@ -155,6 +156,7 @@ export const emitsDef = [
   'transition-end',
   'did-move',
   'update:view',
+  'update:pages',
 ];
 
 const contextKey = '__vc_calendar_context__';
@@ -409,13 +411,6 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
           }),
         );
       }
-      // Refresh state for days
-      forDays(pages, day => {
-        // Refresh disabled state
-        refreshDisabledDay(day);
-        // Refresh focusable state
-        refreshFocusableDay(day);
-      });
       // Assign the transition
       state.transitionName = getPageTransition(
         state.pages[0],
@@ -704,6 +699,17 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
       forDays(state.pages, day => refreshFocusableDay(day));
     },
   );
+
+  watchEffect(() => {
+    emit('update:pages', state.pages);
+    // Refresh state for days
+    forDays(state.pages, day => {
+      // Refresh disabled state
+      refreshDisabledDay(day);
+      // Refresh focusable state
+      refreshFocusableDay(day);
+    });
+  });
 
   // #endregion Watch
 
