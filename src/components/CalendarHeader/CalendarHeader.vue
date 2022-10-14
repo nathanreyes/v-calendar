@@ -12,7 +12,7 @@
         @click="movePrev"
         @keydown.space.enter="movePrev"
       >
-        <BaseIcon name="ChevronLeft" />
+        <BaseIcon name="ChevronLeft" size="24" />
       </button>
     </slot>
     <div v-if="show.title" class="vc-title" v-popover="navPopoverOptions">
@@ -26,20 +26,21 @@
         @click="moveNext"
         @keydown.space.enter="moveNext"
       >
-        <BaseIcon name="ChevronRight" />
+        <BaseIcon name="ChevronRight" size="24" />
       </button>
     </slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { PropType, computed, watch } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import { useCalendar } from '../../use/calendar';
 import { popoverDirective as vPopover } from '../../utils/popovers';
+import { Page } from '../../utils/locale';
 
 const props = defineProps({
-  page: { type: Object, required: true },
+  page: { type: Object as PropType<Page>, required: true },
   layout: String,
   isLg: Boolean,
   isXl: Boolean,

@@ -29,6 +29,8 @@
   border-style: solid;
   border-radius: var(--vc-rounded);
   border-color: transparent;
+  width: 28px;
+  height: 30px;
   z-index: 1;
   &:hover {
     background: var(--vc-header-arrow-hover-bg);
