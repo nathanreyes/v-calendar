@@ -33,7 +33,7 @@ interface NumberRuleConfig {
   interval?: number;
 }
 
-type DatePartsRuleFunction = (part: number, parts: DateParts) => boolean;
+type DatePartsRuleFunction = (part: number, parts: TimeParts) => boolean;
 
 type DatePartsRule =
   | number
@@ -61,7 +61,6 @@ interface DatePartsObject<T> {
   hours: T;
 }
 
-export type DatePartsKey = 'hours' | 'minutes' | 'seconds' | 'milliseconds';
 type DatePartsRange = [number, number, number];
 type DatePartsOptions = DatePartsObject<{ value: number; label: string }[]>;
 
@@ -87,7 +86,24 @@ export interface PageAddress {
   year: number;
 }
 
-export interface DateParts extends PageAddress {
+export interface TimeParts {
+  hours: number;
+  minutes: number;
+  seconds: number;
+  milliseconds: number;
+}
+
+export interface SimpleDateParts {
+  year: number;
+  month: number;
+  day: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  milliseconds: number;
+}
+
+export interface DateParts {
   milliseconds: number;
   seconds: number;
   minutes: number;
@@ -129,7 +145,7 @@ export enum DatePatch {
   Time,
 }
 
-const PATCH_KEYS: Record<DatePatch, (keyof DateParts)[]> = {
+const DatePatchKeys: Record<DatePatch, (keyof SimpleDateParts)[]> = {
   [DatePatch.DateTime]: [
     'year',
     'month',
@@ -453,7 +469,10 @@ export function getStartOfWeek(date: Date, firstDayOfWeek: DayOfWeek = 1) {
   return addDays(date, daysToAdd);
 }
 
-export function getDateFromParts(parts: Partial<DateParts>, timezone = '') {
+export function getDateFromParts(
+  parts: Partial<SimpleDateParts>,
+  timezone = '',
+) {
   const d = new Date();
   const {
     year = d.getFullYear(),
@@ -475,7 +494,10 @@ export function getDateFromParts(parts: Partial<DateParts>, timezone = '') {
   return new Date(year, month - 1, day, hrs, min, sec, ms);
 }
 
-export function getTimezoneOffset(parts: Partial<DateParts>, timezone = '') {
+export function getTimezoneOffset(
+  parts: Partial<SimpleDateParts>,
+  timezone = '',
+) {
   const {
     year: y = 0,
     month: m = 0,
@@ -663,6 +685,7 @@ export function getRelativeTimeNames(localeId = undefined): TimeNames {
   const rtf = new Intl.RelativeTimeFormat(localeId);
   return units.reduce<TimeNames>((names, unit) => {
     const parts = rtf.formatToParts(100, unit);
+    // @ts-ignore
     names[unit] = parts[1].unit;
     return names;
   }, {});
@@ -687,7 +710,7 @@ export function getMonthNames(length: MonthNameLength, localeId = undefined) {
 export function datePartIsValid(
   part: number,
   rule: DatePartsRule,
-  parts: DateParts,
+  parts: TimeParts,
 ): boolean {
   if (isNumber(rule)) return rule === part;
   if (isArray(rule)) return (rule as number[]).includes(part);
@@ -699,7 +722,7 @@ export function datePartIsValid(
 }
 
 export function getDatePartOptions(
-  parts: DateParts,
+  parts: TimeParts,
   range: DatePartsRange,
   rule: DatePartsRule | undefined,
 ) {
@@ -717,7 +740,7 @@ export function getDatePartOptions(
 }
 
 export function getDatePartsOptions(
-  parts: DateParts,
+  parts: TimeParts,
   rules: DatePartsRules,
 ): DatePartsOptions {
   return {
@@ -733,7 +756,7 @@ export function getDatePartsOptions(
 }
 
 export function getNearestDatePart(
-  parts: DateParts,
+  parts: TimeParts,
   range: DatePartsRange,
   value: number,
   rule: DatePartsRule,
@@ -750,20 +773,20 @@ export function getNearestDatePart(
 }
 
 export function applyRulesForDateParts(
-  dateParts: DateParts,
+  dateParts: TimeParts,
   rules: DatePartsRules,
 ) {
-  (['hours', 'minutes', 'seconds', 'milliseconds'] as DatePartsKey[]).forEach(
-    key => {
-      if (!Object.prototype.hasOwnProperty.call(rules, key)) return;
-      dateParts[key] = getNearestDatePart(
-        dateParts,
-        DATE_PART_RANGES[key],
-        dateParts[key],
-        rules[key]!,
-      );
-    },
-  );
+  (
+    ['hours', 'minutes', 'seconds', 'milliseconds'] as (keyof TimeParts)[]
+  ).forEach(key => {
+    if (!Object.prototype.hasOwnProperty.call(rules, key)) return;
+    dateParts[key] = getNearestDatePart(
+      dateParts,
+      DATE_PART_RANGES[key],
+      dateParts[key],
+      rules[key]!,
+    );
+  });
 }
 
 export function parseDate(
@@ -859,7 +882,7 @@ export function parseDate(
 }
 
 export function normalizeDate(
-  d: DateSource | DateParts,
+  d: DateSource | Partial<SimpleDateParts>,
   config: Partial<DateOptions> = {},
 ): Date {
   const nullDate = new Date(NaN);
@@ -876,7 +899,7 @@ export function normalizeDate(
     result = new Date((d as Date).getTime());
   } else if (isDateParts(d)) {
     config.type = 'object';
-    result = getDateFromParts(d as DateParts, timezone);
+    result = getDateFromParts(d as Partial<SimpleDateParts>, timezone);
   }
   // Patch parts or apply rules if needed
   if (result && (patch || rules)) {
@@ -888,7 +911,7 @@ export function normalizeDate(
         1,
         timezone,
       );
-      parts = { ...fillParts, ...pick(parts, PATCH_KEYS[patch]) };
+      parts = { ...fillParts, ...pick(parts, DatePatchKeys[patch]) };
     }
     // Apply date part rules
     if (rules) {

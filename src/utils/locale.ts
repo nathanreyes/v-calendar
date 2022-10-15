@@ -3,7 +3,7 @@ import { CalendarDay } from './page';
 import {
   DateSource,
   DateOptions,
-  DateParts,
+  SimpleDateParts,
   DayOfWeek,
   TimeNames,
   daysInWeek,
@@ -122,7 +122,10 @@ export default class Locale {
     });
   }
 
-  normalizeDate(d: DateParts | DateSource, options: Partial<DateOptions> = {}) {
+  normalizeDate(
+    d: Partial<SimpleDateParts> | DateSource,
+    options: Partial<DateOptions> = {},
+  ) {
     return normalizeDate(d, {
       ...options,
       locale: this,
@@ -150,7 +153,7 @@ export default class Locale {
     return getDateParts(date, this.firstDayOfWeek, this.timezone);
   }
 
-  getDateFromParts(parts: Partial<DateParts>) {
+  getDateFromParts(parts: Partial<SimpleDateParts>) {
     return getDateFromParts(parts, this.timezone);
   }
 

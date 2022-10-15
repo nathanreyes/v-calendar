@@ -39,6 +39,7 @@ export type DateType = 'date' | 'string' | 'number';
 
 export interface DateConfig {
   type: DateType;
+  rules: DatePartsRules;
   mask?: string;
 }
 
@@ -49,10 +50,10 @@ export interface DateRange {
 
 const contextKey = '__vc_date_picker_context__';
 
-const MODE = {
-  DATE: 'date',
-  DATE_TIME: 'datetime',
-  TIME: 'time',
+const DateModes = {
+  Date: 'date',
+  DateTime: 'datetime',
+  Time: 'time',
 };
 
 export enum ValueTarget {
@@ -104,7 +105,7 @@ export interface DatePickerProps extends BaseProps {
 
 export const propsDef = {
   ...basePropsDef,
-  mode: { type: String, default: MODE.DATE },
+  mode: { type: String, default: DateModes.Date },
   modelValue: { type: null, required: true },
   modelModifiers: { default: () => ({}) },
   time: String,
@@ -178,12 +179,12 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       : null,
   );
 
-  const isDate = computed(() => props.mode.toLowerCase() === MODE.DATE);
+  const isDate = computed(() => props.mode.toLowerCase() === DateModes.Date);
 
   const isDateTime = computed(
-    () => props.mode.toLowerCase() === MODE.DATE_TIME,
+    () => props.mode.toLowerCase() === DateModes.DateTime,
   );
-  const isTime = computed(() => props.mode.toLowerCase() === MODE.TIME);
+  const isTime = computed(() => props.mode.toLowerCase() === DateModes.Time);
 
   const isDragging = computed(() => !!dragValue.value);
 
@@ -359,12 +360,15 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function normalizeDateConfig(
-    config: DateConfig | DateConfig[],
+    config: Partial<DateConfig> | Partial<DateConfig>[],
   ): DateConfig[] {
-    return normalizeConfig(config).map((c, i) => ({
-      rules: rules.value[i],
-      ...c,
-    }));
+    return normalizeConfig(config).map(
+      (c, i) =>
+        ({
+          ...c,
+          rules: rules.value[i],
+        } as DateConfig),
+    );
   }
 
   function hasValue(value: any) {
@@ -599,14 +603,14 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     });
   }
 
-  function getDateParts(value: any): Partial<DateParts>[] {
+  function getDateParts(value: any): (DateParts | null)[] {
     if (isRange.value) {
       return [
-        value && value.start ? locale.value.getDateParts(value.start) : {},
-        value && value.end ? locale.value.getDateParts(value.end) : {},
+        value && value.start ? locale.value.getDateParts(value.start) : null,
+        value && value.end ? locale.value.getDateParts(value.end) : null,
       ];
     }
-    return [value ? locale.value.getDateParts(value) : {}];
+    return [value ? locale.value.getDateParts(value) : null];
   }
 
   function cancelDrag() {

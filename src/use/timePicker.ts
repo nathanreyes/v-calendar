@@ -1,6 +1,12 @@
 import { computed } from 'vue';
 import { arrayHasItems } from '../utils/helpers';
-import { DateParts, DatePatch, getDatePartsOptions } from '../utils/dates';
+import {
+  SimpleDateParts,
+  DateParts,
+  DatePatch,
+  getDatePartsOptions,
+  isDateParts,
+} from '../utils/dates';
 import { useBase } from '../use/base';
 import { ValueTarget, useDatePicker } from '../use/datePicker';
 
@@ -77,7 +83,10 @@ export function createTimePicker(props: TimePickerProps) {
 
   const isStart = computed(() => props.position === 0);
   const rules = computed(() => modelConfig.value[props.position].rules);
-  const parts = computed(() => dateParts.value[props.position]);
+  const parts = computed(
+    () => dateParts.value[props.position] || { isValid: false },
+  );
+  const partsValid = computed(() => isDateParts(parts.value));
   const isValid = computed(() => !!parts.value.isValid);
   const showBorder = computed(() => !isTime.value);
   const showHeader = computed(() => {
@@ -85,7 +94,10 @@ export function createTimePicker(props: TimePickerProps) {
   });
 
   const date = computed(() => {
-    let date = locale.value.normalizeDate(parts.value);
+    if (!partsValid.value) return null;
+    let date = locale.value.normalizeDate(
+      parts.value as Partial<SimpleDateParts>,
+    );
     if ((parts.value as DateParts).hours === 24) {
       date = new Date(date.getTime() - 1);
     }
