@@ -122,7 +122,7 @@ export default class Locale {
     });
   }
 
-  normalizeDate(d: DateSource, options: Partial<DateOptions> = {}) {
+  normalizeDate(d: DateParts | DateSource, options: Partial<DateOptions> = {}) {
     return normalizeDate(d, {
       ...options,
       locale: this,
