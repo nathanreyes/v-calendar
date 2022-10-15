@@ -148,7 +148,7 @@ type CachedPage = Pick<
   | 'weeks'
 >;
 
-const DATE_PARTS: Record<PageView, (keyof DateParts)[]> = {
+const viewAddressKeys: Record<PageView, (keyof DateParts)[]> = {
   daily: ['year', 'month', 'day'],
   weekly: ['year', 'month', 'week'],
   monthly: ['year', 'month'],
@@ -493,7 +493,7 @@ export function getPageAddressForDate(
 ) {
   return pick(
     locale.getDateParts(locale.normalizeDate(date)),
-    DATE_PARTS[view],
+    viewAddressKeys[view],
   ) as PageAddress;
 }
 
