@@ -264,7 +264,7 @@
   --vc-hover-bg: hsla(216, 15%, 52%, 0.3);
   --vc-focus-ring: 0 0 0 2px rgb(59 130 246 / 0.7);
   /* Calendar header */
-  --vc-header-arrow-color: var(--vc-white);
+  --vc-header-arrow-color: var(--vc-gray-300);
   --vc-header-arrow-hover-bg: var(--vc-gray-800);
   --vc-header-title-color: var(--vc-gray-100);
   /* Calendar weekdays */
