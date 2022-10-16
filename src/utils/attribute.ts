@@ -1,13 +1,10 @@
 import { Placement } from '@popperjs/core';
-import DateInfo, {
-  DateInfoSource,
-  DateInfoOptions,
-  DateInfoDayContext,
-} from './dateInfo';
+import DateInfo, { DateInfoSource, DateInfoOptions } from './dateInfo';
 import { arrayHasItems, createGuid, extend } from './helpers';
 import { PopoverVisibility } from './popovers';
+import { CalendarDay } from './page';
 import { Theme } from '../use/theme';
-import Locale, { CalendarDay } from './locale';
+import Locale from './locale';
 
 import {
   ContentConfig,
