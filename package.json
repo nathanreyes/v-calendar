@@ -1,5 +1,5 @@
 {
-  "name": "@rommel.vergara/v-calendar",
+  "name": "v-calendar",
   "version": "2.4.1",
   "private": false,
   "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
