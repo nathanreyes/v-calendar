@@ -216,6 +216,7 @@ export default {
       ) {
         this.isFocused = false;
         if (!this.isHovered && this.autoHide) this.hide();
+        this.$parent.$parent.$emit('lostFocus', this.$parent);
       }
     },
     onDocumentClick(e) {
