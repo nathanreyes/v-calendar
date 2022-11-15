@@ -1,10 +1,5 @@
 <template>
-  <Example centered>
-    <Calendar
-      :initial-page="{ month: 1, year: 2019 }"
-      :attributes="attributes"
-    />
-  </Example>
+  <Calendar :initial-page="{ month: 1, year: 2019 }" :attributes="attributes" />
 </template>
 
 <script setup>

@@ -1,7 +1,5 @@
 <template>
-  <Example centered>
-    <Calendar :attributes="attributes" />
-  </Example>
+  <Calendar :attributes="attributes" />
 </template>
 
 <script setup>

@@ -106,7 +106,9 @@ For the simple example above, we used the following properties to build the attr
 
 Here is how the default dot config would appear.
 
-<AttributesDot />
+<Example centered>
+  <AttributesDot />
+</Example>
 
 ```vue
 <script setup>
@@ -128,7 +130,9 @@ Attributes inherit the default color from the `Calendar.color` prop (which is bl
 
 However, all attributes except popovers may be assigned directly to a color.
 
-<AttributesHighlightColor />
+<Example centered>
+  <AttributesHighlightColor />
+</Example>
 
 ```vue
 <script setup>
@@ -179,7 +183,9 @@ When using an object value, these are the properties you may use for further hig
 
 Here is an example using each of the three fill mode types (`solid`, `light` and `outline`, respectively).
 
-<AttributesHighlightCustom />
+<Example centered>
+  <AttributesHighlightCustom />
+</Example>
 
 ```vue
 <template>
@@ -247,7 +253,9 @@ When using an object value, these are the properties you may use for further con
 | `class` | String | Class to apply to the content element. |
 | `style` | Object | Style to apply to the content element. |
 
-<AttributesContent />
+<Example centered>
+  <AttributesContent />
+</Example>
 
 ```vue
 <template>
@@ -451,7 +459,9 @@ Each attribute type allows for targeting `start`, `base` and `end` sections with
 
 For example, we could style the `fillMode` for the highlight end caps separately from the base section.
 
-<AttributesHighlightRange />
+<Example centered>
+  <AttributesHighlightRange />
+</Example>
 
 ```vue
 <template>
@@ -570,13 +580,15 @@ For a more customized approach you can insert your own `"day-popover"` custom sc
   If you are not familiar with the convention of using scoped slots in Vue.js, you can reference the [Vue docs](https://vuejs.org/v2/guide/components.html#Scoped-Slots) or [this post by alligator.io](https://alligator.io/vuejs/scoped-component-slots/).
 </BaseAlert>
 
-<AttributesPopoverSlot />
+<Example centered>
+  <AttributesPopoverSlot />
+</Example>
 
 ```vue{3-7,31-33}
 <template>
   <Calendar :attributes="attributes">
     <template #day-popover>
-      <div class="px-1">
+      <div class="text-xs text-gray-700 dark:text-gray-300">
         Using my own content now
       </div>
     </template>
@@ -624,7 +636,9 @@ Now that you are providing your own popover, you need to display the attributes 
 
 Let's walk through the process of customizing the previous example. First, let's add a header to display the date for the popover.
 
-<AttributesPopoverSlot :step="2" />
+<Example centered>
+  <AttributesPopoverSlot :step="2" />
+</Example>
 
 ```html
 <Calendar :attributes="attributes">

@@ -1,34 +1,34 @@
 <template>
-  <Example centered>
-    <Calendar :attributes="attributes">
-      <template #day-popover="{ day, format, masks, dayTitle, attributes }">
-        <div class="px-1">
-          <span v-if="step === 1">Using my own content now</span>
-          <div
-            class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
-            v-else-if="step === 2"
-          >
-            {{ format(day.date, `${masks.dayPopover}`) }}
-          </div>
-          <div
-            class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
-            v-else-if="step >= 3"
-          >
-            {{ dayTitle }}
-          </div>
-          <ul v-if="step === 3">
-            <li
-              v-for="{ key, customData } in attributes"
-              :key="key"
-              class="text-gray-900 dark:text-gray-100"
-            >
-              {{ customData.description }}
-            </li>
-          </ul>
+  <Calendar :attributes="attributes">
+    <template #day-popover="{ day, format, masks, dayTitle, attributes }">
+      <div class="px-1">
+        <div v-if="step === 1" class="text-xs text-gray-700 dark:text-gray-300">
+          Using my own content now
         </div>
-      </template>
-    </Calendar>
-  </Example>
+        <div
+          class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
+          v-else-if="step === 2"
+        >
+          {{ format(day.date, `${masks.dayPopover}`) }}
+        </div>
+        <div
+          class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
+          v-else-if="step >= 3"
+        >
+          {{ dayTitle }}
+        </div>
+        <ul v-if="step === 3">
+          <li
+            v-for="{ key, customData } in attributes"
+            :key="key"
+            class="text-gray-900 dark:text-gray-100"
+          >
+            {{ customData.description }}
+          </li>
+        </ul>
+      </div>
+    </template>
+  </Calendar>
 </template>
 
 <script setup>
@@ -44,7 +44,7 @@ const todos = ref([
   {
     description: 'Take Noah to basketball practice.',
     isComplete: false,
-    dates: { weekdays: 6 }, // Every Friday
+    dates: { repeats: { weekdays: 6 } }, // Every Friday
     color: 'red',
   },
 ]);
