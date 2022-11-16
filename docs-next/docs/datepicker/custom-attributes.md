@@ -55,7 +55,7 @@ We'll first try to display the dragged range, then fall back to the selected ran
     @drag="dragValue = $event"
   >
     <template #day-popover="{ format }">
-      <div>
+      <div class="text-sm">
         {{ format(dragValue ? dragValue.start : range.start, 'MMM D') }}
         -
         {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}

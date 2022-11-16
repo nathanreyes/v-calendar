@@ -670,7 +670,9 @@ Because this technique for displaying the header is common, you can extract the 
 
 Now, we just need to display the attributes for the day as well. We can do so by extracting the `attributes` array from the slot-scope expression. We'll use a simple list to display the attribute data.
 
-<AttributesPopoverSlot :step="3" />
+<Example centered>
+  <AttributesPopoverSlot :step="3" />
+</Example>
 
 ```html{7-11}
 <Calendar :attributes="attributes">
@@ -679,11 +681,15 @@ Now, we just need to display the attributes for the day as well. We can do so by
       <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
         {{ dayTitle }}
       </div>
-      <ul>
-        <li v-for="{ key, customData } in attributes" :key="key">
-          {{ customData.description }}
-        </li>
-      </ul>
+        <ul>
+          <li
+            v-for="{ key, customData } in attributes"
+            :key="key"
+            class="block text-xs text-gray-700 dark:text-gray-300 bg-red-100"
+          >
+            {{ customData.description }}
+          </li>
+        </ul>
     </div>
   </template>
 </Calendar>

@@ -7,13 +7,7 @@
         </div>
         <div
           class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
-          v-else-if="step === 2"
-        >
-          {{ format(day.date, `${masks.dayPopover}`) }}
-        </div>
-        <div
-          class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center"
-          v-else-if="step >= 3"
+          v-else-if="step >= 2"
         >
           {{ dayTitle }}
         </div>
@@ -21,7 +15,7 @@
           <li
             v-for="{ key, customData } in attributes"
             :key="key"
-            class="text-gray-900 dark:text-gray-100"
+            class="block text-xs text-gray-500 dark:text-gray-400"
           >
             {{ customData.description }}
           </li>
