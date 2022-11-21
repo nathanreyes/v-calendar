@@ -88,6 +88,10 @@ function sidebar() {
             text: 'Attributes',
             link: '/calendar/attributes',
           },
+          {
+            text: 'Dates',
+            link: '/calendar/dates',
+          },
         ],
       },
       // Date Picker

@@ -44,4 +44,4 @@ Use the following tokens to configure your custom masks:
 | | `WWWW` | Sunday, Monday, ..., Saturday |
 | **Year** | `YY` | 70, 71, ... 69 |
 | | `YYYY` | 1970, 1971, ..., 2069 |
-| **Long Date** | `L` | 01/21/1983 (en-US), 21/01/1983 (en-GB), ..., 1983/01/21 (*civilized*) |
+| **Long Date** | `L` | 01/21/1983 (en-US), 21/01/1983 (en-GB), ..., 1983/01/21 |

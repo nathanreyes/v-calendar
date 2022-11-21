@@ -46,8 +46,6 @@ data() {
         // We use a single date here, but it could also be an array of dates,
         //  a date range or a complex date pattern.
         dates: new Date(),
-        // You can optionally provide dates to exclude
-        excludeDates: null,
         // Think of `order` like `z-index`
         order: 0
       }

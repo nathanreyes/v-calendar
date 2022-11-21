@@ -22,7 +22,7 @@ const todos = ref([
   {
     description: 'Take Noah to basketball practice.',
     isComplete: false,
-    dates: { weekdays: 6 }, // Every Friday
+    dates: { repeat: { weekdays: 5 } }, // Every Friday
     color: 'red',
   },
 ]);

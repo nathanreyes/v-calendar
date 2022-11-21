@@ -21,6 +21,7 @@ const meetings = [
       weekdays: 2,
     },
     color: 'blue',
+    order: 10,
   },
   {
     description: 'Meeting to discuss the new project.',
@@ -44,7 +45,7 @@ const todos = [
   {
     description: 'Take Noah to basketball practice.',
     isComplete: false,
-    dates: { weekdays: 6 },
+    dates: { repeat: { weekdays: 6 } },
     color: 'orange',
   },
   {
@@ -82,23 +83,27 @@ export default {
           dates: new Date(),
           order: 100,
         },
-        ...this.meetings.map(({ description, dates, color }) => ({
+        ...this.meetings.map(({ description, dates, color, order }) => ({
           dates,
           highlight: color,
           popover: {
             label: description,
           },
+          order: order || 0,
         })),
-        ...this.todos.map(todo => ({
-          dates: todo.dates,
-          dot: {
-            color: todo.color,
-            class: todo.isComplete ? 'opacity-25' : '',
-          },
-          popover: {
-            label: todo.description,
-          },
-        })),
+        ...this.todos.map(
+          ({ description, dates, color, order, isComplete }) => ({
+            dates: dates,
+            dot: {
+              color: color,
+              class: isComplete ? 'opacity-25' : '',
+            },
+            popover: {
+              label: description,
+            },
+            order: order || 0,
+          }),
+        ),
       ];
     },
   },

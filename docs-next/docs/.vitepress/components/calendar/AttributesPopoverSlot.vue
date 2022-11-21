@@ -38,7 +38,7 @@ const todos = ref([
   {
     description: 'Take Noah to basketball practice.',
     isComplete: false,
-    dates: { repeats: { weekdays: 6 } }, // Every Friday
+    dates: { repeat: { weekdays: 6 } }, // Every Friday
     color: 'red',
   },
 ]);
