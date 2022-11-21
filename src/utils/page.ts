@@ -1,5 +1,6 @@
 import {
   DateSource,
+  DayParts,
   DateParts,
   MonthParts,
   getMonthParts,
@@ -9,30 +10,20 @@ import {
   weeksInMonth,
   addDays,
   addMonths,
-} from './dates';
+  getDayIndex,
+} from './date/helpers';
 import Locale from './locale';
 import { pad, pick } from './helpers';
 
-export interface CalendarDay {
+export interface CalendarDay extends DayParts {
   id: string;
   position: number;
   label: string;
   ariaLabel: string;
-  day: number;
-  dayFromEnd: number;
-  weekday: number;
   weekdayPosition: number;
   weekdayPositionFromEnd: number;
-  weekdayOrdinal: number;
-  weekdayOrdinalFromEnd: number;
-  week: number;
-  weekFromEnd: number;
   weekPosition: number;
-  weeknumber: number;
   isoWeeknumber: number;
-  month: number;
-  year: number;
-  date: Date;
   range: {
     start: Date;
     end: Date;
@@ -258,6 +249,7 @@ function getDays(
       const onBottom = w === numWeeks;
       const onLeft = i === 1;
       const onRight = i === daysInWeek;
+      const dayIndex = getDayIndex(year, month, day);
       days.push({
         locale,
         id,
@@ -280,6 +272,7 @@ function getDays(
         year,
         dateFromTime,
         date,
+        dayIndex,
         range,
         isToday,
         isFirstDay,

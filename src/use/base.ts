@@ -1,10 +1,11 @@
 import { PropType, computed, provide, inject, toRef } from 'vue';
+import { DarkModeConfig, DarkModeClassConfig } from 'vue-screen-utils';
+import { useTheme } from './theme';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
-import { useTheme } from './theme';
-import { DarkModeConfig, DarkModeClassConfig } from 'vue-screen-utils';
+import { DateRange, addDays } from '../utils/date/helpers';
 
 export interface BaseProps {
   color: string;
@@ -15,11 +16,8 @@ export interface BaseProps {
   masks?: Record<string, any>;
   timezone?: string;
   minDate?: Date;
-  minDateExact?: Date;
   maxDate?: Date;
-  maxDateExact?: Date;
   disabledDates?: [];
-  availableDates?: [];
 }
 
 const contextKey = '__vc_base_context__';
@@ -39,10 +37,7 @@ export const propsDef = {
   timezone: String,
   minDate: null,
   maxDate: null,
-  minDateExact: null,
-  maxDateExact: null,
   disabledDates: null,
-  availableDates: null,
 };
 
 export type BaseContext = ReturnType<typeof createBase>;
@@ -73,47 +68,23 @@ export function createBase(props: BaseProps) {
   const masks = computed(() => locale.value.masks);
 
   const disabledDates = computed(() => {
-    const dates = locale.value.normalizeDates(props.disabledDates, {
-      isAllDay: true,
-    });
+    const dates: any[] = props.disabledDates ?? [];
     // Add disabled range for min date
-    if (props.minDateExact || props.minDate) {
-      const end = props.minDateExact
-        ? locale.value.normalizeDate(props.minDateExact)
-        : locale.value.normalizeDate(props.minDate!, {
-            rules: {
-              hours: 0,
-              minutes: 0,
-              seconds: 0,
-            },
-          });
+    if (props.minDate != null) {
       dates.push({
         start: null,
-        end: new Date(end.getTime() - 1000),
+        end: addDays(locale.value.normalizeDate(props.minDate), -1),
       });
     }
-    // Add disabled range for min date
-    if (props.maxDateExact || props.maxDate) {
-      const start = props.maxDateExact
-        ? locale.value.normalizeDate(props.maxDateExact)
-        : locale.value.normalizeDate(props.maxDate!, {
-            rules: {
-              hours: 23,
-              minutes: 59,
-              seconds: 59,
-            },
-          });
+    // Add disabled range for max date
+    if (props.maxDate != null) {
       dates.push({
-        start: new Date(start.getTime() + 1000),
+        start: addDays(locale.value.normalizeDate(props.maxDate), 1),
         end: null,
       });
     }
-    return dates;
-  });
-
-  const availableDates = computed(() => {
-    return locale.value.normalizeDates(props.availableDates, {
-      isAllDay: false,
+    return DateRange.fromMany(dates, {
+      firstDayOfWeek: locale.value.firstDayOfWeek,
     });
   });
 
@@ -122,8 +93,6 @@ export function createBase(props: BaseProps) {
       {
         key: 'disabled',
         dates: disabledDates.value,
-        excludeDates: availableDates.value,
-        excludeMode: 'includes',
         order: 100,
       },
       theme,
@@ -138,7 +107,6 @@ export function createBase(props: BaseProps) {
     locale,
     masks,
     disabledDates,
-    availableDates,
     disabledAttribute,
   };
   provide(contextKey, context);

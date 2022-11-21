@@ -1,5 +1,5 @@
-import { DayAttribute } from './attribute';
-import { isObject, isString, hasAny, defaults } from './helpers';
+import { Attribute, AttributeCell } from './attribute';
+import { isObject, isString, hasAny, defaultsDeep } from './helpers';
 
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';
 type ThemeProp =
@@ -90,13 +90,12 @@ function normalizeConfig(
       };
     }
   }
-  const result = root as Profile<any>;
   // Fill in missing targets
-  defaults(
-    result,
+  const result = defaultsDeep(
+    root,
     { start: root.startEnd, end: root.startEnd },
     defaultProfile,
-  );
+  ) as Profile<any>;
   // Normalize each target
   Object.entries(result).forEach(([targetType, targetConfig]) => {
     let targetColor = rootColor;
@@ -115,7 +114,7 @@ function normalizeConfig(
     }
     // Set the theme color if it is missing
     // @ts-ignore
-    defaults(result[targetType], { color: targetColor });
+    defaultsDeep(result[targetType], { color: targetColor });
   });
   return result;
 }
@@ -124,7 +123,7 @@ export interface GlyphRenderer<P extends Partial<Glyph>> {
   type: string;
   normalizeConfig(color: string, config: any): Profile<P>;
   prepareRender(glyphs: Record<string, Glyph[]>): void;
-  render(attr: DayAttribute, glyphs: Record<string, Glyph[]>): void;
+  render(attr: AttributeCell, glyphs: Record<string, Glyph[]>): void;
 }
 
 export class HighlightRenderer implements GlyphRenderer<Highlight> {
@@ -143,14 +142,15 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
     if (!glyphs.content) glyphs.content = [];
   }
 
-  render(attr: DayAttribute, glyphs: Record<string, Glyph[]>) {
-    const { key, highlight } = attr;
+  render(
+    { data, onStart, onEnd }: AttributeCell,
+    glyphs: Record<string, Glyph[]>,
+  ) {
+    const { key, highlight } = data;
     if (!highlight) return;
-    const { isDate, hasRecurrence, onStart, onEnd, onStartAndEnd } =
-      attr.dayContext;
     const { highlights, content } = glyphs;
     const { base, start, end } = highlight;
-    if (isDate || onStartAndEnd || hasRecurrence) {
+    if (onStart && onEnd) {
       highlights.push({
         key,
         color: start.color,
@@ -262,14 +262,16 @@ export class BaseRenderer<T extends Partial<Glyph>>
     glyphs[this.collectionType] = [];
   }
 
-  render(attr: DayAttribute, glyphs: Record<string, Glyph[]>) {
-    const { key } = attr;
-    const item = attr[this.type as keyof DayAttribute];
+  render(
+    { data, onStart, onEnd }: AttributeCell,
+    glyphs: Record<string, Glyph[]>,
+  ) {
+    const { key } = data;
+    const item = data[this.type as keyof Attribute];
     if (!key || !item) return;
-    const { isDate, onStart, onEnd } = attr.dayContext;
     const collection = glyphs[this.collectionType];
     const { base, start, end } = item;
-    if (isDate || onStart) {
+    if (onStart) {
       collection.push({
         key,
         color: start.color,

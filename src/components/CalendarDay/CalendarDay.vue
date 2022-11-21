@@ -15,6 +15,7 @@
       name="day-content"
       :day="day"
       :attributes="attributes"
+      :attribute-cells="attributeCells"
       :dayProps="dayContentProps"
       :dayEvents="dayContentEvents"
       :locale="locale"
@@ -56,7 +57,7 @@
 import { PropType, defineComponent, computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/page';
-import { Attribute, PopoverConfig } from '../../utils/attribute';
+import { AttributeCell, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
 
@@ -69,7 +70,7 @@ export default defineComponent({
     const {
       locale,
       theme,
-      dayAttributes,
+      attributeContext,
       dayPopoverId,
       onDayClick,
       onDayMouseenter,
@@ -80,10 +81,16 @@ export default defineComponent({
     } = useCalendar();
 
     const day = computed(() => props.day);
-    const attributes = computed(() => dayAttributes.value[day.value.id] || []);
+    const attributeCells = computed<AttributeCell[]>(() => {
+      if (!attributeContext.value) return [];
+      return attributeContext.value.getCells(day.value.dayIndex);
+    });
+    const attributes = computed(() =>
+      attributeCells.value.map(cell => cell.data),
+    );
 
     function processPopover(
-      attribute: Attribute,
+      { data: attribute }: AttributeCell,
       { popovers }: { popovers: PopoverConfig[] },
     ) {
       const { key, customData, popover } = attribute;
@@ -109,10 +116,9 @@ export default defineComponent({
         ...theme.prepareRender({}),
         popovers: [],
       };
-      attributes.value.forEach(dayAttr => {
-        if (!dayAttr.dayContext) return;
-        theme.render(dayAttr, result);
-        processPopover(dayAttr as Attribute, result);
+      attributeCells.value.forEach(cell => {
+        theme.render(cell, result);
+        processPopover(cell, result);
       });
       return result;
     });
@@ -195,18 +201,20 @@ export default defineComponent({
     });
 
     return {
-      locale,
+      attributes,
+      attributeCells,
+      bars,
       dayClasses,
       dayContentProps,
       dayContentEvents,
       dayPopover,
-      attributes,
-      highlights,
-      hasHighlights,
       dots,
       hasDots,
-      bars,
       hasBars,
+      highlights,
+      hasHighlights,
+      locale,
+      popovers,
     };
   },
 });

@@ -24,7 +24,7 @@ import {
   DateParts,
   DatePartsRules,
   datesAreEqual,
-} from '../utils/dates';
+} from '../utils/date/helpers';
 import {
   PopoverOptions,
   showPopover as sp,

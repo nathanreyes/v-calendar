@@ -1,15 +1,18 @@
 import {
   DayOfWeek,
-  DayInMonth,
   WeekInMonth,
   DayParts,
   diffInDays,
   diffInWeeks,
   diffInMonths,
   diffInYears,
-} from '../dates';
-import { DateRecurrence } from './index';
+} from './helpers';
 import { isArray, isNumber, isObject } from '../helpers';
+
+export enum GroupRuleType {
+  Any = 'any',
+  All = 'all',
+}
 
 export enum IntervalRuleType {
   Days = 'days',
@@ -30,36 +33,14 @@ export enum OrdinalComponentRuleType {
   OrdinalWeekdays = 'ordinalWeekdays',
 }
 
-export enum GroupRuleType {
-  Any = 'any',
-  All = 'all',
-}
-
 export type RuleType =
   | GroupRuleType
   | IntervalRuleType
   | ComponentRuleType
   | OrdinalComponentRuleType;
 
-type OrdinalObjectConfig = Record<string | number, number | number[]>;
-type OrdinalArrayConfig = number[] | number[][];
-
-enum RepeatInterval {
-  Days = 'days',
-  Weeks = 'weeks',
-  Months = 'months',
-  Years = 'years',
-}
-
-export interface RuleConfig {
-  every: [number, RepeatInterval];
-  weekdays: DayOfWeek | DayOfWeek[];
-  days: DayInMonth | DayInMonth[];
-  weeks: WeekInMonth | WeekInMonth[];
-  years: number | number[];
-  ordinalWeekdays: OrdinalObjectConfig | OrdinalArrayConfig;
-  on: RuleConfig[];
-}
+export type OrdinalObjectConfig = Record<string | number, number | number[]>;
+export type OrdinalArrayConfig = number[] | number[][];
 
 interface ComponentRuleRange {
   min: number;
@@ -81,117 +62,47 @@ export const RuleRanges: Record<
 
 export interface Rule<T extends RuleType> {
   type: T;
-  recurrence: DateRecurrence;
   validate(): void;
   passes(dayParts: DayParts): boolean;
 }
 
-export class GroupRule implements Rule<GroupRuleType> {
-  type = GroupRuleType.Any;
-  rules: Rule<RuleType>[] = [];
-
-  constructor(public recurrence: DateRecurrence, public config: any) {
-    this.validate();
-    this.rules = this.normalizeRules(config);
-  }
-
-  validate() {
-    if (isObject(this.config) || isArray(this.config)) return;
-    throw Error('Rule group configuration must be an object or an array.');
-  }
-
-  normalizeRules(config: any) {
-    if (isArray(config)) {
-      this.type = GroupRuleType.Any;
-      return config.map(c => new GroupRule(this.recurrence, c));
-    } else {
-      this.type = GroupRuleType.All;
-      return this.getObjectRules(config);
-    }
-  }
-
-  getObjectRules(config: any) {
-    const rules: Rule<RuleType>[] = [];
-
-    // Add interval rule
-    if (config.every) {
-      const [interval = 1, type = IntervalRuleType.Days] = config.every;
-      rules.push(new IntervalRule(this.recurrence, type, interval));
-    }
-
-    // Add interval rules
-    // Object.values(IntervalRuleType).forEach(type => {
-    //   if (!(type in config)) return;
-    //   rules.push(new IntervalRule(this.recurrence, type, config[type]!));
-    // });
-
-    // Add component rules
-    Object.values(ComponentRuleType).forEach(type => {
-      if (!(type in config)) return;
-      rules.push(new ComponentRule(this.recurrence, type, config[type]));
-    });
-
-    // Add ordinal component rules
-    Object.values(OrdinalComponentRuleType).forEach(type => {
-      if (!(type in config)) return;
-      rules.push(new OrdinalComponentRule(this.recurrence, type, config[type]));
-    });
-
-    // Add group rules
-    if (config.on) {
-      rules.push(new GroupRule(this.recurrence, config.on));
-    }
-
-    return rules;
-  }
-
-  passes(dayParts: DayParts) {
-    if (this.type === GroupRuleType.Any) return this.passesAny(dayParts);
-    return this.passesAll(dayParts);
-  }
-
-  passesAny(dayParts: DayParts) {
-    return this.rules.some(r => r.passes(dayParts));
-  }
-
-  passesAll(dayParts: DayParts) {
-    return this.rules.every(r => r.passes(dayParts));
-  }
-}
-
 export class IntervalRule implements Rule<IntervalRuleType> {
+  private validated = true;
+
   constructor(
-    public recurrence: DateRecurrence,
     public type: IntervalRuleType,
     public interval: number,
+    public from: DayParts,
   ) {
     this.validate();
   }
 
   validate() {
     // Start date needed for interval rules
-    if (!this.recurrence.fromDate) {
-      throw Error(
-        'You can only set an interval if this recurrence has a start date.',
+    if (!this.from) {
+      console.error(
+        `A valid "from" date is required for date interval rule. This rule will be skipped.`,
       );
+      this.validated = false;
     }
   }
 
   passes(dateParts: DayParts) {
+    if (!this.validated) return true;
+
     const { date } = dateParts;
-    const fromDate = this.recurrence.fromDate || new Date();
     switch (this.type) {
       case IntervalRuleType.Days: {
-        return diffInDays(fromDate, date) % this.interval === 0;
+        return diffInDays(this.from.date, date) % this.interval === 0;
       }
       case IntervalRuleType.Weeks: {
-        return diffInWeeks(fromDate, date) % this.interval === 0;
+        return diffInWeeks(this.from.date, date) % this.interval === 0;
       }
       case IntervalRuleType.Months: {
-        return diffInMonths(fromDate, date) % this.interval === 0;
+        return diffInMonths(this.from.date, date) % this.interval === 0;
       }
       case IntervalRuleType.Years: {
-        return diffInYears(fromDate, date) % this.interval === 0;
+        return diffInYears(this.from.date, date) % this.interval === 0;
       }
       default: {
         return false;
@@ -201,13 +112,10 @@ export class IntervalRule implements Rule<IntervalRuleType> {
 }
 
 export class ComponentRule implements Rule<ComponentRuleType> {
+  private validated = true;
   components: number[] = [];
 
-  constructor(
-    public recurrence: DateRecurrence,
-    public type: ComponentRuleType,
-    components: number | number[],
-  ) {
+  constructor(public type: ComponentRuleType, components: number | number[]) {
     this.components = isArray(components) ? components : [components];
     this.validate();
   }
@@ -216,14 +124,15 @@ export class ComponentRule implements Rule<ComponentRuleType> {
     const range = RuleRanges[this.type];
     this.components.forEach(component => {
       if (component < range.min || component > range.max) {
-        throw Error(
-          `Acceptable range for ${this.type} is from ${range.min} to ${range.max}.`,
+        console.error(
+          `Acceptable range for "${this.type}" rule is from ${range.min} to ${range.max}. This rull will be skipped.`,
         );
+        this.validated = false;
       }
     });
   }
 
-  getTestComponents(dayParts: DayParts) {
+  getComponentsToTest(dayParts: DayParts) {
     const { day, dayFromEnd, weekday, week, weekFromEnd, month, year } =
       dayParts;
     switch (this.type) {
@@ -243,16 +152,19 @@ export class ComponentRule implements Rule<ComponentRuleType> {
   }
 
   passes(dayParts: DayParts) {
-    const comps = this.getTestComponents(dayParts);
-    return comps.some(comp => this.components.includes(comp));
+    if (!this.validated) return true;
+
+    const comps = this.getComponentsToTest(dayParts);
+    const result = comps.some(comp => this.components.includes(comp));
+    return result;
   }
 }
 
 export class OrdinalComponentRule implements Rule<OrdinalComponentRuleType> {
+  private validated = true;
   components: [WeekInMonth, DayOfWeek][];
 
   constructor(
-    public recurrence: DateRecurrence,
     public type: OrdinalComponentRuleType,
     components: OrdinalObjectConfig | OrdinalArrayConfig,
   ) {
@@ -291,20 +203,24 @@ export class OrdinalComponentRule implements Rule<OrdinalComponentRuleType> {
     this.components.forEach(([ordinal, ordinalDayOfWeek]) => {
       if (range.ordinal) {
         if (ordinal < range.ordinal.min || ordinal > range.ordinal.max) {
-          throw Error(
-            `Acceptable ordinal range for ${this.type} is from ${range.ordinal.min} to ${range.ordinal.max}.`,
+          console.error(
+            `Acceptable ordinal range for "${this.type}" rule is from ${range.ordinal.min} to ${range.ordinal.max}.`,
           );
+          this.validated = false;
         }
       }
       if (ordinalDayOfWeek < range.min || ordinalDayOfWeek > range.max) {
-        throw Error(
-          `Acceptable range for ${this.type} is from ${range.min} to ${range.max}.`,
+        console.error(
+          `Acceptable range for "${this.type}" rule is from ${range.min} to ${range.max}. This rule will be skipped`,
         );
+        this.validated = false;
       }
     });
   }
 
   passes(dayParts: DayParts) {
+    if (!this.validated) return false;
+
     const { weekday, weekdayOrdinal, weekdayOrdinalFromEnd } = dayParts;
     return this.components.some(
       ([ordinalWeek, ordinalWeekday]) =>

@@ -1,5 +1,5 @@
 import { reactive, Ref } from 'vue';
-import { Attribute, DayAttribute } from '../utils/attribute';
+import { Attribute, AttributeCell } from '../utils/attribute';
 import { DarkModeConfig, useDarkMode } from 'vue-screen-utils';
 import {
   GlyphRenderer,
@@ -27,7 +27,7 @@ export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
   function normalizeGlyphs(attr: Attribute) {
     renderers.forEach(renderer => {
       const type = renderer.type as keyof Attribute;
-      if (attr.hasOwnProperty(type) && attr[type] != null) {
+      if (attr[type] != null) {
         // @ts-ignore
         attr[type] = renderer.normalizeConfig(color.value, attr[type]);
       }
@@ -41,9 +41,9 @@ export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
     return glyphs;
   }
 
-  function render(attr: DayAttribute, glyphs: Glyphs) {
+  function render(cell: AttributeCell, glyphs: Glyphs) {
     renderers.forEach(renderer => {
-      renderer.render(attr, glyphs);
+      renderer.render(cell, glyphs);
     });
   }
 

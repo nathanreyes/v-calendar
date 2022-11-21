@@ -6,7 +6,7 @@ import {
   DatePatch,
   getDatePartsOptions,
   isDateParts,
-} from '../utils/dates';
+} from '../utils/date/helpers';
 import { useBase } from '../use/base';
 import { ValueTarget, useDatePicker } from '../use/datePicker';
 

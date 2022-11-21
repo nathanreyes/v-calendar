@@ -7,23 +7,62 @@ import {
   isArray,
   arrayHasItems,
   isFunction,
-} from './helpers';
+} from '../helpers';
 import toDate from 'date-fns-tz/toDate';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
 import getISOWeek from 'date-fns/getISOWeek';
 import addDays from 'date-fns/addDays';
+import addWeeks from 'date-fns/addWeeks';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
-import Locale, { LocaleConfig } from './locale';
+import Locale, { LocaleConfig } from '../locale';
 
-export { addDays, addMonths, addYears };
+export { addDays, addWeeks, addMonths, addYears };
+export { DateRepeat } from './repeat';
+export { DateRange } from './range';
 
 type DayNameLength = 'narrow' | 'short' | 'long';
 type MonthNameLength = 'short' | 'long';
 
-export type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type DayInMonth =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 18
+  | 20
+  | 21
+  | 22
+  | 23
+  | 24
+  | 25
+  | 26
+  | 27
+  | 28
+  | 29
+  | 30
+  | 31;
 export type DayOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type WeekInMonth = -6 | -5 | -4 | -3 | -2 | -1 | 1 | 2 | 3 | 4 | 5 | 6;
+export type MonthInYear = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+export type StartOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
+export type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type DateSource = Date | string | number;
 export type TimeNames = Partial<Record<Intl.RelativeTimeFormatUnit, string>>;
 
@@ -103,7 +142,22 @@ export interface SimpleDateParts {
   milliseconds: number;
 }
 
-export interface DateParts {
+export interface DayParts {
+  dayIndex: number;
+  day: number;
+  dayFromEnd: number;
+  weekday: number;
+  weekdayOrdinal: number;
+  weekdayOrdinalFromEnd: number;
+  week: number;
+  weekFromEnd: number;
+  weeknumber: number;
+  month: number;
+  year: number;
+  date: Date;
+}
+
+export interface DateParts extends DayParts {
   milliseconds: number;
   seconds: number;
   minutes: number;
@@ -469,6 +523,27 @@ export function getStartOfWeek(date: Date, firstDayOfWeek: DayOfWeek = 1) {
   return addDays(date, daysToAdd);
 }
 
+export function getDayIndex(year: number, month: number, day: number) {
+  const utcDate = Date.UTC(year, month - 1, day);
+  return diffInDays(new Date(0), new Date(utcDate));
+}
+
+export function diffInDays(d1: Date, d2: Date) {
+  return Math.round((d2.getTime() - d1.getTime()) / MS_PER_DAY);
+}
+
+export function diffInWeeks(d1: Date, d2: Date) {
+  return Math.ceil(diffInDays(startOfWeek(d1), startOfWeek(d2)) / 7);
+}
+
+export function diffInYears(d1: Date, d2: Date) {
+  return d2.getUTCFullYear() - d1.getUTCFullYear();
+}
+
+export function diffInMonths(d1: Date, d2: Date) {
+  return diffInYears(d1, d2) * 12 + (d2.getMonth() - d1.getMonth());
+}
+
 export function getDateFromParts(
   parts: Partial<SimpleDateParts>,
   timezone = '',
@@ -521,7 +596,9 @@ export function getTimezoneOffset(
   return (date.getTime() - utcDate.getTime()) / 60000;
 }
 
-export function getMonthParts(
+const _monthParts: Record<string, MonthParts> = {};
+
+export function doGetMonthParts(
   month: number,
   year: number,
   firstDayOfWeek: DayOfWeek,
@@ -555,6 +632,17 @@ export function getMonthParts(
   };
 }
 
+export function getMonthParts(
+  month: number,
+  year: number,
+  firstDayOfWeek: DayOfWeek,
+): MonthParts {
+  const key = `${year}-${month}`;
+  _monthParts[key] =
+    _monthParts[key] || doGetMonthParts(month, year, firstDayOfWeek);
+  return _monthParts[key];
+}
+
 export function getDateParts(
   date: Date,
   firstDayOfWeek: DayOfWeek,
@@ -574,10 +662,10 @@ export function getDateParts(
     seconds * MS_PER_SECOND +
     minutes * MS_PER_MINUTE +
     hours * MS_PER_HOUR;
-  const month = tzDate.getMonth() + 1;
+  const month = <MonthInYear>(tzDate.getMonth() + 1);
   const year = tzDate.getFullYear();
   const monthParts = getMonthParts(month, year, firstDayOfWeek);
-  const day = tzDate.getDate();
+  const day = <DayInMonth>tzDate.getDate();
   const dayFromEnd = monthParts.numDays - day + 1;
   const weekday = tzDate.getDay() + 1;
   const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
@@ -587,6 +675,7 @@ export function getDateParts(
   );
   const weekFromEnd = monthParts.numWeeks - week + 1;
   const weeknumber = monthParts.weeknumbers[week];
+  const dayIndex = getDayIndex(year, month, day);
   const parts: DateParts = {
     milliseconds,
     seconds,
@@ -605,16 +694,20 @@ export function getDateParts(
     year,
     date: tzDate,
     dateTime: tzDate.getTime(),
+    dayIndex,
     timezoneOffset: 0,
     isValid: true,
   };
-  parts.timezoneOffset = getTimezoneOffset(parts, timezone);
   return parts;
 }
 
 export function getThisMonthParts(firstDayOfWeek: DayOfWeek) {
   const date = new Date();
-  return getMonthParts(date.getMonth() + 1, date.getFullYear(), firstDayOfWeek);
+  return getMonthParts(
+    <MonthInYear>(date.getMonth() + 1),
+    date.getFullYear(),
+    firstDayOfWeek,
+  );
 }
 
 export function getPrevMonthParts(

@@ -9,7 +9,7 @@ import {
 } from 'vue';
 import { useCalendar } from './calendar';
 import { Page } from '../utils/page';
-import { getMonthDates } from '../utils/dates';
+import { getMonthDates } from '../utils/date/helpers';
 import { head, last, pad } from '../utils/helpers';
 
 export type CalendarNavContext = ReturnType<typeof createCalendarNav>;

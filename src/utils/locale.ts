@@ -1,8 +1,10 @@
-import DateInfo, { DateInfoOptions } from './dateInfo';
 import { CalendarDay } from './page';
 import {
   DateSource,
   DateOptions,
+  DateRange,
+  DateRangeSource,
+  DateRangeOptions,
   SimpleDateParts,
   DayOfWeek,
   TimeNames,
@@ -21,16 +23,9 @@ import {
   denormalizeDate,
   getHourDates,
   getRelativeTimeNames,
-} from './dates';
+} from './date/helpers';
 import { defaultLocales } from './defaults';
-import {
-  isString,
-  isObject,
-  isArray,
-  has,
-  clamp,
-  defaultsDeep,
-} from './helpers';
+import { isString, isObject, has, clamp, defaultsDeep } from './helpers';
 
 export interface LocaleConfig {
   id: string;
@@ -141,12 +136,12 @@ export default class Locale {
     });
   }
 
-  normalizeDates(dates: any, opts: Partial<DateInfoOptions> = {}) {
+  getDateRanges(
+    ranges: DateRangeSource | DateRangeSource[],
+    opts: Partial<DateRangeOptions> = {},
+  ) {
     opts.firstDayOfWeek = this.firstDayOfWeek;
-    // Assign dates
-    return (isArray(dates) ? dates : [dates])
-      .map((d: any) => d && DateInfo.from(d, opts))
-      .filter((d: any) => d);
+    return DateRange.fromMany(ranges, opts);
   }
 
   getDateParts(date: Date) {

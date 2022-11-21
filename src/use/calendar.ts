@@ -13,10 +13,14 @@ import Popover from '../Popover/Popover.vue';
 import {
   Attribute,
   AttributeConfig,
-  createDayAttribute,
-  DayAttribute,
+  AttributeContext,
 } from '../utils/attribute';
-import { DateSource, addDays, addMonths, addYears } from '../utils/dates';
+import {
+  DateSource,
+  addDays,
+  addMonths,
+  addYears,
+} from '../utils/date/helpers';
 import {
   createGuid,
   isBoolean,
@@ -182,7 +186,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   // #region Computed
 
-  const { theme, locale, masks, disabledAttribute } = useOrCreateBase(props);
+  const { theme, locale, masks, disabledAttribute, disabledDates } =
+    useOrCreateBase(props);
 
   const count = computed(() => props.rows * props.columns);
 
@@ -241,24 +246,30 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const refreshDisabledDay = (day: CalendarDay) => {
-    day.isDisabled =
-      !!disabledAttribute.value && !!disabledAttribute.value.intersectsDay(day);
+    day.isDisabled = disabledAttribute.value.existsOnDay(
+      day.dayIndex,
+      attributeContext.value!,
+    );
   };
 
   const refreshFocusableDay = (day: CalendarDay) => {
     day.isFocusable = day.inMonth && day.day === state.focusableDay;
   };
 
-  const forDays = (
-    pages: Page[] = state.pages,
-    fn: (day: CalendarDay) => boolean | void,
-  ) => {
+  const forDays = (pages: Page[], fn: (day: CalendarDay) => boolean | void) => {
     for (const page of pages) {
       for (const day of page.days) {
         if (fn(day) === false) return;
       }
     }
   };
+
+  const allDays = computed<CalendarDay[]>(() =>
+    state.pages.reduce((result: CalendarDay[], page: Page) => {
+      result.push(...page.days);
+      return result;
+    }, <CalendarDay[]>[]),
+  );
 
   const attributes = computed(() => {
     const result: Attribute[] = [];
@@ -278,24 +289,21 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         ),
       );
     });
+    if (disabledAttribute.value) {
+      result.push(disabledAttribute.value);
+    }
     return result;
   });
 
   const hasAttributes = computed(() => arrayHasItems(attributes.value));
 
-  const dayAttributes = computed(() => {
-    const result: Record<string, DayAttribute[]> = {};
-    state.pages.forEach(page => {
-      page.days.forEach(day => {
-        attributes.value.forEach(attr => {
-          const dayDates = attr.getDayDates(day);
-          if (!dayDates.length) return;
-          result[day.id] ||= [];
-          result[day.id].push(createDayAttribute(day, dayDates[0], attr));
-        });
-      });
+  const attributeContext = computed(() => {
+    if (!allDays.value.length) return null;
+    const ctx = new AttributeContext(allDays.value);
+    attributes.value.forEach(attr => {
+      attr.render(ctx);
     });
-    return result;
+    return ctx;
   });
 
   const getWeeknumberPosition = (column: number, columnFromEnd: number) => {
@@ -314,9 +322,9 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     if (!hasAttributes.value) return null;
     const attr =
       attributes.value.find(attr => attr.pinPage) || attributes.value[0];
-    if (!attr || !attr.hasDates) return null;
-    const [dateInfo] = attr.dates;
-    const date = dateInfo.start?.date || dateInfo.end?.date;
+    if (!attr || !attr.hasRanges) return null;
+    const [range] = attr.ranges;
+    const date = range.start?.date || range.end?.date;
     return date ? getDateAddress(date) : null;
   };
 
@@ -722,7 +730,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     masks,
     attributes,
     disabledAttribute,
-    dayAttributes,
+    disabledDates,
+    attributeContext,
     count,
     step,
     firstPage,
