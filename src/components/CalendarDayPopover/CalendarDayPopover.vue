@@ -31,7 +31,7 @@
 import Popover from '../Popover/Popover.vue';
 import PopoverRow from '../PopoverRow/PopoverRow.vue';
 import { useCalendar } from '../../use/calendar';
-import { CalendarDay } from '../../utils/locale';
+import { CalendarDay } from '../../utils/page';
 
 const { dayPopoverId, theme, masks, locale } = useCalendar();
 

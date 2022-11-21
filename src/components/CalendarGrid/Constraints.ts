@@ -1,6 +1,3 @@
-// import { CalendarDay } from '../../utils/locale';
-// import DateInfo from '../../utils/dateInfo';
-
 type ConstraintType =
   | 'MIN_DURATION'
   | 'MAX_DURATION'
