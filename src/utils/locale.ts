@@ -19,7 +19,7 @@ import {
   getNextMonthParts,
   formatDate,
   parseDate,
-  normalizeDate,
+  toDate,
   denormalizeDate,
   getHourDates,
   getRelativeTimeNames,
@@ -117,11 +117,11 @@ export default class Locale {
     });
   }
 
-  normalizeDate(
+  toDate(
     d: Partial<SimpleDateParts> | DateSource,
     options: Partial<DateOptions> = {},
   ) {
-    return normalizeDate(d, {
+    return toDate(d, {
       ...options,
       locale: this,
       timezone: this.timezone,

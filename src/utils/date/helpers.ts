@@ -8,7 +8,7 @@ import {
   arrayHasItems,
   isFunction,
 } from '../helpers';
-import toDate from 'date-fns-tz/toDate';
+import toFnsDate from 'date-fns-tz/toDate';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
 import getISOWeek from 'date-fns/getISOWeek';
@@ -564,7 +564,7 @@ export function getDateFromParts(
       hrs,
       2,
     )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-    return toDate(dateString, { timeZone: timezone });
+    return toFnsDate(dateString, { timeZone: timezone });
   }
   return new Date(year, month - 1, day, hrs, min, sec, ms);
 }
@@ -589,7 +589,7 @@ export function getTimezoneOffset(
       hrs,
       2,
     )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-    date = toDate(dateString, { timeZone: timezone });
+    date = toFnsDate(dateString, { timeZone: timezone });
   } else {
     date = new Date(y, m - 1, d, hrs, min, sec, ms);
   }
@@ -974,7 +974,7 @@ export function parseDate(
   );
 }
 
-export function normalizeDate(
+export function toDate(
   d: DateSource | Partial<SimpleDateParts>,
   config: Partial<DateOptions> = {},
 ): Date {
@@ -1000,7 +1000,7 @@ export function normalizeDate(
     // Patch date parts
     if (patch) {
       const fillParts = getDateParts(
-        normalizeDate(fillDate || new Date()),
+        toDate(fillDate || new Date()),
         1,
         timezone,
       );
@@ -1025,7 +1025,7 @@ export function formatDate(
     options.locale instanceof Locale
       ? options.locale
       : new Locale(options.locale, timezone);
-  date = normalizeDate(date, { locale, timezone })!;
+  date = toDate(date, { locale, timezone })!;
   if (date == null) return '';
   let mask = normalizeMasks(masks, locale)[0];
   const literals: string[] = [];

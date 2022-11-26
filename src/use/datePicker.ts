@@ -406,20 +406,20 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     if (!hasValue(value)) return null;
     if (isRange.value) {
       let start = value.start > value.end ? value.end : value.start;
-      start = locale.value.normalizeDate(start, {
+      start = locale.value.toDate(start, {
         ...config[0],
         fillDate: valueStart.value ?? undefined,
         patch,
       });
       let end = value.start > value.end ? value.start : value.end;
-      end = locale.value.normalizeDate(end, {
+      end = locale.value.toDate(end, {
         ...config[1],
         fillDate: valueEnd.value ?? undefined,
         patch,
       });
       return sortRange({ start, end }, targetPriority);
     }
-    return locale.value.normalizeDate(value, {
+    return locale.value.toDate(value, {
       ...config[0],
       fillDate: dateValue.value as Date,
       patch,

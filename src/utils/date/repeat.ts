@@ -6,7 +6,6 @@ import {
   WeekInMonth,
   DayParts,
   DateParts,
-  normalizeDate,
   getDateParts,
 } from './helpers';
 import {

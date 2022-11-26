@@ -95,9 +95,7 @@ export function createTimePicker(props: TimePickerProps) {
 
   const date = computed(() => {
     if (!partsValid.value) return null;
-    let date = locale.value.normalizeDate(
-      parts.value as Partial<SimpleDateParts>,
-    );
+    let date = locale.value.toDate(parts.value as Partial<SimpleDateParts>);
     if ((parts.value as DateParts).hours === 24) {
       date = new Date(date.getTime() - 1);
     }

@@ -194,7 +194,7 @@ function getDays(
   const dft =
     (y: number, m: number, d: number) =>
     (hours: number, minutes: number, seconds: number, milliseconds: number) =>
-      locale.normalizeDate({
+      locale.toDate({
         year: y,
         month: m,
         day: d,
@@ -485,7 +485,7 @@ export function getPageAddressForDate(
   locale: Locale,
 ) {
   return pick(
-    locale.getDateParts(locale.normalizeDate(date)),
+    locale.getDateParts(locale.toDate(date)),
     viewAddressKeys[view],
   ) as PageAddress;
 }

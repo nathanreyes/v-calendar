@@ -73,13 +73,13 @@ export function createBase(props: BaseProps) {
     if (props.minDate != null) {
       dates.push({
         start: null,
-        end: addDays(locale.value.normalizeDate(props.minDate), -1),
+        end: addDays(locale.value.toDate(props.minDate), -1),
       });
     }
     // Add disabled range for max date
     if (props.maxDate != null) {
       dates.push({
-        start: addDays(locale.value.normalizeDate(props.maxDate), 1),
+        start: addDays(locale.value.toDate(props.maxDate), 1),
         end: null,
       });
     }
