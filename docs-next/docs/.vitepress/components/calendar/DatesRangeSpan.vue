@@ -2,13 +2,13 @@
   <Calendar :attributes="attributes" />
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue';
 
 const attributes = ref([
   {
-    highlight: true,
-    dates: [new Date()],
+    highlight: 'blue',
+    dates: [{ start: new Date(2022, 10, 7), span: 3 }],
   },
 ]);
 </script>
