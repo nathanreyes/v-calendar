@@ -56,15 +56,83 @@ export type DayInMonth =
   | 28
   | 29
   | 30
-  | 31;
+  | 31
+  | -1
+  | -2
+  | -3
+  | -4
+  | -5
+  | -6
+  | -7
+  | -8
+  | -9
+  | -10
+  | -11
+  | -12
+  | -13
+  | -14
+  | -15
+  | -16
+  | -17
+  | -18
+  | -18
+  | -20
+  | -21
+  | -22
+  | -23
+  | -24
+  | -25
+  | -26
+  | -27
+  | -28
+  | -29
+  | -30
+  | -31;
 export type DayOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export type WeekInMonth = -6 | -5 | -4 | -3 | -2 | -1 | 1 | 2 | 3 | 4 | 5 | 6;
+export type WeekInMonth = 1 | 2 | 3 | 4 | 5 | 6;
+export type WeekInMonthFromEnd = -6 | -5 | -4 | -3 | -2 | -1;
+export type OrdinalWeekInMonth = -5 | -4 | -3 | -2 | -1 | 1 | 2 | 3 | 4 | 5;
 export type MonthInYear = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 export type StartOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type DateSource = Date | string | number;
 export type TimeNames = Partial<Record<Intl.RelativeTimeFormatUnit, string>>;
+
+export function isDayInMonth(dayInMonth: unknown): dayInMonth is DayInMonth {
+  if (!isNumber(dayInMonth)) return false;
+  return dayInMonth >= 1 && dayInMonth <= 31;
+}
+
+export function isDayOfWeek(dayOfWeek: unknown): dayOfWeek is DayOfWeek {
+  if (!isNumber(dayOfWeek)) return false;
+  return dayOfWeek >= 1 && dayOfWeek <= 7;
+}
+
+export function isWeekInMonth(
+  weekInMonth: unknown,
+): weekInMonth is WeekInMonth {
+  if (!isNumber(weekInMonth)) return false;
+  return (
+    (weekInMonth >= -6 && weekInMonth <= -1) ||
+    (weekInMonth >= 1 && weekInMonth <= 6)
+  );
+}
+
+export function isMonthInYear(
+  monthInYear: unknown,
+): monthInYear is MonthInYear {
+  if (!isNumber(monthInYear)) return false;
+  return monthInYear >= 1 && monthInYear <= 12;
+}
+
+export function isOrdinalWeekInMonth(
+  weekInMonth: unknown,
+): weekInMonth is OrdinalWeekInMonth {
+  if (!isNumber(weekInMonth)) return false;
+  if (weekInMonth < -5 || weekInMonth > 5 || weekInMonth === 0) return false;
+  return true;
+}
 
 interface NumberRuleConfig {
   min?: number;
@@ -487,7 +555,7 @@ export function isDateParts(date: any) {
   return date.year && date.month && date.day;
 }
 
-export function isDateSource(date: any) {
+export function isDateSource(date: unknown): date is DateSource {
   if (date == null) return false;
   return isString(date) || isNumber(date) || isDate(date);
 }

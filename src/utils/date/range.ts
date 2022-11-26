@@ -1,56 +1,33 @@
 import { DateRepeat, DateRepeatConfig } from './repeat';
 import {
-  DateSource,
   DateParts,
   DayParts,
   DayOfWeek,
   getDateParts,
-  isDateSource,
-  normalizeDate,
   addDays,
   MS_PER_DAY,
 } from './helpers';
-import { isArray } from '../helpers';
+import { isDate, isArray } from '../helpers';
 
-type DateRangeDate = {
-  date?: DateSource;
-  dateTime?: DateSource;
-  timezone?: string;
-};
+type DateRangeDate = Date | null;
 
 interface DateRangeConfig {
-  start: DateSource | DateRangeDate | null;
-  end: DateSource | DateRangeDate | null;
+  start: DateRangeDate;
+  end: DateRangeDate;
   span: number;
   repeat: Partial<DateRepeatConfig>;
 }
 
-export type DateRangeSource = DateRange | DateSource | Partial<DateRangeConfig>;
+export type DateRangeSource =
+  | DateRange
+  | DateRangeDate
+  | [DateRangeDate, DateRangeDate]
+  | Partial<DateRangeConfig>;
 
 export interface DateRangeOptions {
   order: number;
   firstDayOfWeek: DayOfWeek;
   timezone: string;
-}
-
-function getPartsFromDateRangeSource(
-  source: DateSource | DateRangeDate,
-  opts: Partial<DateRangeOptions>,
-) {
-  let date = new Date();
-  if (isDateSource(source)) {
-    date = normalizeDate(source as DateSource, {
-      ...opts,
-      timezone: opts.timezone,
-    });
-  } else {
-    const di = source as DateRangeDate;
-    date = normalizeDate((di.dateTime || di.date)!, {
-      ...opts,
-      timezone: di.timezone ?? opts.timezone,
-    });
-  }
-  return getDateParts(date, opts.firstDayOfWeek!, opts.timezone);
 }
 
 export class DateRange {
@@ -77,9 +54,12 @@ export class DateRange {
       start: null,
       end: null,
     };
-    if (isDateSource(source)) {
-      config.start = source as DateSource;
-      config.end = source as DateSource;
+    if (isDate(source)) {
+      config.start = source;
+      config.end = source;
+    } else if (isArray(source)) {
+      config.start = source[0] ?? null;
+      config.end = source[1] ?? null;
     } else if (source != null) {
       Object.assign(config, source);
     }
@@ -100,24 +80,25 @@ export class DateRange {
 
     const { start, end, span, repeat } = config;
 
-    if (start) {
-      this.start = getPartsFromDateRangeSource(start, this.opts);
+    if (isDate(start)) {
+      this.start = getDateParts(start, this.firstDayOfWeek, this.timezone);
     }
 
-    if (end) {
-      this.end = getPartsFromDateRangeSource(end, this.opts);
-    } else if (this.start && span) {
-      this.end = getPartsFromDateRangeSource(
+    if (isDate(end)) {
+      this.end = getDateParts(end, this.firstDayOfWeek, this.timezone);
+    } else if (this.start != null && span) {
+      this.end = getDateParts(
         addDays(this.start.date, span - 1),
-        this.opts,
+        this.firstDayOfWeek,
+        this.timezone,
       );
     }
 
     if (repeat) {
       this.repeat = new DateRepeat(
         {
-          ...repeat,
           from: this.start?.date,
+          ...repeat,
         },
         {
           firstDayOfWeek: this.firstDayOfWeek,
@@ -174,6 +155,8 @@ export class DateRange {
   }
 
   intersectsRange(startDayIndex: number, endDayIndex: number) {
+    if (this.start && this.start.dayIndex > endDayIndex) return false;
+    if (this.end && this.end.dayIndex < startDayIndex) return false;
     return true;
   }
 }

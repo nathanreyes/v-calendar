@@ -1,9 +1,9 @@
-import { isArray, isObject, isString } from '../helpers';
+import { isArray, isObject, isString, isFunction } from '../helpers';
 import {
-  DateSource,
   DayOfWeek,
   DayInMonth,
   WeekInMonth,
+  MonthInYear,
   DayParts,
   DateParts,
   getDateParts,
@@ -19,29 +19,27 @@ import {
   OrdinalComponentRuleType,
   OrdinalComponentRule,
   OrdinalObjectConfig,
-  OrdinalArrayConfig,
+  FunctionRule,
+  SingleOrArray,
 } from './rules';
 
 export type RepeatIntervalShort = 'day' | 'week' | 'month' | 'year';
 
-enum RepeatInterval {
-  Days = 'days',
-  Weeks = 'weeks',
-  Months = 'months',
-  Years = 'years',
-}
-
+export type RepeatInterval = 'days' | 'weeks' | 'months' | 'years';
 export interface DateRepeatConfig {
   every: RepeatIntervalShort | [number, RepeatInterval];
-  from: DateSource;
-  until: DateSource;
-  weekdays: DayOfWeek | DayOfWeek[];
-  days: DayInMonth | DayInMonth[];
-  weeks: WeekInMonth | WeekInMonth[];
-  years: number | number[];
-  ordinalWeekdays: OrdinalObjectConfig | OrdinalArrayConfig;
-  on: DateRepeatConfig[];
+  from: Date;
+  until: Date;
+  weekdays: SingleOrArray<DayOfWeek>;
+  days: SingleOrArray<DayInMonth>;
+  weeks: SingleOrArray<WeekInMonth>;
+  months: SingleOrArray<MonthInYear>;
+  years: SingleOrArray<number>;
+  ordinalWeekdays: OrdinalObjectConfig | SingleOrArray<number[]>;
+  on: SingleOrArray<DateRepeatFn | Partial<DateRepeatConfig>>;
 }
+
+export type DateRepeatFn = (dayParts: DayParts) => boolean;
 
 export interface DateRepeatOptions {
   firstDayOfWeek: DayOfWeek;
@@ -49,7 +47,9 @@ export interface DateRepeatOptions {
 }
 
 export class DateRepeat implements Rule<GroupRuleType> {
-  config: Partial<DateRepeatConfig>;
+  private validated = true;
+
+  config: Partial<DateRepeatConfig> | DateRepeatFn;
   type = GroupRuleType.Any;
   from: DateParts | undefined;
   until: DateParts | undefined;
@@ -57,7 +57,7 @@ export class DateRepeat implements Rule<GroupRuleType> {
   options: DateRepeatOptions = { firstDayOfWeek: 1 };
 
   constructor(
-    config: Partial<DateRepeatConfig>,
+    config: Partial<DateRepeatConfig> | DateRepeatFn,
     options?: Partial<DateRepeatOptions>,
     private parent?: DateRepeat,
   ) {
@@ -70,23 +70,26 @@ export class DateRepeat implements Rule<GroupRuleType> {
       throw Error('Start of week must be between 1 and 7.');
     }
 
-    if (config.from) {
-      const from = normalizeDate(config.from);
-      this.from = getDateParts(from, this.firstDayOfWeek, this.timezone);
+    if (isFunction(config)) {
+      this.type = GroupRuleType.All;
+      this.rules = [new FunctionRule(config)];
+    } else if (isArray(config)) {
+      this.type = GroupRuleType.Any;
+      this.rules = config.map(c => new DateRepeat(c, this.options, this));
+    } else if (isObject(config)) {
+      this.type = GroupRuleType.All;
+      // Assign bounding dates
+      this.from = config.from
+        ? getDateParts(config.from, this.firstDayOfWeek, this.timezone)
+        : parent?.from;
+      this.until = config.until
+        ? getDateParts(config.until, this.firstDayOfWeek, this.timezone)
+        : parent?.until;
+      this.rules = this.getObjectRules(config);
     } else {
-      this.from = parent?.from;
+      console.error('Rule group configuration must be an object or an array.');
+      this.validated = false;
     }
-
-    if (config.until) {
-      const until = normalizeDate(config.until);
-      this.until = getDateParts(until, this.firstDayOfWeek, this.timezone);
-    } else {
-      this.until = parent?.until;
-    }
-
-    this.validate();
-
-    this.rules = this.normalizeRules(config);
   }
 
   get firstDayOfWeek() {
@@ -95,21 +98,6 @@ export class DateRepeat implements Rule<GroupRuleType> {
 
   get timezone() {
     return this.options.timezone;
-  }
-
-  validate() {
-    if (isObject(this.config) || isArray(this.config)) return;
-    throw Error('Rule group configuration must be an object or an array.');
-  }
-
-  normalizeRules(config: any) {
-    if (isArray(config)) {
-      this.type = GroupRuleType.Any;
-      return config.map(c => new DateRepeat(c, this.options, this));
-    } else {
-      this.type = GroupRuleType.All;
-      return this.getObjectRules(config);
-    }
   }
 
   getObjectRules(config: any) {
@@ -123,20 +111,13 @@ export class DateRepeat implements Rule<GroupRuleType> {
       if (isArray(config.every)) {
         const [interval = 1, type = IntervalRuleType.Days] = config.every;
         rules.push(new IntervalRule(type, interval, this.from!));
-        switch (type) {
-          case IntervalRuleType.Weeks: {
-            if (!config.weekdays && !config.on && this.from) {
-              config.weekdays = this.from.weekday;
-            }
-          }
-        }
       }
     }
 
     // Add component rules
     Object.values(ComponentRuleType).forEach(type => {
       if (!(type in config)) return;
-      rules.push(new ComponentRule(type, config[type]));
+      rules.push(ComponentRule.create(type, config[type]));
     });
 
     // Add ordinal component rules
@@ -146,7 +127,8 @@ export class DateRepeat implements Rule<GroupRuleType> {
     });
 
     // Add group rules
-    if (config.on) {
+    if (config.on != null) {
+      if (!isArray(config.on)) config.on = [config.on];
       rules.push(new DateRepeat(config.on, this.options, this.parent));
     }
 
@@ -154,18 +136,14 @@ export class DateRepeat implements Rule<GroupRuleType> {
   }
 
   passes(dayParts: DayParts) {
+    if (!this.validated) return true;
+
     if (this.from && dayParts.dayIndex <= this.from.dayIndex) return false;
     if (this.until && dayParts.dayIndex >= this.until.dayIndex) return false;
 
-    if (this.type === GroupRuleType.Any) return this.passesAny(dayParts);
-    return this.passesAll(dayParts);
-  }
-
-  passesAny(dayParts: DayParts) {
-    return this.rules.some(r => r.passes(dayParts));
-  }
-
-  passesAll(dayParts: DayParts) {
+    if (this.type === GroupRuleType.Any) {
+      return this.rules.some(r => r.passes(dayParts));
+    }
     return this.rules.every(r => r.passes(dayParts));
   }
 }
