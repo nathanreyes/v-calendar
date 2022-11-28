@@ -8,9 +8,18 @@ import {
   HighlightRenderer,
   DotRenderer,
   BarRenderer,
+  Highlight,
+  Dot,
+  Bar,
+  Content,
 } from '../utils/glyph';
 
-export type Glyphs = Record<string, Glyph[]>;
+export interface Glyphs {
+  highlights: Highlight[];
+  dots: Dot[];
+  bars: Bar[];
+  content: Content[];
+}
 
 export type Theme = ReturnType<typeof useTheme>;
 
@@ -34,14 +43,14 @@ export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
     });
   }
 
-  function prepareRender(glyphs: Glyphs = {}) {
+  function prepareRender(glyphs: Partial<Glyphs> = {}) {
     renderers.forEach(renderer => {
       renderer.prepareRender(glyphs);
     });
     return glyphs;
   }
 
-  function render(cell: AttributeCell, glyphs: Glyphs) {
+  function render(cell: AttributeCell, glyphs: Partial<Glyphs>) {
     renderers.forEach(renderer => {
       renderer.render(cell, glyphs);
     });

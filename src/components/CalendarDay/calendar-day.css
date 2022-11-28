@@ -71,7 +71,7 @@
 
 /* ----Content---- */
 
-.vc-content {
+.vc-content:not(.vc-base) {
   font-weight: var(--vc-font-bold);
   color: var(--vc-content-color);
 }

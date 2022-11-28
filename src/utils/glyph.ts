@@ -4,6 +4,7 @@ import { isObject, isString, hasAny, defaultsDeep } from './helpers';
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';
 type ThemeProp =
   | 'class'
+  | 'wrapperClass'
   | 'contentClass'
   | 'style'
   | 'contentStyle'
@@ -13,6 +14,7 @@ type ThemeProp =
 const targetProps: GlyphTarget[] = ['base', 'start', 'end', 'startEnd'];
 const displayProps: ThemeProp[] = [
   'class',
+  'wrapperClass',
   'contentClass',
   'style',
   'contentStyle',
@@ -38,7 +40,8 @@ interface Profile<T> {
 export type HighlightFillMode = 'solid' | 'light' | 'outline';
 export interface Highlight extends Glyph {
   fillMode: HighlightFillMode;
-  contentClass: string;
+  wrapperClass: string | any[];
+  contentClass: string | any[];
   contentStyle: Record<string, any>;
 }
 export type HighlightProfile = Profile<Highlight>;
@@ -122,8 +125,8 @@ function normalizeConfig(
 export interface GlyphRenderer<P extends Partial<Glyph>> {
   type: string;
   normalizeConfig(color: string, config: any): Profile<P>;
-  prepareRender(glyphs: Record<string, Glyph[]>): void;
-  render(attr: AttributeCell, glyphs: Record<string, Glyph[]>): void;
+  prepareRender(glyphs: Record<string, P[]>): void;
+  render(attr: AttributeCell, glyphs: Record<string, P[]>): void;
 }
 
 export class HighlightRenderer implements GlyphRenderer<Highlight> {
@@ -144,100 +147,76 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
 
   render(
     { data, onStart, onEnd }: AttributeCell,
-    glyphs: Record<string, Glyph[]>,
+    glyphs: Record<string, Highlight[]>,
   ) {
     const { key, highlight } = data;
     if (!highlight) return;
-    const { highlights, content } = glyphs;
+    const { highlights } = glyphs;
     const { base, start, end } = highlight;
     if (onStart && onEnd) {
       highlights.push({
+        ...start,
         key,
-        color: start.color,
         wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${start.color}`,
         class: [`vc-highlight vc-highlight-bg-${start.fillMode}`, start.class],
-        style: start.style,
-      });
-      content.push({
-        key: `${key}-content`,
-        color: start.color,
-        class: [
+        contentClass: [
           `vc-attr vc-highlight-content-${start.fillMode} vc-${start.color}`,
           start.contentClass,
         ],
-        style: start.contentStyle,
       });
     } else if (onStart) {
       highlights.push({
+        ...base,
         key: `${key}-base`,
-        color: base.color,
         wrapperClass: `vc-day-layer vc-day-box-right-center vc-attr vc-${base.color}`,
         class: [
           `vc-highlight vc-highlight-base-start vc-highlight-bg-${base.fillMode}`,
           base.class,
         ],
-        style: base.style,
       });
       highlights.push({
+        ...start,
         key,
-        color: start.color,
         wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${start.color}`,
         class: [`vc-highlight vc-highlight-bg-${start.fillMode}`, start.class],
-        style: start.style,
-      });
-      content.push({
-        key: `${key}-content`,
-        color: start.color,
-        class: [
+        contentClass: [
           `vc-attr vc-highlight-content-${start.fillMode} vc-${start.color}`,
           start.contentClass,
         ],
-        style: start.contentStyle,
       });
     } else if (onEnd) {
       highlights.push({
+        ...base,
         key: `${key}-base`,
         wrapperClass: `vc-day-layer vc-day-box-left-center vc-attr vc-${base.color}`,
         class: [
           `vc-highlight vc-highlight-base-end vc-highlight-bg-${base.fillMode}`,
           base.class,
         ],
-        style: base.style,
       });
       highlights.push({
+        ...end,
         key,
         wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${end.color}`,
         class: [`vc-highlight vc-highlight-bg-${end.fillMode}`, end.class],
-        style: end.style,
-      });
-      content.push({
-        key: `${key}-content`,
-        color: end.color,
-        class: [
+        contentClass: [
           `vc-attr vc-highlight-content-${end.fillMode} vc-${end.color}`,
           end.contentClass,
         ],
-        style: end.contentStyle,
       });
     } else {
       highlights.push({
+        ...base,
         key: `${key}-middle`,
-        color: base.color,
         wrapperClass: `vc-day-layer vc-day-box-center-center vc-attr vc-${base.color}`,
         class: [
           `vc-highlight vc-highlight-base-middle vc-highlight-bg-${base.fillMode}`,
           base.class,
         ],
-        style: base.style,
-      });
-      content.push({
-        key: `${key}-content`,
-        color: base.color,
-        class: [
+        contentClass: [
           `vc-attr vc-highlight-content-${base.fillMode} vc-${base.color}`,
           base.contentClass,
         ],
-        style: base.contentStyle,
       });
     }
   }
@@ -258,14 +237,11 @@ export class BaseRenderer<T extends Partial<Glyph>>
     return normalizeConfig(color, config) as Profile<T>;
   }
 
-  prepareRender(glyphs: Record<string, Glyph[]>) {
+  prepareRender(glyphs: Record<string, T[]>) {
     glyphs[this.collectionType] = [];
   }
 
-  render(
-    { data, onStart, onEnd }: AttributeCell,
-    glyphs: Record<string, Glyph[]>,
-  ) {
+  render({ data, onStart, onEnd }: AttributeCell, glyphs: Record<string, T[]>) {
     const { key } = data;
     const item = data[this.type as keyof Attribute];
     if (!key || !item) return;
@@ -308,6 +284,10 @@ export class BaseRenderer<T extends Partial<Glyph>>
 export class ContentRenderer extends BaseRenderer<Content> {
   constructor() {
     super('content', 'content');
+  }
+
+  normalizeConfig(_: string, config: any) {
+    return normalizeConfig('base', config) as Profile<Content>;
   }
 }
 

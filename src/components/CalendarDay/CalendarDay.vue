@@ -126,6 +126,8 @@ export default defineComponent({
     const highlights = computed(() => glyphs.value.highlights);
     const hasHighlights = computed(() => !!arrayHasItems(highlights.value));
 
+    const content = computed(() => glyphs.value.content);
+
     const dots = computed(() => glyphs.value.dots);
     const hasDots = computed(() => !!arrayHasItems(dots.value));
 
@@ -133,6 +135,9 @@ export default defineComponent({
     const hasBars = computed(() => !!arrayHasItems(bars.value));
 
     const popovers = computed(() => glyphs.value.popovers);
+    const popoverAttrs = computed(() =>
+      popovers.value.map((p: any) => p.attribute),
+    );
 
     const dayClasses = computed(() => {
       return [
@@ -153,9 +158,13 @@ export default defineComponent({
       const classes = [
         'vc-day-content vc-focusable vc-focus vc-attr',
         { 'vc-disabled': day.value.isDisabled },
-        get(last(glyphs.value.content), 'class') || '',
+        get(last(highlights.value), 'contentClass'),
+        get(last(content.value), 'class') || '',
       ];
-      const style = get(last(glyphs.value.content), 'style');
+      const style = {
+        ...get(last(highlights.value), 'contentStyle'),
+        ...get(last(content.value), 'style'),
+      };
       return {
         class: classes,
         style,
@@ -194,7 +203,7 @@ export default defineComponent({
       return defaults(
         {
           id: dayPopoverId.value,
-          data: { day, attributes },
+          data: { day, attributes: popoverAttrs.value },
         },
         ...popovers.value,
       );
@@ -208,6 +217,7 @@ export default defineComponent({
       dayContentProps,
       dayContentEvents,
       dayPopover,
+      glyphs,
       dots,
       hasDots,
       hasBars,
