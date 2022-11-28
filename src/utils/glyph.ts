@@ -249,33 +249,30 @@ export class BaseRenderer<T extends Partial<Glyph>>
     const { base, start, end } = item;
     if (onStart) {
       collection.push({
+        ...start,
         key,
-        color: start.color,
         class: [
           `vc-${this.type} vc-${this.type}-start vc-${start.color} vc-attr`,
           start.class,
         ],
-        style: start.style,
       });
     } else if (onEnd) {
       collection.push({
+        ...end,
         key,
-        color: end.color,
         class: [
           `vc-${this.type} vc-${this.type}-end vc-${end.color} vc-attr`,
           end.class,
         ],
-        style: end.style,
       });
     } else {
       collection.push({
+        ...base,
         key,
-        color: base.color,
         class: [
           `vc-${this.type} vc-${this.type}-base vc-${base.color} vc-attr`,
           base.class,
         ],
-        style: base.style,
       });
     }
   }
