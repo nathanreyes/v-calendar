@@ -22,12 +22,6 @@ import {
   BarProfile,
 } from './glyph';
 
-export interface GlyphProfile {
-  color: string;
-  class: string;
-  style: Record<string, any>;
-}
-
 export type PopoverConfig = Partial<{
   label: string;
   customData: any;
@@ -89,11 +83,6 @@ export class Attribute {
 
   existsOnDay(dayIndex: number, ctx: AttributeContext) {
     return ctx.cellExists(this.key, dayIndex);
-  }
-
-  includesDay(dayIndex: number, ctx: AttributeContext) {
-    const keys = ctx.getCellKeys(dayIndex);
-    return keys.includes(this.key);
   }
 
   render(ctx: AttributeContext) {

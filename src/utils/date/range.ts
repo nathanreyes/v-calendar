@@ -243,10 +243,6 @@ export class DateRangeContext<T extends RangeData> {
     return !!this.getCell(key, dayIndex);
   }
 
-  getCellKeys(dayIndex: number) {
-    return this.getCells(dayIndex).map(cell => cell.data.key);
-  }
-
   getCells(dayIndex: number) {
     const records = Object.values(this.records);
     const result: DateRangeCell<T>[] = [];
