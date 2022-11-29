@@ -139,6 +139,7 @@ export default class Locale {
     opts: Partial<DateRangeOptions> = {},
   ) {
     opts.firstDayOfWeek = this.firstDayOfWeek;
+    opts.timezone = this.timezone;
     return DateRange.fromMany(ranges, opts);
   }
 
