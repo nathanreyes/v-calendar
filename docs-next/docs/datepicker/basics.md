@@ -116,7 +116,7 @@ If an alternate model format is needed, set the `masks.modelValue` property with
 
 ```vue
 <template>
-  <DatePicker v-model.string="customer.birthday" :masks="masks" is-required />
+  <DatePicker v-model.string="customer.birthday" :masks="masks" />
 </template>
 
 <script setup>
@@ -196,3 +196,11 @@ import { ref, computed } from 'vue';
 const range = ref({ start: 1578290400000, end: 1578636000000 });
 </script>
 ```
+
+## Disable dates
+
+Use `disabled-dates` to disable the user from selecting dates or date ranges that intersect the disabled dates. Any dates specified will disable date and time selection for the the full day.
+
+<Example centered>
+  <DateDisabled />
+</Example>

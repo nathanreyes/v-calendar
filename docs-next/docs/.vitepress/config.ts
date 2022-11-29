@@ -119,6 +119,10 @@ function sidebar() {
             text: 'Custom Attributes',
             link: '/datepicker/custom-attributes',
           },
+          // {
+          //   text: 'Test',
+          //   link: '/datepicker/test',
+          // },
         ],
       },
       {

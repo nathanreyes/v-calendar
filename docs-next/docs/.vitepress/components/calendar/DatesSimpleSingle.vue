@@ -8,7 +8,7 @@ import { ref } from 'vue';
 const attributes = ref([
   {
     highlight: true,
-    dates: [new Date()],
+    dates: new Date(),
   },
 ]);
 </script>

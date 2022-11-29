@@ -1,5 +1,5 @@
 <template>
-  <DateDisplay v-model.string="customer.birthday" :masks="masks" is-required />
+  <DateDisplay v-model.string="customer.birthday" :masks="masks" />
 </template>
 
 <script setup>
