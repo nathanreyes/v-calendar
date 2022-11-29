@@ -7,6 +7,7 @@ import {
   isArray,
   arrayHasItems,
   isFunction,
+  isObject,
 } from '../helpers';
 import toFnsDate from 'date-fns-tz/toDate';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
@@ -549,9 +550,10 @@ function normalizeMasks(masks: string | string[], locale: Locale): string[] {
   );
 }
 
-export function isDateParts(date: any) {
-  if (!date) return false;
-  return date.year && date.month && date.day;
+export function isDateParts(parts: unknown): parts is Partial<DateParts> {
+  return (
+    isObject(parts) && 'year' in parts && 'month' in parts && 'day' in parts
+  );
 }
 
 export function isDateSource(date: unknown): date is DateSource {
@@ -1056,21 +1058,17 @@ export function toDate(
     result = d ? parseDate(d, mask || 'iso', { locale, timezone }) : nullDate;
   } else if (isDate(d)) {
     config.type = 'date';
-    result = new Date((d as Date).getTime());
+    result = new Date(d.getTime());
   } else if (isDateParts(d)) {
     config.type = 'object';
-    result = getDateFromParts(d as Partial<SimpleDateParts>, timezone);
+    result = getDateFromParts(d, timezone);
   }
   // Patch parts or apply rules if needed
   if (result && (patch || rules)) {
     let parts = getDateParts(result, 1, timezone);
     // Patch date parts
-    if (patch) {
-      const fillParts = getDateParts(
-        toDate(fillDate || new Date()),
-        1,
-        timezone,
-      );
+    if (patch && fillDate != null) {
+      const fillParts = getDateParts(toDate(fillDate), 1, timezone);
       parts = { ...fillParts, ...pick(parts, DatePatchKeys[patch]) };
     }
     // Apply date part rules

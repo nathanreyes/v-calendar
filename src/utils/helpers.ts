@@ -30,7 +30,8 @@ export const getType = (value: any) =>
   Object.prototype.toString.call(value).slice(8, -1);
 export const isDate = (value: unknown): value is Date =>
   _isDate(value) && !isNaN(value.getTime());
-export const isObject = (value: any) => getType(value) === 'Object';
+export const isObject = (value: unknown): value is Object =>
+  getType(value) === 'Object';
 
 // Object utils
 export const has = _has;
