@@ -60,6 +60,7 @@ export class Attribute {
   order = 0;
   pinPage = false;
   dateOpts: Partial<DateRangeOptions>;
+  maxRepeatSpan = 0;
 
   constructor(config: Partial<AttributeConfig>, theme: Theme, locale: Locale) {
     const { order, dates } = Object.assign(
@@ -74,19 +75,37 @@ export class Attribute {
     // Assign dates
     this.ranges = locale.getDateRanges(dates ?? [], this.dateOpts);
     this.hasRanges = !!arrayHasItems(this.ranges);
+    this.maxRepeatSpan = this.ranges
+      .filter(r => r.hasRepeat)
+      .map(r => r.daySpan)
+      .reduce((res, curr) => Math.max(res, curr), 0);
   }
 
-  existsOnDay(dayIndex: number, ctx: AttributeContext) {
-    return ctx.cellExists(this.key, dayIndex);
-  }
-
-  render(ctx: AttributeContext) {
-    this.ranges.forEach(range => {
-      ctx.render(this, range);
-    });
+  intersectsRange({ start, end }: DateRange) {
+    if (start == null || end == null) return false;
+    const simpleRanges = this.ranges.filter(r => !r.hasRepeat);
+    for (const range of simpleRanges) {
+      if (range.intersectsRange(start.dayIndex, end.dayIndex)) {
+        return true;
+      }
+    }
+    const repeatRanges = this.ranges.filter(r => r.hasRepeat);
+    if (!repeatRanges.length) return false;
+    const { timezone, firstDayOfWeek } = repeatRanges[0];
+    let day = start;
+    if (this.maxRepeatSpan > 1) {
+      day = getDateParts(
+        addDays(day.date, -this.maxRepeatSpan),
+        firstDayOfWeek,
+        timezone,
+      );
+    }
+    while (day.dayIndex <= end.dayIndex) {
+      for (const range of repeatRanges) {
+        if (range.startsOnDay(day)) return true;
+      }
+      day = getDateParts(addDays(day.date, 1), firstDayOfWeek, timezone);
+    }
+    return false;
   }
 }
-
-export class AttributeContext extends DateRangeContext<Attribute> {}
-
-export type AttributeCell = DateRangeCell<Attribute>;

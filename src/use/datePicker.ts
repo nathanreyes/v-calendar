@@ -12,7 +12,7 @@ import {
 import Calendar from '../components/Calendar.vue';
 import Popover from '../components/Popover.vue';
 import { getDefault } from '../utils/defaults';
-import { AttributeConfig } from '../utils/attribute';
+import { Attribute, AttributeConfig } from '../utils/attribute';
 import {
   CalendarDay,
   getPageAddressForDate,
@@ -147,14 +147,14 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   const showCalendar = ref(false);
   const datePickerPopoverId = ref(createGuid());
-  const dateValue = ref<null | Date | DateRange>(null);
-  const dragValue = ref<null | DateRange>(null);
+  const dateValue = ref<null | Date | SimpleDateRange>(null);
+  const dragValue = ref<null | SimpleDateRange>(null);
   const inputValues = ref<string[]>(['', '']);
   const popoverRef = ref<InstanceType<typeof Popover> | null>(null);
   const calendarRef = ref<InstanceType<typeof Calendar> | null>(null);
 
   let updateTimeout: undefined | number = undefined;
-  let dragTrackingValue: null | DateRange;
+  let dragTrackingValue: null | SimpleDateRange;
   let watchValue = true;
 
   // #region Computed
@@ -165,13 +165,13 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   const valueStart = computed(() =>
     isRange.value && dateValue.value != null
-      ? (dateValue.value as DateRange).start
+      ? (dateValue.value as SimpleDateRange).start
       : null,
   );
 
   const valueEnd = computed(() =>
     isRange.value && dateValue.value != null
-      ? (dateValue.value as DateRange).end
+      ? (dateValue.value as SimpleDateRange).end
       : null,
   );
 
@@ -386,11 +386,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   }
 
   function valueIsDisabled(value: any) {
-    return (
-      hasValue(value) &&
-      disabledAttribute.value &&
-      disabledAttribute.value.intersectsDate(value)
-    );
+    if (!hasValue(value) || !disabledAttribute.value) return false;
+    return disabledAttribute.value.intersectsRange(DateRange.from(value));
   }
 
   function normalizeValue(
@@ -398,7 +395,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     config: DateConfig[],
     patch: DatePatch,
     targetPriority: ValueTarget,
-  ): Date | DateRange | null {
+  ): Date | SimpleDateRange | null {
     if (!hasValue(value)) return null;
     if (isRange.value) {
       let start = value.start > value.end ? value.end : value.start;
@@ -436,7 +433,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   function updateValue(
     value: any,
     opts: Partial<UpdateOptions> = {},
-  ): Promise<Date | DateRange | null> {
+  ): Promise<Date | SimpleDateRange | null> {
     clearTimeout(updateTimeout);
     return new Promise(resolve => {
       const { debounce = 0, ...args } = opts;

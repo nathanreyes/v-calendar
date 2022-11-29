@@ -1,4 +1,5 @@
-import { Attribute, AttributeCell } from './attribute';
+import { Attribute } from './attribute';
+import { DateRangeCell } from './date/range';
 import { isObject, isString, hasAny, defaultsDeep } from './helpers';
 
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';
@@ -126,7 +127,7 @@ export interface GlyphRenderer<P extends Partial<Glyph>> {
   type: string;
   normalizeConfig(color: string, config: any): Profile<P>;
   prepareRender(glyphs: Record<string, P[]>): void;
-  render(attr: AttributeCell, glyphs: Record<string, P[]>): void;
+  render(attr: DateRangeCell<Attribute>, glyphs: Record<string, P[]>): void;
 }
 
 export class HighlightRenderer implements GlyphRenderer<Highlight> {
@@ -146,7 +147,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
   }
 
   render(
-    { data, onStart, onEnd }: AttributeCell,
+    { data, onStart, onEnd }: DateRangeCell<Attribute>,
     glyphs: Record<string, Highlight[]>,
   ) {
     const { key, highlight } = data;
@@ -241,7 +242,10 @@ export class BaseRenderer<T extends Partial<Glyph>>
     glyphs[this.collectionType] = [];
   }
 
-  render({ data, onStart, onEnd }: AttributeCell, glyphs: Record<string, T[]>) {
+  render(
+    { data, onStart, onEnd }: DateRangeCell<Attribute>,
+    glyphs: Record<string, T[]>,
+  ) {
     const { key } = data;
     const item = data[this.type as keyof Attribute];
     if (!key || !item) return;

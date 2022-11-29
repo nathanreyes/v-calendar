@@ -10,17 +10,14 @@ import {
   watchEffect,
 } from 'vue';
 import Popover from '../Popover/Popover.vue';
-import {
-  Attribute,
-  AttributeConfig,
-  AttributeContext,
-} from '../utils/attribute';
+import { Attribute, AttributeConfig } from '../utils/attribute';
 import {
   DateSource,
   addDays,
   addMonths,
   addYears,
 } from '../utils/date/helpers';
+import { DateRangeContext } from '../utils/date/range';
 import {
   createGuid,
   isBoolean,
@@ -246,9 +243,10 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const refreshDisabledDay = (day: CalendarDay) => {
-    day.isDisabled = disabledAttribute.value.existsOnDay(
+    if (!disabledAttribute.value || !attributeContext.value) return;
+    day.isDisabled = attributeContext.value.cellExists(
+      disabledAttribute.value.key,
       day.dayIndex,
-      attributeContext.value!,
     );
   };
 
@@ -299,9 +297,11 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const attributeContext = computed(() => {
     if (!allDays.value.length) return null;
-    const ctx = new AttributeContext(allDays.value);
+    const ctx = new DateRangeContext();
     attributes.value.forEach(attr => {
-      attr.render(ctx);
+      attr.ranges.forEach(range => {
+        ctx.render(attr, range, allDays.value);
+      });
     });
     return ctx;
   });

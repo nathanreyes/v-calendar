@@ -142,7 +142,10 @@ export class DateRange {
   }
 
   get daySpan() {
-    if (this.start == null || this.end == null) return Infinity;
+    if (this.start == null || this.end == null) {
+      if (this.hasRepeat) return 1;
+      return Infinity;
+    }
     return this.end.dayIndex - this.start.dayIndex;
   }
 
@@ -154,9 +157,7 @@ export class DateRange {
   }
 
   intersectsDay(dayIndex: number) {
-    if (this.start && this.start.dayIndex > dayIndex) return false;
-    if (this.end && this.end.dayIndex < dayIndex) return false;
-    return true;
+    return this.intersectsRange(dayIndex, dayIndex);
   }
 
   intersectsRange(startDayIndex: number, endDayIndex: number) {
@@ -178,9 +179,9 @@ export interface RangeData {
   order?: number;
 }
 
-interface DataRanges<T> {
+interface DataRanges {
   ranges: DataRange[];
-  data: T;
+  data: RangeData;
 }
 
 export interface DateRangeCell<T> {
@@ -192,42 +193,39 @@ export interface DateRangeCell<T> {
   order: number;
 }
 
-export class DateRangeContext<T extends RangeData> {
-  private records: Record<string, DataRanges<T>> = {};
-  days: DayParts[];
-  startDayIndex: number;
-  endDayIndex: number;
+export class DateRangeContext {
+  private records: Record<string, DataRanges> = {};
 
-  constructor(days: DayParts[]) {
-    this.days = days;
-    this.startDayIndex = this.days[0].dayIndex;
-    this.endDayIndex = this.days[this.days.length - 1].dayIndex;
-  }
-
-  render(data: T, range: DateRange) {
+  render(data: RangeData, range: DateRange, days: DayParts[]) {
+    let result = null;
+    const startDayIndex = days[0].dayIndex;
+    const endDayIndex = days[days.length - 1].dayIndex;
     if (range.hasRepeat) {
-      this.days.forEach(day => {
+      days.forEach(day => {
         if (range.startsOnDay(day)) {
-          const span = range.daySpan < Infinity ? range.daySpan : 0;
-          this.getRangeRecords(data).push({
+          const span = range.daySpan < Infinity ? range.daySpan : 1;
+          result = {
             startDay: day.dayIndex,
             startTime: range.start?.time ?? 0,
-            endDay: day.dayIndex + span,
+            endDay: day.dayIndex + span - 1,
             endTime: range.end?.time ?? MS_PER_DAY,
-          });
+          };
+          this.getRangeRecords(data).push(result);
         }
       });
-    } else if (range.intersectsRange(this.startDayIndex, this.endDayIndex)) {
-      this.getRangeRecords(data).push({
+    } else if (range.intersectsRange(startDayIndex, endDayIndex)) {
+      result = {
         startDay: range.start?.dayIndex ?? -Infinity,
         startTime: range.start?.time ?? -Infinity,
         endDay: range.end?.dayIndex ?? Infinity,
         endTime: range.end?.time ?? Infinity,
-      });
+      };
+      this.getRangeRecords(data).push(result);
     }
+    return result;
   }
 
-  private getRangeRecords(data: T) {
+  private getRangeRecords(data: RangeData) {
     let record = this.records[data.key];
     if (!record) {
       record = {
@@ -241,7 +239,8 @@ export class DateRangeContext<T extends RangeData> {
 
   getCell(key: string | number, dayIndex: number) {
     const cells = this.getCells(dayIndex);
-    return cells.find(cell => cell.data.key === key);
+    const result = cells.find(cell => cell.data.key === key);
+    return result;
   }
 
   cellExists(key: string | number, dayIndex: number) {
@@ -250,7 +249,7 @@ export class DateRangeContext<T extends RangeData> {
 
   getCells(dayIndex: number) {
     const records = Object.values(this.records);
-    const result: DateRangeCell<T>[] = [];
+    const result: DateRangeCell<any>[] = [];
     records.forEach(({ data, ranges }) => {
       ranges
         .filter(r => r.startDay <= dayIndex && r.endDay >= dayIndex)

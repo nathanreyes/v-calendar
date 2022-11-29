@@ -1,6 +1,7 @@
 import { reactive, Ref } from 'vue';
-import { Attribute, AttributeCell } from '../utils/attribute';
+import { Attribute } from '../utils/attribute';
 import { DarkModeConfig, useDarkMode } from 'vue-screen-utils';
+import { DateRangeCell } from '@/utils/date/range';
 import {
   GlyphRenderer,
   Glyph,
@@ -50,7 +51,7 @@ export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
     return glyphs;
   }
 
-  function render(cell: AttributeCell, glyphs: Partial<Glyphs>) {
+  function render(cell: DateRangeCell<Attribute>, glyphs: Partial<Glyphs>) {
     renderers.forEach(renderer => {
       renderer.render(cell, glyphs);
     });

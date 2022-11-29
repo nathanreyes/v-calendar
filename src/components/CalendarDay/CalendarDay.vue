@@ -57,9 +57,10 @@
 import { PropType, defineComponent, computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/page';
-import { AttributeCell, PopoverConfig } from '../../utils/attribute';
+import { Attribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
+import { DateRangeCell } from '@/utils/date/range';
 
 export default defineComponent({
   directives: { popover: popoverDirective },
@@ -81,7 +82,7 @@ export default defineComponent({
     } = useCalendar();
 
     const day = computed(() => props.day);
-    const attributeCells = computed<AttributeCell[]>(() => {
+    const attributeCells = computed(() => {
       if (!attributeContext.value) return [];
       return attributeContext.value.getCells(day.value.dayIndex);
     });
@@ -90,7 +91,7 @@ export default defineComponent({
     );
 
     function processPopover(
-      { data: attribute }: AttributeCell,
+      { data: attribute }: DateRangeCell<Attribute>,
       { popovers }: { popovers: PopoverConfig[] },
     ) {
       const { key, customData, popover } = attribute;
