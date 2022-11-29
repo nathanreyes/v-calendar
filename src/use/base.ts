@@ -5,7 +5,8 @@ import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
-import { DateRange, addDays } from '../utils/date/helpers';
+import { addDays } from '../utils/date/helpers';
+import { DateRange } from '../utils/date/range';
 
 export interface BaseProps {
   color: string;

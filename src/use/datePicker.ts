@@ -25,6 +25,7 @@ import {
   DatePartsRules,
   datesAreEqual,
 } from '../utils/date/helpers';
+import { SimpleDateRange, DateRange } from '../utils/date/range';
 import {
   PopoverOptions,
   showPopover as sp,
@@ -41,11 +42,6 @@ export interface DateConfig {
   type: DateType;
   rules: DatePartsRules;
   mask?: string;
-}
-
-export interface DateRange {
-  start: Date;
-  end: Date;
 }
 
 const contextKey = '__vc_date_picker_context__';

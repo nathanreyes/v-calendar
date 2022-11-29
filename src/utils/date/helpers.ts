@@ -20,7 +20,6 @@ import Locale, { LocaleConfig } from '../locale';
 
 export { addDays, addWeeks, addMonths, addYears };
 export { DateRepeat } from './repeat';
-export { DateRange } from './range';
 
 type DayNameLength = 'narrow' | 'short' | 'long';
 type MonthNameLength = 'short' | 'long';

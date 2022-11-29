@@ -30,6 +30,11 @@ export interface DateRangeOptions {
   timezone: string;
 }
 
+export interface SimpleDateRange {
+  start: Date;
+  end: Date;
+}
+
 export class DateRange {
   order: number;
   firstDayOfWeek: DayOfWeek;

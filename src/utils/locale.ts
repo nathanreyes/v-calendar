@@ -2,9 +2,6 @@ import { CalendarDay } from './page';
 import {
   DateSource,
   DateOptions,
-  DateRange,
-  DateRangeSource,
-  DateRangeOptions,
   SimpleDateParts,
   DayOfWeek,
   TimeNames,
@@ -24,6 +21,7 @@ import {
   getHourDates,
   getRelativeTimeNames,
 } from './date/helpers';
+import { DateRange, DateRangeSource, DateRangeOptions } from './date/range';
 import { defaultLocales } from './defaults';
 import { isString, isObject, has, clamp, defaultsDeep } from './helpers';
 
