@@ -17,8 +17,11 @@ const meetings = [
   {
     description: 'Bi-weekly staff meeting.',
     dates: {
-      weeklyInterval: 2,
-      weekdays: 2,
+      start: new Date(thisMonthYear, thisMonth, 6),
+      repeat: {
+        every: [2, 'weeks'],
+        weekdays: 1,
+      },
     },
     color: 'blue',
     order: 10,
@@ -72,11 +75,6 @@ export default {
     attributes() {
       return [
         {
-          highlight: {
-            fillMode: 'outline',
-            color: 'purple',
-            class: 'rounded-none bg-transparent',
-          },
           content: {
             class: 'italic',
           },
