@@ -4,8 +4,8 @@ import { DragOffset, ResizeOffset } from '../../use/calendarGrid';
 import Locale from '../locale';
 import { CalendarDay } from '../page';
 import { PopoverOptions } from '../popovers';
-import DateInfo from '../dateInfo';
-import { DateSource, MS_PER_MINUTE, roundDate } from '../dates';
+import { MS_PER_MINUTE, roundDate } from '../date/helpers';
+import { DateRange } from '../date/range';
 import { clamp, defaults } from '../helpers';
 
 interface ResizeOrigin {
@@ -27,20 +27,14 @@ interface DragOrigin {
   durationMs: number;
 }
 
-export interface IDate {
-  date?: DateSource;
-  dateTime?: DateSource;
-  timezone?: string;
-}
-
 export interface EventConfig {
   key: any;
   summary: string;
   description: string;
-  start: IDate;
-  end: IDate;
-  isAllDay: boolean;
-  dateInfo: DateInfo;
+  start: Date;
+  end: Date;
+  allDay: boolean;
+  range: DateRange;
   color: string;
   selected: boolean;
 }
@@ -49,7 +43,8 @@ export interface EventState {
   key: any;
   summary: string;
   description: string;
-  dateInfo: DateInfo;
+  range: DateRange;
+  allDay: boolean;
   color: string;
   fill: string;
   selected: boolean;
@@ -69,7 +64,6 @@ export interface EventState {
 
 export interface Event extends EventState {
   refSelector: string;
-  isAllDay: boolean;
   isMultiDay: boolean;
   isWeekly: boolean;
   durationMs: number;
@@ -104,20 +98,28 @@ export interface EventContext {
   locale: ComputedRef<Locale>;
 }
 
+function rangeFromConfig({ range, start, end }: Partial<EventConfig>) {
+  if (range != null) return range;
+  if (start && end) return DateRange.from({ start, end });
+  return null;
+}
+
 export function createEvent(
   config: Partial<EventConfig>,
   ctx: EventContext,
 ): Event {
   if (!config.key) throw new Error('Key required for events');
-  let { start, end, isAllDay: allDay = false, dateInfo } = config;
-  if (!start && !end && !dateInfo) {
+
+  const range = rangeFromConfig(config);
+  if (!range) {
     throw new Error('Start and end dates required for events');
   }
-  dateInfo = dateInfo ?? DateInfo.from({ start, end, isAllDay: allDay });
+
   const state = reactive<EventState>(
     defaults(config, {
       key: config.key,
-      dateInfo,
+      range,
+      allDay: false,
       summary: 'New Event',
       description: '',
       color: 'indigo',
@@ -155,10 +157,10 @@ export function createEvent(
     () => state.maxDurationMinutes * MS_PER_MINUTE,
   );
   const snapMs = computed(() => state.snapMinutes * MS_PER_MINUTE);
-  const startDate = computed(() => state.dateInfo.start!.date);
+  const startDate = computed(() => state.range.start!.date);
   const startDateTime = computed(() => startDate.value.getTime());
   const startDateLabel = computed(() => formatLabel(startDate.value));
-  const endDate = computed(() => state.dateInfo.end!.date);
+  const endDate = computed(() => state.range.end!.date);
   const endDateTime = computed(() => endDate.value.getTime());
   const endDateLabel = computed(() => formatLabel(endDate.value));
   const durationMs = computed(
@@ -166,12 +168,11 @@ export function createEvent(
   );
   const durationMinutes = computed(() => durationMs.value / MS_PER_MINUTE);
 
-  const isAllDay = computed(() => state.dateInfo.isAllDay);
-  const isMultiDay = computed(() => state.dateInfo.isMultiDay);
-  const isWeekly = computed(() => isAllDay.value || isMultiDay.value);
+  const isMultiDay = computed(() => state.range.isMultiDay);
+  const isWeekly = computed(() => state.allDay || isMultiDay.value);
 
   const isSolid = computed(() => {
-    return isAllDay.value || !ctx.isMonthly.value;
+    return state.allDay || !ctx.isMonthly.value;
   });
 
   const dragIsDirty = computed(() => {
@@ -189,8 +190,8 @@ export function createEvent(
     if (!state.resizable || state.resizing || state.dragging) return;
     state.resizing = true;
     state.resizeOrigin = {
-      start: state.dateInfo.start!.date,
-      end: state.dateInfo.end!.date,
+      start: state.range.start!.date,
+      end: state.range.end!.date,
       isStart,
     };
   }
@@ -218,7 +219,7 @@ export function createEvent(
         end = new Date(resizeOrigin.end.getTime() + msToAdd);
       }
     }
-    state.dateInfo = DateInfo.from({ start, end, isAllDay: isAllDay.value });
+    state.range = DateRange.from({ start, end });
     resizeToConstraints();
   }
 
@@ -233,10 +234,9 @@ export function createEvent(
   function startDrag(day: CalendarDay) {
     if (!state.draggable || state.dragging || state.resizing) return;
     state.dragging = true;
-    const start = state.dateInfo.start!.date;
-    const end = state.dateInfo.end!.date;
-    const durationMs =
-      state.dateInfo.end!.dateTime - state.dateInfo.start!.dateTime;
+    const start = state.range.start!.date;
+    const end = state.range.end!.date;
+    const durationMs = state.range.end!.dateTime - state.range.start!.dateTime;
     const minOffsetWeeks = ctx.isMonthly.value ? -day.weekPosition + 1 : 0;
     const maxOffsetWeeks = ctx.isMonthly.value
       ? ctx.dayRows.value - day.weekPosition
@@ -287,7 +287,7 @@ export function createEvent(
       start = roundDate(start.getTime() + msToAdd, snapMs.value);
     }
     end = new Date(start.getTime() + durationMs);
-    state.dateInfo = DateInfo.from({ start, end, isAllDay: isAllDay.value });
+    state.range = DateRange.from({ start, end });
   }
 
   function stopDrag() {
@@ -299,8 +299,8 @@ export function createEvent(
   // #endregion Dragging
 
   function resizeToConstraints() {
-    if (isAllDay.value) return;
-    const { start, end } = state.dateInfo;
+    if (state.allDay) return;
+    const { start, end } = state.range;
     let startTime = start!.dateTime;
     let endTime = end!.dateTime;
     startTime = roundDate(startTime, snapMs.value).getTime();
@@ -311,10 +311,9 @@ export function createEvent(
     if (maxDurationMs.value > 0 && endTime - startTime > maxDurationMs.value) {
       endTime = startTime + maxDurationMs.value;
     }
-    state.dateInfo = DateInfo.from({
+    state.range = DateRange.from({
       start: new Date(startTime),
       end: new Date(endTime),
-      isAllDay: isAllDay.value,
     });
   }
 
@@ -327,7 +326,6 @@ export function createEvent(
   return reactive({
     ...toRefs(state),
     refSelector,
-    isAllDay,
     isMultiDay,
     isWeekly,
     durationMs,

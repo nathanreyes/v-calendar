@@ -85,7 +85,7 @@ export class Attribute {
     if (start == null || end == null) return false;
     const simpleRanges = this.ranges.filter(r => !r.hasRepeat);
     for (const range of simpleRanges) {
-      if (range.intersectsRange(start.dayIndex, end.dayIndex)) {
+      if (range.intersectsDayRange(start.dayIndex, end.dayIndex)) {
         return true;
       }
     }

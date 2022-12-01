@@ -7,7 +7,7 @@
       `is-${cell.size}`,
       `is-${cell.fill}`,
       {
-        'is-all-day': cell.isAllDay,
+        'is-all-day': cell.allDay,
         'is-dragging': cell.dragging,
         'is-selected': cell.selected,
         'is-resizing': cell.resizing,

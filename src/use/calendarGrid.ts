@@ -14,7 +14,7 @@ import {
   emitsDef,
   createCalendar,
 } from './calendar';
-import { CalendarDay, Page } from '../utils/locale';
+import { CalendarDay, Page } from '../utils/page';
 import { createGuid, on } from '../utils/helpers';
 import {
   EventConfig,
@@ -23,8 +23,8 @@ import {
 } from '../utils/calendar/event';
 import { Cell, createDayCell } from '../utils/calendar/cell';
 import CalendarCellPopover from '../components/CalendarCellPopover/CalendarCellPopover.vue';
-import { roundDate, MS_PER_HOUR } from '../utils/dates';
-import DateInfo from '../utils/dateInfo';
+import { roundDate, MS_PER_HOUR } from '../utils/date/helpers';
+import { DateRange, DateRangeContext } from '../utils/date/range';
 
 type GridState =
   | 'NORMAL'
@@ -311,6 +311,14 @@ export function createCalendarGrid(
 
   const hasSelectedEvents = computed(() => selectedEventsCount.value > 0);
 
+  const eventsContext = computed(() => {
+    const ctx = new DateRangeContext();
+    events.value.forEach(evt => {
+      ctx.render(evt, evt.range, days.value);
+    });
+    return ctx;
+  });
+
   const gridStyle = computed(() => {
     return {
       height: `${24 * pixelsPerHour.value}px`,
@@ -357,7 +365,7 @@ export function createCalendarGrid(
 
   // #region Util
 
-  function createEventFromExisting(config: EventConfig, dateInfo?: DateInfo) {
+  function createEventFromExisting(config: EventConfig, range?: DateRange) {
     const event = events.value.find(e => e.key === config.key);
     const ctx = getEventContext();
     if (event != null) {
@@ -377,9 +385,9 @@ export function createCalendarGrid(
     const event = _createEvent(
       {
         key: createGuid(),
-        start: { date },
-        end: { date },
-        isAllDay: isWeekly,
+        start: date,
+        end: date,
+        allDay: isWeekly,
       },
       getEventContext(),
     );
@@ -423,7 +431,7 @@ export function createCalendarGrid(
     return days.value.map(day => {
       const group: { day: CalendarDay; events: Event[] } = { day, events: [] };
       evts.forEach(evt => {
-        if (evt.dateInfo.intersectsDay(day)) {
+        if (evt.range.intersectsDay(day.dayIndex)) {
           group.events.push(evt);
         }
       });
@@ -541,7 +549,7 @@ export function createCalendarGrid(
     if (active.value) return;
     resizing.value = true;
     event.selected = true;
-    const isWeekly = activeGridRef === weeklyGridRef;
+    const isWeekly = activeGridRef.value === weeklyGridRef.value;
     const ms = getMsFromPosition(position);
     resizeOrigin = {
       position,
@@ -686,7 +694,7 @@ export function createCalendarGrid(
       case 'GRID_CURSOR_DOWN':
       case 'GRID_CURSOR_DOWN_SHIFT': {
         createOrigin.value = {
-          isWeekly: activeGridRef === weeklyGridRef,
+          isWeekly: activeGridRef.value === weeklyGridRef.value,
           date: getDateFromPosition(position, day),
           position,
           day,
@@ -935,6 +943,7 @@ export function createCalendarGrid(
     selectedEvents,
     weekEvents,
     dayCells,
+    eventsContext,
     detailEvent,
     resizing,
     dragging,

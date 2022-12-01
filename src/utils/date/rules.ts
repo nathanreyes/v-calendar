@@ -268,7 +268,7 @@ export class OrdinalComponentRule implements Rule<OrdinalComponentRuleType> {
 
 export class FunctionRule implements Rule<FunctionRuleType> {
   type = FunctionRuleType.Function;
-  validated = true;
+  private validated = true;
 
   constructor(public fn: Function) {
     if (!isFunction(fn)) {

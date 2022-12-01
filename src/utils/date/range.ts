@@ -157,13 +157,17 @@ export class DateRange {
   }
 
   intersectsDay(dayIndex: number) {
-    return this.intersectsRange(dayIndex, dayIndex);
+    return this.intersectsDayRange(dayIndex, dayIndex);
   }
 
-  intersectsRange(startDayIndex: number, endDayIndex: number) {
+  intersectsDayRange(startDayIndex: number, endDayIndex: number) {
     if (this.start && this.start.dayIndex > endDayIndex) return false;
     if (this.end && this.end.dayIndex < startDayIndex) return false;
     return true;
+  }
+
+  intersectsRange(range: DateRange) {
+    return this.intersectsDayRange(range.start?.dayIndex, range.end?.dayIndex);
   }
 }
 
@@ -213,7 +217,7 @@ export class DateRangeContext {
           this.getRangeRecords(data).push(result);
         }
       });
-    } else if (range.intersectsRange(startDayIndex, endDayIndex)) {
+    } else if (range.intersectsDayRange(startDayIndex, endDayIndex)) {
       result = {
         startDay: range.start?.dayIndex ?? -Infinity,
         startTime: range.start?.time ?? -Infinity,

@@ -47,7 +47,7 @@ export interface DateRepeatOptions {
 }
 
 export class DateRepeat implements Rule<GroupRuleType> {
-  private validated = true;
+  validated = true;
 
   config: Partial<DateRepeatConfig> | DateRepeatFn;
   type = GroupRuleType.Any;

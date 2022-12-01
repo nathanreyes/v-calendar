@@ -1,8 +1,8 @@
 import { ComputedRef, Ref, computed, reactive, ref } from 'vue';
-import { CalendarDay } from '../locale';
+import { CalendarDay } from '../page';
 import { roundTenth } from '../helpers';
-import DateInfo from '../dateInfo';
-import { MS_PER_HOUR } from '../dates';
+import { MS_PER_HOUR } from '../date/helpers';
+import { DateRange } from '../date/range';
 import { Event } from './event';
 
 export type CellSize = '2xs' | 'xs' | 'sm' | 'md';
@@ -26,7 +26,7 @@ export interface Cell {
   key: string | number;
   color: string;
   fill: string;
-  isAllDay: boolean;
+  allDay: boolean;
   isMultiDay: boolean;
   isWeekly: boolean;
   selected: boolean;
@@ -49,7 +49,7 @@ function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
   const key = computed(() => event.key);
   const color = computed(() => event.color);
 
-  const isAllDay = computed(() => event.isAllDay);
+  const allDay = computed(() => event.allDay);
   const isMultiDay = computed(() => event.isMultiDay);
   const isWeekly = computed(() => event.isWeekly);
 
@@ -87,7 +87,7 @@ function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
   return {
     key,
     color,
-    isAllDay,
+    allDay,
     isMultiDay,
     isWeekly,
     summary,
@@ -109,7 +109,7 @@ export function createDayCell(event: Event, ctx: DayCellContext) {
   const { day, pixelsPerHour } = ctx;
 
   const position = computed(() => {
-    const { start } = event.dateInfo;
+    const { start } = event.range;
     const { range } = day;
     const dayStartTime = range.start.getTime();
     const yHours = (start!.dateTime - dayStartTime) / MS_PER_HOUR;
@@ -117,7 +117,7 @@ export function createDayCell(event: Event, ctx: DayCellContext) {
   });
 
   const height = computed(() => {
-    const { start, end } = event.dateInfo;
+    const { start, end } = event.range;
     const heightHours = (end!.dateTime - start!.dateTime) / MS_PER_HOUR;
     const fullHeight = 24 * pixelsPerHour.value;
     return Math.max(
@@ -155,7 +155,7 @@ export function createWeekCell(event: Event, ctx: WeekCellContext) {
   const { days } = ctx;
 
   const range = computed(() =>
-    DateInfo.from({
+    DateRange.from({
       start: days[0].range.start,
       end: days[days.length - 1].range.end,
     }),
@@ -164,10 +164,10 @@ export function createWeekCell(event: Event, ctx: WeekCellContext) {
   const size = ref<CellSize>('2xs');
 
   const style = computed(() => {
-    if (!range.value.intersectsDate(event.dateInfo)) return '';
+    if (!range.value.intersectsRange(event.range)) return '';
     let gridColumnStart = 1;
     let gridColumnEnd = days.length + 1;
-    const { start, end } = event.dateInfo;
+    const { start, end } = event.range;
 
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
