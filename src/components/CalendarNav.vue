@@ -208,7 +208,7 @@ export default {
       const items = [];
       for (let year = startYear; year < endYear; year += 1) {
         let enabled = false;
-        for (let month = 1; month < 12; month++) {
+        for (let month = 1; month <= 12; month++) {
           enabled = this.validator({ month, year });
           if (enabled) break;
         }
