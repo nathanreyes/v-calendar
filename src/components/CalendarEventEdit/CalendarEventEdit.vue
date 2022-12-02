@@ -5,7 +5,7 @@
       <!--Label-->
       <input
         v-if="event.editing"
-        v-model="event.label"
+        v-model="event.summary"
         v-focus
         placeholder="Add event label"
         class="color-white placeholder-gray-300 bg-gray-600 px-2 py-1 rounded border border-gray-500"
@@ -141,14 +141,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue';
+import { PropType, defineComponent, reactive, toRefs } from 'vue';
 import { useCalendarGrid } from '../../use/calendarGrid';
+import { Event } from '../../utils/calendar/event';
 
 export default defineComponent({
   name: 'CalendarEventEdit',
   emits: ['close'],
   props: {
-    event: { type: Object, required: true },
+    event: { type: Object as PropType<Event>, required: true },
   },
   directives: {
     focus: {
@@ -166,7 +167,7 @@ export default defineComponent({
     return {
       ...toRefs(state),
       onRemove() {
-        removeEvent(this.event);
+        removeEvent(props.event);
       },
       onToggleEditing() {
         props.event.editing = !props.event.editing;

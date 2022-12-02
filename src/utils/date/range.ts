@@ -167,7 +167,10 @@ export class DateRange {
   }
 
   intersectsRange(range: DateRange) {
-    return this.intersectsDayRange(range.start?.dayIndex, range.end?.dayIndex);
+    return this.intersectsDayRange(
+      range.start?.dayIndex ?? -Infinity,
+      range.end?.dayIndex ?? Infinity,
+    );
   }
 }
 
