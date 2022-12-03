@@ -16,7 +16,7 @@ import CalendarCell from '../CalendarCell/CalendarCell.vue';
 import { useCalendarGrid } from '../../use/calendarGrid';
 import { createWeekCell } from '../../utils/calendar/cell';
 import { Event } from '../../utils/calendar/event';
-import { CalendarDay } from '../../utils/locale';
+import { CalendarDay } from '../../utils/page';
 
 const props = defineProps<{
   days: CalendarDay[];

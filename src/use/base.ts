@@ -1,5 +1,5 @@
-import { PropType, computed, provide, inject, toRef } from 'vue';
-import { DarkModeConfig, DarkModeClassConfig } from 'vue-screen-utils';
+import { PropType, ExtractPropTypes, computed, provide, inject } from 'vue';
+import { DarkModeClassConfig } from 'vue-screen-utils';
 import { useTheme } from './theme';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
@@ -7,19 +7,6 @@ import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
 import { addDays } from '../utils/date/helpers';
 import { DateRange } from '../utils/date/range';
-
-export interface BaseProps {
-  color: string;
-  isDark?: DarkModeConfig;
-  theme?: string;
-  locale?: string | Record<string, any> | Locale;
-  firstDayOfWeek: number;
-  masks?: Record<string, any>;
-  timezone?: string;
-  minDate?: Date;
-  maxDate?: Date;
-  disabledDates?: [];
-}
 
 const contextKey = '__vc_base_context__';
 
@@ -29,25 +16,36 @@ export const propsDef = {
     default: () => getDefault('color'),
   },
   isDark: {
-    type: [Boolean, String, Object as PropType<DarkModeClassConfig>],
+    type: [
+      Boolean,
+      String as PropType<'system'>,
+      Object as PropType<DarkModeClassConfig>,
+    ],
     default: () => getDefault('isDark'),
   },
   firstDayOfWeek: Number,
   masks: Object,
-  locale: [String, Object],
+  locale: [
+    String,
+    Object as PropType<Record<string, any>>,
+    Object as PropType<Locale>,
+  ],
   timezone: String,
   minDate: null,
   maxDate: null,
   disabledDates: null,
 };
 
+export type BaseProps = Readonly<ExtractPropTypes<typeof propsDef>>;
+
 export type BaseContext = ReturnType<typeof createBase>;
 
 export function createBase(props: BaseProps) {
   // #region Computed
 
+  const color = computed(() => props.color ?? '');
   const isDark = computed(() => props.isDark ?? false);
-  const theme = useTheme(toRef(props, 'color'), isDark);
+  const theme = useTheme(color, isDark);
 
   const locale = computed(() => {
     // Return the locale prop if it is an instance of the Locale class

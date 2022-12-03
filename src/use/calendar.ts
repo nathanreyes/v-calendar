@@ -1,4 +1,6 @@
 import {
+  PropType,
+  ExtractPropTypes,
   computed,
   reactive,
   toRefs,
@@ -46,7 +48,7 @@ import {
   getPageAddressForDate,
   addPages as _addPages,
 } from '../utils/page';
-import { BaseProps, propsDef as basePropsDef, useOrCreateBase } from './base';
+import { propsDef as basePropsDef, useOrCreateBase } from './base';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -70,25 +72,7 @@ export interface RefreshOptions {
   transition: MoveTransition;
 }
 
-export interface CalendarProps extends BaseProps {
-  view: CalendarView;
-  rows: number;
-  columns: number;
-  step?: number;
-  titlePosition: TitlePosition;
-  navVisibility: PopoverVisibility;
-  isExpanded: boolean;
-  initialPage?: PageAddress;
-  initialPagePosition: number;
-  showWeeknumbers: boolean | string;
-  showIsoWeeknumbers: boolean | string;
-  minPage?: PageAddress;
-  maxPage?: PageAddress;
-  transition: string;
-  attributes: AttributeConfig[];
-  trimWeeks: boolean;
-  disablePageSwipe: boolean;
-}
+export type CalendarProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 interface CalendarState {
   containerRef: HTMLElement | null;
@@ -109,7 +93,7 @@ export type CalendarContext = ReturnType<typeof createCalendar>;
 export const propsDef = {
   ...basePropsDef,
   view: {
-    type: String,
+    type: String as PropType<CalendarView>,
     default: 'monthly',
     validator(value: string) {
       return ['daily', 'weekly', 'monthly'].includes(value);
@@ -125,22 +109,22 @@ export const propsDef = {
   },
   step: Number,
   titlePosition: {
-    type: String,
-    default: () => getDefault('titlePosition'),
+    type: String as PropType<TitlePosition>,
+    default: () => getDefault('titlePosition') as TitlePosition,
   },
   navVisibility: {
-    type: String,
-    default: () => getDefault('navVisibility'),
+    type: String as PropType<PopoverVisibility>,
+    default: () => getDefault('navVisibility') as PopoverVisibility,
   },
   showWeeknumbers: [Boolean, String],
   showIsoWeeknumbers: [Boolean, String],
   isExpanded: Boolean,
-  initialPage: Object,
+  initialPage: Object as PropType<PageAddress>,
   initialPagePosition: { type: Number, default: 1 },
-  minPage: Object,
-  maxPage: Object,
-  transition: String,
-  attributes: [Object, Array],
+  minPage: Object as PropType<PageAddress>,
+  maxPage: Object as PropType<PageAddress>,
+  transition: String as PropType<MoveTransition>,
+  attributes: Array as PropType<Array<AttributeConfig>>,
   trimWeeks: Boolean,
   disablePageSwipe: Boolean,
 };
