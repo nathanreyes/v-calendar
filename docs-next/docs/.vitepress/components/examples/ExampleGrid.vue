@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
@@ -76,18 +76,18 @@ export default defineComponent({
         events.value.push({
           key: event.key,
           summary: event.summary,
-          color: event.color,
+          // color: event.color,
           start: event.startDate,
           end: event.endDate,
-          popover: {
-            placement: 'right',
-          },
+          // popover: {
+          //   placement: 'right',
+          // },
         });
       },
       onEventResizeBegin({ event }) {
         const evt = events.value.find(e => e.key === event.key);
         if (evt) {
-          evt.dateInfo = event.dateInfo;
+          // evt.range = event.range;
           console.log('set date to', event);
         }
       },
@@ -104,7 +104,7 @@ export default defineComponent({
         // console.log('event-move-update', ev);
         // const event = events.value.find(e => e.key === ev.key);
         // if (event) {
-        //   event.dateInfo = ev.dateInfo;
+        //   event.range = ev.range;
         // }
       },
       onEventMoveEnd(ev) {
