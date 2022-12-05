@@ -71,11 +71,7 @@
                   </div>
                 </div>
                 <!--Week events-->
-                <CalendarGridWeek
-                  v-if="weekEvents[i]"
-                  :days="week.days"
-                  :events="weekEvents[i]"
-                />
+                <CalendarGridWeek :days="week.days" />
               </div>
               <!--Cell popover-->
               <CalendarCellPopover ref="cellPopoverRef" @mousedown.stop />
@@ -138,11 +134,7 @@
                   @keydown.escape="onGridEscapeKeydown"
                   ref="weeklyGridRef"
                 >
-                  <CalendarGridWeek
-                    v-if="weekEvents.length"
-                    :days="days"
-                    :events="weekEvents[0]"
-                  />
+                  <CalendarGridWeek :days="days" />
                   <div class="vc-grid-label vc-all-day">All-Day</div>
                 </div>
                 <!--Partial-day event cells-->
@@ -214,7 +206,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useSlots } from 'vue';
+import { useSlots, computed } from 'vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import CalendarViewSelect from '../CalendarViewSelect/CalendarViewSelect.vue';
@@ -228,6 +220,9 @@ import {
   emits,
   createCalendarGrid,
 } from '../../use/calendarGrid';
+import { Cell, createDayCell } from '../../utils/calendar/cell';
+import { DateRangeCell } from '../../utils/date/range';
+import { Event } from '../../utils/calendar/event';
 
 const emit = defineEmits(emits);
 const props = defineProps(propsDef);
@@ -241,6 +236,7 @@ const {
   locale,
   isDaily,
   isMonthly,
+  pixelsPerHour,
   gridStyle,
   transitionName,
   resizing,
@@ -249,8 +245,7 @@ const {
   weeks,
   days,
   view,
-  weekEvents,
-  dayCells,
+  eventsContext,
   selectedEvents,
   onKeydown,
   onDayNumberClick,
@@ -265,6 +260,20 @@ const {
 } = createCalendarGrid(props as CalendarGridProps, {
   emit,
   slots,
+});
+
+const dayCells = computed(() => {
+  const result: Cell[][] = [];
+  days.value.forEach(({ dayIndex }) => {
+    const ctx = { isDaily, isMonthly, pixelsPerHour, dayIndex };
+    const cells = eventsContext.value.getCells(dayIndex);
+    result.push(
+      cells
+        .filter((cell: DateRangeCell<Event>) => !cell.data.isWeekly)
+        .map(cell => createDayCell(cell, ctx)),
+    );
+  });
+  return result;
 });
 </script>
 

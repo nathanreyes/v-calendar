@@ -1,8 +1,7 @@
 import { ComputedRef, Ref, computed, reactive, ref } from 'vue';
-import { CalendarDay } from '../page';
 import { roundTenth } from '../helpers';
 import { MS_PER_HOUR } from '../date/helpers';
-import { DateRange } from '../date/range';
+import { DateRangeCell } from '../date/range';
 import { Event } from './event';
 
 export type CellSize = '2xs' | 'xs' | 'sm' | 'md';
@@ -13,12 +12,13 @@ interface CellContext {
 }
 
 interface DayCellContext extends CellContext {
-  day: CalendarDay;
+  dayIndex: number;
   pixelsPerHour: Ref<number>;
 }
 
 interface WeekCellContext extends CellContext {
-  days: CalendarDay[];
+  minDayIndex: number;
+  maxDayIndex: number;
 }
 
 export interface Cell {
@@ -45,7 +45,12 @@ export interface Cell {
   dragging: boolean;
 }
 
-function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
+function createCell(
+  rangeCell: DateRangeCell<Event>,
+  size: Ref<CellSize>,
+  ctx: CellContext,
+) {
+  const event = rangeCell.data;
   const key = computed(() => event.key);
   const color = computed(() => event.color);
 
@@ -85,6 +90,7 @@ function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
   const dragging = computed(() => event.dragging);
 
   return {
+    event,
     key,
     color,
     allDay,
@@ -105,20 +111,22 @@ function createCell(event: Event, size: Ref<CellSize>, ctx: CellContext) {
   };
 }
 
-export function createDayCell(event: Event, ctx: DayCellContext) {
-  const { day, pixelsPerHour } = ctx;
+export function createDayCell(
+  rangeCell: DateRangeCell<Event>,
+  ctx: DayCellContext,
+) {
+  const { pixelsPerHour } = ctx;
+  const event = rangeCell.data;
 
   const position = computed(() => {
-    const { start } = event.range;
-    const { range } = day;
-    const dayStartTime = range.start.getTime();
-    const yHours = (start!.dateTime - dayStartTime) / MS_PER_HOUR;
+    const { dayStartTime } = rangeCell;
+    const yHours = dayStartTime / MS_PER_HOUR;
     return Math.max(roundTenth(yHours * pixelsPerHour.value), 0);
   });
 
   const height = computed(() => {
-    const { start, end } = event.range;
-    const heightHours = (end!.dateTime - start!.dateTime) / MS_PER_HOUR;
+    const { dayStartTime, dayEndTime } = rangeCell;
+    const heightHours = (dayEndTime - dayStartTime) / MS_PER_HOUR;
     const fullHeight = 24 * pixelsPerHour.value;
     return Math.max(
       Math.min(heightHours * pixelsPerHour.value, fullHeight - position.value),
@@ -143,7 +151,7 @@ export function createDayCell(event: Event, ctx: DayCellContext) {
   const fill = computed(() => event.fill);
 
   return reactive({
-    ...createCell(event, size, ctx),
+    ...createCell(rangeCell, size, ctx),
     event,
     size,
     style,
@@ -151,37 +159,18 @@ export function createDayCell(event: Event, ctx: DayCellContext) {
   });
 }
 
-export function createWeekCell(event: Event, ctx: WeekCellContext) {
-  const { days } = ctx;
-
-  const range = computed(() =>
-    DateRange.from({
-      start: days[0].range.start,
-      end: days[days.length - 1].range.end,
-    }),
-  );
+export function createWeekCell(
+  rangeCell: DateRangeCell<Event>,
+  ctx: WeekCellContext,
+): Cell {
+  const { data: event, startDay, endDay } = rangeCell;
+  const { minDayIndex, maxDayIndex } = ctx;
 
   const size = ref<CellSize>('2xs');
 
   const style = computed(() => {
-    if (!range.value.intersectsRange(event.range)) return '';
-    let gridColumnStart = 1;
-    let gridColumnEnd = days.length + 1;
-    const { start, end } = event.range;
-
-    for (let i = 0; i < days.length; i++) {
-      const day = days[i];
-      if (start != null) {
-        if (day.range.start <= start.date && day.range.end >= start.date) {
-          gridColumnStart = i + 1;
-        }
-      }
-      if (end != null) {
-        if (day.range.start <= end.date && day.range.end >= end.date) {
-          gridColumnEnd = i + 2;
-        }
-      }
-    }
+    const gridColumnStart = Math.max(startDay - minDayIndex + 1, 1);
+    const gridColumnEnd = Math.min(endDay - maxDayIndex - 1, -1);
     return {
       gridColumnStart,
       gridColumnEnd,
@@ -194,8 +183,7 @@ export function createWeekCell(event: Event, ctx: WeekCellContext) {
   });
 
   return reactive({
-    ...createCell(event, size, ctx),
-    event,
+    ...createCell(rangeCell, size, ctx),
     size,
     style,
     fill,

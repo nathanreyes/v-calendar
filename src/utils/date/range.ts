@@ -191,12 +191,12 @@ interface DataRanges {
   data: RangeData;
 }
 
-export interface DateRangeCell<T> {
+export interface DateRangeCell<T extends RangeData> extends DataRange {
   data: T;
   onStart: boolean;
   onEnd: boolean;
-  startTime: number;
-  endTime: number;
+  dayStartTime: number;
+  dayEndTime: number;
   order: number;
 }
 
@@ -263,10 +263,18 @@ export class DateRangeContext {
         .forEach(range => {
           const onStart = dayIndex === range.startDay;
           const onEnd = dayIndex === range.endDay;
-          const startTime = onStart ? range.startTime : 0;
-          const endTime = onEnd ? range.endTime : MS_PER_DAY;
+          const dayStartTime = onStart ? range.startTime : 0;
+          const dayEndTime = onEnd ? range.endTime : MS_PER_DAY;
           const order = data.order || 0;
-          result.push({ data, onStart, onEnd, startTime, endTime, order });
+          result.push({
+            ...range,
+            data,
+            onStart,
+            onEnd,
+            dayStartTime,
+            dayEndTime,
+            order,
+          });
         });
     });
     result.sort((a, b) => a.order - b.order);

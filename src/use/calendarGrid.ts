@@ -257,16 +257,8 @@ export function createCalendarGrid(
   let activeGridRef = ref<HTMLElement | null>(null);
   Messages._emit = emit;
 
-  const {
-    view,
-    isDaily,
-    isMonthly,
-    pages,
-    firstPage,
-    locale,
-    move,
-    onDayFocusin,
-  } = calendar;
+  const { view, isDaily, isMonthly, pages, locale, move, onDayFocusin } =
+    calendar;
 
   const page = computed<Page>(() => pages.value[0]);
   const days = computed(() => page.value.viewDays);
@@ -394,7 +386,6 @@ export function createCalendarGrid(
     const msg = Messages.EventCreateBegin(event).send();
     if (msg.cancel || !msg.event) return;
     eventsMap.value[event.key] = event;
-    refreshEventCells();
     return event;
   }
 
@@ -402,7 +393,7 @@ export function createCalendarGrid(
     const msg = Messages.EventRemove(event).send();
     if (msg.cancel) return;
     delete eventsMap.value[event.key];
-    refreshEventCells();
+
     hideCellPopover();
   }
 
@@ -425,42 +416,6 @@ export function createCalendarGrid(
       map[config.key] = map[config.key] || createEventFromExisting(config);
       return map;
     }, {} as Record<any, Event>);
-  }
-
-  function groupEvents(evts: Event[]) {
-    return days.value.map(day => {
-      const group: { day: CalendarDay; events: Event[] } = { day, events: [] };
-      evts.forEach(evt => {
-        if (evt.range.intersectsDay(day.dayIndex)) {
-          group.events.push(evt);
-        }
-      });
-      return group;
-    });
-  }
-
-  function doRefreshEventCells() {
-    const rWeekEvents: Set<Event>[] = weeks.value.map(() => new Set());
-    const rDayCells: Cell[][] = days.value.map(() => []);
-    const firstWeekPosition = weeks.value[0].weekPosition;
-    groupEvents(events.value).forEach(({ day, events: evts }, dayIdx) => {
-      evts.forEach(event => {
-        if (isMonthly.value || event.isWeekly) {
-          const wIdx = day.weekPosition - firstWeekPosition;
-          rWeekEvents[wIdx].add(event);
-        } else {
-          rDayCells[dayIdx].push(
-            createDayCell(event, { day, isMonthly, isDaily, pixelsPerHour }),
-          );
-        }
-      });
-    });
-    weekEvents.value = sortEvents(rWeekEvents.map(wc => [...wc]));
-    dayCells.value = sortCells(rDayCells);
-  }
-
-  function refreshEventCells() {
-    requestAnimationFrame(() => doRefreshEventCells());
   }
 
   function getMsFromPosition(position: number) {
@@ -581,7 +536,6 @@ export function createCalendarGrid(
       if (msg.cancel) return;
       event.updateResize(offset);
     });
-    refreshEventCells();
   }
 
   function stopResizingEvents() {
@@ -640,7 +594,6 @@ export function createCalendarGrid(
       if (msg.cancel) return;
       event.updateDrag(offset);
     });
-    refreshEventCells();
   }
 
   function stopDraggingEvents() {
@@ -657,13 +610,8 @@ export function createCalendarGrid(
 
   // #region Watchers
 
-  watch([firstPage], () => refreshEventCells(), {
-    immediate: true,
-  });
-
   function refreshEventsFromProps() {
     eventsMap.value = getEventsFromProps();
-    refreshEventCells();
   }
 
   watch(
@@ -761,7 +709,7 @@ export function createCalendarGrid(
           const evt = createNewEvent(date, isWeekly);
           if (evt) {
             evt.selected = true;
-            emit('did-create-event', evt);
+            Messages.EventCreateEnd(evt).send();
             showCellPopover(evt);
           }
         }
