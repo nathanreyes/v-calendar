@@ -23,36 +23,38 @@ import { defineComponent, ref } from 'vue';
 export default defineComponent({
   setup() {
     const view = ref('monthly');
-    const hourTime = 1000 * 60 * 60;
-    const dayTime = hourTime * 24;
-    const today = new Date();
-    const one = new Date(today.getTime() + dayTime);
-    const two = new Date(today.getTime() + 2 * dayTime);
 
     const events = ref([
       {
         key: 1,
         summary: 'Hello',
-        start: today,
-        end: today,
+        start: new Date(2022, 10, 28),
+        end: new Date(2022, 10, 30),
       },
       {
         key: 2,
         summary: 'Hello 2',
-        start: one,
-        end: two,
+        start: new Date(2022, 10, 30),
+        end: new Date(2022, 11, 2),
       },
       {
         key: 3,
         summary: 'Hello 3',
-        start: today,
-        end: two,
+        start: new Date(2022, 11, 2),
+        end: new Date(2022, 11, 2),
+        color: 'green',
       },
       {
         key: 4,
         summary: 'Hello 4',
-        start: today,
-        end: new Date(today.getTime() + hourTime),
+        start: new Date(2022, 11, 3),
+        end: new Date(2022, 11, 5),
+      },
+      {
+        key: 5,
+        summary: 'Hello 5',
+        start: new Date(2022, 11, 6),
+        end: new Date(2022, 11, 8),
       },
     ]);
     const colors = [
