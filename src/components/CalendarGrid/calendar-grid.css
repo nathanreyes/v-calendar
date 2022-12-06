@@ -157,9 +157,6 @@
         }
       }
     }
-    .vc-grid-week-cells {
-      min-height: 22px;
-    }
     .vc-grid-day {
       position: relative;
       flex-grow: 1;
@@ -208,7 +205,7 @@
 
   .vc-grid-event {
     position: absolute;
-    min-height: 5px;
+    min-height: 20px;
     cursor: pointer;
     border-radius: 5px;
     border-width: 2px;
@@ -271,7 +268,6 @@
       touch-action: none;
     }
     &.is-2xs {
-      border-radius: 3px;
       &.is-selected {
       }
       .vc-grid-event-content {

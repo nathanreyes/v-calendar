@@ -21,8 +21,7 @@ import {
   Event,
   createEvent as _createEvent,
 } from '../utils/calendar/event';
-import { Cell, createDayCell } from '../utils/calendar/cell';
-import CalendarCellPopover from '../components/CalendarCellPopover/CalendarCellPopover.vue';
+import CalendarCellPopover from '../components/CalendarGrid/CalendarCellPopover.vue';
 import { roundDate, MS_PER_HOUR } from '../utils/date/helpers';
 import { DateRange, DateRangeContext } from '../utils/date/range';
 
@@ -281,8 +280,6 @@ export function createCalendarGrid(
 
   const eventsMap = ref<Record<any, Event>>({});
   const events = computed(() => Object.values(eventsMap.value));
-  const weekEvents: Ref<Event[][]> = ref([]);
-  const dayCells: Ref<Cell[][]> = ref([]);
   const detailEvent = ref<Event | null>(null);
 
   const createOrigin = ref<CreateOriginState | null>(null);
@@ -889,8 +886,6 @@ export function createCalendarGrid(
     events,
     eventsMap,
     selectedEvents,
-    weekEvents,
-    dayCells,
     eventsContext,
     detailEvent,
     resizing,

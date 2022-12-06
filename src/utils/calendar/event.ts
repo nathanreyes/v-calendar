@@ -28,7 +28,7 @@ interface DragOrigin {
 }
 
 export interface EventConfig {
-  key: any;
+  key: string | number;
   summary: string;
   description: string;
   start: Date;
@@ -62,33 +62,6 @@ export interface EventState {
   dragOrigin: DragOrigin | null;
 }
 
-export interface Event extends EventState {
-  refSelector: string;
-  isMultiDay: boolean;
-  isWeekly: boolean;
-  durationMs: number;
-  durationMinutes: number;
-  startDate: Date;
-  startDateTime: number;
-  startDateLabel: string;
-  endDate: Date;
-  endDateTime: number;
-  endDateLabel: string;
-  resizable: boolean;
-  isSolid: boolean;
-  dragIsDirty: boolean;
-  resizeToConstraints: () => void;
-  formatDate: (date: Date, mask: string) => string;
-  formatLabel: (date: Date) => string;
-  startResize: (day: CalendarDay, isStart: boolean) => void;
-  updateResize: (offset: ResizeOffset) => void;
-  stopResize: () => void;
-  startDrag: (day: CalendarDay) => void;
-  updateDrag: (offset: DragOffset) => void;
-  stopDrag: () => void;
-  compareTo: (b: Event) => number;
-}
-
 export interface EventContext {
   days: ComputedRef<CalendarDay[]>;
   dayRows: ComputedRef<number>;
@@ -104,10 +77,9 @@ function rangeFromConfig({ range, start, end }: Partial<EventConfig>) {
   return null;
 }
 
-export function createEvent(
-  config: Partial<EventConfig>,
-  ctx: EventContext,
-): Event {
+export type Event = ReturnType<typeof createEvent>;
+
+export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
   if (!config.key) throw new Error('Key required for events');
 
   const range = rangeFromConfig(config);
@@ -157,12 +129,19 @@ export function createEvent(
     () => state.maxDurationMinutes * MS_PER_MINUTE,
   );
   const snapMs = computed(() => state.snapMinutes * MS_PER_MINUTE);
+
   const startDate = computed(() => state.range.start!.date);
   const startDateTime = computed(() => startDate.value.getTime());
   const startDateLabel = computed(() => formatLabel(startDate.value));
+
   const endDate = computed(() => state.range.end!.date);
   const endDateTime = computed(() => endDate.value.getTime());
   const endDateLabel = computed(() => formatLabel(endDate.value));
+
+  const dateLabel = computed(() => {
+    return `${startDateLabel.value} - ${endDateLabel.value}`;
+  });
+
   const durationMs = computed(
     () => endDate.value.getTime() - startDate.value.getTime(),
   );
@@ -336,6 +315,7 @@ export function createEvent(
     endDate,
     endDateTime,
     endDateLabel,
+    dateLabel,
     isSolid,
     dragIsDirty,
     formatDate,

@@ -1,6 +1,12 @@
 <template>
   <div class="vc-grid-week-cells" :style="weekCellsStyle">
-    <CalendarCell v-for="cell in cells" :key="cell.key" :cell="cell" />
+    <template v-for="cell in cells" :key="cell.key">
+      <CalendarWeekCell
+        :cell="cell"
+        :min-day-index="minDayIndex"
+        :max-day-index="maxDayIndex"
+      />
+    </template>
   </div>
 </template>
 
@@ -12,9 +18,8 @@ export default {
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import CalendarCell from '../CalendarCell/CalendarCell.vue';
+import CalendarWeekCell from './CalendarWeekCell.vue';
 import { useCalendarGrid } from '../../use/calendarGrid';
-import { Cell, createWeekCell } from '../../utils/calendar/cell';
 import { DateRangeCell } from '../../utils/date/range';
 import { Event } from '../../utils/calendar/event';
 import { CalendarDay } from '../../utils/page';
@@ -23,14 +28,13 @@ const props = defineProps<{
   days: CalendarDay[];
 }>();
 
-const { isDaily, isMonthly, eventsContext } = useCalendarGrid();
+const { isMonthly, eventsContext } = useCalendarGrid();
+
+const minDayIndex = computed(() => props.days[0].dayIndex);
+const maxDayIndex = computed(() => props.days[props.days.length - 1].dayIndex);
 
 const cells = computed(() => {
-  const minDayIndex = props.days[0].dayIndex;
-  const maxDayIndex = props.days[props.days.length - 1].dayIndex;
-  const ctx = { minDayIndex, maxDayIndex, isDaily, isMonthly };
-
-  const result: Cell[] = [];
+  const result: Array<DateRangeCell<Event>> = [];
   const added: Record<string, boolean> = {};
 
   props.days.forEach(day => {
@@ -39,7 +43,7 @@ const cells = computed(() => {
       if ((!cell.data.isWeekly && !isMonthly.value) || added[cell.data.key]) {
         return;
       }
-      result.push(createWeekCell(cell, ctx));
+      result.push(cell);
       added[cell.data.key] = true;
     });
   });

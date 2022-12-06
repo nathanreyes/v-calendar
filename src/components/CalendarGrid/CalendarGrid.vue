@@ -174,9 +174,9 @@
                         v-for="(cells, i) in dayCells"
                         :key="i"
                       >
-                        <CalendarCell
+                        <CalendarDayCell
                           v-for="cell in cells"
-                          :key="cell.key"
+                          :key="cell.data.key"
                           :cell="cell"
                         />
                       </div>
@@ -210,9 +210,9 @@ import { useSlots, computed } from 'vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import CalendarViewSelect from '../CalendarViewSelect/CalendarViewSelect.vue';
-import CalendarGridWeek from '../CalendarGridWeek/CalendarGridWeek.vue';
-import CalendarCell from '../CalendarCell/CalendarCell.vue';
-import CalendarCellPopover from '../CalendarCellPopover/CalendarCellPopover.vue';
+import CalendarGridWeek from './CalendarGridWeek.vue';
+import CalendarDayCell from './CalendarDayCell.vue';
+import CalendarCellPopover from './CalendarCellPopover.vue';
 import CalendarEventDetails from '../CalendarEventDetails/CalendarEventDetails.vue';
 import {
   CalendarGridProps,
@@ -220,7 +220,6 @@ import {
   emits,
   createCalendarGrid,
 } from '../../use/calendarGrid';
-import { Cell, createDayCell } from '../../utils/calendar/cell';
 import { DateRangeCell } from '../../utils/date/range';
 import { Event } from '../../utils/calendar/event';
 
@@ -236,7 +235,6 @@ const {
   locale,
   isDaily,
   isMonthly,
-  pixelsPerHour,
   gridStyle,
   transitionName,
   resizing,
@@ -263,15 +261,10 @@ const {
 });
 
 const dayCells = computed(() => {
-  const result: Cell[][] = [];
+  const result: DateRangeCell<Event>[][] = [];
   days.value.forEach(({ dayIndex }) => {
-    const ctx = { isDaily, isMonthly, pixelsPerHour, dayIndex };
     const cells = eventsContext.value.getCells(dayIndex);
-    result.push(
-      cells
-        .filter((cell: DateRangeCell<Event>) => !cell.data.isWeekly)
-        .map(cell => createDayCell(cell, ctx)),
-    );
+    result.push(cells.filter(cell => !cell.data.isWeekly));
   });
   return result;
 });
