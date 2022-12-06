@@ -1,13 +1,4 @@
-import {
-  Ref,
-  PropType,
-  ref,
-  computed,
-  provide,
-  inject,
-  watch,
-  nextTick,
-} from 'vue';
+import { PropType, ref, computed, provide, inject, watch, nextTick } from 'vue';
 import {
   CalendarProps,
   propsDef as basePropsDef,
@@ -392,20 +383,6 @@ export function createCalendarGrid(
     delete eventsMap.value[event.key];
 
     hideCellPopover();
-  }
-
-  function sortEvents(e: Event[][]) {
-    for (let i = 0; i < e.length; i++) {
-      e[i] = e[i].sort((a, b) => a.compareTo(b));
-    }
-    return e;
-  }
-
-  function sortCells(e: Cell[][]) {
-    for (let i = 0; i < e.length; i++) {
-      e[i] = e[i].sort((a, b) => a.event.compareTo(b.event));
-    }
-    return e;
   }
 
   function getEventsFromProps() {

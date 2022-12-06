@@ -225,9 +225,13 @@
     &.is-dragging {
       pointer-events: none;
     }
+    .vc-grid-event-start-date-label,
     .vc-grid-event-date-label {
       color: var(--vc-gray-500);
       user-select: none;
+    }
+    .vc-grid-event-start-date-label {
+      display: none;
     }
     &.is-solid {
       font-weight: var(--vc-font-semibold);
@@ -268,6 +272,12 @@
       touch-action: none;
     }
     &.is-2xs {
+      .vc-grid-event-start-date-label {
+        display: block;
+      }
+      .vc-grid-event-date-label {
+        display: none;
+      }
       &.is-selected {
       }
       .vc-grid-event-content {
