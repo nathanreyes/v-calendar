@@ -129,10 +129,10 @@
         <div class="ml-2 text-gray-200 font-medium">
           <span v-if="event.allDay"> All Day </span>
           <span v-else-if="event.isMultiDay"
-            >{{ event.startDateLabel }}-{{ event.endDateLabel }}</span
+            >{{ event.startTimeLabel }}-{{ event.endTimeLabel }}</span
           >
           <span v-else
-            >{{ event.startDateLabel }}-{{ event.endDateLabel }}</span
+            >{{ event.startTimeLabel }}-{{ event.endTimeLabel }}</span
           >
         </div>
       </div>

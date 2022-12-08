@@ -272,12 +272,6 @@
       touch-action: none;
     }
     &.is-2xs {
-      .vc-grid-event-start-date-label {
-        display: block;
-      }
-      .vc-grid-event-date-label {
-        display: none;
-      }
       &.is-selected {
       }
       .vc-grid-event-content {
@@ -288,7 +282,12 @@
     &.is-2xs,
     &.is-xs {
       line-height: var(--vc-leading-none);
-
+      .vc-grid-event-start-date-label {
+        display: block;
+      }
+      .vc-grid-event-date-label {
+        display: none;
+      }
       .vc-grid-event-content {
         display: flex;
         align-items: center;

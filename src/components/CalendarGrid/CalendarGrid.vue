@@ -31,7 +31,7 @@
             >
               <!--Weeks-->
               <div
-                v-for="(week, i) in weeks"
+                v-for="week in weeks"
                 :key="week.id"
                 class="vc-grid-week"
                 :class="[`week-position-${week.weekPosition}`]"
@@ -214,16 +214,12 @@ import CalendarGridWeek from './CalendarGridWeek.vue';
 import CalendarDayCell from './CalendarDayCell.vue';
 import CalendarCellPopover from './CalendarCellPopover.vue';
 import CalendarEventDetails from '../CalendarEventDetails/CalendarEventDetails.vue';
-import {
-  CalendarGridProps,
-  propsDef,
-  emits,
-  createCalendarGrid,
-} from '../../use/calendarGrid';
+import { propsDef, emits, createCalendarGrid } from '../../use/calendarGrid';
 import { DateRangeCell } from '../../utils/date/range';
 import { Event } from '../../utils/calendar/event';
 
 const emit = defineEmits(emits);
+// @ts-ignore
 const props = defineProps(propsDef);
 const slots = useSlots();
 const {
@@ -255,7 +251,8 @@ const {
   onGridEscapeKeydown,
   onTransitionBeforeEnter,
   onTransitionAfterEnter,
-} = createCalendarGrid(props as CalendarGridProps, {
+  // @ts-ignore
+} = createCalendarGrid(props, {
   emit,
   slots,
 });

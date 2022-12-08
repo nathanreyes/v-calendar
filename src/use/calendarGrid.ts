@@ -1,10 +1,14 @@
-import { PropType, ref, computed, provide, inject, watch, nextTick } from 'vue';
 import {
-  CalendarProps,
-  propsDef as basePropsDef,
-  emitsDef,
-  createCalendar,
-} from './calendar';
+  ExtractPropTypes,
+  PropType,
+  ref,
+  computed,
+  provide,
+  inject,
+  watch,
+  nextTick,
+} from 'vue';
+import { propsDef as basePropsDef, emitsDef, createCalendar } from './calendar';
 import { CalendarDay, Page } from '../utils/page';
 import { createGuid, on } from '../utils/helpers';
 import {
@@ -81,17 +85,6 @@ interface CreateOriginState {
   day: CalendarDay;
   isWeekly: boolean;
 }
-
-export interface CalendarGridProps extends CalendarProps {
-  events: EventConfig[];
-}
-
-export const propsDef = {
-  ...basePropsDef,
-  events: {
-    type: Object as PropType<EventConfig[]>,
-  },
-};
 
 // #region Messages
 
@@ -233,6 +226,16 @@ export const emits = [
 const SNAP_MINUTES = 15;
 const PIXELS_PER_HOUR = 50;
 const contextKey = '__vc_grid_context__';
+
+export const propsDef = {
+  ...basePropsDef,
+  events: {
+    type: Object as PropType<EventConfig[]>,
+    default: () => [],
+  },
+};
+
+export type CalendarGridProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 export type CalendarGridContext = ReturnType<typeof createCalendarGrid>;
 
@@ -863,6 +866,7 @@ export function createCalendarGrid(
     events,
     eventsMap,
     selectedEvents,
+    hasSelectedEvents,
     eventsContext,
     detailEvent,
     resizing,

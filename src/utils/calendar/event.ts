@@ -88,7 +88,7 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
   }
 
   const state = reactive<EventState>(
-    defaults(config, {
+    defaults({}, config, {
       key: config.key,
       range,
       allDay: false,
@@ -116,7 +116,7 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
     return ctx.locale.value.formatDate(date, mask);
   }
 
-  function formatLabel(date: Date) {
+  function formatTime(date: Date) {
     if (!date) return '';
     return formatDate(date, 'h:mma');
   }
@@ -132,14 +132,14 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
 
   const startDate = computed(() => state.range.start!.date);
   const startDateTime = computed(() => startDate.value.getTime());
-  const startDateLabel = computed(() => formatLabel(startDate.value));
+  const startTimeLabel = computed(() => formatTime(startDate.value));
 
   const endDate = computed(() => state.range.end!.date);
   const endDateTime = computed(() => endDate.value.getTime());
-  const endDateLabel = computed(() => formatLabel(endDate.value));
+  const endTimeLabel = computed(() => formatTime(endDate.value));
 
-  const dateLabel = computed(() => {
-    return `${startDateLabel.value} - ${endDateLabel.value}`;
+  const timeLabel = computed(() => {
+    return `${startTimeLabel.value} - ${endTimeLabel.value}`;
   });
 
   const durationMs = computed(
@@ -311,15 +311,15 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
     durationMinutes,
     startDate,
     startDateTime,
-    startDateLabel,
+    startTimeLabel,
     endDate,
     endDateTime,
-    endDateLabel,
-    dateLabel,
+    endTimeLabel,
+    timeLabel,
     isSolid,
     dragIsDirty,
     formatDate,
-    formatLabel,
+    formatTime,
     resizeToConstraints,
     startResize,
     updateResize,

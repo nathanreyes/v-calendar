@@ -26,10 +26,10 @@
           <span v-if="isMonthly" class="vc-grid-event-indicator" />
           <div class="vc-grid-event-summary">{{ event.summary }}</div>
           <div class="vc-grid-event-start-date-label">
-            {{ event.startDateLabel }}
+            {{ event.startTimeLabel }}
           </div>
           <div class="vc-grid-event-date-label">
-            {{ event.dateLabel }}
+            {{ event.timeLabel }}
           </div>
         </template>
       </div>
