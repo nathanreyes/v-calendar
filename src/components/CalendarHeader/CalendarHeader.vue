@@ -37,7 +37,7 @@ import { PropType, computed, watch } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import { useCalendar } from '../../use/calendar';
 import { popoverDirective as vPopover } from '../../utils/popovers';
-import { Page } from '../../utils/locale';
+import { Page } from '../../utils/page';
 
 const props = defineProps({
   page: { type: Object as PropType<Page>, required: true },
