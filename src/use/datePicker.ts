@@ -1,4 +1,5 @@
 import {
+  ExtractPropTypes,
   PropType,
   ref,
   computed,
@@ -12,7 +13,7 @@ import {
 import Calendar from '../components/Calendar.vue';
 import Popover from '../components/Popover.vue';
 import { getDefault } from '../utils/defaults';
-import { Attribute, AttributeConfig } from '../utils/attribute';
+import { AttributeConfig } from '../utils/attribute';
 import {
   CalendarDay,
   getPageAddressForDate,
@@ -33,7 +34,7 @@ import {
   togglePopover as tp,
   getPopoverEventHandlers,
 } from '../utils/popovers';
-import { BaseProps, propsDef as basePropsDef, createBase } from './base';
+import { propsDef as basePropsDef, createBase } from './base';
 import { MoveTarget, MoveOptions } from './calendar';
 
 export type DateType = 'date' | 'string' | 'number';
@@ -77,33 +78,28 @@ interface ModelModifiers {
   range?: boolean;
 }
 
+export type DatePickerDate = number | string | Date | null;
+export type DatePickerRangeArray = [DatePickerDate, DatePickerDate];
+export type DatePickerRangeObject = Partial<{
+  start: DatePickerDate;
+  end: DatePickerDate;
+}>;
+
 export type DatePickerContext = ReturnType<typeof createDatePicker>;
 
-export interface DatePickerProps extends BaseProps {
-  mode: string;
-  modelValue: any;
-  modelModifiers: ModelModifiers;
-  time?: string;
-  rules?: DatePartsRules;
-  modelConfig?: any;
-  is24hr: boolean;
-  hideTimeHeader: boolean;
-  timeAccuracy: number;
-  isRequired: boolean;
-  isRange: boolean;
-  updateOnInput: boolean;
-  inputDebounce: number;
-  popover: boolean | Partial<PopoverOptions>;
-  dragAttribute: any;
-  selectAttribute: any;
-  attributes: AttributeConfig[];
-}
+export type DatePickerProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 export const propsDef = {
   ...basePropsDef,
   mode: { type: String, default: DateModes.Date },
-  modelValue: { type: null, required: true },
-  modelModifiers: { default: () => ({}) },
+  modelValue: {
+    type: [Number, String, Date, Object as PropType<DatePickerRangeObject>],
+    required: true,
+  },
+  modelModifiers: {
+    type: Object as PropType<ModelModifiers>,
+    default: () => ({}),
+  },
   time: String,
   rules: [String as PropType<'auto'>, Object as PropType<DatePartsRules>],
   modelConfig: { type: Object, default: () => ({}) },
@@ -124,8 +120,8 @@ export const propsDef = {
     type: [Boolean, Object as PropType<Partial<PopoverOptions>>],
     default: true,
   },
-  dragAttribute: Object,
-  selectAttribute: Object,
+  dragAttribute: Object as PropType<AttributeConfig>,
+  selectAttribute: Object as PropType<AttributeConfig>,
   attributes: [Object, Array],
 };
 

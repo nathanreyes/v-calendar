@@ -1,22 +1,19 @@
 <script lang="ts">
-import { SetupContext, h, reactive } from 'vue';
+import { h, reactive } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import Calendar from '../Calendar/Calendar.vue';
 import TimePicker from '../TimePicker/TimePicker.vue';
-import {
-  DatePickerProps,
-  propsDef,
-  emits,
-  createDatePicker,
-} from '../../use/datePicker';
+import { propsDef, emits, createDatePicker } from '../../use/datePicker';
 import { omit } from '../../utils/helpers';
 
 export default {
   name: 'DatePicker',
   inheritAttrs: false,
   emits,
+  // @ts-ignore
   props: propsDef,
-  setup(props: DatePickerProps, ctx: SetupContext) {
+  setup(props, ctx) {
+    // @ts-ignore
     const datePicker = createDatePicker(props, ctx);
     const { slots, attrs } = ctx;
     const {

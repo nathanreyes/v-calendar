@@ -63,7 +63,9 @@ import CalendarDayPopover from '../CalendarDayPopover/CalendarDayPopover.vue';
 import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
 const emit = defineEmits(emitsDef);
+// @ts-ignore
 const props = defineProps(propsDef);
+// @ts-ignore
 const calendar = createCalendar(props, {
   emit,
 });

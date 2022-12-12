@@ -49,22 +49,24 @@ export type HighlightProfile = Profile<Highlight>;
 export type HighlightConfig =
   | boolean
   | string
-  | Partial<Highlight | HighlightProfile>;
+  | Partial<Highlight | Profile<Partial<Highlight>>>;
 
 // Dots
 export type Dot = Glyph;
 export type DotProfile = Profile<Dot>;
-export type DotConfig = boolean | string | Partial<Dot | DotProfile>;
+export type DotConfig = boolean | string | Partial<Dot | Profile<Partial<Dot>>>;
 
 // Bars
 export type Bar = Glyph;
 export type BarProfile = Profile<Bar>;
-export type BarConfig = boolean | string | Partial<Bar | BarProfile>;
+export type BarConfig = boolean | string | Partial<Bar | Profile<Partial<Bar>>>;
 
 // Content
 export type Content = Glyph;
 export type ContentProfile = Profile<Content>;
-export type ContentConfig = string | Partial<Content | ContentProfile>;
+export type ContentConfig =
+  | string
+  | Partial<Content | Profile<Partial<ContentProfile>>>;
 
 const _defaultProfile = { base: {}, start: {}, end: {} };
 
