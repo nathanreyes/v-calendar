@@ -1080,6 +1080,22 @@ export function toDate(
   return result || nullDate;
 }
 
+export function fromDate(
+  date: Date,
+  { type, mask, locale, timezone }: Partial<DateOptions> = {},
+) {
+  switch (type) {
+    case 'number':
+      return date ? date.getTime() : NaN;
+    case 'string':
+      return date ? formatDate(date, mask || 'iso', { locale, timezone }) : '';
+    case 'object':
+      return date ? getDateParts(date, 1, timezone) : null;
+    default:
+      return date ? new Date(date) : null;
+  }
+}
+
 export function formatDate(
   date: DateSource,
   masks: string | string[],
@@ -1112,20 +1128,4 @@ export function formatDate(
   );
   // Inline literal values back into the formatted value
   return mask.replace(/\?\?/g, () => literals.shift()!);
-}
-
-export function denormalizeDate(
-  date: Date,
-  { type, mask, locale, timezone }: Partial<DateOptions> = {},
-) {
-  switch (type) {
-    case 'number':
-      return date ? date.getTime() : NaN;
-    case 'string':
-      return date ? formatDate(date, mask || 'iso', { locale, timezone }) : '';
-    case 'object':
-      return date ? getDateParts(date, 1, timezone) : null;
-    default:
-      return date ? new Date(date) : null;
-  }
 }

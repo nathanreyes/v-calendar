@@ -17,7 +17,7 @@ import {
   formatDate,
   parseDate,
   toDate,
-  denormalizeDate,
+  fromDate,
   getHourDates,
   getRelativeTimeNames,
 } from './date/helpers';
@@ -126,8 +126,8 @@ export default class Locale {
     });
   }
 
-  denormalizeDate(date: Date, options: Partial<DateOptions> = {}) {
-    return denormalizeDate(date, {
+  fromDate(date: Date, options: Partial<DateOptions> = {}) {
+    return fromDate(date, {
       ...options,
       locale: this,
       timezone: this.timezone,

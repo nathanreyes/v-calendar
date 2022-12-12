@@ -423,11 +423,11 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     if (isRange.value) {
       if (!hasValue(value)) return null;
       return {
-        start: locale.value.denormalizeDate(value.start, config[0]),
-        end: locale.value.denormalizeDate(value.end, config[1]),
+        start: locale.value.fromDate(value.start, config[0]),
+        end: locale.value.fromDate(value.end, config[1]),
       };
     }
-    return locale.value.denormalizeDate(value, config[0]);
+    return locale.value.fromDate(value, config[0]);
   }
 
   function updateValue(
