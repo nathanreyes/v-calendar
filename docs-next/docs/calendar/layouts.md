@@ -28,6 +28,66 @@ Set the `view` prop to display the calendar in 'weekly' view.
 <Calendar view="weekly" />
 ```
 
+## Weeknumbers
+
+### Left
+
+Show week numbers by setting the `show-weeknumbers` prop.
+
+<Example centered>
+  <Calendar show-weeknumbers />
+</Example>
+
+```html
+<Calendar show-weeknumbers />
+```
+
+By default, this will display the numbers on the left side within the calendar pane.
+
+The `show-weeknumbers` can also be assigned to left and outside positions.
+
+### Left Outside
+
+<Example centered>
+  <Calendar show-weeknumbers="left-outside" />
+</Example>
+
+```html
+<Calendar show-weeknumbers="left-outside" />
+```
+
+### Right
+
+<Example centered>
+  <Calendar show-weeknumbers="right-outside" />
+</Example>
+
+```html
+<Calendar show-weeknumbers="right" />
+```
+
+### Right Outside
+
+<Example centered>
+  <Calendar show-weeknumbers="right-outside" />
+</Example>
+
+```html
+<Calendar show-weeknumbers="right-outside" />
+```
+
+## ISO Weeknumbers
+
+To show ISO week numbers, use the `show-iso-weeknumbers` prop with the same convention as `show-weeknumbers`. If both are assigned, the `show-weeknumbers` prop takes precendence.
+
+<Example centered>
+  <Calendar show-iso-weeknumbers />
+</Example>
+
+```html
+<Calendar show-iso-weeknumbers />
+```
+
 ## Title Positioning
 
 To make the title header left or right aligned, use the `title-position` prop.
