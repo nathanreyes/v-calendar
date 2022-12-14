@@ -5,7 +5,7 @@ import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
-import { addDays } from '../utils/date/helpers';
+import { DayOfWeek, addDays } from '../utils/date/helpers';
 import { DateRange } from '../utils/date/range';
 
 const contextKey = '__vc_base_context__';
@@ -23,7 +23,7 @@ export const propsDef = {
     ],
     default: () => getDefault('isDark'),
   },
-  firstDayOfWeek: Number,
+  firstDayOfWeek: Number as PropType<DayOfWeek>,
   masks: Object,
   locale: [
     String,
