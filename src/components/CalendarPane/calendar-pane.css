@@ -8,13 +8,17 @@
   align-items: center;
   position: absolute;
   height: 100%;
-  &.is-left,
-  &.is-left-outside {
-    left: calc(var(--vc-weeknumber-offset) * -1);
+  &.is-left {
+    left: calc(var(--vc-weeknumber-offset-inside) * -1);
   }
-  &.is-right,
+  &.is-right {
+    right: calc(var(--vc-weeknumber-offset-inside) * -1);
+  }
+  &.is-left-outside {
+    left: calc(var(--vc-weeknumber-offset-outside) * -1);
+  }
   &.is-right-outside {
-    right: calc(var(--vc-weeknumber-offset) * -1);
+    right: calc(var(--vc-weeknumber-offset-outside) * -1);
   }
 }
 
@@ -39,10 +43,10 @@
   padding: 6px;
   min-width: 232px;
   &.vc-show-weeknumbers-left {
-    margin-left: var(--vc-weeknumber-offset);
+    margin-left: var(--vc-weeknumber-offset-inside);
   }
   &.vc-show-weeknumbers-right {
-    margin-right: var(--vc-weeknumber-offset);
+    margin-right: var(--vc-weeknumber-offset-inside);
   }
 }
 

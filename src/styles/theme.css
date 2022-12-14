@@ -50,7 +50,8 @@
   --vc-slide-timing: ease;
 
   --vc-day-content-transition: all 0.13s ease-in;
-  --vc-weeknumber-offset: 26px;
+  --vc-weeknumber-offset-inside: 26px;
+  --vc-weeknumber-offset-outside: 34px;
 }
 
 .vc-gray {

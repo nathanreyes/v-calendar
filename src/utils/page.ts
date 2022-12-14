@@ -338,7 +338,12 @@ function getDays(
   return days;
 }
 
-function getWeeks(days: CalendarDay[], locale: Locale): CalendarWeek[] {
+function getWeeks(
+  days: CalendarDay[],
+  showWeeknumbers: boolean,
+  showIsoWeeknumbers: boolean,
+  locale: Locale,
+): CalendarWeek[] {
   const result = days.reduce((result: CalendarWeek[], day: CalendarDay, i) => {
     const weekIndex = Math.floor(i / 7);
     let week = result[weekIndex];
@@ -350,6 +355,11 @@ function getWeeks(days: CalendarDay[], locale: Locale): CalendarWeek[] {
         weekPosition: day.weekPosition,
         weeknumber: day.weeknumber,
         isoWeeknumber: day.isoWeeknumber,
+        weeknumberDisplay: showWeeknumbers
+          ? day.weeknumber
+          : showIsoWeeknumbers
+          ? day.isoWeeknumber
+          : undefined,
         days: [],
       };
       result[weekIndex] = week;
@@ -380,7 +390,8 @@ function getWeeks(days: CalendarDay[], locale: Locale): CalendarWeek[] {
 export function createPageCache(locale: Locale) {
   const cache: Record<string, CachedPage> = {};
 
-  function createCachedPage({ id, month, year }: PageConfig & { id: string }) {
+  function createCachedPage(pageConfig: PageConfig & { id: string }) {
+    const { id, month, year, showWeeknumbers, showIsoWeeknumbers } = pageConfig;
     const date = new Date(year, month - 1, 15);
     const monthComps = getMonthParts(month, year, locale.firstDayOfWeek);
     const prevMonthComps = getPrevMonthParts(
@@ -397,7 +408,7 @@ export function createPageCache(locale: Locale) {
       { monthComps, prevMonthComps, nextMonthComps },
       locale,
     );
-    const weeks = getWeeks(days, locale);
+    const weeks = getWeeks(days, showWeeknumbers, showIsoWeeknumbers, locale);
     const weekdayLabels = locale.getWeekdayLabels(weeks[0].days);
     return {
       id,
