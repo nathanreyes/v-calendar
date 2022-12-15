@@ -209,6 +209,7 @@ button {
     list-style-type: decimal;
   }
   table {
+    background-color: var(--vp-c-bg-mute);
     display: table;
     width: 100%;
     border-top: 1px solid theme(colors.gray.300);
@@ -222,6 +223,7 @@ button {
     tr {
       border-top: none;
       th {
+        color: var(--vp-c-text-2);
         font-size: theme(fontSize.sm);
         font-weight: theme(fontWeight.bold);
         padding: 0.75rem 1.5rem;
