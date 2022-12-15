@@ -20,7 +20,6 @@ import {
 
 export type PopoverConfig = Partial<{
   label: string;
-  customData: any;
   visibility: PopoverVisibility;
   placement: Placement;
   hideIndicator: boolean;
