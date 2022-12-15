@@ -667,48 +667,42 @@ export function getTimezoneOffset(
 
 const _monthParts: Record<string, MonthParts> = {};
 
-export function doGetMonthParts(
-  month: number,
-  year: number,
-  firstDayOfWeek: DayOfWeek,
-): MonthParts {
-  const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const firstDayOfMonth = new Date(year, month - 1, 1);
-  const firstWeekday = firstDayOfMonth.getDay() + 1;
-  const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
-  const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
-  const numWeeks = getWeeksInMonth(firstDayOfMonth, {
-    weekStartsOn,
-  });
-  const weeknumbers = [];
-  const isoWeeknumbers = [];
-  for (let i = 0; i < numWeeks; i++) {
-    const date = addDays(firstDayOfMonth, i * 7);
-    weeknumbers.push(getWeek(date, { weekStartsOn }));
-    isoWeeknumbers.push(getISOWeek(date));
-  }
-  return {
-    firstDayOfWeek,
-    firstDayOfMonth,
-    inLeapYear,
-    firstWeekday,
-    numDays,
-    numWeeks,
-    month,
-    year,
-    weeknumbers,
-    isoWeeknumbers,
-  };
-}
-
 export function getMonthParts(
   month: number,
   year: number,
   firstDayOfWeek: DayOfWeek,
 ): MonthParts {
-  const key = `${year}-${month}`;
-  _monthParts[key] =
-    _monthParts[key] || doGetMonthParts(month, year, firstDayOfWeek);
+  function doGetMonthParts() {
+    const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    const firstDayOfMonth = new Date(year, month - 1, 1);
+    const firstWeekday = firstDayOfMonth.getDay() + 1;
+    const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+    const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
+    const numWeeks = getWeeksInMonth(firstDayOfMonth, {
+      weekStartsOn,
+    });
+    const weeknumbers = [];
+    const isoWeeknumbers = [];
+    for (let i = 0; i < numWeeks; i++) {
+      const date = addDays(firstDayOfMonth, i * 7);
+      weeknumbers.push(getWeek(date, { weekStartsOn }));
+      isoWeeknumbers.push(getISOWeek(date));
+    }
+    return {
+      firstDayOfWeek,
+      firstDayOfMonth,
+      inLeapYear,
+      firstWeekday,
+      numDays,
+      numWeeks,
+      month,
+      year,
+      weeknumbers,
+      isoWeeknumbers,
+    };
+  }
+  const key = `${year}-${month}-${firstDayOfWeek}`;
+  _monthParts[key] ||= doGetMonthParts();
   return _monthParts[key];
 }
 

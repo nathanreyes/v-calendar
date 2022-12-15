@@ -205,7 +205,7 @@
   /* Calendar weekdays */
   --vc-weekday-color: var(--vc-gray-500);
   /* Calendar weeknumbers */
-  --vc-weeknumber-color: var(--vc-gray-500);
+  --vc-weeknumber-color: var(--vc-gray-400);
   /* Calendar nav */
   --vc-nav-hover-bg: var(--vc-gray-200);
   --vc-nav-title-color: var(--vc-gray-900);
