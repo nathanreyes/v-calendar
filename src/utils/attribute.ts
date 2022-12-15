@@ -11,10 +11,11 @@ import {
   HighlightConfig,
   DotConfig,
   BarConfig,
-  ContentProfile,
-  HighlightProfile,
-  DotProfile,
-  BarProfile,
+  Profile,
+  Content,
+  Highlight,
+  Dot,
+  Bar,
 } from './glyph';
 
 export type PopoverConfig = Partial<{
@@ -48,10 +49,10 @@ export interface AttributeConfig {
 export class Attribute {
   key: string | number = '';
   hashcode = '';
-  highlight: HighlightProfile | null = null;
-  content: ContentProfile | null = null;
-  dot: DotProfile | null = null;
-  bar: BarProfile | null = null;
+  highlight: Profile<Highlight> | null = null;
+  content: Profile<Content> | null = null;
+  dot: Profile<Dot> | null = null;
+  bar: Profile<Bar> | null = null;
   event: EventConfig | null = null;
   popover: PopoverConfig | null = null;
   customData: any = null;

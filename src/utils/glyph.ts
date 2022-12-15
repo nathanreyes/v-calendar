@@ -30,7 +30,7 @@ export interface Glyph {
   style: Record<string, any>;
 }
 
-interface Profile<T> {
+export interface Profile<T> {
   start: T;
   base: T;
   end: T;
@@ -45,7 +45,6 @@ export interface Highlight extends Glyph {
   contentClass: string | any[];
   contentStyle: Record<string, any>;
 }
-export type HighlightProfile = Profile<Highlight>;
 export type HighlightConfig =
   | boolean
   | string
@@ -53,20 +52,17 @@ export type HighlightConfig =
 
 // Dots
 export type Dot = Glyph;
-export type DotProfile = Profile<Dot>;
 export type DotConfig = boolean | string | Partial<Dot | Profile<Partial<Dot>>>;
 
 // Bars
 export type Bar = Glyph;
-export type BarProfile = Profile<Bar>;
 export type BarConfig = boolean | string | Partial<Bar | Profile<Partial<Bar>>>;
 
 // Content
 export type Content = Glyph;
-export type ContentProfile = Profile<Content>;
 export type ContentConfig =
   | string
-  | Partial<Content | Profile<Partial<ContentProfile>>>;
+  | Partial<Content | Profile<Partial<Content>>>;
 
 const _defaultProfile = { base: {}, start: {}, end: {} };
 
@@ -140,7 +136,7 @@ export class HighlightRenderer implements GlyphRenderer<Highlight> {
       base: { fillMode: 'light' },
       start: { fillMode: 'solid' },
       end: { fillMode: 'solid' },
-    }) as HighlightProfile;
+    }) as Profile<Highlight>;
   }
 
   prepareRender(glyphs: Record<string, Glyph[]>) {
