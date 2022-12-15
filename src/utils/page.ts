@@ -12,6 +12,7 @@ import {
   addMonths,
   getDayIndex,
 } from './date/helpers';
+import Cache from './cache';
 import Locale from './locale';
 import { pad, pick } from './helpers';
 
@@ -387,109 +388,6 @@ function getWeeks(
   return result;
 }
 
-export function createPageCache(locale: Locale) {
-  const cache: Record<string, CachedPage> = {};
-
-  function createCachedPage(pageConfig: PageConfig & { id: string }) {
-    const { id, month, year, showWeeknumbers, showIsoWeeknumbers } = pageConfig;
-    const date = new Date(year, month - 1, 15);
-    const monthComps = getMonthParts(month, year, locale.firstDayOfWeek);
-    const prevMonthComps = getPrevMonthParts(
-      month,
-      year,
-      locale.firstDayOfWeek,
-    );
-    const nextMonthComps = getNextMonthParts(
-      month,
-      year,
-      locale.firstDayOfWeek,
-    );
-    const days = getDays(
-      { monthComps, prevMonthComps, nextMonthComps },
-      locale,
-    );
-    const weeks = getWeeks(days, showWeeknumbers, showIsoWeeknumbers, locale);
-    const weekdayLabels = locale.getWeekdayLabels(weeks[0].days);
-    return {
-      id,
-      month,
-      year,
-      monthTitle: locale.formatDate(date, locale.masks.title),
-      shortMonthLabel: locale.formatDate(date, 'MMM'),
-      monthLabel: locale.formatDate(date, 'MMMM'),
-      shortYearLabel: year.toString().substring(2),
-      yearLabel: year.toString(),
-      monthComps,
-      prevMonthComps,
-      nextMonthComps,
-      days,
-      weeks,
-      weekdayLabels,
-    };
-  }
-
-  function getPage(config: PageConfig) {
-    const { day, week, month, year, view, trimWeeks } = config;
-
-    let id = `${year}-${pad(month, 2)}`;
-    if (week) id = `${id}-w${week}`;
-    if (day) id = `${id}-${pad(day, 2)}`;
-
-    cache[id] ||= createCachedPage({ id, ...config });
-    const cachedPage = cache[id];
-    const page: Page = {
-      ...cachedPage,
-      ...config,
-      title: '',
-      viewDays: [],
-      viewWeeks: [],
-    };
-    switch (view) {
-      case 'daily': {
-        let dayObj = page.days.find(d => d.inMonth)!;
-        if (day) {
-          dayObj = page.days.find(d => d.day === day && d.inMonth) || dayObj;
-        } else if (week) {
-          dayObj = page.days.find(d => d.week === week && d.inMonth)!;
-        }
-        const weekObj = page.weeks[dayObj.week - 1];
-        page.viewWeeks = [weekObj];
-        page.viewDays = [dayObj];
-        page.week = dayObj.week;
-        page.weekTitle = weekObj.title;
-        page.day = dayObj.day;
-        page.dayTitle = dayObj.ariaLabel;
-        page.title = page.dayTitle;
-        break;
-      }
-      case 'weekly': {
-        page.week = week || 1;
-        const weekObj = page.weeks[page.week - 1];
-        page.viewWeeks = [weekObj];
-        page.viewDays = weekObj.days;
-        page.weekTitle = weekObj.title;
-        page.title = page.weekTitle;
-        break;
-      }
-      default: {
-        page.title = page.monthTitle;
-        page.viewWeeks = page.weeks.slice(
-          0,
-          trimWeeks ? page.monthComps.numWeeks : undefined,
-        );
-        page.viewDays = page.days;
-        break;
-      }
-    }
-    return page;
-  }
-
-  return {
-    cache,
-    getPage,
-  };
-}
-
 export function getPageAddressForDate(
   date: DateSource,
   view: PageView,
@@ -622,4 +520,113 @@ export function pageRangeToArray(
     from = addPages(from, 1, view, locale);
   }
   return result;
+}
+
+export function createPageCache(size: number, locale: Locale) {
+  const cache = new Cache(size, createKey, createCachedPage);
+
+  function createKey(config: PageConfig) {
+    const { day, week, month, year } = config;
+    let id = `${year}-${pad(month, 2)}`;
+    if (week) id = `${id}-w${week}`;
+    if (day) id = `${id}-${pad(day, 2)}`;
+    return id;
+  }
+
+  function createCachedPage(config: PageConfig): CachedPage {
+    const { month, year, showWeeknumbers, showIsoWeeknumbers } = config;
+    const date = new Date(year, month - 1, 15);
+    const monthComps = getMonthParts(month, year, locale.firstDayOfWeek);
+    const prevMonthComps = getPrevMonthParts(
+      month,
+      year,
+      locale.firstDayOfWeek,
+    );
+    const nextMonthComps = getNextMonthParts(
+      month,
+      year,
+      locale.firstDayOfWeek,
+    );
+    const days = getDays(
+      { monthComps, prevMonthComps, nextMonthComps },
+      locale,
+    );
+    const weeks = getWeeks(days, showWeeknumbers, showIsoWeeknumbers, locale);
+    const weekdayLabels = locale.getWeekdayLabels(weeks[0].days);
+    return {
+      id: createKey(config),
+      month,
+      year,
+      monthTitle: locale.formatDate(date, locale.masks.title),
+      shortMonthLabel: locale.formatDate(date, 'MMM'),
+      monthLabel: locale.formatDate(date, 'MMMM'),
+      shortYearLabel: year.toString().substring(2),
+      yearLabel: year.toString(),
+      monthComps,
+      prevMonthComps,
+      nextMonthComps,
+      days,
+      weeks,
+      weekdayLabels,
+    };
+  }
+
+  function getPage(config: PageConfig) {
+    const { day, week, month, year, view, trimWeeks } = config;
+
+    let id = `${year}-${pad(month, 2)}`;
+    if (week) id = `${id}-w${week}`;
+    if (day) id = `${id}-${pad(day, 2)}`;
+
+    const cachedPage = cache.getOrSet(config);
+    const page: Page = {
+      ...cachedPage,
+      ...config,
+      title: '',
+      viewDays: [],
+      viewWeeks: [],
+    };
+    switch (view) {
+      case 'daily': {
+        let dayObj = page.days.find(d => d.inMonth)!;
+        if (day) {
+          dayObj = page.days.find(d => d.day === day && d.inMonth) || dayObj;
+        } else if (week) {
+          dayObj = page.days.find(d => d.week === week && d.inMonth)!;
+        }
+        const weekObj = page.weeks[dayObj.week - 1];
+        page.viewWeeks = [weekObj];
+        page.viewDays = [dayObj];
+        page.week = dayObj.week;
+        page.weekTitle = weekObj.title;
+        page.day = dayObj.day;
+        page.dayTitle = dayObj.ariaLabel;
+        page.title = page.dayTitle;
+        break;
+      }
+      case 'weekly': {
+        page.week = week || 1;
+        const weekObj = page.weeks[page.week - 1];
+        page.viewWeeks = [weekObj];
+        page.viewDays = weekObj.days;
+        page.weekTitle = weekObj.title;
+        page.title = page.weekTitle;
+        break;
+      }
+      default: {
+        page.title = page.monthTitle;
+        page.viewWeeks = page.weeks.slice(
+          0,
+          trimWeeks ? page.monthComps.numWeeks : undefined,
+        );
+        page.viewDays = page.days;
+        break;
+      }
+    }
+    return page;
+  }
+
+  return {
+    getPage,
+  };
 }

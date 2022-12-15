@@ -198,7 +198,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const isWeekly = computed(() => state.view === 'weekly');
   const isDaily = computed(() => state.view === 'daily');
 
-  const pageCache = computed(() => createPageCache(locale.value));
+  const pageCache = computed(() => createPageCache(3, locale.value));
 
   // #endregion Computed
 
