@@ -76,17 +76,23 @@ The `show-weeknumbers` can also be assigned to left and outside positions.
 <Calendar show-weeknumbers="right-outside" />
 ```
 
-## ISO Weeknumbers
+### ISO Weeknumbers
 
 To show ISO week numbers, use the `show-iso-weeknumbers` prop with the same convention as `show-weeknumbers`. If both are assigned, the `show-weeknumbers` prop takes precendence.
 
+Since ISO weeks start on Monday, it makes sense to also set Monday as the first day of the week when setting `show-iso-weeknumbers`.
+
 <Example centered>
-  <Calendar show-iso-weeknumbers />
+  <Calendar :first-day-of-week="2" show-iso-weeknumbers />
 </Example>
 
 ```html
-<Calendar show-iso-weeknumbers />
+<Calendar :first-day-of-week="2" show-iso-weeknumbers />
 ```
+
+<BaseAlert warning>
+For the ISO week date standard (ISO-8601), weeks start on Monday and end on Sunday. If the `firstDayOfWeek` setting is different (U.S. default), this could result in 2 weeks displaying the same week number for certain months.
+</BaseAlert>
 
 ## Title Positioning
 
