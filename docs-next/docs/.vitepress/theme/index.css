@@ -208,4 +208,32 @@ button {
   ol[type='1'] {
     list-style-type: decimal;
   }
+  table {
+    display: table;
+    width: 100%;
+    border-top: 1px solid theme(colors.gray.300);
+    & > * + * {
+      border-top-width: 1px;
+      border-bottom-width: 0px;
+    }
+    thead {
+      background-color: theme(colors.gray.50);
+    }
+    tr {
+      border-top: none;
+      th {
+        font-size: theme(fontSize.sm);
+        font-weight: theme(fontWeight.bold);
+        padding: 0.75rem 1.5rem;
+        text-align: left;
+        border: none;
+      }
+      td {
+        font-size: theme(fontSize.sm);
+        padding: 0.75rem 1.5rem;
+
+        border: none;
+      }
+    }
+  }
 }

@@ -92,6 +92,10 @@ function sidebar() {
             text: 'Dates',
             link: '/calendar/dates',
           },
+          {
+            text: 'API',
+            link: '/calendar/api',
+          },
         ],
       },
       // Date Picker
