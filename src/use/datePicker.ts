@@ -100,7 +100,6 @@ export const propsDef = {
     type: Object as PropType<ModelModifiers>,
     default: () => ({}),
   },
-  time: String,
   rules: [String as PropType<'auto'>, Object as PropType<DatePartsRules>],
   modelConfig: { type: Object, default: () => ({}) },
   is24hr: Boolean,
