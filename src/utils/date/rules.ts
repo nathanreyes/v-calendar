@@ -1,7 +1,5 @@
 import {
-  DayInMonth,
   DayOfWeek,
-  WeekInMonth,
   OrdinalWeekInMonth,
   DayParts,
   diffInDays,
@@ -13,9 +11,8 @@ import {
   isWeekInMonth,
   isMonthInYear,
   isOrdinalWeekInMonth,
-  MonthInYear,
 } from './helpers';
-import { isArray, isNumber, isObject, isFunction } from '../helpers';
+import { isArray, isNumber, isFunction } from '../helpers';
 
 export type SingleOrArray<T> = T | T[];
 
@@ -57,10 +54,6 @@ export type RuleType =
 export type OrdinalArrayConfig = SingleOrArray<
   [OrdinalWeekInMonth, ...DayOfWeek[]]
 >;
-export type OrdinalObjectConfig = Record<
-  string | number,
-  SingleOrArray<DayOfWeek>[]
->;
 
 export interface Rule<T> {
   type: T;
@@ -89,16 +82,16 @@ export class IntervalRule implements Rule<IntervalRuleType> {
 
     const { date } = dateParts;
     switch (this.type) {
-      case IntervalRuleType.Days: {
+      case 'days': {
         return diffInDays(this.from.date, date) % this.interval === 0;
       }
-      case IntervalRuleType.Weeks: {
+      case 'weeks': {
         return diffInWeeks(this.from.date, date) % this.interval === 0;
       }
-      case IntervalRuleType.Months: {
+      case 'months': {
         return diffInMonths(this.from.date, date) % this.interval === 0;
       }
-      case IntervalRuleType.Years: {
+      case 'years': {
         return diffInYears(this.from.date, date) % this.interval === 0;
       }
       default: {
@@ -108,10 +101,8 @@ export class IntervalRule implements Rule<IntervalRuleType> {
   }
 }
 
-export class ComponentRule<T extends number>
-  implements Rule<ComponentRuleType>
-{
-  components: T[] = [];
+export class ComponentRule implements Rule<ComponentRuleType> {
+  components: number[] = [];
 
   static create(type: ComponentRuleType, config: unknown) {
     switch (type) {
@@ -131,8 +122,8 @@ export class ComponentRule<T extends number>
   constructor(
     public type: ComponentRuleType,
     components: unknown,
-    public validator: (component: unknown) => component is T,
-    public getter: (dayParts: DayParts) => T[],
+    public validator: (component: unknown) => component is number,
+    public getter: (dayParts: DayParts) => number[],
   ) {
     this.components = this.normalizeComponents(components);
   }
@@ -140,7 +131,7 @@ export class ComponentRule<T extends number>
   normalizeComponents(components: unknown) {
     if (this.validator(components)) return [components];
     if (!isArray(components)) return [];
-    const result: T[] = [];
+    const result: number[] = [];
     components.forEach(component => {
       if (!this.validator(component)) {
         console.error(
@@ -160,7 +151,7 @@ export class ComponentRule<T extends number>
   }
 }
 
-export class DaysRule extends ComponentRule<DayInMonth> {
+export class DaysRule extends ComponentRule {
   constructor(components: unknown) {
     super(
       ComponentRuleType.Days,
@@ -171,7 +162,7 @@ export class DaysRule extends ComponentRule<DayInMonth> {
   }
 }
 
-export class WeekdaysRule extends ComponentRule<DayOfWeek> {
+export class WeekdaysRule extends ComponentRule {
   constructor(components: unknown) {
     super(
       ComponentRuleType.Weekdays,
@@ -182,7 +173,7 @@ export class WeekdaysRule extends ComponentRule<DayOfWeek> {
   }
 }
 
-export class WeeksRule extends ComponentRule<WeekInMonth> {
+export class WeeksRule extends ComponentRule {
   constructor(components: unknown) {
     super(
       ComponentRuleType.Weeks,
@@ -193,7 +184,7 @@ export class WeeksRule extends ComponentRule<WeekInMonth> {
   }
 }
 
-export class MonthsRule extends ComponentRule<MonthInYear> {
+export class MonthsRule extends ComponentRule {
   constructor(components: unknown) {
     super(ComponentRuleType.Months, components, isMonthInYear, ({ month }) => [
       month,
@@ -201,7 +192,7 @@ export class MonthsRule extends ComponentRule<MonthInYear> {
   }
 }
 
-export class YearsRule extends ComponentRule<number> {
+export class YearsRule extends ComponentRule {
   constructor(components: unknown) {
     super(ComponentRuleType.Years, components, isNumber, ({ year }) => [year]);
   }
@@ -212,7 +203,7 @@ export class OrdinalComponentRule implements Rule<OrdinalComponentRuleType> {
 
   constructor(
     public type: OrdinalComponentRuleType,
-    components: OrdinalObjectConfig | OrdinalArrayConfig,
+    components: OrdinalArrayConfig,
   ) {
     this.components = this.normalizeComponents(components);
   }
@@ -242,17 +233,29 @@ export class OrdinalComponentRule implements Rule<OrdinalComponentRuleType> {
     return result;
   }
 
-  normalizeComponents(config: OrdinalObjectConfig | OrdinalArrayConfig) {
-    if (isObject(config)) {
-      config = Object.entries(config as OrdinalObjectConfig).map(
-        ([numOrString, numOrArray]) => {
-          const num = parseInt(numOrString, 10);
-          if (isArray(numOrArray)) return [num, ...numOrArray];
-          return [num, numOrArray];
-        },
-      );
-    }
-    return this.normalizeArrayConfig(config as OrdinalArrayConfig);
+  normalizeComponents(config: OrdinalArrayConfig) {
+    const result: [OrdinalWeekInMonth, DayOfWeek][] = [];
+    config.forEach((numOrArray, i) => {
+      if (isNumber(numOrArray)) {
+        if (i === 0) return;
+        if (!isOrdinalWeekInMonth(config[0])) {
+          console.error(
+            `Ordinal range for "${this.type}" rule is from -5 to -1 or 1 to 5. This rule will be skipped.`,
+          );
+          return;
+        }
+        if (!isDayOfWeek(numOrArray)) {
+          console.error(
+            `Acceptable range for "${this.type}" rule is from 1 to 5. This rule will be skipped`,
+          );
+          return;
+        }
+        result.push([config[0], numOrArray]);
+      } else if (isArray(numOrArray)) {
+        result.push(...this.normalizeArrayConfig(numOrArray));
+      }
+    });
+    return result;
   }
 
   passes(dayParts: DayParts) {

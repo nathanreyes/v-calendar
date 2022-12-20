@@ -18,7 +18,6 @@ import {
   ComponentRule,
   OrdinalComponentRuleType,
   OrdinalComponentRule,
-  OrdinalObjectConfig,
   FunctionRule,
   SingleOrArray,
 } from './rules';
@@ -35,7 +34,7 @@ export interface DateRepeatConfig {
   weeks: SingleOrArray<WeekInMonth>;
   months: SingleOrArray<MonthInYear>;
   years: SingleOrArray<number>;
-  ordinalWeekdays: OrdinalObjectConfig | SingleOrArray<number[]>;
+  ordinalWeekdays: SingleOrArray<number[]>;
   on: SingleOrArray<DateRepeatFn | Partial<DateRepeatConfig>>;
 }
 
