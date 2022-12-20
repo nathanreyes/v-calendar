@@ -53,12 +53,7 @@ const DateModes = {
   Time: 'time',
 };
 
-export enum ValueTarget {
-  None = 0,
-  Start,
-  End,
-  Both,
-}
+export type ValueTarget = 'none' | 'start' | 'end' | 'both';
 
 export interface UpdateOptions {
   config: any;
@@ -209,12 +204,12 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     /[dD]{1,2}|Do|W{1,4}|M{1,4}|YY(?:YY)?/g.test(inputMask.value),
   );
 
-  const inputMaskPatch = computed(() => {
+  const inputMaskPatch = computed<DatePatch | undefined>(() => {
     if (inputMaskHasTime.value && inputMaskHasDate.value) {
-      return DatePatch.DateTime;
+      return 'dateTime';
     }
-    if (inputMaskHasDate.value) return DatePatch.Date;
-    if (inputMaskHasTime.value) return DatePatch.Time;
+    if (inputMaskHasDate.value) return 'date';
+    if (inputMaskHasTime.value) return 'time';
     return undefined;
   });
 
@@ -242,7 +237,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   });
 
   const inputEvents = computed(() => {
-    const events = [1, 2].map(target => ({
+    const events = (<ValueTarget[]>['start', 'end']).map(target => ({
       input: onInputInput(target),
       change: onInputChange(target),
       keyup: onInputKeyup,
@@ -448,12 +443,12 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     value: any,
     {
       config = modelConfig.value,
-      patch = DatePatch.DateTime,
+      patch = 'dateTime',
       clearIfEqual = false,
       formatInput: fInput = true,
       hidePopover: hPopover = false,
       dragging = isDragging.value,
-      targetPriority = ValueTarget.Both,
+      targetPriority = 'both',
       moveToValue: mValue = false,
     }: Partial<UpdateOptions> = {},
   ) {
@@ -542,7 +537,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     target: ValueTarget,
     opts: Partial<UpdateOptions>,
   ) {
-    inputValues.value.splice(target - 1, 1, inputValue);
+    inputValues.value.splice(target === 'start' ? 0 : 1, 1, inputValue);
     const value = isRange.value
       ? {
           start: inputValues.value[0],
@@ -625,7 +620,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function handleDayClick(day: CalendarDay) {
     const opts: Partial<UpdateOptions> = {
-      patch: DatePatch.Date,
+      patch: 'date',
       formatInput: true,
       hidePopover: true,
     };
@@ -639,7 +634,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       updateValue(dragTrackingValue, {
         ...opts,
         dragging,
-        targetPriority: dragging ? ValueTarget.None : ValueTarget.Both,
+        targetPriority: dragging ? 'none' : 'both',
       });
     } else {
       updateValue(day.date, {
@@ -675,9 +670,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     if (!isDragging.value || dragTrackingValue == null) return;
     dragTrackingValue.end = day.date;
     updateValue(dragTrackingValue, {
-      patch: DatePatch.Date,
+      patch: 'date',
       formatInput: true,
-      targetPriority: ValueTarget.None,
+      targetPriority: 'none',
     });
   }
 
@@ -709,15 +704,15 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     });
   }
 
-  function sortRange(range: any, priority = ValueTarget.None) {
+  function sortRange(range: any, priority = 'none') {
     const { start, end } = range;
     if (start > end) {
       switch (priority) {
-        case ValueTarget.Start:
+        case 'start':
           return { start, end: start };
-        case ValueTarget.End:
+        case 'end':
           return { start: end, end };
-        case ValueTarget.Both:
+        case 'both':
           return { start: end, end: start };
       }
     }
@@ -750,9 +745,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     target: ValueTarget,
     opts: Partial<MoveOptions> = {},
   ) {
-    if (calendarRef.value == null || target === ValueTarget.None) return false;
+    if (calendarRef.value == null || target === 'none') return false;
     const { firstPage, lastPage, move } = calendarRef.value;
-    const start = target !== ValueTarget.End;
+    const start = target !== 'end';
     const page = getPageForValue(start);
     const position = start ? 1 : -1;
     if (!page || pageIsBetweenPages(page, firstPage, lastPage)) return false;

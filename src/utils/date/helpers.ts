@@ -261,14 +261,10 @@ export interface MonthParts {
   isoWeeknumbers: number[];
 }
 
-export enum DatePatch {
-  DateTime,
-  Date,
-  Time,
-}
+export type DatePatch = 'dateTime' | 'date' | 'time';
 
 const DatePatchKeys: Record<DatePatch, (keyof SimpleDateParts)[]> = {
-  [DatePatch.DateTime]: [
+  dateTime: [
     'year',
     'month',
     'day',
@@ -277,8 +273,8 @@ const DatePatchKeys: Record<DatePatch, (keyof SimpleDateParts)[]> = {
     'seconds',
     'milliseconds',
   ],
-  [DatePatch.Date]: ['year', 'month', 'day'],
-  [DatePatch.Time]: ['hours', 'minutes', 'seconds', 'milliseconds'],
+  date: ['year', 'month', 'day'],
+  time: ['hours', 'minutes', 'seconds', 'milliseconds'],
 };
 
 export const daysInWeek = 7;

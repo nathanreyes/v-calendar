@@ -75,8 +75,8 @@ export function createTimePicker(props: TimePickerProps) {
       newValue = newParts;
     }
     updateDpValue(newValue, {
-      patch: DatePatch.Time,
-      targetPriority: isStart.value ? ValueTarget.Start : ValueTarget.End,
+      patch: 'time',
+      targetPriority: isStart.value ? 'start' : 'end',
       moveToValue: true,
     });
   }
