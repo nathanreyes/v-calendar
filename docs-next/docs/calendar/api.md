@@ -33,6 +33,7 @@ title: 'API'
 | **show-weeknumbers** | boolean \| "left" \| "left-outside" \| "right" \| "right-outside| *undefined* |
 | **show-iso-weeknumbers** | boolean \| "left" \| "left-outside" \| "right" \| "right-outside| *undefined* |
 | **trim-weeks** | boolean | false |
+| **disable-page-swipe** | boolean | false |
 
 ## Types
 
