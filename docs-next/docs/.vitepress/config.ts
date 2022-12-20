@@ -123,6 +123,10 @@ function sidebar() {
             text: 'Custom Attributes',
             link: '/datepicker/custom-attributes',
           },
+          {
+            text: 'API',
+            link: '/datepicker/api',
+          },
           // {
           //   text: 'Test',
           //   link: '/datepicker/test',
