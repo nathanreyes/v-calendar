@@ -42,7 +42,6 @@ title: 'API'
 ```ts
 interface AttributeConfig {
   key: string | number;
-  hashcode: string;
   content: string | Partial<Content | Profile<Partial<Content>>>;
   highlight: boolean | string | Partial<Highlight | Profile<Partial<Highlight>>>;
   dot: boolean | string | Partial<Dot | Profile<Partial<Dot>>>;
@@ -51,7 +50,6 @@ interface AttributeConfig {
   dates: DateRangeSource[];
   customData: any;
   order: number;
-  pinPage: boolean;
 }
 
 interface Profile<T> {
