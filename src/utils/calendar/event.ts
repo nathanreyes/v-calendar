@@ -224,8 +224,8 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
     const maxOffsetWeekdays = ctx.isDaily.value
       ? 0
       : ctx.dayColumns.value - day.weekdayPosition;
-    const minOffsetMs = day.range.start.getTime() - start.getTime();
-    const maxOffsetMs = day.range.end.getTime() - end.getTime();
+    const minOffsetMs = day.startDate.getTime() - start.getTime();
+    const maxOffsetMs = day.endDate.getTime() - end.getTime();
     state.dragOrigin = {
       day,
       start,

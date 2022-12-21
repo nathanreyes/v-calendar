@@ -231,17 +231,6 @@ export interface DateParts extends DayParts {
   minutes: number;
   hours: number;
   time: number;
-  day: number;
-  dayFromEnd: number;
-  weekday: number;
-  weekdayOrdinal: number;
-  weekdayOrdinalFromEnd: number;
-  week: number;
-  weekFromEnd: number;
-  weeknumber: number;
-  month: number;
-  year: number;
-  date: Date;
   dateTime: number;
   isValid: boolean;
   timezoneOffset: number;

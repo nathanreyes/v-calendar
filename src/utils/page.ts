@@ -25,10 +25,9 @@ export interface CalendarDay extends DayParts {
   weekdayPositionFromEnd: number;
   weekPosition: number;
   isoWeeknumber: number;
-  range: {
-    start: Date;
-    end: Date;
-  };
+  startDate: Date;
+  noonDate: Date;
+  endDate: Date;
   isToday: boolean;
   isFirstDay: boolean;
   isLastDay: boolean;
@@ -42,12 +41,6 @@ export interface CalendarDay extends DayParts {
   onLeft: boolean;
   onRight: boolean;
   classes: Array<string | Object>;
-  dateFromTime: (
-    hours: number,
-    minutes: number,
-    seconds: number,
-    milliseconds: number,
-  ) => Date;
   locale: Locale;
 }
 
@@ -192,18 +185,6 @@ function getDays(
   const todayDay = today.getDate();
   const todayMonth = today.getMonth() + 1;
   const todayYear = today.getFullYear();
-  const dft =
-    (y: number, m: number, d: number) =>
-    (hours: number, minutes: number, seconds: number, milliseconds: number) =>
-      locale.toDate({
-        year: y,
-        month: m,
-        day: d,
-        hours,
-        minutes,
-        seconds,
-        milliseconds,
-      });
   // Cycle through max weeks in month
   for (let w = 1; w <= weeksInMonth; w++) {
     // Cycle through days in week
@@ -227,16 +208,18 @@ function getDays(
         prevMonth = false;
         thisMonth = true;
       }
-      // Append day info for the current week
-      // Note: this might or might not be an actual month day
-      //  We don't know how the UI wants to display various days,
-      //  so we'll supply all the data we can
-      const dateFromTime = dft(year, month, day);
-      const range = {
-        start: dateFromTime(0, 0, 0, 0),
-        end: dateFromTime(23, 59, 59, 999),
-      };
-      const date = range.start;
+      const startDate = locale.getDateFromParams(year, month, day, 0, 0, 0, 0);
+      const noonDate = locale.getDateFromParams(year, month, day, 12, 0, 0, 0);
+      const endDate = locale.getDateFromParams(
+        year,
+        month,
+        day,
+        23,
+        59,
+        59,
+        999,
+      );
+      const date = startDate;
       const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
       const weekdayPosition = i;
       const weekdayPositionFromEnd = daysInWeek - i;
@@ -271,10 +254,11 @@ function getDays(
         isoWeeknumber,
         month,
         year,
-        dateFromTime,
         date,
+        startDate,
+        endDate,
+        noonDate,
         dayIndex,
-        range,
         isToday,
         isFirstDay,
         isLastDay,

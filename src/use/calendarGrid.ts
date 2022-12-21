@@ -406,7 +406,7 @@ export function createCalendarGrid(
     offsetMs = 0,
     snapMs = 0,
   ) {
-    const startTime = day.range.start.getTime();
+    const startTime = day.startDate.getTime();
     const ms = getMsFromPosition(position);
     const date = roundDate(startTime + ms + offsetMs, snapMs);
     return date;

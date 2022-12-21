@@ -547,9 +547,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const onDayKeydown = (day: CalendarDay, event: KeyboardEvent) => {
     emit('daykeydown', day, event);
-    const { dateFromTime } = day;
-    // Set to noon to offset any daylight savings time offset
-    const date = dateFromTime(12, 0, 0, 0);
+    const date = day.noonDate;
     let newDate = null;
     switch (event.key) {
       case 'ArrowLeft': {

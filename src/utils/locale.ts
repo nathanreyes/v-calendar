@@ -151,6 +151,26 @@ export default class Locale {
     return getDateFromParts(parts, this.timezone);
   }
 
+  getDateFromParams(
+    year: number,
+    month: number,
+    day: number,
+    hours: number,
+    minutes: number,
+    seconds: number,
+    milliseconds: number,
+  ) {
+    return this.getDateFromParts({
+      year,
+      month,
+      day,
+      hours,
+      minutes,
+      seconds,
+      milliseconds,
+    });
+  }
+
   getMonthParts(month: number, year: number) {
     return getMonthParts(month, year, this.firstDayOfWeek);
   }
