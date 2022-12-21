@@ -1,4 +1,5 @@
 import { version } from '../../../package.json';
+import { defineConfig } from 'vitepress';
 
 function nav() {
   return [
@@ -160,7 +161,7 @@ function sidebar() {
   };
 }
 
-export default {
+export default defineConfig({
   title: 'VCalendar',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
   head: [['link', { rel: 'icon', href: '/favicon.png' }]],
@@ -185,4 +186,4 @@ export default {
       copyright: 'Copyright © 2017-present Nathan Reyes',
     },
   },
-};
+});
