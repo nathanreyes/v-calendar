@@ -35,6 +35,23 @@ title: 'API'
 | **trim-weeks** | boolean | false |
 | **disable-page-swipe** | boolean | false |
 
+## Events
+
+| Name | Parameter Type(s) |
+| --- | --- |
+| **dayclick** | [CalendarDay](#calendarday), [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) |
+| **daymouseenter** | [CalendarDay](#calendarday), [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) |
+| **daymouseleave** | [CalendarDay](#calendarday), [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) |
+| **dayfocusin** | [CalendarDay](#calendarday), [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent) |
+| **dayfocusout** | [CalendarDay](#calendarday), [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent) |
+| **daykeydown** | [CalendarDay](#calendarday), [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent) |
+| **weeknumberclick** | [CalendarWeek](#calendarweek), [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) |
+| **transition-start** | |
+| **transition-end** | |
+| **did-move** | [Page](#page)[] |
+| **update:view** | "daily" \| "weekly" \| "monthly" |
+| **update:pages** | [Page](#page)[] |
+
 ## Types
 
 ### AttributeConfig
@@ -137,6 +154,104 @@ interface PageAddress {
   week?: number;
   month: number;
   year: number;
+}
+```
+
+### Page
+
+```ts
+interface Page {
+  id: string;
+  day?: number;
+  week?: number;
+  month: number;
+  year: number;
+  view: PageView;
+  trimWeeks: boolean;
+  position: number;
+  row: number;
+  rowFromEnd: number;
+  column: number;
+  columnFromEnd: number;
+  showWeeknumbers: boolean;
+  showIsoWeeknumbers: boolean;
+  weeknumberPosition: string;
+  monthTitle: string;
+  weekTitle?: string;
+  dayTitle?: string;
+  title: string;
+  titlePosition: TitlePosition;
+  shortMonthLabel: string;
+  monthLabel: string;
+  shortYearLabel: string;
+  yearLabel: string;
+  weekdayLabels: string[];
+  monthComps: MonthParts;
+  prevMonthComps: MonthParts;
+  nextMonthComps: MonthParts;
+  days: CalendarDay[];
+  weeks: CalendarWeek[];
+  viewDays: CalendarDay[];
+  viewWeeks: CalendarWeek[];
+}
+```
+
+### CalendarDay
+
+```ts
+interface CalendarDay {
+  id: string;
+  dayIndex: number;
+  day: number;
+  dayFromEnd: number;
+  weekday: number;
+  weekdayOrdinal: number;
+  weekdayOrdinalFromEnd: number;
+  week: number;
+  weekFromEnd: number;
+  weeknumber: number;
+  month: number;
+  year: number;
+  date: Date;
+  position: number;
+  label: string;
+  ariaLabel: string;
+  weekdayPosition: number;
+  weekdayPositionFromEnd: number;
+  weekPosition: number;
+  isoWeeknumber: number;
+  startDate: Date;
+  noonDate: Date;
+  endDate: Date;
+  isToday: boolean;
+  isFirstDay: boolean;
+  isLastDay: boolean;
+  isDisabled: boolean;
+  isFocusable: boolean;
+  inMonth: boolean;
+  inPrevMonth: boolean;
+  inNextMonth: boolean;
+  onTop: boolean;
+  onBottom: boolean;
+  onLeft: boolean;
+  onRight: boolean;
+  classes: Array<string | Object>;
+  locale: Locale;
+}
+```
+
+### CalendarWeek
+
+```ts
+interface CalendarWeek {
+  id: string;
+  week: number;
+  weekPosition: number;
+  weeknumber: number;
+  isoWeeknumber: number;
+  weeknumberDisplay?: number;
+  days: CalendarDay[];
+  title: string;
 }
 ```
 

@@ -31,8 +31,6 @@ title: 'API'
 | --- | --- |
 | **update:modelValue** | [DatePickerDate](#datepickerdate) |
 | **drag** | [SimpleDateRange](#simpledaterange) \| null |
-| **dayclick**| [CalendarDay](#calendarday) |
-| **daykeydown** | [CalendarDay](#calendarday) |
 | **popover-will-show** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
 | **popover-did-show** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
 | **popover-will-hide** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
@@ -103,48 +101,4 @@ interface PopoverOptions {
 }
 
 type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
-```
-
-### CalendarDay
-
-```ts
-interface CalendarDay {
-  id: string;
-  dayIndex: number;
-  day: number;
-  dayFromEnd: number;
-  weekday: number;
-  weekdayOrdinal: number;
-  weekdayOrdinalFromEnd: number;
-  week: number;
-  weekFromEnd: number;
-  weeknumber: number;
-  month: number;
-  year: number;
-  date: Date;
-  position: number;
-  label: string;
-  ariaLabel: string;
-  weekdayPosition: number;
-  weekdayPositionFromEnd: number;
-  weekPosition: number;
-  isoWeeknumber: number;
-  startDate: Date;
-  noonDate: Date;
-  endDate: Date;
-  isToday: boolean;
-  isFirstDay: boolean;
-  isLastDay: boolean;
-  isDisabled: boolean;
-  isFocusable: boolean;
-  inMonth: boolean;
-  inPrevMonth: boolean;
-  inNextMonth: boolean;
-  onTop: boolean;
-  onBottom: boolean;
-  onLeft: boolean;
-  onRight: boolean;
-  classes: Array<string | Object>;
-  locale: Locale;
-}
 ```
