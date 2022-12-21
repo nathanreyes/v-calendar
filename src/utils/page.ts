@@ -59,7 +59,7 @@ export type PageView = 'daily' | 'weekly' | 'monthly';
 
 export type TitlePosition = 'center' | 'left' | 'right';
 
-export interface Page extends PageAddress {
+export interface Page {
   id: string;
   day?: number;
   week?: number;
