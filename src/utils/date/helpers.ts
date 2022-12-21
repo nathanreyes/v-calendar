@@ -18,6 +18,7 @@ import addWeeks from 'date-fns/addWeeks';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Locale, { LocaleConfig } from '../locale';
+import Cache from '../cache';
 
 export { addDays, addWeeks, addMonths, addYears };
 export { DateRepeat } from './repeat';
@@ -651,6 +652,58 @@ export function getTimezoneOffset(
 }
 
 const _monthParts: Record<string, MonthParts> = {};
+
+interface MonthPartsConfig {
+  month: number;
+  year: number;
+  firstDayOfWeek: DayOfWeek;
+}
+
+export function createMonthPartsCache() {
+  const cache = new Cache(3, createKey, createItem);
+
+  function createKey({ month, year, firstDayOfWeek }: MonthPartsConfig) {
+    return `${year}-${month}-${firstDayOfWeek}`;
+  }
+
+  function createItem({ month, year, firstDayOfWeek }: MonthPartsConfig) {
+    const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    const firstDayOfMonth = new Date(year, month - 1, 1);
+    const firstWeekday = firstDayOfMonth.getDay() + 1;
+    const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+    const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
+    const numWeeks = getWeeksInMonth(firstDayOfMonth, {
+      weekStartsOn,
+    });
+    const weeknumbers = [];
+    const isoWeeknumbers = [];
+    for (let i = 0; i < numWeeks; i++) {
+      const date = addDays(firstDayOfMonth, i * 7);
+      weeknumbers.push(getWeek(date, { weekStartsOn }));
+      isoWeeknumbers.push(getISOWeek(date));
+    }
+    return {
+      firstDayOfWeek,
+      firstDayOfMonth,
+      inLeapYear,
+      firstWeekday,
+      numDays,
+      numWeeks,
+      month,
+      year,
+      weeknumbers,
+      isoWeeknumbers,
+    };
+  }
+
+  function getMonthParts(config: MonthPartsConfig) {
+    return cache.getOrSet(config);
+  }
+
+  return {
+    getMonthParts,
+  };
+}
 
 export function getMonthParts(
   month: number,
