@@ -22,10 +22,23 @@ title: 'API'
 | **update-on-input** | boolean | true |
 | **input-debounce** | number | 1000 |
 | **popover** | true \| Partial<[PopoverOptions](#popoveroptions)> | [true](/datepicker/slot-content#default-behavior) |
-| **drag-attribute** | [AttributeConfig](#attributeconfig) | *undefined* |
-| **select-attribute** | [AttibuteConfig](#attributeconfig) | *undefined* |
+| **drag-attribute** | [AttributeConfig](/calendar/api#attributeconfig) | *undefined* |
+| **select-attribute** | [AttibuteConfig](/calendar/api#attributeconfig) | *undefined* |
 
-## Prop Types
+## Events
+
+| Event | Parameter Type |
+| --- | --- |
+| **update:modelValue** | [DatePickerDate](#datepickerdate) |
+| **drag** | [SimpleDateRange](#simpledaterange) \| null |
+| **dayclick**| [CalendarDay](#calendarday) |
+| **daykeydown** | [CalendarDay](#calendarday) |
+| **popover-will-show** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
+| **popover-did-show** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
+| **popover-will-hide** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
+| **popover-did-hide** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
+
+## Types
 
 ### DatePickerDate
 
@@ -33,6 +46,15 @@ title: 'API'
 type DatePickerDate = number | string | Date | null | {
   start?: number | string | Date | null,
   end?: number | string | Date | null
+}
+```
+
+### SimpleDateRange
+
+```ts
+{
+  start: Date;
+  end: Date;
 }
 ```
  
@@ -83,15 +105,46 @@ interface PopoverOptions {
 type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
 ```
 
-## Events
+### CalendarDay
 
-| Event | Parameter Type |
-| --- | --- |
-| **update:modelValue** | Model value |
-| **drag** | Drag value |
-| **dayclick**| `CalendarDay` |
-| **daykeydown** | `CalendarDay` |
-| **popover-will-show** | |
-| **popover-did-show** | |
-| **popover-will-hide** | |
-| **popover-did-hide** | |
+```ts
+interface CalendarDay {
+  id: string;
+  dayIndex: number;
+  day: number;
+  dayFromEnd: number;
+  weekday: number;
+  weekdayOrdinal: number;
+  weekdayOrdinalFromEnd: number;
+  week: number;
+  weekFromEnd: number;
+  weeknumber: number;
+  month: number;
+  year: number;
+  date: Date;
+  position: number;
+  label: string;
+  ariaLabel: string;
+  weekdayPosition: number;
+  weekdayPositionFromEnd: number;
+  weekPosition: number;
+  isoWeeknumber: number;
+  startDate: Date;
+  noonDate: Date;
+  endDate: Date;
+  isToday: boolean;
+  isFirstDay: boolean;
+  isLastDay: boolean;
+  isDisabled: boolean;
+  isFocusable: boolean;
+  inMonth: boolean;
+  inPrevMonth: boolean;
+  inNextMonth: boolean;
+  onTop: boolean;
+  onBottom: boolean;
+  onLeft: boolean;
+  onRight: boolean;
+  classes: Array<string | Object>;
+  locale: Locale;
+}
+```
