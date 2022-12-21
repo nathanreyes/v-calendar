@@ -91,6 +91,7 @@ Since ISO weeks start on Monday, it makes sense to also set Monday as the first 
 ```
 
 <BaseAlert warning>
+
 For the ISO week date standard (ISO-8601), weeks start on Monday and end on Sunday. If the `firstDayOfWeek` setting is different (U.S. default), this could result in 2 weeks displaying the same week number for certain months.
 </BaseAlert>
 

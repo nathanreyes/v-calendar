@@ -19,7 +19,8 @@ A locale includes multiple settings that are typically assigned on a per region 
 
 There are multiple ways which you can configure the locale for a specific calendar. Locales may be configured globally via the defaults object as well as on a per-calendar basis with the `locale` prop.
 
-<BaseAlert success>
+<BaseAlert>
+
 The [well supported](https://caniuse.com/#feat=internationalization) Internationalization API is used to derive month and weekday names and formatting. This helps keep the package size down, as well as supporting multiple locales in the most performant and isomorphic way.
 </BaseAlert>
 

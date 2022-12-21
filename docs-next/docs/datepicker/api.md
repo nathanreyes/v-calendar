@@ -7,7 +7,8 @@ title: 'API'
 ## Props
 
 <BaseAlert title="Prop Support">
-`DatePicker` accepts all the same props as [Calendar](/calendar/api).
+
+`DatePicker` accepts all the same props as [Calendar](/calendar/api#props).
 </BaseAlert>
 
 | Name | Type | Default |
@@ -26,6 +27,11 @@ title: 'API'
 | **select-attribute** | [AttibuteConfig](/calendar/api#attributeconfig) | *undefined* |
 
 ## Events
+
+<BaseAlert title="Event Support">
+
+`DatePicker` accepts all the same events as [Calendar](/calendar/api#events).
+</BaseAlert>
 
 | Event | Parameter Type |
 | --- | --- |

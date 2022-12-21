@@ -63,10 +63,12 @@ const rules = ref({
 ```
 
 <BaseAlert title="When are rules applied?">
+
 Rules are applied to date values on initial mount **and** future updates.
 </BaseAlert>
 
 <BaseAlert title="Do timezones affect how rules are applied?">
+
 Rules are applied respective of the browser's current timezone, unless the `timezone` prop is explicitly provided.
 </BaseAlert>
 

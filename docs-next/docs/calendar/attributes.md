@@ -99,6 +99,7 @@ For the simple example above, we used the following properties to build the attr
 | **`dates`** | Dates used to display the attribute. |
 
 <BaseAlert title="Attribute defaults">
+
   When simply assigning `true` to the highlight config (or any other attribute except popovers), the currently active color is used to display it. In this example, the `color` prop is not specified, so the default `color` (`"blue"`) and `fillMode` (`"solid"`) are used.
 </BaseAlert>
 
@@ -575,7 +576,9 @@ If you would like to hide the indicator, just set the `hideIndicator` property t
 For a more customized approach you can insert your own `"day-popover"` custom scoped slot within `Calendar`.
 
 <BaseAlert title="Scoped slots">
-  If you are not familiar with the convention of using scoped slots in Vue.js, you can reference the [Vue docs](https://vuejs.org/v2/guide/components.html#Scoped-Slots) or [this post by alligator.io](https://alligator.io/vuejs/scoped-component-slots/).
+
+  If you are not familiar with the convention of using scoped slots in Vue.js, you can reference the [Vue docs](https://vuejs.org/guide/components/slots.html#scoped-slots).
+
 </BaseAlert>
 
 <Example centered>

@@ -49,6 +49,7 @@ To support date text entry, provide a custom `input` element as the default slot
 - `inputEvents`: These events include handlers for events that manage debounce, value updates and showing/hiding the popover (as specified via the `popover` prop).
 
 <BaseAlert title="Popover events" info>
+
 To exclude popover events from `inputEvents`, assign a falsy value to the `popover` prop.
 </BaseAlert>
 
@@ -334,5 +335,6 @@ const date = ref(new Date());
 ```
 
 <BaseAlert>
-See the [date picker examples](/examples/datepickers.html) for more guidance on using these slot variables.
+
+See the [date picker examples](/examples/date-picker-popovers) for more guidance on using these slot variables.
 </BaseAlert>

@@ -160,7 +160,9 @@ const disabledDates = ref([{ start: new Date(2022, 10, 7), end: null }]);
 ```
 
 <BaseAlert warning>
+
 Note how `disabled-dates` do not also disable navigation. Use the `min-date` or `max-date` props to disable dates and navigation.
+
 </BaseAlert>
 
 ## Repeating dates

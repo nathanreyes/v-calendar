@@ -65,8 +65,3 @@ const date = ref(new Date());
 const timeAccuracy = ref(3);
 </script>
 ```
-
-## Custom Slot
-
-<BaseAlert title="Coming soon..." success>
-</BaseAlert>

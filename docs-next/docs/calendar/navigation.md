@@ -71,7 +71,7 @@ If `min-date` or `max-date` props are assigned, this will disable navigation for
 ## Key Commands
 
 <BaseAlert warning>
-  A calendar day must be in focus in order for key commands to be recognized
+  A calendar day must be in focus in order for key commands to be recognized.
 </BaseAlert>
 
 Both `Calendar` and `DatePicker` now support the following key commands for navigation:
@@ -175,6 +175,7 @@ await calendar.value.move(`1983-01-21`)
 ```
 
 <BaseAlert warning>
+
   Calling `move(date)` will move to the month associated with that date. It will not focus on the date after the transition has occurred. To focus on the date, call `focusDate(date)` instead.
 </BaseAlert>
 

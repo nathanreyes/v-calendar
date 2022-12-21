@@ -9,6 +9,7 @@ VCalendar supports a variety of dark mode strategies to ensure compatibility wit
 First, you can pass a boolean value for `isDark` to set the dark mode manually.
 
 <BaseAlert info>
+
 By default, `is-dark` is `false`, so if left unassigned, the calendar will always display in light mode.
 </BaseAlert>
 

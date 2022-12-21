@@ -40,6 +40,7 @@ const date = ref(new Date());
 To allow user selection of date and time components, use `mode: 'dateTime'`. A time picker now appears below the calendar.
 
 <BaseAlert info>
+
   Time components are set using the current timezone setting set by the `timezone` prop. By default, this value is `undefined`, which specifies the local timezone.
 </BaseAlert>
 
@@ -156,6 +157,7 @@ const dateNum = ref(0);
 To bind to a date range with `start` and `end` dates, set the `range` modifier.
 
 <BaseAlert title="Deprecation warning" warning>
+
 The `is-range` prop will continue to be supported, but may be deprecated in a future release.
 </BaseAlert>
 
