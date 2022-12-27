@@ -1,7 +1,7 @@
 import { Placement } from '@popperjs/core';
-import { DateRange, DateRangeSource, DateRangeOptions } from './date/range';
+import { DateRange, DateRangeSource } from './date/range';
 import { arrayHasItems, createGuid } from './helpers';
-import { getDateParts, addDays } from './date/helpers';
+import { addDays } from './date/helpers';
 import { PopoverVisibility } from './popovers';
 import { Theme } from '../use/theme';
 import Locale from './locale';
@@ -59,8 +59,8 @@ export class Attribute {
   hasRanges = false;
   order = 0;
   pinPage = false;
-  dateOpts: Partial<DateRangeOptions>;
   maxRepeatSpan = 0;
+  locale: Locale;
 
   constructor(config: Partial<AttributeConfig>, theme: Theme, locale: Locale) {
     const { order, dates } = Object.assign(
@@ -69,11 +69,11 @@ export class Attribute {
       config,
     );
     if (!this.key) this.key = createGuid();
-    this.dateOpts = { order, firstDayOfWeek: locale.firstDayOfWeek };
+    this.locale = locale;
     // Normalize attribute
     theme.normalizeGlyphs(this);
     // Assign dates
-    this.ranges = locale.getDateRanges(dates ?? [], this.dateOpts);
+    this.ranges = locale.ranges(dates ?? []);
     this.hasRanges = !!arrayHasItems(this.ranges);
     this.maxRepeatSpan = this.ranges
       .filter(r => r.hasRepeat)
@@ -91,20 +91,15 @@ export class Attribute {
     }
     const repeatRanges = this.ranges.filter(r => r.hasRepeat);
     if (!repeatRanges.length) return false;
-    const { timezone, firstDayOfWeek } = repeatRanges[0];
     let day = start;
     if (this.maxRepeatSpan > 1) {
-      day = getDateParts(
-        addDays(day.date, -this.maxRepeatSpan),
-        firstDayOfWeek,
-        timezone,
-      );
+      day = this.locale.getDateParts(addDays(day.date, -this.maxRepeatSpan));
     }
     while (day.dayIndex <= end.dayIndex) {
       for (const range of repeatRanges) {
         if (range.startsOnDay(day)) return true;
       }
-      day = getDateParts(addDays(day.date, 1), firstDayOfWeek, timezone);
+      day = this.locale.getDateParts(addDays(day.date, 1));
     }
     return false;
   }

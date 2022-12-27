@@ -1,11 +1,11 @@
-export default class Cache<P, T> {
+export default class Cache<T> {
   keys: string[] = [];
   store: Record<string, T> = {};
 
   constructor(
     public size: number,
-    private createKey: (params: P) => string,
-    private createItem: (params: P) => T,
+    private createKey: (...args: any[]) => string,
+    private createItem: (...args: any[]) => T,
   ) {}
 
   get(params: P) {
@@ -13,10 +13,10 @@ export default class Cache<P, T> {
     return this.store[key];
   }
 
-  getOrSet(params: P): T {
-    const key = this.createKey(params);
+  getOrSet(...args: any[]): T {
+    const key = this.createKey(...args);
     if (this.store[key]) return this.store[key];
-    const item = this.createItem(params);
+    const item = this.createItem(...args);
     if (this.keys.length >= this.size) {
       const removeKey = this.keys.shift();
       if (removeKey != null) {

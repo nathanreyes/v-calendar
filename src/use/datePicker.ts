@@ -377,7 +377,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
 
   function valueIsDisabled(value: any) {
     if (!hasValue(value) || !disabledAttribute.value) return false;
-    return disabledAttribute.value.intersectsRange(DateRange.from(value));
+    return disabledAttribute.value.intersectsRange(locale.value.range(value));
   }
 
   function normalizeValue(
@@ -525,6 +525,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
         config,
       );
       if (isRange.value) {
+        // @ts-ignore
         inputValues.value = [value && value.start, value && value.end];
       } else {
         inputValues.value = [value as string, ''];
@@ -627,7 +628,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     if (isRange.value) {
       const dragging = !isDragging.value;
       if (dragging) {
-        dragTrackingValue = { ...day.range };
+        dragTrackingValue = { start: day.startDate, end: day.endDate };
       } else if (dragTrackingValue != null) {
         dragTrackingValue.end = day.date;
       }

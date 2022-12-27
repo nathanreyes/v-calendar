@@ -38,7 +38,6 @@ import {
   CalendarDay,
   CalendarWeek,
   TitlePosition,
-  createPageCache,
   pageRangeToArray,
   pageIsValid,
   pageIsEqualToPage,
@@ -197,8 +196,6 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const isMonthly = computed(() => state.view === 'monthly');
   const isWeekly = computed(() => state.view === 'weekly');
   const isDaily = computed(() => state.view === 'daily');
-
-  const pageCache = computed(() => createPageCache(3, locale.value));
 
   // #endregion Computed
 
@@ -387,7 +384,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         const columnFromEnd = props.columns - column + 1;
         const weeknumberPosition = getWeeknumberPosition(column, columnFromEnd);
         pages.push(
-          pageCache.value.getPage({
+          locale.value.getPage({
             ...newPage,
             view: state.view,
             titlePosition: props.titlePosition,

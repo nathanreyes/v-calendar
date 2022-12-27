@@ -3,12 +3,11 @@ import { arrayHasItems } from '../utils/helpers';
 import {
   SimpleDateParts,
   DateParts,
-  DatePatch,
   getDatePartsOptions,
   isDateParts,
 } from '../utils/date/helpers';
 import { useBase } from '../use/base';
-import { ValueTarget, useDatePicker } from '../use/datePicker';
+import { useDatePicker } from '../use/datePicker';
 
 const _amOptions = [
   { value: 0, label: '12' },

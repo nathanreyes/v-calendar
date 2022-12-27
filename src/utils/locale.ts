@@ -1,35 +1,58 @@
-import { CalendarDay } from './page';
+import {
+  PageConfig,
+  CachedPage,
+  CalendarDay,
+  getPageKey,
+  getCachedPage,
+  getPage,
+} from './page';
 import {
   DateSource,
   DateOptions,
-  SimpleDateParts,
+  DatePatchKeys,
   DayOfWeek,
+  MonthParts,
+  MonthInYear,
+  SimpleDateParts,
   TimeNames,
+  applyRulesForDateParts,
   daysInWeek,
+  formatDate,
+  parseDate,
   getDateParts,
   getDateFromParts,
   getDayNames,
   getMonthNames,
   getMonthParts,
-  getThisMonthParts,
-  getPrevMonthParts,
-  getNextMonthParts,
-  formatDate,
-  parseDate,
-  toDate,
-  fromDate,
+  getMonthPartsKey,
   getHourDates,
   getRelativeTimeNames,
+  isDateParts,
 } from './date/helpers';
-import { DateRange, DateRangeSource, DateRangeOptions } from './date/range';
+import Cache from './cache';
+import { DateRange, DateRangeSource } from './date/range';
 import { defaultLocales } from './defaults';
-import { isString, isObject, has, clamp, defaultsDeep } from './helpers';
+import {
+  isString,
+  isNumber,
+  isDate,
+  isObject,
+  has,
+  pick,
+  clamp,
+  defaultsDeep,
+} from './helpers';
 
 export interface LocaleConfig {
   id: string;
   firstDayOfWeek: DayOfWeek;
   masks: any;
+  monthCacheSize: number;
+  pageCacheSize: number;
 }
+
+const DEFAULT_MONTH_CACHE_SIZE = 12;
+const DEFAULT_PAGE_CACHE_SIZE = 5;
 
 export function resolveConfig(
   config: string | Partial<LocaleConfig> | undefined,
@@ -49,7 +72,13 @@ export function resolveConfig(
   const validKey = (k: string) => localeKeys.find(lk => lk.toLowerCase() === k);
   id = validKey(id) || validKey(id.substring(0, 2)) || detLocale;
   // Add fallback and spread default locale to prevent repetitive update loops
-  const defLocale = { ...locales['en-IE'], ...locales[id], id };
+  const defLocale: LocaleConfig = {
+    ...locales['en-IE'],
+    ...locales[id],
+    id,
+    monthCacheSize: DEFAULT_MONTH_CACHE_SIZE,
+    pageCacheSize: DEFAULT_PAGE_CACHE_SIZE,
+  };
   // Assign or merge defaults with provided config
   const result: LocaleConfig = isObject(config)
     ? defaultsDeep(config, defLocale)
@@ -73,17 +102,21 @@ export default class Locale {
   monthNamesShort: string[];
   relativeTimeNames: TimeNames;
   amPm: [string, string] = ['am', 'pm'];
-  monthCache: any;
-  pageCache: any;
+  monthCache: Cache<MonthParts>;
+  pageCache: Cache<CachedPage>;
 
   constructor(
     config: Partial<LocaleConfig> | string | undefined = undefined,
     timezone?: string,
   ) {
-    const { id, firstDayOfWeek, masks } = resolveConfig(
-      config,
-      defaultLocales.value,
+    const { id, firstDayOfWeek, masks, monthCacheSize, pageCacheSize } =
+      resolveConfig(config, defaultLocales.value);
+    this.monthCache = new Cache(
+      monthCacheSize,
+      getMonthPartsKey,
+      getMonthParts,
     );
+    this.pageCache = new Cache(pageCacheSize, getPageKey, getCachedPage);
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek) as DayOfWeek;
@@ -97,54 +130,76 @@ export default class Locale {
     this.monthNames = getMonthNames('long', this.id);
     this.monthNamesShort = getMonthNames('short', this.id);
     this.relativeTimeNames = getRelativeTimeNames(this.id);
-    this.monthCache = {};
-    this.pageCache = {};
   }
 
-  formatDate(date: DateSource, masks: string | string[]) {
-    return formatDate(date, masks, {
-      locale: this,
-      timezone: this.timezone,
-    });
+  formatDate(date: Date, masks: string | string[]) {
+    return formatDate(date, masks, this);
   }
 
   parseDate(dateString: string, mask: string | string[]) {
-    return parseDate(dateString, mask, {
-      locale: this,
-      timezone: this.timezone,
-    });
+    return parseDate(dateString, mask, this);
   }
 
   toDate(
-    d: Partial<SimpleDateParts> | DateSource,
-    options: Partial<DateOptions> = {},
-  ) {
-    return toDate(d, {
-      ...options,
-      locale: this,
-      timezone: this.timezone,
-    });
+    d: DateSource | Partial<SimpleDateParts>,
+    config: Partial<DateOptions> = {},
+  ): Date {
+    const nullDate = new Date(NaN);
+    let result = nullDate;
+    const { fillDate, mask, patch, rules } = config;
+    if (isNumber(d)) {
+      config.type = 'number';
+      result = new Date(+d);
+    } else if (isString(d)) {
+      config.type = 'string';
+      result = d ? parseDate(d, mask || 'iso', this) : nullDate;
+    } else if (isDate(d)) {
+      config.type = 'date';
+      result = new Date(d.getTime());
+    } else if (isDateParts(d)) {
+      config.type = 'object';
+      result = this.getDateFromParts(d);
+    }
+    // Patch parts or apply rules if needed
+    if (result && (patch || rules)) {
+      let parts = this.getDateParts(result);
+      // Patch date parts
+      if (patch && fillDate != null) {
+        const fillParts = this.getDateParts(this.toDate(fillDate));
+        parts = { ...fillParts, ...pick(parts, DatePatchKeys[patch]) };
+      }
+      // Apply date part rules
+      if (rules) {
+        applyRulesForDateParts(parts, rules);
+      }
+      result = this.getDateFromParts(parts);
+    }
+    return result || nullDate;
   }
 
-  fromDate(date: Date, options: Partial<DateOptions> = {}) {
-    return fromDate(date, {
-      ...options,
-      locale: this,
-      timezone: this.timezone,
-    });
+  fromDate(date: Date, { type, mask }: Partial<DateOptions> = {}) {
+    switch (type) {
+      case 'number':
+        return date ? date.getTime() : NaN;
+      case 'string':
+        return date ? this.formatDate(date, mask || 'iso') : '';
+      case 'object':
+        return date ? this.getDateParts(date) : null;
+      default:
+        return date ? new Date(date) : null;
+    }
   }
 
-  getDateRanges(
-    ranges: DateRangeSource | DateRangeSource[],
-    opts: Partial<DateRangeOptions> = {},
-  ) {
-    opts.firstDayOfWeek = this.firstDayOfWeek;
-    opts.timezone = this.timezone;
-    return DateRange.fromMany(ranges, opts);
+  range(source: DateRangeSource) {
+    return DateRange.from(source, this);
+  }
+
+  ranges(ranges: DateRangeSource | DateRangeSource[]) {
+    return DateRange.fromMany(ranges, this);
   }
 
   getDateParts(date: Date) {
-    return getDateParts(date, this.firstDayOfWeek, this.timezone);
+    return getDateParts(date, this);
   }
 
   getDateFromParts(parts: Partial<SimpleDateParts>) {
@@ -171,20 +226,32 @@ export default class Locale {
     });
   }
 
+  getPage(config: PageConfig) {
+    const cachedPage = this.pageCache.getOrSet(config, this);
+    return getPage(config, cachedPage);
+  }
+
   getMonthParts(month: number, year: number) {
-    return getMonthParts(month, year, this.firstDayOfWeek);
+    const { firstDayOfWeek } = this;
+    return this.monthCache.getOrSet(month, year, firstDayOfWeek);
   }
 
   getThisMonthParts() {
-    return getThisMonthParts(this.firstDayOfWeek);
+    const date = new Date();
+    return this.getMonthParts(
+      <MonthInYear>(date.getMonth() + 1),
+      date.getFullYear(),
+    );
   }
 
   getPrevMonthParts(month: number, year: number) {
-    return getPrevMonthParts(month, year, this.firstDayOfWeek);
+    if (month === 1) return this.getMonthParts(12, year - 1);
+    return this.getMonthParts(month - 1, year);
   }
 
   getNextMonthParts(month: number, year: number) {
-    return getNextMonthParts(month, year, this.firstDayOfWeek);
+    if (month === 12) return this.getMonthParts(1, year + 1);
+    return this.getMonthParts(month + 1, year);
   }
 
   getHourLabels() {

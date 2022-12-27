@@ -1,6 +1,5 @@
 import {
   pad,
-  pick,
   isNumber,
   isString,
   isDate,
@@ -18,10 +17,11 @@ import addWeeks from 'date-fns/addWeeks';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Locale, { LocaleConfig } from '../locale';
-import Cache from '../cache';
 
 export { addDays, addWeeks, addMonths, addYears };
 export { DateRepeat } from './repeat';
+
+// #region Types
 
 type DayNameLength = 'narrow' | 'short' | 'long';
 type MonthNameLength = 'short' | 'long';
@@ -99,6 +99,8 @@ export type StartOfWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type DateSource = Date | string | number;
 export type TimeNames = Partial<Record<Intl.RelativeTimeFormatUnit, string>>;
+
+// #endregion Types
 
 export function isDayInMonth(dayInMonth: unknown): dayInMonth is DayInMonth {
   if (!isNumber(dayInMonth)) return false;
@@ -183,8 +185,6 @@ export interface DateOptions {
   mask: string;
   patch: DatePatch;
   rules: DatePartsRules;
-  timezone: string;
-  locale: Locale | LocaleConfig | string;
 }
 
 export interface PageAddress {
@@ -253,7 +253,7 @@ export interface MonthParts {
 
 export type DatePatch = 'dateTime' | 'date' | 'time';
 
-const DatePatchKeys: Record<DatePatch, (keyof SimpleDateParts)[]> = {
+export const DatePatchKeys: Record<DatePatch, (keyof SimpleDateParts)[]> = {
   dateTime: [
     'year',
     'month',
@@ -651,107 +651,12 @@ export function getTimezoneOffset(
   return (date.getTime() - utcDate.getTime()) / 60000;
 }
 
-const _monthParts: Record<string, MonthParts> = {};
-
-interface MonthPartsConfig {
-  month: number;
-  year: number;
-  firstDayOfWeek: DayOfWeek;
-}
-
-export function createMonthPartsCache() {
-  const cache = new Cache(3, createKey, createItem);
-
-  function createKey({ month, year, firstDayOfWeek }: MonthPartsConfig) {
-    return `${year}-${month}-${firstDayOfWeek}`;
-  }
-
-  function createItem({ month, year, firstDayOfWeek }: MonthPartsConfig) {
-    const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    const firstDayOfMonth = new Date(year, month - 1, 1);
-    const firstWeekday = firstDayOfMonth.getDay() + 1;
-    const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
-    const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
-    const numWeeks = getWeeksInMonth(firstDayOfMonth, {
-      weekStartsOn,
-    });
-    const weeknumbers = [];
-    const isoWeeknumbers = [];
-    for (let i = 0; i < numWeeks; i++) {
-      const date = addDays(firstDayOfMonth, i * 7);
-      weeknumbers.push(getWeek(date, { weekStartsOn }));
-      isoWeeknumbers.push(getISOWeek(date));
-    }
-    return {
-      firstDayOfWeek,
-      firstDayOfMonth,
-      inLeapYear,
-      firstWeekday,
-      numDays,
-      numWeeks,
-      month,
-      year,
-      weeknumbers,
-      isoWeeknumbers,
-    };
-  }
-
-  function getMonthParts(config: MonthPartsConfig) {
-    return cache.getOrSet(config);
-  }
-
-  return {
-    getMonthParts,
-  };
-}
-
-export function getMonthParts(
-  month: number,
-  year: number,
-  firstDayOfWeek: DayOfWeek,
-): MonthParts {
-  function doGetMonthParts() {
-    const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    const firstDayOfMonth = new Date(year, month - 1, 1);
-    const firstWeekday = firstDayOfMonth.getDay() + 1;
-    const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
-    const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
-    const numWeeks = getWeeksInMonth(firstDayOfMonth, {
-      weekStartsOn,
-    });
-    const weeknumbers = [];
-    const isoWeeknumbers = [];
-    for (let i = 0; i < numWeeks; i++) {
-      const date = addDays(firstDayOfMonth, i * 7);
-      weeknumbers.push(getWeek(date, { weekStartsOn }));
-      isoWeeknumbers.push(getISOWeek(date));
-    }
-    return {
-      firstDayOfWeek,
-      firstDayOfMonth,
-      inLeapYear,
-      firstWeekday,
-      numDays,
-      numWeeks,
-      month,
-      year,
-      weeknumbers,
-      isoWeeknumbers,
-    };
-  }
-  const key = `${year}-${month}-${firstDayOfWeek}`;
-  _monthParts[key] ||= doGetMonthParts();
-  return _monthParts[key];
-}
-
-export function getDateParts(
-  date: Date,
-  firstDayOfWeek: DayOfWeek,
-  timezone = '',
-): DateParts {
+export function getDateParts(date: Date, locale: Locale): DateParts {
   let tzDate = new Date(date.getTime());
-  if (timezone) {
-    tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+  if (locale.timezone) {
+    tzDate = new Date(
+      date.toLocaleString('en-US', { timeZone: locale.timezone }),
+    );
     tzDate.setMilliseconds(date.getMilliseconds());
   }
   const milliseconds = tzDate.getMilliseconds();
@@ -765,7 +670,7 @@ export function getDateParts(
     hours * MS_PER_HOUR;
   const month = <MonthInYear>(tzDate.getMonth() + 1);
   const year = tzDate.getFullYear();
-  const monthParts = getMonthParts(month, year, firstDayOfWeek);
+  const monthParts = locale.getMonthParts(month, year);
   const day = <DayInMonth>tzDate.getDate();
   const dayFromEnd = monthParts.numDays - day + 1;
   const weekday = tzDate.getDay() + 1;
@@ -802,31 +707,46 @@ export function getDateParts(
   return parts;
 }
 
-export function getThisMonthParts(firstDayOfWeek: DayOfWeek) {
-  const date = new Date();
-  return getMonthParts(
-    <MonthInYear>(date.getMonth() + 1),
-    date.getFullYear(),
+export function getMonthPartsKey(
+  month: number,
+  year: number,
+  firstDayOfWeek: DayOfWeek,
+) {
+  return `${year}-${month}-${firstDayOfWeek}`;
+}
+
+export function getMonthParts(
+  month: number,
+  year: number,
+  firstDayOfWeek: DayOfWeek,
+) {
+  const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const firstDayOfMonth = new Date(year, month - 1, 1);
+  const firstWeekday = firstDayOfMonth.getDay() + 1;
+  const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+  const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
+  const numWeeks = getWeeksInMonth(firstDayOfMonth, {
+    weekStartsOn,
+  });
+  const weeknumbers = [];
+  const isoWeeknumbers = [];
+  for (let i = 0; i < numWeeks; i++) {
+    const date = addDays(firstDayOfMonth, i * 7);
+    weeknumbers.push(getWeek(date, { weekStartsOn }));
+    isoWeeknumbers.push(getISOWeek(date));
+  }
+  return {
     firstDayOfWeek,
-  );
-}
-
-export function getPrevMonthParts(
-  month: number,
-  year: number,
-  firstDayOfWeek: DayOfWeek,
-) {
-  if (month === 1) return getMonthParts(12, year - 1, firstDayOfWeek);
-  return getMonthParts(month - 1, year, firstDayOfWeek);
-}
-
-export function getNextMonthParts(
-  month: number,
-  year: number,
-  firstDayOfWeek: DayOfWeek,
-) {
-  if (month === 12) return getMonthParts(1, year + 1, firstDayOfWeek);
-  return getMonthParts(month + 1, year, firstDayOfWeek);
+    firstDayOfMonth,
+    inLeapYear,
+    firstWeekday,
+    numDays,
+    numWeeks,
+    month,
+    year,
+    weeknumbers,
+    isoWeeknumbers,
+  };
 }
 
 export function getWeekdayDates() {
@@ -986,13 +906,8 @@ export function applyRulesForDateParts(
 export function parseDate(
   dateString: string,
   mask: string | string[],
-  options: FormatParseOptions = {},
+  locale: Locale,
 ) {
-  const { timezone } = options;
-  const locale =
-    options.locale instanceof Locale
-      ? options.locale
-      : new Locale(options.locale, timezone);
   const masks = normalizeMasks(mask, locale);
   return (
     masks
@@ -1056,18 +971,15 @@ export function parseDate(
             ),
           );
         } else {
-          date = getDateFromParts(
-            {
-              year: dp.year || today.getFullYear(),
-              month: (dp.month || 0) + 1,
-              day: dp.day || 1,
-              hours: dp.hours || 0,
-              minutes: dp.minutes || 0,
-              seconds: dp.seconds || 0,
-              milliseconds: dp.milliseconds || 0,
-            },
-            timezone,
-          );
+          date = locale.getDateFromParts({
+            year: dp.year || today.getFullYear(),
+            month: (dp.month || 0) + 1,
+            day: dp.day || 1,
+            hours: dp.hours || 0,
+            minutes: dp.minutes || 0,
+            seconds: dp.seconds || 0,
+            milliseconds: dp.milliseconds || 0,
+          });
         }
         return date;
       })
@@ -1075,83 +987,22 @@ export function parseDate(
   );
 }
 
-export function toDate(
-  d: DateSource | Partial<SimpleDateParts>,
-  config: Partial<DateOptions> = {},
-): Date {
-  const nullDate = new Date(NaN);
-  let result = nullDate;
-  const { fillDate, locale, timezone, mask, patch, rules } = config;
-  if (isNumber(d)) {
-    config.type = 'number';
-    result = new Date(+d);
-  } else if (isString(d)) {
-    config.type = 'string';
-    result = d ? parseDate(d, mask || 'iso', { locale, timezone }) : nullDate;
-  } else if (isDate(d)) {
-    config.type = 'date';
-    result = new Date(d.getTime());
-  } else if (isDateParts(d)) {
-    config.type = 'object';
-    result = getDateFromParts(d, timezone);
-  }
-  // Patch parts or apply rules if needed
-  if (result && (patch || rules)) {
-    let parts = getDateParts(result, 1, timezone);
-    // Patch date parts
-    if (patch && fillDate != null) {
-      const fillParts = getDateParts(toDate(fillDate), 1, timezone);
-      parts = { ...fillParts, ...pick(parts, DatePatchKeys[patch]) };
-    }
-    // Apply date part rules
-    if (rules) {
-      applyRulesForDateParts(parts, rules);
-    }
-    result = getDateFromParts(parts, timezone);
-  }
-  return result || nullDate;
-}
-
-export function fromDate(
-  date: Date,
-  { type, mask, locale, timezone }: Partial<DateOptions> = {},
-) {
-  switch (type) {
-    case 'number':
-      return date ? date.getTime() : NaN;
-    case 'string':
-      return date ? formatDate(date, mask || 'iso', { locale, timezone }) : '';
-    case 'object':
-      return date ? getDateParts(date, 1, timezone) : null;
-    default:
-      return date ? new Date(date) : null;
-  }
-}
-
 export function formatDate(
-  date: DateSource,
+  date: Date,
   masks: string | string[],
-  options: FormatParseOptions = {},
+  locale: Locale,
 ) {
-  const { timezone } = options;
-  const locale =
-    options.locale instanceof Locale
-      ? options.locale
-      : new Locale(options.locale, timezone);
-  date = toDate(date, { locale, timezone })!;
   if (date == null) return '';
   let mask = normalizeMasks(masks, locale)[0];
+  // Convert timezone to utc if needed
+  if (/Z$/.test(mask)) locale.timezone = 'utc';
   const literals: string[] = [];
   // Make literals inactive by replacing them with ??
   mask = mask.replace(literal, ($0, $1: string) => {
     literals.push($1);
     return '??';
   });
-  const dateParts = getDateParts(
-    date,
-    locale.firstDayOfWeek,
-    /Z$/.test(mask) ? 'utc' : timezone,
-  );
+  const dateParts = locale.getDateParts(date);
   // Apply formatting rules
   mask = mask.replace(token, $0 =>
     $0 in formatFlags

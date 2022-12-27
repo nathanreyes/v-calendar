@@ -1,4 +1,5 @@
 import { isArray, isObject, isString, isFunction } from '../helpers';
+import Locale from '../locale';
 import {
   DayOfWeek,
   DayInMonth,
@@ -6,7 +7,6 @@ import {
   MonthInYear,
   DayParts,
   DateParts,
-  getDateParts,
 } from './helpers';
 import {
   Rule,
@@ -41,8 +41,7 @@ export interface DateRepeatConfig {
 export type DateRepeatFn = (dayParts: DayParts) => boolean;
 
 export interface DateRepeatOptions {
-  firstDayOfWeek: DayOfWeek;
-  timezone?: string;
+  locale: Locale;
 }
 
 export class DateRepeat implements Rule<GroupRuleType> {
@@ -53,50 +52,36 @@ export class DateRepeat implements Rule<GroupRuleType> {
   from: DateParts | undefined;
   until: DateParts | undefined;
   rules: Rule<RuleType>[] = [];
-  options: DateRepeatOptions = { firstDayOfWeek: 1 };
+  locale = new Locale();
 
   constructor(
     config: Partial<DateRepeatConfig> | DateRepeatFn,
-    options?: Partial<DateRepeatOptions>,
+    options: Partial<DateRepeatOptions> = {},
     private parent?: DateRepeat,
   ) {
+    if (options.locale) this.locale = options.locale;
+
     this.config = config;
-
-    // Assign local options
-    Object.assign(this.options, options);
-    const { firstDayOfWeek } = this.options;
-    if (!firstDayOfWeek || firstDayOfWeek < 1 || firstDayOfWeek > 7) {
-      throw Error('Start of week must be between 1 and 7.');
-    }
-
     if (isFunction(config)) {
       this.type = GroupRuleType.All;
       this.rules = [new FunctionRule(config)];
     } else if (isArray(config)) {
       this.type = GroupRuleType.Any;
-      this.rules = config.map(c => new DateRepeat(c, this.options, this));
+      this.rules = config.map(c => new DateRepeat(c, options, this));
     } else if (isObject(config)) {
       this.type = GroupRuleType.All;
       // Assign bounding dates
       this.from = config.from
-        ? getDateParts(config.from, this.firstDayOfWeek, this.timezone)
+        ? this.locale.getDateParts(config.from)
         : parent?.from;
       this.until = config.until
-        ? getDateParts(config.until, this.firstDayOfWeek, this.timezone)
+        ? this.locale.getDateParts(config.until)
         : parent?.until;
       this.rules = this.getObjectRules(config);
     } else {
       console.error('Rule group configuration must be an object or an array.');
       this.validated = false;
     }
-  }
-
-  get firstDayOfWeek() {
-    return this.options.firstDayOfWeek;
-  }
-
-  get timezone() {
-    return this.options.timezone;
   }
 
   getObjectRules(config: any) {
@@ -128,7 +113,9 @@ export class DateRepeat implements Rule<GroupRuleType> {
     // Add group rules
     if (config.on != null) {
       if (!isArray(config.on)) config.on = [config.on];
-      rules.push(new DateRepeat(config.on, this.options, this.parent));
+      rules.push(
+        new DateRepeat(config.on, { locale: this.locale }, this.parent),
+      );
     }
 
     return rules;

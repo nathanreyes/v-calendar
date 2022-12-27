@@ -6,7 +6,6 @@ import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
 import { DayOfWeek, addDays } from '../utils/date/helpers';
-import { DateRange } from '../utils/date/range';
 
 const contextKey = '__vc_base_context__';
 
@@ -82,9 +81,7 @@ export function createBase(props: BaseProps) {
         end: null,
       });
     }
-    return DateRange.fromMany(dates, {
-      firstDayOfWeek: locale.value.firstDayOfWeek,
-    });
+    return locale.value.ranges(dates);
   });
 
   const disabledAttribute = computed(() => {

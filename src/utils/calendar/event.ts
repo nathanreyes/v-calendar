@@ -71,12 +71,6 @@ export interface EventContext {
   locale: ComputedRef<Locale>;
 }
 
-function rangeFromConfig({ range, start, end }: Partial<EventConfig>) {
-  if (range != null) return range;
-  if (start && end) return DateRange.from({ start, end });
-  return null;
-}
-
 export type Event = ReturnType<typeof createEvent>;
 
 export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
@@ -112,14 +106,22 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
     }),
   );
 
+  function rangeFromConfig({ range, start, end }: Partial<EventConfig>) {
+    if (range != null) return range;
+    if (start && end) return ctx.locale.value.range({ start, end });
+    return null;
+  }
+
   function formatDate(date: Date, mask: string) {
-    return ctx.locale.value.formatDate(date, mask);
+    return locale.value.formatDate(date, mask);
   }
 
   function formatTime(date: Date) {
     if (!date) return '';
     return formatDate(date, 'h:mma');
   }
+
+  const locale = computed(() => ctx.locale.value);
 
   const refSelector = computed(() => `[data-cell-id="${state.key}"]`);
   const minDurationMs = computed(
@@ -198,7 +200,7 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
         end = new Date(resizeOrigin.end.getTime() + msToAdd);
       }
     }
-    state.range = DateRange.from({ start, end });
+    state.range = locale.value.range({ start, end });
     resizeToConstraints();
   }
 
@@ -266,7 +268,7 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
       start = roundDate(start.getTime() + msToAdd, snapMs.value);
     }
     end = new Date(start.getTime() + durationMs);
-    state.range = DateRange.from({ start, end });
+    state.range = locale.value.range({ start, end });
   }
 
   function stopDrag() {
@@ -290,7 +292,7 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
     if (maxDurationMs.value > 0 && endTime - startTime > maxDurationMs.value) {
       endTime = startTime + maxDurationMs.value;
     }
-    state.range = DateRange.from({
+    state.range = locale.value.range({
       start: new Date(startTime),
       end: new Date(endTime),
     });

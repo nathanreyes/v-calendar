@@ -1,13 +1,7 @@
 import { DateRepeat, DateRepeatConfig } from './repeat';
-import {
-  DateParts,
-  DayParts,
-  DayOfWeek,
-  getDateParts,
-  addDays,
-  MS_PER_DAY,
-} from './helpers';
+import { DateParts, DayParts, addDays, MS_PER_DAY } from './helpers';
 import { isDate, isArray } from '../helpers';
+import Locale from '../locale';
 
 type DateRangeDate = Date | null;
 
@@ -15,6 +9,7 @@ interface DateRangeConfig {
   start: DateRangeDate;
   end: DateRangeDate;
   span: number;
+  order: number;
   repeat: Partial<DateRepeatConfig>;
 }
 
@@ -24,12 +19,6 @@ export type DateRangeSource =
   | [DateRangeDate, DateRangeDate]
   | Partial<DateRangeConfig>;
 
-export interface DateRangeOptions {
-  order: number;
-  firstDayOfWeek: DayOfWeek;
-  timezone: string;
-}
-
 export interface SimpleDateRange {
   start: Date;
   end: Date;
@@ -37,23 +26,19 @@ export interface SimpleDateRange {
 
 export class DateRange {
   order: number;
-  firstDayOfWeek: DayOfWeek;
-  timezone: string | undefined = undefined;
+  locale: Locale;
   start: DateParts | null = null;
   end: DateParts | null = null;
   repeat: DateRepeat | null = null;
 
-  static fromMany(
-    ranges: DateRangeSource | DateRangeSource[],
-    opts: Partial<DateRangeOptions> = {},
-  ) {
+  static fromMany(ranges: DateRangeSource | DateRangeSource[], locale: Locale) {
     // Assign dates
     return (isArray(ranges) ? ranges : [ranges])
       .filter(d => d)
-      .map(d => DateRange.from(d, opts));
+      .map(d => DateRange.from(d, locale));
   }
 
-  static from(source: DateRangeSource, opts: Partial<DateRangeOptions> = {}) {
+  static from(source: DateRangeSource, locale: Locale) {
     if (source instanceof DateRange) return source;
     const config: Partial<DateRangeConfig> = {
       start: null,
@@ -68,36 +53,24 @@ export class DateRange {
     } else if (source != null) {
       Object.assign(config, source);
     }
-    return new DateRange(config, opts);
+    return new DateRange(config, locale);
   }
 
-  private constructor(
-    config: Partial<DateRangeConfig>,
-    {
-      order = 0,
-      firstDayOfWeek = 1,
-      timezone = undefined,
-    }: Partial<DateRangeOptions>,
-  ) {
-    this.order = order;
-    this.firstDayOfWeek = firstDayOfWeek;
-    this.timezone = timezone;
-
-    const { start, end, span, repeat } = config;
+  private constructor(config: Partial<DateRangeConfig>, locale = new Locale()) {
+    this.locale = locale;
+    const { start, end, span, order, repeat } = config;
 
     if (isDate(start)) {
-      this.start = getDateParts(start, this.firstDayOfWeek, this.timezone);
+      this.start = locale.getDateParts(start);
     }
 
     if (isDate(end)) {
-      this.end = getDateParts(end, this.firstDayOfWeek, this.timezone);
+      this.end = locale.getDateParts(end);
     } else if (this.start != null && span) {
-      this.end = getDateParts(
-        addDays(this.start.date, span - 1),
-        this.firstDayOfWeek,
-        this.timezone,
-      );
+      this.end = locale.getDateParts(addDays(this.start.date, span - 1));
     }
+
+    this.order = order ?? 0;
 
     if (repeat) {
       this.repeat = new DateRepeat(
@@ -106,20 +79,15 @@ export class DateRange {
           ...repeat,
         },
         {
-          firstDayOfWeek: this.firstDayOfWeek,
-          timezone: this.timezone,
+          locale: this.locale,
         },
       );
     }
   }
 
-  from(date: DateRangeSource) {
-    return DateRange.from(date, this.opts);
-  }
-
   get opts() {
-    const { order, firstDayOfWeek, timezone } = this;
-    return { order, firstDayOfWeek, timezone };
+    const { order, locale } = this;
+    return { order, locale };
   }
 
   get hasRepeat() {
