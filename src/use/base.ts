@@ -1,6 +1,7 @@
 import { PropType, ExtractPropTypes, computed, provide, inject } from 'vue';
 import { DarkModeClassConfig } from 'vue-screen-utils';
-import { useTheme } from './theme';
+import { useDarkMode } from 'vue-screen-utils';
+import { Theme } from './theme';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
@@ -44,7 +45,8 @@ export function createBase(props: BaseProps) {
 
   const color = computed(() => props.color ?? '');
   const isDark = computed(() => props.isDark ?? false);
-  const theme = useTheme(color, isDark);
+  const { displayMode } = useDarkMode(isDark);
+  const theme = computed(() => new Theme(color.value));
 
   const locale = computed(() => {
     // Return the locale prop if it is an instance of the Locale class
@@ -91,7 +93,7 @@ export function createBase(props: BaseProps) {
         dates: disabledDates.value,
         order: 100,
       },
-      theme,
+      theme.value,
       locale.value,
     );
   });
@@ -99,6 +101,9 @@ export function createBase(props: BaseProps) {
   // #endregion Computed
 
   const context = {
+    color,
+    isDark,
+    displayMode,
     theme,
     locale,
     masks,

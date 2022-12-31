@@ -1,11 +1,7 @@
 <template>
   <Popover
     :id="navPopoverId"
-    :class="[
-      'vc-nav-popover-container',
-      `vc-${theme.color}`,
-      `vc-${theme.displayMode}`,
-    ]"
+    :class="['vc-nav-popover-container', `vc-${color}`, `vc-${displayMode}`]"
     ref="navPopoverRef"
   >
     <template #default="{ data }">
@@ -19,5 +15,5 @@ import Popover from '../Popover/Popover.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
 import { useCalendar } from '../../use/calendar';
 
-const { navPopoverId, theme, navPopoverRef, move } = useCalendar();
+const { navPopoverId, color, displayMode, navPopoverRef, move } = useCalendar();
 </script>

@@ -1,6 +1,4 @@
-import { reactive, Ref } from 'vue';
 import { Attribute } from '../utils/attribute';
-import { DarkModeConfig, useDarkMode } from 'vue-screen-utils';
 import { DateRangeCell } from '@/utils/date/range';
 import {
   GlyphRenderer,
@@ -22,20 +20,21 @@ export interface Glyphs {
   content: Content[];
 }
 
-export type Theme = ReturnType<typeof useTheme>;
-
-export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
-  const { displayMode } = useDarkMode(isDark);
-
-  const renderers: GlyphRenderer<Glyph>[] = [
+export class Theme {
+  color: string;
+  renderers: GlyphRenderer<Glyph>[] = [
     new ContentRenderer(),
     new HighlightRenderer(),
     new DotRenderer(),
     new BarRenderer(),
   ];
 
-  function normalizeGlyphs(attr: Attribute) {
-    renderers.forEach(renderer => {
+  constructor(color: string) {
+    this.color = color;
+  }
+
+  normalizeGlyphs(attr: Attribute) {
+    this.renderers.forEach(renderer => {
       const type = renderer.type as keyof Attribute;
       if (attr[type] != null) {
         // @ts-ignore
@@ -44,24 +43,16 @@ export function useTheme(color: Ref<string>, isDark: Ref<DarkModeConfig>) {
     });
   }
 
-  function prepareRender(glyphs: Partial<Glyphs> = {}) {
-    renderers.forEach(renderer => {
+  prepareRender(glyphs: Partial<Glyphs> = {}) {
+    this.renderers.forEach(renderer => {
       renderer.prepareRender(glyphs);
     });
     return glyphs;
   }
 
-  function render(cell: DateRangeCell<Attribute>, glyphs: Partial<Glyphs>) {
-    renderers.forEach(renderer => {
+  render(cell: DateRangeCell<Attribute>, glyphs: Partial<Glyphs>) {
+    this.renderers.forEach(renderer => {
       renderer.render(cell, glyphs);
     });
   }
-
-  return reactive({
-    color,
-    displayMode,
-    normalizeGlyphs,
-    prepareRender,
-    render,
-  });
 }

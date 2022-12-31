@@ -19,7 +19,8 @@ export default {
     const {
       isTime,
       isDateTime,
-      theme,
+      color,
+      displayMode,
       dateParts,
       datePickerPopoverId,
       attributes,
@@ -71,7 +72,7 @@ export default {
         return h(
           'div',
           {
-            class: `vc-container vc-bordered vc${theme.color} vc-${theme.displayMode}`,
+            class: `vc-container vc-bordered vc${color} vc-${displayMode}`,
           },
           [timePicker()],
         );
@@ -95,7 +96,7 @@ export default {
         {
           id: datePickerPopoverId.value,
           placement: 'bottom-start',
-          class: `vc-date-picker-content vc-${theme.color} vc-${theme.displayMode}`,
+          class: `vc-date-picker-content vc-${color} vc-${displayMode}`,
           ref: popoverRef,
           'onBefore-show': onPopoverBeforeShow,
           'onAfter-show': onPopoverAfterShow,

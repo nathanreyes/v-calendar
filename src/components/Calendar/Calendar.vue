@@ -6,8 +6,8 @@
       'vc-container',
       `vc-${view}`,
       'vc-bordered',
-      `vc-${theme.color}`,
-      `vc-${theme.displayMode}`,
+      `vc-${color}`,
+      `vc-${displayMode}`,
       {
         'vc-expanded': isExpanded,
       },
@@ -73,7 +73,8 @@ defineExpose(calendar);
 const {
   containerRef,
   view,
-  theme,
+  color,
+  displayMode,
   inTransition,
   firstPage,
   pages,

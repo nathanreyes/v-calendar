@@ -1,7 +1,7 @@
 <template>
   <Popover
     :id="popoverId"
-    :class="[`vc-${theme.color}`, `vc-${theme.displayMode}`]"
+    :class="[`vc-${color}`, `vc-${displayMode}`]"
     @after-hide="onAfterHide"
     ref="popoverRef"
   >
@@ -38,7 +38,7 @@ export default defineComponent({
     const state: State = reactive({
       event: null,
     });
-    const { theme } = useCalendar();
+    const { displayMode, color } = useCalendar();
 
     const popoverOptions = computed(
       () =>
@@ -74,7 +74,8 @@ export default defineComponent({
     return {
       popoverRef,
       ...toRefs(state),
-      theme,
+      displayMode,
+      color,
       show,
       update,
       hide,

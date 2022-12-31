@@ -2,7 +2,7 @@
   <div
     v-if="weeks.length"
     class="vc-grid-container"
-    :class="[`vc-${theme.color}`, `vc-${theme.displayMode}`, `vc-${view}`]"
+    :class="[`vc-${color}`, `vc-${displayMode}`, `vc-${view}`]"
     ref="containerRef"
     @keydown="onKeydown"
   >
@@ -227,7 +227,8 @@ const {
   cellPopoverRef,
   dailyGridRef,
   weeklyGridRef,
-  theme,
+  color,
+  displayMode,
   locale,
   isDaily,
   isMonthly,
