@@ -63,7 +63,7 @@ export class Attribute {
   locale: Locale;
 
   constructor(config: Partial<AttributeConfig>, theme: Theme, locale: Locale) {
-    const { order, dates } = Object.assign(
+    const { dates } = Object.assign(
       this,
       { hashcode: '', order: 0, pinPage: false },
       config,

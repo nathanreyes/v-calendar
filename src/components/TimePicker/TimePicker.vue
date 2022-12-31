@@ -4,7 +4,7 @@
     :class="[{ 'vc-invalid': !isValid, 'vc-bordered': showBorder }]"
   >
     <slot name="time-header">
-      <div v-if="showHeader" class="vc-time-header">
+      <div v-if="showHeader && date" class="vc-time-header">
         <span class="vc-time-weekday">
           {{ locale.formatDate(date, 'WWW') }}
         </span>

@@ -1,4 +1,5 @@
 import {
+  ExtractPropTypes,
   PropType,
   ref,
   computed,
@@ -14,9 +15,7 @@ import { head, last, pad } from '../utils/helpers';
 
 export type CalendarNavContext = ReturnType<typeof createCalendarNav>;
 
-export interface CalendarNavProps {
-  value: Page;
-}
+export type CalendarNavProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 export const propsDef = {
   value: { type: Object as PropType<Page>, required: true },

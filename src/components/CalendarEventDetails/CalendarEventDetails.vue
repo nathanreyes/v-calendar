@@ -3,7 +3,7 @@
     <template v-if="single">
       <div class="vc-field">
         <div class="vc-label">Title</div>
-        <input v-model="single.label" type="text" class="vc-input" />
+        <input v-model="single.summary" type="text" class="vc-input" />
       </div>
       <div class="vc-field">
         <div class="vc-label">Start</div>
@@ -24,11 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, PropType } from 'vue';
+import { Event } from '../../utils/calendar/event';
 import DatePicker from '../DatePicker/DatePicker.vue';
 
 const props = defineProps({
-  events: { type: Array, required: true },
+  events: { type: Array as PropType<Event[]>, required: true },
 });
 
 const single = computed(() => {

@@ -26,7 +26,7 @@ import {
   DatePartsRules,
   datesAreEqual,
 } from '../utils/date/helpers';
-import { SimpleDateRange, DateRange } from '../utils/date/range';
+import { SimpleDateRange } from '../utils/date/range';
 import {
   PopoverOptions,
   showPopover as sp,

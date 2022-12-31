@@ -16,12 +16,12 @@
 
 <script lang="ts">
 import { PropType, defineComponent, computed } from 'vue';
-import { DayAttribute } from '../../utils/attribute';
+import { Attribute } from '../../utils/attribute';
 
 export default defineComponent({
   name: 'PopoverRow',
   props: {
-    attribute: { type: Object as PropType<DayAttribute>, required: true },
+    attribute: { type: Object as PropType<Attribute>, required: true },
   },
   setup(props) {
     const indicator = computed(() => {
