@@ -253,7 +253,7 @@ export function createCalendarGrid(
   const { view, isDaily, isMonthly, pages, locale, move, onDayFocusin } =
     calendar;
 
-  const page = computed<Page>(() => pages.value[0]);
+  const page = computed(() => pages.value[0]);
   const days = computed(() => page.value.viewDays);
   const weeks = computed(() => page.value.viewWeeks);
   const dayColumns = computed(() => {

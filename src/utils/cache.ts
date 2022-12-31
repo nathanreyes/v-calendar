@@ -4,12 +4,12 @@ export default class Cache<T> {
 
   constructor(
     public size: number,
-    private createKey: (...args: any[]) => string,
-    private createItem: (...args: any[]) => T,
+    public createKey: (...args: any[]) => string,
+    public createItem: (...args: any[]) => T,
   ) {}
 
-  get(params: P) {
-    const key = this.createKey(params);
+  get(...args: any[]) {
+    const key = this.createKey(...args);
     return this.store[key];
   }
 

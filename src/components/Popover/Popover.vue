@@ -86,7 +86,7 @@ export default defineComponent({
     let resizeObserver: ResizeObserver | null = null;
     let popper: Instance | null = null;
 
-    const state = reactive<PopoverState>({
+    const state: PopoverState = reactive({
       isVisible: false,
       target: null,
       data: null,

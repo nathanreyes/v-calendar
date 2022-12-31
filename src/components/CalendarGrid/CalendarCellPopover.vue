@@ -35,15 +35,18 @@ export default defineComponent({
   },
   setup(props) {
     const popoverRef = ref(null);
-    const state = reactive<State>({
+    const state: State = reactive({
       event: null,
     });
     const { theme } = useCalendar();
 
-    const popoverOptions = computed<Partial<PopoverOptions>>(() => ({
-      id: props.popoverId,
-      placement: 'right',
-    }));
+    const popoverOptions = computed(
+      () =>
+        ({
+          id: props.popoverId,
+          placement: 'right',
+        } as Partial<PopoverOptions>),
+    );
 
     function show(event: Event) {
       state.event = event;

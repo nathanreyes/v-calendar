@@ -6,7 +6,7 @@ import { CalendarDay } from '../page';
 import { PopoverOptions } from '../popovers';
 import { MS_PER_MINUTE, roundDate } from '../date/helpers';
 import { DateRange } from '../date/range';
-import { clamp, defaults } from '../helpers';
+import { clamp, omit } from '../helpers';
 
 interface ResizeOrigin {
   start: Date;
@@ -33,8 +33,8 @@ export interface EventConfig {
   description: string;
   start: Date;
   end: Date;
-  allDay: boolean;
   range: DateRange;
+  allDay: boolean;
   color: string;
   selected: boolean;
 }
@@ -81,35 +81,36 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
     throw new Error('Start and end dates required for events');
   }
 
-  const state = reactive<EventState>(
-    defaults({}, config, {
-      key: config.key,
-      range,
-      allDay: false,
-      summary: 'New Event',
-      description: '',
-      color: 'indigo',
-      fill: 'light',
-      selected: false,
-      draggable: true,
-      dragging: false,
-      resizable: true,
-      resizing: false,
-      editing: false,
-      order: 0,
-      minDurationMinutes: 15,
-      maxDurationMinutes: 0,
-      snapMinutes: 15,
-      popover: null,
-      resizeOrigin: null,
-      dragOrigin: null,
-    }),
-  );
+  const state: EventState = reactive({
+    key: config.key,
+    range,
+    allDay: false,
+    summary: 'New Event',
+    description: '',
+    color: 'indigo',
+    fill: 'light',
+    selected: false,
+    draggable: true,
+    dragging: false,
+    resizable: true,
+    resizing: false,
+    editing: false,
+    order: 0,
+    minDurationMinutes: 15,
+    maxDurationMinutes: 0,
+    snapMinutes: 15,
+    popover: null,
+    resizeOrigin: null,
+    dragOrigin: null,
+    ...omit(config, 'range', 'start', 'end'),
+  });
 
   function rangeFromConfig({ range, start, end }: Partial<EventConfig>) {
     if (range != null) return range;
-    if (start && end) return ctx.locale.value.range({ start, end });
-    return null;
+    if (!start || !end) {
+      throw new Error('Start and end dates required for events');
+    }
+    return ctx.locale.value.range({ start, end });
   }
 
   function formatDate(date: Date, mask: string) {

@@ -39,7 +39,7 @@ const height = computed(() => {
   );
 });
 
-const size = computed<string>(() => {
+const size = computed(() => {
   if (height.value <= 16) return '2xs';
   if (height.value <= 30) return 'xs';
   if (height.value <= 48) return 'sm';

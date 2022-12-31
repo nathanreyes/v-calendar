@@ -112,7 +112,7 @@ export default defineComponent({
       popovers.splice(0, 0, resolvedPopover);
     }
 
-    const glyphs = computed<any>(() => {
+    const glyphs = computed(() => {
       const result = {
         ...theme.prepareRender({}),
         popovers: [],

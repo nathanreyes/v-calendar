@@ -204,7 +204,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     /[dD]{1,2}|Do|W{1,4}|M{1,4}|YY(?:YY)?/g.test(inputMask.value),
   );
 
-  const inputMaskPatch = computed<DatePatch | undefined>(() => {
+  const inputMaskPatch = computed(() => {
     if (inputMaskHasTime.value && inputMaskHasDate.value) {
       return 'dateTime';
     }
@@ -296,7 +296,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return attrs;
   });
 
-  const rules = computed<DatePartsRules[]>(() => {
+  const rules = computed(() => {
     return normalizeConfig(
       props.rules === 'auto' ? getAutoRules() : props.rules ?? {},
     );

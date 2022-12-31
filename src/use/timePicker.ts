@@ -101,7 +101,7 @@ export function createTimePicker(props: TimePickerProps) {
     return date;
   });
 
-  const hours = computed<number>({
+  const hours = computed({
     get() {
       return (parts.value as DateParts).hours;
     },
@@ -110,7 +110,7 @@ export function createTimePicker(props: TimePickerProps) {
     },
   });
 
-  const minutes = computed<number>({
+  const minutes = computed({
     get() {
       return (parts.value as DateParts).minutes;
     },
@@ -119,7 +119,7 @@ export function createTimePicker(props: TimePickerProps) {
     },
   });
 
-  const seconds = computed<number>({
+  const seconds = computed({
     get() {
       return (parts.value as DateParts).seconds;
     },
@@ -128,7 +128,7 @@ export function createTimePicker(props: TimePickerProps) {
     },
   });
 
-  const milliseconds = computed<number>({
+  const milliseconds = computed({
     get() {
       return (parts.value as DateParts).milliseconds;
     },

@@ -146,7 +146,7 @@ export const emitsDef = [
 const contextKey = '__vc_calendar_context__';
 
 export function createCalendar(props: CalendarProps, { emit, slots }: any) {
-  const state = reactive<CalendarState>({
+  const state: CalendarState = reactive({
     containerRef: null,
     navPopoverRef: null,
     lastFocusedDay: null,
@@ -173,9 +173,9 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const step = computed(() => props.step || count.value);
 
-  const firstPage = computed(() => head<Page>(state.pages) ?? null);
+  const firstPage = computed(() => head(state.pages) ?? null);
 
-  const lastPage = computed(() => last<Page>(state.pages) ?? null);
+  const lastPage = computed(() => last(state.pages) ?? null);
 
   const minPage = computed(
     () =>
@@ -243,7 +243,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     }
   };
 
-  const allDays = computed<CalendarDay[]>(() =>
+  const allDays = computed(() =>
     state.pages.reduce((result: CalendarDay[], page: Page) => {
       result.push(...page.days);
       return result;
