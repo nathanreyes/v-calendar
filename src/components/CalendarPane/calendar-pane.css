@@ -7,7 +7,6 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  height: 100%;
   &.is-left {
     left: calc(var(--vc-weeknumber-offset-inside) * -1);
   }
