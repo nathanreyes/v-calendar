@@ -3,7 +3,7 @@ import { DateRange, DateRangeSource } from './date/range';
 import { arrayHasItems, createGuid } from './helpers';
 import { addDays } from './date/helpers';
 import { PopoverVisibility } from './popovers';
-import { Theme } from '../use/theme';
+import { Theme } from './theme';
 import Locale from './locale';
 
 import {

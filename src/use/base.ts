@@ -1,7 +1,7 @@
 import { PropType, ExtractPropTypes, computed, provide, inject } from 'vue';
 import { DarkModeClassConfig } from 'vue-screen-utils';
 import { useDarkMode } from 'vue-screen-utils';
-import { Theme } from './theme';
+import { Theme } from '../utils/theme';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';

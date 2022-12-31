@@ -1,4 +1,4 @@
-import { Attribute } from '../utils/attribute';
+import { Attribute } from './attribute';
 import { DateRangeCell } from '@/utils/date/range';
 import {
   GlyphRenderer,
@@ -11,7 +11,7 @@ import {
   Dot,
   Bar,
   Content,
-} from '../utils/glyph';
+} from './glyph';
 
 export interface Glyphs {
   highlights: Highlight[];
