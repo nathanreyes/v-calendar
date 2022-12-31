@@ -114,11 +114,11 @@ export default defineComponent({
 
     const glyphs = computed(() => {
       const result = {
-        ...theme.prepareRender({}),
+        ...theme.value.prepareRender({}),
         popovers: [],
       };
       attributeCells.value.forEach(cell => {
-        theme.render(cell, result);
+        theme.value.render(cell, result);
         processPopover(cell, result);
       });
       return result;

@@ -38,7 +38,7 @@ export class Theme {
       const type = renderer.type as keyof Attribute;
       if (attr[type] != null) {
         // @ts-ignore
-        attr[type] = renderer.normalizeConfig(color.value, attr[type]);
+        attr[type] = renderer.normalizeConfig(this.color, attr[type]);
       }
     });
   }
