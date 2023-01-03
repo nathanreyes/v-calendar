@@ -641,7 +641,7 @@ export default {
           fillDate: (this.value_ && this.value_.start) || config[0].fillDate,
           patch,
         });
-        const end = new Date(value.start).getTime() > new Date(value.end).getTime() > 0 ? value.start : value.end;
+        const end = new Date(value.start).getTime() > new Date(value.end).getTime() ? value.start : value.end;
         result.end = this.normalizeDate(end, {
           ...config[1],
           fillDate: (this.value_ && this.value_.end) || config[1].fillDate,
