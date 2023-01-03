@@ -647,7 +647,6 @@ export default {
           fillDate: (this.value_ && this.value_.end) || config[1].fillDate,
           patch,
         });
-        console.log(start, end, result);
         return this.sortRange(result, rangePriority);
       }
       return this.normalizeDate(value, {
