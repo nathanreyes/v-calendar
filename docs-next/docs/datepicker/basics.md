@@ -12,11 +12,10 @@ In short, it was built build to handle most date picker needs.
 
 ## Selection modes
 
-Use the `mode` prop to switch between 3 different date selection modes: `date`, `dateTime` and `time`.
+`DatePicker` can be configured to allow the user to select a date, date and time, or only time values via the `mode` prop.
 
 ### Date Mode
 
-`DatePicker` can bind to single dates using the `v-model` directive.
 
 To limit user selection to only date components (month, day, year), use `mode: 'date'`. This is the default prop value, so it isn't explicitly required.
 
@@ -41,7 +40,7 @@ To allow user selection of date and time components, use `mode: 'dateTime'`. A t
 
 <BaseAlert info>
 
-  Time components are set using the current timezone setting set by the `timezone` prop. By default, this value is `undefined`, which specifies the local timezone.
+  Time components are set using the current timezone setting set by the `timezone` prop. By default, this value is `undefined`, which defaults to the local timezone.
 </BaseAlert>
 
 <Example centered>
@@ -90,7 +89,7 @@ To prevent this, set the `is-required` prop.
 
 ## String dates
 
-To bind to a string value, set the `string` modifier. In this example, the date is provided in ISO-8601 format with the Z designator (zero UTC offset).
+To bind to a string value, set the `string` model modifier. In this example, the date is provided in ISO-8601 format with the Z designator (zero UTC offset).
 
 <Example centered>
   <ModelModifierString />

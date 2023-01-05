@@ -59,7 +59,7 @@ The `show-weeknumbers` can also be assigned to left and outside positions.
 ### Right
 
 <Example centered>
-  <Calendar show-weeknumbers="right-outside" />
+  <Calendar show-weeknumbers="right" />
 </Example>
 
 ```html
@@ -182,11 +182,11 @@ Use the `rows` and `columns` props to create multi-row and multi-column static l
 
 ## Responsive Layouts
 
-Previous to 3.0, `v-calendar` provided a `$screens` function out-of-the-box to help create computed properties based on the current screen size. To minimize package size and complexity, this functionality has been extracted to an external package, [`vue-screen-utils`](https://github.com/nathanreyes/vue-screen-utils).
+Previous to 3.0, `v-calendar` provided a `$screens` function out-of-the-box to help create computed properties based on the current screen size. To minimize package size and complexity, this built-in functionality has been removed.
 
-To create dynamic `rows` or `columns`, first install a utility tool like [`vue-screen-utils`](https://github.com/nathanreyes/vue-screen-utils) that can create dynamic computed properties based on media queries or `ResizeObserver`.
+To reproduce this behavior, you can bind to computed `rows` or `columns` using your own logic, or install a 3rd-party plugin like [`vue-screen-utils`](https://github.com/nathanreyes/vue-screen-utils) that can create dynamic computed properties based on media queries or `ResizeObserver`.
 
-For this example, we can use the `mapCurrent` function to display 2 `columns` for large screens.
+For this example, we can use the `mapCurrent` function exported by [`vue-screen-utils`](https://github.com/nathanreyes/vue-screen-utils) to display 2 `columns` for large screens.
 
 <Example centered>
   <LayoutsResponsive />
