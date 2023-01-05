@@ -301,7 +301,9 @@ type WeekInMonth = -6 | -5 | -4 | -3 | -2 | -1 | 1 | 2 | 3 | 4 | 5 | 6;
 type MonthInYear = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 ```
 
-Component rule values can be expressed as a single number or an array of numbers. In the example below, since repeating on multiple days of the month (15, 25), the `days` property must be an array.
+Component rule values can be expressed as a single number or an array of numbers. Also, note that the `days` and `weeks` rules may be expressed as negative numbers to offset from the end of the repeat interval.
+
+In the example below, since repeating on multiple days of the month (15, 25), the `days` property must be an array.
 
 <Example centered>
   <DatesRepeat :example="2" />
@@ -314,7 +316,7 @@ const attributes = ref([
     highlight: true,
     dates: [
       {
-        start: new Date(2022, 10, 25),
+        start: new Date(2022, 10, 15),
         repeat: {
           every: [2, 'months'],
           days: [15, 25],
@@ -327,7 +329,7 @@ const attributes = ref([
 
 ### Ordinal component rules
 
-Ordinal component rules are can target ordinal weekdays of the month. Such examples include
+Ordinal component rules target ordinal weekdays of the month. Such examples include
 
 * First Sunday of the month
 * Fifth Tuesday of the month
@@ -354,7 +356,7 @@ The rule values are expressed as an array with the position first (-6 to -1, 1 t
 }
 ```
 
-Note that multiple weekdays can be appended to the end of the array.
+Multiple weekdays can be appended to the end of the array.
 
 ```ts
 {
@@ -365,7 +367,7 @@ Note that multiple weekdays can be appended to the end of the array.
 }
 ```
 
-Multiple positions can be targeted by wrapped in another array.
+Multiple rules can be set by wrapping them in a separate array.
 
 ```ts
 {
@@ -435,8 +437,7 @@ const attributes = ref([
     highlight: true,
     dates: [
       {
-        start: new Date(2022, 10, 7),
-        end: new Date(2022, 10, 9),
+        start: new Date(2022, 10, 15),
         repeat: {
           every: 'month',
           days: 15,
@@ -461,7 +462,7 @@ const attributes = ref([
     highlight: true,
     dates: [
       {
-        start: new Date(2022, 10, 7),
+        start: new Date(2022, 10, 15),
         repeat: {
           every: 'month',
           on: [{ days: 15 }, { ordinalWeekdays: [-1, 2] }],
@@ -508,7 +509,7 @@ const attributes = ref([
     highlight: true,
     dates: [
       {
-        start: new Date(2022, 10, 7),
+        start: new Date(2022, 10, 15),
         repeat: {
           every: 'month',
           on: ({ weekdayOrdinalFromEnd, weekday, day }) =>

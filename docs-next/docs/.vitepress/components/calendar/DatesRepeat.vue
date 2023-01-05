@@ -31,18 +31,18 @@ const dates = ref([
   },
   {
     title: 'Every other month on the 15th or the 25th',
-    start: new Date(2022, 10, 25),
+    start: new Date(2022, 10, 15),
     repeat: {
       every: [2, 'months'],
       days: [15, 25],
     },
   },
   {
-    title: 'Every month on the first or last Monday',
+    title: 'Every other month on the first or last Monday',
     start: new Date(2022, 10, 7),
     end: new Date(2022, 10, 9),
     repeat: {
-      every: 'month',
+      every: [2, 'months'],
       ordinalWeekdays: [
         [1, 2], // First Monday of the month
         [-1, 2], // Last Monday of the month
@@ -51,7 +51,7 @@ const dates = ref([
   },
   {
     title: 'Every month on the 15th and the last Monday',
-    start: new Date(2022, 10, 7),
+    start: new Date(2022, 10, 15),
     repeat: {
       every: 'month',
       days: 15,
@@ -60,7 +60,7 @@ const dates = ref([
   },
   {
     title: 'Every month on the 15th or the last Monday',
-    start: new Date(2022, 10, 7),
+    start: new Date(2022, 10, 15),
     repeat: {
       every: 'month',
       on: [{ days: 15 }, { ordinalWeekdays: [-1, 2] }],
@@ -68,7 +68,7 @@ const dates = ref([
   },
   {
     title: 'Every month on the 15th or the last Monday',
-    start: new Date(2022, 10, 7),
+    start: new Date(2022, 10, 15),
     repeat: {
       every: 'month',
       on: ({ weekdayOrdinalFromEnd, weekday, day }) =>
