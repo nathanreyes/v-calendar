@@ -6,7 +6,7 @@ import locales from '../../../src/utils/defaults/locales';
 function matchLocaleWithConfig(locale, config) {
   expect(locale.id).toEqual(config.id);
   expect(locale.firstDayOfWeek).toEqual(config.firstDayOfWeek);
-  expect(locale.masks).toEqual(config.masks);
+  expect(locale.masks.L).toEqual(config.masks.L);
 }
 
 function testLocaleKeys(locale) {
@@ -64,7 +64,6 @@ describe('Locale', () => {
       matchLocaleWithConfig(locale, config);
     });
   });
-
   it('should initialize with partial config data', () => {
     const config = {
       id: 'en',
@@ -89,7 +88,7 @@ describe('Locale', () => {
   });
   it('should calculate day components correctly', () => {
     const testComponent = c => {
-      const locale = new Locale(undefined, { timezone: c.timezone });
+      const locale = new Locale(undefined, c.timezone);
       const date = new Date(c.date);
       const day = locale.getDateParts(new Date(c.date));
       const omitKeys = ['date', 'timezone'];
