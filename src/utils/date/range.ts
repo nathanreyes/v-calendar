@@ -1,6 +1,6 @@
 import { DateRepeat, DateRepeatConfig } from './repeat';
 import { DateParts, DayParts, addDays, MS_PER_DAY } from './helpers';
-import { isDate, isArray } from '../helpers';
+import { isDate, isArray, isObject } from '../helpers';
 import Locale from '../locale';
 
 type DateRangeDate = Date | null;
@@ -44,15 +44,19 @@ export class DateRange {
       start: null,
       end: null,
     };
-    if (isDate(source)) {
-      config.start = source;
-      config.end = source;
-    } else if (isArray(source)) {
-      config.start = source[0] ?? null;
-      config.end = source[1] ?? null;
-    } else if (source != null) {
-      Object.assign(config, source);
+    if (source != null) {
+      if (isArray(source)) {
+        config.start = source[0] ?? null;
+        config.end = source[1] ?? null;
+      } else if (isObject(source)) {
+        Object.assign(config, source);
+      } else {
+        config.start = source;
+        config.end = source;
+      }
     }
+    if (config.start != null) config.start = new Date(config.start);
+    if (config.end != null) config.end = new Date(config.end);
     return new DateRange(config, locale);
   }
 
@@ -128,17 +132,17 @@ export class DateRange {
     return this.intersectsDayRange(dayIndex, dayIndex);
   }
 
-  intersectsDayRange(startDayIndex: number, endDayIndex: number) {
-    if (this.start && this.start.dayIndex > endDayIndex) return false;
-    if (this.end && this.end.dayIndex < startDayIndex) return false;
-    return true;
-  }
-
   intersectsRange(range: DateRange) {
     return this.intersectsDayRange(
       range.start?.dayIndex ?? -Infinity,
       range.end?.dayIndex ?? Infinity,
     );
+  }
+
+  intersectsDayRange(startDayIndex: number, endDayIndex: number) {
+    if (this.start && this.start.dayIndex > endDayIndex) return false;
+    if (this.end && this.end.dayIndex < startDayIndex) return false;
+    return true;
   }
 }
 
