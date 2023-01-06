@@ -45,7 +45,7 @@ import {
 
 export interface LocaleConfig {
   id: string;
-  firstDayOfWeek: DayOfWeek;
+  firstDayOfWeek: number;
   masks: any;
   monthCacheSize: number;
   pageCacheSize: number;
