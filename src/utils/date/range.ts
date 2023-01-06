@@ -3,7 +3,7 @@ import { DateParts, DayParts, addDays, MS_PER_DAY } from './helpers';
 import { isDate, isArray, isObject } from '../helpers';
 import Locale from '../locale';
 
-type DateRangeDate = Date | null;
+type DateRangeDate = Date | string | number | null;
 
 interface DateRangeConfig {
   start: DateRangeDate;
