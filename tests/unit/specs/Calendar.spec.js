@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Calendar from '@/components/Calendar/Calendar';
+import Calendar from '@/components/Calendar/Calendar.vue';
 import disabledTests from '../util/disabledTests';
 import { pad } from '@/utils/helpers';
 
@@ -17,8 +17,8 @@ describe('Calendar', () => {
     const expectDisabledArrows = (arrows, wrapper) => {
       ['prev', 'next'].forEach(dir => {
         const disabledClass = arrows.includes(dir)
-          ? '.is-disabled'
-          : ':not(.is-disabled)';
+          ? '.vc-disabled'
+          : ':not(.vc-disabled)';
         const arrowSelector = `.vc-arrow.vc-${dir}${disabledClass}`;
         expect(wrapper.find(arrowSelector).exists()).toBe(true);
       });
@@ -32,8 +32,8 @@ describe('Calendar', () => {
             d > 0 ? d === i : d.start <= i && i <= d.end,
           );
           const disabledClass = isDisabled
-            ? '.is-disabled'
-            : ':not(.is-disabled)';
+            ? '.vc-disabled'
+            : ':not(.vc-disabled)';
           const dayContentSelector = `${daySelector}${disabledClass}`;
           expect(wrapper.find(dayContentSelector).exists()).toBe(true);
         }
@@ -44,8 +44,8 @@ describe('Calendar', () => {
     const expectDisabledNavArrows = (directions, wrapper) => {
       ['left', 'right'].forEach(dir => {
         const disabledClass = directions.includes(dir)
-          ? '.is-disabled'
-          : ':not(.is-disabled)';
+          ? '.vc-disabled'
+          : ':not(.vc-disabled)';
         const arrowSelector = `.vc-nav-arrow.is-${dir}${disabledClass}`;
         expect(wrapper.find(arrowSelector).exists()).toBe(true);
       });
@@ -54,8 +54,8 @@ describe('Calendar', () => {
     const expectDisabledNavMonths = (months, year, wrapper) => {
       for (let i = 1; i <= 12; i++) {
         const disabledClass = months.includes(i)
-          ? '.is-disabled'
-          : ':not(.is-disabled)';
+          ? '.vc-disabled'
+          : ':not(.vc-disabled)';
         const itemSelector = `.vc-nav-item${disabledClass}[data-id="${year}.${pad(
           i,
           2,
@@ -67,8 +67,8 @@ describe('Calendar', () => {
     const expectDisabledNavYears = (years, wrapper) => {
       for (let i = 2016; i <= 2027; i++) {
         const disabledClass = years.includes(i)
-          ? '.is-disabled'
-          : ':not(.is-disabled)';
+          ? '.vc-disabled'
+          : ':not(.vc-disabled)';
         const itemSelector = `.vc-nav-item${disabledClass}[data-id="${i}"]`;
         expect(wrapper.find(itemSelector).exists()).toBe(true);
       }
@@ -128,6 +128,7 @@ describe('Calendar', () => {
   describe(':methods', () => {
     it(':move should move to a date', async () => {
       const wrapper = mount(Calendar);
+      console.log('wrapper', wrapper);
       await wrapper.vm.move(new Date(2000, 0, 1), { transition: 'none' });
       expect(wrapper.find('.id-2000-01-01').exists()).toBe(true);
     });

@@ -1,10 +1,20 @@
-import type { UserConfig } from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 
 // https://vitejs.dev/config/
-const config: UserConfig = {
+export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['tests/unit/setup.ts'],
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
@@ -24,6 +34,4 @@ const config: UserConfig = {
       },
     },
   },
-};
-
-export default config;
+});

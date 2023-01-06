@@ -1,15 +1,16 @@
 import lodash from 'lodash';
-import Locale from '@/utils/locale';
+import Locale, { LocaleConfig } from '@/utils/locale';
 import locales from '@/utils/defaults/locales';
-import dayData from '../util/dayData.json';
+import { DateParts } from '@/utils/date/helpers';
+import { DayData, data } from '../util/dayData';
 
-function matchLocaleWithConfig(locale, config) {
+function matchLocaleWithConfig(locale: Locale, config: Partial<LocaleConfig>) {
   expect(locale.id).toEqual(config.id);
   expect(locale.firstDayOfWeek).toEqual(config.firstDayOfWeek);
   expect(locale.masks.L).toEqual(config.masks.L);
 }
 
-function testLocaleKeys(locale) {
+function testLocaleKeys(locale: Locale) {
   const keys = [
     'id',
     'firstDayOfWeek',
@@ -87,17 +88,16 @@ describe('Locale', () => {
     matchLocaleWithConfig(locale, config);
   });
   it('should calculate day components correctly', () => {
-    const testComponent = c => {
+    const testComponent = (c: DayData) => {
       const locale = new Locale(undefined, c.timezone);
-      const date = new Date(c.date);
       const day = locale.getDateParts(new Date(c.date));
       const omitKeys = ['date', 'timezone'];
       return Object.keys(c)
         .filter(k => !omitKeys.includes(k))
         .every(k => {
-          return c[k] === day[k];
+          return c[k as keyof DayData] === day[k as keyof DateParts];
         });
     };
-    dayData.forEach(c => expect(testComponent(c)).toEqual(true));
+    data.forEach(c => expect(testComponent(c)).toEqual(true));
   });
 });

@@ -15,7 +15,7 @@
     "baseUrl": ".",
     "types": [
       "resize-observer-browser",
-      "@types/jest",
+      "vitest/globals"
     ],
     "paths": {
       "@/*": [
