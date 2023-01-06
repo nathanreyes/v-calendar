@@ -1,7 +1,7 @@
 import lodash from 'lodash';
+import Locale from '@/utils/locale';
+import locales from '@/utils/defaults/locales';
 import dayData from '../util/dayData.json';
-import Locale from '../../../src/utils/locale';
-import locales from '../../../src/utils/defaults/locales';
 
 function matchLocaleWithConfig(locale, config) {
   expect(locale.id).toEqual(config.id);

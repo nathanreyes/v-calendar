@@ -1,0 +1,20 @@
+[
+  {
+    "summary": "single date at start of day",
+    "range": "2023-01-02T00:00:00",
+    "includes": ["2023-01-02T00:00:00"],
+    "excludes": ["2023-01-01T23:59:59.999", "2023-01-03T00:00:00"]
+  },
+  {
+    "summary": "single date at end of day",
+    "range": "2023-01-02T23:59:59.999",
+    "includes": ["2023-01-02T00:00:00"],
+    "excludes": ["2023-01-01T23:59:59.999", "2023-01-03T00:00:00"]
+  },
+  {
+    "summary": "date range from start of day to start of end day",
+    "range": { "start": "2023-01-02T00:00:00", "end": "2023-01-03T00:00:00" },
+    "includes": ["2023-01-02T00:00:00", "2023-01-03T00:00:00"],
+    "excludes": ["2023-01-01T23:59:59.999", "2023-01-04:T00:00:00"]
+  }
+]
