@@ -1,4 +1,4 @@
-const disabledTests = [
+export default [
   // Min date
   {
     it: ':min-date disables days, arrows and nav state',
@@ -118,5 +118,3 @@ const disabledTests = [
   //   },
   // },
 ];
-
-module.exports = disabledTests;

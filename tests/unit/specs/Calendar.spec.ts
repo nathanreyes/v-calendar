@@ -1,7 +1,8 @@
-import { mount } from '@vue/test-utils';
+import { VueWrapper, mount } from '@vue/test-utils';
 import Calendar from '@/components/Calendar/Calendar.vue';
-import disabledTests from '../util/disabledTests';
+import { CalendarContext } from '@/use/calendar';
 import { pad } from '@/utils/helpers';
+import disabledTests from '../util/disabledTests';
 
 describe('Calendar', () => {
   describe(':props', () => {
@@ -14,7 +15,7 @@ describe('Calendar', () => {
       expect(wrapper.find('.vc-day.id-2000-01-01').exists()).toBe(true);
     });
 
-    const expectDisabledArrows = (arrows, wrapper) => {
+    const expectDisabledArrows = (arrows: string[], wrapper: VueWrapper) => {
       ['prev', 'next'].forEach(dir => {
         const disabledClass = arrows.includes(dir)
           ? '.vc-disabled'
@@ -24,13 +25,14 @@ describe('Calendar', () => {
       });
     };
 
-    const expectDisabledDays = (days, wrapper) => {
+    const expectDisabledDays = (
+      days: { start: number; end: number }[],
+      wrapper: VueWrapper,
+    ) => {
       for (let i = 1; i <= 31; i++) {
         const daySelector = `.vc-day.day-${i}:not(.is-not-in-month) .vc-day-content`;
         if (wrapper.find(daySelector).exists()) {
-          const isDisabled = days.some(d =>
-            d > 0 ? d === i : d.start <= i && i <= d.end,
-          );
+          const isDisabled = days.some(d => d.start <= i && i <= d.end);
           const disabledClass = isDisabled
             ? '.vc-disabled'
             : ':not(.vc-disabled)';
@@ -41,7 +43,10 @@ describe('Calendar', () => {
       return;
     };
 
-    const expectDisabledNavArrows = (directions, wrapper) => {
+    const expectDisabledNavArrows = (
+      directions: string[],
+      wrapper: VueWrapper,
+    ) => {
       ['left', 'right'].forEach(dir => {
         const disabledClass = directions.includes(dir)
           ? '.vc-disabled'
@@ -51,7 +56,11 @@ describe('Calendar', () => {
       });
     };
 
-    const expectDisabledNavMonths = (months, year, wrapper) => {
+    const expectDisabledNavMonths = (
+      months: number[],
+      year: number,
+      wrapper: VueWrapper,
+    ) => {
       for (let i = 1; i <= 12; i++) {
         const disabledClass = months.includes(i)
           ? '.vc-disabled'
@@ -64,7 +73,7 @@ describe('Calendar', () => {
       }
     };
 
-    const expectDisabledNavYears = (years, wrapper) => {
+    const expectDisabledNavYears = (years: number[], wrapper: VueWrapper) => {
       for (let i = 2016; i <= 2027; i++) {
         const disabledClass = years.includes(i)
           ? '.vc-disabled'
@@ -128,20 +137,25 @@ describe('Calendar', () => {
   describe(':methods', () => {
     it(':move should move to a date', async () => {
       const wrapper = mount(Calendar);
-      console.log('wrapper', wrapper);
-      await wrapper.vm.move(new Date(2000, 0, 1), { transition: 'none' });
+      // @ts-ignore
+      const vm = wrapper.vm as CalendarContext;
+      await vm.move(new Date(2000, 0, 1), { transition: 'none' });
       expect(wrapper.find('.id-2000-01-01').exists()).toBe(true);
     });
     it(':move should move forward by n months', async () => {
       const wrapper = mount(Calendar);
-      await wrapper.vm.move({ month: 1, year: 2000 }, { transition: 'none' });
-      await wrapper.vm.move(5, { transition: 'none' });
+      // @ts-ignore
+      const vm = wrapper.vm as CalendarContext;
+      await vm.move({ month: 1, year: 2000 }, { transition: 'none' });
+      await vm.moveBy(5, { transition: 'none' });
       expect(wrapper.find('.id-2000-06-01').exists()).toBe(true);
     });
     it(':move should move backwards by n months', async () => {
       const wrapper = mount(Calendar);
-      await wrapper.vm.move({ month: 1, year: 2000 }, { transition: 'none' });
-      await wrapper.vm.move(-5, { transition: 'none' });
+      // @ts-ignore
+      const vm = wrapper.vm as CalendarContext;
+      await vm.move({ month: 1, year: 2000 }, { transition: 'none' });
+      await vm.moveBy(-5, { transition: 'none' });
       expect(wrapper.find('.id-1999-08-01').exists()).toBe(true);
     });
   });

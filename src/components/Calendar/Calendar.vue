@@ -50,36 +50,27 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: 'Calendar',
-};
-</script>
-
-<script setup lang="ts">
+import { defineComponent } from 'vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import CalendarPane from '../CalendarPane/CalendarPane.vue';
 import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
 import CalendarDayPopover from '../CalendarDayPopover/CalendarDayPopover.vue';
 import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
-const emit = defineEmits(emitsDef);
-// @ts-ignore
-const props = defineProps(propsDef);
-// @ts-ignore
-const calendar = createCalendar(props, {
-  emit,
+export default defineComponent({
+  name: 'Calendar',
+  components: {
+    CalendarHeader,
+    CalendarPane,
+    CalendarNavPopover,
+    CalendarDayPopover,
+  },
+  emits: emitsDef,
+  // @ts-ignore
+  props: propsDef,
+  setup(props, { emit }) {
+    // @ts-ignore
+    return createCalendar(props, { emit });
+  },
 });
-defineExpose(calendar);
-const {
-  containerRef,
-  view,
-  color,
-  displayMode,
-  inTransition,
-  firstPage,
-  pages,
-  transitionName,
-  onTransitionBeforeEnter,
-  onTransitionAfterEnter,
-} = calendar;
 </script>
