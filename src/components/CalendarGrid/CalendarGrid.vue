@@ -219,7 +219,6 @@ import { DateRangeCell } from '../../utils/date/range';
 import { Event } from '../../utils/calendar/event';
 
 const emit = defineEmits(emits);
-// @ts-ignore
 const props = defineProps(propsDef);
 const slots = useSlots();
 const {
@@ -252,7 +251,6 @@ const {
   onGridEscapeKeydown,
   onTransitionBeforeEnter,
   onTransitionAfterEnter,
-  // @ts-ignore
 } = createCalendarGrid(props, {
   emit,
   slots,

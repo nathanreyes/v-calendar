@@ -10,10 +10,8 @@ export default {
   name: 'DatePicker',
   inheritAttrs: false,
   emits,
-  // @ts-ignore
   props: propsDef,
   setup(props, ctx) {
-    // @ts-ignore
     const datePicker = createDatePicker(props, ctx);
     const { slots, attrs } = ctx;
     const {

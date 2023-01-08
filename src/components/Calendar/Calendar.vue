@@ -66,10 +66,8 @@ export default defineComponent({
     CalendarDayPopover,
   },
   emits: emitsDef,
-  // @ts-ignore
   props: propsDef,
   setup(props, { emit }) {
-    // @ts-ignore
     return createCalendar(props, { emit });
   },
 });
