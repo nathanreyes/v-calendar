@@ -1,6 +1,5 @@
 import { VueWrapper, mount } from '@vue/test-utils';
 import Calendar from '@/components/Calendar/Calendar.vue';
-import { CalendarContext } from '@/use/calendar';
 import { pad } from '@/utils/helpers';
 import disabledTests from '../util/disabledTests';
 
@@ -137,23 +136,20 @@ describe('Calendar', () => {
   describe(':methods', () => {
     it(':move should move to a date', async () => {
       const wrapper = mount(Calendar);
-      // @ts-ignore
-      const vm = wrapper.vm as CalendarContext;
+      const vm = wrapper.vm;
       await vm.move(new Date(2000, 0, 1), { transition: 'none' });
       expect(wrapper.find('.id-2000-01-01').exists()).toBe(true);
     });
     it(':move should move forward by n months', async () => {
       const wrapper = mount(Calendar);
-      // @ts-ignore
-      const vm = wrapper.vm as CalendarContext;
+      const vm = wrapper.vm;
       await vm.move({ month: 1, year: 2000 }, { transition: 'none' });
       await vm.moveBy(5, { transition: 'none' });
       expect(wrapper.find('.id-2000-06-01').exists()).toBe(true);
     });
     it(':move should move backwards by n months', async () => {
       const wrapper = mount(Calendar);
-      // @ts-ignore
-      const vm = wrapper.vm as CalendarContext;
+      const vm = wrapper.vm;
       await vm.move({ month: 1, year: 2000 }, { transition: 'none' });
       await vm.moveBy(-5, { transition: 'none' });
       expect(wrapper.find('.id-1999-08-01').exists()).toBe(true);
