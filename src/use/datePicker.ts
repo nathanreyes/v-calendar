@@ -430,7 +430,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     return new Promise(resolve => {
       const { debounce = 0, ...args } = opts;
       if (debounce > 0) {
-        updateTimeout = setTimeout(() => {
+        updateTimeout = window.setTimeout(() => {
           forceUpdateValue(value, args);
           resolve(dateValue.value);
         }, debounce);
