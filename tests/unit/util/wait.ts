@@ -1,3 +1,3 @@
-module.exports = function wait(milliseconds: number) {
+export default function wait(milliseconds: number) {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
-};
+}
