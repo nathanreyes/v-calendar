@@ -1,7 +1,7 @@
 import { h } from 'vue';
-import { mount } from '@vue/test-utils';
-import DatePicker from '@/components/DatePicker/DatePicker';
-import TimePicker from '@/components/TimePicker/TimePicker';
+import { mount, VueWrapper } from '@vue/test-utils';
+import DatePicker from '@/components/DatePicker/DatePicker.vue';
+import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import dateValues from '../util/dateValues.json';
 import wait from '../util/wait';
 
@@ -23,15 +23,16 @@ describe('DatePicker', () => {
         });
         await dp.vm.$nextTick();
         if (dv.props.mode !== 'date') {
-          const tp = dp.findComponent(TimePicker).vm;
-          const { hours, minutes, isAM } = dv.time;
+          const tp = dp.findComponent<typeof TimePicker>(TimePicker).vm;
+          tp.
+          const { hours, minutes, isAM } = dv.time!;
           expect(tp.hours).toEqual(hours);
           expect(tp.minutes).toEqual(minutes);
           expect(tp.isAM).toEqual(isAM);
         }
         if (dv.clickEl) {
           await dp.find(dv.clickEl).trigger('click');
-          expect(dp.emitted()['update:modelValue'][0][0]).toEqual(dv.newValue);
+          expect(dp.emitted('update:modelValue')![0]).toEqual(dv.newValue);
         }
       }
     });
@@ -180,7 +181,7 @@ describe('DatePicker', () => {
   });
 });
 
-async function checkValidHours(prop, hours) {
+async function checkValidHours(prop: any, hours: number[]) {
   const dp = mount(DatePicker, {
     props: {
       modelValue: new Date(2000, 0, 15),
@@ -191,7 +192,7 @@ async function checkValidHours(prop, hours) {
   });
   await dp.vm.$nextTick();
   await dp.vm.$nextTick();
-  const selector = dp.find('.vc-select select');
+  const selector = dp.find<HTMLSelectElement>('.vc-select select');
   const options = selector.element.options;
   expect(options.length).toEqual(hours.length);
   hours.forEach((hour, i) => {
@@ -199,7 +200,7 @@ async function checkValidHours(prop, hours) {
   });
 }
 
-function mountWithInputs(props) {
+function mountWithInputs(props: any) {
   return mount(DatePicker, {
     props: {
       ...props,
@@ -234,7 +235,11 @@ function mountWithInputs(props) {
   });
 }
 
-async function updateInputs(dp, startValue, endValue) {
+async function updateInputs(
+  dp: VueWrapper,
+  startValue: string,
+  endValue: string,
+) {
   const inputs = dp.findAll('input');
   let input = null;
   if (startValue) {
