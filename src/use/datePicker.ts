@@ -88,7 +88,7 @@ export const propsDef = {
   ...basePropsDef,
   mode: { type: String, default: DateModes.Date },
   modelValue: {
-    type: null as unknown as PropType<
+    type: [Number, String, Date, Object] as PropType<
       number | string | Date | DatePickerRangeObject
     >,
     required: true,
@@ -97,7 +97,7 @@ export const propsDef = {
     type: Object as PropType<ModelModifiers>,
     default: () => ({}),
   },
-  rules: null as unknown as PropType<'auto' | DatePartsRules>,
+  rules: [String, Object] as PropType<'auto' | DatePartsRules>,
   modelConfig: { type: Object, default: () => ({}) },
   is24hr: Boolean,
   hideTimeHeader: Boolean,
@@ -113,7 +113,7 @@ export const propsDef = {
     default: () => getDefault('datePicker.inputDebounce'),
   },
   popover: {
-    type: null as unknown as PropType<boolean | Partial<PopoverOptions>>,
+    type: [Boolean, Object] as PropType<boolean | Partial<PopoverOptions>>,
     default: true,
   },
   dragAttribute: Object as PropType<AttributeConfig>,

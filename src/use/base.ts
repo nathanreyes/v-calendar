@@ -16,12 +16,14 @@ export const propsDef = {
     default: () => getDefault('color'),
   },
   isDark: {
-    type: null as unknown as PropType<boolean | 'system' | DarkModeClassConfig>,
+    type: [Boolean, String, Object] as PropType<
+      boolean | 'system' | DarkModeClassConfig
+    >,
     default: () => getDefault('isDark'),
   },
   firstDayOfWeek: Number as PropType<DayOfWeek>,
   masks: Object,
-  locale: null as unknown as PropType<string | Record<string, any> | Locale>,
+  locale: [String, Object] as PropType<string | Record<string, any> | Locale>,
   timezone: String,
   minDate: null,
   maxDate: null,
