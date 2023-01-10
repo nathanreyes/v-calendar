@@ -42,6 +42,8 @@ export interface TimePickerProps {
   position: number;
 }
 
+export type TimePickerContext = ReturnType<typeof createTimePicker>;
+
 export function createTimePicker(props: TimePickerProps) {
   const baseCtx = useBase();
   const { locale } = baseCtx;

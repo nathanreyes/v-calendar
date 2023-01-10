@@ -70,6 +70,8 @@ const props = defineProps<{
   position: number;
 }>();
 
+const timePicker = createTimePicker(props);
+defineExpose(timePicker);
 const {
   locale,
   isValid,
@@ -86,5 +88,5 @@ const {
   showHeader,
   showBorder,
   timeAccuracy,
-} = createTimePicker(props);
+} = timePicker;
 </script>
