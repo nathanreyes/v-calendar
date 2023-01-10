@@ -111,7 +111,7 @@
     "props": {
       "mode": "date",
       "modelValue": null,
-      "fromPage": { "month": 1, "year": 2021 },
+      "initialPage": { "month": 1, "year": 2021 },
       "modelConfig": {
         "type": "string",
         "mask": "YYYY-MM-DDTHH:mm:ssZ",
