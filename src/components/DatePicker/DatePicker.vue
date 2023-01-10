@@ -73,7 +73,7 @@ export default {
         return h(
           'div',
           {
-            class: `vc-container vc-bordered vc${color} vc-${displayMode}`,
+            class: `vc-container vc-bordered vc-${color.value} vc-${displayMode.value}`,
           },
           [timePicker()],
         );
