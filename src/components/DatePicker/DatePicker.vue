@@ -34,6 +34,9 @@ export default {
       onPopoverAfterHide,
     } = datePicker;
 
+    // Expose datePicker for external access
+    ctx.expose(datePicker);
+
     const slotCtx = reactive(
       omit(datePicker, 'modelConfig', 'calendarRef', 'popoverRef'),
     );
