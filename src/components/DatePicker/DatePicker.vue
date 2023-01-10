@@ -50,6 +50,10 @@ export default {
     // Calendar renderer
     const calendar = () => {
       if (!dateParts.value) return null;
+      // Replace footer slot with timePicker if needed
+      const renderSlots = isDateTime.value
+        ? { ...slots, footer: timePicker }
+        : slots;
       return h(
         Calendar,
         {
@@ -60,10 +64,7 @@ export default {
           onDaymouseenter,
           onDaykeydown,
         },
-        {
-          ...slots,
-          footer: isDateTime.value ? timePicker : slots.footer,
-        },
+        renderSlots,
       );
     };
 
