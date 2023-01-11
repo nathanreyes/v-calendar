@@ -15,8 +15,8 @@ export default {
     const datePicker = createDatePicker(props, ctx);
     const { slots, attrs } = ctx;
     const {
-      isTime,
-      isDateTime,
+      isTimeMode,
+      isDateTimeMode,
       color,
       displayMode,
       dateParts,
@@ -51,7 +51,7 @@ export default {
     const calendar = () => {
       if (!dateParts.value) return null;
       // Replace footer slot with timePicker if needed
-      const renderSlots = isDateTime.value
+      const renderSlots = isDateTimeMode.value
         ? { ...slots, footer: timePicker }
         : slots;
       return h(
@@ -70,7 +70,7 @@ export default {
 
     // Content renderer
     const content = () => {
-      if (isTime.value) {
+      if (isTimeMode.value) {
         return h(
           'div',
           {
