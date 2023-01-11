@@ -816,7 +816,6 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   // #region Lifecycle
 
   onMounted(() => {
-    // Handle escape key presses
     forceUpdateValue(props.modelValue, {
       formatInput: true,
       hidePopover: false,
