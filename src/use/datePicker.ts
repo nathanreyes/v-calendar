@@ -47,11 +47,7 @@ export interface DateConfig {
 
 const contextKey = '__vc_date_picker_context__';
 
-const DateModes = {
-  Date: 'date',
-  DateTime: 'datetime',
-  Time: 'time',
-};
+export type DateModes = 'date' | 'datetime' | 'time';
 
 export type ValueTarget = 'none' | 'start' | 'end' | 'both';
 
@@ -86,7 +82,7 @@ export type DatePickerProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 export const propsDef = {
   ...basePropsDef,
-  mode: { type: String, default: DateModes.Date },
+  mode: { type: String, default: 'date' },
   modelValue: {
     type: [Number, String, Date, Object] as PropType<
       number | string | Date | DatePickerRangeObject
@@ -167,12 +163,9 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       : null,
   );
 
-  const isDate = computed(() => props.mode.toLowerCase() === DateModes.Date);
-
-  const isDateTime = computed(
-    () => props.mode.toLowerCase() === DateModes.DateTime,
-  );
-  const isTime = computed(() => props.mode.toLowerCase() === DateModes.Time);
+  const isDate = computed(() => props.mode.toLowerCase() === 'date');
+  const isDateTime = computed(() => props.mode.toLowerCase() === 'datetime');
+  const isTime = computed(() => props.mode.toLowerCase() === 'time');
 
   const isDragging = computed(() => !!dragValue.value);
 
