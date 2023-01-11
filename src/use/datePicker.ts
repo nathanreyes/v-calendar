@@ -19,13 +19,14 @@ import {
   getPageAddressForDate,
   pageIsBetweenPages,
 } from '../utils/page';
-import { isObject, isArray, defaultsDeep, createGuid } from '../utils/helpers';
 import {
-  DatePatch,
-  DateParts,
-  DatePartsRules,
-  datesAreEqual,
-} from '../utils/date/helpers';
+  isObject,
+  isArray,
+  isDate,
+  defaultsDeep,
+  createGuid,
+} from '../utils/helpers';
+import { DatePatch, DateParts, DatePartsRules } from '../utils/date/helpers';
 import { SimpleDateRange } from '../utils/date/range';
 import {
   PopoverOptions,
@@ -359,6 +360,14 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       return isObject(value) && value.start != null && value.end != null;
     }
     return value != null;
+  }
+
+  function datesAreEqual(a: any, b: any): boolean {
+    const aIsDate = isDate(a);
+    const bIsDate = isDate(b);
+    if (!aIsDate && !bIsDate) return true;
+    if (aIsDate !== bIsDate) return false;
+    return a.getTime() === b.getTime();
   }
 
   function valuesAreEqual(a: any, b: any) {

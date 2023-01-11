@@ -561,14 +561,6 @@ export function startOfWeek(date: Date, firstDayOfWeek: DayOfWeek = 1) {
   return addDays(date, daysToAdd);
 }
 
-export function datesAreEqual(a: any, b: any): boolean {
-  const aIsDate = isDate(a);
-  const bIsDate = isDate(b);
-  if (!aIsDate && !bIsDate) return true;
-  if (aIsDate !== bIsDate) return false;
-  return a.getTime() === b.getTime();
-}
-
 export function getStartOfWeek(date: Date, firstDayOfWeek: DayOfWeek = 1) {
   const day = date.getDay() + 1;
   const daysToAdd =
