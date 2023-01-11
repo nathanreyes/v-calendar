@@ -163,9 +163,11 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       : null,
   );
 
-  const isDate = computed(() => props.mode.toLowerCase() === 'date');
-  const isDateTime = computed(() => props.mode.toLowerCase() === 'datetime');
-  const isTime = computed(() => props.mode.toLowerCase() === 'time');
+  const isDateMode = computed(() => props.mode.toLowerCase() === 'date');
+  const isDateTimeMode = computed(
+    () => props.mode.toLowerCase() === 'datetime',
+  );
+  const isTimeMode = computed(() => props.mode.toLowerCase() === 'time');
 
   const isDragging = computed(() => !!dragValue.value);
 
@@ -182,10 +184,10 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
   );
 
   const inputMask = computed(() => {
-    if (isTime.value) {
+    if (isTimeMode.value) {
       return props.is24hr ? masks.value.inputTime24hr : masks.value.inputTime;
     }
-    if (isDateTime.value) {
+    if (isDateTimeMode.value) {
       return props.is24hr
         ? masks.value.inputDateTime24hr
         : masks.value.inputDateTime;
@@ -306,7 +308,7 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
       min: [0, 59],
       hr: [0, 23],
     };
-    const accuracy = isDate.value ? 0 : props.timeAccuracy;
+    const accuracy = isDateMode.value ? 0 : props.timeAccuracy;
     return [0, 1].map(i => {
       switch (accuracy) {
         case 0:
@@ -826,8 +828,8 @@ export function createDatePicker(props: DatePickerProps, ctx: any) {
     popoverEvents,
     calendarRef,
     isRange,
-    isTime,
-    isDateTime,
+    isTimeMode,
+    isDateTimeMode,
     is24hr: toRef(props, 'is24hr'),
     hideTimeHeader: toRef(props, 'hideTimeHeader'),
     timeAccuracy: toRef(props, 'timeAccuracy'),

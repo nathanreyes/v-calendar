@@ -49,7 +49,7 @@ export function createTimePicker(props: TimePickerProps) {
   const { locale } = baseCtx;
   const {
     isRange,
-    isTime,
+    isTimeMode,
     dateParts,
     modelConfig,
     is24hr,
@@ -89,7 +89,7 @@ export function createTimePicker(props: TimePickerProps) {
   );
   const partsValid = computed(() => isDateParts(parts.value));
   const isValid = computed(() => !!parts.value.isValid);
-  const showBorder = computed(() => !isTime.value);
+  const showBorder = computed(() => !isTimeMode.value);
   const showHeader = computed(() => {
     return !hideTimeHeader.value && isValid.value;
   });
