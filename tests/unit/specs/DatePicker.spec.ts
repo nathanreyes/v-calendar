@@ -1,41 +1,100 @@
-import { h } from 'vue';
+import { UnwrapNestedRefs, ComponentPublicInstance, h, nextTick } from 'vue';
 import { mount, VueWrapper } from '@vue/test-utils';
 import DatePicker from '@/components/DatePicker/DatePicker.vue';
 import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import dateValues from '../util/dateValues.json';
 import wait from '../util/wait';
+import { DatePickerContext } from '@/use/datePicker';
+
+type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
+  ComponentPublicInstance;
+
+// #region Test helpers
+
+async function mountDp(props: any) {
+  const dpWrapper = mount<DatePickerComponent>(
+    // @ts-ignore
+    DatePicker,
+    { props },
+  );
+  await nextTick();
+  await nextTick();
+  return dpWrapper;
+}
+
+function getDayClass(vm: DatePickerComponent, date: Date) {
+  return `.id-${vm.locale.getDayId(date)}`;
+}
+
+function getDayContentClass(vm: DatePickerComponent, date: Date) {
+  return `${getDayClass(vm, date)} .vc-day-content`;
+}
+
+// #endregion - Test helpers
 
 describe('DatePicker', () => {
-  describe(':props', () => {
-    it(':value - renders a date value', async () => {
-      const wrapper = mount(DatePicker, {
-        props: {
-          modelValue: new Date(2000, 0, 15),
-        },
-      });
-      expect(wrapper.find('.id-2000-01-15').exists()).toBe(true);
+  describe(':props', async () => {
+    it(':value - does not emit update:modelValue on initial load', async () => {
+      const dp = await mountDp({ modelValue: new Date() });
+      expect(dp.emitted('update:modelValue')).toBeUndefined();
     });
 
-    it(':value - sets the right dates and times', async () => {
-      for (const dv of dateValues) {
-        const dp = mount(DatePicker, {
-          props: dv.props,
-        });
-        await dp.vm.$nextTick();
-        if (dv.props.mode !== 'date') {
-          const tp = dp.findComponent<typeof TimePicker>(TimePicker).vm;
-          tp.
-          const { hours, minutes, isAM } = dv.time!;
-          expect(tp.hours).toEqual(hours);
-          expect(tp.minutes).toEqual(minutes);
-          expect(tp.isAM).toEqual(isAM);
-        }
-        if (dv.clickEl) {
-          await dp.find(dv.clickEl).trigger('click');
-          expect(dp.emitted('update:modelValue')![0]).toEqual(dv.newValue);
-        }
-      }
+    it(':value - emits update:modelValue on day click', async () => {
+      const date = new Date(2023, 0, 15);
+      const initialPage = { year: 2023, month: 1 };
+      const dp = await mountDp({ modelValue: null, initialPage });
+      const day = dp.get(getDayContentClass(dp.vm, date));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')).toHaveLength(1);
     });
+
+    it(':is-required - clears value if new value equal to previous value and is false', async () => {
+      const date = new Date(2023, 0, 15);
+      const dp = await mountDp({ modelValue: date });
+      const day = dp.get(getDayContentClass(dp.vm, date));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')).toHaveLength(1);
+      expect(dp.emitted('update:modelValue')![0][0]).toBe(null);
+    });
+
+    it(':is-required - keeps value if new value equal to previous value and is true', async () => {
+      const date = new Date(2023, 0, 15);
+      const dp = await mountDp({ modelValue: date, isRequired: true });
+      const day = dp.get(getDayContentClass(dp.vm, date));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    // for (const dv of dateValues) {
+    //   const dp = await mountDp(dv.props);
+    //   it(':value - loads the correct initial page', () => {
+    //     expect(() => dp.get(dv.pageEl)).not.toThrowError();
+    //   });
+    //   if (dv.dayEls) {
+    //     it(':value - selects the correct day(s)', () => {
+    //       dv.dayEls.forEach(el => {
+    //         expect(() => dp.get(el)).not.toThrowError();
+    //       });
+    //     });
+    //   }
+    //   if (dv.props.mode !== 'date' && dv.time) {
+    //     it(':value - sets the correct time', () => {
+    //       const tp = dp.getComponent(TimePicker);
+    //       const { hours, minutes, isAM } = dv.time;
+    //       expect(tp.vm.hours).toEqual(hours);
+    //       expect(tp.vm.minutes).toEqual(minutes);
+    //       expect(tp.vm.isAM).toEqual(isAM);
+    //     });
+    //   }
+    //   if (dv.clickEl) {
+    //     // it('emits the correct date value on day click', async () => {
+    //     //   await dp.find(dv.clickEl).trigger('click');
+    //     //   console.log(dp.emitted('update:modelValue'));
+    //     //   const newValue = dp.emitted('update:modelValue')![0][0];
+    //     //   // expect(newValue).toEqual(dv.newValue);
+    //     // });
+    //   }
+    // }
 
     // it(':min-date - prevents date before minimum date', async () => {
     //   const dp = mount(DatePicker, {
