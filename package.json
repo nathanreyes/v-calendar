@@ -1,13 +1,16 @@
 {
   "name": "v-calendar",
+  "type": "module",
   "version": "3.0.0-alpha.8",
   "description": "A calendar and date picker plugin for Vue.js.",
   "author": "Nathan Reyes <nathanreyes@me.com>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nathanreyes/v-calendar"
-  },
+  "repository": "https://github.com/nathanreyes/v-calendar",
   "homepage": "https://vcalendar.io",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "unpkg": "dist/iife/index.js",
+  "types": "dist/types/index.d.ts",
   "keywords": [
     "vue",
     "vue3",
@@ -24,19 +27,23 @@
     "dist",
     "types/*.d.ts"
   ],
-  "module": "dist/v-calendar.es.js",
-  "main": "dist/v-calendar.umd.js",
-  "unpkg": "dist/v-calendar.min.js",
-  "types": "types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/v-calendar.es.js",
-      "require": "./dist/v-calendar.umd.js"
+      "import": {
+        "node": "./dist/esm-node/index.mjs",
+        "default": "./dist/es/index.js"
+      },
+      "require": "./dist/cjs/index.js"
     },
     "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "yarn build:types && yarn build:es && yarn build:mjs && yarn build:cjs && yarn build:iife",
+    "build:types": "vue-tsc --noEmit",
+    "build:es": "vite build --config ./build/configs/vite.es.ts",
+    "build:mjs": "vite build --config ./build/configs/vite.mjs.ts",
+    "build:cjs": "vite build --config ./build/configs/vite.cjs.ts",
+    "build:iife": "vite build --config ./build/configs/vite.iife.ts",
     "analyze": "vite build --config analyze.config.ts",
     "test": "vitest",
     "lint": "eslint . --ext .js,.vue"
@@ -77,15 +84,12 @@
     "regenerator-runtime": "^0.13.9",
     "resize-observer-polyfill": "^1.5.1",
     "rollup-plugin-visualizer": "^5.5.4",
+    "terser": "^5.16.1",
     "tslib": "^2.4.0",
     "typescript": "^4.8.4",
     "vite": "^4.0.4",
     "vitest": "^0.26.3",
-    "vue": "^3.2.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "vue": "^3.2.0",
+    "vue-tsc": "^1.0.24"
+  }
 }
