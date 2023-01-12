@@ -60,7 +60,7 @@ import { CalendarDay } from '../../utils/page';
 import { Attribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
-import { DateRangeCell } from '@/utils/date/range';
+import { DateRangeCell } from '../../utils/date/range';
 
 export default defineComponent({
   directives: { popover: popoverDirective },

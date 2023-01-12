@@ -1,12 +1,12 @@
 <script lang="ts">
-import { h, reactive } from 'vue';
+import { h, reactive, defineComponent } from 'vue';
 import Popover from '../Popover/Popover.vue';
 import Calendar from '../Calendar/Calendar.vue';
 import TimePicker from '../TimePicker/TimePicker.vue';
 import { propsDef, emits, createDatePicker } from '../../use/datePicker';
 import { omit } from '../../utils/helpers';
 
-export default {
+export default defineComponent({
   name: 'DatePicker',
   inheritAttrs: false,
   emits,
@@ -111,5 +111,5 @@ export default {
       ),
     ];
   },
-};
+});
 </script>

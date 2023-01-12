@@ -40,7 +40,7 @@ export interface PopoverEvent {
   detail: Partial<PopoverOptions>;
 }
 
-interface PopoverEventHandlers {
+export interface PopoverEventHandlers {
   click: (e: MouseEvent) => void;
   mousemove: (e: MouseEvent) => void;
   mouseleave: (e: MouseEvent) => void;

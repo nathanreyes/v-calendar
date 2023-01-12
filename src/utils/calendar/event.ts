@@ -8,13 +8,13 @@ import { MS_PER_MINUTE, roundDate } from '../date/helpers';
 import { DateRange } from '../date/range';
 import { clamp, omit } from '../helpers';
 
-interface ResizeOrigin {
+export interface ResizeOrigin {
   start: Date;
   end: Date;
   isStart: boolean;
 }
 
-interface DragOrigin {
+export interface DragOrigin {
   day: CalendarDay;
   start: Date;
   end: Date;

@@ -164,7 +164,7 @@ interface DatePartOption {
   disabled?: boolean;
 }
 
-interface DatePartsObject<T> {
+export interface DatePartsObject<T> {
   milliseconds: T;
   seconds: T;
   minutes: T;

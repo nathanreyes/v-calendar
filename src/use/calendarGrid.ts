@@ -9,7 +9,7 @@ import {
   nextTick,
 } from 'vue';
 import { propsDef as basePropsDef, emitsDef, createCalendar } from './calendar';
-import { CalendarDay, Page } from '../utils/page';
+import { CalendarDay } from '../utils/page';
 import { createGuid, on } from '../utils/helpers';
 import {
   EventConfig,
@@ -60,7 +60,7 @@ export interface ResizeOffset {
   ms: number;
 }
 
-interface DragOriginState {
+export interface DragOriginState {
   position: number;
   date: Date;
   day: CalendarDay;
@@ -69,7 +69,7 @@ interface DragOriginState {
   ms: number;
 }
 
-interface ResizeOriginState {
+export interface ResizeOriginState {
   position: number;
   day: CalendarDay;
   event: Event;
@@ -79,7 +79,7 @@ interface ResizeOriginState {
   ms: number;
 }
 
-interface CreateOriginState {
+export interface CreateOriginState {
   position: number;
   date: Date;
   day: CalendarDay;
@@ -238,6 +238,8 @@ export const propsDef = {
 export type CalendarGridProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 export type CalendarGridContext = ReturnType<typeof createCalendarGrid>;
+
+type IBoundingRect = Pick<Element, 'getBoundingClientRect'>;
 
 export function createCalendarGrid(
   props: CalendarGridProps,
@@ -413,9 +415,10 @@ export function createCalendarGrid(
   }
 
   const getPositionFromMouseEvent = (
-    gridEl: HTMLElement,
+    gridEl: IBoundingRect | null,
     event: MouseEvent,
   ): Point => {
+    if (gridEl == null) return { x: 0, y: 0 };
     const rect = gridEl.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -423,9 +426,10 @@ export function createCalendarGrid(
   };
 
   const getPositionFromTouchEvent = (
-    gridEl: HTMLElement,
+    gridEl: IBoundingRect | null,
     event: TouchEvent,
   ): Point => {
+    if (gridEl == null) return { x: 0, y: 0 };
     const rect = gridEl.getBoundingClientRect();
     const touch = event.targetTouches[0] || event.changedTouches[0];
     const x = touch.clientX - rect.left;
@@ -434,7 +438,7 @@ export function createCalendarGrid(
   };
 
   const getPositionFromUIEvent = (
-    gridEl: HTMLElement,
+    gridEl: IBoundingRect | null,
     event: UIEvent,
   ): Point => {
     if (event.type.startsWith('touch'))
@@ -442,8 +446,8 @@ export function createCalendarGrid(
     return getPositionFromMouseEvent(gridEl, event as MouseEvent);
   };
 
-  const getDayFromPosition = (el: HTMLElement, { x, y }: any) => {
-    if (!el) return days.value[0];
+  const getDayFromPosition = (el: IBoundingRect | null, { x, y }: any) => {
+    if (el == null) return days.value[0];
     const rect = el.getBoundingClientRect();
     const dayWidth = rect.width / dayColumns.value;
     const dayHeight = rect.height / dayRows.value;

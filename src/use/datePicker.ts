@@ -1,4 +1,5 @@
 import {
+  SetupContext,
   ExtractPropTypes,
   PropType,
   ref,
@@ -64,7 +65,7 @@ export interface UpdateOptions {
   moveToValue: boolean;
 }
 
-interface ModelModifiers {
+export interface ModelModifiers {
   number?: boolean;
   string?: boolean;
   range?: boolean;
@@ -129,7 +130,10 @@ export const emits = [
   'popover-did-hide',
 ];
 
-export function createDatePicker(props: DatePickerProps, ctx: any) {
+export function createDatePicker(
+  props: DatePickerProps,
+  ctx: SetupContext<string[]>,
+) {
   const baseCtx = createBase(props);
   const { locale, masks, disabledAttribute } = baseCtx;
   const { emit } = ctx;
