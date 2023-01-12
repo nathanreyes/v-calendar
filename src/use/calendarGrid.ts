@@ -239,7 +239,7 @@ export type CalendarGridProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 export type CalendarGridContext = ReturnType<typeof createCalendarGrid>;
 
-type IBoundingRect = Pick<Element, 'getBoundingClientRect'>;
+type IBoundingRect = Pick<Element, 'getBoundingClientRect' | 'contains'>;
 
 export function createCalendarGrid(
   props: CalendarGridProps,
@@ -247,9 +247,9 @@ export function createCalendarGrid(
 ) {
   const calendar = createCalendar(props, { emit, slots });
   const cellPopoverRef = ref<typeof CalendarCellPopover>();
-  const dailyGridRef = ref<HTMLElement | null>(null);
-  const weeklyGridRef = ref<HTMLElement | null>(null);
-  let activeGridRef = ref<HTMLElement | null>(null);
+  const dailyGridRef = ref<IBoundingRect | null>(null);
+  const weeklyGridRef = ref<IBoundingRect | null>(null);
+  let activeGridRef = ref<IBoundingRect | null>(null);
   Messages._emit = emit;
 
   const { view, isDaily, isMonthly, pages, locale, move, onDayFocusin } =

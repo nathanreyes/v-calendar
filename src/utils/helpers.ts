@@ -76,10 +76,8 @@ export const roundTenth = (n: number) => {
 export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
 
-export const resolveEl = (
-  target: Element | ComponentPublicInstance | string | null,
-): Element | null => {
-  if (target == null) return target;
+export const resolveEl = (target: unknown): Node | null => {
+  if (target == null) return target ?? null;
   if (document && isString(target)) return document.querySelector(target);
   return (target as ComponentPublicInstance).$el ?? target;
 };
@@ -89,7 +87,7 @@ export interface ElementPosition {
   left: number;
 }
 
-interface CustomElement {
+export interface CustomElement {
   addEventListener: Function;
   removeEventListener: Function;
   dispatchEvent: Function;

@@ -1,4 +1,5 @@
 import { on, off, isFunction } from './helpers';
+import type { CustomElement } from './helpers';
 
 interface SwipeHandlerOptions {
   maxSwipeTime: number;
@@ -7,7 +8,7 @@ interface SwipeHandlerOptions {
 }
 
 export const addHorizontalSwipeHandler = (
-  element: HTMLElement,
+  element: CustomElement,
   handler: Function,
   {
     maxSwipeTime,

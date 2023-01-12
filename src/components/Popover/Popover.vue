@@ -180,7 +180,11 @@ export default defineComponent({
           destroyPopper();
         }
         if (!popper) {
-          popper = createPopper(el, popoverRef.value, popperOptions.value);
+          popper = createPopper(
+            el as Element,
+            popoverRef.value,
+            popperOptions.value,
+          );
         } else {
           popper.update();
         }
@@ -200,9 +204,7 @@ export default defineComponent({
       }
     }
 
-    function isCurrentTarget(
-      target: Element | ComponentPublicInstance | string | null | undefined,
-    ) {
+    function isCurrentTarget(target: unknown) {
       if (!target || !popper) return false;
       const el = resolveEl(target);
       return el === popper.state.elements.reference;

@@ -13,6 +13,23 @@ import { Page } from '../utils/page';
 import { getMonthDates } from '../utils/date/helpers';
 import { head, last, pad } from '../utils/helpers';
 
+export interface YearItem {
+  year: number;
+  id: string;
+  label: string;
+  ariaLabel: string;
+  isActive: boolean;
+  isCurrent: boolean;
+  isDisabled: boolean;
+  click: () => void;
+}
+
+export interface MonthItem extends YearItem {
+  month: number;
+}
+
+export type IQuerySelector = Pick<HTMLElement, 'querySelector'>;
+
 export type CalendarNavContext = ReturnType<typeof createCalendarNav>;
 
 export type CalendarNavProps = Readonly<ExtractPropTypes<typeof propsDef>>;
@@ -26,27 +43,11 @@ export const emitsDef = ['input'];
 const contextKey = '__vc_calendar_nav_context__';
 
 export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
-  interface YearItem {
-    year: number;
-    id: string;
-    label: string;
-    ariaLabel: string;
-    isActive: boolean;
-    isCurrent: boolean;
-    isDisabled: boolean;
-    click: () => void;
-  }
-
-  interface MonthItem extends YearItem {
-    month: number;
-  }
-
-  const _yearGroupCount = 12;
-
   const monthMode = ref(true);
   const yearIndex = ref(0);
   const yearGroupIndex = ref(0);
-  const navContainer = ref<HTMLElement | null>(null);
+  const yearGroupCount = 12;
+  const navContainer = ref<IQuerySelector | null>(null);
 
   const { locale, masks, canMove, getDateAddress } = useCalendar();
 
@@ -76,8 +77,8 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
 
   function getYearItems(yearGroupIndex: number): YearItem[] {
     const { year: thisYear } = getDateAddress(new Date());
-    const startYear = yearGroupIndex * _yearGroupCount;
-    const endYear = startYear + _yearGroupCount;
+    const startYear = yearGroupIndex * yearGroupCount;
+    const endYear = startYear + yearGroupCount;
     const items = [];
     for (let year = startYear; year < endYear; year += 1) {
       let enabled = false;
@@ -138,7 +139,7 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
   }
 
   function getYearGroupIndex(year: number) {
-    return Math.floor(year / _yearGroupCount);
+    return Math.floor(year / yearGroupCount);
   }
 
   function toggleMode() {

@@ -28,6 +28,7 @@ import {
   last,
   arrayHasItems,
 } from '../utils/helpers';
+import type { CustomElement } from '../utils/helpers';
 import { getDefault } from '../utils/defaults';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
@@ -73,8 +74,10 @@ export interface RefreshOptions {
 
 export type CalendarProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
+type IContainer = Pick<Element, 'querySelector'> & CustomElement;
+
 interface CalendarState {
-  containerRef: HTMLElement | null;
+  containerRef: IContainer | null;
   navPopoverRef: typeof Popover | null;
   lastFocusedDay: CalendarDay | null;
   focusableDay: number;

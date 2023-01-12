@@ -10,7 +10,7 @@ export interface PopoverOptions {
   isInteractive: boolean;
   autoHide: boolean;
   force: boolean;
-  target: HTMLElement | ComponentPublicInstance | string | null;
+  target: unknown;
   placement: Placement;
   modifiers: any;
   data: any;
@@ -21,7 +21,7 @@ export interface PopoverOptions {
 
 export interface PopoverState {
   isVisible: boolean;
-  target: HTMLElement | ComponentPublicInstance | string | null;
+  target: unknown;
   data: any;
   transition: string;
   placement: Placement;
