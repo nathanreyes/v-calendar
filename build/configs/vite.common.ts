@@ -1,12 +1,12 @@
 import { readFileSync, lstatSync, readdirSync } from 'fs';
 import vue from '@vitejs/plugin-vue';
 import { resolve as resolver } from 'path';
+import type { RollupOptions } from 'rollup';
+import { visualizer } from 'rollup-plugin-visualizer';
 // import { chunkSplitPlugin } from 'vite-plugin-chunk-split';
 // import { appendComponentCss } from './plugins/append-component-css';
 // import { fixImportHell } from './plugins/fix-import-hell';
 import { defineVitePlugin } from '../types/define-vite-plugin';
-
-import type { RollupOptions } from 'rollup';
 
 export type BuildFormat = 'iife' | 'es' | 'cjs' | 'esm-node';
 
@@ -52,10 +52,10 @@ const rollupMjsBuildOptions: RollupOptions = {
 export default function createViteConfig(format: BuildFormat) {
   const isEsm = ['es', 'esm-node'].includes(format);
   const isNode = format === 'esm-node';
+  const isEs = format === 'es';
 
   const config = defineVitePlugin({
     resolve,
-
     build: {
       outDir: `dist/${format}`,
       cssCodeSplit: isEsm,
@@ -79,7 +79,6 @@ export default function createViteConfig(format: BuildFormat) {
         ? { ...rollupOptions, ...rollupMjsBuildOptions }
         : rollupOptions,
     },
-
     plugins: [
       vue({
         isProduction: true,
@@ -92,6 +91,17 @@ export default function createViteConfig(format: BuildFormat) {
   // isEsm && config.plugins.push(chunkSplitPlugin({ strategy: 'unbundle' }));
   // isEsm && !isNode && config.plugins.push(appendComponentCss());
   // isEsm && config.plugins.push(fixImportHell());
+
+  // Add visualizer for es build
+  if (isEs) {
+    config.plugins.push(
+      visualizer({
+        filename: 'dist/stats.html',
+        title: 'V-Calendar Visualizer',
+        open: true,
+      }),
+    );
+  }
 
   return config;
 }
