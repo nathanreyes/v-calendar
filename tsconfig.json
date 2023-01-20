@@ -28,7 +28,7 @@
       "dom.iterable",
       "scripthost",
       "esnext.intl"
-    ]
+    ],
   },
   "include": [
     "src/**/*.ts",
@@ -37,5 +37,5 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

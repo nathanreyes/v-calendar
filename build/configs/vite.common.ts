@@ -1,31 +1,30 @@
-import { readFileSync, lstatSync, readdirSync } from 'fs';
+import path from 'path';
+import { lstatSync, readdirSync } from 'fs';
 import vue from '@vitejs/plugin-vue';
-import { resolve as resolver } from 'path';
-import type { RollupOptions } from 'rollup';
+import { type InlineConfig } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
-// import { chunkSplitPlugin } from 'vite-plugin-chunk-split';
-// import { appendComponentCss } from './plugins/append-component-css';
-// import { fixImportHell } from './plugins/fix-import-hell';
-import { defineVitePlugin } from '../types/define-vite-plugin';
+import type { RollupOptions } from 'rollup';
 
-export type BuildFormat = 'iife' | 'es' | 'cjs' | 'esm-node';
+export type BuildFormat = 'es' | 'mjs' | 'cjs' | 'iife';
 
 export const resolve = {
   alias: {
-    '@': resolver(process.cwd(), 'src'),
-    '~/': resolver(process.cwd(), 'src'),
+    '@': path.resolve(process.cwd(), 'src'),
+    '~/': path.resolve(process.cwd(), 'src'),
   },
 };
 
-const libBuildOptions = (format: 'iife' | 'es' | 'cjs') => ({
-  entry: resolver(process.cwd(), 'src/index.ts'),
-  fileName: () => 'index.js',
-  formats: [format],
-  // Only for iife/umd
-  name: 'VCalendar',
-});
+export const readDirRecursive = (path: string): string[] => {
+  return readdirSync(path).reduce<string[]>((acc, entry) => {
+    const p = `${path}/${entry}`;
+    if (lstatSync(p).isDirectory()) {
+      return [...acc, ...readDirRecursive(p)];
+    }
+    return [...acc, p];
+  }, []);
+};
 
-const rollupOptions = {
+const rollupOptions: RollupOptions = {
   external: ['vue', '@popperjs/core'],
   output: {
     // Provide global variables to use in the UMD build
@@ -38,10 +37,10 @@ const rollupOptions = {
 };
 
 const rollupMjsBuildOptions: RollupOptions = {
-  input: resolver(process.cwd(), 'src/index.ts'),
+  input: path.resolve(process.cwd(), 'src/index.ts'),
   output: {
     sourcemap: true,
-    dir: 'dist/esm-node',
+    dir: 'dist/mjs',
     format: 'esm',
     entryFileNames: '[name].mjs',
     chunkFileNames: '[name].mjs',
@@ -49,35 +48,39 @@ const rollupMjsBuildOptions: RollupOptions = {
   },
 };
 
-export default function createViteConfig(format: BuildFormat) {
-  const isEsm = ['es', 'esm-node'].includes(format);
-  const isNode = format === 'esm-node';
+export function createViteConfig(format: BuildFormat): InlineConfig {
   const isEs = format === 'es';
+  const isEsm = ['es', 'mjs'].includes(format);
+  const isNode = format === 'mjs';
+  const useTerser = format === 'iife';
 
-  const config = defineVitePlugin({
+  const config: InlineConfig = {
     resolve,
     build: {
       outDir: `dist/${format}`,
-      cssCodeSplit: isEsm,
+      cssCodeSplit: !isEsm,
       sourcemap: true,
-
-      // may be in future - less transpiling, faster (default 'modules')
-      // if the build.minify option is 'terser', 'esnext' will be forced down to 'es2019'
-      // target: 'esnext',
-
-      // default esbuild, not available for esm format in lib mode
-      minify: format === 'iife' ? 'terser' : false,
-      terserOptions: {
-        // https://stackoverflow.com/questions/57720816/rails-webpacker-terser-keep-fnames
-        // disable mangling class names (for vue class component)
-        keep_classnames: true,
-        // disable mangling functions names
-        keep_fnames: true,
+      lib: {
+        entry: path.resolve(process.cwd(), 'src/index.ts'),
+        fileName: () => 'index.js',
+        formats: [isNode ? 'es' : format],
+        // Only for iife/umd
+        name: 'VCalendar',
       },
-      lib: libBuildOptions(isNode ? 'es' : format),
       rollupOptions: isNode
         ? { ...rollupOptions, ...rollupMjsBuildOptions }
         : rollupOptions,
+      // default esbuild, not available for esm format in lib mode
+      minify: useTerser ? 'terser' : false,
+      terserOptions: useTerser
+        ? {
+            // https://stackoverflow.com/questions/57720816/rails-webpacker-terser-keep-fnames
+            // disable mangling class names (for vue class component)
+            keep_classnames: true,
+            // disable mangling functions names
+            keep_fnames: true,
+          }
+        : undefined,
     },
     plugins: [
       vue({
@@ -85,20 +88,14 @@ export default function createViteConfig(format: BuildFormat) {
         exclude: [/\.md$/, /\.spec\.ts$/, /\.spec\.disabled$/],
       }),
     ],
-  });
-
-  // https://github.com/sanyuan0704/vite-plugin-chunk-split
-  // isEsm && config.plugins.push(chunkSplitPlugin({ strategy: 'unbundle' }));
-  // isEsm && !isNode && config.plugins.push(appendComponentCss());
-  // isEsm && config.plugins.push(fixImportHell());
+  };
 
   // Add visualizer for es build
   if (isEs) {
-    config.plugins.push(
+    config.plugins!.push(
       visualizer({
         filename: 'dist/stats.html',
         title: 'V-Calendar Visualizer',
-        open: true,
       }),
     );
   }

@@ -30,7 +30,7 @@
   "exports": {
     ".": {
       "import": {
-        "node": "./dist/esm-node/index.mjs",
+        "node": "./dist/mjs/index.mjs",
         "default": "./dist/es/index.js"
       },
       "require": "./dist/cjs/index.js"
@@ -38,13 +38,7 @@
     "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
-    "build": "yarn build:types && yarn build:es && yarn build:mjs && yarn build:cjs && yarn build:iife",
-    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "build:es": "vite build --config ./build/configs/vite.es.ts",
-    "build:mjs": "vite build --config ./build/configs/vite.mjs.ts",
-    "build:cjs": "vite build --config ./build/configs/vite.cjs.ts",
-    "build:iife": "vite build --config ./build/configs/vite.iife.ts",
-    "analyze": "vite build --config analyze.config.ts",
+    "build": "tsx build/build.ts",
     "test": "vitest",
     "lint": "eslint . --ext .js,.vue"
   },
@@ -86,6 +80,7 @@
     "rollup-plugin-visualizer": "^5.5.4",
     "terser": "^5.16.1",
     "tslib": "^2.4.0",
+    "tsx": "^3.12.2",
     "typescript": "^4.8.4",
     "vite": "^4.0.4",
     "vitest": "^0.26.3",
