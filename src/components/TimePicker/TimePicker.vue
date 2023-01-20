@@ -90,3 +90,75 @@ const {
   timeAccuracy,
 } = timePicker;
 </script>
+
+<style lang="css">
+.vc-time-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  &.vc-invalid {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  &.vc-bordered {
+    border-top: 1px solid var(--vc-time-picker-border);
+  }
+  > * + * {
+    margin-top: 4px;
+  }
+}
+
+.vc-time-header {
+  display: flex;
+  align-items: center;
+  font-size: var(--vc-text-sm);
+  font-weight: var(--vc-font-semibold);
+  text-transform: uppercase;
+  margin-top: -4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  line-height: 21px;
+}
+
+.vc-time-select-group {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+  background: var(--vc-time-select-group-bg);
+  border-radius: var(--vc-rounded-md);
+  border: 1px solid var(--vc-time-select-group-border);
+  .vc-base-icon {
+    margin-right: 4px;
+    color: var(--vc-time-select-group-icon-color);
+  }
+}
+
+.vc-time-weekday {
+  color: var(--vc-time-weekday-color);
+  letter-spacing: var(--tracking-wide);
+}
+
+.vc-time-month {
+  color: var(--vc-time-month-color);
+  margin-left: 8px;
+}
+
+.vc-time-day {
+  color: var(--vc-time-day-color);
+  margin-left: 4px;
+}
+
+.vc-time-year {
+  color: var(--vc-time-year-color);
+  margin-left: 8px;
+}
+
+.vc-time-colon {
+  margin: 0 1px 2px 2px;
+}
+
+.vc-time-decimal {
+  margin: 0 0 0 1px;
+}
+</style>

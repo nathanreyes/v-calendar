@@ -1,11 +1,4 @@
 @import './transitions.css';
-@import '../components/Calendar/calendar.css';
-@import '../components/CalendarDay/calendar-day.css';
-@import '../components/CalendarNav/calendar-nav.css';
-@import '../components/CalendarPane/calendar-pane.css';
-@import '../components/Popover/popover.css';
-@import '../components/PopoverRow/popover-row.css';
-@import '../components/TimePicker/time-picker.css';
 @import './theme.css';
 
 .vc-container {

@@ -55,3 +55,47 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="css">
+.vc-day-popover-row {
+  display: flex;
+  align-items: center;
+  transition: var(--vc-day-content-transition);
+}
+
+.vc-day-popover-row-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 0;
+  width: 15px;
+  & span {
+    transition: var(--vc-day-content-transition);
+  }
+}
+
+.vc-day-popover-row-label {
+  display: flex;
+  align-items: center;
+  flex-wrap: none;
+  flex-grow: 1;
+  width: max-content;
+  margin-left: 4px;
+  margin-right: 4px;
+  font-size: var(--vc-text-xs);
+  line-height: var(--vc-leading-normal);
+}
+
+.vc-day-popover-row-highlight {
+  width: 8px;
+  height: 5px;
+  border-radius: 3px;
+}
+
+.vc-day-popover-row-dot {
+}
+.vc-day-popover-row-bar {
+  width: 10px;
+  height: 3px;
+}
+</style>

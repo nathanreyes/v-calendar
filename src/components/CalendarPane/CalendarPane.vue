@@ -69,3 +69,75 @@ export default {
   },
 };
 </script>
+
+<style lang="css">
+.vc-pane {
+  min-width: 250px;
+}
+
+.vc-weeknumber {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  &.is-left {
+    left: calc(var(--vc-weeknumber-offset-inside) * -1);
+  }
+  &.is-right {
+    right: calc(var(--vc-weeknumber-offset-inside) * -1);
+  }
+  &.is-left-outside {
+    left: calc(var(--vc-weeknumber-offset-outside) * -1);
+  }
+  &.is-right-outside {
+    right: calc(var(--vc-weeknumber-offset-outside) * -1);
+  }
+}
+
+.vc-weeknumber-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--vc-text-xs);
+  font-weight: var(--vc-font-medium);
+  font-style: italic;
+  width: 28px;
+  height: 28px;
+  margin-top: 2px;
+  color: var(--vc-weeknumber-color);
+  user-select: none;
+}
+
+.vc-weeks {
+  position: relative;
+  /* overflow: auto; */
+  -webkit-overflow-scrolling: touch;
+  padding: 6px;
+  min-width: 232px;
+  &.vc-show-weeknumbers-left {
+    margin-left: var(--vc-weeknumber-offset-inside);
+  }
+  &.vc-show-weeknumbers-right {
+    margin-right: var(--vc-weeknumber-offset-inside);
+  }
+}
+
+.vc-weekday {
+  text-align: center;
+  color: var(--vc-weekday-color);
+  font-size: var(--vc-text-sm);
+  font-weight: var(--vc-font-bold);
+  line-height: 14px;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  cursor: default;
+  user-select: none;
+}
+
+.vc-week,
+.vc-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  position: relative;
+}
+</style>

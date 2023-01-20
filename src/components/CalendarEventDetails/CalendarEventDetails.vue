@@ -39,6 +39,34 @@ const single = computed(() => {
 const startDate = ref(new Date());
 </script>
 
-<style lang="css">
-@import './calendar-event-details.css';
+<style>
+.vc-calendar-cell-details {
+  background: var(--vc-gray-100);
+  border: solid 1px var(--vc-gray-300);
+  min-width: 400px;
+  padding: 1rem 1.5rem;
+  margin: 2.5rem 0 1rem 1rem;
+  border-radius: var(--vc-rounded-lg);
+
+  .vc-field {
+  }
+  .vc-label {
+    font-size: var(--vc-text-sm);
+    color: var(--vc-gray-600);
+    font-weight: var(--vc-font-medium);
+    letter-spacing: var(--tracking-wide);
+  }
+  .vc-input {
+    font-size: var(--vc-text-sm);
+    display: block;
+    margin-top: 0.25rem;
+    shadow: var(--vc-shadow-sm);
+    border: 1px solid var(--vc-gray-300);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--vc-rounded-md);
+    width: 100%;
+  }
+}
+
+/* focus:ring-indigo-500 focus:border-indigo-500  */
 </style>

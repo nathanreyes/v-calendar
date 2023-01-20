@@ -54,7 +54,6 @@ import {
   onUnmounted,
   defineComponent,
   nextTick,
-  ComponentPublicInstance,
 } from 'vue';
 import {
   State as PopperState,
@@ -430,3 +429,124 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="css">
+.vc-popover-content-wrapper {
+  --popover-horizontal-content-offset: 8px;
+  --popover-vertical-content-offset: 10px;
+  --popover-caret-horizontal-offset: 18px;
+  --popover-caret-vertical-offset: 8px;
+
+  position: absolute;
+  display: block;
+  outline: none;
+  z-index: 10;
+  &:not(.is-interactive) {
+    pointer-events: none;
+  }
+}
+
+.vc-popover-content {
+  position: relative;
+  color: var(--vc-popover-content-color);
+  font-weight: var(--vc-font-medium);
+  background-color: var(--vc-popover-content-bg);
+  border: 1px solid;
+  border-color: var(--vc-popover-content-border);
+  border-radius: var(--vc-rounded-lg);
+  padding: 4px;
+  outline: none;
+  z-index: 10;
+  box-shadow: var(--vc-shadow-lg);
+  &.direction-bottom {
+    margin-top: var(--popover-vertical-content-offset);
+  }
+  &.direction-top {
+    margin-bottom: var(--popover-vertical-content-offset);
+  }
+  &.direction-left {
+    margin-right: var(--popover-horizontal-content-offset);
+  }
+  &.direction-right {
+    margin-left: var(--popover-horizontal-content-offset);
+  }
+}
+
+.vc-popover-caret {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-top: inherit;
+  border-left: inherit;
+  background-color: inherit;
+  z-index: -1;
+  &.direction-bottom {
+    top: 0;
+    &.align-left {
+      transform: translateY(-50%) rotate(45deg);
+    }
+    &.align-center {
+      transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    }
+    &.align-right {
+      transform: translateY(-50%) rotate(45deg);
+    }
+  }
+  &.direction-top {
+    top: 100%;
+    &.align-left {
+      transform: translateY(-50%) rotate(-135deg);
+    }
+    &.align-center {
+      transform: translateX(-50%) translateY(-50%) rotate(-135deg);
+    }
+    &.align-right {
+      transform: translateY(-50%) rotate(-135deg);
+    }
+  }
+  &.direction-left {
+    left: 100%;
+    &.align-top {
+      transform: translateX(-50%) rotate(135deg);
+    }
+    &.align-middle {
+      transform: translateY(-50%) translateX(-50%) rotate(135deg);
+    }
+    &.align-bottom {
+      transform: translateX(-50%) rotate(135deg);
+    }
+  }
+  &.direction-right {
+    left: 0;
+    &.align-top {
+      transform: translateX(-50%) rotate(-45deg);
+    }
+    &.align-middle {
+      transform: translateY(-50%) translateX(-50%) rotate(-45deg);
+    }
+    &.align-bottom {
+      transform: translateX(-50%) rotate(-45deg);
+    }
+  }
+  &.align-left {
+    left: var(--popover-caret-horizontal-offset);
+  }
+  &.align-center {
+    left: 50%;
+  }
+  &.align-right {
+    right: var(--popover-caret-horizontal-offset);
+  }
+  &.align-top {
+    top: var(--popover-caret-vertical-offset);
+  }
+  &.align-middle {
+    top: 50%;
+  }
+  &.align-bottom {
+    bottom: var(--popover-caret-vertical-offset);
+  }
+}
+</style>

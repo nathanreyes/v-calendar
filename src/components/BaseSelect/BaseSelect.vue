@@ -46,5 +46,50 @@ defineEmits(['update:modelValue']);
 </script>
 
 <style lang="css">
-@import './base-select.css';
+.vc-base-select {
+  position: relative;
+  & select {
+    color: var(--vc-select-color);
+    display: block;
+    appearance: none;
+    background-color: transparent;
+    font-size: var(--vc-text-base);
+    font-weight: var(--vc-font-medium);
+    border-radius: var(--vc-rounded);
+    height: 30px;
+    width: max-content;
+    padding: 0px 4px;
+    margin: 0;
+    line-height: var(--leading-none);
+    text-indent: 0px;
+    background-image: none;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--vc-select-hover-bg);
+    }
+    &.has-icon {
+      padding: 0px 24px 0 10px;
+    }
+    &:not(.transparent) {
+      background-color: var(--vc-select-bg);
+      border: 1px solid var(--vc-select-border);
+    }
+    &.small {
+      font-size: var(--vc-text-sm);
+      &.has-icon {
+        padding: 0 20px 0 8 px;
+      }
+    }
+    &.align-right {
+      text-align: right;
+    }
+  }
+  & .vc-base-icon {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
 </style>

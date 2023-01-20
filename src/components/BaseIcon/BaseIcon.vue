@@ -20,5 +20,10 @@ const icon = computed(() => (icons as any)[`Icon${props.name}`]);
 </script>
 
 <style lang="css">
-@import './base-icon.css';
+.vc-base-icon {
+  display: inline-block;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
 </style>
