@@ -9,7 +9,7 @@ When a default slot is used with `DatePicker`, that content will display instead
 </Example>
 
 ```vue
-<DatePicker v-model="date">
+<VDatePicker v-model="date">
   <template #default="{ togglePopover }">
     <button
       class="px-3 py-2 bg-blue-500 text-sm text-white font-semibold rounded-md"
@@ -18,7 +18,7 @@ When a default slot is used with `DatePicker`, that content will display instead
       Select date
     </button>
   </template>
-</DatePicker>
+</VDatePicker>
 ```
 
 In this simple example, we display a `<button />` as the default slot, and use one of the slot props provided to toggle the calendar popover.
@@ -59,11 +59,11 @@ To exclude popover events from `inputEvents`, assign a falsy value to the `popov
 
 ```vue
 <template>
-  <DatePicker v-model="date">
+  <VDatePicker v-model="date">
     <template #default="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -82,7 +82,7 @@ When binding to a date range and providing custom `input` elements, the `inputVa
 
 ```vue
 <template>
-  <DatePicker v-model="range" is-range>
+  <VDatePicker v-model="range" is-range>
     <template #default="{ inputValue, inputEvents }">
       <div class="flex justify-center items-center">
         <BaseInput :value="inputValue.start" v-on="inputEvents.start" />
@@ -90,7 +90,7 @@ When binding to a date range and providing custom `input` elements, the `inputVa
         <BaseInput :value="inputValue.end" v-on="inputEvents.end" />
       </div>
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -113,11 +113,11 @@ Use the `input-debounce` prop (in milliseconds) to set a custom debounce duratio
 
 ```vue
 <template>
-  <DatePicker v-model="date" :input-debounce="500">
+  <VDatePicker v-model="date" :input-debounce="500">
     <template #default="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -136,11 +136,11 @@ To completely disable value updates as the user types, set the `update-on-input`
 
 ```vue
 <template>
-  <DatePicker v-model="date" :update-on-input="false">
+  <VDatePicker v-model="date" :update-on-input="false">
     <template v-slot="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -163,11 +163,11 @@ However, a `locale` prop can be provided to override this setting. This could be
 
 ```vue
 <template>
-  <DatePicker v-model="date" :locale="locale">
+  <VDatePicker v-model="date" :locale="locale">
     <template v-slot="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -191,11 +191,11 @@ Alternatively, if you wish to keep the locale, but just override the locale's in
 
 ```vue
 <template>
-  <DatePicker v-model="date" :masks="masks">
+  <VDatePicker v-model="date" :masks="masks">
     <template v-slot="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -250,11 +250,11 @@ Now, if the `inputEvents` have been properly bound to an `input` element, then t
 
 ```vue
 <template>
-  <DatePicker v-model="date" :popover="popover">
+  <VDatePicker v-model="date" :popover="popover">
     <template #default="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -275,11 +275,11 @@ To customize this behavior, provide a custom `PopoverOptions` object.
 
 ```vue
 <template>
-  <DatePicker v-model="date" :popover="popover">
+  <VDatePicker v-model="date" :popover="popover">
     <template #default="{ inputValue, inputEvents }">
       <BaseInput :value="inputValue" v-on="inputEvents" />
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>
@@ -306,7 +306,7 @@ You may choose to not bind popover behavior to the `inputEvents`, or you may not
 
 ```vue
 <template>
-  <DatePicker v-model="date" :popover="false">
+  <VDatePicker v-model="date" :popover="false">
     <template #default="{ togglePopover, inputValue, inputEvents }">
       <div
         class="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden"
@@ -324,7 +324,7 @@ You may choose to not bind popover behavior to the `inputEvents`, or you may not
         />
       </div>
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>

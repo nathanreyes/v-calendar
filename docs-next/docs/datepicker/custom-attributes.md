@@ -23,7 +23,7 @@ For example, we can use a `dot` instead of a `highlight` to denote the selected 
 
 ```vue
 <template>
-  <DatePicker v-model="date" :select-attribute="selectAttribute" />
+  <VDatePicker v-model="date" :select-attribute="selectAttribute" />
 </template>
 
 <script setup>
@@ -48,7 +48,7 @@ We'll first try to display the dragged range, then fall back to the selected ran
 
 ```vue
 <template>
-  <DatePicker
+  <VDatePicker
     v-model.range="range"
     :select-attribute="selectDragAttribute"
     :drag-attribute="selectDragAttribute"
@@ -61,7 +61,7 @@ We'll first try to display the dragged range, then fall back to the selected ran
         {{ format(dragValue ? dragValue.end : range.end, 'MMM D') }}
       </div>
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 
 <script setup>

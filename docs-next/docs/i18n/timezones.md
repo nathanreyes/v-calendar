@@ -68,7 +68,7 @@ When using the `timezone` prop with `DatePicker`, the displayed time will reflec
 ```vue
 <template>
   <TimezonePicker v-model="timezone" />
-  <DatePicker mode="dateTime" v-model.range="range" :timezone="timezone" />
+  <VDatePicker mode="dateTime" v-model.range="range" :timezone="timezone" />
 </template>
 
 <script>
@@ -92,7 +92,7 @@ Assigned `rules` will respect the assigned `timezone`, or the local browser's ti
 
 ```vue
 <template>
-  <DatePicker v-model.range="range" :rules="rules" timezone="UTC" />
+  <VDatePicker v-model.range="range" :rules="rules" timezone="UTC" />
 </template>
 
 <script setup>

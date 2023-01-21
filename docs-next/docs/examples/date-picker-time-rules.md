@@ -8,7 +8,7 @@
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" :rules="rules" />
+  <VDatePicker v-model="date" mode="dateTime" :rules="rules" />
 </template>
 
 <script setup>
@@ -32,7 +32,7 @@ const rules = {
 
 ```vue
 <template>
-  <DatePicker v-model.range="date" mode="dateTime" :rules="rules" />
+  <VDatePicker v-model.range="date" mode="dateTime" :rules="rules" />
 </template>
 
 <script setup>

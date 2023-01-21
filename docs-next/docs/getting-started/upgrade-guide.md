@@ -21,7 +21,7 @@ The default component prefix of `v` has been removed when using [plugin](./insta
 
 <!-- New  -->
 <VCalendar />
-<DatePicker />
+<VDatePicker />
 ```
 
 ## Dark Mode Updates

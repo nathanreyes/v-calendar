@@ -7,11 +7,11 @@
       </div>
       <div class="vc-field">
         <div class="vc-label">Start</div>
-        <DatePicker v-model="startDate" mode="dateTime">
+        <VDatePicker v-model="startDate" mode="dateTime">
           <template #default="{ inputValue, inputEvents }">
             <input class="vc-input" :value="inputValue" v-on="inputEvents" />
           </template>
-        </DatePicker>
+        </VDatePicker>
       </div>
     </template>
     <div v-else-if="events.length">

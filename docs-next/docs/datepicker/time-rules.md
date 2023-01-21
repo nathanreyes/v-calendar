@@ -21,7 +21,7 @@ After initial mount, if the user selects new dates in the calendar, only the yea
 ```vue
 <template>
   <DateModePicker v-model="mode" />
-  <DatePicker v-model="date" :mode="mode" />
+  <VDatePicker v-model="date" :mode="mode" />
 </template>
 
 <script setup>
@@ -44,7 +44,7 @@ Note how the `Date Value` displayed below shows the zero-ed out time components.
 
 ```vue
 <template>
-  <DatePicker v-model="date" :rules="rules" />
+  <VDatePicker v-model="date" :rules="rules" />
 </template>
 
 <script setup>
@@ -87,7 +87,7 @@ For date ranges, we can normalize the start time to the start of day and the end
 ```vue
 <template>
   <DateModePicker v-model="mode" />
-  <DatePicker v-model.range="range" :mode="mode" :rules="rules" />
+  <VDatePicker v-model.range="range" :mode="mode" :rules="rules" />
 </template>
 
 <script setup>
@@ -152,7 +152,7 @@ A rule with a single number will limit selection to that value. For example, may
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" :rules="rules" />
+  <VDatePicker v-model="date" mode="dateTime" :rules="rules" />
 </template>
 
 <script setup>
@@ -177,7 +177,7 @@ A rule with an array of numbers will limit selection to values in the list.
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" :rules="rules" />
+  <VDatePicker v-model="date" mode="dateTime" :rules="rules" />
 </template>
 
 <script setup>
@@ -210,7 +210,7 @@ All of the properties are optional and may be used in any combination. For examp
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" :rules="rules" />
+  <VDatePicker v-model="date" mode="dateTime" :rules="rules" />
 </template>
 
 <script setup>
@@ -238,7 +238,7 @@ For example, using `mode: 'date'` will zero-out hours, minutes, seconds and mill
 <template>
   <DateModePicker v-model="mode" />
   <TimeAccuracyPicker v-model="timeAccuracy" />
-  <DatePicker
+  <VDatePicker
     v-model="date"
     :mode="mode"
     :time-accuracy="timeAccuracy"

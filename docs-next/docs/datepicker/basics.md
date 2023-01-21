@@ -25,7 +25,7 @@ To limit user selection to only date components (month, day, year), use `mode: '
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="date" />
+  <VDatePicker v-model="date" mode="date" />
 </template>
 
 <script setup>
@@ -49,7 +49,7 @@ To allow user selection of date and time components, use `mode: 'dateTime'`. A t
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" />
+  <VDatePicker v-model="date" mode="dateTime" />
 </template>
 
 <script setup>
@@ -68,7 +68,7 @@ To limit user selection to only time components (hours, minutes, seconds), use `
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="time" :timezone="timezone" />
+  <VDatePicker v-model="date" mode="time" :timezone="timezone" />
 </template>
 
 <script setup>
@@ -116,7 +116,7 @@ If an alternate model format is needed, set the `masks.modelValue` property with
 
 ```vue
 <template>
-  <DatePicker v-model.string="customer.birthday" :masks="masks" />
+  <VDatePicker v-model.string="customer.birthday" :masks="masks" />
 </template>
 
 <script setup>
@@ -166,7 +166,7 @@ The `is-range` prop will continue to be supported, but may be deprecated in a fu
 
 ```vue
 <template>
-  <DatePicker v-model.range="range" mode="dateTime" />
+  <VDatePicker v-model.range="range" mode="dateTime" />
 </template>
 
 <script setup>
@@ -189,7 +189,7 @@ Modifiers may be combined. For example, we could bind to a date range with numbe
 
 ```vue
 <template>
-  <DatePicker v-model.range.number="range" />
+  <VDatePicker v-model.range.number="range" />
 </template>
 
 <script setup>
@@ -208,7 +208,7 @@ Use `disabled-dates` to prevent selection of dates or date ranges that intersect
 
 ```vue
 <template>
-  <DatePicker v-model="date" :disabled-dates="disabledDates" />
+  <VDatePicker v-model="date" :disabled-dates="disabledDates" />
 </template>
 
 <script setup>

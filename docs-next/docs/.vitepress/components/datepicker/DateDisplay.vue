@@ -34,11 +34,11 @@
       <slot name="header" />
     </div>
     <!--Date Picker-->
-    <DatePicker v-bind="$attrs">
+    <VDatePicker v-bind="$attrs">
       <template v-for="(index, name) in $slots" v-slot:[name]="props">
         <slot :name="name" v-bind="props" />
       </template>
-    </DatePicker>
+    </VDatePicker>
   </div>
 </template>
 

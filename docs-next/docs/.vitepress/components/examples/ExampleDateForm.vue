@@ -10,7 +10,7 @@
         >Select Date</label
       >
       <div class="flex w-full">
-        <DatePicker v-model="date" :popover="popover">
+        <VDatePicker v-model="date" :popover="popover">
           <template v-slot="{ inputValue, inputEvents }">
             <input
               id="date"
@@ -20,7 +20,7 @@
               v-on="inputEvents"
             />
           </template>
-        </DatePicker>
+        </VDatePicker>
         <button
           type="button"
           class="text-white font-bold py-2 px-4 rounded-r user-select-none focus:outline-none"

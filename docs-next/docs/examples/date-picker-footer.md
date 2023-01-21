@@ -8,7 +8,7 @@
 
 ```vue
 <template>
-  <DatePicker v-model="date" color="indigo">
+  <VDatePicker v-model="date" color="indigo">
     <template #footer>
       <div class="w-full px-3 pb-3">
         <button
@@ -19,7 +19,7 @@
         </button>
       </div>
     </template>
-  </DatePicker>
+  </VDatePicker>
 </template>
 <script setup>
 import { ref } from 'vue';

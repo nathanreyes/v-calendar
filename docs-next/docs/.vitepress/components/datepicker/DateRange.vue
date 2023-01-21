@@ -1,6 +1,6 @@
 <template>
   <Example centered>
-    <DatePicker v-model.range="range" />
+    <VDatePicker v-model.range="range" />
     <div class="mt-2">{{ JSON.stringify(range) }}</div>
   </Example>
 </template>

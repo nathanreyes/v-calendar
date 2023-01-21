@@ -14,7 +14,7 @@ When `mode` is `dateTime` or `time`, use the `is24hr` prop to use 24-hr selectio
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" is24hr />
+  <VDatePicker v-model="date" mode="dateTime" is24hr />
 </template>
 
 <script setup>
@@ -33,7 +33,7 @@ The time header may be hidden via the `hide-time-header` prop.
 
 ```vue
 <template>
-  <DatePicker v-model="date" mode="dateTime" hide-time-header />
+  <VDatePicker v-model="date" mode="dateTime" hide-time-header />
 </template>
 
 <script setup>
@@ -55,7 +55,7 @@ The time accuracy is a number mapping to the most accurate time component allowe
 ```vue
 <template>
   <TimeAccuracyPicker v-model="timeAccuracy" />
-  <DatePicker v-model="date" mode="dateTime" :time-accuracy="timeAccuracy" />
+  <VDatePicker v-model="date" mode="dateTime" :time-accuracy="timeAccuracy" />
 </template>
 
 <script setup>
