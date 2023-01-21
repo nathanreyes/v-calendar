@@ -98,7 +98,7 @@ export default defineComponent({
         {
           id: datePickerPopoverId.value,
           placement: 'bottom-start',
-          class: `vc-date-picker-content vc-${color} vc-${displayMode}`,
+          class: `vc-date-picker-content vc-${color.value} vc-${displayMode.value}`,
           ref: popoverRef,
           'onBefore-show': onPopoverBeforeShow,
           'onAfter-show': onPopoverAfterShow,
