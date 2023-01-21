@@ -33,7 +33,7 @@ export interface Defaults {
 }
 
 const defaultConfig: Defaults = {
-  componentPrefix: '',
+  componentPrefix: 'V',
   color: 'blue',
   isDark: false,
   navVisibility: 'click',
