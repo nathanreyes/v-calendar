@@ -87,7 +87,9 @@ To prevent this, set the `is-required` prop.
   <DateWithValue mode="dateTime" is-required />
 </Example>
 
-## String dates
+## Model modifiers
+
+### String dates
 
 To bind to a string value, set the `string` model modifier. In this example, the date is provided in ISO-8601 format with the Z designator (zero UTC offset).
 
@@ -106,7 +108,7 @@ const date = ref('2000-01-01T12:00:00.000Z');
 </script>
 ```
 
-### Custom mask
+#### Custom mask
 
 If an alternate model format is needed, set the `masks.modelValue` property with the desired format.
 
@@ -132,7 +134,7 @@ const masks = ref({
 </script>
 ```
 
-## Number dates
+### Number dates
 
 To bind to a number value, set the `number` modifier. The model value should be an integer value representing the number of milliseconds since January 1, 1970, 00:00:00 UTC (the ECMAScript epoch, equivalent to the UNIX epoch).
 
@@ -151,7 +153,7 @@ const dateNum = ref(0);
 </script>
 ```
 
-## Date ranges
+### Date ranges
 
 To bind to a date range with `start` and `end` dates, set the `range` modifier.
 
@@ -179,7 +181,7 @@ const range = ref({
 </script>
 ```
 
-## Combine modifiers
+### Combine modifiers
 
 Modifiers may be combined. For example, we could bind to a date range with number dates.
 

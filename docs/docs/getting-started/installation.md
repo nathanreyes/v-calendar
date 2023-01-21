@@ -4,9 +4,9 @@ title: 'Installation'
 
 # Installation
 
-<BaseAlert title="Requirement">
+<BaseAlert hide-title>
 
-  [Vue.js](https://vuejs.org) version 3.2+ is required.
+  [Vue.js](https://vuejs.org) 3.2+ is required.
 </BaseAlert>
 
 ## Install Plugin
@@ -25,7 +25,7 @@ yarn add v-calendar
 
 ## Use Plugin
 
-<BaseAlert title="Import CSS">
+<BaseAlert title="CSS Import">
 
 **As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
 </BaseAlert>
@@ -131,7 +131,7 @@ export default {
       <VDatePicker v-model='selectedDate' />
     </div>
 
-    <!-- Vue (global) -->
+    <!-- Vue  -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- VCalendar (automatically installed) -->
     <script src="https://unpkg.com/v-calendar"></script>
