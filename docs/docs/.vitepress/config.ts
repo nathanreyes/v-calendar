@@ -128,10 +128,6 @@ function sidebar() {
             text: 'API',
             link: '/datepicker/api',
           },
-          // {
-          //   text: 'Test',
-          //   link: '/datepicker/test',
-          // },
         ],
       },
       {
@@ -151,11 +147,6 @@ function sidebar() {
             link: '/i18n/timezones',
           },
         ],
-      },
-      {
-        text: 'Event Calendar',
-        collapsible: true,
-        items: [{ text: 'Introduction', link: '/event-calendar/introduction' }],
       },
     ],
   };
