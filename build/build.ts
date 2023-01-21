@@ -1,5 +1,6 @@
-import { type BuildFormat } from './configs/vite.common';
+import fs from 'fs';
 import { execSync } from 'child_process';
+import { type BuildFormat } from './configs/vite.common';
 
 const formats: BuildFormat[] = ['es', 'mjs', 'cjs', 'iife'];
 
@@ -11,8 +12,13 @@ async function executeBuild() {
 
   // Build lib with formats
   for (const format of formats) {
-    execSync(`yarn build:${format}`, { stdio: 'inherit' });
+    execSync(`vite build --config ./build/configs/vite.${format}.ts`, {
+      stdio: 'inherit',
+    });
   }
+
+  // Copy css to root
+  fs.copyFileSync('dist/es/style.css', 'dist/style.css');
 }
 
 executeBuild();

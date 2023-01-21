@@ -10,7 +10,7 @@
   "module": "dist/es/index.js",
   "jsdelivr": "dist/iife/index.js",
   "unpkg": "dist/iife/index.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/types/src/index.d.ts",
   "keywords": [
     "vue",
     "vue3",
@@ -25,7 +25,8 @@
   "files": [
     "src",
     "dist",
-    "types/*.d.ts"
+    "package.json",
+    "README.md"
   ],
   "exports": {
     ".": {
@@ -35,7 +36,8 @@
       },
       "require": "./dist/cjs/index.js"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./dist/*": "./dist/*"
   },
   "scripts": {
     "build": "tsx build/build.ts",
