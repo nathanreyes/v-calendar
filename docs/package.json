@@ -1,19 +1,25 @@
 {
-  "name": "docs",
-  "version": "2.0.0",
+  "name": "docs-vite",
+  "version": "1.0.0",
+  "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "vuepress dev",
-    "build": "vuepress build"
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "serve": "vitepress serve docs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "short-uuid": "^4.2.0",
+    "vue-screen-utils": "^1.0.0-beta.9"
+  },
   "devDependencies": {
-    "@vuepress/plugin-google-analytics": "^1.9.5",
-    "@vuepress/plugin-register-components": "^2.0.0-beta.33",
-    "@vuepress/shared-utils": "^1.9.5",
-    "postcss-nested": "^5.0.6",
-    "tailwindcss": "1.5.1",
-    "typescript": "^4.5.4",
-    "vuepress": "^2.0.0-beta.33"
+    "@tailwindcss/forms": "^0.5.2",
+    "@tailwindcss/typography": "^0.5.4",
+    "autoprefixer": "^10.4.8",
+    "postcss": "^8.4.16",
+    "tailwindcss": "^3.1.8",
+    "unplugin-vue-components": "^0.22.3",
+    "vitepress": "^1.0.0-alpha.40",
+    "vue": "^3.2.37"
   }
 }

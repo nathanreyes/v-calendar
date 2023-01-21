@@ -1,9 +1,8 @@
 .DS_Store
 node_modules
 /dist
-/lib
-docs/.vuepress/dist
-/testumdbuild
+docs/docs/.vitepress/dist
+docs/docs/.vitepress/cache
 
 # local env files
 .env.local
