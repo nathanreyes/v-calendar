@@ -1,5 +1,8 @@
 <template>
-  <Calendar :initial-page="{ month: 1, year: 2018 }" :attributes="attributes" />
+  <VCalendar
+    :initial-page="{ month: 1, year: 2018 }"
+    :attributes="attributes"
+  />
 </template>
 
 <script setup>

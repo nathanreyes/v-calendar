@@ -16,7 +16,7 @@ For example, we can pass a single date to highlight today's date in the calendar
 
 ```vue{11}
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup>
@@ -39,7 +39,7 @@ We can also pass multiple dates in an array to highlight multiple dates in the c
 
 ```vue{11-16}
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup>
@@ -72,7 +72,7 @@ A range can be configured with an array of start/end dates.
 
 ```vue
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup>
@@ -122,7 +122,7 @@ Note from the definition above that the date range can be denoted with `start` a
 
 ```vue{11}
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup>
@@ -149,7 +149,7 @@ Boundless dates probably make more sense when defining disabled date expressions
 
 ```vue{8}
 <template>
-  <Calendar :disabled-dates="disabledDates" />
+  <VCalendar :disabled-dates="disabledDates" />
 </template>
 
 <script setup>
@@ -175,7 +175,7 @@ Use the `repeat` property of a date range object to create a repeating date or d
 
 ```vue
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup>
@@ -256,7 +256,7 @@ Also, it is important to note that `week`, `month` and `year` interval rules mus
 
 ```vue
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup lang="ts">

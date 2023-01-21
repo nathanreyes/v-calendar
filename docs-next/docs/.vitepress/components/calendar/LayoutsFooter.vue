@@ -1,5 +1,5 @@
 <template>
-  <Calendar ref="calendar">
+  <VCalendar ref="calendar">
     <template #footer>
       <div class="w-full px-4 pb-3">
         <button
@@ -10,7 +10,7 @@
         </button>
       </div>
     </template>
-  </Calendar>
+  </VCalendar>
 </template>
 
 <script setup>

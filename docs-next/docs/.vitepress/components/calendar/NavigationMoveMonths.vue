@@ -11,5 +11,5 @@ async function move() {
 </script>
 <template>
   <BaseButton @click="move" class="mb-4"> Move </BaseButton>
-  <Calendar ref="calendar" />
+  <VCalendar ref="calendar" />
 </template>

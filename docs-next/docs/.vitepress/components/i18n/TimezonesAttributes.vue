@@ -1,6 +1,6 @@
 <template>
   <Example centered>
-    <Calendar :attributes="attrs" :timezone="timezone" />
+    <VCalendar :attributes="attrs" :timezone="timezone" />
     <FullTimezonePicker v-model="timezone" />
   </Example>
 </template>

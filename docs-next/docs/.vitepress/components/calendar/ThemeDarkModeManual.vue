@@ -5,7 +5,7 @@
         <input id="darkmode" type="checkbox" v-model="isDark" />
         <label for="darkmode"> Dark Mode </label>
       </div>
-      <Calendar :is-dark="isDark" />
+      <VCalendar :is-dark="isDark" />
     </div>
   </Example>
 </template>

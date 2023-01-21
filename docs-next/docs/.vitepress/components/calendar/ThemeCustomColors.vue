@@ -11,7 +11,7 @@ const attrs = ref([
 
 <template>
   <Example centered>
-    <Calendar color="sky-blue" :attributes="attrs" />
+    <VCalendar color="sky-blue" :attributes="attrs" />
   </Example>
 </template>
 

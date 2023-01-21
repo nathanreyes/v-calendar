@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="flex justify-center mt-6">
-      <Calendar
+      <VCalendar
         :initial-page="{ month: 4, year: 2019 }"
         :color="selectedColor.value"
         :attributes="attrs"

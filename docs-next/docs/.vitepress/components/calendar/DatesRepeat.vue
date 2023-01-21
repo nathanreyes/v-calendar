@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center space-y-3">
     <h4 class="font-bold text-center">{{ title }}</h4>
-    <Calendar :attributes="attributes" />
+    <VCalendar :attributes="attributes" />
   </div>
 </template>
 

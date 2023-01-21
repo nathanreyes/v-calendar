@@ -9,11 +9,11 @@ title: 'Layouts'
 To expand the component to the full width of its container, set the `is-expanded` prop.
 
 <Example>
-  <Calendar is-expanded/>
+  <VCalendar is-expanded/>
 </Example>
 
 ```html
-<Calendar is-expanded />
+<VCalendar is-expanded />
 ```
 
 ## Weekly View
@@ -21,11 +21,11 @@ To expand the component to the full width of its container, set the `is-expanded
 Set the `view` prop to display the calendar in 'weekly' view.
 
 <Example centered>
-  <Calendar view="weekly" />
+  <VCalendar view="weekly" />
 </Example>
 
 ```html
-<Calendar view="weekly" />
+<VCalendar view="weekly" />
 ```
 
 ## Weeknumbers
@@ -35,11 +35,11 @@ Set the `view` prop to display the calendar in 'weekly' view.
 Show week numbers by setting the `show-weeknumbers` prop.
 
 <Example centered>
-  <Calendar show-weeknumbers />
+  <VCalendar show-weeknumbers />
 </Example>
 
 ```html
-<Calendar show-weeknumbers />
+<VCalendar show-weeknumbers />
 ```
 
 By default, this will display the numbers on the left side within the calendar pane.
@@ -49,31 +49,31 @@ The `show-weeknumbers` can also be assigned to left and outside positions.
 ### Left Outside
 
 <Example centered>
-  <Calendar show-weeknumbers="left-outside" />
+  <VCalendar show-weeknumbers="left-outside" />
 </Example>
 
 ```html
-<Calendar show-weeknumbers="left-outside" />
+<VCalendar show-weeknumbers="left-outside" />
 ```
 
 ### Right
 
 <Example centered>
-  <Calendar show-weeknumbers="right" />
+  <VCalendar show-weeknumbers="right" />
 </Example>
 
 ```html
-<Calendar show-weeknumbers="right" />
+<VCalendar show-weeknumbers="right" />
 ```
 
 ### Right Outside
 
 <Example centered>
-  <Calendar show-weeknumbers="right-outside" />
+  <VCalendar show-weeknumbers="right-outside" />
 </Example>
 
 ```html
-<Calendar show-weeknumbers="right-outside" />
+<VCalendar show-weeknumbers="right-outside" />
 ```
 
 ### ISO Weeknumbers
@@ -83,11 +83,11 @@ To show ISO week numbers, use the `show-iso-weeknumbers` prop with the same conv
 Since ISO weeks start on Monday, it makes sense to also set Monday as the first day of the week when setting `show-iso-weeknumbers`.
 
 <Example centered>
-  <Calendar :first-day-of-week="2" show-iso-weeknumbers />
+  <VCalendar :first-day-of-week="2" show-iso-weeknumbers />
 </Example>
 
 ```html
-<Calendar :first-day-of-week="2" show-iso-weeknumbers />
+<VCalendar :first-day-of-week="2" show-iso-weeknumbers />
 ```
 
 <BaseAlert warning>
@@ -102,21 +102,21 @@ To make the title header left or right aligned, use the `title-position` prop.
 ### Left Aligned
 
 <Example centered>
-  <Calendar title-position="left" />
+  <VCalendar title-position="left" />
 </Example>
 
 ```html
-<Calendar title-position="left" />
+<VCalendar title-position="left" />
 ```
 
 ### Right Aligned
 
 <Example centered>
-  <Calendar title-position="right" />
+  <VCalendar title-position="right" />
 </Example>
 
 ```html
-<Calendar title-position="right" />
+<VCalendar title-position="right" />
 ```
 
 ## Trim Weeks
@@ -128,11 +128,11 @@ This is to ensure user interface consistency and prevents the calendar height fr
 However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 
 <Example centered>
-  <Calendar trim-weeks />
+  <VCalendar trim-weeks />
 </Example>
 
 ```html
-<Calendar trim-weeks>
+<VCalendar trim-weeks>
 ```
 
 ## Footer
@@ -143,7 +143,7 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 
 ```vue
 <template>
-  <Calendar ref="calendar">
+  <VCalendar ref="calendar">
     <template #footer>
       <div class="w-full px-4 pb-3">
         <button
@@ -154,7 +154,7 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
         </button>
       </div>
     </template>
-  </Calendar>
+  </VCalendar>
 </template>
 
 <script setup>
@@ -173,11 +173,11 @@ function moveToday() {
 Use the `rows` and `columns` props to create multi-row and multi-column static layouts.
 
 <Example centered>
-  <Calendar :rows="2"/>
+  <VCalendar :rows="2"/>
 </Example>
 
 ```html
-<Calendar :rows="2" />
+<VCalendar :rows="2" />
 ```
 
 ## Responsive Layouts
@@ -194,7 +194,7 @@ For this example, we can use the `mapCurrent` function exported by [`vue-screen-
 
 ```vue
 <template>
-  <Calendar :columns="columns" />
+  <VCalendar :columns="columns" />
 </template>
 <script setup>
 import { useScreens } from 'vue-screen-utils';
@@ -212,7 +212,7 @@ Next, for mobile layouts, we can expand the pane width to fill its container.
 
 ```vue
 <template>
-  <Calendar :columns="columns" :isExpanded="isExpanded" />
+  <VCalendar :columns="columns" :isExpanded="isExpanded" />
 </template>
 <script setup>
 import { useScreens } from 'vue-screen-utils';

@@ -1,5 +1,5 @@
 <template>
-  <Calendar :columns="columns" />
+  <VCalendar :columns="columns" />
 </template>
 <script setup>
 import { useScreens } from 'vue-screen-utils';

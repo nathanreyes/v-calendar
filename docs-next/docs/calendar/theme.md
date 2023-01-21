@@ -22,7 +22,7 @@ By default, `is-dark` is `false`, so if left unassigned, the calendar will alway
     <input id="darkmode" type="checkbox" v-model="isDark" />
     <label for="darkmode"> Dark Mode </label>
   </div>
-  <Calendar :is-dark="isDark" />
+  <VCalendar :is-dark="isDark" />
 </div>
 </template>
 <script setup>
@@ -41,7 +41,7 @@ For example, to view the effect on the Mac, you can navigate to  **System Prefer
 
 ```vue
 <template>
-  <Calendar is-dark="system" />
+  <VCalendar is-dark="system" />
 </template>
 ```
 
@@ -54,24 +54,24 @@ For example, most calendars on this site sync with this site's dark mode by watc
 To use the class strategy, pass an object with the element `selector` and `darkClass` to check against. Any class updates made on the element are watched with a `MutationObserver` to detect future changes made by the user.
 
 <Example centered>
-  <Calendar :is-dark="{ selector: ':root', darkClass: 'dark' }" />
+  <VCalendar :is-dark="{ selector: ':root', darkClass: 'dark' }" />
 </Example>
 
 ```html
 <template>
-  <Calendar is-dark="{ selector: ':root', darkClass: 'dark' }" />
+  <VCalendar is-dark="{ selector: ':root', darkClass: 'dark' }" />
 <template>
 ```
 
 Because `:root` and `dark` are the default `selector` and `darkClass`, respectively, a simple object could be passed to achieve the same effect.
 
 <Example centered>
-  <Calendar :is-dark="{}" />
+  <VCalendar :is-dark="{}" />
 </Example>
 
 ```html
 <template>
-  <Calendar is-dark="{}" />
+  <VCalendar is-dark="{}" />
 <template>
 ```
 
@@ -85,7 +85,7 @@ You can apply a theme color with the `color` prop.
 
 ```vue
 <template>
-  <Calendar
+  <VCalendar
     :initial-page="{ month: 4, year: 2019 }"
     :color="selectedColor.value"
     :attributes="attrs"
@@ -147,7 +147,7 @@ const attrs = ref([
 ]);
 </script>
 <template>
-  <Calendar color="sky-blue" :attributes="attrs" />
+  <VCalendar color="sky-blue" :attributes="attrs" />
 </template>
 ```
 

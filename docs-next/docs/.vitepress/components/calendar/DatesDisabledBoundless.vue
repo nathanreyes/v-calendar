@@ -1,5 +1,5 @@
 <template>
-  <Calendar :disabled-dates="disabledDates" />
+  <VCalendar :disabled-dates="disabledDates" />
 </template>
 
 <script setup>

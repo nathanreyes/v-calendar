@@ -19,7 +19,7 @@ The `timezone` prop is used to set the beginning and ending time boundaries for 
 ```vue
 <template>
   <TimezonePicker v-model="timezone" />
-  <Calendar :attributes="attrs" :timezone="timezone" />
+  <VCalendar :attributes="attrs" :timezone="timezone" />
 </template>
 
 <script setup>

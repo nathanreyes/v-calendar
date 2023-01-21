@@ -1,5 +1,5 @@
 <template>
-  <Calendar :columns="columns" :isExpanded="isExpanded" />
+  <VCalendar :columns="columns" :isExpanded="isExpanded" />
 </template>
 <script setup>
 import { useScreens } from 'vue-screen-utils';

@@ -20,7 +20,7 @@ The default component prefix of `v` has been removed when using [plugin](./insta
 <v-date-picker />
 
 <!-- New  -->
-<Calendar />
+<VCalendar />
 <DatePicker />
 ```
 

@@ -15,11 +15,11 @@ There are 2 primary methods for navigating the calendar within the header.
 2. Navigation popover to more easily skip to a specific month/year.
 
 <Example centered>
-  <Calendar />
+  <VCalendar />
 </Example>
 
 ```html
-<Calendar />
+<VCalendar />
 ```
 
 ### Month Steps
@@ -29,7 +29,7 @@ By default, the calendar will navigate to the month following the last current d
 This default step amount is equal to the number of rows multiplied by the number of columns in a given layout (2 rows x 1 column = 2).
 
 <Example centered>
-  <Calendar :rows="2" />
+  <VCalendar :rows="2" />
 </Example>
 
 However, the `step` prop can be used to configure a custom month interval.
@@ -37,11 +37,11 @@ However, the `step` prop can be used to configure a custom month interval.
 For example, instead of moving forward by 2 months in the previous example, we can instead force it move by 1 month.
 
 <Example centered>
-  <Calendar :rows="2" :step="1" />
+  <VCalendar :rows="2" :step="1" />
 </Example>
 
 ```html
-<Calendar :rows="2" :step="1" />
+<VCalendar :rows="2" :step="1" />
 ```
 
 ### Min & Max Dates
@@ -51,21 +51,21 @@ If `min-date` or `max-date` props are assigned, this will disable navigation for
 #### Min Date
 
 <Example centered>
-  <Calendar :min-date="new Date()" />
+  <VCalendar :min-date="new Date()" />
 </Example>
 
 ```html
-<Calendar :min-date="new Date()" />
+<VCalendar :min-date="new Date()" />
 ```
 
 #### Max Date
 
 <Example centered>
-  <Calendar :max-date="new Date()" />
+  <VCalendar :max-date="new Date()" />
 </Example>
 
 ```html
-<Calendar :max-date="new Date()" />
+<VCalendar :max-date="new Date()" />
 ```
 
 ## Key Commands
@@ -131,7 +131,7 @@ Calling `moveBy(num)` with a **negative** number will move **backwards** by a gi
 
 ```vue
 <template>
-  <Calendar ref="calendar">
+  <VCalendar ref="calendar">
 </template>
 
 <script setup>

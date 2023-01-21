@@ -27,7 +27,7 @@ The [well supported](https://caniuse.com/#feat=internationalization) Internation
 ## Default Locale
 
 ```html
-<Calendar />
+<VCalendar />
 ```
 
 With no locale specified, the locale detected by the Internationalization API is used.
@@ -35,11 +35,11 @@ With no locale specified, the locale detected by the Internationalization API is
 ## Default w/ Props
 
 ```html
-<Calendar :first-day-of-week="2" :masks="{ title: 'MMM YYYY' }" />
+<VCalendar :first-day-of-week="2" :masks="{ title: 'MMM YYYY' }" />
 ```
 
 <Example centered>
-  <Calendar :first-day-of-week="2" :masks="{ title: 'MMM YYYY' }" />
+  <VCalendar :first-day-of-week="2" :masks="{ title: 'MMM YYYY' }" />
 </Example>
 
 Uses the detected locale with customized `firstDayOfWeek` or `masks` that will override the built-in locale settings. When using a customized `masks` prop, the default masks will supply any masks that are missing, so you are free to provide single overrides.
@@ -47,11 +47,11 @@ Uses the detected locale with customized `firstDayOfWeek` or `masks` that will o
 ## String Locale
 
 ```html
-<Calendar locale="es" />
+<VCalendar locale="es" />
 ```
 
 <Example centered>
-  <Calendar locale="es" />
+  <VCalendar locale="es" />
 </Example>
 
 With a string locale, the locale with the matching identifier is used. The Internationalization API is used to generate the `dayNames`, `dayNamesShort`, `dayNamesShorter`, `dayNamesNarrow`, `monthNames` and `monthNamesShort` properties. Because the API does not provide common values for the `firstDayOfWeek` or `masks` these are loaded from the plugin defaults (unless specifically provided via props).
@@ -59,11 +59,11 @@ With a string locale, the locale with the matching identifier is used. The Inter
 ## Object Locale
 
 ```html
-<Calendar :locale="{ id: 'da', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }" />
+<VCalendar :locale="{ id: 'da', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }" />
 ```
 
 <Example centered>
-  <Calendar :locale="{ id: 'da', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }" />
+  <VCalendar :locale="{ id: 'da', firstDayOfWeek: 2, masks: { weekdays: 'WW' } }" />
 </Example>
 
 With an object locale, you can simply provide all the settings you need together in a single object.
@@ -93,9 +93,9 @@ Vue.use(VCalendar, {
 Then, all you need to do is reference your locale when using the calendar component.
 
 ```html
-<Calendar locale="pt-PT" />
+<VCalendar locale="pt-PT" />
 ```
 
 <Example centered>
-  <Calendar locale="pt-PT" />
+  <VCalendar locale="pt-PT" />
 </Example>

@@ -1,5 +1,5 @@
 <template>
-  <Calendar :attributes="attributes">
+  <VCalendar :attributes="attributes">
     <template #day-popover="{ day, format, masks, dayTitle, attributes }">
       <div class="px-1">
         <div v-if="step === 1" class="text-xs text-gray-700 dark:text-gray-300">
@@ -22,7 +22,7 @@
         </ul>
       </div>
     </template>
-  </Calendar>
+  </VCalendar>
 </template>
 
 <script setup>

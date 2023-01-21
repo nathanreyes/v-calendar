@@ -1,5 +1,5 @@
 <template>
-  <Calendar :attributes="attrs" />
+  <VCalendar :attributes="attrs" />
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
   <Example centered>
-    <Calendar is-dark="system" />
+    <VCalendar is-dark="system" />
   </Example>
 </template>

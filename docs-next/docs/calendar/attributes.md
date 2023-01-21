@@ -20,7 +20,7 @@ A single attribute may be displayed for single dates, date ranges and even compl
 Here is the basic structure of attributes:
 
 ```html
-<Calendar :attributes='attributes' />
+<VCalendar :attributes='attributes' />
 ```
 
 ```js
@@ -74,7 +74,7 @@ Let's start by displaying a simple **highlight** on today's date.
 
 ```vue
 <template>
-  <Calendar :attributes='attrs' />
+  <VCalendar :attributes='attrs' />
 </template>
 
 <script setup>
@@ -188,7 +188,7 @@ Here is an example using each of the three fill mode types (`solid`, `light` and
 
 ```vue
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup>
@@ -258,7 +258,7 @@ When using an object value, these are the properties you may use for further con
 
 ```vue
 <template>
-  <Calendar
+  <VCalendar
     :initial-page="{ month: 1, year: 2018 }"
     :attributes="attributes"
   />
@@ -337,7 +337,7 @@ When using an object value, these are the properties you may use for further dot
 
 ```vue
 <template>
-  <Calendar
+  <VCalendar
     :initial-page="{ month: 1, year: 2018 }"
     :attributes="attributes"
   />
@@ -415,7 +415,7 @@ These are the additional configuration options you may use for further bar custo
 
 ```vue
 <template>
-  <Calendar
+  <VCalendar
     :initial-page="{ month: 1, year: 2018 }"
     :attributes="attributes"
   />
@@ -464,7 +464,7 @@ For example, we could style the `fillMode` for the highlight end caps separately
 
 ```vue
 <template>
-  <Calendar
+  <VCalendar
     :initial-page="{ month: 1, year: 2019 }"
     :attributes="attributes"
   />
@@ -498,7 +498,7 @@ Labels are the basic tooltip-style popover, configured as simple strings. By def
 
 ```vue
 <template>
-  <Calendar :attributes="attributes" />
+  <VCalendar :attributes="attributes" />
 </template>
 
 <script setup>
@@ -587,13 +587,13 @@ For a more customized approach you can insert your own `"day-popover"` custom sc
 
 ```vue{3-7,31-33}
 <template>
-  <Calendar :attributes="attributes">
+  <VCalendar :attributes="attributes">
     <template #day-popover>
       <div class="text-xs text-gray-700 dark:text-gray-300">
         Using my own content now
       </div>
     </template>
-  </Calendar>
+  </VCalendar>
 </template>
 
 <script setup>
@@ -642,7 +642,7 @@ Let's walk through the process of customizing the previous example. First, let's
 </Example>
 
 ```html
-<Calendar :attributes="attributes">
+<VCalendar :attributes="attributes">
   <template #day-popover="{ day, format, masks }">
     <div class="px-1">
       <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
@@ -650,7 +650,7 @@ Let's walk through the process of customizing the previous example. First, let's
       </div>
     </div>
   </template>
-</Calendar>
+</VCalendar>
 ```
 
 For the header, we use the `format` function to format the date for the current `day`, using the default `dayPopover` mask. Note: you could also just use your own custom mask.
@@ -658,7 +658,7 @@ For the header, we use the `format` function to format the date for the current 
 Because this technique for displaying the header is common, you can extract the pre-formatted `dayTitle` property.
 
 ```html{5}
-<Calendar :attributes="attributes">
+<VCalendar :attributes="attributes">
   <template #day-popover="{ day, dayTitle }">
     <div class="px-1">
       <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
@@ -666,7 +666,7 @@ Because this technique for displaying the header is common, you can extract the 
       </div>
     </div>
   </template>
-</Calendar>
+</VCalendar>
 ```
 
 Now, we just need to display the attributes for the day as well. We can do so by extracting the `attributes` array from the slot-scope expression. We'll use a simple list to display the attribute data.
@@ -676,7 +676,7 @@ Now, we just need to display the attributes for the day as well. We can do so by
 </Example>
 
 ```html{7-11}
-<Calendar :attributes="attributes">
+<VCalendar :attributes="attributes">
   <template #day-popover="{ dayTitle, attributes }">
     <div class="px-2">
       <div class="text-xs text-gray-700 dark:text-gray-300 font-semibold text-center">
@@ -693,5 +693,5 @@ Now, we just need to display the attributes for the day as well. We can do so by
         </ul>
     </div>
   </template>
-</Calendar>
+</VCalendar>
 ```

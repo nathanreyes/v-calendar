@@ -116,7 +116,7 @@
       </template>
     </div>
     <div class="flex-shrink-0">
-      <Calendar
+      <VCalendar
         :rows="2"
         ref="calendar"
         :transition="transition"

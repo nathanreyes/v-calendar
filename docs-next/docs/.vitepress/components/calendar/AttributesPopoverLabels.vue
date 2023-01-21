@@ -6,7 +6,7 @@
     <div class="text-lg font-semibold mb-2 mt-0" v-if="visibility === 'click'">
       Click
     </div>
-    <Calendar :attributes="attributes" />
+    <VCalendar :attributes="attributes" />
   </Example>
 </template>
 
