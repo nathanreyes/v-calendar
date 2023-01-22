@@ -63,6 +63,7 @@ export interface UpdateOptions {
   dragging: boolean;
   targetPriority: ValueTarget;
   moveToValue: boolean;
+  loading: boolean;
 }
 
 export interface ModelModifiers {
@@ -87,9 +88,8 @@ export const propsDef = {
   mode: { type: String, default: 'date' },
   modelValue: {
     type: [Number, String, Date, Object] as PropType<
-      number | string | Date | DatePickerRangeObject
+      number | string | Date | DatePickerRangeObject | null
     >,
-    required: true,
   },
   modelModifiers: {
     type: Object as PropType<ModelModifiers>,
@@ -460,8 +460,13 @@ export function createDatePicker(
       dragging = isDragging.value,
       targetPriority = 'both',
       moveToValue: mValue = false,
+      loading = false,
     }: Partial<UpdateOptions> = {},
   ) {
+    const valueRef = dragging ? dragValue : dateValue;
+    // Notify after the first load by default
+    let notify = !loading;
+
     // 1. Normalization
     const normalizedConfig = normalizeDateConfig(config);
     let normalizedValue = normalizeValue(
@@ -471,42 +476,43 @@ export function createDatePicker(
       targetPriority,
     );
 
-    // Reset to previous value if it was cleared but is required
-    if (!normalizedValue && props.isRequired) {
-      normalizedValue = dateValue.value;
-    }
-
     // 2. Validation (date or range)
     const isDisabled = valueIsDisabled(normalizedValue);
     if (isDisabled) {
       if (dragging) return;
-      normalizedValue = dateValue.value;
+      if (loading) {
+        notify = normalizedValue != null;
+        normalizedValue = null;
+      } else {
+        normalizedValue = dateValue.value;
+      }
       // Don't allow hiding popover
       hPopover = false;
+    } else if (!loading) {
+      const valuesEqual = valuesAreEqual(dateValue.value, normalizedValue);
+      // Reset to previous value if it was cleared but is required
+      if (normalizedValue == null && props.isRequired) {
+        normalizedValue = dateValue.value;
+        // Clear value if same value was passed
+      } else if (normalizedValue != null && valuesEqual && clearIfEqual) {
+        normalizedValue = null;
+      } else {
+        notify = !valuesEqual;
+      }
     }
 
     // 3. Assignment
-    const valueRef = dragging ? dragValue : dateValue;
-    let valueChanged = !valuesAreEqual(valueRef.value, normalizedValue);
+    valueRef.value = normalizedValue;
+    // Clear drag value if needed
+    if (!dragging) dragValue.value = null;
 
-    // Clear value if same value selected and clearIfEqual is set
-    if (!isDisabled && !valueChanged && clearIfEqual) {
-      normalizedValue = null;
-      valueChanged = true;
-    }
-
-    // Assign value
-    if (valueChanged) {
-      valueRef.value = normalizedValue;
-      // Clear drag value if needed
-      if (!dragging) dragValue.value = null;
-      // Denormalization
+    // 4. Notification
+    if (notify) {
+      const event = isDragging.value ? 'drag' : 'update:modelValue';
       const denormalizedValue = denormalizeValue(
         normalizedValue,
         normalizedConfig,
       );
-      // Notification
-      const event = isDragging.value ? 'drag' : 'update:modelValue';
       watchValue = false;
       emit(event, denormalizedValue);
       nextTick(() => (watchValue = true));
@@ -823,6 +829,7 @@ export function createDatePicker(
     forceUpdateValue(props.modelValue, {
       formatInput: true,
       hidePopover: false,
+      loading: true,
     });
   });
 
