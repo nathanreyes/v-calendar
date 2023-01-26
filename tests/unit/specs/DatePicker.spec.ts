@@ -3,8 +3,6 @@ import { mount, VueWrapper } from '@vue/test-utils';
 import DatePicker from '@/components/DatePicker/DatePicker.vue';
 import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import { DatePickerContext } from '@/use/datePicker';
-import dateValues from '../util/dateValues.json';
-import wait from '../util/wait';
 
 type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
   ComponentPublicInstance;
@@ -17,8 +15,6 @@ async function mountDp(props: any) {
     DatePicker,
     { props },
   );
-  await nextTick();
-  await nextTick();
   return dpWrapper;
 }
 
@@ -99,7 +95,7 @@ describe('DatePicker', () => {
       expect(dp.emitted('update:modelValue')![0][0]).toEqual('2000-01-20');
     });
 
-    it(':is-required - clears value if new value equal to previous value and is false', async () => {
+    it(':is-required - clears value if set to false and new value equal to previous value', async () => {
       const date = new Date(2023, 0, 15);
       const dp = await mountDp({ modelValue: date });
       const day = dp.get(getDayContentClass(dp.vm, date));
@@ -108,7 +104,7 @@ describe('DatePicker', () => {
       expect(dp.emitted('update:modelValue')![0][0]).toBe(null);
     });
 
-    it(':is-required - keeps value if new value equal to previous value and is true', async () => {
+    it(':is-required - keeps value if set to true and new value equal to previous value', async () => {
       const date = new Date(2023, 0, 15);
       const dp = await mountDp({ modelValue: date, isRequired: true });
       const day = dp.get(getDayContentClass(dp.vm, date));
@@ -118,43 +114,52 @@ describe('DatePicker', () => {
 
     it(':rules - emits update:modelValue on initial load if rule modifies value', async () => {
       const date = new Date(2023, 0, 15, 0, 0, 0, 0);
-      const clickDate = new Date(2023, 0, 15, 12, 0, 0, 0);
+      const rulesDate = new Date(2023, 0, 15, 12, 0, 0, 0);
       const rules = { hours: 12 };
       const dp = await mountDp({ modelValue: date, rules });
       expect(dp.emitted('update:modelValue')).toHaveLength(1);
-      expect(dp.emitted('update:modelValue')![0][0]).toEqual(clickDate);
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(rulesDate);
     });
 
-    // for (const dv of dateValues) {
-    //   const dp = await mountDp(dv.props);
-    //   it(':value - loads the correct initial page', () => {
-    //     expect(() => dp.get(dv.pageEl)).not.toThrowError();
-    //   });
-    //   if (dv.dayEls) {
-    //     it(':value - selects the correct day(s)', () => {
-    //       dv.dayEls.forEach(el => {
-    //         expect(() => dp.get(el)).not.toThrowError();
-    //       });
-    //     });
-    //   }
-    //   if (dv.props.mode !== 'date' && dv.time) {
-    //     it(':value - sets the correct time', () => {
-    //       const tp = dp.getComponent(TimePicker);
-    //       const { hours, minutes, isAM } = dv.time;
-    //       expect(tp.vm.hours).toEqual(hours);
-    //       expect(tp.vm.minutes).toEqual(minutes);
-    //       expect(tp.vm.isAM).toEqual(isAM);
-    //     });
-    //   }
-    //   if (dv.clickEl) {
-    //     // it('emits the correct date value on day click', async () => {
-    //     //   await dp.find(dv.clickEl).trigger('click');
-    //     //   console.log(dp.emitted('update:modelValue'));
-    //     //   const newValue = dp.emitted('update:modelValue')![0][0];
-    //     //   // expect(newValue).toEqual(dv.newValue);
-    //     // });
-    //   }
-    // }
+    it(':rules - applies number rule on date selection', async () => {
+      const initialPage = { year: 2000, month: 1 };
+      const clickDate = new Date(2000, 0, 20);
+      const rulesDate = new Date(2000, 0, 20, 9, 0, 0, 0);
+      const dp = await mountDp({
+        modelValue: null,
+        rules: { hours: 9 },
+        initialPage,
+      });
+      const day = dp.get(getDayContentClass(dp.vm, clickDate));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(rulesDate);
+    });
+
+    it(':rules - limit time components to static number', async () => {
+      const dp = await mountDp({
+        modelValue: new Date(),
+        mode: 'dateTime',
+        rules: {
+          hours: 5,
+        },
+      });
+      const tp = dp.getComponent(TimePicker);
+      const { hourOptions } = tp.vm;
+      expect(hourOptions).toHaveLength(1);
+      // Check view model
+      expect(hourOptions[0].value).toEqual(5);
+      // Check view
+      expectSelectHours(dp, [5]);
+    });
+
+    async function expectSelectHours(dp: VueWrapper, hours: number[]) {
+      const selector = dp.find<HTMLSelectElement>('.vc-base-select select');
+      const options = selector.element.options;
+      expect(options.length).toEqual(hours.length);
+      hours.forEach((hour, i) => {
+        expect(options[i].value).toEqual(hour.toString());
+      });
+    }
 
     // it(':min-date - prevents date before minimum date', async () => {
     //   const dp = mount(DatePicker, {
@@ -222,34 +227,6 @@ describe('DatePicker', () => {
     //   expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
     // });
 
-    // it(':is-required - keeps date when set', async () => {
-    //   const dp = mount(DatePicker, {
-    //     props: {
-    //       modelValue: new Date(2000, 0, 15),
-    //       isRequired: true,
-    //     },
-    //   });
-    //   await dp.vm.$nextTick();
-    //   await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
-    //   expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
-    //   await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
-    //   expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
-    // });
-
-    // it(':is-required - clears date when not set', async () => {
-    //   const dp = mount(DatePicker, {
-    //     props: {
-    //       modelValue: new Date(2000, 0, 15),
-    //       isRequired: false,
-    //     },
-    //   });
-    //   await dp.vm.$nextTick();
-    //   await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
-    //   expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
-    //   await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
-    //   expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(false);
-    // });
-
     // it(':model-config.fillDate - fills missing date parts for date input', async () => {
     //   const dp = mountWithInputs({
     //     modelValue: null,
@@ -299,25 +276,6 @@ describe('DatePicker', () => {
     // });
   });
 });
-
-async function checkValidHours(prop: any, hours: number[]) {
-  const dp = mount(DatePicker, {
-    props: {
-      modelValue: new Date(2000, 0, 15),
-      mode: 'dateTime',
-      is24hr: true,
-      validHours: prop,
-    },
-  });
-  await dp.vm.$nextTick();
-  await dp.vm.$nextTick();
-  const selector = dp.find<HTMLSelectElement>('.vc-select select');
-  const options = selector.element.options;
-  expect(options.length).toEqual(hours.length);
-  hours.forEach((hour, i) => {
-    expect(options[i].value).toEqual(hour.toString());
-  });
-}
 
 function mountWithInputs(props: any) {
   return mount(DatePicker, {
