@@ -816,7 +816,7 @@ export function getMonthNames(length: MonthNameLength, localeId = undefined) {
 export function datePartIsValid(
   part: number,
   rule: DatePartsRule,
-  parts: TimeParts,
+  parts: DateParts,
 ): boolean {
   if (isNumber(rule)) return rule === part;
   if (isArray(rule)) return (rule as number[]).includes(part);
@@ -828,7 +828,7 @@ export function datePartIsValid(
 }
 
 export function getDatePartOptions(
-  parts: TimeParts,
+  parts: DateParts,
   range: DatePartsRange,
   rule: DatePartsRule | undefined,
 ) {
@@ -846,7 +846,7 @@ export function getDatePartOptions(
 }
 
 export function getDatePartsOptions(
-  parts: TimeParts,
+  parts: DateParts,
   rules: DatePartsRules,
 ): DatePartsOptions {
   return {
@@ -862,7 +862,7 @@ export function getDatePartsOptions(
 }
 
 export function getNearestDatePart(
-  parts: TimeParts,
+  parts: DateParts,
   range: DatePartsRange,
   value: number,
   rule: DatePartsRule,
@@ -879,7 +879,7 @@ export function getNearestDatePart(
 }
 
 export function applyRulesForDateParts(
-  dateParts: TimeParts,
+  dateParts: DateParts,
   rules: DatePartsRules,
 ) {
   (
