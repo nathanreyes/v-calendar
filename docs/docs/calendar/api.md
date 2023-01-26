@@ -65,9 +65,9 @@ canMoveBy: (pages: number, opts?: Partial<MoveOptions>) => boolean
 | **canMoveBy** | (pages: number, opts?: Partial[\<MoveOptions\>](#moveoptions)) => boolean |
 | **move** | (target: [MoveTarget](#movetarget), opts?: Partial[\<MoveOptions\>](#moveoptions)) => Promise\<boolean\> |
 | **moveBy** | (pages: number, opts?: Partial[\<MoveOptions\>](#moveoptions)) => Promise\<boolean\> |
-| **movePrev** | movePrev: () => Promise\<boolean\> |
-| **moveNext** | moveNext: () => Promise\<boolean\> |
-| **focusDate** | focusDate: (date: Date, opts?: Partial[\<MoveOptions\>](#moveoptions)) => Promise\<boolean\> |
+| **movePrev** | () => Promise\<boolean\> |
+| **moveNext** | () => Promise\<boolean\> |
+| **focusDate** | (date: Date, opts?: Partial[\<MoveOptions\>](#moveoptions)) => Promise\<boolean\> |
 
 ## Types
 
