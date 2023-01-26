@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-day" :class="dayClasses">
+  <div :class="dayClasses">
     <!--Highlights-->
     <div v-if="hasHighlights" class="vc-highlights vc-day-layer">
       <div
