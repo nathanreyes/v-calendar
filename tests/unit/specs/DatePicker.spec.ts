@@ -2,9 +2,9 @@ import { UnwrapNestedRefs, ComponentPublicInstance, h, nextTick } from 'vue';
 import { mount, VueWrapper } from '@vue/test-utils';
 import DatePicker from '@/components/DatePicker/DatePicker.vue';
 import TimePicker from '@/components/TimePicker/TimePicker.vue';
+import { DatePickerContext } from '@/use/datePicker';
 import dateValues from '../util/dateValues.json';
 import wait from '../util/wait';
-import { DatePickerContext } from '@/use/datePicker';
 
 type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
   ComponentPublicInstance;
@@ -48,6 +48,57 @@ describe('DatePicker', () => {
       expect(dp.emitted('update:modelValue')).toHaveLength(1);
     });
 
+    it(':model-modifiers - emits correct updated value with number model modifier', async () => {
+      const initialDate = new Date(2000, 0, 15);
+      const clickDate = new Date(2000, 0, 20);
+      const dp = await mountDp({
+        modelValue: initialDate.getTime(),
+        modelModifiers: {
+          number: true,
+        },
+      });
+      const day = dp.get(getDayContentClass(dp.vm, clickDate));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(
+        clickDate.getTime(),
+      );
+    });
+
+    it(':model-modifiers - emits correct updated ISO value with string model modifier', async () => {
+      const initialDate = new Date(2000, 0, 15);
+      const clickDate = new Date(2000, 0, 20);
+      const dp = await mountDp({
+        modelValue: initialDate.toISOString(),
+        modelModifiers: {
+          string: true,
+        },
+      });
+      const day = dp.get(getDayContentClass(dp.vm, clickDate));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(
+        clickDate.toISOString(),
+      );
+    });
+
+    it(':model-modifiers - emits correct masked value with string model modifier', async () => {
+      const initialPage = { year: 2000, month: 1 };
+      const clickDate = new Date(2000, 0, 20);
+      const mask = 'YYYY-MM-DD';
+      const dp = await mountDp({
+        modelValue: null,
+        modelModifiers: {
+          string: true,
+        },
+        masks: {
+          modelValue: mask,
+        },
+        initialPage,
+      });
+      const day = dp.get(getDayContentClass(dp.vm, clickDate));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual('2000-01-20');
+    });
+
     it(':is-required - clears value if new value equal to previous value and is false', async () => {
       const date = new Date(2023, 0, 15);
       const dp = await mountDp({ modelValue: date });
@@ -63,6 +114,15 @@ describe('DatePicker', () => {
       const day = dp.get(getDayContentClass(dp.vm, date));
       await day.trigger('click');
       expect(dp.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it(':rules - emits update:modelValue on initial load if rule modifies value', async () => {
+      const date = new Date(2023, 0, 15, 0, 0, 0, 0);
+      const clickDate = new Date(2023, 0, 15, 12, 0, 0, 0);
+      const rules = { hours: 12 };
+      const dp = await mountDp({ modelValue: date, rules });
+      expect(dp.emitted('update:modelValue')).toHaveLength(1);
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(clickDate);
     });
 
     // for (const dv of dateValues) {
