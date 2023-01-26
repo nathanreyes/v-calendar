@@ -51,7 +51,7 @@ export function createTimePicker(props: TimePickerProps) {
     isRange,
     isTimeMode,
     dateParts,
-    modelConfig,
+    rules,
     is24hr,
     hideTimeHeader,
     timeAccuracy,
@@ -83,7 +83,6 @@ export function createTimePicker(props: TimePickerProps) {
   }
 
   const isStart = computed(() => props.position === 0);
-  const rules = computed(() => modelConfig.value[props.position].rules);
   const parts = computed(
     () => dateParts.value[props.position] || { isValid: false },
   );
@@ -156,7 +155,7 @@ export function createTimePicker(props: TimePickerProps) {
   });
 
   const options = computed(() =>
-    getDatePartsOptions(parts.value as DateParts, rules.value),
+    getDatePartsOptions(parts.value as DateParts, rules.value[props.position]),
   );
 
   const amHourOptions = computed(() => {
