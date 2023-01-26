@@ -4,7 +4,7 @@ title: Date Picker | Basics
 
 # Basics
 
-`DatePicker` is a feature-rich date picker component implemented as a wrapper for `Calendar`. Thus, it accepts all same props and emits all of the same events.
+`VDatePicker` is a feature-rich date picker component implemented as a wrapper for `VCalendar`. Thus, it accepts all same props and emits all of the same events.
 
 It supports binding to both single dates and dates ranges. It can be configured for date and time selection modes, and can bind to various date types including dates, strings, numbers and even object date configurations.
 
@@ -12,7 +12,7 @@ In short, it was built build to handle most date picker needs.
 
 ## Selection modes
 
-`DatePicker` can be configured to allow the user to select a date, date and time, or only time values via the `mode` prop.
+`VDatePicker` can be configured to allow the user to select a date, date and time, or only time values via the `mode` prop.
 
 ### Date Mode
 

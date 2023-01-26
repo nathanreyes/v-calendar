@@ -4,7 +4,7 @@ title: Date Picker | Custom Attributes
 
 # Custom Attributes
 
-`DatePicker` uses the following props to display date selections:
+`VDatePicker` uses the following props to display date selections:
 
 ## Select Attribute
 

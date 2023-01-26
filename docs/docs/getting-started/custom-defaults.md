@@ -4,7 +4,7 @@ title: 'Custom Defaults'
 
 # Custom Defaults
 
-Custom defaults can be provided on initialization. Note that almost all of these defaults can be overridden by props on `Calendar` or `DatePicker` components.
+Custom defaults can be provided on initialization. Note that almost all of these defaults can be overridden by props on `VCalendar` or `VDatePicker` components.
 
 ```js
 Vue.use(VCalendar, {

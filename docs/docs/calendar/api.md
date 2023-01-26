@@ -52,6 +52,23 @@ title: 'API'
 | **update:view** | "daily" \| "weekly" \| "monthly" |
 | **update:pages** | [Page](#page)[] |
 
+## Methods
+
+```ts
+canMove: (target: [MoveTarget](), opts?: Partial<MoveOptions>) => boolean
+canMoveBy: (pages: number, opts?: Partial<MoveOptions>) => boolean
+```
+
+| Name | Type |
+| --- | --- |
+| **canMove** | (target: [\<MoveTarget\>](#movetarget), opts?: Partial[\<MoveOptions\>](#moveoptions)) => boolean | 
+| **canMoveBy** | (pages: number, opts?: Partial[\<MoveOptions\>](#moveoptions)) => boolean |
+| **move** | (target: [MoveTarget](#movetarget), opts?: Partial[\<MoveOptions\>](#moveoptions)) => Promise\<boolean\> |
+| **moveBy** | (pages: number, opts?: Partial[\<MoveOptions\>](#moveoptions)) => Promise\<boolean\> |
+| **movePrev** | movePrev: () => Promise\<boolean\> |
+| **moveNext** | moveNext: () => Promise\<boolean\> |
+| **focusDate** | focusDate: (date: Date, opts?: Partial[\<MoveOptions\>](#moveoptions)) => Promise\<boolean\> |
+
 ## Types
 
 ### AttributeConfig
@@ -117,85 +134,6 @@ type PopoverConfig = Partial<{
 }>;
 ```
 
-### DarkModeClassConfig
-
-```ts
-interface DarkModeClassConfig {
-  selector: string;
-  darkClass: string;
-}
-```
-
-### DateRangeSource
-
-```ts
-type DateRangeSource = DateRangeDate | [DateRangeDate, DateRangeDate] | Partial<DateRangeConfig>;
-
-type DateRangeDate = Date | null;
-
-interface DateRangeConfig {
-  start: DateRangeDate;
-  end: DateRangeDate;
-  span: number;
-  repeat: Partial<DateRepeatConfig>;
-}
-```
-
-### DateSource
-
-```ts
-type DateSource = Date | string | number;
-```
-
-### PageAddress
-```ts
-interface PageAddress {
-  day?: number;
-  week?: number;
-  month: number;
-  year: number;
-}
-```
-
-### Page
-
-```ts
-interface Page {
-  id: string;
-  day?: number;
-  week?: number;
-  month: number;
-  year: number;
-  view: PageView;
-  trimWeeks: boolean;
-  position: number;
-  row: number;
-  rowFromEnd: number;
-  column: number;
-  columnFromEnd: number;
-  showWeeknumbers: boolean;
-  showIsoWeeknumbers: boolean;
-  weeknumberPosition: string;
-  monthTitle: string;
-  weekTitle?: string;
-  dayTitle?: string;
-  title: string;
-  titlePosition: TitlePosition;
-  shortMonthLabel: string;
-  monthLabel: string;
-  shortYearLabel: string;
-  yearLabel: string;
-  weekdayLabels: string[];
-  monthComps: MonthParts;
-  prevMonthComps: MonthParts;
-  nextMonthComps: MonthParts;
-  days: CalendarDay[];
-  weeks: CalendarWeek[];
-  viewDays: CalendarDay[];
-  viewWeeks: CalendarWeek[];
-}
-```
-
 ### CalendarDay
 
 ```ts
@@ -252,6 +190,106 @@ interface CalendarWeek {
   weeknumberDisplay?: number;
   days: CalendarDay[];
   title: string;
+}
+```
+
+### DarkModeClassConfig
+
+```ts
+interface DarkModeClassConfig {
+  selector: string;
+  darkClass: string;
+}
+```
+
+### DateRangeSource
+
+```ts
+type DateRangeSource = DateRangeDate | [DateRangeDate, DateRangeDate] | Partial<DateRangeConfig>;
+
+type DateRangeDate = Date | null;
+
+interface DateRangeConfig {
+  start: DateRangeDate;
+  end: DateRangeDate;
+  span: number;
+  repeat: Partial<DateRepeatConfig>;
+}
+```
+
+### DateSource
+
+```ts
+type DateSource = Date | string | number;
+```
+
+### MoveOptions
+
+```ts
+interface MoveOptions {
+  position: number;
+  view: CalendarView;
+  transition: MoveTransition;
+  force: boolean;
+}
+
+type MoveTransition = 'none' | 'fade' | 'slide-v' | 'slide-h';
+
+```
+
+### MoveTarget
+
+```ts
+type MoveTarget = DateSource | PageAddress;
+```
+
+### PageAddress
+
+```ts
+interface PageAddress {
+  day?: number;
+  week?: number;
+  month: number;
+  year: number;
+}
+```
+
+### Page
+
+```ts
+interface Page {
+  id: string;
+  day?: number;
+  week?: number;
+  month: number;
+  year: number;
+  view: PageView;
+  trimWeeks: boolean;
+  position: number;
+  row: number;
+  rowFromEnd: number;
+  column: number;
+  columnFromEnd: number;
+  showWeeknumbers: boolean;
+  showIsoWeeknumbers: boolean;
+  weeknumberPosition: string;
+  monthTitle: string;
+  weekTitle?: string;
+  dayTitle?: string;
+  title: string;
+  titlePosition: TitlePosition;
+  shortMonthLabel: string;
+  monthLabel: string;
+  shortYearLabel: string;
+  yearLabel: string;
+  weekdayLabels: string[];
+  monthComps: MonthParts;
+  prevMonthComps: MonthParts;
+  nextMonthComps: MonthParts;
+  days: CalendarDay[];
+  weeks: CalendarWeek[];
+  viewDays: CalendarDay[];
+  viewWeeks: CalendarWeek[];
 }
 ```
 

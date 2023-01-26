@@ -573,7 +573,7 @@ If you would like to hide the indicator, just set the `hideIndicator` property t
 
 ### 2. Scoped Slot
 
-For a more customized approach you can insert your own `"day-popover"` custom scoped slot within `Calendar`.
+For a more customized approach you can insert your own `"day-popover"` custom scoped slot within `VCalendar`.
 
 <BaseAlert title="Scoped slots">
 

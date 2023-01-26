@@ -74,7 +74,7 @@ If `min-date` or `max-date` props are assigned, this will disable navigation for
   A calendar day must be in focus in order for key commands to be recognized.
 </BaseAlert>
 
-Both `Calendar` and `DatePicker` now support the following key commands for navigation:
+Both `VCalendar` and `VDatePicker` now support the following key commands for navigation:
 
 | Command | Action |
 | --- | --- |

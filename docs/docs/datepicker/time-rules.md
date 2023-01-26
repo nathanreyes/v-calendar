@@ -10,7 +10,7 @@ Rules can be defined for time components, including `hours`, `minutes`, `seconds
 
 ### Default bahavior
 
-First, it's important to note that, with no rules present, `DatePicker` will **not** apply any time modifications to a bound date during the mounting phase. This ensures data consistency throughout your web application.
+First, it's important to note that, with no rules present, `VDatePicker` will **not** apply any time modifications to a bound date during the mounting phase. This ensures data consistency throughout your web application.
 
 After initial mount, if the user selects new dates in the calendar, only the year, month and day components are updated. If the user selects a new time component in the time picker, only those components are updated, respectively.
 
@@ -36,7 +36,7 @@ const mode = ref('date');
 
 Let's start with a simple example to show how rules work. We can zero-out time components by setting a `rules` prop object with hard-coded values for the time component keys.
 
-Note how the `Date Value` displayed below shows the zero-ed out time components. A date was passed in (`new Date()`) and the `DatePicker` applied the rules on mount and re-emitted the new date value.
+Note how the `Date Value` displayed below shows the zero-ed out time components. A date was passed in (`new Date()`) and the `VDatePicker` applied the rules on mount and re-emitted the new date value.
 
 <Example centered>
   <DateRulesIntroDate />
@@ -226,7 +226,7 @@ const rules = ref({
 
 ## Auto Rules
 
-If accounting for date modes, date ranges and time accuracy is too much, pass `rules: 'auto'`, and `DatePicker` will make a "best guess" for what rules to apply.
+`VDatePicker` can make a "best guess" for what rules to apply based on the current date `mode` and `time-accuracy` props.
 
 For example, using `mode: 'date'` will zero-out hours, minutes, seconds and milliseconds. Otherwise, the `time-accuracy` prop will only zero-out components more accurate than the current setting. Finally, more adjustments could be made when using the `range` modifier.
 

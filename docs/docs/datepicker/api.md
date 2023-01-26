@@ -8,7 +8,7 @@ title: 'API'
 
 <BaseAlert title="Prop Support">
 
-`DatePicker` accepts all the same props as [Calendar](/calendar/api#props).
+`VDatePicker` accepts all the same props as [VCalendar](/calendar/api#props).
 </BaseAlert>
 
 | Name | Type | Default |
@@ -30,7 +30,7 @@ title: 'API'
 
 <BaseAlert title="Event Support">
 
-`DatePicker` accepts all the same events as [Calendar](/calendar/api#events).
+`VDatePicker` accepts all the same events as [Calendar](/calendar/api#events).
 </BaseAlert>
 
 | Event | Parameter Type |

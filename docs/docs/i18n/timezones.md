@@ -4,7 +4,7 @@ title: 'Timezones'
 
 # Timezones
 
-To assign a timezone, pass the `timezone: String` prop with the desired timezone setting for either `DatePicker` or `Calendar`.
+To assign a timezone, pass the `timezone: String` prop with the desired timezone setting for either `VDatePicker` or `VCalendar`.
 
 Reference this [stack overflow](https://stackoverflow.com/questions/38399465/how-to-get-list-of-all-timezones-in-javascript) question for guidance on obtaining a base list of available timezones. In addition to the timezones supported, `UTC` may be used for the Coordinated Universal Time setting.
 
@@ -61,7 +61,7 @@ const attrs = ref([
 
 ## Date Picker
 
-When using the `timezone` prop with `DatePicker`, the displayed time will reflect the time associated with the date in the specified timezone.
+When using the `timezone` prop with `VDatePicker`, the displayed time will reflect the time associated with the date in the specified timezone.
 
 <TimezonesPickerTime />
 

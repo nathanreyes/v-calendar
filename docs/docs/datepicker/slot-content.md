@@ -2,7 +2,7 @@
 
 ## Default slot
 
-When a default slot is used with `DatePicker`, that content will display instead of the calendar picker.
+When a default slot is used with `VDatePicker`, that content will display instead of the calendar picker.
 
 <Example centered>
   <DateSimpleSlot />
@@ -43,7 +43,7 @@ interface DatePickerContext {
 
 ## Input element
 
-To support date text entry, provide a custom `input` element as the default slot. `DatePicker` provides formatting, parsing and event handling out of the box via the following slot props:
+To support date text entry, provide a custom `input` element as the default slot. `VDatePicker` provides formatting, parsing and event handling out of the box via the following slot props:
 
 - `inputValue`: The is the value you should bind to your input. This value will update as new dates are assigned and validated by the component.
 - `inputEvents`: These events include handlers for events that manage debounce, value updates and showing/hiding the popover (as specified via the `popover` prop).
