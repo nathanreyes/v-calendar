@@ -466,12 +466,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const canMoveNext = computed(() => canMoveBy(step.value));
 
   const move = async (target: MoveTarget, opts: Partial<MoveOptions> = {}) => {
-    // Reject if we can't move to this page
-    if (!opts.force && !canMove(target, opts)) {
-      return Promise.reject(
-        new Error(`Move target is disabled: ${JSON.stringify(opts)}`),
-      );
-    }
+    // Return if we can't move to this page
+    if (!opts.force && !canMove(target, opts)) return false;
     // Move to new `fromPage` if it's different from the current one
     if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, firstPage.value)) {
       // Hide nav popover for good measure
@@ -522,10 +518,10 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const focusDate = async (date: Date, opts: Partial<MoveOptions> = {}) => {
-    if (tryFocusDate(date)) return Promise.resolve(true);
+    if (tryFocusDate(date)) return true;
     // Move to the given date
     await move(date, opts);
-    return await Promise.resolve(tryFocusDate(date));
+    return tryFocusDate(date);
   };
 
   const onDayClick = (day: CalendarDay, event: MouseEvent) => {
@@ -727,23 +723,23 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     step,
     firstPage,
     lastPage,
+    canMovePrev,
+    canMoveNext,
     minPage,
     maxPage,
     isMonthly,
     isWeekly,
     isDaily,
     navVisibility,
+    showWeeknumbers,
+    showIsoWeeknumbers,
     getDateAddress,
     canMove,
     canMoveBy,
-    canMovePrev,
-    canMoveNext,
     move,
     moveBy,
     movePrev,
     moveNext,
-    showWeeknumbers,
-    showIsoWeeknumbers,
     onTransitionBeforeEnter,
     onTransitionAfterEnter,
     tryFocusDate,
