@@ -142,22 +142,22 @@ export default class Locale {
 
   toDate(
     d: DateSource | Partial<SimpleDateParts>,
-    config: Partial<DateOptions> = {},
+    opts: Partial<DateOptions> = {},
   ): Date {
     const nullDate = new Date(NaN);
     let result = nullDate;
-    const { fillDate, mask, patch, rules } = config;
+    const { fillDate, mask, patch, rules } = opts;
     if (isNumber(d)) {
-      config.type = 'number';
+      opts.type = 'number';
       result = new Date(+d);
     } else if (isString(d)) {
-      config.type = 'string';
+      opts.type = 'string';
       result = d ? parseDate(d, mask || 'iso', this) : nullDate;
     } else if (isDate(d)) {
-      config.type = 'date';
+      opts.type = 'date';
       result = new Date(d.getTime());
     } else if (isDateParts(d)) {
-      config.type = 'object';
+      opts.type = 'object';
       result = this.getDateFromParts(d);
     }
     // Patch parts or apply rules if needed
