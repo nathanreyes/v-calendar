@@ -101,7 +101,7 @@ describe('DatePicker', () => {
       const day = dp.get(getDayContentClass(dp.vm, date));
       await day.trigger('click');
       expect(dp.emitted('update:modelValue')).toHaveLength(1);
-      expect(dp.emitted('update:modelValue')![0][0]).toBe(null);
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(null);
     });
 
     it(':is-required - keeps value if set to true and new value equal to previous value', async () => {
@@ -193,11 +193,11 @@ describe('DatePicker', () => {
         maxDate: new Date(2000, 0, 25),
       });
       // Day after max date is disabled
-      expect(dp.find('.id-2000-01-26 .vc-disabled').exists()).toBe(true);
+      expect(dp.find('.id-2000-01-26 .vc-disabled').exists()).toEqual(true);
       // Click day after max date
       await dp.find('.id-2000-01-26 .vc-day-content').trigger('click');
       // Highlight should NOT appear
-      expect(dp.find('.id-2000-01-26 .vc-highlight').exists()).toBe(false);
+      expect(dp.find('.id-2000-01-26 .vc-highlight').exists()).toEqual(false);
     });
 
     it(':max-date - allows date on maximum date', async () => {
@@ -206,11 +206,11 @@ describe('DatePicker', () => {
         maxDate: new Date(2000, 0, 25),
       });
       // Day of max date is not disabled
-      expect(dp.find('.id-2000-01-25 .vc-disabled').exists()).toBe(false);
+      expect(dp.find('.id-2000-01-25 .vc-disabled').exists()).toEqual(false);
       // Click day of max date
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
       // Highlight should appear
-      expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
+      expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toEqual(true);
     });
 
     // it(':model-config.fillDate - fills missing date parts for date input', async () => {
