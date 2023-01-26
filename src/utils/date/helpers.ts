@@ -821,10 +821,10 @@ export function datePartIsValid(
   if (isNumber(rule)) return rule === part;
   if (isArray(rule)) return (rule as number[]).includes(part);
   if (isFunction(rule)) return rule(part, parts);
-  if (rule.min) return rule.min <= part;
-  if (rule.max) return rule.max >= part;
-  if (rule.interval) return part % rule.interval === 0;
-  return false;
+  if (rule.min != null && rule.min > part) return false;
+  if (rule.max != null && rule.max < part) return false;
+  if (rule.interval != null && part % rule.interval !== 0) return false;
+  return true;
 }
 
 export function getDatePartOptions(
