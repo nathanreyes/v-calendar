@@ -6,10 +6,9 @@
       :value="modelValue"
       class="vc-focus"
       :class="{
-        'has-icon': showIcon,
-        'align-right': alignRight,
-        transparent,
-        small,
+        'vc-has-icon': showIcon,
+        'vc-align-right': alignRight,
+        'vc-small': small,
       }"
       @change="$emit('update:modelValue', $event.target.value)"
     >
@@ -39,7 +38,6 @@ defineProps({
   modelValue: null,
   alignRight: Boolean,
   showIcon: Boolean,
-  transparent: Boolean,
   small: Boolean,
 });
 defineEmits(['update:modelValue']);
@@ -67,20 +65,16 @@ defineEmits(['update:modelValue']);
     &:hover {
       background-color: var(--vc-select-hover-bg);
     }
-    &.has-icon {
+    &.vc-has-icon {
       padding: 0px 24px 0 10px;
     }
-    &:not(.transparent) {
-      background-color: var(--vc-select-bg);
-      border: 1px solid var(--vc-select-border);
-    }
-    &.small {
+    &.vc-small {
       font-size: var(--vc-text-sm);
-      &.has-icon {
+      &.vc-has-icon {
         padding: 0 20px 0 8 px;
       }
     }
-    &.align-right {
+    &.vc-align-right {
       text-align: right;
     }
   }

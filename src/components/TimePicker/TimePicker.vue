@@ -21,42 +21,23 @@
     </slot>
     <div class="vc-time-select-group">
       <BaseIcon name="Clock" size="17" />
-      <BaseSelect
-        v-model.number="hours"
-        :options="hourOptions"
-        align-right
-        transparent
-      />
+      <BaseSelect v-model.number="hours" :options="hourOptions" align-right />
       <template v-if="timeAccuracy > 1">
         <span class="vc-time-colon">:</span>
-        <BaseSelect
-          v-model.number="minutes"
-          :options="options.minutes"
-          transparent
-        />
+        <BaseSelect v-model.number="minutes" :options="options.minutes" />
       </template>
       <template v-if="timeAccuracy > 2">
         <span class="vc-time-colon">:</span>
-        <BaseSelect
-          v-model.number="seconds"
-          :options="options.seconds"
-          transparent
-        />
+        <BaseSelect v-model.number="seconds" :options="options.seconds" />
       </template>
       <template v-if="timeAccuracy > 3">
         <span class="vc-time-decimal">.</span>
         <BaseSelect
           v-model.number="milliseconds"
           :options="options.milliseconds"
-          transparent
         />
       </template>
-      <BaseSelect
-        v-if="!is24hr"
-        v-model="isAM"
-        :options="isAMOptions"
-        transparent
-      />
+      <BaseSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions" />
     </div>
   </div>
 </template>
