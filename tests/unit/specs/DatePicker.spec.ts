@@ -135,24 +135,45 @@ describe('DatePicker', () => {
       expect(dp.emitted('update:modelValue')![0][0]).toEqual(rulesDate);
     });
 
-    it(':rules - limit time components to static number', async () => {
+    it(':rules - limits time components to static number', () => {
+      const rules = { hours: 5 };
+      expectHours({ rules }, [5]);
+    });
+
+    it(':rules - limits time components to array', () => {
+      const hours = [0, 3, 5, 8, 10, 11, 15, 19, 23];
+      const rules = { hours };
+      expectHours({ rules }, hours);
+    });
+
+    it(':rules - limits time components to min/max', () => {
+      const rules = { hours: { min: 4, max: 15 } };
+      const hours = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+      expectHours({ rules }, hours);
+    });
+
+    it(':rules - limits time components to hours in work week', () => {
+      const modelValue = new Date(2023, 0, 26);
+      const rules = {
+        hours: (hour: number, { weekday }: { weekday: number }) => {
+          return ![1, 7].includes(weekday) && hour >= 8 && hour <= 12;
+        },
+      };
+      const hours = [8, 9, 10, 11, 12];
+      expectHours({ modelValue, rules }, hours);
+    });
+
+    async function expectHours(props: any, hours: number[]) {
       const dp = await mountDp({
         modelValue: new Date(),
         mode: 'dateTime',
-        rules: {
-          hours: 5,
-        },
+        is24hr: true,
+        ...props,
       });
       const tp = dp.getComponent(TimePicker);
       const { hourOptions } = tp.vm;
-      expect(hourOptions).toHaveLength(1);
-      // Check view model
-      expect(hourOptions[0].value).toEqual(5);
-      // Check view
-      expectSelectHours(dp, [5]);
-    });
-
-    async function expectSelectHours(dp: VueWrapper, hours: number[]) {
+      expect(hourOptions).toHaveLength(hours.length);
+      // Check select options
       const selector = dp.find<HTMLSelectElement>('.vc-base-select select');
       const options = selector.element.options;
       expect(options.length).toEqual(hours.length);
@@ -241,24 +262,6 @@ describe('DatePicker', () => {
     //     start: new Date('2021-01-01T12:15:00.000Z'),
     //     end: new Date('2021-01-01T12:15:00.000Z'),
     //   });
-    // });
-
-    // it(':valid-hours - limits hours to array', async () => {
-    //   const hours = [0, 3, 5, 8, 10, 11, 15, 19, 23];
-    //   checkValidHours(hours, hours);
-    // });
-
-    // it(':valid-hours - limits hours to min/max', async () => {
-    //   const prop = { min: 4, max: 15 };
-    //   const hours = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-    //   checkValidHours(prop, hours);
-    // });
-
-    // it(':valid-hours - limits hours to function', async () => {
-    //   const prop = (hour, { weekday }) =>
-    //     ![1, 7].includes(weekday) || (hour >= 8 && hour <= 12);
-    //   const hours = [8, 9, 10, 11, 12];
-    //   checkValidHours(prop, hours);
     // });
   });
 });
