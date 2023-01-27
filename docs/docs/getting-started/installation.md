@@ -55,13 +55,6 @@ app.use(VCalendar, {})
 
 :::
 
-<BaseAlert title="Plugin Defaults">
-
-Custom defaults can be provided when using the plugin, but still can be overridden by props on `VCalendar` or `VDatePicker` components.
-
-[Reference defaults](/calendar/api#defaults)
-</BaseAlert>
-
 ### Method 2: Use Components Globally
 
 ::: code-group
@@ -119,9 +112,16 @@ export default {
     };
   },
 }
+</script>
 ```
 
 :::
+
+### Plugin Defaults
+
+As referenced above, custom defaults can be provided when using the plugin, but still can be overridden by props on `VCalendar` or `VDatePicker` components.
+
+[Reference defaults](/calendar/api#defaults)
 
 ## Use from CDN
 
