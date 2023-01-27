@@ -223,7 +223,7 @@ const rules = ref({
 Finally, a rule may be defined as a function that accepts the time component value along with a `DateParts` object and returns a boolean.
 
 ```ts
-type DatePartsRuleFunction = (part: number, parts: DateParts) => boolean;
+type DatePartsRuleFunction = (component: number, parts: DateParts) => boolean;
 
 export interface DateParts {
   dayIndex: number;
