@@ -134,12 +134,6 @@ type DatePartsRule =
   | Array<number>
   | NumberRuleConfig
   | DatePartsRuleFunction;
-
-interface NumberRuleConfig {
-  min?: number;
-  max?: number;
-  interval?: number;
-}
 ```
 
 ## Number Rules
@@ -192,7 +186,7 @@ const rules = ref({
 
 ## Object Rules
 
-Finally, a rule may be an object with the following definition.
+A rule may be an object with the following definition.
 
 ```ts
 interface NumberRuleConfig {
@@ -220,6 +214,63 @@ const date = ref(new Date());
 const rules = ref({
   hours: { min: 12, max: 20 },
   minutes: { interval: 5 },
+});
+</script>
+```
+
+## Function Rules
+
+Finally, a rule may be defined as a function that accepts the time component value along with a `DateParts` object and returns a boolean.
+
+```ts
+type DatePartsRuleFunction = (part: number, parts: DateParts) => boolean;
+
+export interface DateParts {
+  dayIndex: number;
+  day: number;
+  dayFromEnd: number;
+  weekday: number;
+  weekdayOrdinal: number;
+  weekdayOrdinalFromEnd: number;
+  week: number;
+  weekFromEnd: number;
+  weeknumber: number;
+  month: number;
+  year: number;
+  date: Date;
+  milliseconds: number;
+  seconds: number;
+  minutes: number;
+  hours: number;
+  time: number;
+  dateTime: number;
+  isValid: boolean;
+  timezoneOffset: number;
+  isPm?: boolean;
+}
+```
+
+These are the most flexible type of rules. For example, we could limit time selection to morning hours on weekends.
+
+<Example centered>
+  <DateRulesFunction />
+</Example>
+
+```vue
+<template>
+  <VDatePicker v-model="date" mode="dateTime" :rules="rules" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+const rules = ref({
+  hours: (hour, { weekday }) => {
+    // 8AM - 12PM on the weekends
+    if ([1, 7].includes(weekday)) return hour >= 8 && hour <= 12;
+    // Any hour otherwise
+    return true;
+  },
 });
 </script>
 ```
