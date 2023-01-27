@@ -20,7 +20,7 @@ title: 'API'
 | **nav-visibility** | "click" \| "hover" \| "hover-focus" \| "focus" | "click" |
 | **title-position** | "center" \| "left" \| "right" | "center" |
 | **transition** | "none" \| "fade" \| "slide-v" \| "slide-h" | "slide-h" |
-| **masks** | Record<string, string \| string[]> | [Default masks](#masks) |
+| **masks** | Record<string, string \| string[]> | [Default masks](#defaults) |
 | **locale** | string | *undefined* |
 | **timezone** | string | *undefined* |
 | **initial-page** | [PageAddress](#pageaddress) | *undefined* |
@@ -53,11 +53,6 @@ title: 'API'
 | **update:pages** | [Page](#page)[] |
 
 ## Methods
-
-```ts
-canMove: (target: [MoveTarget](), opts?: Partial<MoveOptions>) => boolean
-canMoveBy: (pages: number, opts?: Partial<MoveOptions>) => boolean
-```
 
 | Name | Type |
 | --- | --- |
@@ -295,21 +290,37 @@ interface Page {
 
 ## Defaults
 
-### Masks
-```json
+```js
 {
-  "title": "MMMM YYYY",
-  "weekdays": "W",
-  "navMonths": "MMM",
-  "hours": "h A",
-  "input": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
-  "inputDateTime": ["L h:mm A", "YYYY-MM-DD h:mm A", "YYYY/MM/DD h:mm A"],
-  "inputDateTime24hr": ["L HH:mm", "YYYY-MM-DD HH:mm", "YYYY/MM/DD HH:mm"],
-  "inputTime": ["h:mm A"],
-  "inputTime24hr": ["HH:mm"],
-  "dayPopover": "WWW, MMM D, YYYY",
-  "data": ["L", "YYYY-MM-DD", "YYYY/MM/DD"],
-  "model": "iso",
-  "iso": "YYYY-MM-DDTHH:mm:ss.SSSZ"
+  componentPrefix: 'V',
+  color: 'blue',
+  isDark: false,
+  navVisibility: 'click',
+  titlePosition: 'center',
+  transition: 'slide-h',
+  datePicker: {
+    updateOnInput: true,
+    inputDebounce: 1000,
+    popover: {
+      visibility: 'hover-focus',
+      placement: 'bottom-start',
+      isInteractive: true,
+    },
+  },
+  masks: {
+    title: 'MMMM YYYY',
+    weekdays: 'W',
+    navMonths: 'MMM',
+    hours: 'h A',
+    input: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
+    inputDateTime: ['L h:mm A', 'YYYY-MM-DD h:mm A', 'YYYY/MM/DD h:mm A'],
+    inputDateTime24hr: ['L HH:mm', 'YYYY-MM-DD HH:mm', 'YYYY/MM/DD HH:mm'],
+    inputTime: ['h:mm A'],
+    inputTime24hr: ['HH:mm'],
+    dayPopover: 'WWW, MMM D, YYYY',
+    data: ['L', 'YYYY-MM-DD', 'YYYY/MM/DD'],
+    model: 'iso',
+    iso: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+  }
 }
 ```

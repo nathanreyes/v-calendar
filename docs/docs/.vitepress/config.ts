@@ -59,10 +59,6 @@ function sidebar() {
         items: [
           { text: 'Installation', link: '/getting-started/installation' },
           {
-            text: 'Custom Defaults',
-            link: '/getting-started/custom-defaults',
-          },
-          {
             text: 'Upgrade Guide',
             link: '/getting-started/upgrade-guide',
           },
