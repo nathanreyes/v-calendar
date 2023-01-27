@@ -63,7 +63,6 @@ export interface UpdateOptions {
   dragging: boolean;
   targetPriority: ValueTarget;
   moveToValue: boolean;
-  loading: boolean;
 }
 
 export interface ModelModifiers {
@@ -831,7 +830,6 @@ export function createDatePicker(
     forceUpdateValue(props.modelValue, {
       formatInput: true,
       hidePopover: false,
-      loading: true,
     });
   });
 
