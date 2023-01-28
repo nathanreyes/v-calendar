@@ -16,6 +16,7 @@ export default defineComponent({
     const { slots, attrs } = ctx;
     const {
       isTimeMode,
+      isRange,
       isDateTimeMode,
       color,
       displayMode,
@@ -37,14 +38,12 @@ export default defineComponent({
     // Expose datePicker for external access
     ctx.expose(datePicker);
 
-    const slotCtx = reactive(
-      omit(datePicker, 'modelConfig', 'calendarRef', 'popoverRef'),
-    );
+    const slotCtx = reactive(omit(datePicker, 'calendarRef', 'popoverRef'));
 
     // Timepicker renderer
     const timePicker = () => {
-      if (!dateParts.value) return null;
-      return dateParts.value.map((_, i) => h(TimePicker, { position: i }));
+      const positions = isRange.value ? [0, 1] : [0];
+      return positions.map(position => h(TimePicker, { position }));
     };
 
     // Calendar renderer
