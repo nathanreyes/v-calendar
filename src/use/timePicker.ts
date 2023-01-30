@@ -58,14 +58,7 @@ export function createTimePicker(props: TimePickerProps) {
     updateValue: updateDpValue,
   } = useDatePicker();
 
-  interface TimeParts {
-    hours: number;
-    minutes: number;
-    seconds: number;
-    milliseconds: number;
-  }
-
-  function updateParts(newParts: Partial<TimeParts>) {
+  function updateParts(newParts: Partial<DateParts>) {
     newParts = Object.assign(parts.value, newParts);
     let newValue = null;
     if (isRange.value) {

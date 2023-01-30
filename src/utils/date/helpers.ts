@@ -164,16 +164,6 @@ interface DatePartOption {
   disabled?: boolean;
 }
 
-export interface DatePartsObject<T> {
-  milliseconds: T;
-  seconds: T;
-  minutes: T;
-  hours: T;
-}
-
-type DatePartsRange = [number, number, number];
-type DatePartsOptions = DatePartsObject<{ value: number; label: string }[]>;
-
 export interface FormatParseOptions {
   locale?: Locale | LocaleConfig | string;
   timezone?: string;
@@ -276,12 +266,15 @@ export const MS_PER_DAY = MS_PER_HOUR * 24;
 
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const maskMacros = ['L', 'iso'];
-const DATE_PART_RANGES: DatePartsObject<DatePartsRange> = {
+
+type DatePartsRange = Readonly<[number, number, number]>;
+type TimePartsKey = 'milliseconds' | 'seconds' | 'minutes' | 'hours';
+const DATE_PART_RANGES: Record<TimePartsKey, DatePartsRange> = {
   milliseconds: [0, 999, 3],
   seconds: [0, 59, 2],
   minutes: [0, 59, 2],
   hours: [0, 23, 2],
-};
+} as const;
 
 // #region Format constants
 
@@ -845,10 +838,7 @@ export function getDatePartOptions(
   return options;
 }
 
-export function getDatePartsOptions(
-  parts: DateParts,
-  rules: DatePartsRules,
-): DatePartsOptions {
+export function getDatePartsOptions(parts: DateParts, rules: DatePartsRules) {
   return {
     milliseconds: getDatePartOptions(
       parts,
@@ -882,17 +872,18 @@ export function applyRulesForDateParts(
   dateParts: DateParts,
   rules: DatePartsRules,
 ) {
-  (
-    ['hours', 'minutes', 'seconds', 'milliseconds'] as (keyof TimeParts)[]
-  ).forEach(key => {
-    if (!Object.prototype.hasOwnProperty.call(rules, key)) return;
-    dateParts[key] = getNearestDatePart(
+  const result = <DateParts>{ ...dateParts };
+  Object.entries(rules).forEach(([key, rule]) => {
+    const range = DATE_PART_RANGES[key as TimePartsKey];
+    const value = dateParts[key as TimePartsKey];
+    result[key as TimePartsKey] = getNearestDatePart(
       dateParts,
-      DATE_PART_RANGES[key],
-      dateParts[key],
-      rules[key]!,
+      range,
+      value,
+      rule,
     );
   });
+  return result;
 }
 
 export function parseDate(

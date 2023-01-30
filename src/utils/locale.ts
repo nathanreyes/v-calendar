@@ -166,11 +166,13 @@ export default class Locale {
       // Patch date parts
       if (patch && fillDate != null) {
         const fillParts = this.getDateParts(this.toDate(fillDate));
-        parts = { ...fillParts, ...pick(parts, DatePatchKeys[patch]) };
+        parts = this.getDateParts(
+          this.toDate({ ...fillParts, ...pick(parts, DatePatchKeys[patch]) }),
+        );
       }
       // Apply date part rules
       if (rules) {
-        applyRulesForDateParts(parts, rules);
+        parts = applyRulesForDateParts(parts, rules);
       }
       result = this.getDateFromParts(parts);
     }
