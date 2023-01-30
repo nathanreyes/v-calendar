@@ -152,7 +152,19 @@ describe('DatePicker', () => {
       expectHours({ rules }, hours);
     });
 
-    it(':rules - limits time components to hours in work week', () => {
+    it(':rules - limits time components to min/interval', () => {
+      const rules = { hours: { min: 4, interval: 2 } };
+      const hours = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
+      expectHours({ rules }, hours);
+    });
+
+    it(':rules - limits time components to interval/max', () => {
+      const rules = { hours: { interval: 2, max: 16 } };
+      const hours = [0, 2, 4, 6, 8, 10, 12, 14, 16];
+      expectHours({ rules }, hours);
+    });
+
+    it(':rules - limits time components to hours in work week function', () => {
       const modelValue = new Date(2023, 0, 26);
       const rules = {
         hours: (hour: number, { weekday }: { weekday: number }) => {
