@@ -52,6 +52,7 @@ const contextKey = '__vc_date_picker_context__';
 export type DateModes = 'date' | 'datetime' | 'time';
 
 export type ValueTarget = 'none' | 'start' | 'end' | 'both';
+export type InputValueTarget = 'start' | 'end';
 
 export interface UpdateOptions {
   config: any;
@@ -237,7 +238,7 @@ export function createDatePicker(
   });
 
   const inputEvents = computed(() => {
-    const events = (<ValueTarget[]>['start', 'end']).map(target => ({
+    const events = (['start', 'end'] as const).map(target => ({
       input: onInputInput(target),
       change: onInputChange(target),
       keyup: onInputKeyup,
@@ -542,7 +543,7 @@ export function createDatePicker(
 
   function onInputUpdate(
     inputValue: string,
-    target: ValueTarget,
+    target: InputValueTarget,
     opts: Partial<UpdateOptions>,
   ) {
     inputValues.value.splice(target === 'start' ? 0 : 1, 1, inputValue);
@@ -565,7 +566,7 @@ export function createDatePicker(
     });
   }
 
-  function onInputInput(target: ValueTarget) {
+  function onInputInput(target: InputValueTarget) {
     return (e: InputEvent) => {
       if (!props.updateOnInput) return;
       onInputUpdate((<HTMLInputElement>e.currentTarget).value, target, {
@@ -576,7 +577,7 @@ export function createDatePicker(
     };
   }
 
-  function onInputChange(target: ValueTarget) {
+  function onInputChange(target: InputValueTarget) {
     return (e: InputEvent) => {
       onInputUpdate((<HTMLInputElement>e.currentTarget).value, target, {
         formatInput: true,
