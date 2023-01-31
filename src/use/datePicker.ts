@@ -179,7 +179,7 @@ export function createDatePicker(
     if (props.modelModifiers.number) type = 'number';
     if (props.modelModifiers.string) type = 'string';
     const mask = masks.value.modelValue || 'iso';
-    return <DateConfig>{ type, mask };
+    return normalizeConfig(<DateConfig>{ type, mask });
   });
 
   const dateParts = computed(() =>
@@ -494,11 +494,12 @@ export function createDatePicker(
     valueRef.value = normalizedValue;
     // Clear drag value if needed
     if (!dragging) dragValue.value = null;
-    // Get denormalized value
+    // Denormalize value using the model config
     const denormalizedValue = denormalizeValue(
       normalizedValue,
-      normalizedConfig,
+      modelConfig.value,
     );
+
     // 4. Notification
     if (notify) {
       watchValue = false;
