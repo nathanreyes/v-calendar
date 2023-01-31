@@ -9,7 +9,6 @@
             >({{ capitalize(dateType(value)) }})</span
           ></BaseField
         >
-        <BaseField label="ISO:">{{ dateISO(value) }}</BaseField>
       </div>
       <!--Date Range Display (ISO)-->
       <template v-else>
@@ -45,7 +44,6 @@
 <script>
 import { computed } from 'vue';
 import { capitalize } from 'lodash';
-import Locale from '@plugin/utils/locale';
 
 export default {
   inheritAttrs: false,
@@ -67,18 +65,11 @@ export default {
       if (val.toLocaleString) return val.toLocaleString();
       return val.toString();
     }
-    function dateISO(val) {
-      if (val == null) return 'null';
-      const locale = new Locale();
-      const date = locale.toDate(val);
-      return date.toISOString();
-    }
     return {
       value,
       isRange,
       dateType,
       dateRaw,
-      dateISO,
       capitalize,
     };
   },
