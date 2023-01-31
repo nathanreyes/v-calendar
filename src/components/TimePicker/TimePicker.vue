@@ -24,17 +24,26 @@
       <BaseSelect v-model.number="hours" :options="hourOptions" align-right />
       <template v-if="timeAccuracy > 1">
         <span class="vc-time-colon">:</span>
-        <BaseSelect v-model.number="minutes" :options="options.minutes" />
+        <BaseSelect
+          v-model.number="minutes"
+          :options="options.minutes"
+          :align-left="timeAccuracy === 2"
+        />
       </template>
       <template v-if="timeAccuracy > 2">
         <span class="vc-time-colon">:</span>
-        <BaseSelect v-model.number="seconds" :options="options.seconds" />
+        <BaseSelect
+          v-model.number="seconds"
+          :options="options.seconds"
+          :align-left="timeAccuracy === 3"
+        />
       </template>
       <template v-if="timeAccuracy > 3">
         <span class="vc-time-decimal">.</span>
         <BaseSelect
           v-model.number="milliseconds"
           :options="options.milliseconds"
+          align-left
         />
       </template>
       <BaseSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions" />

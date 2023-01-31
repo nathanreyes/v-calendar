@@ -8,6 +8,7 @@
       :class="{
         'vc-has-icon': showIcon,
         'vc-align-right': alignRight,
+        'vc-align-left': alignLeft,
         'vc-small': small,
       }"
       @change="$emit('update:modelValue', $event.target.value)"
@@ -37,6 +38,7 @@ defineProps({
   options: Array,
   modelValue: null,
   alignRight: Boolean,
+  alignLeft: Boolean,
   showIcon: Boolean,
   small: Boolean,
 });
@@ -62,6 +64,7 @@ defineEmits(['update:modelValue']);
     text-indent: 0px;
     background-image: none;
     cursor: pointer;
+    text-align: center;
     &:hover {
       background-color: var(--vc-select-hover-bg);
     }
@@ -73,6 +76,9 @@ defineEmits(['update:modelValue']);
       &.vc-has-icon {
         padding: 0 20px 0 8 px;
       }
+    }
+    &.vc-align-left {
+      text-align: left;
     }
     &.vc-align-right {
       text-align: right;
