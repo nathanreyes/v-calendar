@@ -112,6 +112,16 @@ describe('DatePicker', () => {
       expect(dp.emitted('update:modelValue')).toBeUndefined();
     });
 
+    it(':disabled-dates - prevents selection of single dates', async () => {
+      const dp = await mountDp({
+        modelValue: new Date(2023, 0, 1),
+        disabledDates: [{ repeat: { weekdays: [4, 5] } }],
+      });
+      const day = dp.get(getDayContentClass(dp.vm, new Date(2023, 0, 11)));
+      await day.trigger('click');
+      expect(dp.emitted('update:modelValue')).toBeUndefined();
+    });
+
     it(':rules - emits update:modelValue on initial load if rule modifies value', async () => {
       const date = new Date(2023, 0, 15, 0, 0, 0, 0);
       const rulesDate = new Date(2023, 0, 15, 12, 0, 0, 0);
