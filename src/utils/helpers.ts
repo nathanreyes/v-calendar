@@ -1,11 +1,10 @@
 import { ComponentPublicInstance } from 'vue';
 
 // Type utils
-import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
 
-export { isArray, isFunction, isString };
+export { isFunction, isString };
 export { default as isBoolean } from 'lodash/isBoolean';
 export { default as isNumber } from 'lodash/isNumber';
 export { default as isUndefined } from 'lodash/isUndefined';
@@ -72,6 +71,8 @@ export const mergeEvents = (...args: Array<any>) => {
 export const roundTenth = (n: number) => {
   return Math.round(n * 100) / 100;
 };
+
+export const isArray = (val: any): val is any[] => Array.isArray(val);
 
 export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
