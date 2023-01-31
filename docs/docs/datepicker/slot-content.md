@@ -9,16 +9,18 @@ When a default slot is used with `VDatePicker`, that content will display instea
 </Example>
 
 ```vue
-<VDatePicker v-model="date">
-  <template #default="{ togglePopover }">
-    <button
-      class="px-3 py-2 bg-blue-500 text-sm text-white font-semibold rounded-md"
-      @click="togglePopover"
-    >
-      Select date
-    </button>
-  </template>
-</VDatePicker>
+<template>
+  <VDatePicker v-model="date">
+    <template #default="{ togglePopover }">
+      <button
+        class="px-3 py-2 bg-blue-500 text-sm text-white font-semibold rounded-md"
+        @click="togglePopover"
+      >
+        Select date
+      </button>
+    </template>
+  </VDatePicker>
+</template>
 ```
 
 In this simple example, we display a `<button />` as the default slot, and use one of the slot props provided to toggle the calendar popover.
