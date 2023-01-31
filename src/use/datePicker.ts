@@ -474,12 +474,11 @@ export function createDatePicker(
       normalizedValue = dateValue.value;
       // Don't allow hiding popover
       hPopover = false;
-    }
-
-    // 2b. Validation against is-required or clearIfEqual
-    if (normalizedValue == null && props.isRequired) {
+      // 2b. Validation against is-required or clearIfEqual
+    } else if (normalizedValue == null && props.isRequired) {
       // Reset to previous value if it was cleared but is required
       normalizedValue = dateValue.value;
+      // 2c. Validation against clearIfEqual
     } else if (
       // Clear value if same value was passed
       normalizedValue != null &&
@@ -500,7 +499,6 @@ export function createDatePicker(
       normalizedValue,
       normalizedConfig,
     );
-
     // 4. Notification
     if (notify) {
       watchValue = false;
