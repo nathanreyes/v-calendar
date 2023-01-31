@@ -202,7 +202,7 @@ const range = ref({ start: 1578290400000, end: 1578636000000 });
 
 ## Disable dates
 
-Use `disabled-dates` to prevent selection of dates or date ranges that intersect the disabled dates. Any dates specified will disable date and time selection for the the full day.
+Use `disabled-dates` to prevent selection of dates that intersect the disabled dates. Any dates specified will disable date and time selection for the the full day.
 
 <Example centered>
   <DateDisabled />
@@ -216,6 +216,32 @@ Use `disabled-dates` to prevent selection of dates or date ranges that intersect
 <script setup>
 import { ref } from 'vue';
 const date = ref(new Date());
+const disabledDates = ref([
+  {
+    repeat: {
+      weekdays: [4, 5],
+    },
+  },
+]);
+</script>
+```
+
+### Date ranges
+
+Similarly, `disabled-dates` will prevent dragging over secified dates for date ranges.
+
+<Example centered>
+  <DateRangeDisabled />
+</Example>
+
+```vue
+<template>
+  <VDatePicker v-model.range="range" :disabled-dates="disabledDates" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const range = ref(null);
 const disabledDates = ref([
   {
     repeat: {
