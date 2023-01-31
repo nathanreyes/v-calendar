@@ -431,18 +431,16 @@ export function createDatePicker(
   function updateValue(
     value: any,
     opts: Partial<UpdateOptions> = {},
-  ): Promise<Date | SimpleDateRange | null> {
+  ): Promise<ReturnType<typeof forceUpdateValue>> {
     clearTimeout(updateTimeout);
     return new Promise(resolve => {
       const { debounce = 0, ...args } = opts;
       if (debounce > 0) {
         updateTimeout = window.setTimeout(() => {
-          forceUpdateValue(value, args);
-          resolve(dateValue.value);
+          resolve(forceUpdateValue(value, args));
         }, debounce);
       } else {
-        forceUpdateValue(value, args);
-        resolve(dateValue.value);
+        resolve(forceUpdateValue(value, args));
       }
     });
   }
@@ -472,7 +470,7 @@ export function createDatePicker(
     // 2a. Validation against disabled dates
     const isDisabled = valueIsDisabled(normalizedValue);
     if (isDisabled) {
-      if (dragging) return;
+      if (dragging) return null;
       normalizedValue = dateValue.value;
       // Don't allow hiding popover
       hPopover = false;
@@ -493,20 +491,20 @@ export function createDatePicker(
 
     // 3. Assignment
     const valueRef = dragging ? dragValue : dateValue;
-    const notify = !valuesAreEqual(dateValue.value, normalizedValue);
+    const notify = !valuesAreEqual(valueRef.value, normalizedValue);
     valueRef.value = normalizedValue;
     // Clear drag value if needed
     if (!dragging) dragValue.value = null;
+    // Get denormalized value
+    const denormalizedValue = denormalizeValue(
+      normalizedValue,
+      normalizedConfig,
+    );
 
     // 4. Notification
     if (notify) {
-      const event = isDragging.value ? 'drag' : 'update:modelValue';
-      const denormalizedValue = denormalizeValue(
-        normalizedValue,
-        normalizedConfig,
-      );
       watchValue = false;
-      emit(event, denormalizedValue);
+      emit(dragging ? 'drag' : 'update:modelValue', denormalizedValue);
       nextTick(() => (watchValue = true));
     }
 
@@ -520,6 +518,8 @@ export function createDatePicker(
     if (mValue) {
       nextTick(() => moveToValue(targetPriority));
     }
+
+    return denormalizedValue;
   }
 
   function formatInput() {
