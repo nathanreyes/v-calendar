@@ -13,7 +13,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['vue', '@popperjs/core'],
+      external: ['vue', 'vue/server-renderer', '@popperjs/core'],
     },
   },
 });
