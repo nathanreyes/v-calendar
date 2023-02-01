@@ -1,5 +1,5 @@
-import { fileURLToPath, URL } from 'url';
 import { defineConfig } from 'vite';
+import path from 'path';
 
 export default defineConfig({
   server: {
@@ -7,8 +7,13 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./', import.meta.url)),
-      '@plugin': fileURLToPath(new URL('../../src', import.meta.url)),
+      '@': path.resolve(__dirname, './'),
+      'v-calendar': path.resolve(__dirname, '../../src'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      external: ['vue', '@popperjs/core'],
     },
   },
 });

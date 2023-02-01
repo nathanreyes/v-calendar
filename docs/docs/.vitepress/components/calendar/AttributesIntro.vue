@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import Locale from '@plugin/utils/locale';
+import Locale from 'v-calendar/utils/locale';
 const locale = new Locale();
 let { month: thisMonth, year: thisMonthYear } = locale.getThisMonthParts();
 let { month: nextMonth, year: nextMonthYear } = locale.getNextMonthParts(
