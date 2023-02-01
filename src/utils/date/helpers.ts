@@ -157,7 +157,7 @@ export interface DatePartsRules {
   milliseconds?: DatePartsRule;
 }
 
-interface DatePartOption {
+export interface DatePartOption {
   value: number;
   label: string;
   disabled?: boolean;
