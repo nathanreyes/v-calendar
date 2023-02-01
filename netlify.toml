@@ -15,5 +15,5 @@
   # directory if one has been set, or the root directory if
   # a base has not been set.
   publish = ".vitepress/dist"
-
-
+  
+  environment = { NODE_VERSION = "14.19.3" }
