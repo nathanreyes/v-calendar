@@ -1,12 +1,17 @@
-import { PropType, ExtractPropTypes, computed, provide, inject } from 'vue';
-import { DarkModeClassConfig } from 'vue-screen-utils';
-import { useDarkMode } from 'vue-screen-utils';
+import {
+  type PropType,
+  type ExtractPropTypes,
+  computed,
+  provide,
+  inject,
+} from 'vue';
+import { type DarkModeClassConfig, useDarkMode } from 'vue-screen-utils';
 import { Theme } from '../utils/theme';
 import { getDefault } from '../utils/defaults';
 import { default as Locale, LocaleConfig } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
-import { DayOfWeek, addDays } from '../utils/date/helpers';
+import { type DayOfWeek, addDays } from '../utils/date/helpers';
 
 const contextKey = '__vc_base_context__';
 

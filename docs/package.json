@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "short-uuid": "^4.2.0",
-    "vue-screen-utils": "^1.0.0-beta.9"
+    "vue-screen-utils": "^1.0.0-beta.13"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",
