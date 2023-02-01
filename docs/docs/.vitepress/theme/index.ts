@@ -1,6 +1,6 @@
 import DefaultTheme from 'vitepress/theme';
 import { ComponentOptions } from 'vue';
-import VCalendar from '@/../../src';
+import VCalendar from 'v-calendar';
 import './index.css';
 
 // Autoregister components

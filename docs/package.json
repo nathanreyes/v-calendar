@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vitepress dev docs",
-    "build": "NODE_OPTIONS='--experimental-specifier-resolution=node' vitepress build docs",
+    "build": "vitepress build docs",
     "preview": "vitepress preview docs",
     "serve": "vitepress serve docs"
   },

@@ -11,9 +11,4 @@ export default defineConfig({
       'v-calendar': path.resolve(__dirname, '../../src'),
     },
   },
-  build: {
-    rollupOptions: {
-      external: ['vue', 'vue/server-renderer', '@popperjs/core'],
-    },
-  },
 });
