@@ -18,7 +18,7 @@
     <!--Calendar Container-->
     <div :class="['vc-pane-container', { 'in-transition': inTransition }]">
       <div class="vc-pane-header-wrapper">
-        <CalendarHeader :page="firstPage!" is-lg hide-title />
+        <CalendarHeader v-if="firstPage" :page="firstPage!" is-lg hide-title />
       </div>
       <Transition
         :name="`vc-${transitionName}`"

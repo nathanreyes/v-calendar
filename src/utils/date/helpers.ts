@@ -13,12 +13,11 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
 import getISOWeek from 'date-fns/getISOWeek';
 import addDays from 'date-fns/addDays';
-import addWeeks from 'date-fns/addWeeks';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import Locale, { LocaleConfig } from '../locale';
 
-export { addDays, addWeeks, addMonths, addYears };
+export { addDays, addMonths, addYears };
 export { DateRepeat } from './repeat';
 
 // #region Types

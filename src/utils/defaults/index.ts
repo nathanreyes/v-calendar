@@ -65,7 +65,7 @@ const defaultLocales = computed(() => {
 export { defaultLocales };
 
 export const getDefault = (path: string) => {
-  if (window && has(window.__vcalendar__, path)) {
+  if (typeof window !== 'undefined' && has(window.__vcalendar__, path)) {
     return get(window.__vcalendar__, path);
   }
   return get(state, path);
@@ -73,5 +73,5 @@ export const getDefault = (path: string) => {
 
 export const setupDefaults = (app: App, userDefaults: Defaults | undefined) => {
   app.config.globalProperties.$VCalendar = state;
-  return Object.assign(state, defaultsDeep(userDefaults, state));
+  return defaultsDeep(userDefaults, state);
 };

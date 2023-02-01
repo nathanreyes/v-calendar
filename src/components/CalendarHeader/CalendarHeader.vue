@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, computed, watch } from 'vue';
+import { PropType, computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import { useCalendar } from '../../use/calendar';
 import { popoverDirective as vPopover } from '../../utils/popovers';
