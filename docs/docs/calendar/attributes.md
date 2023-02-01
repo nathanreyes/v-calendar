@@ -628,7 +628,7 @@ Now that you are providing your own popover, you need to display the attributes 
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-| `day` | Object | The [day object](/api/day-object.md) associated with the popover. |
+| `day` | Object | The [day object](/calendar/api#calendarday) associated with the popover. |
 | `dayTitle` | String | The formatted date title according to the `masks.dayPopover` prop |
 | `attributes` | Array | All the attributes assigned for the associated day. Only attributes with 'truthy' values assigned to their `popover` key are passed in. |
 | `format` | Function | Function for formatting dates. Accepts `date: Date` and `mask: String` arguments, respectively. |

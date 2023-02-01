@@ -109,7 +109,7 @@ const attrs = ref([
 
 Colors and other styles for both light and dark modes may be customized by overriding css variables defined within your own custom theme stylesheet.
 
-Use the [default stylesheet]() as a guide.
+Use the [default stylesheet](https://github.com/nathanreyes/v-calendar/blob/v3/src/styles/theme.css) as a guide.
 
 ### Adding a custom color
 

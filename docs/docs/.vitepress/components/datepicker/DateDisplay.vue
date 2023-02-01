@@ -43,7 +43,7 @@
 
 <script>
 import { computed } from 'vue';
-import { capitalize } from 'lodash';
+import capitalize from 'lodash/capitalize';
 
 export default {
   inheritAttrs: false,

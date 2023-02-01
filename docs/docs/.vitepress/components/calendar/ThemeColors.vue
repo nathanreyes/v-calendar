@@ -120,7 +120,7 @@ const attrs = ref([
 
 function colorClass(color) {
   const sharedClasses = `inline-block text-sm border rounded py-1 focus:outline-none w-20 dark:hover:text-white`;
-  if (color === this.selectedColor) {
+  if (color === selectedColor.value) {
     return `${sharedClasses} ${color.selectedClass} text-white font-semibold`;
   }
   return `${sharedClasses} ${color.class} font-medium`;
