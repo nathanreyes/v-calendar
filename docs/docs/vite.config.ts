@@ -6,12 +6,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  plugins: [nodeResolve()],
-  build: {
-    rollupOptions: {
-      external: ['vue'],
-    },
-  },
+  plugins: [nodeResolve({ exportConditions: ['node'] })],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
