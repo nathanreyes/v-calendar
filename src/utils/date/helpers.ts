@@ -8,13 +8,13 @@ import {
   isFunction,
   isObject,
 } from '../helpers';
-import toFnsDate from 'date-fns-tz/toDate/index.js';
-import getWeeksInMonth from 'date-fns/getWeeksInMonth/index.js';
-import getWeek from 'date-fns/getWeek/index.js';
-import getISOWeek from 'date-fns/getISOWeek/index.js';
-import addDays from 'date-fns/addDays/index.js';
-import addMonths from 'date-fns/addMonths/index.js';
-import addYears from 'date-fns/addYears/index.js';
+import toFnsDate from 'date-fns-tz/toDate';
+import getWeeksInMonth from 'date-fns/getWeeksInMonth';
+import getWeek from 'date-fns/getWeek';
+import getISOWeek from 'date-fns/getISOWeek';
+import addDays from 'date-fns/addDays';
+import addMonths from 'date-fns/addMonths';
+import addYears from 'date-fns/addYears';
 import Locale, { LocaleConfig } from '../locale';
 
 export { addDays, addMonths, addYears };
