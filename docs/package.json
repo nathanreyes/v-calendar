@@ -16,7 +16,6 @@
     "vue-screen-utils": "^1.0.0-beta.13"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.0.1",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/typography": "^0.5.4",
     "autoprefixer": "^10.4.8",
