@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import path from 'path';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
+console.log(path.resolve(__dirname, '../../'));
+
 export default defineConfig({
   server: {
     port: 3000,
@@ -10,8 +12,8 @@ export default defineConfig({
     nodeResolve({
       exportConditions: ['node'],
       modulePaths: [
-        path.resolve(__dirname, '../'),
-        path.resolve(__dirname, '../../'),
+        path.resolve(__dirname, '../node_modules'),
+        path.resolve(__dirname, '../../node_modules'),
       ],
     }),
   ],
