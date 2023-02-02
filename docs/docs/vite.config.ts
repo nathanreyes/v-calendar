@@ -9,7 +9,10 @@ export default defineConfig({
   plugins: [
     nodeResolve({
       exportConditions: ['node'],
-      modulePaths: [path.resolve(__dirname, '../')],
+      modulePaths: [
+        path.resolve(__dirname, '../'),
+        path.resolve(__dirname, '../../'),
+      ],
     }),
   ],
   resolve: {
