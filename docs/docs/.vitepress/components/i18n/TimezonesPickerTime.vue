@@ -12,8 +12,8 @@
 import { ref } from 'vue';
 
 const timezone = ref('UTC');
-const range = {
+const range = ref({
   start: new Date(Date.UTC(2020, 0, 6)),
   end: new Date(Date.UTC(2020, 0, 10)),
-};
+});
 </script>
