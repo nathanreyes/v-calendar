@@ -79,6 +79,9 @@
   .VPNavBar.fill {
     border-bottom-color: var(--vp-c-divider) !important;
   }
+  .VPNavBar.has-sidebar .curtain::before {
+    display: none !important;
+  }
 }
 
 input,
