@@ -20,23 +20,54 @@ The included screens mixin that supplied the `$screens` function has been remove
 
 ## Calendar
 
-### Deprecated `from-page`, `to-page`, `from-date`, and `to-date` props
+### Deprecate `from-page`, `to-page`, `from-date`, and `to-date` props
 
 Use the `initial-page` and `initial-page-position` props to correctly set the initial months for a calendar.
 
 [Read more](/calendar/api#props)
 
-### Deprecated Highlight Fill Mode
+### Deprecate Highlight Fill Mode
 
 The `none` option for `attribute.highlight.fillMode` has been deprecated in favor of the more descriptive `outline` option.
 
 [Read more](/calendar/attributes#highlights)
 
+### Repeating dates config
+
+When using repeating dates with date expressions, repeat rules must now be nested within a `repeat` object. This change was made to support repeating date ranges, which was not possible in v2.
+
+Also, the separate repeat interval keys (`dailyInterval`, `weeklyInterval`, `monthlyInterval`, `yearlyInterval`) have been deprecated in favor of the `every` key.
+
+```vue{13-16}
+<template>
+  <VCalendar :attributes="attributes" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const attributes = ref([
+  {
+    highlight: true,
+    dates: {
+      start: new Date(2022, 10, 7),
+      repeat: {
+        every: [2, 'weeks'],
+        weekdays: 2,
+      },
+    },
+  },
+]);
+</script>
+```
+
+[Read more](/calendar/dates#repeating-dates)
+
 ## DatePicker
 
 ### Deprecate `modelConfig` prop
 
-To bind to numbers or strings, use the `number` and `string` model modifiers in favor of the `modelConfig` prop. Provide the `masks.modelValue` prop if a string mask is desired.
+Use the `number` and `string` model modifiers in favor of the `modelConfig` prop. Provide the `masks.modelValue` prop if a string mask is needed.
 
 [Read more](/datepicker/basics#model-modifiers)
 

@@ -87,7 +87,7 @@ You can apply a theme color with the `color` prop.
 <template>
   <VCalendar
     :initial-page="{ month: 4, year: 2019 }"
-    :color="selectedColor.value"
+    :color="selectedColor"
     :attributes="attrs"
   />
 </template>
