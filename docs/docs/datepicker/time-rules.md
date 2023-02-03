@@ -36,7 +36,7 @@ const mode = ref('date');
 
 Let's start with a simple example to show how rules work. We can zero-out time components by setting a `rules` prop object with hard-coded values for the time component keys.
 
-Note how the `Date Value` displayed below shows the zero-ed out time components. A date was passed in (`new Date()`) and the `VDatePicker` applied the rules on mount and re-emitted the new date value.
+Note how the `Value` displayed below shows the zero-ed out time components. A date was passed in (`new Date()`) and the `VDatePicker` applied the rules on mount and re-emitted the new date value.
 
 <Example centered>
   <DateRulesIntroDate />
