@@ -6,11 +6,9 @@ title: 'Upgrade Guide'
 
 This document outlines how to upgrade VCalendar from v2 to v3.
 
-Some changes introduced in versions previous to `3.0.0-alpha.8` have also been rolled back. They will be noted with the following warning:
+Some changes introduced in versions previous to `3.0.0-alpha.9` have also been rolled back. They will be noted with the following warning:
 
-<BaseAlert title="Pre 3.0.0-alpha.8" warning />
-
-## Dark Mode
+<BaseAlert title="Pre 3.0.0-alpha.9" warning />
 
 ## Deprecated Screens Mixin
 
@@ -63,6 +61,12 @@ const attributes = ref([
 
 [Read more](/calendar/dates#repeating-dates)
 
+### Added `moveBy`
+
+Any direct calls of the `move` function on the calendar to move forward and back by *n* number of months should now use `moveBy`.
+
+[Read more](/calendar/navigation#move-by-number-of-pages)
+
 ## DatePicker
 
 ### Deprecate `modelConfig` prop
@@ -79,7 +83,7 @@ Using the `is-range` prop to bind to date ranges is soft-deprecated. To bind to 
 
 ### Deprecate `minute-increment` and `valid-hours` props
 
-<BaseAlert warning title="Pre 3.0.0-alpha.8" />
+<BaseAlert warning title="Pre 3.0.0-alpha.9" />
 
 The `minute-increment` and `valid-hours` props have been deprecated in favor of using the `rules` prop.
 
