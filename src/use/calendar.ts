@@ -221,7 +221,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     return getPageAddressForDate(date, _view.value, locale.value);
   };
 
-  const refreshDisabledDay = (day: CalendarDay) => {
+  const refreshDisabled = (day: CalendarDay) => {
     if (!disabledAttribute.value || !attributeContext.value) return;
     day.isDisabled = attributeContext.value.cellExists(
       disabledAttribute.value.key,
@@ -229,7 +229,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     );
   };
 
-  const refreshFocusableDay = (day: CalendarDay) => {
+  const refreshFocusable = (day: CalendarDay) => {
     day.isFocusable = day.inMonth && day.day === focusableDay.value;
   };
 
@@ -686,9 +686,9 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     // Refresh state for days
     forDays(_pages.value, day => {
       // Refresh disabled state
-      refreshDisabledDay(day);
+      refreshDisabled(day);
       // Refresh focusable state
-      refreshFocusableDay(day);
+      refreshFocusable(day);
     });
   });
 
