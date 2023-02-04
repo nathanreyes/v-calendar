@@ -25,12 +25,17 @@
           </div>
           <!--CTA buttons-->
           <div class="flex space-x-4 mt-10">
-            <BaseLinkButton
+            <a
               href="/getting-started/installation"
+              class="inline-flex items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-accent-800 bg-accent-100 hover:bg-accent-200"
               icon="BaseArrowRightIcon"
               accent
-              >Get Started</BaseLinkButton
-            >
+              ><span>Get Started</span>
+              <Component
+                is="BaseArrowRightIcon"
+                class="w-4 h-4 text-accent-500"
+              />
+            </a>
             <BaseLinkButton
               href="https://github.com/nathanreyes/v-calendar"
               icon="BaseExternalLinkIcon"
