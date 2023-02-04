@@ -4,7 +4,6 @@ import { defineConfig } from 'vitepress';
 function nav() {
   return [
     { text: 'Guide', link: '/getting-started/installation' },
-    { text: 'Examples', link: '/examples/' },
     {
       text: version,
       items: [
