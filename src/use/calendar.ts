@@ -2,7 +2,7 @@ import {
   PropType,
   ExtractPropTypes,
   computed,
-  reactive,
+  ref,
   toRefs,
   provide,
   onMounted,
@@ -76,20 +76,6 @@ export type CalendarProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 type IContainer = Pick<Element, 'querySelector'> & CustomElement;
 
-interface CalendarState {
-  containerRef: IContainer | null;
-  navPopoverRef: typeof Popover | null;
-  lastFocusedDay: CalendarDay | null;
-  focusableDay: number;
-  inTransition: boolean;
-  navPopoverId: string;
-  dayPopoverId: string;
-  view: CalendarView;
-  pages: Page[];
-  transitionName: string;
-  refreshing: boolean;
-}
-
 export type CalendarContext = ReturnType<typeof createCalendar>;
 
 export const propsDef = {
@@ -149,19 +135,17 @@ export const emitsDef = [
 const contextKey = '__vc_calendar_context__';
 
 export function createCalendar(props: CalendarProps, { emit, slots }: any) {
-  const state: CalendarState = reactive({
-    containerRef: null,
-    navPopoverRef: null,
-    lastFocusedDay: null,
-    focusableDay: new Date().getDate(),
-    inTransition: false,
-    navPopoverId: createGuid(),
-    dayPopoverId: createGuid(),
-    view: props.view,
-    pages: [],
-    transitionName: '',
-    refreshing: false,
-  });
+  // Reactive refs
+  const containerRef = ref<IContainer | null>(null);
+  const navPopoverRef = ref<typeof Popover | null>(null);
+  const focusedDay = ref<CalendarDay | null>(null);
+  const focusableDay = ref(new Date().getDate());
+  const inTransition = ref(false);
+  const navPopoverId = ref(createGuid());
+  const dayPopoverId = ref(createGuid());
+  const _view = ref(props.view);
+  const _pages = ref<Page[]>([]);
+  const transitionName = ref('');
 
   // Non-reactive util vars
   let transitionPromise: any = null;
@@ -183,9 +167,9 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const step = computed(() => props.step || count.value);
 
-  const firstPage = computed(() => head(state.pages) ?? null);
+  const firstPage = computed(() => head(_pages.value) ?? null);
 
-  const lastPage = computed(() => last(state.pages) ?? null);
+  const lastPage = computed(() => last(_pages.value) ?? null);
 
   const minPage = computed(
     () =>
@@ -203,21 +187,21 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const showIsoWeeknumbers = computed(() => !!props.showIsoWeeknumbers);
 
-  const isMonthly = computed(() => state.view === 'monthly');
-  const isWeekly = computed(() => state.view === 'weekly');
-  const isDaily = computed(() => state.view === 'daily');
+  const isMonthly = computed(() => _view.value === 'monthly');
+  const isWeekly = computed(() => _view.value === 'weekly');
+  const isDaily = computed(() => _view.value === 'daily');
 
   // #endregion Computed
 
   // #region Methods
 
   const onTransitionBeforeEnter = () => {
-    state.inTransition = true;
+    inTransition.value = true;
     emit('transition-start');
   };
 
   const onTransitionAfterEnter = () => {
-    state.inTransition = false;
+    inTransition.value = false;
     emit('transition-end');
     if (transitionPromise) {
       transitionPromise.resolve(true);
@@ -225,12 +209,16 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     }
   };
 
-  const addPages = (address: PageAddress, count: number, view = state.view) => {
+  const addPages = (
+    address: PageAddress,
+    count: number,
+    view = _view.value,
+  ) => {
     return _addPages(address, count, view, locale.value);
   };
 
   const getDateAddress = (date: DateSource) => {
-    return getPageAddressForDate(date, state.view, locale.value);
+    return getPageAddressForDate(date, _view.value, locale.value);
   };
 
   const refreshDisabledDay = (day: CalendarDay) => {
@@ -242,7 +230,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const refreshFocusableDay = (day: CalendarDay) => {
-    day.isFocusable = day.inMonth && day.day === state.focusableDay;
+    day.isFocusable = day.inMonth && day.day === focusableDay.value;
   };
 
   const forDays = (pages: Page[], fn: (day: CalendarDay) => boolean | void) => {
@@ -254,8 +242,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const allDays = computed(() =>
-    state.pages.reduce((result: CalendarDay[], page: Page) => {
       result.push(...page.days);
+    _pages.value.reduce((result: CalendarDay[], page: Page) => {
       return result;
     }, <CalendarDay[]>[]),
   );
@@ -333,7 +321,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     page: PageAddress,
     opts: Partial<MoveOptions> = {},
   ) => {
-    const { view = state.view, position = 1, force } = opts;
+    const { view = _view.value, position = 1, force } = opts;
     const pagesToAdd = position > 0 ? 1 - position : -(count.value + position);
     let fromPage = addPages(page, pagesToAdd, view);
     let toPage = addPages(fromPage!, count.value - 1, view);
@@ -396,7 +384,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         pages.push(
           locale.value.getPage({
             ...newPage,
-            view: state.view,
+            view: _view.value,
             titlePosition: props.titlePosition,
             trimWeeks: props.trimWeeks,
             position,
@@ -411,15 +399,15 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         );
       }
       // Assign the transition
-      state.transitionName = getPageTransition(
-        state.pages[0],
+      transitionName.value = getPageTransition(
+        _pages.value[0],
         pages[0],
         transition,
       );
       // Assign the new pages
-      state.pages = pages;
+      _pages.value = pages;
       // Cache or resolve transition promise
-      if (state.transitionName && state.transitionName !== 'none') {
+      if (transitionName.value && transitionName.value !== 'none') {
         transitionPromise = {
           resolve,
           reject,
@@ -451,7 +439,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     const pagesInRange = pageRangeToArray(
       opts.fromPage!,
       opts.toPage!,
-      state.view,
+      _view.value,
       locale.value,
     ).map(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
     return pagesInRange.every(val => val);
@@ -471,13 +459,13 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     // Move to new `fromPage` if it's different from the current one
     if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, firstPage.value)) {
       // Hide nav popover for good measure
-      if (state.navPopoverRef) {
-        state.navPopoverRef.hide({ hideDelay: 0 });
+      if (navPopoverRef.value) {
+        navPopoverRef.value.hide({ hideDelay: 0 });
       }
       // Quietly change view if needed
       if (opts.view) {
         skipWatcher('view', 10);
-        state.view = opts.view;
+        _view.value = opts.view;
       }
       await refreshPages({
         ...opts,
@@ -485,7 +473,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
         position: 1,
         force: true,
       });
-      emit('did-move', state.pages);
+      emit('did-move', _pages.value);
     }
     return true;
   };
@@ -506,7 +494,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     const inMonth = isMonthly.value ? '.in-month' : '';
     const daySelector = `.id-${locale.value.getDayId(date)}${inMonth}`;
     const selector = `${daySelector}.vc-focusable, ${daySelector} .vc-focusable`;
-    const el = state.containerRef;
+    const el = containerRef.value;
     if (el) {
       const focusableEl = el.querySelector(selector) as HTMLElement;
       if (focusableEl) {
@@ -525,7 +513,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const onDayClick = (day: CalendarDay, event: MouseEvent) => {
-    state.focusableDay = day.day;
+    focusableDay.value = day.day;
     emit('dayclick', day, event);
   };
 
@@ -538,13 +526,13 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const onDayFocusin = (day: CalendarDay, event: FocusEvent | null) => {
-    state.focusableDay = day.day;
-    state.lastFocusedDay = day;
+    focusableDay.value = day.day;
+    focusedDay.value = day;
     emit('dayfocusin', day, event);
   };
 
   const onDayFocusout = (day: CalendarDay, event: FocusEvent) => {
-    state.lastFocusedDay = null;
+    focusedDay.value = null;
     emit('dayfocusout', day, event);
   };
 
@@ -611,7 +599,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   };
 
   const onKeydown = (event: KeyboardEvent) => {
-    const day = state.lastFocusedDay;
+    const day = focusedDay.value;
     if (day != null) {
       onDayKeydown(day, event);
     }
@@ -633,10 +621,10 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   // Mounted
   onMounted(() => {
-    if (!props.disablePageSwipe && state.containerRef) {
+    if (!props.disablePageSwipe && containerRef.value) {
       // Add swipe handler to move to next and previous pages
       removeHandlers = addHorizontalSwipeHandler(
-        state.containerRef,
+        containerRef.value,
         ({ toLeft = false, toRight = false }) => {
           if (toLeft) {
             moveNext();
@@ -651,7 +639,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   // Unmounted
   onUnmounted(() => {
-    state.pages = [];
+    _pages.value = [];
     if (removeHandlers) removeHandlers();
   });
 
@@ -673,30 +661,30 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   watch(
     () => props.view,
-    () => (state.view = props.view),
+    () => (_view.value = props.view),
   );
 
   watch(
-    () => state.view,
+    () => _view.value,
     () => {
       handleWatcher('view', () => {
         refreshPages();
       });
-      emit('update:view', state.view);
+      emit('update:view', _view.value);
     },
   );
 
   watch(
-    () => state.focusableDay,
+    () => focusableDay.value,
     () => {
-      forDays(state.pages, day => refreshFocusableDay(day));
+      forDays(_pages.value, day => refreshFocusable(day));
     },
   );
 
   watchEffect(() => {
-    emit('update:pages', state.pages);
+    emit('update:pages', _pages.value);
     // Refresh state for days
-    forDays(state.pages, day => {
+    forDays(_pages.value, day => {
       // Refresh disabled state
       refreshDisabledDay(day);
       // Refresh focusable state
@@ -709,7 +697,15 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const context = {
     emit,
     slots,
-    ...toRefs(state),
+    containerRef,
+    navPopoverRef,
+    focusedDay,
+    inTransition,
+    navPopoverId,
+    dayPopoverId,
+    view: _view,
+    pages: _pages,
+    transitionName,
     theme,
     color,
     displayMode,
