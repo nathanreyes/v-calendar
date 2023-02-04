@@ -1,11 +1,11 @@
 <template>
   <div class="my-10 mx-24">
     <div
-      class="relative bg-gradient-to-r from-indigo-600 to-cyan-500 px-20 py-14 rounded-lg w-full mt-6"
+      class="relative bg-gradient-to-r from-indigo-600 dark:from-indigo-800 to-cyan-500 dark:to-cyan-700 px-20 py-14 rounded-lg w-full mt-6"
     >
       <div class="absolute top-0 left-0 w-full flex px-20">
         <div
-          class="flex space-x-2 px-4 py-2 text-accent-800 rounded-b-lg bg-blur-sm bg-white/60"
+          class="flex space-x-2 px-4 py-2 text-accent-800 dark:text-gray-200 rounded-b-lg bg-blur-sm bg-white/60 dark:bg-white/20"
         >
           <span> &#127881; </span>
           <span class="font-semibold"> Version 3 docs are live! </span>
@@ -27,13 +27,13 @@
           <div class="flex space-x-4 mt-10">
             <a
               href="/getting-started/installation"
-              class="inline-flex items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-accent-800 bg-accent-100 hover:bg-accent-200"
+              class="inline-flex items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-accent-800 dark:text-white bg-accent-100 hover:bg-accent-200 dark:bg-accent-500 dark:hover:bg-accent-400"
               icon="BaseArrowRightIcon"
               accent
               ><span>Get Started</span>
               <Component
                 is="BaseArrowRightIcon"
-                class="w-4 h-4 text-accent-500"
+                class="w-4 h-4 text-accent-500 dark:text-gray-200"
               />
             </a>
             <BaseLinkButton
