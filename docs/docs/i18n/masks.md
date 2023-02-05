@@ -32,10 +32,10 @@ Use the following tokens to configure your custom masks:
 | | `MM` | 01, 02, ..., 12 |
 | | `MMM` | Jan, Feb, ..., Dec |
 | | `MMMM` | January, February, ..., December |
-| **Day of Month** | `D` | 1, 2, ..., 31 |
+| **Month Day** | `D` | 1, 2, ..., 31 |
 | | `DD` | 01, 02, ..., 31 |
 | | `Do` | 1st, 2nd, ..., 31st |
-| **Day of Week** | `d` | 1, 2, ..., 7 |
+| **Week Day** | `d` | 1, 2, ..., 7 |
 | | `d` | 1, 2, ..., 7 |
 | | `dd` | 01, 02, ..., 07 |
 | | `W` | S, M, ..., S |
@@ -44,4 +44,20 @@ Use the following tokens to configure your custom masks:
 | | `WWWW` | Sunday, Monday, ..., Saturday |
 | **Year** | `YY` | 70, 71, ... 69 |
 | | `YYYY` | 1970, 1971, ..., 2069 |
-| **Long Date** | `L` | 01/21/1983 (en-US), 21/01/1983 (en-GB), ..., 1983/01/21 |
+| **Hour** | `h` | 1, 2, ..., 11, 12 |
+| | `hh` | 01, 01, ..., 11, 12 |
+| | `H` | 0, 1, ..., 22, 23 |
+| | `HH` | 00, 01, ..., 22, 23 |
+| **Minute** | `m` | 1, 2, ..., 59, 60 |
+| | `mm` | 01, 02, ..., 58, 59 |
+| **Second** | `s` | 1, 2, ..., 58, 59 |
+| | `ss` | 01, 02, ..., 58, 59 |
+| **Fractional Second** | `S` | 0, 1, ..., 8, 9  |
+| | `SS` | 0, 1, ..., 98, 99 |
+| | `SSS` | 0, 1, ..., 998, 999 |
+| **AM/PM** | `A` | AM PM |
+| | `a` | am pm |
+| **Timezone** | `ZZ` | -11, -10, ..., +10, +11 |
+| | `ZZZ` | -1100, -1000, ..., +1000, +1100 |
+| | `ZZZZ` | -11:00, -10:00, ..., +10:00, +11:00 |
+| **Localized Date** | `L` | 01/21/1983 (en-US), 21/01/1983 (en-GB), ..., 1983/01/21 (*civilized*) |
