@@ -530,11 +530,13 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const onDayFocusin = (day: CalendarDay, event: FocusEvent | null) => {
     focusableDay.value = day.day;
     focusedDay.value = day;
+    day.isFocused = true;
     emit('dayfocusin', day, event);
   };
 
   const onDayFocusout = (day: CalendarDay, event: FocusEvent) => {
     focusedDay.value = null;
+    day.isFocused = false;
     emit('dayfocusout', day, event);
   };
 

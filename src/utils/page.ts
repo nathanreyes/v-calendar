@@ -29,6 +29,7 @@ export interface CalendarDay extends DayParts {
   isLastDay: boolean;
   isDisabled: boolean;
   isFocusable: boolean;
+  isFocused: boolean;
   inMonth: boolean;
   inPrevMonth: boolean;
   inNextMonth: boolean;
@@ -260,6 +261,7 @@ function getDays(
         isLastDay,
         isDisabled: !thisMonth,
         isFocusable: !thisMonth,
+        isFocused: false,
         inMonth: thisMonth,
         inPrevMonth: prevMonth,
         inNextMonth: nextMonth,
