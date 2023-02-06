@@ -18,13 +18,17 @@ The included screens mixin that supplied the `$screens` function has been remove
 
 ## Calendar
 
-### Deprecate `from-page`, `to-page`, `from-date`, and `to-date` props
+### Replace `from-page`, `to-page`, `from-date`, and `to-date` props
 
 Use the `initial-page` and `initial-page-position` props to correctly set the initial months for a calendar.
 
 [Read more](/calendar/api#props)
 
-### Deprecate Highlight Fill Mode
+### Replace `is-expanded` prop
+
+The `expanded` prop should now be used in lieu of `is-expanded` to set full-width calendars.
+
+### Replace Highlight Fill Mode
 
 The `none` option for `attribute.highlight.fillMode` has been deprecated in favor of the more descriptive `outline` option.
 

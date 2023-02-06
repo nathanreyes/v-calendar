@@ -15,7 +15,7 @@ title: 'API'
 | **step** | number | *undefined* |
 | **color** | string | "blue" |
 | **is-dark** | boolean \| "system" \| [DarkModeClassConfig](#darkmodeclassconfig) | false |
-| **is-expanded** | boolean | false |
+| **expanded** | boolean | false |
 | **first-day-of-week** | 1 \| 2 \| 3 \| 4 \| 5 \| 6 \| 7 | 1 |
 | **nav-visibility** | "click" \| "hover" \| "hover-focus" \| "focus" | "click" |
 | **title-position** | "center" \| "left" \| "right" | "center" |

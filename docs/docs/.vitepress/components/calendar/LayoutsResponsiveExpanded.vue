@@ -1,5 +1,5 @@
 <template>
-  <VCalendar :columns="columns" :isExpanded="isExpanded" />
+  <VCalendar :columns="columns" :expanded="expanded" />
 </template>
 <script setup>
 import { useScreens } from 'vue-screen-utils';
@@ -11,5 +11,5 @@ const { mapCurrent } = useScreens({
   lg: '1024px',
 });
 const columns = mapCurrent({ lg: 2 }, 1);
-const isExpanded = mapCurrent({ lg: false }, true);
+const expanded = mapCurrent({ lg: false }, true);
 </script>

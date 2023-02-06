@@ -6,14 +6,14 @@ title: 'Layouts'
 
 ## Full Width
 
-To expand the component to the full width of its container, set the `is-expanded` prop.
+To expand the component to the full width of its container, set the `expanded` prop.
 
 <Example>
-  <VCalendar is-expanded/>
+  <VCalendar expanded/>
 </Example>
 
 ```html
-<VCalendar is-expanded />
+<VCalendar expanded />
 ```
 
 ## Weekly View
@@ -212,7 +212,7 @@ Next, for mobile layouts, we can expand the pane width to fill its container.
 
 ```vue
 <template>
-  <VCalendar :columns="columns" :isExpanded="isExpanded" />
+  <VCalendar :columns="columns" :expanded="expanded" />
 </template>
 <script setup>
 import { useScreens } from 'vue-screen-utils';
@@ -224,7 +224,7 @@ const { mapCurrent } = useScreens({
   lg: '1024px',
 });
 const columns = mapCurrent({ lg: 2 }, 1);
-const isExpanded = mapCurrent({ lg: false }, true);
+const expanded = mapCurrent({ lg: false }, true);
 </script>
 ```
 
