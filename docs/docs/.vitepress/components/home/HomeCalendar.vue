@@ -5,18 +5,21 @@
     <div class="w-full max-w-5xl mx-auto">
       <div class="p-10">
         <h2 class="text-5xl text-white font-display text-center">Calendar</h2>
-        <p class="text-gray-200 mt-6 text-center">
-          An elegant and flexible date and date picker plugin for Vue.js
+        <p v-if="false" class="text-gray-200 mt-6 text-center">
+          A calendar for all your needs
         </p>
       </div>
-      <BaseTabs class="flex flex-col lg:flex-row lg:justify-end lg:h-[500px]">
+      <BaseTabs
+        class="flex flex-col lg:flex-row lg:justify-end lg:h-[500px]"
+        ref="calendarTabsRef"
+      >
         <BaseTabList
           class="flex lg:flex-col lg:px-0 space-x-2 space-y-1 lg:space-x-0 max-w-full px-4 pb-4 sm:pb-0 lg:mt-6 lg:ml-6 sm:mx-auto whitespace-nowrap overflow-x-auto sm:overflow-visible overflow-y-hidden"
         >
           <BaseTab
             v-for="{ title, summary } in calendarTabs"
             :key="title"
-            class="focus:outline-none focus:ring ring-white/10 lg:rounded-l-xl"
+            class="focus:outline-none focus:ring ring-white/10 rounded-full lg:rounded-none lg:rounded-l-xl"
           >
             <template #default="{ selected }">
               <HomeTab :title="title" :summary="summary" :selected="selected" />
@@ -24,24 +27,25 @@
           </BaseTab>
         </BaseTabList>
         <BaseTabPanels>
-          <BaseTabPanel>
-            <HomeReminders />
+          <BaseTabPanel v-for="{ panel, summary } in calendarTabs">
+            <HomeTabPanel :summary="summary">
+              <component v-if="panel" :is="panel" />
+            </HomeTabPanel>
           </BaseTabPanel>
-          <BaseTabPanel></BaseTabPanel>
-          <BaseTabPanel></BaseTabPanel>
-          <BaseTabPanel></BaseTabPanel>
         </BaseTabPanels>
       </BaseTabs>
     </div>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
+const calendarTabsRef = ref(null);
 const calendarTabs = ref([
   {
     title: 'Flexible layouts',
     summary: 'Choose between weekly or mult-paned monthly layouts.',
+    panel: 'HomeReminders',
   },
   {
     title: 'Colors & dark mode',
@@ -56,4 +60,14 @@ const calendarTabs = ref([
     summary: 'Choose between weekly or mult-paned monthly layouts.',
   },
 ]);
+
+const selectedSummary = computed(() => {
+  if (calendarTabsRef.value == null) return '';
+  const idx = calendarTabsRef.value.selectedIndex;
+  return calendarTabs.value[idx].summary;
+});
+
+function reverse() {
+  calendarTabs.value = calendarTabs.value.reverse();
+}
 </script>

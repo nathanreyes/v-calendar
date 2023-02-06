@@ -1,8 +1,8 @@
 <template>
   <!--Default tab button-->
   <div
-    class="hidden font-display text-lg text-white px-4 py-1"
-    :class="{ 'bg-white text-accent-600 rounded-full': selected }"
+    class="lg:hidden font-display text-lg text-white px-4 py-1 rounded-full"
+    :class="{ 'bg-white text-accent-600': selected }"
   >
     {{ title }}
   </div>

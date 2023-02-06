@@ -5,13 +5,22 @@
 </template>
 
 <script setup lang="ts">
-import { useSlots, cloneVNode } from 'vue';
+import { type RendererNode, useSlots, cloneVNode } from 'vue';
 
 const slots = useSlots();
-const items = slots.default
-  ? slots.default().map((slot, i) => {
-      return cloneVNode(slot, { index: i });
-    })
-  : [];
-const render = () => items;
+const render = () => {
+  if (slots.default) {
+    const node = slots.default();
+    let children: any[] = [];
+    if (typeof node[0].type === 'symbol') {
+      children = (node[0] as RendererNode).children;
+    } else {
+      children = node;
+    }
+    return children.map((child, i) => {
+      return cloneVNode(child, { index: i });
+    });
+  }
+  return null;
+};
 </script>
