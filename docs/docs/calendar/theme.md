@@ -1,78 +1,35 @@
 # Theme
 
-## Dark Mode
+## Class Helpers
 
-VCalendar supports a variety of dark mode strategies to ensure compatibility with your application. They are all configured by the `is-dark` prop.
+VCalendar supports some basic helper props to avoid having to manually override styles.
 
-### Manual Strategy
+### Borderless
 
-First, you can pass a boolean value for `isDark` to set the dark mode manually.
+Set the `borderless` prop to simple reset the border width and radius.
 
-<BaseAlert info>
-
-By default, `is-dark` is `false`, so if left unassigned, the calendar will always display in light mode.
-</BaseAlert>
-
-<ThemeDarkModeManual />
+<Example centered>
+  <VCalendar borderless />
+</Example>
 
 ```vue
 <template>
-<div class="space-y-2">
-  <div class="flex items-center space-x-2">
-    <input id="darkmode" type="checkbox" v-model="isDark" />
-    <label for="darkmode"> Dark Mode </label>
-  </div>
-  <VCalendar :is-dark="isDark" />
-</div>
+  <VCalendar borderless />
 </template>
-<script setup>
-import { ref } from 'vue';
-const isDark = ref(false);
-</script>
 ```
 
-### System Preference Strategy
+### Transparent
 
-When assigning `is-dark: "system"`, it will use the `Window.matchMedia()` API to apply the user's system preference. This setting is continually watched to detect future changes made by the user.
+Set the `transparent` prop to reset the background color. This prop should be used if embedding the calendar within another container. Most often, this prop should be set in combination with the `borderless` prop.
 
-For example, to view the effect on the Mac, you can navigate to  **System Preferences	&#8250; General** and switch the **Appearance** setting between `Light`, `Dark` and `Auto`.
-
-<ThemeDarkModeSys />
+<Example centered>
+  <VCalendar transparent borderless />
+</Example>
 
 ```vue
 <template>
-  <VCalendar is-dark="system" />
+  <VCalendar transparent borderless />
 </template>
-```
-
-### Class Strategy
-
-Finally, dark mode can be activated if a class is present on an element.
-
-For example, most calendars on this site sync with this site's dark mode by watching for the `dark` class on the `:root` element.
-
-To use the class strategy, pass an object with the element `selector` and `darkClass` to check against. Any class updates made on the element are watched with a `MutationObserver` to detect future changes made by the user.
-
-<Example centered>
-  <VCalendar :is-dark="{ selector: ':root', darkClass: 'dark' }" />
-</Example>
-
-```html
-<template>
-  <VCalendar is-dark="{ selector: ':root', darkClass: 'dark' }" />
-<template>
-```
-
-Because `:root` and `dark` are the default `selector` and `darkClass`, respectively, a simple object could be passed to achieve the same effect.
-
-<Example centered>
-  <VCalendar :is-dark="{}" />
-</Example>
-
-```html
-<template>
-  <VCalendar is-dark="{}" />
-<template>
 ```
 
 ## Colors
@@ -169,4 +126,79 @@ We can also use the same approach to update an existing color. For example, we m
   --vc-accent-800: #075985;
   --vc-accent-900: #0c4a6e;
 }
+```
+
+## Dark Mode
+
+VCalendar supports a variety of dark mode strategies to ensure compatibility with your application. They are all configured by the `is-dark` prop.
+
+### Manual Strategy
+
+First, you can pass a boolean value for `isDark` to set the dark mode manually.
+
+<BaseAlert info>
+
+By default, `is-dark` is `false`, so if left unassigned, the calendar will always display in light mode.
+</BaseAlert>
+
+<ThemeDarkModeManual />
+
+```vue
+<template>
+<div class="space-y-2">
+  <div class="flex items-center space-x-2">
+    <input id="darkmode" type="checkbox" v-model="isDark" />
+    <label for="darkmode"> Dark Mode </label>
+  </div>
+  <VCalendar :is-dark="isDark" />
+</div>
+</template>
+<script setup>
+import { ref } from 'vue';
+const isDark = ref(false);
+</script>
+```
+
+### System Preference Strategy
+
+When assigning `is-dark: "system"`, it will use the `Window.matchMedia()` API to apply the user's system preference. This setting is continually watched to detect future changes made by the user.
+
+For example, to view the effect on the Mac, you can navigate to  **System Preferences	&#8250; General** and switch the **Appearance** setting between `Light`, `Dark` and `Auto`.
+
+<ThemeDarkModeSys />
+
+```vue
+<template>
+  <VCalendar is-dark="system" />
+</template>
+```
+
+### Class Strategy
+
+Finally, dark mode can be activated if a class is present on an element.
+
+For example, most calendars on this site sync with this site's dark mode by watching for the `dark` class on the `:root` element.
+
+To use the class strategy, pass an object with the element `selector` and `darkClass` to check against. Any class updates made on the element are watched with a `MutationObserver` to detect future changes made by the user.
+
+<Example centered>
+  <VCalendar :is-dark="{ selector: ':root', darkClass: 'dark' }" />
+</Example>
+
+```html
+<template>
+  <VCalendar is-dark="{ selector: ':root', darkClass: 'dark' }" />
+<template>
+```
+
+Because `:root` and `dark` are the default `selector` and `darkClass`, respectively, a simple object could be passed to achieve the same effect.
+
+<Example centered>
+  <VCalendar :is-dark="{}" />
+</Example>
+
+```html
+<template>
+  <VCalendar is-dark="{}" />
+<template>
 ```
