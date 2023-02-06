@@ -83,8 +83,7 @@ export default defineComponent({
 
     const day = computed(() => props.day);
     const attributeCells = computed(() => {
-      if (!attributeContext.value) return [];
-      return attributeContext.value.getCells(day.value.dayIndex);
+      return attributeContext.value.getCells(day.value);
     });
     const attributes = computed(() =>
       attributeCells.value.map(cell => cell.data),

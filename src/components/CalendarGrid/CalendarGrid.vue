@@ -258,8 +258,8 @@ const {
 
 const dayCells = computed(() => {
   const result: DateRangeCell<Event>[][] = [];
-  days.value.forEach(({ dayIndex }) => {
-    const cells = eventsContext.value.getCells(dayIndex);
+  days.value.forEach(day => {
+    const cells = eventsContext.value.getCells(day);
     result.push(cells.filter(cell => !cell.data.isWeekly));
   });
   return result;

@@ -24,14 +24,14 @@ const { pixelsPerHour } = useCalendarGrid();
 const event = computed(() => props.cell.data);
 
 const position = computed(() => {
-  const { dayStartTime } = props.cell;
-  const yHours = dayStartTime / MS_PER_HOUR;
+  const { startTime } = props.cell;
+  const yHours = startTime / MS_PER_HOUR;
   return Math.max(roundTenth(yHours * pixelsPerHour.value), 0);
 });
 
 const height = computed(() => {
-  const { dayStartTime, dayEndTime } = props.cell;
-  const heightHours = (dayEndTime - dayStartTime) / MS_PER_HOUR;
+  const { startTime, endTime } = props.cell;
+  const heightHours = (endTime - startTime) / MS_PER_HOUR;
   const fullHeight = 24 * pixelsPerHour.value;
   return Math.max(
     Math.min(heightHours * pixelsPerHour.value, fullHeight - position.value),

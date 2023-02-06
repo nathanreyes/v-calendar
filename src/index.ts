@@ -18,3 +18,6 @@ export default { install };
 export * from './components';
 export { setupDefaults as setupCalendar } from './utils/defaults';
 export { popoverDirective } from './utils/popovers';
+
+export { createCalendar, useCalendar } from './use/calendar';
+export { createDatePicker, useDatePicker } from './use/datePicker';

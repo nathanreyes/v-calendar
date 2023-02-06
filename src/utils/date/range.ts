@@ -1,6 +1,7 @@
 import { DateRepeat, DateRepeatConfig } from './repeat';
 import { DateParts, DayParts, addDays, MS_PER_DAY } from './helpers';
 import { isDate, isArray, isObject } from '../helpers';
+import { CalendarDay } from '../page';
 import Locale from '../locale';
 
 type DateRangeDate = Date | string | number | null;
@@ -167,8 +168,11 @@ export interface DateRangeCell<T extends RangeData> extends DataRange {
   data: T;
   onStart: boolean;
   onEnd: boolean;
-  dayStartTime: number;
-  dayEndTime: number;
+  startTime: number;
+  startDate: Date;
+  endTime: number;
+  endDate: Date;
+  allDay: boolean;
   order: number;
 }
 
@@ -216,35 +220,46 @@ export class DateRangeContext {
     return record.ranges;
   }
 
-  getCell(key: string | number, dayIndex: number) {
-    const cells = this.getCells(dayIndex);
+  getCell(key: string | number, day: CalendarDay) {
+    const cells = this.getCells(day);
     const result = cells.find(cell => cell.data.key === key);
     return result;
   }
 
   cellExists(key: string | number, dayIndex: number) {
-    return !!this.getCell(key, dayIndex);
+    const records = this.records[key];
+    if (records == null) return false;
+    return records.ranges.some(
+      r => r.startDay <= dayIndex && r.endDay >= dayIndex,
+    );
   }
 
-  getCells(dayIndex: number) {
+  getCells(day: CalendarDay) {
     const records = Object.values(this.records);
     const result: DateRangeCell<any>[] = [];
+    const { dayIndex } = day;
     records.forEach(({ data, ranges }) => {
       ranges
         .filter(r => r.startDay <= dayIndex && r.endDay >= dayIndex)
         .forEach(range => {
           const onStart = dayIndex === range.startDay;
           const onEnd = dayIndex === range.endDay;
-          const dayStartTime = onStart ? range.startTime : 0;
-          const dayEndTime = onEnd ? range.endTime : MS_PER_DAY;
+          const startTime = onStart ? range.startTime : 0;
+          const startDate = new Date(day.startDate.getTime() + startTime);
+          const endTime = onEnd ? range.endTime : MS_PER_DAY;
+          const endDate = new Date(day.endDate.getTime() + endTime);
+          const allDay = startTime === 0 && endTime === MS_PER_DAY;
           const order = data.order || 0;
           result.push({
             ...range,
             data,
             onStart,
             onEnd,
-            dayStartTime,
-            dayEndTime,
+            startTime,
+            startDate,
+            endTime,
+            endDate,
+            allDay,
             order,
           });
         });

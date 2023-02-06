@@ -1,9 +1,8 @@
 import {
-  PropType,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
   computed,
   ref,
-  toRefs,
   provide,
   onMounted,
   onUnmounted,
@@ -12,14 +11,14 @@ import {
   watchEffect,
 } from 'vue';
 import Popover from '../Popover/Popover.vue';
-import { Attribute, AttributeConfig } from '../utils/attribute';
+import { Attribute, type AttributeConfig } from '../utils/attribute';
 import {
-  DateSource,
+  type DateSource,
   addDays,
   addMonths,
   addYears,
 } from '../utils/date/helpers';
-import { DateRangeContext } from '../utils/date/range';
+import { type DateRangeCell, DateRangeContext } from '../utils/date/range';
 import {
   createGuid,
   isBoolean,
@@ -34,11 +33,11 @@ import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 import { PopoverVisibility } from '../utils/popovers';
 import {
-  Page,
-  PageAddress,
-  CalendarDay,
-  CalendarWeek,
-  TitlePosition,
+  type Page,
+  type PageAddress,
+  type CalendarDay,
+  type CalendarWeek,
+  type TitlePosition,
   pageRangeToArray,
   pageIsValid,
   pageIsEqualToPage,
@@ -71,6 +70,11 @@ export interface RefreshOptions {
   force: boolean;
   transition: MoveTransition;
 }
+
+export type DayCells = Record<
+  number,
+  { day: CalendarDay; cells: DateRangeCell<Attribute>[] }
+>;
 
 export type CalendarProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
@@ -243,9 +247,9 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     }
   };
 
-  const allDays = computed(() =>
-      result.push(...page.days);
+  const days = computed(() =>
     _pages.value.reduce((result: CalendarDay[], page: Page) => {
+      result.push(...page.viewDays);
       return result;
     }, <CalendarDay[]>[]),
   );
@@ -277,14 +281,21 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const hasAttributes = computed(() => arrayHasItems(attributes.value));
 
   const attributeContext = computed(() => {
-    if (!allDays.value.length) return null;
     const ctx = new DateRangeContext();
     attributes.value.forEach(attr => {
       attr.ranges.forEach(range => {
-        ctx.render(attr, range, allDays.value);
+        ctx.render(attr, range, days.value);
       });
     });
     return ctx;
+  });
+
+  const dayCells = computed(() => {
+    return days.value.reduce((result, day) => {
+      result[day.dayIndex] = { day, cells: [] };
+      result[day.dayIndex].cells.push(...attributeContext.value.getCells(day));
+      return result;
+    }, {} as DayCells);
   });
 
   const getWeeknumberPosition = (column: number, columnFromEnd: number) => {
@@ -719,6 +730,8 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     disabledAttribute,
     disabledDates,
     attributeContext,
+    days,
+    dayCells,
     count,
     step,
     firstPage,

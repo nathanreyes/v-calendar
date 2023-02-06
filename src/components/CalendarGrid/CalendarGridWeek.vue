@@ -38,7 +38,7 @@ const cells = computed(() => {
   const added: Record<string, boolean> = {};
 
   props.days.forEach(day => {
-    const cells = eventsContext.value.getCells(day.dayIndex);
+    const cells = eventsContext.value.getCells(day);
     cells.forEach((cell: DateRangeCell<Event>) => {
       if ((!cell.data.isWeekly && !isMonthly.value) || added[cell.data.key]) {
         return;
