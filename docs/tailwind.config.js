@@ -7,6 +7,10 @@ module.exports = {
   content: ['./docs/.vitepress/components/**/*.{js,ts,vue}', './docs/**/*.md'],
   darkMode: 'class',
   theme: {
+    fontFamily: {
+      display: ['Lexend', 'sans-serif'],
+      sans: ['Inter', 'sans-serif'],
+    },
     extend: {
       colors: {
         accent: colors.indigo,

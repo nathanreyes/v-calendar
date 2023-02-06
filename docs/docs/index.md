@@ -3,4 +3,6 @@ title: VCalendar
 layout: page
 ---
 
-<Hero />
+<HomeHero />
+
+<HomeCalendar />

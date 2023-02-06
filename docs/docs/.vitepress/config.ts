@@ -151,7 +151,23 @@ function sidebar() {
 export default defineConfig({
   title: 'VCalendar',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
-  head: [['link', { rel: 'icon', href: '/favicon.png' }]],
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.png' }],
+    [
+      'link',
+      {
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
+        rel: 'stylesheet',
+      },
+    ],
+    [
+      'link',
+      {
+        href: 'https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap',
+        rel: 'stylesheet',
+      },
+    ],
+  ],
   themeConfig: {
     nav: nav(),
     socialLinks: [

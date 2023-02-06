@@ -2,7 +2,6 @@
   <VCalendar
     :initial-page="{ month: 1, year: 2018 }"
     :attributes="attributes"
-    is-dark
   />
 </template>
 

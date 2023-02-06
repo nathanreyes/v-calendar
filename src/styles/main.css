@@ -23,18 +23,24 @@
   & [role='button'] {
     cursor: pointer;
   }
-  &.vc-bordered {
-    border: 1px solid;
-    border-color: var(--vc-border);
-    border-radius: var(--vc-rounded-lg);
-  }
-  &.vc-expanded {
-    min-width: 100%;
-  }
   /* Hides double border within popovers */
   & .vc-container {
     border: none;
   }
+}
+
+.vc-bordered {
+  border: 1px solid;
+  border-color: var(--vc-border);
+  border-radius: var(--vc-rounded-lg);
+}
+
+.vc-expanded {
+  min-width: 100%;
+}
+
+.vc-transparent {
+  background-color: transparent;
 }
 
 .vc-date-picker-content {
