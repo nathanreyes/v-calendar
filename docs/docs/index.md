@@ -1,6 +1,6 @@
 ---
-title: VCalendar
-layout: page
+title: Home
+layout: home
 ---
 
 <HomeHero />

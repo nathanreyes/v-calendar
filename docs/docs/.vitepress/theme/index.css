@@ -43,6 +43,11 @@
   --vp-c-switch-bg: theme(colors.gray.300);
   --vp-c-switch-border: theme(colors.gray.400);
   --vp-c-switch-grabber-bg: theme(colors.white);
+
+  font-family: @apply font-sans;
+  .title {
+    @apply font-display;
+  }
 }
 
 .dark {
@@ -133,6 +138,14 @@ button {
   color: var(--tw-prose-body);
   font-size: 1rem;
   line-height: 1.75;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+  }
   h1 {
     color: var(--tw-prose-headings);
     font-size: 2.14em;

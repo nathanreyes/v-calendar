@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col lg:flex-row lg:justify-end">
+  <div>
     <slot />
   </div>
 </template>
