@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-time-picker"
-    :class="[{ 'vc-invalid': !isValid, 'vc-bordered': showBorder }]"
+    :class="[{ 'vc-invalid': !isValid, 'vc-attached': !isTimeMode }]"
   >
     <slot name="time-header">
       <div v-if="showHeader && date" class="vc-time-header">
@@ -72,11 +72,11 @@ const {
   milliseconds,
   options,
   hourOptions,
+  isTimeMode,
   isAM,
   isAMOptions,
   is24hr,
   showHeader,
-  showBorder,
   timeAccuracy,
 } = timePicker;
 </script>
@@ -91,7 +91,7 @@ const {
     pointer-events: none;
     opacity: 0.5;
   }
-  &.vc-bordered {
+  &.vc-attached {
     border-top: 1px solid var(--vc-time-picker-border);
   }
   > * + * {

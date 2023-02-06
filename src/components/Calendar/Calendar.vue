@@ -5,11 +5,12 @@
     :class="[
       'vc-container',
       `vc-${view}`,
-      'vc-bordered',
       `vc-${color}`,
       `vc-${displayMode}`,
       {
-        'vc-expanded': isExpanded,
+        'vc-expanded': expanded,
+        'vc-bordered': !borderless,
+        'vc-transparent': transparent,
       },
     ]"
     @mouseup.prevent

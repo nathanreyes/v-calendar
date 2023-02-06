@@ -45,9 +45,9 @@ export interface TimePickerProps {
 export type TimePickerContext = ReturnType<typeof createTimePicker>;
 
 export function createTimePicker(props: TimePickerProps) {
-  const baseCtx = useBase();
-  const { locale } = baseCtx;
+  const ctx = useDatePicker();
   const {
+    locale,
     isRange,
     isTimeMode,
     dateParts,
@@ -56,7 +56,7 @@ export function createTimePicker(props: TimePickerProps) {
     hideTimeHeader,
     timeAccuracy,
     updateValue: updateDpValue,
-  } = useDatePicker();
+  } = ctx;
 
   function updateParts(newParts: Partial<DateParts>) {
     newParts = Object.assign(parts.value, newParts);
@@ -81,7 +81,6 @@ export function createTimePicker(props: TimePickerProps) {
   );
   const partsValid = computed(() => isDateParts(parts.value));
   const isValid = computed(() => !!parts.value.isValid);
-  const showBorder = computed(() => !isTimeMode.value);
   const showHeader = computed(() => {
     return !hideTimeHeader.value && isValid.value;
   });
@@ -179,8 +178,7 @@ export function createTimePicker(props: TimePickerProps) {
   });
 
   return {
-    ...baseCtx,
-    showBorder,
+    ...ctx,
     showHeader,
     timeAccuracy,
     parts,
