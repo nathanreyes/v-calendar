@@ -15,17 +15,17 @@
         <a
           href="/getting-started/installation"
           class="inline-flex items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-accent-800 dark:text-white bg-accent-100 hover:bg-accent-200 dark:bg-accent-500 dark:hover:bg-accent-400"
-          icon="BaseArrowRightIcon"
+          icon="IconArrowRight"
           accent
           ><span>Get Started</span>
           <Component
-            is="BaseArrowRightIcon"
+            is="IconArrowRight"
             class="w-4 h-4 text-accent-500 dark:text-gray-200"
           />
         </a>
         <BaseLinkButton
           href="https://github.com/nathanreyes/v-calendar"
-          icon="BaseExternalLinkIcon"
+          icon="IconExternalLink"
           >View on GitHub</BaseLinkButton
         >
       </div>

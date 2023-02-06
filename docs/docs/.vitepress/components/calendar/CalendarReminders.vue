@@ -65,7 +65,7 @@ const reminders = ref([
     id: 1,
     summary: 'Meeting with Jonas Stark',
     date: new Date(2023, 6, 4, 9, 30),
-    icon: 'BaseVideoCameraIcon',
+    icon: 'IconVideoCamera',
     iconClass: 'bg-red-100 text-red-500 dark:bg-red-400 dark:text-white',
     notify: true,
   },
@@ -73,10 +73,18 @@ const reminders = ref([
     id: 2,
     summary: "Mia's birthday party",
     date: new Date(2023, 6, 8, 12),
-    icon: 'BaseCakeIcon',
+    icon: 'IconCake',
     iconClass:
       'bg-indigo-100 text-indigo-500 dark:bg-indigo-400 dark:text-white',
     notify: true,
+  },
+  {
+    id: 3,
+    summary: "Mom and dad's anniversary",
+    date: new Date(2023, 6, 2, 3),
+    icon: 'IconHeart',
+    iconClass: 'bg-blue-100 text-blue-500 dark:bg-blue-400 dark:text-white',
+    notify: false,
   },
 ]);
 
