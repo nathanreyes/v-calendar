@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="flex flex-col items-center py-14">
+    <div class="flex flex-col items-center py-14 px-4">
       <h1 class="text-5xl font-medium mt-6 font-display">
         <span
           class="text-transparent bg-gradient-to-r from-indigo-600 dark:from-indigo-300 to-cyan-500 dark:to-cyan-300 bg-clip-text"

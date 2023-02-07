@@ -1,15 +1,29 @@
 <template>
   <div
-    class="overflow-hidden py-16 bg-gradient-to-r shadow-inner from-indigo-600 dark:from-indigo-800 to-cyan-500 dark:to-cyan-700"
+    class="overflow-hidden py-16 bg-gradient-to-r shadow-inner from-indigo-600 dark:from-indigo-700 to-cyan-500 dark:to-cyan-700"
   >
     <div class="w-full max-w-5xl mx-auto">
-      <div class="p-10">
-        <h2 class="text-4xl text-white font-display text-center">Calendar</h2>
+      <div class="flex justify-center items-center">
+        <div class="p-3 rounded-lg space-x-2">
+          <HomeHeaderButton
+            :selected="showCalendar"
+            @click="showCalendar = true"
+            >Calendar</HomeHeaderButton
+          >
+          <HomeHeaderButton
+            :selected="!showCalendar"
+            @click="showCalendar = false"
+            >Date Picker</HomeHeaderButton
+          >
+        </div>
         <p v-if="false" class="text-gray-200 mt-6 text-center">
           A calendar for all your needs
         </p>
       </div>
-      <BaseTabs class="flex flex-col lg:flex-row lg:justify-end lg:h-[500px]">
+      <BaseTabs
+        v-if="showCalendar"
+        class="flex flex-col lg:flex-row lg:justify-end lg:h-[500px] mt-6"
+      >
         <BaseTabList
           class="flex lg:flex-col lg:px-0 space-x-2 space-y-1 lg:space-x-0 max-w-full px-4 pb-4 sm:pb-0 lg:mt-6 lg:ml-6 sm:mx-auto whitespace-nowrap overflow-x-auto sm:overflow-visible overflow-y-hidden"
         >
@@ -36,6 +50,8 @@
 </template>
 <script setup>
 import { ref } from 'vue';
+
+const showCalendar = ref(true);
 
 const calendarTabs = ref([
   {

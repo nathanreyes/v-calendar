@@ -4,5 +4,4 @@ layout: home
 ---
 
 <HomeHero />
-<HomeCalendar />
-<HomeDatePicker />
+<HomeFeatures />

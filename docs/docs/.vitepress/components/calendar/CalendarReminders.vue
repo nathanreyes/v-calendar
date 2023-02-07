@@ -13,8 +13,9 @@
         expanded
       />
       <div v-if="calendar" class="py-4 px-6 w-full">
-        <div class="py-2 flex">
+        <div class="py-2 flex justify-between items-center">
           <h2 class="font-semibold text-lg">Reminders</h2>
+          <IconBell class="text-gray-400 dark:text-gray-500" />
         </div>
         <template v-for="{ day, cells } in Object.values(dayCells)">
           <ul v-if="cells.length > 0" class="py-2 space-y-2">
@@ -38,13 +39,9 @@
                     <p
                       class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"
                     >
-                      {{ day.locale.formatDate(cell.startDate, 'WWWW') }}
-                    </p>
-
-                    <p
-                      class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"
-                    >
-                      {{ day.locale.formatDate(cell.startDate, 'H:mm a') }}
+                      {{
+                        day.locale.formatDate(cell.startDate, 'WWWW, H:mm a')
+                      }}
                     </p>
                   </div>
                 </div>

@@ -14,6 +14,8 @@
   --vp-c-divider-inverse: var(--vp-c-divider-dark-1);
   --vp-c-divider-inverse-light: var(--vp-c-divider-dark-2);
 
+  --vp-c-gutter: theme(colors.gray.200);
+
   --vp-c-text-light-1: theme(colors.gray.800);
   --vp-c-text-light-2: theme(colors.gray.600);
   --vp-c-text-light-3: theme(colors.gray.500);
@@ -62,6 +64,8 @@
 
   --vp-c-divider-inverse: var(--vp-c-divider-light-1);
   --vp-c-divider-inverse-light: var(--vp-c-divider-light-2);
+
+  --vp-c-gutter: theme(colors.gray.700);
 
   --vp-c-text-dark-1: theme(colors.gray.100);
   --vp-c-text-dark-2: theme(colors.gray.300);
