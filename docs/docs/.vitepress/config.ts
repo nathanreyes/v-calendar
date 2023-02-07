@@ -176,9 +176,9 @@ export default defineConfig({
     outline: [2, 3],
     sidebar: sidebar(),
     algolia: {
-      appId: 'FT5KSHFUG1',
-      apiKey: '47929e4efb7adf753dface031e3ab4ee',
-      indexName: 'vcalendar',
+      appId: 'UBR2AQC4NS',
+      apiKey: 'd346a02045eeeb56460d8dfca5b23f35',
+      indexName: 'v3-vcalendar',
     },
     carbonAds: {
       code: 'CE7IK53U',
