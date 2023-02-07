@@ -309,24 +309,28 @@ export function resolveConfig(config, locales) {
   const defLocale = { ...locales['en-IE'], ...locales[id], id };
   // Assign or merge defaults with provided config
   config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
+  // Set default mask if not provided with custom option
+  if (!config.masks.L) {
+    config.masks.L = 'MM/DD/YYYY';
+  }
   // Return resolved config
   return config;
 }
 
 export default class Locale {
   constructor(config, { locales = defaultLocales, timezone } = {}) {
-    const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
+    const { id, firstDayOfWeek, masks, translations } = resolveConfig(config, locales);
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
     this.masks = masks;
     this.timezone = timezone || undefined;
-    this.dayNames = this.getDayNames('long');
-    this.dayNamesShort = this.getDayNames('short');
-    this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
-    this.dayNamesNarrow = this.getDayNames('narrow');
-    this.monthNames = this.getMonthNames('long');
-    this.monthNamesShort = this.getMonthNames('short');
+    this.dayNames = translations?.dayNames || this.getDayNames('long');
+    this.dayNamesShort = translations?.dayNamesShort || this.getDayNames('short');
+    this.dayNamesShorter = translations?.dayNamesShorter || this.dayNamesShort.map(s => s.substring(0, 2));
+    this.dayNamesNarrow = translations?.dayNamesNarrow || this.getDayNames('narrow');
+    this.monthNames = translations?.monthNames || this.getMonthNames('long');
+    this.monthNamesShort = translations?.monthNamesShort || this.getMonthNames('short');
     this.amPm = ['am', 'pm'];
     this.monthData = {};
     // Bind methods
