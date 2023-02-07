@@ -28,9 +28,12 @@
                   </div>
                 </div>
                 <div class="flex-grow">
-                  <p class="font-medium">
-                    {{ cell.data.customData.summary }}
-                  </p>
+                  <div class="flex justify-between">
+                    <p class="font-medium">
+                      {{ cell.data.customData.summary }}
+                    </p>
+                    <BaseSwitch v-model="cell.data.customData.notify" />
+                  </div>
                   <div class="flex justify-between items-center">
                     <p
                       class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"

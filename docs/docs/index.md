@@ -4,5 +4,5 @@ layout: home
 ---
 
 <HomeHero />
-
 <HomeCalendar />
+<HomeDatePicker />

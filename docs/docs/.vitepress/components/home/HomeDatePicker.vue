@@ -1,10 +1,8 @@
 <template>
-  <div
-    class="overflow-hidden py-16 bg-gradient-to-r shadow-inner from-indigo-600 dark:from-indigo-800 to-cyan-500 dark:to-cyan-700"
-  >
+  <div class="overflow-hidden py-16 shadow-inner">
     <div class="w-full max-w-5xl mx-auto">
       <div class="p-10">
-        <h2 class="text-4xl text-white font-display text-center">Calendar</h2>
+        <h2 class="text-4xl font-display text-center">Date Picker</h2>
         <p v-if="false" class="text-gray-200 mt-6 text-center">
           A calendar for all your needs
         </p>
@@ -34,6 +32,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref } from 'vue';
 
