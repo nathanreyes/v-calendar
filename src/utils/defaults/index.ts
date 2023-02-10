@@ -65,7 +65,7 @@ const defaultLocales = computed(() => {
 export { defaultLocales };
 
 export const getDefault = (path: string) => {
-  if (window && has(window.__vcalendar__, path)) {
+  if (typeof window !== 'undefined' && window && has(window.__vcalendar__, path)) {
     return get(window.__vcalendar__, path);
   }
   return get(state, path);
