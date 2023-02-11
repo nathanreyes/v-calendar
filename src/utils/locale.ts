@@ -262,12 +262,6 @@ export default class Locale {
     });
   }
 
-  getWeekdayLabels(days: CalendarDay[]) {
-    return days.map(d => {
-      return this.formatDate(d.date, this.masks.weekdays);
-    });
-  }
-
   getDayId(date: Date) {
     return this.formatDate(date, 'YYYY-MM-DD');
   }

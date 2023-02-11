@@ -52,6 +52,11 @@ export interface CalendarWeek {
   title: string;
 }
 
+export interface CalendarWeekday {
+  weekday: number;
+  label: string;
+}
+
 export type PageView = 'daily' | 'weekly' | 'monthly';
 
 export type TitlePosition = 'center' | 'left' | 'right';
@@ -81,12 +86,12 @@ export interface Page {
   monthLabel: string;
   shortYearLabel: string;
   yearLabel: string;
-  weekdayLabels: string[];
   monthComps: MonthParts;
   prevMonthComps: MonthParts;
   nextMonthComps: MonthParts;
   days: CalendarDay[];
   weeks: CalendarWeek[];
+  weekdays: CalendarWeekday[];
   viewDays: CalendarDay[];
   viewWeeks: CalendarWeek[];
 }
@@ -122,12 +127,12 @@ export type CachedPage = Pick<
   | 'monthLabel'
   | 'shortYearLabel'
   | 'yearLabel'
-  | 'weekdayLabels'
   | 'monthComps'
   | 'prevMonthComps'
   | 'nextMonthComps'
   | 'days'
   | 'weeks'
+  | 'weekdays'
 >;
 
 const viewAddressKeys: Record<PageView, (keyof DateParts)[]> = {
@@ -370,6 +375,13 @@ function getWeeks(
   return result;
 }
 
+function getWeekdays(week: CalendarWeek, locale: Locale): CalendarWeekday[] {
+  return week.days.map(day => ({
+    label: locale.formatDate(day.date, locale.masks.weekdays),
+    weekday: day.weekday,
+  }));
+}
+
 export function getPageAddressForDate(
   date: DateSource,
   view: PageView,
@@ -520,7 +532,7 @@ export function getCachedPage(config: PageConfig, locale: Locale): CachedPage {
   const nextMonthComps = locale.getNextMonthParts(month, year);
   const days = getDays({ monthComps, prevMonthComps, nextMonthComps }, locale);
   const weeks = getWeeks(days, showWeeknumbers, showIsoWeeknumbers, locale);
-  const weekdayLabels = locale.getWeekdayLabels(weeks[0].days);
+  const weekdays = getWeekdays(weeks[0], locale);
   return {
     id: getPageKey(config),
     month,
@@ -535,7 +547,7 @@ export function getCachedPage(config: PageConfig, locale: Locale): CachedPage {
     nextMonthComps,
     days,
     weeks,
-    weekdayLabels,
+    weekdays,
   };
 }
 

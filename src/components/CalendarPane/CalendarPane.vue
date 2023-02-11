@@ -19,8 +19,12 @@
     >
       <div class="vc-weekdays">
         <!--Weekday labels-->
-        <div v-for="(wl, i) in page.weekdayLabels" :key="i" class="vc-weekday">
-          {{ wl }}
+        <div
+          v-for="({ weekday, label }, i) in page.weekdays"
+          :key="i"
+          :class="`vc-weekday vc-weekday-${weekday}`"
+        >
+          {{ label }}
         </div>
       </div>
       <!--Weeks-->
