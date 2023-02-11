@@ -14,18 +14,23 @@ title: 'Installation'
 ::: code-group
 
 ```shell [npm]
-npm install v-calendar
+npm install v-calendar @popperjs/core
 ```
 
 ```shell [yarn]
-yarn add v-calendar
+yarn add v-calendar @popperjs/core
 ```
+
+<BaseAlert title="Peer dependency">
+
+  [Popper.js](https://popper.js.org/docs/v2/) 2.0+ is required as a peer dependency.
+</BaseAlert>
 
 :::
 
 ## Use Plugin
 
-<BaseAlert title="CSS Import">
+<BaseAlert title="CSS import">
 
 **As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
 </BaseAlert>
