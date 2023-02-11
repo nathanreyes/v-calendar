@@ -55,7 +55,6 @@ function sidebar() {
       // Getting Started
       {
         text: 'Getting Started',
-        collapsible: true,
         items: [
           { text: 'Installation', link: '/getting-started/installation' },
           {
@@ -67,7 +66,6 @@ function sidebar() {
       // Calendar
       {
         text: 'Calendar',
-        collapsible: true,
         items: [
           {
             text: 'Theme',
@@ -98,7 +96,6 @@ function sidebar() {
       // Date Picker
       {
         text: 'Date Picker',
-        collapsible: true,
         items: [
           {
             text: 'Basics',
@@ -128,7 +125,6 @@ function sidebar() {
       },
       {
         text: 'i18n',
-        collapsible: true,
         items: [
           {
             text: 'Locales',

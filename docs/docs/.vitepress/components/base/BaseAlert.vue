@@ -1,3 +1,32 @@
+<template>
+  <div
+    class="flex items-start p-4 text-sm rounded-md space-x-3 my-6 custom-block"
+    :class="theme.wrapperClass"
+  >
+    <component
+      :is="theme.icon"
+      class="flex-shrink-0 w-5 h-5"
+      :class="theme.iconClass"
+    />
+    <div class="flex-grow flex flex-col space-y-2">
+      <div
+        v-if="!hideTitle"
+        class="font-display font-bold"
+        :class="theme.titleClass"
+      >
+        {{ title || theme.title }}
+      </div>
+      <div
+        v-if="$slots.default"
+        class="font-medium mt-0 mb-0 p-0 leading-relaxed"
+        :class="theme.slotClass"
+      >
+        <slot />
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -54,27 +83,3 @@ const theme = computed(() => {
   }
 });
 </script>
-<template>
-  <div
-    class="flex items-start p-4 text-sm rounded-md space-x-3 my-6 custom-block"
-    :class="theme.wrapperClass"
-  >
-    <component
-      :is="theme.icon"
-      class="flex-shrink-0 w-5 h-5"
-      :class="theme.iconClass"
-    />
-    <div class="flex-grow flex flex-col space-y-2">
-      <div v-if="!hideTitle" class="font-bold" :class="theme.titleClass">
-        {{ title || theme.title }}
-      </div>
-      <div
-        v-if="$slots.default"
-        class="font-medium mt-0 mb-0 p-0 leading-relaxed"
-        :class="theme.slotClass"
-      >
-        <slot />
-      </div>
-    </div>
-  </div>
-</template>

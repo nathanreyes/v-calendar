@@ -190,6 +190,15 @@ interface CalendarWeek {
 }
 ```
 
+### CalendarWeekday
+
+```ts
+interface CalendarWeekday {
+  weekday: number;
+  label: string;
+}
+```
+
 ### DarkModeClassConfig
 
 ```ts
@@ -279,12 +288,12 @@ interface Page {
   monthLabel: string;
   shortYearLabel: string;
   yearLabel: string;
-  weekdayLabels: string[];
   monthComps: MonthParts;
   prevMonthComps: MonthParts;
   nextMonthComps: MonthParts;
   days: CalendarDay[];
   weeks: CalendarWeek[];
+  weekdays: CalendarWeekday[];
   viewDays: CalendarDay[];
   viewWeeks: CalendarWeek[];
 }
