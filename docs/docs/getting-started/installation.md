@@ -4,9 +4,9 @@ title: 'Installation'
 
 # Installation
 
-<BaseAlert hide-title>
+<BaseAlert title="Dependencies" hide-title>
 
-  [Vue.js](https://vuejs.org) 3.2+ is required.
+[Vue.js](https://vuejs.org) 3.2+, [Popper.js](https://popper.js.org/docs/v2/) 2.0+ are required.
 </BaseAlert>
 
 ## Install Plugin
@@ -20,11 +20,6 @@ npm install v-calendar @popperjs/core
 ```shell [yarn]
 yarn add v-calendar @popperjs/core
 ```
-
-<BaseAlert title="Peer dependency">
-
-  [Popper.js](https://popper.js.org/docs/v2/) 2.0+ is required as a peer dependency.
-</BaseAlert>
 
 :::
 
