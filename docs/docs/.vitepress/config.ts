@@ -9,7 +9,7 @@ function nav() {
       items: [
         {
           text: 'Changelog',
-          link: 'https://github.com/nathanreyes/v-calendar/blob/master/CHANGELOG.md',
+          link: 'https://github.com/nathanreyes/v-calendar/blob/v3/CHANGELOG.md',
         },
         { text: '2.0', link: 'https://v2.vcalendar.io' },
       ],
