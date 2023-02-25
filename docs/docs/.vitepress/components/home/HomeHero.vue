@@ -11,10 +11,12 @@
         An elegant and flexible date and date picker plugin for Vue.js
       </p>
       <!--CTA buttons-->
-      <div class="flex space-x-4 mt-10">
+      <div
+        class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-10"
+      >
         <a
           href="/getting-started/installation"
-          class="inline-flex items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-accent-800 dark:text-white bg-accent-100 hover:bg-accent-200 dark:bg-accent-500 dark:hover:bg-accent-400"
+          class="w-full sm:w-auto inline-flex justify-center items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-accent-800 dark:text-white bg-accent-100 hover:bg-accent-200 dark:bg-accent-500 dark:hover:bg-accent-400"
           icon="IconArrowRight"
           accent
           ><span>Get Started</span>

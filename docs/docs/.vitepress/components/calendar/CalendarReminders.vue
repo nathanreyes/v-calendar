@@ -1,55 +1,51 @@
 <template>
   <div>
-    <div class="w-full max-w-md">
-      <VCalendar
-        view="weekly"
-        :attributes="attrs"
-        ref="calendar"
-        title-position="left"
-        :masks="masks"
-        :bordered="false"
-        transparent
-        borderless
-        expanded
-      />
-      <div v-if="calendar" class="py-4 px-6 w-full">
-        <div class="py-2 flex justify-between items-center">
-          <h2 class="font-semibold text-lg">Reminders</h2>
-          <IconBell class="text-gray-400 dark:text-gray-500" />
-        </div>
-        <template v-for="{ day, cells } in Object.values(dayCells)">
-          <ul v-if="cells.length > 0" class="py-2 space-y-2">
-            <li v-for="cell in cells">
-              <div class="flex items-center space-x-4">
-                <div class="flex-grow-0 flex-shrink-0">
-                  <div
-                    :class="`flex justify-center items-center w-10 h-10 rounded-lg ${cell.data.customData.iconClass}`"
-                  >
-                    <component :is="cell.data.customData.icon" />
-                  </div>
-                </div>
-                <div class="flex-grow">
-                  <div class="flex justify-between">
-                    <p class="font-medium">
-                      {{ cell.data.customData.summary }}
-                    </p>
-                    <BaseSwitch v-model="cell.data.customData.notify" />
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <p
-                      class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"
-                    >
-                      {{
-                        day.locale.formatDate(cell.startDate, 'WWWW, H:mm a')
-                      }}
-                    </p>
-                  </div>
+    <VCalendar
+      view="weekly"
+      :attributes="attrs"
+      ref="calendar"
+      title-position="left"
+      :masks="masks"
+      :bordered="false"
+      transparent
+      borderless
+      expanded
+    />
+    <div v-if="calendar" class="py-4 px-6 w-full">
+      <div class="py-2 flex justify-between items-center">
+        <h2 class="font-semibold text-lg">Reminders</h2>
+        <IconBell class="text-gray-400 dark:text-gray-500" />
+      </div>
+      <template v-for="{ day, cells } in Object.values(dayCells)">
+        <ul v-if="cells.length > 0" class="py-2 space-y-2">
+          <li v-for="cell in cells">
+            <div class="flex items-center space-x-4">
+              <div class="flex-grow-0 flex-shrink-0">
+                <div
+                  :class="`flex justify-center items-center w-10 h-10 rounded-lg ${cell.data.customData.iconClass}`"
+                >
+                  <component :is="cell.data.customData.icon" />
                 </div>
               </div>
-            </li>
-          </ul>
-        </template>
-      </div>
+              <div class="flex-grow">
+                <div class="flex justify-between">
+                  <p class="font-medium">
+                    {{ cell.data.customData.summary }}
+                  </p>
+                  <BaseSwitch v-model="cell.data.customData.notify" />
+                </div>
+                <div class="flex justify-between items-center">
+                  <p
+                    class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"
+                  >
+                    {{ day.locale.formatDate(cell.startDate, 'WWWW, H:mm a') }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </template>
     </div>
   </div>
 </template>

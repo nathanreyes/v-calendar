@@ -4,7 +4,7 @@
   >
     <div class="w-full max-w-5xl mx-auto">
       <div class="flex justify-center items-center">
-        <div class="p-3 rounded-lg space-x-2">
+        <div class="flex flex-row p-3 rounded-lg space-x-3 sm:space-x-4">
           <HomeHeaderButton
             :selected="showCalendar"
             @click="showCalendar = true"
@@ -48,6 +48,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref } from 'vue';
 
