@@ -32,7 +32,7 @@
         <div class="content-container">
           <slot name="doc-before" />
           <main class="main">
-            <Content :class="[pageName, 'nr-doc prose']" />
+            <Content :class="[pageName, 'nr-doc']" />
           </main>
           <slot name="doc-footer-before" />
           <VPDocFooter />

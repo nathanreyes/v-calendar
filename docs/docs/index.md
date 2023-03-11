@@ -10,21 +10,15 @@ Version 3.0 brings a host of feature improvements and bug fixes, including [week
 
 If upgrading from version 2.0, be sure to view the [upgrade guide](/getting-started/upgrade-guide) for breaking changes.
 
-<div class="flex space-x-4 vp-raw">
+<div class="flex space-x-4 not-prose">
   <BaseButton url="/getting-started/installation">
     <span>Get Started</span>
     <IconArrowRight class="w-4 h-4 text-accent-500 dark:text-gray-200" />
   </BaseButton>
-  <a href="/getting-started/installation"
-    class="w-full sm:w-auto inline-flex justify-center items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-white dark:text-white bg-accent-600 hover:bg-accent-200 dark:bg-accent-500 dark:hover:bg-accent-400"
-    ><span>Get Started</span>
+  <BaseButton url="/getting-started/installation" light>
+    View 2.0 Documentation
     <IconArrowRight class="w-4 h-4 text-accent-500 dark:text-gray-200" />
-  </a>
-    <a href="/getting-started/installation"
-    class="w-full sm:w-auto inline-flex justify-center items-center font-semibold space-x-2 text-sm px-4 py-2 rounded-lg text-accent-800 dark:text-white bg-accent-100 hover:bg-accent-200 dark:bg-accent-500 dark:hover:bg-accent-400"
-    ><span>View 2.0 Documentation</span>
-    <IconArrowRight class="w-4 h-4 text-accent-500 dark:text-gray-200" />
-  </a>
+  </BaseButton>
 </div>
 
 ## Theme

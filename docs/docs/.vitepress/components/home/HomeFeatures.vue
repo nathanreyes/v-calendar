@@ -38,9 +38,13 @@
           </BaseTab>
         </BaseTabList>
         <BaseTabPanels>
-          <BaseTabPanel v-for="{ panel, summary } in calendarTabs">
+          <BaseTabPanel v-for="{ imgUrl, summary } in calendarTabs">
             <HomeTabPanel :summary="summary">
-              <component v-if="panel" :is="panel" />
+              <div
+                class="w-[45rem] overflow-hidden rounded-xl bg-slate-50 shadow-xl lg-w[67.8125rem]"
+              >
+                <img :src="imgUrl" class="w-full" />
+              </div>
             </HomeTabPanel>
           </BaseTabPanel>
         </BaseTabPanels>
@@ -58,7 +62,7 @@ const calendarTabs = ref([
   {
     title: 'Flexible layouts',
     summary: 'Choose between weekly or mult-paned monthly layouts.',
-    panel: 'HomeReminders',
+    imgUrl: '/layouts.png',
   },
   {
     title: 'Colors & dark mode',
