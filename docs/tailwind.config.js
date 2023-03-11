@@ -4,7 +4,7 @@ const colors = require('tailwindcss/colors');
 delete colors.lightBlue;
 
 module.exports = {
-  content: ['./docs/.vitepress/components/**/*.{js,ts,vue}', './docs/**/*.md'],
+  content: ['./docs/.vitepress/**/*.{js,ts,vue}', './docs/**/*.md'],
   darkMode: 'class',
   theme: {
     fontFamily: {
