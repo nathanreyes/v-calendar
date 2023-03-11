@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-start p-4 text-sm rounded-md space-x-3 my-6 custom-block"
+    class="flex items-start p-4 text-sm rounded-md space-x-3 my-6 custom-block not-prose"
     :class="theme.wrapperClass"
   >
     <component

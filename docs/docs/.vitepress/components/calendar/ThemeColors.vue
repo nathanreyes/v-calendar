@@ -1,38 +1,49 @@
 <template>
-  <Example>
-    <div class="space-y-2">
-      <div class="flex justify-center space-x-1">
-        <button
-          v-for="color in colors_1"
-          :key="color.value"
-          :class="colorClass(color)"
-          @click="selectedColor = color"
-        >
-          {{ color.label }}
-        </button>
-      </div>
-      <div class="flex justify-center space-x-1">
-        <button
-          v-for="color in colors_2"
-          :key="color.value"
-          :class="colorClass(color)"
-          @click="selectedColor = color"
-        >
-          {{ color.label }}
-        </button>
+  <div class="space-y-2">
+    <div class="flex justify-center space-x-1">
+      <button
+        v-for="color in colors_1"
+        :key="color.value"
+        :class="colorClass(color)"
+        @click="selectedColor = color"
+      >
+        {{ color.label }}
+      </button>
+    </div>
+    <div class="flex justify-center space-x-1">
+      <button
+        v-for="color in colors_2"
+        :key="color.value"
+        :class="colorClass(color)"
+        @click="selectedColor = color"
+      >
+        {{ color.label }}
+      </button>
+    </div>
+    <div v-if="showDarkMode" class="flex justify-center items-center">
+      <div class="flex items-center space-x-2">
+        <input id="darkmode" type="checkbox" v-model="isDark" />
+        <label for="darkmode"> Dark Mode </label>
       </div>
     </div>
-    <div class="flex justify-center mt-6">
-      <VCalendar
-        :initial-page="{ month: 4, year: 2019 }"
-        :color="selectedColor.value"
-        :attributes="attrs"
-      />
-    </div>
-  </Example>
+  </div>
+
+  <div class="flex justify-center mt-6">
+    <VCalendar
+      :initial-page="{ month: 4, year: 2019 }"
+      :color="selectedColor.value"
+      :attributes="attrs"
+      :is-dark="isDark"
+    />
+  </div>
 </template>
+
 <script setup>
 import { ref } from 'vue';
+
+defineProps({
+  showDarkMode: Boolean,
+});
 
 const colors = ref([
   {
@@ -110,6 +121,7 @@ const colors = ref([
 const selectedColor = ref(colors.value.find(c => c.value === 'blue'));
 const colors_1 = colors.value.slice(0, 5);
 const colors_2 = colors.value.slice(5, 10);
+const isDark = ref(false);
 const attrs = ref([
   {
     key: 'test',
@@ -121,8 +133,8 @@ const attrs = ref([
 function colorClass(color) {
   const sharedClasses = `inline-block text-sm border rounded py-1 focus:outline-none w-20 dark:hover:text-white`;
   if (color === selectedColor.value) {
-    return `${sharedClasses} ${color.selectedClass} text-white font-semibold`;
+    return `${sharedClasses} ${color.selectedClass} text-white font-medium`;
   }
-  return `${sharedClasses} ${color.class} font-medium`;
+  return `${sharedClasses} ${color.class}`;
 }
 </script>

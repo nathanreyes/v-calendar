@@ -5,7 +5,7 @@ defineProps({
 });
 </script>
 <template>
-  <div class="vp-reset" :class="{ dark }">
+  <div class="not-prose" :class="{ dark }">
     <div
       class="py-6 px-8 my-4 bg-gray-100 border dark:bg-black dark:border-gray-600 rounded-lg"
       :class="[{ 'flex flex-col justify-center items-center': centered }]"

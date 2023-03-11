@@ -36,7 +36,9 @@ VCalendar ships with support for 10 colors: **gray**, **red**, **orange**, **yel
 
 You can apply a theme color with the `color` prop.
 
-<ThemeColors />
+<Example centered>
+  <ThemeColors />
+</Example>
 
 ```vue
 <template>
