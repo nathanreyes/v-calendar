@@ -1,5 +1,6 @@
 .nr-doc {
-  @apply prose prose-a:text-accent-500 hover:prose-a:text-accent-800 dark:prose-invert dark:prose-a:text-accent-300 dark:hover:prose-a:text-accent-500;
+  @apply prose prose-a:text-accent-500 hover:prose-a:text-accent-700
+  dark:prose-invert dark:prose-a:text-accent-300 dark:hover:prose-a:text-accent-400;
 }
 
 .nr-doc .header-anchor {

@@ -19,6 +19,7 @@
       <ul v-if="cells.length > 0" class="py-2 space-y-2">
         <li v-for="cell in cells">
           <div class="flex items-center space-x-4">
+            <!--Icon-->
             <div class="flex-grow-0 flex-shrink-0">
               <div
                 :class="`flex justify-center items-center w-10 h-10 rounded-lg ${cell.data.customData.iconClass}`"
@@ -26,35 +27,18 @@
                 <component :is="cell.data.customData.icon" />
               </div>
             </div>
-            <div class="flex-grow">
-              <div class="flex justify-between">
+            <div class="flex-grow flex justify-between items-center">
+              <div>
                 <p class="font-medium">
                   {{ cell.data.customData.summary }}
                 </p>
-                <BaseSwitch v-model="cell.data.customData.notify" />
+                <p
+                  class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"
+                >
+                  {{ day.locale.formatDate(cell.startDate, 'WWWW, H:mm a') }}
+                </p>
               </div>
-              <!-- <div class="flex justify-between items-center">
-                  <p
-                    class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"
-                  >
-                    <component :is="cell.data.customData.icon" />
-                  </div>
-                </div> -->
-              <div class="flex-grow">
-                <div class="flex justify-between">
-                  <p class="font-medium">
-                    {{ cell.data.customData.summary }}
-                  </p>
-                  <BaseSwitch v-model="cell.data.customData.notify" />
-                </div>
-                <div class="flex justify-between items-center">
-                  <p
-                    class="text-xs font-medium text-gray-400 dark:text-gray-400 leading-2"
-                  >
-                    {{ day.locale.formatDate(cell.startDate, 'WWWW, H:mm a') }}
-                  </p>
-                </div>
-              </div>
+              <BaseSwitch v-model="cell.data.customData.notify" />
             </div>
           </div>
         </li>

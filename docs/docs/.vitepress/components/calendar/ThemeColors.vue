@@ -20,11 +20,12 @@
         {{ color.label }}
       </button>
     </div>
-    <div v-if="showDarkMode" class="flex justify-center items-center">
-      <div class="flex items-center space-x-2">
-        <input id="darkmode" type="checkbox" v-model="isDark" />
-        <label for="darkmode"> Dark Mode </label>
-      </div>
+    <div
+      v-if="showDarkMode"
+      class="flex justify-center items-center space-x-2 pt-2"
+    >
+      <input id="darkmode" type="checkbox" v-model="isDark" />
+      <label for="darkmode"> Dark Mode </label>
     </div>
   </div>
 
@@ -41,7 +42,7 @@
 <script setup>
 import { ref } from 'vue';
 
-defineProps({
+const props = defineProps({
   showDarkMode: Boolean,
 });
 
@@ -127,11 +128,11 @@ const colors = ref([
       'bg-pink-500 dark:hover:bg-pink-700 dark:hover:bg-pink-700 dark:border-pink-500',
   },
 ]);
-
 const selectedColor = ref(colors.value.find(c => c.value === 'blue'));
 const colors_1 = colors.value.slice(0, 5);
 const colors_2 = colors.value.slice(5, 10);
-const isDark = ref(false);
+const isDark = ref(props.showDarkMode ? false : undefined);
+
 const attrs = ref([
   {
     key: 'test',

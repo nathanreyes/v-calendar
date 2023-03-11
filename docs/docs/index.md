@@ -17,7 +17,7 @@ If upgrading from version 2.0, be sure to view the [upgrade guide](/getting-star
   </BaseButton>
   <BaseButton url="/getting-started/installation" light>
     View 2.0 Documentation
-    <IconArrowRight class="w-4 h-4 text-accent-500 dark:text-gray-200" />
+    <IconArrowRight class="w-4 h-4 text-accent-600" />
   </BaseButton>
 </div>
 
