@@ -49,7 +49,3 @@ For full documentation, visit [vcalendar.io](https://vcalendar.io/).
 | **Single Date** | **Multiple Date** | **Date Range** |
 | :---: | :---: | :---: |
 | <img width="200" src="https://res.cloudinary.com/dqgcfqzpk/image/upload/v1557327864/v-calendar/single-picker.png"> | <img width="200" src="https://res.cloudinary.com/dqgcfqzpk/image/upload/v1557327864/v-calendar/multi-picker.png"> | <img width="200" src="https://res.cloudinary.com/dqgcfqzpk/image/upload/v1557327864/v-calendar/range-picker.png"> |
-
-### Custom Calendars w/ Scoped Slots
-
-<img width="400" src="https://res.cloudinary.com/dqgcfqzpk/image/upload/v1557328504/v-calendar/custom-calendars.png">
