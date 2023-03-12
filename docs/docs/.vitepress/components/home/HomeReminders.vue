@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full sm:w-96 lg:w-full flex flex-col lg:flex-row justify-center items-stretch mx-auto lg:mx-0 bg-gray-100 dark:bg-gray-800 border border-gray-400 dark:border-gray-600 sm:rounded-2xl lg:rounded-r-none drop-shadow-lg"
+    class="w-full sm:w-96 lg:w-full flex flex-col lg:flex-row justify-center items-stretch mx-auto lg:mx-0 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 sm:rounded-2xl lg:rounded-r-none drop-shadow-lg"
   >
     <div
       class="w-full sm:w-96 mx-auto lg:max-w-none lg:border-r border-gray-300 dark:border-gray-500"

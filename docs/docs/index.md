@@ -25,7 +25,7 @@ If upgrading from version 2.0, be sure to view the [upgrade guide](/getting-star
 
 VCalendar provides attractive default styling based on simple colors and dark mode.
 
-<Example centered>
+<Example centered no-code>
   <ThemeColors show-dark-mode />
 </Example>
 
@@ -35,18 +35,60 @@ Custom styling with class overrides and css variables are also available.
 
 ## Layouts
 
-Calendars can be adapted to fit a variety of use cases, including weekly mode.
+Calendars may be configured to adapt for multiple layouts. For example, weekly calendars can be used in constrained environments.
 
-<Example centered>
+<Example centered no-code>
   <HomeReminders />
 </Example>
 
-Calendars can also be configured for multi-row and multi-column calendar layouts.
+Also, calendars can also be configured for multi-row and multi-column layouts.
 
-<Example centered>
+<Example centered no-code>
   <LayoutsResponsiveExpanded />
 </Example>
 
 [Read more](/calendar/layouts)
 
 ## Attributes
+
+Decorate calendars with attributes on specified dates or date ranges. They can even be displayed for repeating date patterns.
+
+<Example centered no-code>
+  <AttributesIntro />
+</Example>
+
+[Read more](/calendar/attributes)
+
+## Date Picker
+
+`VDatePicker` is a feature-rich date picker component implemented as a wrapper for `VCalendar`, which can easily bind to a variety of date formats.
+
+<Example centered no-code>
+  <DateWithValue mode="date" />
+</Example>
+
+[Read more](/datepicker/basics)
+
+Even date ranges are supported
+
+<Example centered>
+  <ModelModifierRange />
+</Example>
+
+[Read more](/datepicker/basics#date-ranges)
+
+Time selection is also supported with configurable hour, minute, second and millisecond accuracy.
+
+<Example centered no-code>
+  <DateWithValue mode="dateTime" is24hr />
+</Example>
+
+[Read more](/datepicker/time-picker)
+
+Flexible rules can also be easily configured to dynamically limit time selection, like afternoon hours and 5-minute increments.
+
+<Example centered no-code>
+  <DateRulesObject />
+</Example>
+
+[Read more](/datepicker/time-rules)
