@@ -3,15 +3,14 @@
 </template>
 
 <script lang="ts">
-import Locale from 'v-calendar/utils/locale';
-const locale = new Locale();
-let { month: thisMonth, year: thisMonthYear } = locale.getThisMonthParts();
-let { month: nextMonth, year: nextMonthYear } = locale.getNextMonthParts(
-  thisMonth,
-  thisMonthYear,
-);
-thisMonth--;
-nextMonth--;
+const date = new Date();
+const thisMonth = date.getMonth();
+const thisMonthYear = date.getFullYear();
+
+const nextMonthDate = new Date(date);
+nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+const nextMonth = nextMonthDate.getMonth();
+const nextMonthYear = nextMonthDate.getFullYear();
 
 const meetings = [
   {
