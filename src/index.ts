@@ -2,7 +2,7 @@ import { App } from 'vue';
 import * as components from './components/index';
 import { setVueInstance } from './utils/config/index';
 import { Defaults, setupDefaults } from './utils/defaults';
-import './styles/main.css';
+import './styles/index.css';
 
 const install = (app: App, defaults: Defaults = {}) => {
   setVueInstance(app);
