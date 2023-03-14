@@ -121,13 +121,7 @@ cd v-calendar
 yarn
 ```
 
-### Switch to `/next` branch
-
-```sh
-git checkout next
-```
-
-### Build Library
+### Build library
 
 ```sh
 # Types, ES, ESM, CommonJS, IIFE
@@ -138,4 +132,11 @@ yarn build
 
 ```sh
 yarn lint
+```
+
+### Test library
+
+```sh
+# Types, ES, ESM, CommonJS, IIFE
+yarn test
 ```
