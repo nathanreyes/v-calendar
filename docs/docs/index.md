@@ -15,7 +15,7 @@ If upgrading from version 2.0, be sure to view the [upgrade guide](/getting-star
     <span>Get Started</span>
     <IconArrowRight class="w-4 h-4 text-accent-500 dark:text-gray-200" />
   </BaseButton>
-  <BaseButton url="/getting-started/installation" light>
+  <BaseButton url="https://v2.vcalendar.io" light>
     View 2.0 Documentation
     <IconArrowRight class="w-4 h-4 text-accent-600" />
   </BaseButton>
