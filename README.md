@@ -1,19 +1,21 @@
 # VCalendar Plugin for Vue 3
 
-A calendar and date picker plugin for [Vue.js](https://vuejs.org) (requires version 3.2+).
+A calendar and date picker plugin for [Vue.js](https://vuejs.org).
+
+[Vue.js](https://vuejs.org) 3.2+, [Popper.js](https://popper.js.org/docs/v2/) 2.0+ are required.
 
 ## Install Plugin
 
 ### NPM
 
 ```shell
-npm install v-calendar
+npm install v-calendar @popperjs/core
 ```
 
 ### Yarn
 
 ```shell
-yarn add v-calendar
+yarn add v-calendar @popperjs/core
 ```
 
 ## Use Plugin
