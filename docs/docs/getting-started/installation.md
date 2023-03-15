@@ -14,11 +14,11 @@ title: 'Installation'
 ::: code-group
 
 ```shell [npm]
-npm install v-calendar @popperjs/core
+npm install v-calendar@next @popperjs/core
 ```
 
 ```shell [yarn]
-yarn add v-calendar @popperjs/core
+yarn add v-calendar@next @popperjs/core
 ```
 
 :::

@@ -9,13 +9,13 @@ A calendar and date picker plugin for [Vue.js](https://vuejs.org).
 ### NPM
 
 ```shell
-npm install v-calendar @popperjs/core
+npm install v-calendar@next @popperjs/core
 ```
 
 ### Yarn
 
 ```shell
-yarn add v-calendar @popperjs/core
+yarn add v-calendar@next @popperjs/core
 ```
 
 ## Use Plugin

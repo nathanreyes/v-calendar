@@ -6,7 +6,7 @@ title: Welcome
 
 Welcome to VCalendar, a calendar a date picker plugin for Vue.js.
 
-Version 3.0 brings a host of feature improvements and bug fixes, including [weekly views](/calendar/layouts.html#weekly-view), a [simplified time picker](/datepicker/time-picker), [repeating date ranges](/calendar/dates.html#repeating-dates), [time rules](/datepicker/time-rules), and performance improvements.
+Version 3 brings a host of feature improvements and bug fixes, including [weekly views](/calendar/layouts.html#weekly-view), a [simplified time picker](/datepicker/time-picker), [repeating date ranges](/calendar/dates.html#repeating-dates), [time rules](/datepicker/time-rules), and performance improvements.
 
 If upgrading from version 2.0, be sure to view the [upgrade guide](/getting-started/upgrade-guide) for breaking changes.
 
