@@ -31,6 +31,7 @@
 * Deprecate `from-page`, `from-date`, `to-page`, `to-date` props in lieu of `initial-page`
 * Add `moveBy` method to move by number of pages
 * Emit native `event` as 2nd argument for day and week events (`dayclick`, `daymouseenter`, `daymouseleave`, `dayfocusin`, `dayfocusout`, `daykeydown`, `weeknumberclick`)
+* Rename `SetupCalendar` export to `setupCalendar`
 
 ### Date Picker
 
