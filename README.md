@@ -48,11 +48,11 @@ app.use(VCalendar, {})
 
 ```js
 // main.js
-import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
+import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 
 // Use plugin defaults (optional)
-app.use(SetupCalendar, {})
+app.use(setupCalendar, {})
 
 // Use the components
 app.component('VCalendar', Calendar)
@@ -71,10 +71,10 @@ app.component('VDatePicker', DatePicker)
 
 ```js
 // main.js
-import { SetupCalendar } from 'v-calendar';
+import { setupCalendar } from 'v-calendar';
 
 // Use calendar defaults (optional)
-app.use(SetupCalendar, {})
+app.use(setupCalendar, {})
 ```
 
 ```vue
