@@ -18,7 +18,7 @@ for (const path in modules) {
 }
 
 export default {
-  ...DefaultTheme,
+  extends: DefaultTheme,
   enhanceApp({ app }) {
     app.use(VCalendar, {
       isDark: {},

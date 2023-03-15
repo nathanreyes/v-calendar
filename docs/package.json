@@ -4,10 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "vitepress dev docs",
-    "build": "NODE_OPTIONS='--experimental-specifier-resolution=node' vitepress build docs",
-    "preview": "vitepress preview docs",
-    "serve": "vitepress serve docs"
+    "dev": "vitepress dev",
+    "build": "NODE_OPTIONS='--experimental-specifier-resolution=node' vitepress build",
+    "preview": "vitepress preview",
+    "serve": "vitepress serve"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
@@ -21,7 +21,7 @@
     "autoprefixer": "^10.4.8",
     "postcss": "^8.4.16",
     "tailwindcss": "^3.1.8",
-    "vitepress": "^1.0.0-alpha.52",
+    "vitepress": "^1.0.0-alpha.59",
     "vue": "^3.2.37"
   }
 }

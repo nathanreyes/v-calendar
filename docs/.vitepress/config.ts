@@ -1,4 +1,4 @@
-import { version } from '../../../package.json';
+import { version } from '../../package.json';
 import { defineConfig } from 'vitepress';
 import { fileURLToPath, URL } from 'node:url';
 import path from 'path';
@@ -196,15 +196,12 @@ export default defineConfig({
         { find: '@', replacement: path.resolve(__dirname, './') },
         {
           find: 'v-calendar',
-          replacement: path.resolve(__dirname, '../../../src'),
+          replacement: path.resolve(__dirname, '../../src'),
         },
         {
           find: /^.*\/VPDoc\.vue$/,
           replacement: fileURLToPath(
-            new URL(
-              '../.vitepress/theme/components/NRDoc.vue',
-              import.meta.url,
-            ),
+            new URL('./theme/components/NRDoc.vue', import.meta.url),
           ),
         },
       ],
