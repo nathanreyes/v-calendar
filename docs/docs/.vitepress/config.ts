@@ -1,5 +1,7 @@
 import { version } from '../../../package.json';
 import { defineConfig } from 'vitepress';
+import { fileURLToPath, URL } from 'node:url';
+import path from 'path';
 
 function nav() {
   return [
@@ -183,6 +185,29 @@ export default defineConfig({
     footer: {
       message: 'Released under the MIT License.',
       copyright: 'Copyright © 2017-present Nathan Reyes',
+    },
+  },
+  vite: {
+    server: {
+      port: 3000,
+    },
+    resolve: {
+      alias: [
+        { find: '@', replacement: path.resolve(__dirname, './') },
+        {
+          find: 'v-calendar',
+          replacement: path.resolve(__dirname, '../../../src'),
+        },
+        {
+          find: /^.*\/VPDoc\.vue$/,
+          replacement: fileURLToPath(
+            new URL(
+              '../.vitepress/theme/components/NRDoc.vue',
+              import.meta.url,
+            ),
+          ),
+        },
+      ],
     },
   },
 });
