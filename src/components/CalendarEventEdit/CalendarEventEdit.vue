@@ -15,6 +15,7 @@
       <div class="flex justify-end items-center space-x-3">
         <!--Edit button-->
         <button
+          type="button"
           v-if="!event.editing"
           class="w-5 h-5 text-blue-500 hover:opacity-50"
           @click="onToggleEditing()"
@@ -34,7 +35,7 @@
           </svg>
         </button>
         <!--Remove button-->
-        <button class="w-5 h-5 text-red-500 hover:opacity-50" @click="onRemove">
+        <button type="button" class="w-5 h-5 text-red-500 hover:opacity-50" @click="onRemove">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -50,7 +51,7 @@
           </svg>
         </button>
         <!--Close button-->
-        <button class="w-5 h-5 hover:opacity-50" @click="$emit('close')">
+        <button type="button" class="w-5 h-5 hover:opacity-50" @click="$emit('close')">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -71,6 +72,7 @@
       <div class="flex justify-end items-center space-x-2 mt-3 mb-1">
         <!--Save button-->
         <button
+          type="button"
           class="flex justify-center items-center bg-blue-200 text-sm text-blue-800 hover:bg-blue-300 px-2 py-1 rounded"
           @click="onSave"
         >
@@ -78,6 +80,7 @@
         </button>
         <!--Cancel button-->
         <button
+          type="button"
           class="flex justify-center items-center text-sm px-2 py-1 rounded hover:bg-gray-500"
           @click="onCancel"
         >

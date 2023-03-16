@@ -8,6 +8,7 @@
       <button
         v-if="show.prev"
         :class="['vc-arrow vc-prev vc-focus', { 'vc-disabled': !canMovePrev }]"
+        type="button"
         role="button"
         @click="movePrev"
         @keydown.space.enter="movePrev"
@@ -22,6 +23,7 @@
       <button
         v-if="show.next"
         :class="['vc-arrow vc-next vc-focus', { 'vc-disabled': !canMoveNext }]"
+        type="button"
         role="button"
         @click="moveNext"
         @keydown.space.enter="moveNext"
