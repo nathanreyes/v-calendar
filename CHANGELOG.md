@@ -42,3 +42,9 @@
 * Add `time-accuracy` prop to allow selecting seconds and milliseconds components in time picker
 * Major redesign of `TimePicker` to fit more time component selections
 * Deprecate `update-layout` slot prop as it is no longer needed
+
+## 3.0.1
+
+### Calendar
+
+* Add missing `type=button` attribute to navigation buttons
