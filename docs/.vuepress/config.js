@@ -107,11 +107,7 @@ module.exports = {
         {
           title: 'Getting Started',
           collapsable: false,
-          children: [
-            'installation',
-            'custom-defaults',
-            ['https://vcalendar.io', 'Vue 3'],
-          ],
+          children: ['installation', 'custom-defaults', 'vue-3'],
         },
         {
           title: 'Core Concepts',
