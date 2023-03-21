@@ -11,7 +11,11 @@ title: 'Installation'
 ### 1. Install via npm
 
 ```bash
-npm install v-calendar
+npm i --save v-calendar@v2-latest
+```
+
+```yarn
+yarn add v-calendar@v2-latest
 ```
 
 ### 2. Import and use VCalendar
