@@ -1,33 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { UnwrapNestedRefs, ComponentPublicInstance, h, nextTick } from 'vue';
-import { mount, VueWrapper } from '@vue/test-utils';
-import DatePicker from '@/components/DatePicker/DatePicker.vue';
 import TimePicker from '@/components/TimePicker/TimePicker.vue';
-import { DatePickerContext } from '@/use/datePicker';
-
-type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
-  ComponentPublicInstance;
-
-// #region Test helpers
-
-async function mountDp(props: any) {
-  const dpWrapper = mount<DatePickerComponent>(
-    // @ts-ignore
-    DatePicker,
-    { props },
-  );
-  return dpWrapper;
-}
-
-function getDayClass(vm: DatePickerComponent, date: Date) {
-  return `.id-${vm.locale.getDayId(date)}`;
-}
-
-function getDayContentClass(vm: DatePickerComponent, date: Date) {
-  return `${getDayClass(vm, date)} .vc-day-content`;
-}
-
-// #endregion - Test helpers
+import {
+  mountDp,
+  mountWithInputs,
+  getDayContentClass,
+  updateInputs,
+} from './utils';
 
 describe('DatePicker', () => {
   describe(':props', async () => {
@@ -256,89 +234,44 @@ describe('DatePicker', () => {
       // Highlight should appear
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toEqual(true);
     });
-
-    // it(':model-config.fillDate - fills missing date parts for date input', async () => {
-    //   const dp = mountWithInputs({
-    //     modelValue: null,
-    //     mode: 'time',
-    //     modelConfig: {
-    //       type: 'string',
-    //       fillDate: new Date(2021, 0, 1),
-    //     },
-    //   });
-    //   await updateInputs(dp, '12:15 PM');
-    //   expect(dp.vm.value_.toISOString()).toEqual('2021-01-01T12:15:00.000Z');
-    // });
-
-    // it(':model-config.fillDate - fills missing date parts for date range inputs', async () => {
-    //   const dp = mountWithInputs({
-    //     modelValue: null,
-    //     mode: 'time',
-    //     isRange: true,
-    //     modelConfig: {
-    //       type: 'string',
-    //       fillDate: new Date(2021, 0, 1),
-    //     },
-    //   });
-    //   await updateInputs(dp, '12:15 PM', '12:15 PM');
-    //   expect(dp.vm.value_).toEqual({
-    //     start: new Date('2021-01-01T12:15:00.000Z'),
-    //     end: new Date('2021-01-01T12:15:00.000Z'),
-    //   });
-    // });
   });
+
+  describe(':withInputs', () => {
+    it(':resets value to null when input is cleared', async () => {
+      const dp = await mountWithInputs({
+        modelValue: new Date(),
+      });
+      await updateInputs(dp, '');
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(null);
+    });
+  });
+  // it(':model-config.fillDate - fills missing date parts for date input', async () => {
+  //   const dp = mountWithInputs({
+  //     modelValue: null,
+  //     mode: 'time',
+  //     modelConfig: {
+  //       type: 'string',
+  //       fillDate: new Date(2021, 0, 1),
+  //     },
+  //   });
+  //   await updateInputs(dp, '12:15 PM');
+  //   expect(dp.vm.value_.toISOString()).toEqual('2021-01-01T12:15:00.000Z');
+  // });
+
+  // it(':model-config.fillDate - fills missing date parts for date range inputs', async () => {
+  //   const dp = mountWithInputs({
+  //     modelValue: null,
+  //     mode: 'time',
+  //     isRange: true,
+  //     modelConfig: {
+  //       type: 'string',
+  //       fillDate: new Date(2021, 0, 1),
+  //     },
+  //   });
+  //   await updateInputs(dp, '12:15 PM', '12:15 PM');
+  //   expect(dp.vm.value_).toEqual({
+  //     start: new Date('2021-01-01T12:15:00.000Z'),
+  //     end: new Date('2021-01-01T12:15:00.000Z'),
+  //   });
+  // });
 });
-
-function mountWithInputs(props: any) {
-  return mount(DatePicker, {
-    props: {
-      ...props,
-      timezone: 'utc',
-    },
-    slots: {
-      default: function (sProps) {
-        if (props.isRange) {
-          return h('div', [
-            h('input', {
-              props: {
-                modelValue: sProps.inputValue.start,
-              },
-              on: sProps.inputEvents.start,
-            }),
-            h('input', {
-              props: {
-                modelValue: sProps.inputValue.end,
-              },
-              on: sProps.inputEvents.end,
-            }),
-          ]);
-        }
-        return h('input', {
-          props: {
-            modelValue: sProps.inputValue,
-          },
-          on: sProps.inputEvents,
-        });
-      },
-    },
-  });
-}
-
-async function updateInputs(
-  dp: VueWrapper,
-  startValue: string,
-  endValue: string,
-) {
-  const inputs = dp.findAll('input');
-  let input = null;
-  if (startValue) {
-    input = inputs[0];
-    await input.setValue(startValue);
-    await input.trigger('change');
-  }
-  if (endValue) {
-    input = inputs[1];
-    await input.setValue(endValue);
-    await input.trigger('change');
-  }
-}
