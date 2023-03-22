@@ -5,6 +5,8 @@ import { createViteConfig } from './build/configs/vite.common';
 export default defineConfig({
   ...createViteConfig('es'),
   test: {
-    environment: 'happy-dom',
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['tests/unit/setup.ts'],
   },
 });
