@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { UnwrapNestedRefs, ComponentPublicInstance, h, nextTick } from 'vue';
 import { mount, VueWrapper } from '@vue/test-utils';
 import DatePicker from '@/components/DatePicker/DatePicker.vue';

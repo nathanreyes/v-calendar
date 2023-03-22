@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { VueWrapper, mount } from '@vue/test-utils';
 import Calendar from '@/components/Calendar/Calendar.vue';
 import { pad } from '@/utils/helpers';

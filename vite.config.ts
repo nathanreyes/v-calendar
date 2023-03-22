@@ -4,4 +4,7 @@ import { createViteConfig } from './build/configs/vite.common';
 
 export default defineConfig({
   ...createViteConfig('es'),
+  test: {
+    environment: 'happy-dom',
+  },
 });

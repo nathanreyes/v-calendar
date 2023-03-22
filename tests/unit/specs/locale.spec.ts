@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import lodash from 'lodash';
 import Locale, { LocaleConfig } from '@/utils/locale';
 import locales from '@/utils/defaults/locales';
