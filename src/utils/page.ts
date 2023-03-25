@@ -11,6 +11,7 @@ import {
 } from './date/helpers';
 import Locale from './locale';
 import { pad, pick } from './helpers';
+import { Attribute } from './attribute';
 
 export interface CalendarDay extends DayParts {
   id: string;
@@ -39,6 +40,10 @@ export interface CalendarDay extends DayParts {
   onRight: boolean;
   classes: Array<string | Object>;
   locale: Locale;
+}
+
+export interface AttributedCalendarDay extends CalendarDay {
+  attributes: Attribute[];
 }
 
 export interface CalendarWeek {

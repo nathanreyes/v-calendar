@@ -56,7 +56,7 @@
 <script lang="ts">
 import { PropType, defineComponent, computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
-import { CalendarDay } from '../../utils/page';
+import { CalendarDay, AttributedCalendarDay } from '../../utils/page';
 import { Attribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
@@ -86,8 +86,15 @@ export default defineComponent({
       return attributeContext.value.getCells(day.value);
     });
     const attributes = computed(() =>
-      attributeCells.value.map(cell => cell.data),
+      attributeCells.value.map(cell => cell.data as Attribute),
     );
+    const attributedDay = computed(() => {
+      return {
+        ...day.value,
+        attributes: attributes.value,
+        attributeCells: attributeCells.value,
+      } as AttributedCalendarDay;
+    });
 
     function processPopover(
       { data: attribute }: DateRangeCell<Attribute>,
@@ -178,22 +185,22 @@ export default defineComponent({
     const dayContentEvents = computed(() => {
       return {
         click(event: MouseEvent) {
-          onDayClick(day.value, event);
+          onDayClick(attributedDay.value, event);
         },
         mouseenter(event: MouseEvent) {
-          onDayMouseenter(day.value, event);
+          onDayMouseenter(attributedDay.value, event);
         },
         mouseleave(event: MouseEvent) {
-          onDayMouseleave(day.value, event);
+          onDayMouseleave(attributedDay.value, event);
         },
         focusin(event: FocusEvent) {
-          onDayFocusin(day.value, event);
+          onDayFocusin(attributedDay.value, event);
         },
         focusout(event: FocusEvent) {
-          onDayFocusout(day.value, event);
+          onDayFocusout(attributedDay.value, event);
         },
         keydown(event: KeyboardEvent) {
-          onDayKeydown(day.value, event);
+          onDayKeydown(attributedDay.value, event);
         },
       };
     });

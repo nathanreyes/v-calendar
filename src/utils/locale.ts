@@ -1,7 +1,6 @@
 import {
   PageConfig,
   CachedPage,
-  CalendarDay,
   getPageKey,
   getCachedPage,
   getPage,
