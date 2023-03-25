@@ -36,7 +36,6 @@ export function mountWithInputs(props: any) {
   return mountDp(
     {
       ...props,
-      timezone: 'utc',
     },
     {
       default: function (sProps: any) {

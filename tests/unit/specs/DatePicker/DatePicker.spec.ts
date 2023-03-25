@@ -236,7 +236,30 @@ describe('DatePicker', () => {
     });
   });
 
-  describe(':withInputs', () => {
+  describe(':withInputs', async () => {
+    it(':sets value when input text is set in YYYY-MM-DD format', async () => {
+      const dp = await mountWithInputs({
+        modelValue: null,
+      });
+      await updateInputs(dp, '2023-01-01');
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(
+        new Date(2023, 0, 1),
+      );
+    });
+
+    it(':sets values when input text is set in custom format', async () => {
+      const dp = await mountWithInputs({
+        modelValue: null,
+        masks: {
+          input: 'MM/DD/YYYY',
+        },
+      });
+      await updateInputs(dp, '1/21/1983');
+      expect(dp.emitted('update:modelValue')![0][0]).toEqual(
+        new Date(1983, 0, 21),
+      );
+    });
+
     it(':resets value to null when input is cleared', async () => {
       const dp = await mountWithInputs({
         modelValue: new Date(),
