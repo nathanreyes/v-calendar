@@ -1,5 +1,5 @@
-import { ComponentPublicInstance, Directive, DirectiveBinding } from 'vue';
-import { Placement } from '@popperjs/core';
+import type { ComponentPublicInstance, Directive, DirectiveBinding } from 'vue';
+import type { Placement } from '@popperjs/core';
 import { elementContains, on, resolveEl } from './helpers';
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';

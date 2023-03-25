@@ -1,5 +1,5 @@
 import { Attribute } from './attribute';
-import { DateRangeCell } from './date/range';
+import type { DateRangeCell } from './date/range';
 import { isObject, isString, hasAny, defaultsDeep } from './helpers';
 
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';

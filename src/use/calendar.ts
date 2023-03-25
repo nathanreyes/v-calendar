@@ -12,7 +12,7 @@ import {
 } from 'vue';
 import { propsDef as basePropsDef, useOrCreateBase } from './base';
 import Popover from '../Popover/Popover.vue';
-import { Attribute, type AttributeConfig } from '../utils/attribute';
+import { type AttributeConfig, Attribute } from '../utils/attribute';
 import {
   type DateSource,
   addDays,
@@ -31,7 +31,6 @@ import {
   arrayHasItems,
 } from '../utils/helpers';
 import {
-  type AttributedCalendarDay,
   type CalendarDay,
   type CalendarWeek,
   type Page,
@@ -46,7 +45,7 @@ import {
   getPageAddressForDate,
   addPages as _addPages,
 } from '../utils/page';
-import { type PopoverVisibility } from '../utils/popovers';
+import type { PopoverVisibility } from '../utils/popovers';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 
@@ -145,7 +144,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   // Reactive refs
   const containerRef = ref<IContainer | null>(null);
   const navPopoverRef = ref<typeof Popover | null>(null);
-  const focusedDay = ref<AttributedCalendarDay | null>(null);
+  const focusedDay = ref<CalendarDay | null>(null);
   const focusableDay = ref(new Date().getDate());
   const inTransition = ref(false);
   const navPopoverId = ref(createGuid());
@@ -526,36 +525,33 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     return tryFocusDate(date);
   };
 
-  const onDayClick = (day: AttributedCalendarDay, event: MouseEvent) => {
+  const onDayClick = (day: CalendarDay, event: MouseEvent) => {
     focusableDay.value = day.day;
     emit('dayclick', day, event);
   };
 
-  const onDayMouseenter = (day: AttributedCalendarDay, event: MouseEvent) => {
+  const onDayMouseenter = (day: CalendarDay, event: MouseEvent) => {
     emit('daymouseenter', day, event);
   };
 
-  const onDayMouseleave = (day: AttributedCalendarDay, event: MouseEvent) => {
+  const onDayMouseleave = (day: CalendarDay, event: MouseEvent) => {
     emit('daymouseleave', day, event);
   };
 
-  const onDayFocusin = (
-    day: AttributedCalendarDay,
-    event: FocusEvent | null,
-  ) => {
+  const onDayFocusin = (day: CalendarDay, event: FocusEvent | null) => {
     focusableDay.value = day.day;
     focusedDay.value = day;
     day.isFocused = true;
     emit('dayfocusin', day, event);
   };
 
-  const onDayFocusout = (day: AttributedCalendarDay, event: FocusEvent) => {
+  const onDayFocusout = (day: CalendarDay, event: FocusEvent) => {
     focusedDay.value = null;
     day.isFocused = false;
     emit('dayfocusout', day, event);
   };
 
-  const onDayKeydown = (day: AttributedCalendarDay, event: KeyboardEvent) => {
+  const onDayKeydown = (day: CalendarDay, event: KeyboardEvent) => {
     emit('daykeydown', day, event);
     const date = day.noonDate;
     let newDate = null;

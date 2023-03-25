@@ -1,16 +1,16 @@
 import { Attribute } from './attribute';
-import { DateRangeCell } from '@/utils/date/range';
+import type { DateRangeCell } from '@/utils/date/range';
 import {
-  GlyphRenderer,
-  Glyph,
+  type Bar,
+  type Content,
+  type Dot,
+  type GlyphRenderer,
+  type Glyph,
+  type Highlight,
   ContentRenderer,
   HighlightRenderer,
   DotRenderer,
   BarRenderer,
-  Highlight,
-  Dot,
-  Bar,
-  Content,
 } from './glyph';
 
 export interface Glyphs {

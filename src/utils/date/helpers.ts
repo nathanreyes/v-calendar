@@ -15,7 +15,7 @@ import getISOWeek from 'date-fns/getISOWeek';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
-import Locale, { LocaleConfig } from '../locale';
+import { type LocaleConfig, default as Locale } from '../locale';
 
 export { addDays, addMonths, addYears };
 export { DateRepeat } from './repeat';

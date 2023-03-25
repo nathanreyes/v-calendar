@@ -1,6 +1,6 @@
 import { isArray, isObject, isString, isFunction } from '../helpers';
 import Locale from '../locale';
-import {
+import type {
   DayOfWeek,
   DayInMonth,
   WeekInMonth,
@@ -9,17 +9,17 @@ import {
   DateParts,
 } from './helpers';
 import {
-  Rule,
-  RuleType,
-  GroupRuleType,
-  IntervalRuleType,
-  IntervalRule,
-  ComponentRuleType,
+  type Rule,
+  type RuleType,
+  type SingleOrArray,
   ComponentRule,
+  ComponentRuleType,
+  FunctionRule,
+  GroupRuleType,
+  IntervalRule,
+  IntervalRuleType,
   OrdinalComponentRuleType,
   OrdinalComponentRule,
-  FunctionRule,
-  SingleOrArray,
 } from './rules';
 
 export type RepeatIntervalShort = 'day' | 'week' | 'month' | 'year';

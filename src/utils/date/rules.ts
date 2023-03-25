@@ -1,7 +1,7 @@
 import {
-  DayOfWeek,
-  OrdinalWeekInMonth,
-  DayParts,
+  type DayOfWeek,
+  type OrdinalWeekInMonth,
+  type DayParts,
   diffInDays,
   diffInWeeks,
   diffInMonths,

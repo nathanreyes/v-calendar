@@ -1,4 +1,4 @@
-import { App as Application } from 'vue';
+import type { App as Application } from 'vue';
 
 const config = {};
 

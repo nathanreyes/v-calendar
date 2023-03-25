@@ -1,7 +1,7 @@
 import {
-  SetupContext,
-  ExtractPropTypes,
-  PropType,
+  type SetupContext,
+  type ExtractPropTypes,
+  type PropType,
   ref,
   computed,
   watch,
@@ -14,9 +14,9 @@ import {
 import Calendar from '../components/Calendar.vue';
 import Popover from '../components/Popover.vue';
 import { getDefault } from '../utils/defaults';
-import { AttributeConfig } from '../utils/attribute';
+import type { AttributeConfig } from '../utils/attribute';
 import {
-  CalendarDay,
+  type CalendarDay,
   getPageAddressForDate,
   pageIsBetweenPages,
 } from '../utils/page';
@@ -29,17 +29,21 @@ import {
   defaultsDeep,
   createGuid,
 } from '../utils/helpers';
-import { DatePatch, DateParts, DatePartsRules } from '../utils/date/helpers';
-import { SimpleDateRange } from '../utils/date/range';
+import type {
+  DatePatch,
+  DateParts,
+  DatePartsRules,
+} from '../utils/date/helpers';
+import type { SimpleDateRange } from '../utils/date/range';
 import {
-  PopoverOptions,
+  type PopoverOptions,
   showPopover as sp,
   hidePopover as hp,
   togglePopover as tp,
   getPopoverEventHandlers,
 } from '../utils/popovers';
 import { propsDef as basePropsDef, createBase } from './base';
-import { MoveTarget, MoveOptions } from './calendar';
+import type { MoveTarget, MoveOptions } from './calendar';
 
 export type DateType = 'date' | 'string' | 'number';
 

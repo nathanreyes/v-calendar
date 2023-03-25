@@ -54,13 +54,13 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, computed } from 'vue';
+import { type PropType, defineComponent, computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
-import { CalendarDay, AttributedCalendarDay } from '../../utils/page';
-import { Attribute, PopoverConfig } from '../../utils/attribute';
+import type { CalendarDay } from '../../utils/page';
+import type { Attribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
-import { DateRangeCell } from '../../utils/date/range';
+import type { DateRangeCell } from '../../utils/date/range';
 
 export default defineComponent({
   directives: { popover: popoverDirective },
@@ -93,7 +93,7 @@ export default defineComponent({
         ...day.value,
         attributes: attributes.value,
         attributeCells: attributeCells.value,
-      } as AttributedCalendarDay;
+      };
     });
 
     function processPopover(

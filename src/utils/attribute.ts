@@ -1,8 +1,8 @@
-import { Placement } from '@popperjs/core';
-import { DateRange, DateRangeSource } from './date/range';
+import type { Placement } from '@popperjs/core';
+import { type DateRangeSource, DateRange } from './date/range';
 import { arrayHasItems, createGuid } from './helpers';
 import { addDays } from './date/helpers';
-import { PopoverVisibility } from './popovers';
+import type { PopoverVisibility } from './popovers';
 import { Theme } from './theme';
 import Locale from './locale';
 

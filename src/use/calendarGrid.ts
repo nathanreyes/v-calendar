@@ -1,6 +1,6 @@
 import {
-  ExtractPropTypes,
-  PropType,
+  type ExtractPropTypes,
+  type PropType,
   ref,
   computed,
   provide,
@@ -9,11 +9,11 @@ import {
   nextTick,
 } from 'vue';
 import { propsDef as basePropsDef, emitsDef, createCalendar } from './calendar';
-import { CalendarDay } from '../utils/page';
+import type { CalendarDay } from '../utils/page';
 import { createGuid, on } from '../utils/helpers';
 import {
-  EventConfig,
-  Event,
+  type EventConfig,
+  type Event,
   createEvent as _createEvent,
 } from '../utils/calendar/event';
 import CalendarCellPopover from '../components/CalendarGrid/CalendarCellPopover.vue';

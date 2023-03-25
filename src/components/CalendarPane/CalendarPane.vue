@@ -52,11 +52,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
 import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
 import { useCalendar } from '../../use/calendar';
-import { Page } from '../../utils/page';
+import type { Page } from '../../utils/page';
 
 export default {
   name: 'CalendarPane',

@@ -1,5 +1,5 @@
-import { App as Application, Component } from 'vue';
-import { Defaults } from '../defaults';
+import type { App as Application, Component } from 'vue';
+import type { Defaults } from '../defaults';
 import { get } from '../helpers';
 
 export const registerComponent = (

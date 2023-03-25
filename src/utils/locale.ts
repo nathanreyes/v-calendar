@@ -1,19 +1,19 @@
 import {
-  PageConfig,
-  CachedPage,
+  type PageConfig,
+  type CachedPage,
   getPageKey,
   getCachedPage,
   getPage,
 } from './page';
 import {
-  DateSource,
-  DateOptions,
+  type DateSource,
+  type DateOptions,
+  type DayOfWeek,
+  type MonthParts,
+  type MonthInYear,
+  type SimpleDateParts,
+  type TimeNames,
   DatePatchKeys,
-  DayOfWeek,
-  MonthParts,
-  MonthInYear,
-  SimpleDateParts,
-  TimeNames,
   applyRulesForDateParts,
   daysInWeek,
   formatDate,
@@ -29,7 +29,7 @@ import {
   isDateParts,
 } from './date/helpers';
 import Cache from './cache';
-import { DateRange, DateRangeSource } from './date/range';
+import { type DateRangeSource, DateRange } from './date/range';
 import { defaultLocales } from './defaults';
 import {
   isString,

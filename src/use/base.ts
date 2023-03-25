@@ -8,7 +8,7 @@ import {
 import { type DarkModeClassConfig, useDarkMode } from 'vue-screen-utils';
 import { Theme } from '../utils/theme';
 import { getDefault } from '../utils/defaults';
-import { default as Locale, LocaleConfig } from '../utils/locale';
+import { type LocaleConfig, default as Locale } from '../utils/locale';
 import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
 import { type DayOfWeek, addDays } from '../utils/date/helpers';

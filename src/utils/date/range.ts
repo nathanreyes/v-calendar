@@ -1,7 +1,7 @@
-import { DateRepeat, DateRepeatConfig } from './repeat';
-import { DateParts, DayParts, addDays, MS_PER_DAY } from './helpers';
+import { type DateRepeatConfig, DateRepeat } from './repeat';
+import { type DateParts, type DayParts, addDays, MS_PER_DAY } from './helpers';
 import { isDate, isArray, isObject } from '../helpers';
-import { CalendarDay } from '../page';
+import type { CalendarDay } from '../page';
 import Locale from '../locale';
 
 type DateRangeDate = Date | string | number | null;

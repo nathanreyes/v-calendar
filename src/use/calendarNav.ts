@@ -1,6 +1,6 @@
 import {
-  ExtractPropTypes,
-  PropType,
+  type ExtractPropTypes,
+  type PropType,
   ref,
   computed,
   watch,
@@ -9,7 +9,7 @@ import {
   inject,
 } from 'vue';
 import { useCalendar } from './calendar';
-import { Page } from '../utils/page';
+import type { Page } from '../utils/page';
 import { getMonthDates } from '../utils/date/helpers';
 import { head, last, pad } from '../utils/helpers';
 
