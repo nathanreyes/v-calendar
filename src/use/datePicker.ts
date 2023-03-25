@@ -21,6 +21,8 @@ import {
   pageIsBetweenPages,
 } from '../utils/page';
 import {
+  isNumber,
+  isString,
   isObject,
   isArray,
   isDate,
@@ -51,8 +53,7 @@ const contextKey = '__vc_date_picker_context__';
 
 export type DateModes = 'date' | 'datetime' | 'time';
 
-export type ValueTarget = 'none' | 'start' | 'end' | 'both';
-export type InputValueTarget = 'start' | 'end';
+export type ValueTarget = 'start' | 'end';
 
 export interface UpdateOptions {
   config: any;
@@ -358,11 +359,20 @@ export function createDatePicker(
     );
   }
 
+  function hasDateValue(value: unknown) {
+    if (isNumber(value)) return !isNaN(value);
+    if (isDate(value)) return !isNaN(value.getTime());
+    if (isString(value)) return value !== '';
+    return value != null;
+  }
+
   function hasValue(value: any) {
     if (isRange.value) {
-      return isObject(value) && value.start != null && value.end != null;
+      return (
+        isObject(value) && hasDateValue(value.start) && hasDateValue(value.end)
+      );
     }
-    return value != null;
+    return hasDateValue(value);
   }
 
   function datesAreEqual(a: any, b: any): boolean {
@@ -393,25 +403,23 @@ export function createDatePicker(
     value: any,
     config: DateConfig[],
     patch: DatePatch,
-    targetPriority: ValueTarget,
+    targetPriority?: ValueTarget,
   ): Date | SimpleDateRange | null {
     if (!hasValue(value)) return null;
     if (isRange.value) {
-      let start = value.start > value.end ? value.end : value.start;
-      start = locale.value.toDate(start, {
+      const start = locale.value.toDate(value.start, {
         ...config[0],
         fillDate: valueStart.value ?? undefined,
         patch,
       });
-      let end = value.start > value.end ? value.start : value.end;
-      end = locale.value.toDate(end, {
+      const end = locale.value.toDate(value.end, {
         ...config[1],
         fillDate: valueEnd.value ?? undefined,
         patch,
       });
       return sortRange({ start, end }, targetPriority);
     }
-    return locale.value.toDate(value, {
+    return locale.value.toDateOrNull(value, {
       ...config[0],
       fillDate: dateValue.value as Date,
       patch,
@@ -455,7 +463,7 @@ export function createDatePicker(
       formatInput: fInput = true,
       hidePopover: hPopover = false,
       dragging = isDragging.value,
-      targetPriority = 'both',
+      targetPriority,
       moveToValue: mValue = false,
     }: Partial<UpdateOptions> = {},
   ) {
@@ -516,7 +524,7 @@ export function createDatePicker(
 
     // 7. Move to range target if needed
     if (mValue) {
-      nextTick(() => moveToValue(targetPriority));
+      nextTick(() => moveToValue(targetPriority ?? 'start'));
     }
 
     return denormalizedValue;
@@ -543,7 +551,7 @@ export function createDatePicker(
 
   function onInputUpdate(
     inputValue: string,
-    target: InputValueTarget,
+    target: ValueTarget,
     opts: Partial<UpdateOptions>,
   ) {
     inputValues.value.splice(target === 'start' ? 0 : 1, 1, inputValue);
@@ -566,7 +574,7 @@ export function createDatePicker(
     });
   }
 
-  function onInputInput(target: InputValueTarget) {
+  function onInputInput(target: ValueTarget) {
     return (e: InputEvent) => {
       if (!props.updateOnInput) return;
       onInputUpdate((<HTMLInputElement>e.currentTarget).value, target, {
@@ -577,7 +585,7 @@ export function createDatePicker(
     };
   }
 
-  function onInputChange(target: InputValueTarget) {
+  function onInputChange(target: ValueTarget) {
     return (e: InputEvent) => {
       onInputUpdate((<HTMLInputElement>e.currentTarget).value, target, {
         formatInput: true,
@@ -643,7 +651,6 @@ export function createDatePicker(
       updateValue(dragTrackingValue, {
         ...opts,
         dragging,
-        targetPriority: dragging ? 'none' : 'both',
       });
     } else {
       updateValue(day.date, {
@@ -678,10 +685,9 @@ export function createDatePicker(
   function onDayMouseEnter(day: CalendarDay, event: MouseEvent) {
     if (!isDragging.value || dragTrackingValue == null) return;
     dragTrackingValue.end = day.date;
-    updateValue(dragTrackingValue, {
+    updateValue(sortRange(dragTrackingValue), {
       patch: 'date',
       formatInput: true,
-      targetPriority: 'none',
     });
   }
 
@@ -713,7 +719,7 @@ export function createDatePicker(
     });
   }
 
-  function sortRange(range: any, priority = 'none') {
+  function sortRange(range: any, priority?: ValueTarget) {
     const { start, end } = range;
     if (start > end) {
       switch (priority) {
@@ -721,7 +727,7 @@ export function createDatePicker(
           return { start, end: start };
         case 'end':
           return { start: end, end };
-        case 'both':
+        default:
           return { start: end, end: start };
       }
     }
@@ -754,7 +760,7 @@ export function createDatePicker(
     target: ValueTarget,
     opts: Partial<MoveOptions> = {},
   ) {
-    if (calendarRef.value == null || target === 'none') return false;
+    if (calendarRef.value == null) return false;
     const { firstPage, lastPage, move } = calendarRef.value;
     const start = target !== 'end';
     const page = getPageForValue(start);
@@ -819,12 +825,7 @@ export function createDatePicker(
 
   // Set initial date value (no validation applied)
   const config = normalizeConfig(modelConfig.value);
-  dateValue.value = normalizeValue(
-    props.modelValue,
-    config,
-    'dateTime',
-    'both',
-  );
+  dateValue.value = normalizeValue(props.modelValue, config, 'dateTime');
 
   onMounted(() => {
     forceUpdateValue(props.modelValue, {

@@ -178,6 +178,14 @@ export default class Locale {
     return result || nullDate;
   }
 
+  toDateOrNull(
+    d: DateSource | Partial<SimpleDateParts>,
+    opts: Partial<DateOptions> = {},
+  ): Date | null {
+    const dte = this.toDate(d, opts);
+    return isNaN(dte.getTime()) ? null : dte;
+  }
+
   fromDate(date: Date, { type, mask }: Partial<DateOptions> = {}) {
     switch (type) {
       case 'number':
