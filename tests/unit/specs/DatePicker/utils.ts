@@ -39,28 +39,41 @@ export function mountWithInputs(props: any) {
     },
     {
       default: function (sProps: any) {
-        if (props.isRange) {
-          return h('div', [
-            h('input', {
-              props: {
-                modelValue: sProps.inputValue.start,
-              },
-              ...renderFnEvents(sProps.inputEvents.start),
-            }),
-            h('input', {
-              props: {
-                modelValue: sProps.inputValue.end,
-              },
-              ...renderFnEvents(sProps.inputEvents.end),
-            }),
-          ]);
-        }
         return h('input', {
           props: {
             modelValue: sProps.inputValue,
           },
           ...renderFnEvents(sProps.inputEvents),
         });
+      },
+    },
+  );
+}
+
+export function mountWithRangeInputs(props: any) {
+  return mountDp(
+    {
+      ...props,
+      modelModifiers: {
+        range: true,
+      },
+    },
+    {
+      default: function (sProps: any) {
+        return h('div', [
+          h('input', {
+            props: {
+              modelValue: sProps.inputValue.start,
+            },
+            ...renderFnEvents(sProps.inputEvents.start),
+          }),
+          h('input', {
+            props: {
+              modelValue: sProps.inputValue.end,
+            },
+            ...renderFnEvents(sProps.inputEvents.end),
+          }),
+        ]);
       },
     },
   );
@@ -80,4 +93,7 @@ export async function updateInputs(
     await inputs[1].setValue(endValue);
     await inputs[1].trigger('change');
   }
+  return endValue == null
+    ? dp.emitted('update:modelValue')![0][0]
+    : dp.emitted('update:modelValue')![1][0];
 }

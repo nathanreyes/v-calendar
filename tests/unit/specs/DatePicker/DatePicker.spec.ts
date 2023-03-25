@@ -3,6 +3,7 @@ import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import {
   mountDp,
   mountWithInputs,
+  mountWithRangeInputs,
   getDayContentClass,
   updateInputs,
 } from './utils';
@@ -241,8 +242,7 @@ describe('DatePicker', () => {
       const dp = await mountWithInputs({
         modelValue: null,
       });
-      await updateInputs(dp, '2023-01-01');
-      expect(dp.emitted('update:modelValue')![0][0]).toEqual(
+      expect(await updateInputs(dp, '2023-01-01')).toEqual(
         new Date(2023, 0, 1),
       );
     });
@@ -254,8 +254,7 @@ describe('DatePicker', () => {
           input: 'MM/DD/YYYY',
         },
       });
-      await updateInputs(dp, '1/21/1983');
-      expect(dp.emitted('update:modelValue')![0][0]).toEqual(
+      expect(await updateInputs(dp, '1/21/1983')).toEqual(
         new Date(1983, 0, 21),
       );
     });
@@ -264,10 +263,37 @@ describe('DatePicker', () => {
       const dp = await mountWithInputs({
         modelValue: new Date(),
       });
-      await updateInputs(dp, '');
-      expect(dp.emitted('update:modelValue')![0][0]).toEqual(null);
+      expect(await updateInputs(dp, '')).toEqual(null);
     });
   });
+
+  describe(':withRangeInputs', async () => {
+    it(':sets range value when input text is set in YYYY-MM-DD format', async () => {
+      const dp = await mountWithRangeInputs({
+        modelValue: null,
+      });
+      expect(await updateInputs(dp, '2023-01-01', '2023-01-05')).toEqual({
+        start: new Date(2023, 0, 1),
+        end: new Date(2023, 0, 5),
+      });
+    });
+  });
+
+  describe(':withRangeInputs', async () => {
+    it(':sets range value when input text is set in custom format', async () => {
+      const dp = await mountWithRangeInputs({
+        modelValue: null,
+        masks: {
+          input: 'MM/DD/YYYY',
+        },
+      });
+      expect(await updateInputs(dp, '1/21/1983', '10/1/2004')).toEqual({
+        start: new Date(1983, 0, 21),
+        end: new Date(2004, 9, 1),
+      });
+    });
+  });
+
   // it(':model-config.fillDate - fills missing date parts for date input', async () => {
   //   const dp = mountWithInputs({
   //     modelValue: null,
