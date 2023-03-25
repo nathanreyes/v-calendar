@@ -5,7 +5,6 @@ import path from 'path';
 
 function nav() {
   return [
-    { text: 'Guide', link: '/getting-started/installation' },
     {
       text: version,
       items: [
