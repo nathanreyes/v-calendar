@@ -14,7 +14,6 @@ export interface PopoverOptions {
   placement: Placement;
   modifiers: any;
   data: any;
-  renderFn: boolean;
   showDelay: number;
   hideDelay: number;
 }
@@ -140,25 +139,25 @@ export function getPopoverEventHandlers(
       }
     }
   };
-  const renderFn = opts.renderFn;
+
   const handlers: Record<string, Function> = {};
   switch (opts.visibility) {
     case 'click':
-      handlers[renderFn ? 'onClick' : 'click'] = clickHandler;
+      handlers.click = clickHandler;
       break;
     case 'hover':
-      handlers[renderFn ? 'onMousemove' : 'mousemove'] = mouseMoveHandler;
-      handlers[renderFn ? 'onMouseleave' : 'mouseleave'] = mouseLeaveHandler;
+      handlers.mousemove = mouseMoveHandler;
+      handlers.mouseleave = mouseLeaveHandler;
       break;
     case 'focus':
-      handlers[renderFn ? 'onFocusin' : 'focusin'] = focusInHandler;
-      handlers[renderFn ? 'onFocusout' : 'focusout'] = focusOutHandler;
+      handlers.focusin = focusInHandler;
+      handlers.focusout = focusOutHandler;
       break;
     case 'hover-focus':
-      handlers[renderFn ? 'onMousemove' : 'mousemove'] = mouseMoveHandler;
-      handlers[renderFn ? 'onMouseleave' : 'mouseleave'] = mouseLeaveHandler;
-      handlers[renderFn ? 'onFocusin' : 'focusin'] = focusInHandler;
-      handlers[renderFn ? 'onFocusout' : 'focusout'] = focusOutHandler;
+      handlers.mousemove = mouseMoveHandler;
+      handlers.mouseleave = mouseLeaveHandler;
+      handlers.focusin = focusInHandler;
+      handlers.focusout = focusOutHandler;
       break;
   }
   return handlers;
