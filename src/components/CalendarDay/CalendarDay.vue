@@ -11,7 +11,7 @@
       </div>
     </div>
     <!--Content-->
-    <slot
+    <CalendarSlot
       name="day-content"
       :day="day"
       :attributes="attributes"
@@ -27,7 +27,7 @@
       >
         {{ day.label }}
       </div>
-    </slot>
+    </CalendarSlot>
     <!--Dots-->
     <div v-if="hasDots" class="vc-day-layer vc-day-box-center-bottom">
       <div class="vc-dots">
@@ -55,6 +55,7 @@
 
 <script lang="ts">
 import { type PropType, defineComponent, computed } from 'vue';
+import CalendarSlot from '../CalendarSlot/CalendarSlot.vue';
 import { useCalendar } from '../../use/calendar';
 import type { CalendarDay } from '../../utils/page';
 import type { Attribute, PopoverConfig } from '../../utils/attribute';
@@ -64,15 +65,17 @@ import type { DateRangeCell } from '../../utils/date/range';
 
 export default defineComponent({
   directives: { popover: popoverDirective },
+  components: { CalendarSlot },
   props: {
     day: { type: Object as PropType<CalendarDay>, required: true },
   },
-  setup(props, { slots }) {
+  setup(props) {
     const {
       locale,
       theme,
       attributeContext,
       dayPopoverId,
+      slots,
       onDayClick,
       onDayMouseenter,
       onDayMouseleave,
