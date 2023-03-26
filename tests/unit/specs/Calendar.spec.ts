@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { h } from 'vue';
 import { VueWrapper, mount } from '@vue/test-utils';
 import Calendar from '@/components/Calendar/Calendar.vue';
 import { pad } from '@/utils/helpers';
@@ -132,6 +133,21 @@ describe('Calendar', () => {
         }
       });
     }
+  });
+
+  describe(':slots', () => {
+    it(':renders the day-content slot', async () => {
+      const wrapper = mount(Calendar, {
+        props: {
+          initialPage: { month: 1, year: 2000 },
+        },
+        slots: {
+          'day-content': ({ day }) =>
+            h('div', { class: `custom-day-${day.day}` }, day.day),
+        },
+      });
+      expect(wrapper.find('.id-2000-01-15 .custom-day-15').exists()).toBe(true);
+    });
   });
 
   describe(':methods', () => {
