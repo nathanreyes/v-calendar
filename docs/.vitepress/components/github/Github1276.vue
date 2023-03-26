@@ -1,17 +1,12 @@
 <template>
   <form action="POST">
     <VCalendar>
-      <template #header-prev-button="{ move }"
-        ><button
-          type="button"
-          class="hover:bg-gray-200 px-2 rounded"
-          @click="move"
+      <template #day-content="{ day }">
+        <div
+          class="w-full h-full flex justify-center items-center text-sm text-red-500"
         >
-          L
-        </button></template
-      >
-      <template #header-title="{ title }"
-        ><span>{{ title }}</span>
+          {{ day.day }}
+        </div>
       </template>
     </VCalendar>
   </form>
