@@ -68,8 +68,8 @@ export default defineComponent({
   },
   emits: emitsDef,
   props: propsDef,
-  setup(props, { emit }) {
-    return createCalendar(props, { emit });
+  setup(props, { emit, slots }) {
+    return createCalendar(props, { emit, slots });
   },
 });
 </script>
