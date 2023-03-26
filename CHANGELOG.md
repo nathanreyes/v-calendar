@@ -48,3 +48,11 @@
 ### Calendar
 
 * Add missing `type=button` attribute to navigation buttons
+
+## 3.0.2
+
+### Bug Fixes
+
+* Include `attributes` within day event objects
+* Fix date normalization bug when clearing input fields
+* Fix `day-content` slot
