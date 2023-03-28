@@ -4,39 +4,50 @@
     :class="{ 'is-lg': isLg, 'is-xl': isXl, 'is-2xl': is2xl }"
     :style="gridStyle"
   >
-    <slot name="header-left-button" :move="movePrev">
-      <button
-        v-if="show.prev"
-        :class="['vc-arrow vc-prev vc-focus', { 'vc-disabled': !canMovePrev }]"
-        role="button"
-        type="button"
-        @click="movePrev"
-        @keydown.space.enter="movePrev"
-      >
+    <button
+      v-if="show.prev"
+      type="button"
+      :class="[
+        'vc-arrow vc-prev vc-focus',
+        {
+          'vc-disabled': !canMovePrev,
+        },
+      ]"
+      @click="movePrev"
+      @keydown.space.enter="movePrev"
+    >
+      <CalendarSlot name="header-prev-button" :disabled="!canMovePrev">
         <BaseIcon name="ChevronLeft" size="24" />
-      </button>
-    </slot>
+      </CalendarSlot>
+    </button>
     <div v-if="show.title" class="vc-title" v-popover="navPopoverOptions">
-      <slot name="header-title">{{ page.title }}</slot>
+      <CalendarSlot name="header-title" :title="page.title">
+        <span>{{ page.title }}</span>
+      </CalendarSlot>
     </div>
-    <slot name="header-right-button" :move="moveNext">
-      <button
-        v-if="show.next"
-        :class="['vc-arrow vc-next vc-focus', { 'vc-disabled': !canMoveNext }]"
-        role="button"
-        type="button"
-        @click="moveNext"
-        @keydown.space.enter="moveNext"
-      >
+    <button
+      v-if="show.next"
+      type="button"
+      :class="[
+        'vc-arrow vc-next vc-focus',
+        {
+          'vc-disabled': !canMoveNext,
+        },
+      ]"
+      @click="moveNext"
+      @keydown.space.enter="moveNext"
+    >
+      <CalendarSlot name="header-next-button" :disabled="!canMoveNext">
         <BaseIcon name="ChevronRight" size="24" />
-      </button>
-    </slot>
+      </CalendarSlot>
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { PropType, computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
+import CalendarSlot from '../CalendarSlot/CalendarSlot.vue';
 import { useCalendar } from '../../use/calendar';
 import { popoverDirective as vPopover } from '../../utils/popovers';
 import { Page } from '../../utils/page';
@@ -59,6 +70,7 @@ const {
   canMoveNext,
   moveNext,
 } = useCalendar();
+
 const navPlacement = computed(() => {
   switch (props.page.titlePosition) {
     case 'left':
@@ -122,21 +134,11 @@ const gridStyle = computed(() => {
   display: grid;
   grid-gap: 4px;
   align-items: center;
-  padding: 10px 10px 0px 10px;
-  .vc-title {
-    grid-row: 1;
-    grid-column: title;
-    color: var(--vc-header-title-color);
-    font-weight: var(--vc-font-semibold);
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-    margin: 0 0.75rem;
-    line-height: 30px;
-    &:hover {
-      opacity: 0.75;
-    }
-  }
+  height: 30px;
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+
   &.is-lg {
     font-size: var(--vc-text-lg);
   }
@@ -145,6 +147,29 @@ const gridStyle = computed(() => {
   }
   &.is-2xl {
     font-size: var(--vc-text-2xl);
+  }
+
+  .vc-title,
+  .vc-prev,
+  .vc-next {
+    display: flex;
+    align-items: center;
+    grid-row: 1;
+    pointer-events: auto;
+  }
+
+  .vc-title {
+    grid-column: title;
+    color: var(--vc-header-title-color);
+    font-weight: var(--vc-font-semibold);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    margin: 0 8px;
+    line-height: 30px;
+    &:hover {
+      opacity: 0.75;
+    }
   }
   .vc-prev {
     grid-column: prev;

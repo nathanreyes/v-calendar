@@ -89,12 +89,12 @@ export default defineComponent({
 
 .vc-pane-header-wrapper {
   position: absolute;
+  top: 0;
   width: 100%;
   pointer-events: none;
 }
 
 .vc-arrow {
-  grid-row: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -108,7 +108,8 @@ export default defineComponent({
   border-color: transparent;
   width: 28px;
   height: 30px;
-  z-index: 1;
+  margin: 0;
+  padding: 0;
   &:hover {
     background: var(--vc-header-arrow-hover-bg);
   }
