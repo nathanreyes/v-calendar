@@ -19,10 +19,6 @@
       outline: none;
     }
   }
-  & button,
-  & [role='button'] {
-    cursor: pointer;
-  }
   /* Hides double border within popovers */
   & .vc-container {
     border: none;
