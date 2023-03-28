@@ -54,6 +54,15 @@ title: 'API'
 | **update:view** | "daily" \| "weekly" \| "monthly" |
 | **update:pages** | [Page](#page)[] |
 
+## Slots
+
+| Name | Props |
+| --- | --- |
+| **header-title** | title: string |
+| **header-prev-button** | move: () => Promise\<boolean\>, disabled: boolean |
+| **header-next-button** | move: () => Promise\<boolean\>, disabled: boolean |
+| **day-content** | day: [CalendarDay](#calendarday), attributes: Attribute[], locale: Locale |
+
 ## Methods
 
 | Name | Type |

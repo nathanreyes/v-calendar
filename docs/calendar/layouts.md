@@ -16,6 +16,30 @@ To expand the component to the full width of its container, set the `expanded` p
 <VCalendar expanded />
 ```
 
+## Title Positioning
+
+To make the title header left or right aligned, use the `title-position` prop.
+
+### Left Aligned
+
+<Example centered>
+  <VCalendar title-position="left" />
+</Example>
+
+```html
+<VCalendar title-position="left" />
+```
+
+### Right Aligned
+
+<Example centered>
+  <VCalendar title-position="right" />
+</Example>
+
+```html
+<VCalendar title-position="right" />
+```
+
 ## Weekly View
 
 Set the `view` prop to display the calendar in 'weekly' view.
@@ -94,30 +118,6 @@ Since ISO weeks start on Monday, it makes sense to also set Monday as the first 
 
 For the ISO week date standard (ISO-8601), weeks start on Monday and end on Sunday. If the `firstDayOfWeek` setting is different (U.S. default), this could result in 2 weeks displaying the same week number for certain months.
 </BaseAlert>
-
-## Title Positioning
-
-To make the title header left or right aligned, use the `title-position` prop.
-
-### Left Aligned
-
-<Example centered>
-  <VCalendar title-position="left" />
-</Example>
-
-```html
-<VCalendar title-position="left" />
-```
-
-### Right Aligned
-
-<Example centered>
-  <VCalendar title-position="right" />
-</Example>
-
-```html
-<VCalendar title-position="right" />
-```
 
 ## Trim Weeks
 
