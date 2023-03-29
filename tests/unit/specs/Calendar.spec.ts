@@ -188,6 +188,32 @@ describe('Calendar', () => {
         wrapper.find('.vc-header .custom-header-next-button').exists(),
       ).toBe(true);
     });
+    it(':renders the nav-prev-button slot', async () => {
+      const wrapper = mount(Calendar, {
+        slots: {
+          'nav-prev-button': () =>
+            h('span', { class: `custom-nav-prev-button` }, 'P'),
+        },
+      });
+      const titleButton = wrapper.find('.vc-title');
+      await titleButton.trigger('click');
+      expect(
+        wrapper.find('.vc-nav-header .custom-nav-prev-button').exists(),
+      ).toBe(true);
+    });
+    it(':renders the nav-next-button slot', async () => {
+      const wrapper = mount(Calendar, {
+        slots: {
+          'nav-next-button': () =>
+            h('span', { class: `custom-nav-next-button` }, 'P'),
+        },
+      });
+      const titleButton = wrapper.find('.vc-title');
+      await titleButton.trigger('click');
+      expect(
+        wrapper.find('.vc-nav-header .custom-nav-next-button').exists(),
+      ).toBe(true);
+    });
   });
 
   describe(':methods', () => {
