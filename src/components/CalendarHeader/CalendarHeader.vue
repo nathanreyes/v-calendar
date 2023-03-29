@@ -7,12 +7,8 @@
     <button
       v-if="show.prev"
       type="button"
-      :class="[
-        'vc-arrow vc-prev vc-focus',
-        {
-          'vc-disabled': !canMovePrev,
-        },
-      ]"
+      class="vc-arrow vc-prev vc-focus"
+      :disabled="!canMovePrev"
       @click="movePrev"
       @keydown.space.enter="movePrev"
     >
@@ -20,20 +16,21 @@
         <BaseIcon name="ChevronLeft" size="24" />
       </CalendarSlot>
     </button>
-    <div v-if="show.title" class="vc-title" v-popover="navPopoverOptions">
+    <button
+      v-if="show.title"
+      type="button"
+      class="vc-title"
+      v-popover="navPopoverOptions"
+    >
       <CalendarSlot name="header-title" :title="page.title">
         <span>{{ page.title }}</span>
       </CalendarSlot>
-    </div>
+    </button>
     <button
       v-if="show.next"
       type="button"
-      :class="[
-        'vc-arrow vc-next vc-focus',
-        {
-          'vc-disabled': !canMoveNext,
-        },
-      ]"
+      class="vc-arrow vc-next vc-focus"
+      :disabled="!canMoveNext"
       @click="moveNext"
       @keydown.space.enter="moveNext"
     >
@@ -155,22 +152,44 @@ const gridStyle = computed(() => {
     display: flex;
     align-items: center;
     grid-row: 1;
+    border: 0;
+    border-radius: var(--vc-rounded);
     pointer-events: auto;
+    user-select: none;
+    cursor: pointer;
   }
 
   .vc-title {
     grid-column: title;
     color: var(--vc-header-title-color);
     font-weight: var(--vc-font-semibold);
-    cursor: pointer;
-    user-select: none;
     white-space: nowrap;
+    padding: 0 4px;
     margin: 0 8px;
     line-height: 30px;
     &:hover {
       opacity: 0.75;
     }
   }
+
+  .vc-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--vc-header-arrow-color);
+    width: 28px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    &:hover {
+      background: var(--vc-header-arrow-hover-bg);
+    }
+    &:disabled {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+  }
+
   .vc-prev {
     grid-column: prev;
   }

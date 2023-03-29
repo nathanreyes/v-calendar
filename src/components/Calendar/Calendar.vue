@@ -94,31 +94,6 @@ export default defineComponent({
   pointer-events: none;
 }
 
-.vc-arrow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  pointer-events: auto;
-  color: var(--vc-header-arrow-color);
-  border-width: 1px;
-  border-style: solid;
-  border-radius: var(--vc-rounded);
-  border-color: transparent;
-  width: 28px;
-  height: 30px;
-  margin: 0;
-  padding: 0;
-  &:hover {
-    background: var(--vc-header-arrow-hover-bg);
-  }
-  &.vc-disabled {
-    opacity: 0.25;
-    pointer-events: none;
-  }
-}
-
 .vc-day-popover-container {
   font-size: var(--vc-text-xs);
   font-weight: var(--vc-font-medium);
