@@ -57,7 +57,7 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
       if (navContainer.value == null) return;
       // Set focus on the first enabled nav item
       const focusableEl = navContainer.value.querySelector(
-        '.vc-nav-item:not(.vc-disabled)',
+        '.vc-nav-item:not(:disabled)',
       ) as HTMLElement;
       if (focusableEl) {
         focusableEl.focus();
@@ -119,23 +119,6 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
         click: () => monthClick(month, year),
       };
     });
-  }
-
-  function getItemClasses({
-    isActive,
-    isCurrent,
-    isDisabled,
-  }: MonthItem | YearItem) {
-    const classes = ['vc-nav-item vc-focus'];
-    if (isActive) {
-      classes.push('is-active');
-    } else if (isCurrent) {
-      classes.push('is-current');
-    }
-    if (isDisabled) {
-      classes.push('vc-disabled');
-    }
-    return classes;
   }
 
   function getYearGroupIndex(year: number) {
@@ -257,7 +240,6 @@ export function createCalendarNav(props: CalendarNavProps, { emit }: any) {
     activeItems,
     prevItemsEnabled,
     nextItemsEnabled,
-    getItemClasses,
     toggleMode,
     movePrev,
     moveNext,
