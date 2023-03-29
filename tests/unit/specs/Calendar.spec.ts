@@ -19,8 +19,8 @@ describe('Calendar', () => {
     const expectDisabledArrows = (arrows: string[], wrapper: VueWrapper) => {
       ['prev', 'next'].forEach(dir => {
         const disabledClass = arrows.includes(dir)
-          ? '.vc-disabled'
-          : ':not(.vc-disabled)';
+          ? ':disabled'
+          : ':not(:disabled)';
         const arrowSelector = `.vc-arrow.vc-${dir}${disabledClass}`;
         expect(wrapper.find(arrowSelector).exists()).toBe(true);
       });
@@ -50,8 +50,8 @@ describe('Calendar', () => {
     ) => {
       ['left', 'right'].forEach(dir => {
         const disabledClass = directions.includes(dir)
-          ? '.vc-disabled'
-          : ':not(.vc-disabled)';
+          ? ':disabled'
+          : ':not(:disabled)';
         const arrowSelector = `.vc-nav-arrow.is-${dir}${disabledClass}`;
         expect(wrapper.find(arrowSelector).exists()).toBe(true);
       });
@@ -64,8 +64,8 @@ describe('Calendar', () => {
     ) => {
       for (let i = 1; i <= 12; i++) {
         const disabledClass = months.includes(i)
-          ? '.vc-disabled'
-          : ':not(.vc-disabled)';
+          ? ':disabled'
+          : ':not(:disabled)';
         const itemSelector = `.vc-nav-item${disabledClass}[data-id="${year}.${pad(
           i,
           2,
@@ -77,8 +77,8 @@ describe('Calendar', () => {
     const expectDisabledNavYears = (years: number[], wrapper: VueWrapper) => {
       for (let i = 2016; i <= 2027; i++) {
         const disabledClass = years.includes(i)
-          ? '.vc-disabled'
-          : ':not(.vc-disabled)';
+          ? ':disabled'
+          : ':not(:disabled)';
         const itemSelector = `.vc-nav-item${disabledClass}[data-id="${i}"]`;
         expect(wrapper.find(itemSelector).exists()).toBe(true);
       }
