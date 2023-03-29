@@ -164,8 +164,8 @@ const gridStyle = computed(() => {
     color: var(--vc-header-title-color);
     font-weight: var(--vc-font-semibold);
     white-space: nowrap;
-    padding: 0 4px;
-    margin: 0 8px;
+    padding: 0 8px;
+    margin: 0;
     line-height: 30px;
     &:hover {
       opacity: 0.75;
