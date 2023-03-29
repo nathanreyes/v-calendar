@@ -23,8 +23,6 @@
       <button
         type="button"
         class="vc-nav-title vc-focus"
-        :style="{ whiteSpace: 'nowrap' }"
-        tabindex="0"
         @click="toggleMode"
         @keydown="e => onSpaceOrEnter(e, toggleMode)"
       >
@@ -106,6 +104,7 @@ const {
   user-select: none;
   border: 0;
   border-radius: var(--vc-rounded);
+  white-space: nowrap;
   &:hover {
     background-color: var(--vc-nav-hover-bg);
   }
