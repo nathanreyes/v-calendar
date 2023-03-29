@@ -56,7 +56,9 @@
         :data-id="item.id"
         :aria-label="item.ariaLabel"
         class="vc-nav-item vc-focus"
-        :class="{ 'is-active': item.isActive, 'is-current': item.isCurrent }"
+        :class="[
+          item.isActive ? 'is-active' : item.isCurrent ? 'is-current' : '',
+        ]"
         :disabled="item.isDisabled"
         @click="item.click"
         @keydown="e => onSpaceOrEnter(e, item.click)"
