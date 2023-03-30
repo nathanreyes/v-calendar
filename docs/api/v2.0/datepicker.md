@@ -16,7 +16,7 @@ sidebarDepth: 2
 
 **Description:** Selection mode: `"date"`, `"dateTime"`, `"time"`
 
-**Default:** `"single"`
+**Default:** `"date"`
 
 ### `value`
 
