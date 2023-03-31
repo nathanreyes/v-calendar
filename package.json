@@ -41,7 +41,8 @@
   },
   "scripts": {
     "build": "tsx build/build.ts",
-    "build:all": "yarn build && cd docs && yarn build",
+    "build:docs": "cd docs && yarn build",
+    "build:all": "yarn build && yarn build:docs",
     "test": "vitest",
     "lint": "eslint . --ext .js,.vue"
   },
