@@ -194,23 +194,24 @@ const positionOptions = ref([{ value: 1 }, { value: 2 }]);
 const transitioning = ref(false);
 
 function onMove(arg) {
+  if (calendar.value == null) return;
   if (typeof arg === 'number') {
     calendar.value.moveBy(arg, {
-      transition: this.transition,
-      position: this.position,
+      transition: transition.value,
+      position: position.value,
     });
   } else {
     calendar.value.move(arg, {
-      transition: this.transition,
-      position: this.position,
+      transition: transition.value,
+      position: position.value,
     });
   }
 }
 
 function onMoveFocus(arg) {
   calendar.value.focusDate(arg, {
-    transition: this.transition,
-    position: this.position,
+    transition: transition.value,
+    position: position.value,
   });
 }
 </script>
