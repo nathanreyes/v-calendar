@@ -56,3 +56,13 @@
 * Include `attributes` within day event objects
 * Fix date normalization bug when clearing input fields
 * Fix `day-content` slot
+
+## 3.0.3
+
+## Bug Fixes
+
+* Fix `header-title`, `header-prev-button`, `header-next-button`, `nav-prev-button` and `nav-next-button` slots
+
+## Improvements
+
+* Improve header elements/styling
