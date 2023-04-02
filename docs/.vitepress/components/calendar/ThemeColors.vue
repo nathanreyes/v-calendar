@@ -1,18 +1,8 @@
 <template>
   <div class="space-y-2">
-    <div class="flex justify-center space-x-1">
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
       <button
-        v-for="color in colors_1"
-        :key="color.value"
-        :class="colorClass(color)"
-        @click="selectedColor = color"
-      >
-        {{ color.label }}
-      </button>
-    </div>
-    <div class="flex justify-center space-x-1">
-      <button
-        v-for="color in colors_2"
+        v-for="color in colors"
         :key="color.value"
         :class="colorClass(color)"
         @click="selectedColor = color"
@@ -129,8 +119,6 @@ const colors = ref([
   },
 ]);
 const selectedColor = ref(colors.value.find(c => c.value === 'blue'));
-const colors_1 = colors.value.slice(0, 5);
-const colors_2 = colors.value.slice(5, 10);
 const isDark = ref(props.showDarkMode ? false : undefined);
 
 const attrs = ref([

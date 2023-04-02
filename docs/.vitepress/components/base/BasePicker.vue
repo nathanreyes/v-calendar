@@ -1,6 +1,6 @@
 <template>
   <BaseField>
-    <div class="flex items-center space-x-3">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3">
       <div
         class="flex space-x-2 hover:cursor-pointer text-sm font-medium hover:text-gray-500"
         v-for="option in opts"
@@ -14,7 +14,7 @@
           class="hover:cursor-pointer"
           @click.stop
         />
-        <label :for="option.id" class="hover:cursor-pointer">
+        <label :for="option.id" class="hover:cursor-pointer whitespace-nowrap">
           {{ option.label }}
         </label>
       </div>

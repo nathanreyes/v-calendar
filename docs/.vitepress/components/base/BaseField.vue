@@ -1,5 +1,7 @@
 <template>
-  <div class="flex items-center space-x-2 text-sm font-semibold">
+  <div
+    class="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-x-2 sm:space-y-0 text-sm font-semibold"
+  >
     <span
       class="flex-shrink-0 text-gray-500 dark:text-gray-400 tracking-wide"
       >{{ label }}</span

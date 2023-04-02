@@ -10,14 +10,14 @@ Version 3 brings a host of feature improvements and bug fixes, including [weekly
 
 If upgrading from version 2.0, be sure to view the [upgrade guide](/getting-started/upgrade-guide) for breaking changes.
 
-<div class="flex space-x-4 not-prose">
+<div class="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 not-prose">
   <BaseButton url="/getting-started/installation">
     <span>Get Started</span>
-    <IconArrowRight class="w-4 h-4 text-accent-500 dark:text-gray-200" />
+    <IconArrowRight class="w-4 h-4 text-accent-200" />
   </BaseButton>
   <BaseButton url="https://v2.vcalendar.io" light>
     View 2.0 Documentation
-    <IconArrowRight class="w-4 h-4 text-accent-600" />
+    <IconArrowRight class="w-4 h-4 text-accent-400" />
   </BaseButton>
 </div>
 

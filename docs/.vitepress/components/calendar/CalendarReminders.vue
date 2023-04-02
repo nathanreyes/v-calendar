@@ -10,7 +10,7 @@
     borderless
     expanded
   />
-  <div v-if="calendar" class="py-4 px-6 w-full h-[18rem]">
+  <div v-if="calendar" class="py-4 px-6 w-full h-[18rem] overflow-y-auto">
     <div class="py-4 flex justify-between items-center">
       <h2 class="font-semibold text-lg">Reminders</h2>
       <IconBell class="text-gray-400 dark:text-gray-500" />
@@ -38,8 +38,11 @@
                   {{ day.locale.formatDate(cell.startDate, 'WWWW, H:mm a') }}
                 </p>
               </div>
-              <BaseSwitch v-model="cell.data.customData.notify" />
             </div>
+            <BaseSwitch
+              v-model="cell.data.customData.notify"
+              class="self-start mt-1"
+            />
           </div>
         </li>
       </ul>

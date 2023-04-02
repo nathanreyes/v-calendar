@@ -14,7 +14,9 @@
       <template v-else>
         <BaseField v-if="value == null" label="Date Value"> null </BaseField>
         <template v-else>
-          <div class="flex space-x-4">
+          <div
+            class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0"
+          >
             <BaseField label="Start:"
               >{{ dateRaw(value.start) }}
               <span v-if="dateType(value.start)"
