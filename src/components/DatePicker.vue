@@ -433,13 +433,12 @@ export default {
       this.$emit('daykeydown', day);
     },
     handleDayClick(day) {
-      const { keepVisibleOnInput, visibility } = this.popover_;
+      const { autoHide, visibility } = this.popover_;
       const opts = {
         patch: PATCH.DATE,
         adjustTime: true,
         formatInput: true,
-        hidePopover:
-          this.isDate && !keepVisibleOnInput && visibility !== 'visible',
+        hidePopover: typeof autoHide === 'boolean' ? autoHide : true,
       };
       if (this.isRange) {
         if (!this.isDragging) {
