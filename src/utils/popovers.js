@@ -46,7 +46,7 @@ export function getPopoverTriggerEvents(opts) {
   const hover = visibility === 'hover';
   const hoverFocus = visibility === 'hover-focus';
   const focus = visibility === 'focus';
-  opts.autoHide = opts.autoHide ?? !click;
+  opts.autoHide = typeof opts.autoHide === 'boolean' ? opts.autoHide : !click;
   let hovered = false;
   let focused = false;
   return {
