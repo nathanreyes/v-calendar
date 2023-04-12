@@ -439,7 +439,7 @@ export default {
         adjustTime: true,
         formatInput: true,
         hidePopover:
-          this.isDate && !keepVisibleOnInput && visibility !== 'visible',
+          (this.isDate || this.isDateTime) && !keepVisibleOnInput && visibility !== 'visible',
       };
       if (this.isRange) {
         if (!this.isDragging) {
