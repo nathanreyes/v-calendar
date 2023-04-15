@@ -12,7 +12,7 @@
 
 <script setup>
 import Popover from '../Popover/Popover.vue';
-import CalendarNav from '../CalendarNav/CalendarNav.vue';
+import CalendarNav from './CalendarNav.vue';
 import { useCalendar } from '../../use/calendar';
 
 const { navPopoverId, color, displayMode, navPopoverRef, move } = useCalendar();

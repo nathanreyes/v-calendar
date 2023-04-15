@@ -207,8 +207,8 @@ export default {
 
 <script setup lang="ts">
 import { useSlots, computed } from 'vue';
-import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
-import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
+import CalendarNavPopover from '../Calendar/CalendarNavPopover.vue';
+import CalendarHeader from '../Calendar/CalendarHeader.vue';
 import CalendarViewSelect from '../CalendarViewSelect/CalendarViewSelect.vue';
 import CalendarGridWeek from './CalendarGridWeek.vue';
 import CalendarDayCell from './CalendarDayCell.vue';

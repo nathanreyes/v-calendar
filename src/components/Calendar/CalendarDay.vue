@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import { type PropType, defineComponent, computed } from 'vue';
-import CalendarSlot from '../CalendarSlot/CalendarSlot.vue';
+import CalendarSlot from './CalendarSlot.vue';
 import { useCalendar } from '../../use/calendar';
 import type { CalendarDay } from '../../utils/page';
 import type { Attribute, PopoverConfig } from '../../utils/attribute';

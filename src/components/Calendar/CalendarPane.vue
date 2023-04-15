@@ -53,8 +53,8 @@
 
 <script lang="ts">
 import type { PropType } from 'vue';
-import CalendarDay from '../CalendarDay/CalendarDay.vue';
-import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
+import CalendarDay from './CalendarDay.vue';
+import CalendarHeader from './CalendarHeader.vue';
 import { useCalendar } from '../../use/calendar';
 import type { Page } from '../../utils/page';
 

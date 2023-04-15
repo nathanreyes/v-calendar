@@ -69,7 +69,7 @@
 
 <script setup lang="ts">
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
-import CalendarSlot from '../CalendarSlot/CalendarSlot.vue';
+import CalendarSlot from './CalendarSlot.vue';
 import { createCalendarNav } from '../../use/calendarNav';
 import { onSpaceOrEnter } from '../../utils/helpers';
 import { propsDef, emitsDef } from '../../use/calendarNav';

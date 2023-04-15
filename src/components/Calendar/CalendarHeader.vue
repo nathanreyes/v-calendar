@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { PropType, computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
-import CalendarSlot from '../CalendarSlot/CalendarSlot.vue';
+import CalendarSlot from './CalendarSlot.vue';
 import { useCalendar } from '../../use/calendar';
 import { popoverDirective as vPopover } from '../../utils/popovers';
 import { Page } from '../../utils/page';
