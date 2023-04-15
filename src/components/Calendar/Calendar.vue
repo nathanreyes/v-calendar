@@ -34,8 +34,8 @@
             gridTemplateColumns: `repeat(${columns}, 1fr)`,
           }"
         >
-          <!--Calendar Panes-->
-          <CalendarPane v-for="page in pages" :key="page.id" :page="page" />
+          <!--Calendar pages-->
+          <CalendarPage v-for="page in pages" :key="page.id" :page="page" />
         </div>
       </Transition>
       <slot name="footer" />
@@ -53,7 +53,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import CalendarHeader from './CalendarHeader.vue';
-import CalendarPane from './CalendarPane.vue';
+import CalendarPage from './CalendarPage.vue';
 import CalendarNavPopover from './CalendarNavPopover.vue';
 import CalendarDayPopover from './CalendarDayPopover.vue';
 import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
@@ -62,7 +62,7 @@ export default defineComponent({
   name: 'Calendar',
   components: {
     CalendarHeader,
-    CalendarPane,
+    CalendarPage,
     CalendarNavPopover,
     CalendarDayPopover,
   },
