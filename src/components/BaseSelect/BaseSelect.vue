@@ -52,7 +52,7 @@ defineEmits(['update:modelValue']);
     color: var(--vc-select-color);
     display: block;
     appearance: none;
-    background-color: transparent;
+    background-color: var(--vc-select-bg);
     font-size: var(--vc-text-base);
     font-weight: var(--vc-font-medium);
     border-radius: var(--vc-rounded);
