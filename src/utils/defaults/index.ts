@@ -1,8 +1,8 @@
 import { App, reactive, computed } from 'vue';
-import { defaultsDeep, mapValues, get, has } from '../_';
+import type { DarkModeConfig } from 'vue-screen-utils';
+import { defaultsDeep, mapValues, get, has } from '../helpers';
 import touch from './touch.json';
 import masks from './masks.json';
-import screens from './screens.json';
 import locales from './locales';
 
 declare const window: any;
@@ -10,7 +10,6 @@ declare const window: any;
 interface DatePickerPopoverDefaults {
   visibility?: string;
   placement?: string;
-  keepVisibleOnInput?: boolean;
   isInteractive?: boolean;
 }
 
@@ -23,19 +22,18 @@ interface DatePickerDefaults {
 export interface Defaults {
   componentPrefix?: string;
   color?: string;
-  isDark?: boolean;
+  isDark?: DarkModeConfig;
   navVisibility?: string;
   titlePosition?: string;
   transition?: string;
   touch?: object;
   masks?: object;
-  screens?: object;
   locales?: any;
   datePicker?: DatePickerDefaults;
 }
 
 const defaultConfig: Defaults = {
-  componentPrefix: 'v',
+  componentPrefix: 'V',
   color: 'blue',
   isDark: false,
   navVisibility: 'click',
@@ -43,7 +41,6 @@ const defaultConfig: Defaults = {
   transition: 'slide-h',
   touch,
   masks,
-  screens,
   locales,
   datePicker: {
     updateOnInput: true,
@@ -51,7 +48,6 @@ const defaultConfig: Defaults = {
     popover: {
       visibility: 'hover-focus',
       placement: 'bottom-start',
-      keepVisibleOnInput: false,
       isInteractive: true,
     },
   },
@@ -59,14 +55,14 @@ const defaultConfig: Defaults = {
 
 const state = reactive(defaultConfig);
 
-const computedLocales = computed(() => {
-  return mapValues(state.locales, (v: any) => {
-    v.masks = defaultsDeep(v.masks, state.masks);
-    return v;
+const defaultLocales = computed(() => {
+  return mapValues(state.locales, (l: any) => {
+    l.masks = defaultsDeep(l.masks, state.masks);
+    return l;
   });
 });
 
-export { computedLocales as locales };
+export { defaultLocales };
 
 export const getDefault = (path: string) => {
   if (window && has(window.__vcalendar__, path)) {

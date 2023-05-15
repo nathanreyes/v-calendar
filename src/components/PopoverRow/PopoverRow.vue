@@ -3,10 +3,10 @@
   <div class="vc-day-popover-row">
     <!-- Indicator -->
     <div v-if="indicator" class="vc-day-popover-row-indicator">
-      <span :style="indicator.style" :class="indicator.class" />
+      <span :class="indicator.class" />
     </div>
     <!-- Content -->
-    <div class="vc-day-popover-row-content">
+    <div class="vc-day-popover-row-label">
       <slot>{{
         attribute.popover ? attribute.popover.label : 'No content provided'
       }}</slot>
@@ -14,63 +14,89 @@
   </div>
 </template>
 
-<script>
-import { childMixin } from '../../utils/mixins';
+<script lang="ts">
+import { PropType, defineComponent, computed } from 'vue';
+import { Attribute } from '../../utils/attribute';
 
-export default {
+export default defineComponent({
   name: 'PopoverRow',
   compatConfig: { MODE: 3 },
-  mixins: [childMixin],
   props: {
-    attribute: Object,
+    attribute: { type: Object as PropType<Attribute>, required: true },
   },
-  computed: {
-    indicator() {
-      const { highlight, dot, bar, popover } = this.attribute;
+  setup(props) {
+    const indicator = computed(() => {
+      const { content, highlight, dot, bar, popover } = props.attribute;
       if (popover && popover.hideIndicator) return null;
-      if (highlight) {
-        const { color, isDark } = highlight.start;
+      if (content) {
         return {
-          style: {
-            ...this.theme.bgAccentHigh({
-              color,
-              isDark: !isDark,
-            }),
-            width: '10px',
-            height: '5px',
-            borderRadius: '3px',
-          },
+          class: `vc-bar vc-day-popover-row-bar vc-attr vc-${content.base.color}`,
+        };
+      }
+      if (highlight) {
+        return {
+          class: `vc-highlight-bg-solid vc-day-popover-row-highlight vc-attr vc-${highlight.base.color}`,
         };
       }
       if (dot) {
-        const { color, isDark } = dot.start;
         return {
-          style: {
-            ...this.theme.bgAccentHigh({
-              color,
-              isDark: !isDark,
-            }),
-            width: '5px',
-            height: '5px',
-            borderRadius: '50%',
-          },
+          class: `vc-dot vc-attr vc-${dot.base.color}`,
         };
       }
       if (bar) {
-        const { color, isDark } = bar.start;
         return {
-          style: {
-            ...this.theme.bgAccentHigh({
-              color,
-              isDark: !isDark,
-            }),
-            width: '10px',
-            height: '3px',
-          },
+          class: `vc-bar vc-day-popover-row-bar vc-attr vc-${bar.base.color}`,
         };
       }
       return null;
-    },
+    });
+    return {
+      indicator,
+    };
   },
-};
+});
 </script>
+
+<style lang="css">
+.vc-day-popover-row {
+  display: flex;
+  align-items: center;
+  transition: var(--vc-day-content-transition);
+}
+
+.vc-day-popover-row-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 0;
+  width: 15px;
+  & span {
+    transition: var(--vc-day-content-transition);
+  }
+}
+
+.vc-day-popover-row-label {
+  display: flex;
+  align-items: center;
+  flex-wrap: none;
+  flex-grow: 1;
+  width: max-content;
+  margin-left: 4px;
+  margin-right: 4px;
+  font-size: var(--vc-text-xs);
+  line-height: var(--vc-leading-normal);
+}
+
+.vc-day-popover-row-highlight {
+  width: 8px;
+  height: 5px;
+  border-radius: 3px;
+}
+
+.vc-day-popover-row-dot {
+}
+.vc-day-popover-row-bar {
+  width: 10px;
+  height: 3px;
+}
+</style>

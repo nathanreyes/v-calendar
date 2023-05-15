@@ -1,13 +1,16 @@
 {
   "name": "v-calendar",
+  "type": "module",
   "version": "3.0.0-alpha.9",
-  "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
+  "description": "A calendar and date picker plugin for Vue.js.",
   "author": "Nathan Reyes <nathanreyes@me.com>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nathanreyes/v-calendar"
-  },
+  "repository": "https://github.com/nathanreyes/v-calendar",
   "homepage": "https://vcalendar.io",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "unpkg": "dist/iife/index.js",
+  "types": "dist/types/src/index.d.ts",
   "keywords": [
     "vue",
     "vue3",
@@ -22,51 +25,50 @@
   "files": [
     "src",
     "dist",
-    "types/*.d.ts"
+    "package.json",
+    "README.md"
   ],
-  "main": "dist/v-calendar.umd.js",
-  "module": "dist/v-calendar.es.js",
   "exports": {
     ".": {
-      "import": "./dist/v-calendar.es.js",
-      "require": "./dist/v-calendar.umd.js"
+      "import": {
+        "node": "./dist/mjs/index.mjs",
+        "default": "./dist/es/index.js"
+      },
+      "require": "./dist/cjs/index.js"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./dist/*": "./dist/*"
   },
-  "unpkg": "dist/vcalendar.min.js",
-  "types": "types/index.d.ts",
   "scripts": {
-    "build": "vite build",
-    "analyze": "vite build --config analyze.config.ts",
-    "test": "yarn jest",
+    "build": "tsx build/build.ts",
+    "test": "vitest",
     "lint": "eslint . --ext .js,.vue"
   },
   "dependencies": {
-    "@popperjs/core": "2.4.0",
+    "@popperjs/core": "2.9.0",
     "@types/lodash": "^4.14.165",
+    "@types/resize-observer-browser": "^0.1.7",
     "date-fns": "^2.16.1",
     "date-fns-tz": "^1.0.12",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "vue-screen-utils": "^1.0.0-beta.9"
   },
   "peerDependencies": {
-    "vue": "^3.1.0"
+    "vue": "^3.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.0",
-    "@typescript-eslint/eslint-plugin": "2.33.0",
-    "@typescript-eslint/parser": "2.33.0",
-    "@vitejs/plugin-vue": "^1.2.5",
-    "@vue/compiler-sfc": "3.1.5",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/compiler-sfc": "^3.2.0",
     "@vue/eslint-config-prettier": "6.0.0",
-    "@vue/eslint-config-typescript": "5.0.2",
-    "@vue/test-utils": "^2.0.0-rc.18",
+    "@vue/eslint-config-typescript": "^11.0.0",
+    "@vue/test-utils": "^2.2.7",
     "autoprefixer": "^9.7.8",
-    "babel-jest": "^27.4.6",
-    "eslint": "^7.31.0",
+    "eslint": "^8.17.0",
     "eslint-plugin-prettier": "3.1.3",
-    "eslint-plugin-vue": "^7.14.0",
-    "husky": "^4.3.0",
-    "jest": "^27.4.7",
+    "eslint-plugin-vue": "^9.1.1",
+    "jsdom": "^20.0.3",
     "lint-staged": "^10.4.2",
     "postcss": "^8.0.0",
     "postcss-import": "^14.0.2",
@@ -76,17 +78,15 @@
     "postcss-url": "^8.0.0",
     "prettier": "^2.5.1",
     "regenerator-runtime": "^0.13.9",
-    "rimraf": "^3.0.2",
+    "resize-observer-polyfill": "^1.5.1",
     "rollup-plugin-visualizer": "^5.5.4",
-    "ts-jest": "^27.1.3",
-    "typescript": "3.9.3",
-    "vite": "^2.4.3",
-    "vue": "^3.1.0",
-    "vue3-jest": "^27.0.0-alpha.1"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "terser": "^5.16.1",
+    "tslib": "^2.4.0",
+    "tsx": "^3.12.2",
+    "typescript": "^4.8.4",
+    "vite": "^4.0.4",
+    "vitest": "^0.26.3",
+    "vue": "^3.2.0",
+    "vue-tsc": "^1.0.24"
+  }
 }

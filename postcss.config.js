@@ -1,5 +1,5 @@
-const path = require('path');
-module.exports = {
+import path from 'path';
+export default {
   plugins: {
     'postcss-import': {
       resolve(id, basedir) {

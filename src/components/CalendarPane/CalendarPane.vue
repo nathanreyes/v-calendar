@@ -1,203 +1,144 @@
-<script>
-import { h } from 'vue';
+<template>
+  <div
+    :class="[
+      'vc-pane',
+      `row-${page.row}`,
+      `row-from-end-${page.rowFromEnd}`,
+      `column-${page.column}`,
+      `column-from-end-${page.columnFromEnd}`,
+    ]"
+    ref="pane"
+  >
+    <CalendarHeader :page="page" is-lg hide-arrows />
+    <div
+      class="vc-weeks"
+      :class="{
+        [`vc-show-weeknumbers-${page.weeknumberPosition}`]:
+          page.weeknumberPosition,
+      }"
+    >
+      <div class="vc-weekdays">
+        <!--Weekday labels-->
+        <div v-for="(wl, i) in page.weekdayLabels" :key="i" class="vc-weekday">
+          {{ wl }}
+        </div>
+      </div>
+      <!--Weeks-->
+      <div
+        v-for="week in page.viewWeeks"
+        :key="`weeknumber-${week.weeknumber}`"
+        class="vc-week"
+      >
+        <!--Weeknumber-->
+        <div
+          v-if="page.weeknumberPosition"
+          :class="['vc-weeknumber', `is-${page.weeknumberPosition}`]"
+        >
+          <span
+            :class="['vc-weeknumber-content']"
+            @click="onWeeknumberClick(week, $event)"
+            >{{ week.weeknumberDisplay }}</span
+          >
+        </div>
+        <!--Week days-->
+        <CalendarDay v-for="day in week.days" :key="day.id" :day="day" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { PropType } from 'vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
-import { childMixin, slotMixin } from '../../utils/mixins';
-import { getPopoverTriggerEvents } from '../../utils/popovers';
-import { getDefault } from '../../utils/defaults';
-import { isBoolean } from '../../utils/_';
+import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
+import { useCalendar } from '../../use/calendar';
+import { Page } from '../../utils/page';
 
 export default {
   name: 'CalendarPane',
   compatConfig: { MODE: 3 },
-  emits: ['update:page', 'weeknumberclick'],
-  mixins: [childMixin, slotMixin],
   inheritAttrs: false,
-  render() {
-    // Header
-    const header =
-      this.safeSlot('header', this.page) ||
-      // Default header
-      h('div', { class: `vc-header align-${this.titlePosition}` }, [
-        // Header title
-        h(
-          'div',
-          {
-            class: 'vc-title',
-            ...this.navPopoverEvents,
-          },
-          [this.safeSlot('header-title', this.page, this.page.title)],
-        ),
-      ]);
-
-    // Weekday cells
-    const weekdayCells = this.weekdayLabels.map((wl, i) =>
-      h(
-        'div',
-        {
-          key: i + 1,
-          class: 'vc-weekday',
-        },
-        [wl],
-      ),
-    );
-
-    const showWeeknumbersLeft = this.showWeeknumbers_.startsWith('left');
-    const showWeeknumbersRight = this.showWeeknumbers_.startsWith('right');
-    if (showWeeknumbersLeft) {
-      weekdayCells.unshift(
-        h('div', {
-          class: 'vc-weekday',
-        }),
-      );
-    } else if (showWeeknumbersRight) {
-      weekdayCells.push(
-        h('div', {
-          class: 'vc-weekday',
-        }),
-      );
-    }
-
-    // Weeknumber cell
-    const getWeeknumberCell = weeknumber =>
-      h(
-        'div',
-        {
-          class: ['vc-weeknumber'],
-        },
-        [
-          h(
-            'span',
-            {
-              class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
-              onClick: event => {
-                this.$emit('weeknumberclick', {
-                  weeknumber,
-                  days: this.page.days.filter(
-                    d => d[this.weeknumberKey] === weeknumber,
-                  ),
-                  event,
-                });
-              },
-            },
-            [weeknumber],
-          ),
-        ],
-      );
-
-    // Day cells
-    const dayCells = [];
-    const { daysInWeek } = this.locale;
-    this.page.days.forEach((day, i) => {
-      const mod = i % daysInWeek;
-      // Inset weeknumber cell on left side if needed
-      if (
-        (showWeeknumbersLeft && mod === 0) ||
-        (showWeeknumbersRight && mod === daysInWeek)
-      ) {
-        dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
-      }
-      dayCells.push(
-        h(
-          CalendarDay,
-          {
-            ...this.$attrs,
-            day,
-          },
-          this.$slots,
-        ),
-      );
-      // Insert weeknumber cell on right side if needed
-      if (showWeeknumbersRight && mod === daysInWeek - 1) {
-        dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
-      }
-    });
-
-    // Weeks
-    const weeks = h(
-      'div',
-      {
-        class: {
-          'vc-weeks': true,
-          'vc-show-weeknumbers': this.showWeeknumbers_,
-          'is-left': showWeeknumbersLeft,
-          'is-right': showWeeknumbersRight,
-        },
-      },
-      [weekdayCells, dayCells],
-    );
-
-    return h(
-      'div',
-      {
-        class: [
-          'vc-pane',
-          `row-from-end-${this.rowFromEnd}`,
-          `column-from-end-${this.columnFromEnd}`,
-        ],
-        ref: 'pane',
-      },
-      [header, weeks],
-    );
-  },
+  components: { CalendarHeader, CalendarDay },
   props: {
-    page: Object,
-    position: Number,
-    row: Number,
-    rowFromEnd: Number,
-    column: Number,
-    columnFromEnd: Number,
-    titlePosition: String,
-    navVisibility: {
-      type: String,
-      default: () => getDefault('navVisibility'),
-    },
-    showWeeknumbers: [Boolean, String],
-    showIsoWeeknumbers: [Boolean, String],
+    page: { type: Object as PropType<Page>, required: true },
   },
-  computed: {
-    weeknumberKey() {
-      return this.showWeeknumbers ? 'weeknumber' : 'isoWeeknumber';
-    },
-    showWeeknumbers_() {
-      const showWeeknumbers = this.showWeeknumbers || this.showIsoWeeknumbers;
-      if (showWeeknumbers == null) return '';
-      if (isBoolean(showWeeknumbers)) {
-        return showWeeknumbers ? 'left' : '';
-      }
-      if (showWeeknumbers.startsWith('right')) {
-        return this.columnFromEnd > 1 ? 'right' : showWeeknumbers;
-      }
-      return this.column > 1 ? 'left' : showWeeknumbers;
-    },
-    navPlacement() {
-      switch (this.titlePosition) {
-        case 'left':
-          return 'bottom-start';
-        case 'right':
-          return 'bottom-end';
-        default:
-          return 'bottom';
-      }
-    },
-    navPopoverEvents() {
-      const { sharedState, navVisibility, navPlacement, page, position } = this;
-      return getPopoverTriggerEvents({
-        id: sharedState.navPopoverId,
-        visibility: navVisibility,
-        placement: navPlacement,
-        modifiers: [
-          { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
-        ],
-        data: { page, position },
-        isInteractive: true,
-        isRenderFn: true,
-      });
-    },
-    weekdayLabels() {
-      return this.locale
-        .getWeekdayDates()
-        .map(d => this.format(d, this.masks.weekdays));
-    },
+  setup() {
+    const { onWeeknumberClick } = useCalendar();
+    return {
+      onWeeknumberClick,
+    };
   },
 };
 </script>
+
+<style lang="css">
+.vc-pane {
+  min-width: 250px;
+}
+
+.vc-weeknumber {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  &.is-left {
+    left: calc(var(--vc-weeknumber-offset-inside) * -1);
+  }
+  &.is-right {
+    right: calc(var(--vc-weeknumber-offset-inside) * -1);
+  }
+  &.is-left-outside {
+    left: calc(var(--vc-weeknumber-offset-outside) * -1);
+  }
+  &.is-right-outside {
+    right: calc(var(--vc-weeknumber-offset-outside) * -1);
+  }
+}
+
+.vc-weeknumber-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--vc-text-xs);
+  font-weight: var(--vc-font-medium);
+  font-style: italic;
+  width: 28px;
+  height: 28px;
+  margin-top: 2px;
+  color: var(--vc-weeknumber-color);
+  user-select: none;
+}
+
+.vc-weeks {
+  position: relative;
+  /* overflow: auto; */
+  -webkit-overflow-scrolling: touch;
+  padding: 6px;
+  min-width: 232px;
+  &.vc-show-weeknumbers-left {
+    margin-left: var(--vc-weeknumber-offset-inside);
+  }
+  &.vc-show-weeknumbers-right {
+    margin-right: var(--vc-weeknumber-offset-inside);
+  }
+}
+
+.vc-weekday {
+  text-align: center;
+  color: var(--vc-weekday-color);
+  font-size: var(--vc-text-sm);
+  font-weight: var(--vc-font-bold);
+  line-height: 14px;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  cursor: default;
+  user-select: none;
+}
+
+.vc-week,
+.vc-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  position: relative;
+}
+</style>

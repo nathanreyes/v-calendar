@@ -1,35 +1,44 @@
 # VCalendar Plugin for Vue 3
 
-A Vue plugin for for attributed calendars date pickers using Vue 3, Typescript and Rollup.
+A calendar and date picker plugin for [Vue.js](https://vuejs.org) (requires version 3.2+).
 
-### Install Plugin
+## Install Plugin
+
+### NPM
 
 ```shell
-yarn add v-calendar@next
+npm install v-calendar
 ```
 
-### Use Plugin
+### Yarn
+
+```shell
+yarn add v-calendar
+```
+
+## Use Plugin
 
 :warning: **As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
 
 ```js
-import 'v-calendar/dist/style.css';
+import 'v-calendar/style.css';
 ```
 
-#### Method 1: Use Globally
+### Method 1: Use Globally
 
 ```js
 import VCalendar from 'v-calendar';
+import 'v-calendar/style.css';
 
-// Use plugin with defaults
+// Use plugin with optional defaults
 app.use(VCalendar, {})
 ```
 
 ```html
-<!-- Component.vue template -->
+<!-- MyComponent.vue -->
 <template>
-  <v-calendar />
-  <v-date-picker v-model="date" />
+  <VCalendar />
+  <VDatePicker v-model="date" />
 </template>
 ```
 
@@ -38,19 +47,21 @@ app.use(VCalendar, {})
 ```js
 // main.js
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
+import 'v-calendar/style.css';
 
-// Setup plugin for defaults or `$screens` (optional)
+// Use plugin defaults (optional)
 app.use(SetupCalendar, {})
+
 // Use the components
-app.component('Calendar', Calendar)
-app.component('DatePicker', DatePicker)
+app.component('VCalendar', Calendar)
+app.component('VDatePicker', DatePicker)
 ```
 
 ```html
-<!-- Component.vue template -->
+<!-- MyComponent.vue -->
 <template>
-  <Calendar />
-  <DatePicker v-model="date" />
+  <VCalendar />
+  <VDatePicker v-model="date" />
 </template>
 ```
 
@@ -60,21 +71,20 @@ app.component('DatePicker', DatePicker)
 // main.js
 import { SetupCalendar } from 'v-calendar';
 
-// Setup plugin for defaults or `$screens` (optional)
+// Use calendar defaults (optional)
 app.use(SetupCalendar, {})
 ```
 
-```html
-<!-- Component.vue template -->
+```vue
+<!-- MyComponent.vue -->
 <template>
   <Calendar />
   <DatePicker v-model="date">
 </template>
-```
 
-```js
-// Component.vue script
+<script>
 import { Calendar, DatePicker } from 'v-calendar';
+import 'v-calendar/style.css';
 
 export default {
   components: {
@@ -87,6 +97,7 @@ export default {
     };
   },
 }
+</script>
 ```
 
 ## Source setup
@@ -117,7 +128,7 @@ git checkout next
 ### Build Library
 
 ```sh
-# ES, CommonJS, IIFE and CSS
+# Types, ES, ESM, CommonJS, IIFE
 yarn build
 ```
 

@@ -1,0 +1,35 @@
+.vc-header {
+  display: grid;
+  grid-gap: 4px;
+  align-items: center;
+  padding: 10px 10px 0px 10px;
+  .vc-title {
+    grid-row: 1;
+    grid-column: title;
+    color: var(--vc-header-title-color);
+    font-weight: var(--vc-font-semibold);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    margin: 0 0.75rem;
+    line-height: 30px;
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+  &.is-lg {
+    font-size: var(--vc-text-lg);
+  }
+  &.is-xl {
+    font-size: var(--vc-text-xl);
+  }
+  &.is-2xl {
+    font-size: var(--vc-text-2xl);
+  }
+  .vc-prev {
+    grid-column: prev;
+  }
+  .vc-next {
+    grid-column: next;
+  }
+}

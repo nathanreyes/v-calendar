@@ -1,0 +1,324 @@
+:root {
+  --vc-white: #ffffff;
+  --vc-black: #000000;
+
+  --vc-gray-50: #f8fafc;
+  --vc-gray-100: #f1f5f9;
+  --vc-gray-200: #e2e8f0;
+  --vc-gray-300: #cbd5e1;
+  --vc-gray-400: #94a3b8;
+  --vc-gray-500: #64748b;
+  --vc-gray-600: #475569;
+  --vc-gray-700: #334155;
+  --vc-gray-800: #1e293b;
+  --vc-gray-900: #0f172a;
+
+  --vc-font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'Helvetica', 'Arial', sans-serif;
+
+  --vc-font-normal: 400;
+  --vc-font-medium: 500;
+  --vc-font-semibold: 600;
+  --vc-font-bold: 700;
+
+  --vc-text-2xs: 10px;
+  --vc-text-xs: 12px;
+  --vc-text-sm: 14px;
+  --vc-text-base: 16px;
+  --vc-text-lg: 18px;
+  --vc-text-xl: 20px;
+  --vc-text-2xl: 24px;
+
+  --vc-leading-none: 1;
+  --vc-leading-tight: 1.25;
+  --vc-leading-snug: 1.375;
+  --vc-leading-normal: 1.5;
+
+  --vc-rounded: 0.25rem;
+  --vc-rounded-md: 0.375rem;
+  --vc-rounded-lg: 0.5rem;
+  --vc-rounded-full: 9999px;
+
+  --vc-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --vc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --vc-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  --vc-slide-translate: 22px;
+  --vc-slide-duration: 0.15s;
+  --vc-slide-timing: ease;
+
+  --vc-day-content-transition: all 0.13s ease-in;
+  --vc-weeknumber-offset-inside: 26px;
+  --vc-weeknumber-offset-outside: 34px;
+}
+
+.vc-gray {
+  --vc-accent-50: var(--vc-gray-50);
+  --vc-accent-100: var(--vc-gray-100);
+  --vc-accent-200: var(--vc-gray-200);
+  --vc-accent-300: var(--vc-gray-300);
+  --vc-accent-400: var(--vc-gray-400);
+  --vc-accent-500: var(--vc-gray-500);
+  --vc-accent-600: var(--vc-gray-600);
+  --vc-accent-700: var(--vc-gray-700);
+  --vc-accent-800: var(--vc-gray-800);
+  --vc-accent-900: var(--vc-gray-900);
+}
+
+.vc-red {
+  --vc-accent-50: #fef2f2;
+  --vc-accent-100: #fee2e2;
+  --vc-accent-200: #fecaca;
+  --vc-accent-300: #fca5a5;
+  --vc-accent-400: #f87171;
+  --vc-accent-500: #ef4444;
+  --vc-accent-600: #dc2626;
+  --vc-accent-700: #b91c1c;
+  --vc-accent-800: #991b1b;
+  --vc-accent-900: #7f1d1d;
+}
+
+.vc-orange {
+  --vc-accent-50: #fff7ed;
+  --vc-accent-100: #ffedd5;
+  --vc-accent-200: #fed7aa;
+  --vc-accent-300: #fdba74;
+  --vc-accent-400: #fb923c;
+  --vc-accent-500: #f97316;
+  --vc-accent-600: #ea580c;
+  --vc-accent-700: #c2410c;
+  --vc-accent-800: #9a3412;
+  --vc-accent-900: #7c2d12;
+}
+
+.vc-yellow {
+  --vc-accent-50: #fefce8;
+  --vc-accent-100: #fef9c3;
+  --vc-accent-200: #fef08a;
+  --vc-accent-300: #fde047;
+  --vc-accent-400: #facc15;
+  --vc-accent-500: #eab308;
+  --vc-accent-600: #ca8a04;
+  --vc-accent-700: #a16207;
+  --vc-accent-800: #854d0e;
+  --vc-accent-900: #713f12;
+}
+
+.vc-green {
+  --vc-accent-50: #f0fdf4;
+  --vc-accent-100: #dcfce7;
+  --vc-accent-200: #bbf7d0;
+  --vc-accent-300: #86efac;
+  --vc-accent-400: #4ade80;
+  --vc-accent-500: #22c55e;
+  --vc-accent-600: #16a34a;
+  --vc-accent-700: #15803d;
+  --vc-accent-800: #166534;
+  --vc-accent-900: #14532d;
+}
+
+.vc-teal {
+  --vc-accent-50: #f0fdfa;
+  --vc-accent-100: #ccfbf1;
+  --vc-accent-200: #99f6e4;
+  --vc-accent-300: #5eead4;
+  --vc-accent-400: #2dd4bf;
+  --vc-accent-500: #14b8a6;
+  --vc-accent-600: #0d9488;
+  --vc-accent-700: #0f766e;
+  --vc-accent-800: #115e59;
+  --vc-accent-900: #134e4a;
+}
+
+.vc-blue {
+  --vc-accent-50: #eff6ff;
+  --vc-accent-100: #dbeafe;
+  --vc-accent-200: #bfdbfe;
+  --vc-accent-300: #93c5fd;
+  --vc-accent-400: #60a5fa;
+  --vc-accent-500: #3b82f6;
+  --vc-accent-600: #2563eb;
+  --vc-accent-700: #1d4ed8;
+  --vc-accent-800: #1e40af;
+  --vc-accent-900: #1e3a8a;
+}
+
+.vc-indigo {
+  --vc-accent-50: #eef2ff;
+  --vc-accent-100: #e0e7ff;
+  --vc-accent-200: #c7d2fe;
+  --vc-accent-300: #a5b4fc;
+  --vc-accent-400: #818cf8;
+  --vc-accent-500: #6366f1;
+  --vc-accent-600: #4f46e5;
+  --vc-accent-700: #4338ca;
+  --vc-accent-800: #3730a3;
+  --vc-accent-900: #312e81;
+}
+
+.vc-purple {
+  --vc-accent-50: #faf5ff;
+  --vc-accent-100: #f3e8ff;
+  --vc-accent-200: #e9d5ff;
+  --vc-accent-300: #d8b4fe;
+  --vc-accent-400: #c084fc;
+  --vc-accent-500: #a855f7;
+  --vc-accent-600: #9333ea;
+  --vc-accent-700: #7e22ce;
+  --vc-accent-800: #6b21a8;
+  --vc-accent-900: #581c87;
+}
+
+.vc-pink {
+  --vc-accent-50: #fdf2f8;
+  --vc-accent-100: #fce7f3;
+  --vc-accent-200: #fbcfe8;
+  --vc-accent-300: #f9a8d4;
+  --vc-accent-400: #f472b6;
+  --vc-accent-500: #ec4899;
+  --vc-accent-600: #db2777;
+  --vc-accent-700: #be185d;
+  --vc-accent-800: #9d174d;
+  --vc-accent-900: #831843;
+}
+
+.vc-focus {
+  &:focus-within {
+    outline: 0;
+    box-shadow: var(--vc-focus-ring);
+  }
+}
+
+.vc-light {
+  /* Base */
+  --vc-color: var(--vc-gray-900);
+  --vc-bg: var(--vc-white);
+  --vc-border: var(--vc-gray-300);
+  --vc-hover-bg: hsla(211, 25%, 84%, 0.3);
+  --vc-focus-ring: 0 0 0 2px rgb(59, 131, 246, 0.4);
+  /* Calendar header */
+  --vc-header-arrow-color: var(--vc-gray-500);
+  --vc-header-arrow-hover-bg: var(--vc-gray-200);
+  --vc-header-title-color: var(--vc-gray-900);
+  /* Calendar weekdays */
+  --vc-weekday-color: var(--vc-gray-500);
+  /* Calendar weeknumbers */
+  --vc-weeknumber-color: var(--vc-gray-400);
+  /* Calendar nav */
+  --vc-nav-hover-bg: var(--vc-gray-200);
+  --vc-nav-title-color: var(--vc-gray-900);
+  --vc-nav-item-hover-box-shadow: none;
+  --vc-nav-item-active-color: var(--vc-white);
+  --vc-nav-item-active-bg: var(--vc-accent-500);
+  --vc-nav-item-active-box-shadow: var(--vc-shadow);
+  --vc-nav-item-current-color: var(--vc-accent-600);
+  /* Calendar day popover */
+  --vc-day-popover-container-color: var(--vc-white);
+  --vc-day-popover-container-bg: var(--vc-gray-800);
+  --vc-day-popover-container-border: var(--vc-gray-700);
+  --vc-day-popover-header-color: var(--vc-gray-700);
+  /* Popover content */
+  --vc-popover-content-color: var(--vc-gray-900);
+  --vc-popover-content-bg: var(--vc-gray-50);
+  --vc-popover-content-border: var(--vc-gray-300);
+  /* Time picker */
+  --vc-time-picker-border: var(--vc-gray-300);
+  --vc-time-weekday-color: var(--vc-gray-700);
+  --vc-time-month-color: var(--vc-accent-600);
+  --vc-time-day-color: var(--vc-accent-600);
+  --vc-time-year-color: var(--vc-gray-500);
+  /* Time select group */
+  --vc-time-select-group-bg: var(--vc-gray-50);
+  --vc-time-select-group-border: var(--vc-gray-300);
+  --vc-time-select-group-icon-color: var(--vc-accent-500);
+  /* Base select */
+  --vc-select-color: var(--vc-gray-900);
+  --vc-select-bg: var(--vg-gray-50);
+  --vc-select-hover-bg: var(--vc-gray-100);
+  --vc-select-border: var(--vc-gray-300);
+  /* Calendar day */
+  --vc-day-content-hover-bg: var(--vc-hover-bg);
+  --vc-day-content-disabled-color: var(--vc-gray-400);
+  /* Calendar attributes */
+  &.vc-attr,
+  & .vc-attr {
+    --vc-content-color: var(--vc-accent-600);
+    --vc-highlight-outline-bg: var(--vc-white);
+    --vc-highlight-outline-border: var(--vc-accent-600);
+    --vc-highlight-outline-content-color: var(--vc-accent-700);
+    --vc-highlight-light-bg: var(--vc-accent-200);
+    --vc-highlight-light-content-color: var(--vc-accent-900);
+    --vc-highlight-solid-bg: var(--vc-accent-600);
+    --vc-highlight-solid-content-color: var(--vc-white);
+    --vc-dot-bg: var(--vc-accent-600);
+    --vc-bar-bg: var(--vc-accent-600);
+  }
+}
+
+.vc-dark {
+  /* Base */
+  --vc-color: var(--vc-white);
+  --vc-bg: var(--vc-gray-900);
+  --vc-border: var(--vc-gray-700);
+  --vc-hover-bg: hsla(216, 15%, 52%, 0.3);
+  --vc-focus-ring: 0 0 0 2px rgb(59 130 246 / 0.7);
+  /* Calendar header */
+  --vc-header-arrow-color: var(--vc-gray-300);
+  --vc-header-arrow-hover-bg: var(--vc-gray-800);
+  --vc-header-title-color: var(--vc-gray-100);
+  /* Calendar weekdays */
+  --vc-weekday-color: var(--vc-accent-200);
+  /* Calendar weeknumbers */
+  --vc-weeknumber-color: var(--vc-gray-500);
+  /* Calendar nav */
+  --vc-nav-hover-bg: var(--vc-gray-700);
+  --vc-nav-title-color: var(--vc-gray-100);
+  --vc-nav-item-hover-box-shadow: none;
+  --vc-nav-item-active-color: var(--vc-white);
+  --vc-nav-item-active-bg: var(--vc-accent-500);
+  --vc-nav-item-active-box-shadow: none;
+  --vc-nav-item-current-color: var(--vc-accent-400);
+  /* Calendar day popover */
+  --vc-day-popover-container-color: var(--vc-gray-800);
+  --vc-day-popover-container-bg: var(--vc-white);
+  --vc-day-popover-container-border: var(--vc-gray-100);
+  --vc-day-popover-header-color: var(--vc-gray-300);
+  /* Popover content */
+  --vc-popover-content-color: var(--vc-white);
+  --vc-popover-content-bg: var(--vc-gray-800);
+  --vc-popover-content-border: var(--vc-gray-700);
+  /* Time picker */
+  --vc-time-picker-border: var(--vc-gray-700);
+  --vc-time-weekday-color: var(--vc-gray-400);
+  --vc-time-month-color: var(--vc-accent-400);
+  --vc-time-day-color: var(--vc-accent-400);
+  --vc-time-year-color: var(--vc-gray-500);
+  /* Time select group */
+  --vc-time-select-group-bg: var(--vc-gray-700);
+  --vc-time-select-group-border: var(--vc-gray-500);
+  --vc-time-select-group-icon-color: var(--vc-accent-400);
+  /* Base select */
+  --vc-select-color: var(--vc-gray-200);
+  --vc-select-bg: var(--vc-gray-700);
+  --vc-select-hover-bg: var(--vc-gray-600);
+  --vc-select-border: var(--vc-gray-500);
+  /* Calendar day */
+  --vc-day-content-hover-bg: var(--vc-hover-bg);
+  --vc-day-content-disabled-color: var(--vc-gray-600);
+  /* Calendar attributes */
+  &.vc-attr,
+  & .vc-attr {
+    --vc-content-color: var(--vc-accent-500);
+    --vc-highlight-outline-bg: var(--vc-gray-900);
+    --vc-highlight-outline-border: var(--vc-accent-300);
+    --vc-highlight-outline-content-color: var(--vc-accent-200);
+    --vc-highlight-light-bg: var(--vc-accent-800);
+    --vc-highlight-light-content-color: var(--vc-accent-100);
+    --vc-highlight-solid-bg: var(--vc-accent-500);
+    --vc-highlight-solid-content-color: var(--vc-white);
+    --vc-dot-bg: var(--vc-accent-500);
+    --vc-bar-bg: var(--vc-accent-500);
+  }
+}

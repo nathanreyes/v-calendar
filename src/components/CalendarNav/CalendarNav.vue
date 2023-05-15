@@ -6,20 +6,20 @@
       <!--Move prev button-->
       <span
         role="button"
-        class="vc-nav-arrow is-left"
-        :class="{ 'is-disabled': !prevItemsEnabled }"
+        class="vc-nav-arrow is-left vc-focus"
+        :class="{ 'vc-disabled': !prevItemsEnabled }"
         :tabindex="prevItemsEnabled ? 0 : undefined"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
       >
         <slot name="nav-left-button">
-          <svg-icon name="left-arrow" width="20px" height="24px" />
+          <BaseIcon name="ChevronLeft" width="20px" height="24px" />
         </slot>
       </span>
       <!--Mode switch button-->
       <span
         role="button"
-        class="vc-nav-title vc-grid-focus"
+        class="vc-nav-title vc-focus"
         :style="{ whiteSpace: 'nowrap' }"
         tabindex="0"
         @click="toggleMode"
@@ -31,13 +31,13 @@
       <span
         role="button"
         class="vc-nav-arrow is-right"
-        :class="{ 'is-disabled': !nextItemsEnabled }"
+        :class="{ 'vc-disabled': !nextItemsEnabled }"
         :tabindex="nextItemsEnabled ? 0 : undefined"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
       >
         <slot name="nav-right-button">
-          <svg-icon name="right-arrow" width="20px" height="24px" />
+          <BaseIcon name="ChevronRight" width="20px" height="24px" />
         </slot>
       </span>
     </div>
@@ -60,212 +60,109 @@
   </div>
 </template>
 
-<script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue';
-import { childMixin } from '../../utils/mixins';
-import { head, last } from '../../utils/_';
-import { onSpaceOrEnter, pad } from '../../utils/helpers';
+<script setup lang="ts">
+import BaseIcon from '../BaseIcon/BaseIcon.vue';
+import { createCalendarNav } from '../../use/calendarNav';
+import { onSpaceOrEnter } from '../../utils/helpers';
+import { propsDef, emitsDef } from '../../use/calendarNav';
 
-const _yearGroupCount = 12;
+const props = defineProps(propsDef);
+const emit = defineEmits(emitsDef);
+defineOptions({  compatConfig: { MODE: 3 } });
 
-export default {
-  name: 'CalendarNav',
-  compatConfig: { MODE: 3 },
-  emits: ['input'],
-  components: {
-    SvgIcon,
-  },
-  mixins: [childMixin],
-  props: {
-    value: { type: Object, default: () => ({ month: 0, year: 0 }) },
-    validator: { type: Function, default: () => () => true },
-  },
-  data() {
-    return {
-      monthMode: true,
-      yearIndex: 0,
-      yearGroupIndex: 0,
-      onSpaceOrEnter,
-    };
-  },
-  computed: {
-    month() {
-      return this.value ? this.value.month || 0 : 0;
-    },
-    year() {
-      return this.value ? this.value.year || 0 : 0;
-    },
-    title() {
-      return this.monthMode
-        ? this.yearIndex
-        : `${this.firstYear} - ${this.lastYear}`;
-    },
-    monthItems() {
-      return this.getMonthItems(this.yearIndex);
-    },
-    yearItems() {
-      return this.getYearItems(this.yearGroupIndex);
-    },
-    prevItemsEnabled() {
-      return this.monthMode
-        ? this.prevMonthItemsEnabled
-        : this.prevYearItemsEnabled;
-    },
-    nextItemsEnabled() {
-      return this.monthMode
-        ? this.nextMonthItemsEnabled
-        : this.nextYearItemsEnabled;
-    },
-    prevMonthItemsEnabled() {
-      return this.getMonthItems(this.yearIndex - 1).some(i => !i.isDisabled);
-    },
-    nextMonthItemsEnabled() {
-      return this.getMonthItems(this.yearIndex + 1).some(i => !i.isDisabled);
-    },
-    prevYearItemsEnabled() {
-      return this.getYearItems(this.yearGroupIndex - 1).some(
-        i => !i.isDisabled,
-      );
-    },
-    nextYearItemsEnabled() {
-      return this.getYearItems(this.yearGroupIndex + 1).some(
-        i => !i.isDisabled,
-      );
-    },
-    activeItems() {
-      return this.monthMode ? this.monthItems : this.yearItems;
-    },
-    firstYear() {
-      return head(this.yearItems.map(i => i.year));
-    },
-    lastYear() {
-      return last(this.yearItems.map(i => i.year));
-    },
-  },
-  watch: {
-    year() {
-      this.yearIndex = this.year;
-    },
-    yearIndex(val) {
-      this.yearGroupIndex = this.getYearGroupIndex(val);
-    },
-    value() {
-      this.focusFirstItem();
-    },
-  },
-  created() {
-    this.yearIndex = this.year;
-  },
-  mounted() {
-    this.focusFirstItem();
-  },
-  methods: {
-    focusFirstItem() {
-      this.$nextTick(() => {
-        // Set focus on the first enabled nav item
-        const focusableEl = this.$refs.navContainer.querySelector(
-          '.vc-nav-item:not(.is-disabled)',
-        );
-        if (focusableEl) {
-          focusableEl.focus();
-        }
-      });
-    },
-    getItemClasses({ isActive, isCurrent, isDisabled }) {
-      const classes = ['vc-nav-item'];
-      if (isActive) {
-        classes.push('is-active');
-      } else if (isCurrent) {
-        classes.push('is-current');
-      }
-      if (isDisabled) {
-        classes.push('is-disabled');
-      }
-      return classes;
-    },
-    getYearGroupIndex(year) {
-      return Math.floor(year / _yearGroupCount);
-    },
-    getMonthItems(year) {
-      const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
-      return this.locale.getMonthDates().map((d, i) => {
-        const month = i + 1;
-        return {
-          month,
-          year,
-          id: `${year}.${pad(month, 2)}`,
-          label: this.locale.format(d, this.masks.navMonths),
-          ariaLabel: this.locale.format(d, 'MMMM YYYY'),
-          isActive: month === this.month && year === this.year,
-          isCurrent: month === thisMonth && year === thisYear,
-          isDisabled: !this.validator({ month, year }),
-          click: () => this.monthClick(month, year),
-        };
-      });
-    },
-    getYearItems(yearGroupIndex) {
-      const { _, year: thisYear } = this.pageForDate(new Date());
-      const startYear = yearGroupIndex * _yearGroupCount;
-      const endYear = startYear + _yearGroupCount;
-      const items = [];
-      for (let year = startYear; year < endYear; year += 1) {
-        let enabled = false;
-        for (let month = 1; month < 12; month++) {
-          enabled = this.validator({ month, year });
-          if (enabled) break;
-        }
-        items.push({
-          year,
-          id: year,
-          label: year,
-          ariaLabel: year,
-          isActive: year === this.year,
-          isCurrent: year === thisYear,
-          isDisabled: !enabled,
-          click: () => this.yearClick(year),
-        });
-      }
-      return items;
-    },
-    monthClick(month, year) {
-      if (this.validator({ month, year })) {
-        this.$emit('input', { month, year });
-      }
-    },
-    yearClick(year) {
-      this.yearIndex = year;
-      this.monthMode = true;
-      this.focusFirstItem();
-    },
-    toggleMode() {
-      this.monthMode = !this.monthMode;
-    },
-    movePrev() {
-      if (!this.prevItemsEnabled) return;
-      if (this.monthMode) {
-        this.movePrevYear();
-      }
-      this.movePrevYearGroup();
-    },
-    moveNext() {
-      if (!this.nextItemsEnabled) return;
-      if (this.monthMode) {
-        this.moveNextYear();
-      }
-      this.moveNextYearGroup();
-    },
-    movePrevYear() {
-      this.yearIndex--;
-    },
-    moveNextYear() {
-      this.yearIndex++;
-    },
-    movePrevYearGroup() {
-      this.yearGroupIndex--;
-    },
-    moveNextYearGroup() {
-      this.yearGroupIndex++;
-    },
-  },
-};
+
+const {
+  navContainer,
+  title,
+  prevItemsEnabled,
+  nextItemsEnabled,
+  activeItems,
+  getItemClasses,
+  toggleMode,
+  movePrev,
+  moveNext,
+} = createCalendarNav(props, { emit });
 </script>
+
+<style lang="css">
+.vc-nav-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.vc-nav-title,
+.vc-nav-arrow,
+.vc-nav-item {
+  font-size: var(--vc-text-sm);
+  &:hover {
+    background-color: var(--vc-nav-hover-bg);
+  }
+  &.vc-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+.vc-nav-title {
+  color: var(--vc-nav-title-color);
+  font-weight: var(--vc-font-bold);
+  line-height: var(--vc-leading-snug);
+  padding: 4px 8px;
+  border-radius: var(--vc-rounded);
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  user-select: none;
+}
+
+.vc-nav-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  line-height: var(--vc-leading-snug);
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: var(--vc-rounded);
+  &.is-left {
+    margin-right: auto;
+  }
+  &.is-right {
+    margin-left: auto;
+  }
+}
+
+.vc-nav-items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-row-gap: 2px;
+  grid-column-gap: 5px;
+}
+
+.vc-nav-item {
+  width: 48px;
+  text-align: center;
+  line-height: var(--vc-leading-snug);
+  font-weight: var(--vc-font-semibold);
+  padding: 4px 0;
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: var(--vc-rounded);
+  user-select: none;
+  &.is-active {
+    color: var(--vc-nav-item-active-color);
+    background-color: var(--vc-nav-item-active-bg);
+    font-weight: var(--vc-font-bold);
+    &:not(:focus) {
+      box-shadow: var(--vc-nav-item-active-box-shadow);
+    }
+  }
+  &.is-current {
+    color: var(--vc-nav-item-current-color);
+  }
+}
+</style>

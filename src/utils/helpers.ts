@@ -1,11 +1,46 @@
-import { isArray, isObject, isFunction, isDate } from './_';
+import { ComponentPublicInstance } from 'vue';
 
-export interface Page {
-  month: number;
-  year: number;
-}
+// Type utils
+import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
 
-export const pad = (val: string, len: number, char = '0') => {
+export { isFunction, isString };
+export { default as isBoolean } from 'lodash/isBoolean';
+export { default as isNumber } from 'lodash/isNumber';
+export { default as isUndefined } from 'lodash/isUndefined';
+import _isDate from 'lodash/isDate';
+
+// Object utils
+export { default as get } from 'lodash/get';
+export { default as set } from 'lodash/set';
+export { default as mapValues } from 'lodash/mapValues';
+export { default as defaults } from 'lodash/defaults';
+export { default as defaultsDeep } from 'lodash/defaultsDeep';
+import _has from 'lodash/has';
+
+// Collection utils
+export { default as map } from 'lodash/map';
+export { default as head } from 'lodash/head';
+export { default as last } from 'lodash/last';
+import _some from 'lodash/some';
+
+// Type checkers
+export const getType = (value: any) =>
+  Object.prototype.toString.call(value).slice(8, -1);
+export const isDate = (value: unknown): value is Date =>
+  _isDate(value) && !isNaN(value.getTime());
+export const isObject = (value: unknown): value is Object =>
+  getType(value) === 'Object';
+
+// Object utils
+export const has = _has;
+export const hasAny = (obj: object, props: string[]) =>
+  _some(props, p => _has(obj, p));
+
+// Collection utils
+export const some = _some;
+
+export const pad = (val: string | number, len: number, char = '0') => {
   val = val !== null && val !== undefined ? String(val) : '';
   len = len || 2;
   while (val.length < len) {
@@ -33,133 +68,114 @@ export const mergeEvents = (...args: Array<any>) => {
   return result;
 };
 
-export const pageIsValid = (page: Page | null): boolean =>
-  !!(page && page.month && page.year);
-
-export const pageIsBeforePage = (page: Page, comparePage: Page): boolean => {
-  if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
-  if (page.year === comparePage.year) return page.month < comparePage.month;
-  return page.year < comparePage.year;
+export const roundTenth = (n: number) => {
+  return Math.round(n * 100) / 100;
 };
 
-export const pageIsAfterPage = (page: Page, comparePage: Page): boolean => {
-  if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
-  if (page.year === comparePage.year) return page.month > comparePage.month;
-  return page.year > comparePage.year;
-};
+export const isArray = (val: any): val is any[] => Array.isArray(val);
 
-export const pageIsBetweenPages = (
-  page: Page,
-  fromPage: Page,
-  toPage: Page,
-): boolean =>
-  (page || false) &&
-  !pageIsBeforePage(page, fromPage) &&
-  !pageIsAfterPage(page, toPage);
-
-export const pageIsEqualToPage = (aPage: Page, bPage: Page): boolean => {
-  if (!aPage && bPage) return false;
-  if (aPage && !bPage) return false;
-  if (!aPage && !bPage) return true;
-  return aPage.month === bPage.month && aPage.year === bPage.year;
-};
-
-export const addPages = ({ month, year }: Page, count: number): Page => {
-  const incr = count > 0 ? 1 : -1;
-  for (let i = 0; i < Math.abs(count); i++) {
-    month += incr;
-    if (month > 12) {
-      month = 1;
-      year++;
-    } else if (month < 1) {
-      month = 12;
-      year--;
-    }
-  }
-  return {
-    month,
-    year,
-  };
-};
-
-export const pageRangeToArray = (from: Page, to: Page) => {
-  if (!pageIsValid(from) || !pageIsValid(to)) return [];
-  const result = [];
-  while (!pageIsAfterPage(from, to)) {
-    result.push(from);
-    from = addPages(from, 1);
-  }
-  return result;
-};
-
-export function datesAreEqual(a: any, b: any): boolean {
-  const aIsDate = isDate(a);
-  const bIsDate = isDate(b);
-  if (!aIsDate && !bIsDate) return true;
-  if (aIsDate !== bIsDate) return false;
-  return a.getTime() === b.getTime();
-}
-
-export const arrayHasItems = (array: Array<any>): boolean =>
+export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
+
+export const resolveEl = (target: unknown): Node | null => {
+  if (target == null) return target ?? null;
+  if (document && isString(target)) return document.querySelector(target);
+  return (target as ComponentPublicInstance).$el ?? target;
+};
 
 export interface ElementPosition {
   top: number;
   left: number;
 }
 
-export const mixinOptionalProps = (source: any, target: any, props: [any]) => {
-  const assigned: Array<string> = [];
-  props.forEach(p => {
-    const name = p.name || p.toString();
-    const mixin = p.mixin;
-    const validate = p.validate;
-    if (Object.prototype.hasOwnProperty.call(source, name)) {
-      const value = validate ? validate(source[name]) : source[name];
-      target[name] = mixin && isObject(value) ? { ...mixin, ...value } : value;
-      assigned.push(name);
-    }
-  });
-  return {
-    target,
-    assigned: assigned.length ? assigned : null,
-  };
+export interface CustomElement {
+  addEventListener: Function;
+  removeEventListener: Function;
+  dispatchEvent: Function;
+}
+
+export const off = (
+  element: CustomElement,
+  event: string,
+  handler: (e: any) => void,
+  opts: boolean | EventListenerOptions | undefined = undefined,
+) => {
+  element.removeEventListener(event, handler, opts);
 };
 
 export const on = (
-  element: Element,
+  element: CustomElement,
   event: string,
-  handler: EventListenerOrEventListenerObject,
-  opts: boolean | AddEventListenerOptions | undefined,
+  handler: (e: any) => void,
+  opts: boolean | AddEventListenerOptions | undefined = undefined,
 ) => {
-  if (element && event && handler) {
-    element.addEventListener(event, handler, opts);
-  }
+  element.addEventListener(event, handler, opts);
+  return () => off(element, event, handler, opts);
 };
 
-export const off = (
-  element: Element,
-  event: string,
-  handler: EventListenerOrEventListenerObject,
-  opts: boolean | EventListenerOptions | undefined,
-) => {
-  if (element && event) {
-    element.removeEventListener(event, handler, opts);
-  }
-};
-
-export const elementContains = (element: Element, child: Element) =>
+export const elementContains = (element: Node, child: Node) =>
   !!element && !!child && (element === child || element.contains(child));
 
 export const onSpaceOrEnter = (
   event: KeyboardEvent,
-  handler: EventHandlerNonNull,
+  handler: (e: KeyboardEvent) => void,
 ) => {
   if (event.key === ' ' || event.key === 'Enter') {
     handler(event);
     event.preventDefault();
   }
 };
+
+export const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const omit = <T extends object, K extends [...(keyof T)[]]>(
+  obj: T,
+  ...keys: K
+) => {
+  const ret = {} as {
+    [K in keyof typeof obj]: typeof obj[K];
+  };
+  let key: keyof typeof obj;
+  for (key in obj) {
+    if (!keys.includes(key)) {
+      ret[key] = obj[key];
+    }
+  }
+  return ret;
+};
+
+export const pick = <T extends object, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Pick<T, K> => {
+  const ret: any = {};
+  keys.forEach(key => {
+    if (key in obj) ret[key] = obj[key];
+  });
+  return ret;
+};
+
+export function extend<T extends object, E extends object>(
+  value: T,
+  ext: E,
+): T & E {
+  const handler = {
+    get(target: T, prop: keyof (T | E)) {
+      if ((prop as string) in target) {
+        return target[prop];
+      }
+      return ext[prop];
+    },
+  };
+  // @ts-ignore
+  return new Proxy(value, handler) as T & E;
+}
+
+export function clamp(num: number, min: number, max: number) {
+  return Math.min(Math.max(num, min), max);
+}
 
 /* eslint-disable no-bitwise */
 
