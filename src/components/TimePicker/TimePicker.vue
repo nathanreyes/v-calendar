@@ -52,7 +52,6 @@
 </template>
 
 <script setup lang="ts">
-import { configureCompat } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import BaseSelect from '../BaseSelect/BaseSelect.vue';
 import { createTimePicker } from '../../use/timePicker';
@@ -61,7 +60,7 @@ const props = defineProps<{
   position: number;
 }>();
 
-configureCompat({ MODE: 3 })
+defineOptions({  compatConfig: { MODE: 3 } });
 
 const timePicker = createTimePicker(props);
 defineExpose(timePicker);
