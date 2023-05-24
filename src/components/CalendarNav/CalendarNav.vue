@@ -61,6 +61,7 @@
 </template>
 
 <script setup lang="ts">
+import { configureCompat } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import { createCalendarNav } from '../../use/calendarNav';
 import { onSpaceOrEnter } from '../../utils/helpers';
@@ -68,7 +69,8 @@ import { propsDef, emitsDef } from '../../use/calendarNav';
 
 const props = defineProps(propsDef);
 const emit = defineEmits(emitsDef);
-defineOptions({  compatConfig: { MODE: 3 } });
+
+configureCompat({ MODE: 3 })
 
 
 const {
