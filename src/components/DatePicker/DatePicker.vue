@@ -8,6 +8,7 @@ import { omit } from '../../utils/helpers';
 
 export default defineComponent({
   name: 'DatePicker',
+  compatConfig: { MODE: 3 },
   inheritAttrs: false,
   emits,
   props: propsDef,

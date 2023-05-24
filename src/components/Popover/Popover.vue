@@ -71,6 +71,7 @@ import {
 
 export default defineComponent({
   name: 'Popover',
+  compatConfig: { MODE: 3 },
   inheritAttrs: false,
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   props: {

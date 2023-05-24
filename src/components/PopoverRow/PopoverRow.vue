@@ -20,6 +20,7 @@ import { Attribute } from '../../utils/attribute';
 
 export default defineComponent({
   name: 'PopoverRow',
+  compatConfig: { MODE: 3 },
   props: {
     attribute: { type: Object as PropType<Attribute>, required: true },
   },

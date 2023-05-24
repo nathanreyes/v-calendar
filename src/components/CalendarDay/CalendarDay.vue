@@ -63,6 +63,7 @@ import { popoverDirective } from '../../utils/popovers';
 import { DateRangeCell } from '../../utils/date/range';
 
 export default defineComponent({
+  compatConfig: { MODE: 3 },
   directives: { popover: popoverDirective },
   props: {
     day: { type: Object as PropType<CalendarDay>, required: true },

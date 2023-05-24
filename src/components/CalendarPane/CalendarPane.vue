@@ -56,6 +56,7 @@ import { Page } from '../../utils/page';
 
 export default {
   name: 'CalendarPane',
+  compatConfig: { MODE: 3 },
   inheritAttrs: false,
   components: { CalendarHeader, CalendarDay },
   props: {

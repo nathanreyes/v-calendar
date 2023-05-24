@@ -60,6 +60,8 @@ const props = defineProps<{
   position: number;
 }>();
 
+defineOptions({  compatConfig: { MODE: 3 } });
+
 const timePicker = createTimePicker(props);
 defineExpose(timePicker);
 const {

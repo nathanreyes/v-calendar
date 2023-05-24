@@ -59,6 +59,7 @@ import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
 export default defineComponent({
   name: 'Calendar',
+  compatConfig: { MODE: 3 },
   components: {
     CalendarHeader,
     CalendarPane,

@@ -68,6 +68,8 @@ import { propsDef, emitsDef } from '../../use/calendarNav';
 
 const props = defineProps(propsDef);
 const emit = defineEmits(emitsDef);
+defineOptions({  compatConfig: { MODE: 3 } });
+
 
 const {
   navContainer,
