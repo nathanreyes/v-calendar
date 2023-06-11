@@ -5,15 +5,21 @@
     ref="navPopoverRef"
   >
     <template #default="{ data }">
-      <CalendarNav :value="data.page" @input="move" />
+      <CalendarPageProvider :page="data.page">
+        <CalendarSlot name="nav">
+          <CalendarNav />
+        </CalendarSlot>
+      </CalendarPageProvider>
     </template>
   </Popover>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Popover from '../Popover/Popover.vue';
 import CalendarNav from './CalendarNav.vue';
+import CalendarPageProvider from './CalendarPageProvider.vue';
+import CalendarSlot from './CalendarSlot.vue';
 import { useCalendar } from '../../use/calendar';
 
-const { navPopoverId, color, displayMode, navPopoverRef, move } = useCalendar();
+const { navPopoverId, color, displayMode, navPopoverRef } = useCalendar();
 </script>

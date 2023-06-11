@@ -12,13 +12,16 @@ export default {
 <script setup lang="ts">
 import { useCalendar } from '../../use/calendar';
 
-type CalendarSlot =
+export type CalendarSlot =
+  | 'header-title-wrapper'
   | 'header-title'
   | 'header-prev-button'
   | 'header-next-button'
+  | 'nav'
   | 'nav-prev-button'
   | 'nav-next-button'
-  | 'day-content';
+  | 'day-content'
+  | 'page';
 
 defineProps<{
   name: CalendarSlot;

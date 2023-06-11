@@ -9,7 +9,7 @@
         class="vc-nav-arrow is-left vc-focus"
         :disabled="!prevItemsEnabled"
         @click="movePrev"
-        @keydown="e => onSpaceOrEnter(e, movePrev)"
+        @keydown="(e: KeyboardEvent) => onSpaceOrEnter(e, movePrev)"
       >
         <CalendarSlot
           name="nav-prev-button"
@@ -24,7 +24,7 @@
         type="button"
         class="vc-nav-title vc-focus"
         @click="toggleMode"
-        @keydown="e => onSpaceOrEnter(e, toggleMode)"
+        @keydown="(e: KeyboardEvent) => onSpaceOrEnter(e, toggleMode)"
       >
         {{ title }}
       </button>
@@ -34,7 +34,7 @@
         class="vc-nav-arrow is-right vc-focus"
         :disabled="!nextItemsEnabled"
         @click="moveNext"
-        @keydown="e => onSpaceOrEnter(e, moveNext)"
+        @keydown="(e: KeyboardEvent) => onSpaceOrEnter(e, moveNext)"
       >
         <CalendarSlot
           name="nav-next-button"
@@ -59,7 +59,7 @@
         ]"
         :disabled="item.isDisabled"
         @click="item.click"
-        @keydown="e => onSpaceOrEnter(e, item.click)"
+        @keydown="(e: KeyboardEvent) => onSpaceOrEnter(e, item.click)"
       >
         {{ item.label }}
       </button>
@@ -68,25 +68,189 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch, onMounted } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import CalendarSlot from './CalendarSlot.vue';
-import { createCalendarNav } from '../../use/calendarNav';
-import { onSpaceOrEnter } from '../../utils/helpers';
-import { propsDef, emitsDef } from '../../use/calendarNav';
+import { head, last, onSpaceOrEnter } from '../../utils/helpers';
+import { useCalendar } from '../../use/calendar';
+import { usePage } from '../../use/page';
 
-const props = defineProps(propsDef);
-const emit = defineEmits(emitsDef);
+export type IQuerySelector = Pick<HTMLElement, 'querySelector'>;
 
-const {
-  navContainer,
-  title,
-  prevItemsEnabled,
-  nextItemsEnabled,
-  activeItems,
-  toggleMode,
-  movePrev,
-  moveNext,
-} = createCalendarNav(props, { emit });
+const { masks, move } = useCalendar();
+const { page, getMonthItems, getYearItems } = usePage();
+
+const monthMode = ref(true);
+const selectedYear = ref(0);
+const selectedYearGroup = ref(0);
+const yearGroupCount = 12;
+const navContainer = ref<IQuerySelector | null>(null);
+
+function focusFirstItem() {
+  // Use setTimeout instead of $nextTick so it plays nice with popperjs
+  setTimeout(() => {
+    if (navContainer.value == null) return;
+    // Set focus on the first enabled nav item
+    const focusableEl = navContainer.value.querySelector(
+      '.vc-nav-item:not(:disabled)',
+    ) as HTMLElement;
+    if (focusableEl) {
+      focusableEl.focus();
+    }
+  }, 10);
+}
+
+function getYearGroupIndex(year: number) {
+  return Math.floor(year / yearGroupCount);
+}
+
+function toggleMode() {
+  monthMode.value = !monthMode.value;
+}
+
+function getStartYear(groupIndex: number) {
+  return groupIndex * yearGroupCount;
+}
+
+function getEndYear(groupIndex: number) {
+  return yearGroupCount * (groupIndex + 1) - 1;
+}
+
+// #region Move methods
+
+function movePrev() {
+  if (!prevItemsEnabled.value) return;
+  if (monthMode.value) {
+    movePrevYear();
+  }
+  movePrevYearGroup();
+}
+
+function moveNext() {
+  if (!nextItemsEnabled.value) return;
+  if (monthMode.value) {
+    moveNextYear();
+  }
+  moveNextYearGroup();
+}
+
+function movePrevYear() {
+  selectedYear.value--;
+}
+
+function moveNextYear() {
+  selectedYear.value++;
+}
+
+function movePrevYearGroup() {
+  selectedYearGroup.value--;
+}
+
+function moveNextYearGroup() {
+  selectedYearGroup.value++;
+}
+
+// #endregion Move methods
+
+const monthItems = computed(() =>
+  getMonthItems(selectedYear.value, masks.value.navMonths).map(item => ({
+    ...item,
+    click: () =>
+      move({ month: item.month, year: item.year }, { position: page.position }),
+  })),
+);
+
+const prevMonthItems = computed(() =>
+  getMonthItems(selectedYear.value - 1, masks.value.navMonths),
+);
+
+const prevMonthItemsEnabled = computed(() =>
+  prevMonthItems.value.some(i => !i.isDisabled),
+);
+
+const nextMonthItems = computed(() =>
+  getMonthItems(selectedYear.value + 1, masks.value.navMonths),
+);
+
+const nextMonthItemsEnabled = computed(() =>
+  nextMonthItems.value.some(i => !i.isDisabled),
+);
+
+const yearItems = computed(() =>
+  getYearItems(
+    getStartYear(selectedYearGroup.value),
+    getEndYear(selectedYearGroup.value),
+  ).map(item => {
+    return {
+      ...item,
+      click: () => {
+        selectedYear.value = item.year;
+        monthMode.value = true;
+        focusFirstItem();
+      },
+    };
+  }),
+);
+
+const prevYearItems = computed(() =>
+  getYearItems(
+    getStartYear(selectedYearGroup.value - 1),
+    getEndYear(selectedYearGroup.value - 1),
+  ),
+);
+
+const prevYearItemsEnabled = computed(() =>
+  prevYearItems.value.some(i => !i.isDisabled),
+);
+
+const nextYearItems = computed(() =>
+  getYearItems(
+    getStartYear(selectedYearGroup.value + 1),
+    getEndYear(selectedYearGroup.value + 1),
+  ),
+);
+
+const nextYearItemsEnabled = computed(() =>
+  nextYearItems.value.some(i => !i.isDisabled),
+);
+
+const activeItems = computed(() =>
+  monthMode.value ? monthItems.value : yearItems.value,
+);
+
+const prevItemsEnabled = computed(() =>
+  monthMode.value ? prevMonthItemsEnabled.value : prevYearItemsEnabled.value,
+);
+
+const nextItemsEnabled = computed(() =>
+  monthMode.value ? nextMonthItemsEnabled.value : nextYearItemsEnabled.value,
+);
+
+const firstYear = computed(() => head(yearItems.value.map(i => i.year)));
+
+const lastYear = computed(() => last(yearItems.value.map(i => i.year)));
+
+const title = computed(() => {
+  return monthMode.value
+    ? selectedYear.value
+    : `${firstYear.value} - ${lastYear.value}`;
+});
+
+watch(
+  () => page.year,
+  () => {
+    selectedYear.value = page.year;
+  },
+);
+
+watch(
+  () => selectedYear.value,
+  val => (selectedYearGroup.value = getYearGroupIndex(val)),
+);
+
+selectedYear.value = page.year;
+
+onMounted(() => focusFirstItem());
 </script>
 
 <style lang="css">
