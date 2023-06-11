@@ -1,17 +1,20 @@
 <template>
-  <div class="vc-base-select">
-    <BaseIcon v-if="showIcon" name="ChevronDown" :size="small ? '16' : '18'" />
+  <div
+    class="vc-base-select"
+    :class="{ 'vc-fit-content': fitContent, 'vc-has-icon': showIcon }"
+  >
     <select
       v-bind="$attrs"
       :value="modelValue"
       class="vc-focus"
       :class="{
-        'vc-has-icon': showIcon,
         'vc-align-right': alignRight,
         'vc-align-left': alignLeft,
         'vc-small': small,
       }"
-      @change="$emit('update:modelValue', $event.target.value)"
+      @change="
+        $emit('update:modelValue', ($event.target as HTMLSelectElement).value)
+      "
     >
       <option
         v-for="option in options"
@@ -22,43 +25,102 @@
         {{ option.label }}
       </option>
     </select>
+    <BaseIcon v-if="showIcon" name="ChevronDown" :size="small ? '16' : '18'" />
+    <div v-if="fitContent" class="vc-base-sizer" aria-hidden="true">
+      {{ selectedLabel }}
+    </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   inheritAttrs: false,
 };
 </script>
 
-<script setup>
+<script setup lang="ts">
+import { computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 
-defineProps({
-  options: Array,
-  modelValue: null,
-  alignRight: Boolean,
-  alignLeft: Boolean,
-  showIcon: Boolean,
-  small: Boolean,
-});
+interface BaseOption {
+  value: any;
+  label: string;
+  disabled?: boolean;
+}
+
+const props = defineProps<{
+  options: BaseOption[];
+  modelValue: any;
+  alignRight?: boolean;
+  alignLeft?: boolean;
+  showIcon?: boolean;
+  small?: boolean;
+  fitContent?: boolean;
+}>();
 defineEmits(['update:modelValue']);
+
+const selectedLabel = computed(() => {
+  const option = props.options.find(opt => opt.value === props.modelValue);
+  return option?.label;
+});
 </script>
 
 <style lang="css">
 .vc-base-select {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  font-size: var(--vc-text-base);
+  font-weight: var(--vc-font-medium);
+  &.vc-has-icon {
+    & select {
+      padding: 0 27px 0 9px;
+    }
+    & .vc-base-sizer {
+      padding: 0 28px 0 10px;
+    }
+  }
+  &.vc-small {
+    font-size: var(--vc-text-sm);
+    &.vc-has-icon {
+      padding: 0 20px 0 8px;
+    }
+  }
+  &.vc-fit-content {
+    & select {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+  }
+  & .vc-base-icon {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  & .vc-base-sizer {
+    font-size: var(--vc-text-base);
+    font-weight: var(--vc-font-medium);
+    color: transparent;
+    padding: 0px 8px;
+    margin: 0;
+  }
   & select {
+    display: inline-flex;
+    justify-content: center;
     color: var(--vc-select-color);
     display: block;
     appearance: none;
     background-color: transparent;
-    font-size: var(--vc-text-base);
-    font-weight: var(--vc-font-medium);
     border-radius: var(--vc-rounded);
     height: 30px;
     width: max-content;
-    padding: 0px 4px;
+    padding: 0px 7px;
     margin: 0;
     line-height: var(--leading-none);
     text-indent: 0px;
@@ -68,28 +130,12 @@ defineEmits(['update:modelValue']);
     &:hover {
       background-color: var(--vc-select-hover-bg);
     }
-    &.vc-has-icon {
-      padding: 0px 24px 0 10px;
-    }
-    &.vc-small {
-      font-size: var(--vc-text-sm);
-      &.vc-has-icon {
-        padding: 0 20px 0 8 px;
-      }
-    }
     &.vc-align-left {
       text-align: left;
     }
     &.vc-align-right {
       text-align: right;
     }
-  }
-  & .vc-base-icon {
-    position: absolute;
-    top: 6px;
-    right: 4px;
-    opacity: 0.6;
-    pointer-events: none;
   }
 }
 </style>
