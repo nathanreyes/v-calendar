@@ -70,7 +70,6 @@ import {
 } from '../../utils/popovers';
 
 export default defineComponent({
-  name: 'Popover',
   inheritAttrs: false,
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   props: {

@@ -7,7 +7,6 @@ import { propsDef, emits, createDatePicker } from '../../use/datePicker';
 import { omit } from '../../utils/helpers';
 
 export default defineComponent({
-  name: 'DatePicker',
   inheritAttrs: false,
   emits,
   props: propsDef,

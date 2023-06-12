@@ -10,7 +10,7 @@ const install = (app: App, defaults: Defaults = {}) => {
   const prefix = app.config.globalProperties.$VCalendar.componentPrefix;
   for (const componentKey in components) {
     const component = (components as any)[componentKey];
-    app.component(`${prefix}${component.name}`, component);
+    app.component(`${prefix}${componentKey}`, component);
   }
 };
 
