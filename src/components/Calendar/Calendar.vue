@@ -35,7 +35,15 @@
           }"
         >
           <!--Calendar pages-->
-          <CalendarPage v-for="page in pages" :key="page.id" :page="page" />
+          <CalendarPageProvider
+            v-for="page in pages"
+            :key="page.id"
+            :page="page"
+          >
+            <slot name="page">
+              <CalendarPage />
+            </slot>
+          </CalendarPageProvider>
         </div>
       </Transition>
       <slot name="footer" />
@@ -50,27 +58,30 @@
   <CalendarNavPopover />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { useSlots } from 'vue';
 import CalendarHeader from './CalendarHeader.vue';
 import CalendarPage from './CalendarPage.vue';
 import CalendarNavPopover from './CalendarNavPopover.vue';
 import CalendarDayPopover from './CalendarDayPopover.vue';
+import CalendarPageProvider from './CalendarPageProvider.vue';
 import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
-export default defineComponent({
-  name: 'Calendar',
-  components: {
-    CalendarHeader,
-    CalendarPage,
-    CalendarNavPopover,
-    CalendarDayPopover,
-  },
-  emits: emitsDef,
-  props: propsDef,
-  setup(props, { emit, slots }) {
-    return createCalendar(props, { emit, slots });
-  },
+const props = defineProps(propsDef);
+const emit = defineEmits(emitsDef);
+const slots = useSlots();
+
+const {
+  displayMode,
+  inTransition,
+  firstPage,
+  transitionName,
+  onTransitionBeforeEnter,
+  onTransitionAfterEnter,
+  pages,
+} = createCalendar(props, {
+  emit,
+  slots,
 });
 </script>
 
