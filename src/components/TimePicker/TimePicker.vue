@@ -122,6 +122,10 @@ const {
     margin-right: 4px;
     color: var(--vc-time-select-group-icon-color);
   }
+  select {
+    background: transparent;
+    padding: 0px 4px;
+  }
 }
 
 .vc-time-weekday {

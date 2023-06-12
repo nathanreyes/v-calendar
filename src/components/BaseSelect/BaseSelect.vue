@@ -1,7 +1,10 @@
 <template>
   <div
     class="vc-base-select"
-    :class="{ 'vc-fit-content': fitContent, 'vc-has-icon': showIcon }"
+    :class="{
+      'vc-fit-content': fitContent,
+      'vc-has-icon': showIcon,
+    }"
   >
     <select
       v-bind="$attrs"
@@ -10,7 +13,6 @@
       :class="{
         'vc-align-right': alignRight,
         'vc-align-left': alignLeft,
-        'vc-small': small,
       }"
       @change="
         $emit('update:modelValue', ($event.target as HTMLSelectElement).value)
@@ -25,7 +27,7 @@
         {{ option.label }}
       </option>
     </select>
-    <BaseIcon v-if="showIcon" name="ChevronDown" :size="small ? '16' : '18'" />
+    <BaseIcon v-if="showIcon" name="ChevronDown" :size="18" />
     <div v-if="fitContent" class="vc-base-sizer" aria-hidden="true">
       {{ selectedLabel }}
     </div>
@@ -54,7 +56,6 @@ const props = defineProps<{
   alignRight?: boolean;
   alignLeft?: boolean;
   showIcon?: boolean;
-  small?: boolean;
   fitContent?: boolean;
 }>();
 defineEmits(['update:modelValue']);
@@ -80,12 +81,6 @@ const selectedLabel = computed(() => {
     }
     & .vc-base-sizer {
       padding: 0 28px 0 10px;
-    }
-  }
-  &.vc-small {
-    font-size: var(--vc-text-sm);
-    &.vc-has-icon {
-      padding: 0 20px 0 8px;
     }
   }
   &.vc-fit-content {
@@ -116,7 +111,7 @@ const selectedLabel = computed(() => {
     color: var(--vc-select-color);
     display: block;
     appearance: none;
-    background-color: transparent;
+    background-color: var(--vc-select-bg);
     border-radius: var(--vc-rounded);
     height: 30px;
     width: max-content;

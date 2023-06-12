@@ -4,7 +4,6 @@
     :options="viewOptions"
     class="vc-view-select"
     show-icon
-    small
   />
 </template>
 <script setup lang="ts">
