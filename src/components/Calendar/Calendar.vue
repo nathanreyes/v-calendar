@@ -58,8 +58,7 @@
   <CalendarNavPopover />
 </template>
 
-<script setup lang="ts">
-import { useSlots } from 'vue';
+<script lang="ts">
 import CalendarHeader from './CalendarHeader.vue';
 import CalendarPage from './CalendarPage.vue';
 import CalendarNavPopover from './CalendarNavPopover.vue';
@@ -67,22 +66,20 @@ import CalendarDayPopover from './CalendarDayPopover.vue';
 import CalendarPageProvider from './CalendarPageProvider.vue';
 import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
-const props = defineProps(propsDef);
-const emit = defineEmits(emitsDef);
-const slots = useSlots();
-
-const {
-  displayMode,
-  inTransition,
-  firstPage,
-  transitionName,
-  onTransitionBeforeEnter,
-  onTransitionAfterEnter,
-  pages,
-} = createCalendar(props, {
-  emit,
-  slots,
-});
+export default {
+  components: {
+    CalendarHeader,
+    CalendarPage,
+    CalendarNavPopover,
+    CalendarDayPopover,
+    CalendarPageProvider,
+  },
+  props: propsDef,
+  emit: emitsDef,
+  setup(props, { emit, slots }) {
+    return createCalendar(props, { emit, slots });
+  },
+};
 </script>
 
 <style>
