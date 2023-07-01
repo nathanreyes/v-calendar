@@ -6,13 +6,11 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue';
 export type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
   ComponentPublicInstance;
 
-export async function mountDp(props: any, slots?: any) {
-  const dpWrapper = mount<DatePickerComponent>(
-    // @ts-ignore
-    DatePicker,
-    { props, slots },
-  );
-  return dpWrapper;
+export function mountDp(props: any, slots?: any) {
+  return mount(DatePicker, {
+    props,
+    slots,
+  }) as unknown as VueWrapper<DatePickerComponent>;
 }
 
 export function getDayClass(vm: DatePickerComponent, date: Date) {
