@@ -1,10 +1,10 @@
-import { provide, inject } from 'vue';
-import { type Page } from '../utils/page';
+import { type DeepReadonly, type Ref, provide, inject } from 'vue';
+import { type Page, getPageId } from '../utils/page';
 import { getMonthDates } from '../utils/date/helpers';
-import { pad } from '../utils/helpers';
 import { useCalendar } from '..';
 
-export interface YearItem {
+export interface MonthNavItem {
+  month: number;
   year: number;
   id: string;
   label: string;
@@ -14,49 +14,49 @@ export interface YearItem {
   isDisabled: boolean;
 }
 
-export interface MonthItem extends YearItem {
-  month: number;
-}
+export type YearNavItem = Omit<MonthNavItem, 'month'>;
 
 export type CalendarPageContext = ReturnType<typeof createPage>;
 
 const contextKey = '__vc_page_context__';
 
-export function createPage(page: Page) {
+export function createPage(page: DeepReadonly<Ref<Page>>) {
   const { locale, getDateAddress, canMove } = useCalendar();
 
-  function getMonthItems(year: number, mask: string): MonthItem[] {
+  function getMonthItems(year: number, mask: string): MonthNavItem[] {
     const { month: thisMonth, year: thisYear } = getDateAddress(new Date());
     return getMonthDates().map((d, i: number) => {
       const month = i + 1;
       return {
         month,
         year,
-        id: `${year}.${pad(month, 2)}`,
+        id: getPageId(month, year),
         label: locale.value.formatDate(d, mask),
         ariaLabel: locale.value.formatDate(d, 'MMMM'),
-        isActive: month === page.month && year === page.year,
+        isActive: month === page.value.month && year === page.value.year,
         isCurrent: month === thisMonth && year === thisYear,
-        isDisabled: !canMove({ month, year }, { position: page.position }),
+        isDisabled: !canMove(
+          { month, year },
+          { position: page.value.position },
+        ),
       };
     });
   }
 
-  function getYearItems(startYear: number, endYear: number): YearItem[] {
+  function getYearItems(startYear: number, endYear: number): YearNavItem[] {
     const { year: thisYear } = getDateAddress(new Date());
+    const { position } = page.value;
     const items = [];
     for (let year = startYear; year <= endYear; year += 1) {
-      let enabled = false;
-      for (let month = 1; month < 12; month++) {
-        enabled = canMove({ month, year }, { position: page.position });
-        if (enabled) break;
-      }
+      const enabled = [...Array(12).keys()].some(m =>
+        canMove({ month: m + 1, year }, { position }),
+      );
       items.push({
         year,
         id: year.toString(),
         label: year.toString(),
         ariaLabel: year.toString(),
-        isActive: year === page.year,
+        isActive: year === page.value.year,
         isCurrent: year === thisYear,
         isDisabled: !enabled,
       });

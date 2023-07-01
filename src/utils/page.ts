@@ -382,6 +382,10 @@ function getWeekdays(week: CalendarWeek, locale: Locale): CalendarWeekday[] {
   }));
 }
 
+export function getPageId(month: number, year: number) {
+  return `${year}.${pad(month, 2)}`;
+}
+
 export function getPageAddressForDate(
   date: DateSource,
   view: PageView,

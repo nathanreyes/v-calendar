@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from 'vue';
+import { computed, ref, watch, onMounted, watchEffect } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import CalendarSlot from './CalendarSlot.vue';
 import { head, last, onSpaceOrEnter } from '../../utils/helpers';
@@ -81,9 +81,10 @@ const { masks, move } = useCalendar();
 const { page, getMonthItems, getYearItems } = usePage();
 
 const monthMode = ref(true);
-const selectedYear = ref(0);
-const selectedYearGroup = ref(0);
 const yearGroupCount = 12;
+
+const selectedYear = ref(page.value.year);
+const selectedYearGroup = ref(getYearGroupIndex(page.value.year));
 const navContainer = ref<IQuerySelector | null>(null);
 
 function focusFirstItem() {
@@ -156,7 +157,10 @@ const monthItems = computed(() =>
   getMonthItems(selectedYear.value, masks.value.navMonths).map(item => ({
     ...item,
     click: () =>
-      move({ month: item.month, year: item.year }, { position: page.position }),
+      move(
+        { month: item.month, year: item.year },
+        { position: page.value.position },
+      ),
   })),
 );
 
@@ -236,19 +240,15 @@ const title = computed(() => {
     : `${firstYear.value} - ${lastYear.value}`;
 });
 
-watch(
-  () => page.year,
-  () => {
-    selectedYear.value = page.year;
-  },
-);
+watchEffect(() => {
+  selectedYear.value = page.value.year;
+  focusFirstItem();
+});
 
 watch(
   () => selectedYear.value,
   val => (selectedYearGroup.value = getYearGroupIndex(val)),
 );
-
-selectedYear.value = page.year;
 
 onMounted(() => focusFirstItem());
 </script>
