@@ -6,7 +6,6 @@ import {
   getDatePartsOptions,
   isDateParts,
 } from '../utils/date/helpers';
-import { useBase } from '../use/base';
 import { useDatePicker } from '../use/datePicker';
 
 const _amOptions = [
