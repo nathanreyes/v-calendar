@@ -215,7 +215,6 @@ export default defineComponent({
       setTimer(opts.showDelay ?? props.showDelay, () => {
         if (state.isVisible) {
           state.force = false;
-          emit('after-show');
         }
         updateState({
           ...opts,
@@ -245,12 +244,6 @@ export default defineComponent({
       } else {
         show(opts);
       }
-    }
-
-    function update(opts: Partial<PopoverOptions> = {}) {
-      if (!isCurrentTarget(opts.target)) return;
-      updateState(opts);
-      setupPopper();
     }
 
     function onDocumentClick(e: CustomEvent) {
@@ -308,20 +301,20 @@ export default defineComponent({
       off(document, 'toggle-popover', onDocumentTogglePopover);
     }
 
-    function beforeEnter(el: HTMLElement) {
+    function beforeEnter(el: Element) {
       emit('before-show', el);
     }
 
-    function afterEnter(el: HTMLElement) {
+    function afterEnter(el: Element) {
       state.force = false;
       emit('after-show', el);
     }
 
-    function beforeLeave(el: HTMLElement) {
+    function beforeLeave(el: Element) {
       emit('before-hide', el);
     }
 
-    function afterLeave(el: HTMLElement) {
+    function afterLeave(el: Element) {
       state.force = false;
       destroyPopper();
       emit('after-hide', el);
