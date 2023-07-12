@@ -11,7 +11,7 @@ export default {
         dayCell: ({ day }) => {
           if (!day.inMonth)
             return {
-              opacity: 0,
+              opacity: 0.3,
               pointerEvents: 'none',
             };
         },

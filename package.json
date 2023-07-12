@@ -1,9 +1,9 @@
 {
-  "name": "v-calendar",
-  "version": "2.4.1",
+  "name": "v-calendar-enriched",
+  "version": "2.5.0",
   "private": false,
-  "description": "A clean and extendable plugin for building simple attributed calendars in Vue.js.",
-  "author": "Nathan Reyes <nathanreyes@me.com>",
+  "description": "A clean and extendend version of plugin v-calendar",
+  "author": "Edson Machado Andreassa <andreassa181@gmail.com> and Nathan Reyes <nathanreyes@me.com>",
   "scripts": {
     "serve": "vue-cli-service serve src/lib.js",
     "build": "yarn build:lib && yarn build:calendar && yarn build:date-picker && yarn build:popover && yarn build:popover-row",

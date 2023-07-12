@@ -1,5 +1,11 @@
 <template>
   <div class="section">
+    <div class="bg-gray-400 pt-10 pb-20 rounded-3xl mb-5">
+      <div class="font-medium text-3xl mb-6">Dev test</div>
+      <v-calendar view="weekly" ref="cal" />
+      <v-calendar ref="cal" />
+    </div>
+
     <h2>Calendar Attributes</h2>
     <h3>
       Show highlights, dots, bars and custom popovers
