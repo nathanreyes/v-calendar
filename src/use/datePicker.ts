@@ -53,7 +53,7 @@ export interface DateConfig {
   mask?: string;
 }
 
-const contextKey = '__vc_date_picker_context__';
+const contextKey = Symbol('__vc_date_picker_context__');
 
 export type DateModes = 'date' | 'datetime' | 'time';
 

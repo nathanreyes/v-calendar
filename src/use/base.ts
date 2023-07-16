@@ -13,7 +13,7 @@ import { Attribute } from '../utils/attribute';
 import { isObject } from '../utils/helpers';
 import { type DayOfWeek, addDays } from '../utils/date/helpers';
 
-const contextKey = '__vc_base_context__';
+const contextKey = Symbol('__vc_base_context__');
 
 export const propsDef = {
   color: {

@@ -138,7 +138,7 @@ export const emitsDef = [
   'update:pages',
 ];
 
-const contextKey = '__vc_calendar_context__';
+const contextKey = Symbol('__vc_calendar_context__');
 
 export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   // Reactive refs

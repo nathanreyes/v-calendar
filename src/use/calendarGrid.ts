@@ -225,7 +225,7 @@ export const emits = [
 
 const SNAP_MINUTES = 15;
 const PIXELS_PER_HOUR = 50;
-const contextKey = '__vc_grid_context__';
+const contextKey = Symbol('__vc_grid_context__');
 
 export const propsDef = {
   ...basePropsDef,

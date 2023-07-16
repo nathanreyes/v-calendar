@@ -18,7 +18,7 @@ export type YearNavItem = Omit<MonthNavItem, 'month'>;
 
 export type CalendarPageContext = ReturnType<typeof createPage>;
 
-const contextKey = '__vc_page_context__';
+const contextKey = Symbol('__vc_page_context__');
 
 export function createPage(page: DeepReadonly<Ref<Page>>) {
   const { locale, getDateAddress, canMove } = useCalendar();
