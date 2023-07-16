@@ -19,8 +19,6 @@ describe('DatePicker', () => {
       const date = new Date(2023, 0, 15);
       const initialPage = { year: 2023, month: 1 };
       const dp = mountDp({ modelValue: null, initialPage });
-      console.log(typeof dp);
-
       const day = dp.get(getDayContentClass(dp.vm, date));
       await day.trigger('click');
       expect(dp.emitted('update:modelValue')).toHaveLength(1);
@@ -155,7 +153,6 @@ describe('DatePicker', () => {
       const hours = [0, 2, 4, 6, 8, 10, 12, 14, 16];
       expectHours({ rules }, hours);
     });
-
     it(':rules - limits time components to hours in work week function', () => {
       const modelValue = new Date(2023, 0, 26);
       const rules = {
@@ -271,7 +268,7 @@ describe('DatePicker', () => {
 
   describe(':withRangeInputs', async () => {
     it(':sets range value when input text is set in YYYY-MM-DD format', async () => {
-      const dp = await mountWithRangeInputs({
+      const dp = mountWithRangeInputs({
         modelValue: null,
       });
       expect(await updateInputs(dp, '2023-01-01', '2023-01-05')).toEqual({
@@ -283,7 +280,7 @@ describe('DatePicker', () => {
 
   describe(':withRangeInputs', async () => {
     it(':sets range value when input text is set in custom format', async () => {
-      const dp = await mountWithRangeInputs({
+      const dp = mountWithRangeInputs({
         modelValue: null,
         masks: {
           input: 'MM/DD/YYYY',
