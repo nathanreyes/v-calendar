@@ -62,6 +62,7 @@ import type { Attribute, PopoverConfig } from '../../utils/attribute';
 import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
 import { popoverDirective } from '../../utils/popovers';
 import type { DateRangeCell } from '../../utils/date/range';
+import { useSlot } from '../../use/slots';
 
 export default defineComponent({
   directives: { popover: popoverDirective },
@@ -75,7 +76,6 @@ export default defineComponent({
       theme,
       attributeContext,
       dayPopoverId,
-      slots,
       onDayClick,
       onDayMouseenter,
       onDayMouseleave,
@@ -149,11 +149,12 @@ export default defineComponent({
       popovers.value.map((p: any) => p.attribute),
     );
 
+    const dayContentSlot = useSlot('day-content');
     const dayClasses = computed(() => {
       return [
         'vc-day',
         ...day.value.classes,
-        { 'vc-day-box-center-center': !slots['day-content'] },
+        { 'vc-day-box-center-center': !dayContentSlot },
         { 'is-not-in-month': !props.day.inMonth },
       ];
     });

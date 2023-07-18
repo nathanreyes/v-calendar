@@ -1,6 +1,7 @@
 import {
   type PropType,
   type ExtractPropTypes,
+  type SetupContext,
   computed,
   ref,
   provide,
@@ -48,6 +49,7 @@ import {
 import type { PopoverVisibility } from '../utils/popovers';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
+import { provideSlots } from './slots';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -140,8 +142,12 @@ export const emitsDef = [
 
 const contextKey = Symbol('__vc_calendar_context__');
 
-export function createCalendar(props: CalendarProps, { emit, slots }: any) {
-  // Reactive refs
+export function createCalendar(
+  props: CalendarProps,
+  { slots, emit }: Pick<SetupContext, 'slots' | 'emit'>,
+) {
+  // #region Refs
+
   const containerRef = ref<IContainer | null>(null);
   const navPopoverRef = ref<typeof Popover | null>(null);
   const focusedDay = ref<CalendarDay | null>(null);
@@ -153,11 +159,15 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   const _pages = ref<Page[]>([]);
   const transitionName = ref('');
 
+  // #endregion
+
   // Non-reactive util vars
   let transitionPromise: any = null;
   let removeHandlers: any = null;
 
   // #region Computed
+
+  provideSlots(slots);
 
   const {
     theme,
@@ -711,7 +721,6 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const context = {
     emit,
-    slots,
     containerRef,
     navPopoverRef,
     focusedDay,

@@ -44,6 +44,7 @@ import {
 } from '../utils/popovers';
 import { propsDef as basePropsDef, createBase } from './base';
 import type { MoveTarget, MoveOptions } from './calendar';
+import { provideSlots } from './slots';
 
 export type DateType = 'date' | 'string' | 'number';
 
@@ -136,11 +137,12 @@ export const emits = [
 
 export function createDatePicker(
   props: DatePickerProps,
-  ctx: SetupContext<string[]>,
+  { emit, slots }: SetupContext<string[]>,
 ) {
+  provideSlots(slots);
+
   const baseCtx = createBase(props);
   const { locale, masks, disabledAttribute } = baseCtx;
-  const { emit } = ctx;
 
   const showCalendar = ref(false);
   const datePickerPopoverId = ref(createGuid());

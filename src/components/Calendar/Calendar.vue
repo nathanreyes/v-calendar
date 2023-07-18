@@ -40,20 +40,17 @@
             :key="page.id"
             :page="page"
           >
-            <slot name="page">
+            <CalendarSlot name="page" :page="page">
               <CalendarPage />
-            </slot>
+            </CalendarSlot>
           </CalendarPageProvider>
         </div>
       </Transition>
-      <slot name="footer" />
+      <CalendarSlot name="footer" />
     </div>
   </div>
   <!--Day popover-->
-  <CalendarDayPopover
-    ><template #default="props"
-      ><slot name="day-popover" v-bind="props" /></template
-  ></CalendarDayPopover>
+  <CalendarDayPopover />
   <!--Nav popover-->
   <CalendarNavPopover />
 </template>
@@ -64,6 +61,7 @@ import CalendarPage from './CalendarPage.vue';
 import CalendarNavPopover from './CalendarNavPopover.vue';
 import CalendarDayPopover from './CalendarDayPopover.vue';
 import CalendarPageProvider from './CalendarPageProvider.vue';
+import CalendarSlot from './CalendarSlot.vue';
 import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
 export default {
@@ -73,6 +71,7 @@ export default {
     CalendarNavPopover,
     CalendarDayPopover,
     CalendarPageProvider,
+    CalendarSlot,
   },
   props: propsDef,
   emit: emitsDef,

@@ -3,7 +3,7 @@
     class="vc-time-picker"
     :class="[{ 'vc-invalid': !isValid, 'vc-attached': !isTimeMode }]"
   >
-    <slot name="time-header">
+    <CalendarSlot name="time-header">
       <div v-if="showHeader && date" class="vc-time-header">
         <span class="vc-time-weekday">
           {{ locale.formatDate(date, 'WWW') }}
@@ -18,7 +18,7 @@
           {{ locale.formatDate(date, 'YYYY') }}
         </span>
       </div>
-    </slot>
+    </CalendarSlot>
     <div class="vc-time-select-group">
       <BaseIcon name="Clock" size="17" />
       <BaseSelect v-model.number="hours" :options="hourOptions" align-right />
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import BaseSelect from '../BaseSelect/BaseSelect.vue';
+import CalendarSlot from '../Calendar/CalendarSlot.vue';
 import { createTimePicker } from '../../use/timePicker';
 
 const props = defineProps<{

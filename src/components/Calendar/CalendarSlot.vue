@@ -1,5 +1,5 @@
 <template>
-  <Component v-if="slots[name]" :is="slots[name]" v-bind="$attrs" />
+  <Component v-if="slot" :is="slot" v-bind="$attrs" />
   <slot v-else />
 </template>
 
@@ -10,9 +10,12 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useCalendar } from '../../use/calendar';
+import { useSlot } from '../../use/slots';
 
 export type CalendarSlotName =
+  | 'day-content'
+  | 'day-popover'
+  | 'footer'
   | 'header-title-wrapper'
   | 'header-title'
   | 'header-prev-button'
@@ -20,12 +23,12 @@ export type CalendarSlotName =
   | 'nav'
   | 'nav-prev-button'
   | 'nav-next-button'
-  | 'day-content'
-  | 'page';
+  | 'page'
+  | 'time-header';
 
-defineProps<{
+const props = defineProps<{
   name: CalendarSlotName;
 }>();
 
-const { slots } = useCalendar();
+const slot = useSlot(props.name);
 </script>
