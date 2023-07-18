@@ -122,5 +122,5 @@ export function useBase() {
 }
 
 export function useOrCreateBase(props: BaseProps) {
-  return inject<BaseContext>(contextKey, createBase(props));
+  return inject<BaseContext>(contextKey, () => createBase(props), true);
 }
