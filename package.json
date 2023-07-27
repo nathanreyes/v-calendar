@@ -30,6 +30,7 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/types/src/index.d.ts",
       "import": {
         "node": "./dist/mjs/index.mjs",
         "default": "./dist/es/index.js"
