@@ -67,7 +67,7 @@ export function createBase(props: BaseProps) {
   const masks = computed(() => locale.value.masks);
 
   const disabledDates = computed(() => {
-    const dates: any[] = props.disabledDates ?? [];
+    const dates: any[] = [...props.disabledDates] ?? [];
     // Add disabled range for min date
     if (props.minDate != null) {
       dates.push({
