@@ -94,6 +94,7 @@ export default class Attribute {
   // Accepts: Day object
   // Returns: First attribute date info that occurs on given day.
   intersectsDay(day) {
+    // console.count('attribute intersectsDay');
     return (
       !this.excludesDay(day) &&
       (this.dates.find(d => d.intersectsDay(day)) || false)

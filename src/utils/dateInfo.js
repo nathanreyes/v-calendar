@@ -8,6 +8,7 @@ const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 export default class DateInfo {
   constructor(config, { order = 0, locale, isFullDay } = {}) {
+    // console.count('DateInfor constructor')
     this.isDateInfo = true;
     this.order = order;
     this.locale = locale instanceof Locale ? locale : new Locale(locale);
@@ -396,6 +397,8 @@ export default class DateInfo {
   }
 
   intersectsDay(day) {
+    // console.count('dateInfo intersectsDay');
+    // return null;
     // Date is outside general range - return null
     if (!this.shallowIntersectsDate(day.range)) return null;
     // Return this date if patterns match
