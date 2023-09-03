@@ -68,7 +68,7 @@ To limit user selection to only time components (hours, minutes, seconds), use `
 
 ```vue
 <template>
-  <VDatePicker v-model="date" mode="time" :timezone="timezone" />
+  <VDatePicker v-model="date" mode="time" />
 </template>
 
 <script setup>
@@ -79,13 +79,24 @@ const date = ref(new Date());
 
 ## Required date
 
-When selecting dates, the default behavior is to allow the user to reset the date value to `null` be re-selecting it.
+When selecting dates, the default behavior is to allow the user to reset the date value to `null` after re-selecting the same date.
 
 To prevent this, set the `is-required` prop.
 
 <Example centered>
   <DateWithValue mode="dateTime" is-required />
 </Example>
+
+```vue
+<template>
+  <VDatePicker v-model="date" mode="dateTime" is-required />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const date = ref(new Date());
+</script>
+```
 
 ## Model modifiers
 
