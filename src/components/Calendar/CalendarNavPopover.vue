@@ -2,7 +2,6 @@
   <Popover
     :id="navPopoverId"
     :class="['vc-nav-popover-container', `vc-${color}`, `vc-${displayMode}`]"
-    ref="navPopoverRef"
   >
     <template #default="{ data }">
       <CalendarPageProvider :page="data.page">
@@ -21,5 +20,5 @@ import CalendarPageProvider from './CalendarPageProvider.vue';
 import CalendarSlot from './CalendarSlot.vue';
 import { useCalendar } from '../../use/calendar';
 
-const { navPopoverId, color, displayMode, navPopoverRef } = useCalendar();
+const { navPopoverId, color, displayMode } = useCalendar();
 </script>

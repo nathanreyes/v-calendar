@@ -12,7 +12,6 @@ import {
   watchEffect,
 } from 'vue';
 import { propsDef as basePropsDef, useOrCreateBase } from './base';
-import Popover from '../Popover/Popover.vue';
 import { type AttributeConfig, Attribute } from '../utils/attribute';
 import {
   type DateSource,
@@ -46,7 +45,7 @@ import {
   getPageAddressForDate,
   addPages as _addPages,
 } from '../utils/page';
-import type { PopoverVisibility } from '../utils/popovers';
+import { type PopoverVisibility, hidePopover } from '../utils/popovers';
 import { addHorizontalSwipeHandler } from '../utils/touch';
 import { skipWatcher, handleWatcher } from '../utils/watchers';
 import { provideSlots } from './slots';
@@ -149,7 +148,6 @@ export function createCalendar(
   // #region Refs
 
   const containerRef = ref<IContainer | null>(null);
-  const navPopoverRef = ref<typeof Popover | null>(null);
   const focusedDay = ref<CalendarDay | null>(null);
   const focusableDay = ref(new Date().getDate());
   const inTransition = ref(false);
@@ -482,9 +480,7 @@ export function createCalendar(
     // Move to new `fromPage` if it's different from the current one
     if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, firstPage.value)) {
       // Hide nav popover for good measure
-      if (navPopoverRef.value) {
-        navPopoverRef.value.hide({ hideDelay: 0 });
-      }
+      hidePopover({ id: navPopoverId.value, hideDelay: 0 });
       // Quietly change view if needed
       if (opts.view) {
         skipWatcher('view', 10);
@@ -722,7 +718,6 @@ export function createCalendar(
   const context = {
     emit,
     containerRef,
-    navPopoverRef,
     focusedDay,
     inTransition,
     navPopoverId,
