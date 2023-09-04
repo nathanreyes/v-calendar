@@ -27,7 +27,6 @@ import {
   isArray,
   isDate,
   defaultsDeep,
-  createGuid,
 } from '../utils/helpers';
 import type {
   DatePatch,
@@ -145,7 +144,7 @@ export function createDatePicker(
   const { locale, masks, disabledAttribute } = baseCtx;
 
   const showCalendar = ref(false);
-  const datePickerPopoverId = ref(createGuid());
+  const datePickerPopoverId = ref(Symbol());
   const dateValue = ref<null | Date | SimpleDateRange>(null);
   const dragValue = ref<null | SimpleDateRange>(null);
   const inputValues = ref<string[]>(['', '']);

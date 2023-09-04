@@ -23,7 +23,6 @@ import { type DateRangeCell, DateRangeContext } from '../utils/date/range';
 import { getDefault } from '../utils/defaults';
 import {
   type CustomElement,
-  createGuid,
   isBoolean,
   has,
   head,
@@ -151,8 +150,8 @@ export function createCalendar(
   const focusedDay = ref<CalendarDay | null>(null);
   const focusableDay = ref(new Date().getDate());
   const inTransition = ref(false);
-  const navPopoverId = ref(createGuid());
-  const dayPopoverId = ref(createGuid());
+  const navPopoverId = ref(Symbol());
+  const dayPopoverId = ref(Symbol());
   const _view = ref(props.view);
   const _pages = ref<Page[]>([]);
   const transitionName = ref('');

@@ -12,7 +12,7 @@ import {
   HighlightConfig,
   Profile,
 } from './glyph';
-import { arrayHasItems, createGuid } from './helpers';
+import { arrayHasItems } from './helpers';
 import Locale from './locale';
 import type { PopoverVisibility } from './popovers';
 import { Theme } from './theme';
@@ -67,7 +67,6 @@ export class Attribute {
       { hashcode: '', order: 0, pinPage: false },
       config,
     );
-    if (!this.key) this.key = createGuid();
     this.locale = locale;
     // Normalize attribute
     theme.normalizeGlyphs(this);

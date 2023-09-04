@@ -73,7 +73,7 @@ export default defineComponent({
   inheritAttrs: false,
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   props: {
-    id: { type: String, required: true },
+    id: { type: [Number, String, Symbol], required: true },
     showDelay: { type: Number, default: 0 },
     hideDelay: { type: Number, default: 110 },
     boundarySelector: { type: String },

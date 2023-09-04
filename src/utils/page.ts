@@ -13,7 +13,7 @@ import { pad, pick } from './helpers';
 import Locale from './locale';
 
 export interface CalendarDay extends DayParts {
-  id: string;
+  id: PropertyKey;
   position: number;
   label: string;
   ariaLabel: string;

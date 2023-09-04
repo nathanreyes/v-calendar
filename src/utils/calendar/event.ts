@@ -28,7 +28,7 @@ export interface DragOrigin {
 }
 
 export interface EventConfig {
-  key: string | number;
+  key: PropertyKey;
   summary: string;
   description: string;
   start: Date;

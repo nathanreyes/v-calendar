@@ -16,7 +16,7 @@ import {
 } from '../utils/calendar/event';
 import { MS_PER_HOUR, roundDate } from '../utils/date/helpers';
 import { DateRange, DateRangeContext } from '../utils/date/range';
-import { createGuid, on } from '../utils/helpers';
+import { on } from '../utils/helpers';
 import type { CalendarDay } from '../utils/page';
 import { propsDef as basePropsDef, createCalendar, emitsDef } from './calendar';
 
@@ -369,7 +369,7 @@ export function createCalendarGrid(
   function createNewEvent(date: Date, isWeekly: boolean) {
     const event = _createEvent(
       {
-        key: createGuid(),
+        key: Symbol(),
         start: date,
         end: date,
         allDay: isWeekly,
@@ -394,7 +394,7 @@ export function createCalendarGrid(
     return props.events.reduce((map, config) => {
       map[config.key] = map[config.key] || createEventFromExisting(config);
       return map;
-    }, {} as Record<any, Event>);
+    }, {} as Record<keyof any, Event>);
   }
 
   function getMsFromPosition(position: number) {
