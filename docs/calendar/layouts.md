@@ -137,8 +137,10 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 
 ## Footer
 
+A `footer` slot may be used to insert content below the primary calendar content.
+
 <Example centered>
-  <LayoutsFooter />
+  <LayoutsFooterCalendar />
 </Example>
 
 ```vue
@@ -167,6 +169,12 @@ function moveToday() {
 }
 </script>
 ```
+
+The slot may also be applied to date pickers.
+
+<Example centered>
+  <LayoutsFooterDatePicker />
+</Example>
 
 ## Multiple Rows & Columns
 
