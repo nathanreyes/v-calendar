@@ -43,25 +43,6 @@ export const pad = (val: string | number, len: number, char = '0') => {
   return val;
 };
 
-export const evalFn = (fn: Function, args: any) =>
-  isFunction(fn) ? fn(args) : fn;
-
-export const mergeEvents = (...args: Array<any>) => {
-  const result: any = {};
-  args.forEach(e =>
-    Object.entries(e).forEach(([key, value]) => {
-      if (!result[key]) {
-        result[key] = value;
-      } else if (isArray(result[key])) {
-        result[key].push(value);
-      } else {
-        result[key] = [result[key], value];
-      }
-    }),
-  );
-  return result;
-};
-
 export const roundTenth = (n: number) => {
   return Math.round(n * 100) / 100;
 };
@@ -72,7 +53,7 @@ export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
 
 export const resolveEl = (target: unknown): Node | null => {
-  if (target == null) return target ?? null;
+  if (target == null) return null;
   if (document && isString(target)) return document.querySelector(target);
   return (target as ComponentPublicInstance).$el ?? target;
 };
