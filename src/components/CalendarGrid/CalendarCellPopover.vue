@@ -23,8 +23,8 @@ import {
   hidePopover,
   showPopover,
 } from '../../utils/popovers';
-import CalendarEventEdit from '../CalendarEventEdit/CalendarEventEdit.vue';
 import Popover from '../Popover/Popover.vue';
+import CalendarEventEdit from './CalendarEventEdit.vue';
 
 interface State {
   event: Event | null;

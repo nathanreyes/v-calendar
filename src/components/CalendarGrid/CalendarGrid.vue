@@ -209,14 +209,14 @@ export default {
 import { useSlots, computed } from 'vue';
 import CalendarNavPopover from '../Calendar/CalendarNavPopover.vue';
 import CalendarHeader from '../Calendar/CalendarHeader.vue';
-import CalendarViewSelect from '../CalendarViewSelect/CalendarViewSelect.vue';
+import CalendarViewSelect from './CalendarViewSelect.vue';
 import CalendarGridWeek from './CalendarGridWeek.vue';
 import CalendarDayCell from './CalendarDayCell.vue';
 import CalendarCellPopover from './CalendarCellPopover.vue';
-import CalendarEventDetails from '../CalendarEventDetails/CalendarEventDetails.vue';
+import CalendarEventDetails from './CalendarEventDetails.vue';
 import { propsDef, emits, createCalendarGrid } from '../../use/calendarGrid';
-import { DateRangeCell } from '../../utils/date/range';
-import { Event } from '../../utils/calendar/event';
+import type { DateRangeCell } from '../../utils/date/range';
+import type { Event } from '../../utils/calendar/event';
 
 const emit = defineEmits(emits);
 const props = defineProps(propsDef);
