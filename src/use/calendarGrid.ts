@@ -249,7 +249,7 @@ export function createCalendarGrid(
   const cellPopoverRef = ref<typeof CalendarCellPopover>();
   const dailyGridRef = ref<IBoundingRect | null>(null);
   const weeklyGridRef = ref<IBoundingRect | null>(null);
-  let activeGridRef = ref<IBoundingRect | null>(null);
+  const activeGridRef = ref<IBoundingRect | null>(null);
   Messages._emit = emit;
 
   const { view, isDaily, isMonthly, pages, locale, move, onDayFocusin } =
@@ -813,10 +813,10 @@ export function createCalendarGrid(
   }
 
   const setActiveGrid = (event: MouseEvent | TouchEvent) => {
-    activeGridRef =
+    activeGridRef.value =
       [dailyGridRef, weeklyGridRef].find(
         ref => ref.value && ref.value.contains(event.currentTarget as Node),
-      ) || ref(null);
+      )?.value ?? null;
   };
 
   const handleEvent = (
