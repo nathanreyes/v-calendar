@@ -11,8 +11,8 @@ import {
   inject,
   provide,
 } from 'vue';
-import Calendar from '../components/Calendar.vue';
-import Popover from '../components/Popover.vue';
+import Calendar from '../components/Calendar/Calendar.vue';
+import Popover from '../components/Popover/Popover.vue';
 import { getDefault } from '../utils/defaults';
 import type { AttributeConfig } from '../utils/attribute';
 import {

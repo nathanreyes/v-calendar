@@ -1,6 +1,6 @@
 import { Attribute } from './attribute';
 import type { DateRangeCell } from './date/range';
-import { isObject, isString, hasAny, defaultsDeep } from './helpers';
+import { defaultsDeep, hasAny, isObject, isString } from './helpers';
 
 type GlyphTarget = 'base' | 'start' | 'end' | 'startEnd';
 type ThemeProp =

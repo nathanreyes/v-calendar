@@ -52,10 +52,10 @@
 </template>
 
 <script setup lang="ts">
+import { createTimePicker } from '../../use/timePicker';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import BaseSelect from '../BaseSelect/BaseSelect.vue';
 import CalendarSlot from '../Calendar/CalendarSlot.vue';
-import { createTimePicker } from '../../use/timePicker';
 
 const props = defineProps<{
   position: number;

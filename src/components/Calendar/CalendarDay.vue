@@ -54,15 +54,15 @@
 </template>
 
 <script lang="ts">
-import { type PropType, defineComponent, computed } from 'vue';
-import CalendarSlot from './CalendarSlot.vue';
+import { type PropType, computed, defineComponent } from 'vue';
 import { useCalendar } from '../../use/calendar';
-import type { CalendarDay } from '../../utils/page';
-import type { Attribute, PopoverConfig } from '../../utils/attribute';
-import { arrayHasItems, last, get, defaults } from '../../utils/helpers';
-import { popoverDirective } from '../../utils/popovers';
-import type { DateRangeCell } from '../../utils/date/range';
 import { useSlot } from '../../use/slots';
+import type { Attribute, PopoverConfig } from '../../utils/attribute';
+import type { DateRangeCell } from '../../utils/date/range';
+import { arrayHasItems, defaults, get, last } from '../../utils/helpers';
+import type { CalendarDay } from '../../utils/page';
+import { popoverDirective } from '../../utils/popovers';
+import CalendarSlot from './CalendarSlot.vue';
 
 export default defineComponent({
   directives: { popover: popoverDirective },

@@ -1,16 +1,16 @@
 import {
+  type DateParts,
   type DateSource,
   type DayParts,
-  type DateParts,
   type MonthParts,
-  daysInWeek,
-  weeksInMonth,
   addDays,
   addMonths,
+  daysInWeek,
   getDayIndex,
+  weeksInMonth,
 } from './date/helpers';
-import Locale from './locale';
 import { pad, pick } from './helpers';
+import Locale from './locale';
 
 export interface CalendarDay extends DayParts {
   id: string;

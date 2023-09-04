@@ -56,13 +56,13 @@
 </template>
 
 <script lang="ts">
-import CalendarHeader from './CalendarHeader.vue';
-import CalendarPage from './CalendarPage.vue';
-import CalendarNavPopover from './CalendarNavPopover.vue';
+import { createCalendar, emitsDef, propsDef } from '../../use/calendar';
 import CalendarDayPopover from './CalendarDayPopover.vue';
+import CalendarHeader from './CalendarHeader.vue';
+import CalendarNavPopover from './CalendarNavPopover.vue';
+import CalendarPage from './CalendarPage.vue';
 import CalendarPageProvider from './CalendarPageProvider.vue';
 import CalendarSlot from './CalendarSlot.vue';
-import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
 
 export default {
   components: {

@@ -62,10 +62,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { computed, defineComponent } from 'vue';
+import type { Event } from '../../utils/calendar/event';
+import type { DateRangeCell } from '../../utils/date/range';
 import { popoverDirective } from '../../utils/popovers';
-import { DateRangeCell } from '../../utils/date/range';
-import { Event } from '../../utils/calendar/event';
 
 export default defineComponent({
   name: 'CalendarCell',

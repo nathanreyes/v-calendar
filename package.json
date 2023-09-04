@@ -44,7 +44,8 @@
     "build:docs": "cd docs && yarn build",
     "build:all": "yarn build && yarn build:docs",
     "test": "vitest",
-    "lint": "eslint . --ext .js,.vue"
+    "lint": "eslint . --ext .js,.vue",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,vue}\""
   },
   "dependencies": {
     "@types/lodash": "^4.14.165",
@@ -60,6 +61,7 @@
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.6",
+    "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "@vitejs/plugin-vue": "^4.0.0",

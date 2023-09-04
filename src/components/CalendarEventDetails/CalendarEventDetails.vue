@@ -24,9 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, PropType } from 'vue';
+import { type PropType, computed, ref } from 'vue';
 import { Event } from '../../utils/calendar/event';
-import DatePicker from '../DatePicker/DatePicker.vue';
 
 const props = defineProps({
   events: { type: Array as PropType<Event[]>, required: true },

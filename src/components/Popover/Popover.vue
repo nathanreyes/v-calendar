@@ -45,28 +45,28 @@
 
 <script lang="ts">
 import {
-  ref,
-  toRefs,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-  onUnmounted,
-  defineComponent,
-  nextTick,
-} from 'vue';
-import {
-  State as PopperState,
-  Instance,
-  OptionsGeneric,
-  PositioningStrategy,
+  type Instance,
+  type OptionsGeneric,
+  type State as PopperState,
+  type PositioningStrategy,
   createPopper,
 } from '@popperjs/core';
-import { on, off, elementContains, resolveEl, omit } from '../../utils/helpers';
 import {
+  computed,
+  defineComponent,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from 'vue';
+import { elementContains, off, omit, on, resolveEl } from '../../utils/helpers';
+import type {
+  PopoverEvent,
   PopoverOptions,
   PopoverState,
-  PopoverEvent,
 } from '../../utils/popovers';
 
 export default defineComponent({

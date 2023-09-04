@@ -1,4 +1,4 @@
-import { type SetupContext, provide, inject } from 'vue';
+import { type SetupContext, inject, provide } from 'vue';
 
 type Slots = SetupContext['slots'];
 

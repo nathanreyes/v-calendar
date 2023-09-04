@@ -42,11 +42,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useCalendar } from '../../use/calendar';
+import { Page } from '../../utils/page';
+import { popoverDirective as vPopover } from '../../utils/popovers';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import CalendarSlot from './CalendarSlot.vue';
-import { useCalendar } from '../../use/calendar';
-import { popoverDirective as vPopover } from '../../utils/popovers';
-import { Page } from '../../utils/page';
 
 const props = defineProps<{
   page: Page;

@@ -1,4 +1,4 @@
-import { on, off, isFunction } from './helpers';
+import { isFunction, off, on } from './helpers';
 import type { CustomElement } from './helpers';
 
 interface SwipeHandlerOptions {

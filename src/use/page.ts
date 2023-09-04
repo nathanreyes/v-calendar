@@ -1,7 +1,7 @@
-import { type Ref, provide, inject } from 'vue';
-import { type Page, getPageId } from '../utils/page';
-import { getMonthDates } from '../utils/date/helpers';
+import { type Ref, inject, provide } from 'vue';
 import { useCalendar } from '..';
+import { getMonthDates } from '../utils/date/helpers';
+import { type Page, getPageId } from '../utils/page';
 
 export interface MonthNavItem {
   month: number;

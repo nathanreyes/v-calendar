@@ -1,25 +1,25 @@
-import { isArray, isObject, isString, isFunction } from '../helpers';
+import { isArray, isFunction, isObject, isString } from '../helpers';
 import Locale from '../locale';
 import type {
-  DayOfWeek,
-  DayInMonth,
-  WeekInMonth,
-  MonthInYear,
-  DayParts,
   DateParts,
+  DayInMonth,
+  DayOfWeek,
+  DayParts,
+  MonthInYear,
+  WeekInMonth,
 } from './helpers';
 import {
-  type Rule,
-  type RuleType,
-  type SingleOrArray,
   ComponentRule,
   ComponentRuleType,
   FunctionRule,
   GroupRuleType,
   IntervalRule,
   IntervalRuleType,
-  OrdinalComponentRuleType,
   OrdinalComponentRule,
+  OrdinalComponentRuleType,
+  type Rule,
+  type RuleType,
+  type SingleOrArray,
 } from './rules';
 
 export type RepeatIntervalShort = 'day' | 'week' | 'month' | 'year';

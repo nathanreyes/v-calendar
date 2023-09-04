@@ -68,12 +68,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, watchEffect } from 'vue';
-import BaseIcon from '../BaseIcon/BaseIcon.vue';
-import CalendarSlot from './CalendarSlot.vue';
-import { head, last, onSpaceOrEnter } from '../../utils/helpers';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { usePage } from '../../use/page';
+import { head, last, onSpaceOrEnter } from '../../utils/helpers';
+import BaseIcon from '../BaseIcon/BaseIcon.vue';
+import CalendarSlot from './CalendarSlot.vue';
 
 export type IQuerySelector = Pick<HTMLElement, 'querySelector'>;
 

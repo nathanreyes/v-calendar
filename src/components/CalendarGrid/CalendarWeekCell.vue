@@ -16,10 +16,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import CalendarCell from './CalendarCell.vue';
 import { useCalendarGrid } from '../../use/calendarGrid';
-import { DateRangeCell } from '../../utils/date/range';
 import { Event } from '../../utils/calendar/event';
+import { DateRangeCell } from '../../utils/date/range';
+import CalendarCell from './CalendarCell.vue';
 
 const props = defineProps<{
   cell: DateRangeCell<Event>;

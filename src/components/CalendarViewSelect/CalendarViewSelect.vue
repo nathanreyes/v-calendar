@@ -8,9 +8,9 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import BaseSelect from '../BaseSelect/BaseSelect.vue';
 import { useCalendar } from '../../use/calendar';
 import { capitalize } from '../../utils/helpers';
+import BaseSelect from '../BaseSelect/BaseSelect.vue';
 
 const { locale, view } = useCalendar();
 

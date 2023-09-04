@@ -26,10 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import Popover from '../Popover/Popover.vue';
-import PopoverRow from '../PopoverRow/PopoverRow.vue';
 import { useCalendar } from '../../use/calendar';
 import { CalendarDay } from '../../utils/page';
+import Popover from '../Popover/Popover.vue';
+import PopoverRow from '../PopoverRow/PopoverRow.vue';
 import CalendarSlot from './CalendarSlot.vue';
 
 const { dayPopoverId, displayMode, color, masks, locale } = useCalendar();

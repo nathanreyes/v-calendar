@@ -1,24 +1,24 @@
 import {
   type ExtractPropTypes,
   type PropType,
-  ref,
   computed,
-  provide,
   inject,
-  watch,
   nextTick,
+  provide,
+  ref,
+  watch,
 } from 'vue';
-import { propsDef as basePropsDef, emitsDef, createCalendar } from './calendar';
-import type { CalendarDay } from '../utils/page';
-import { createGuid, on } from '../utils/helpers';
+import CalendarCellPopover from '../components/CalendarGrid/CalendarCellPopover.vue';
 import {
-  type EventConfig,
   type Event,
+  type EventConfig,
   createEvent as _createEvent,
 } from '../utils/calendar/event';
-import CalendarCellPopover from '../components/CalendarGrid/CalendarCellPopover.vue';
-import { roundDate, MS_PER_HOUR } from '../utils/date/helpers';
+import { MS_PER_HOUR, roundDate } from '../utils/date/helpers';
 import { DateRange, DateRangeContext } from '../utils/date/range';
+import { createGuid, on } from '../utils/helpers';
+import type { CalendarDay } from '../utils/page';
+import { propsDef as basePropsDef, createCalendar, emitsDef } from './calendar';
 
 type GridState =
   | 'NORMAL'

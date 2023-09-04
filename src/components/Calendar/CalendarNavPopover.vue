@@ -14,11 +14,11 @@
 </template>
 
 <script setup lang="ts">
+import { useCalendar } from '../../use/calendar';
 import Popover from '../Popover/Popover.vue';
 import CalendarNav from './CalendarNav.vue';
 import CalendarPageProvider from './CalendarPageProvider.vue';
 import CalendarSlot from './CalendarSlot.vue';
-import { useCalendar } from '../../use/calendar';
 
 const { navPopoverId, color, displayMode } = useCalendar();
 </script>

@@ -1,28 +1,22 @@
-import { ComponentPublicInstance } from 'vue';
-
-// Type utils
+import _has from 'lodash/has';
+import _isDate from 'lodash/isDate';
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
+import _some from 'lodash/some';
+import type { ComponentPublicInstance } from 'vue';
 
 export { isFunction, isString };
 export { default as isBoolean } from 'lodash/isBoolean';
 export { default as isNumber } from 'lodash/isNumber';
 export { default as isUndefined } from 'lodash/isUndefined';
-import _isDate from 'lodash/isDate';
-
-// Object utils
 export { default as get } from 'lodash/get';
 export { default as set } from 'lodash/set';
 export { default as mapValues } from 'lodash/mapValues';
 export { default as defaults } from 'lodash/defaults';
 export { default as defaultsDeep } from 'lodash/defaultsDeep';
-import _has from 'lodash/has';
-
-// Collection utils
 export { default as map } from 'lodash/map';
 export { default as head } from 'lodash/head';
 export { default as last } from 'lodash/last';
-import _some from 'lodash/some';
 
 // Type checkers
 export const getType = (value: any) =>
