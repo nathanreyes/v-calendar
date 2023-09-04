@@ -1,7 +1,7 @@
-import { UnwrapNestedRefs, ComponentPublicInstance, h } from 'vue';
-import { mount, VueWrapper } from '@vue/test-utils';
-import { DatePickerContext } from '@/use/datePicker';
 import DatePicker from '@/components/DatePicker/DatePicker.vue';
+import { DatePickerContext } from '@/use/datePicker';
+import { VueWrapper, mount } from '@vue/test-utils';
+import { ComponentPublicInstance, UnwrapNestedRefs, h } from 'vue';
 
 export type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
   ComponentPublicInstance;

@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import lodash from 'lodash';
-import Locale, { LocaleConfig } from '@/utils/locale';
-import locales from '@/utils/defaults/locales';
 import { DateParts } from '@/utils/date/helpers';
+import locales from '@/utils/defaults/locales';
+import Locale, { LocaleConfig } from '@/utils/locale';
+import lodash from 'lodash';
+import { describe, expect, it } from 'vitest';
 import { DayData, data } from '../util/dayData';
 
 function matchLocaleWithConfig(locale: Locale, config: Partial<LocaleConfig>) {

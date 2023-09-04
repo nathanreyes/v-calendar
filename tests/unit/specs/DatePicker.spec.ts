@@ -1,10 +1,10 @@
-import { describe, expect, it } from 'vitest';
 import TimePicker from '@/components/TimePicker/TimePicker.vue';
+import { describe, expect, it } from 'vitest';
 import {
+  getDayContentClass,
   mountDp,
   mountWithInputs,
   mountWithRangeInputs,
-  getDayContentClass,
   updateInputs,
 } from './utils';
 

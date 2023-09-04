@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import Locale from '@/utils/locale';
 import { DateParts, addDays } from '@/utils/date/helpers';
 import { DateRange, DateRangeContext } from '@/utils/date/range';
+import Locale from '@/utils/locale';
+import { describe, expect, it } from 'vitest';
 import ranges from '../util/ranges.json';
 
 function datePartsMatch(dp1: DateParts | null, dp2: DateParts | null) {

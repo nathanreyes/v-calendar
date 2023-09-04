@@ -1,8 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { h } from 'vue';
-import { VueWrapper, mount } from '@vue/test-utils';
 import Calendar from '@/components/Calendar/Calendar.vue';
 import { pad } from '@/utils/helpers';
+import { VueWrapper, mount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
 import disabledTests from '../util/disabledTests';
 
 describe('Calendar', () => {
