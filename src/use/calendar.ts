@@ -463,7 +463,7 @@ export function createCalendar(
       _view.value,
       locale.value,
     ).map(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
-    return pagesInRange.every(val => val);
+    return pagesInRange.some(val => val);
   };
 
   const canMoveBy = (pages: number, opts: Partial<MoveOptions> = {}) => {
