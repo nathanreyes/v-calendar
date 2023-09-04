@@ -41,22 +41,22 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, computed } from 'vue';
+import { computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import CalendarSlot from './CalendarSlot.vue';
 import { useCalendar } from '../../use/calendar';
 import { popoverDirective as vPopover } from '../../utils/popovers';
 import { Page } from '../../utils/page';
 
-const props = defineProps({
-  page: { type: Object as PropType<Page>, required: true },
-  layout: String,
-  isLg: Boolean,
-  isXl: Boolean,
-  is2xl: Boolean,
-  hideTitle: Boolean,
-  hideArrows: Boolean,
-});
+const props = defineProps<{
+  page: Page;
+  layout?: string;
+  isLg?: boolean;
+  isXl?: boolean;
+  is2xl?: boolean;
+  hideTitle?: boolean;
+  hideArrows?: boolean;
+}>();
 
 const {
   navPopoverId,

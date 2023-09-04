@@ -27,7 +27,7 @@
         {{ option.label }}
       </option>
     </select>
-    <BaseIcon v-if="showIcon" name="ChevronDown" :size="18" />
+    <BaseIcon v-if="showIcon" name="ChevronDown" size="18" />
     <div v-if="fitContent" class="vc-base-sizer" aria-hidden="true">
       {{ selectedLabel }}
     </div>

@@ -1,8 +1,8 @@
 import {
-  DateSource,
-  DayParts,
-  DateParts,
-  MonthParts,
+  type DateSource,
+  type DayParts,
+  type DateParts,
+  type MonthParts,
   daysInWeek,
   weeksInMonth,
   addDays,

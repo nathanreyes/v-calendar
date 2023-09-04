@@ -1,4 +1,4 @@
-import { type DeepReadonly, type Ref, provide, inject } from 'vue';
+import { type Ref, provide, inject } from 'vue';
 import { type Page, getPageId } from '../utils/page';
 import { getMonthDates } from '../utils/date/helpers';
 import { useCalendar } from '..';
@@ -20,7 +20,7 @@ export type CalendarPageContext = ReturnType<typeof createPage>;
 
 const contextKey = Symbol('__vc_page_context__');
 
-export function createPage(page: DeepReadonly<Ref<Page>>) {
+export function createPage(page: Ref<Page>) {
   const { locale, getDateAddress, canMove } = useCalendar();
 
   function getMonthItems(year: number, mask: string): MonthNavItem[] {

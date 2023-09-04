@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { toRef } from 'vue';
-import { Page } from '../../utils/page';
+import type { Page } from '../../utils/page';
 import { createPage } from '../../use/page';
 
 const props = defineProps<{
