@@ -56,6 +56,7 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { createCalendar, emitsDef, propsDef } from '../../use/calendar';
 import CalendarDayPopover from './CalendarDayPopover.vue';
 import CalendarHeader from './CalendarHeader.vue';
@@ -64,7 +65,7 @@ import CalendarPage from './CalendarPage.vue';
 import CalendarPageProvider from './CalendarPageProvider.vue';
 import CalendarSlot from './CalendarSlot.vue';
 
-export default {
+export default defineComponent({
   components: {
     CalendarHeader,
     CalendarPage,
@@ -78,7 +79,7 @@ export default {
   setup(props, { emit, slots }) {
     return createCalendar(props, { emit, slots });
   },
-};
+});
 </script>
 
 <style>
