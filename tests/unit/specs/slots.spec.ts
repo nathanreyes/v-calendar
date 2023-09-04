@@ -145,7 +145,6 @@ describe.each([
 
   if (name === 'DatePicker') {
     it(':renders the time-header slot', () => {
-      console.log('test', name);
       const wrapper = mount(component, {
         props: { mode: 'dateTime' },
         slots: {
