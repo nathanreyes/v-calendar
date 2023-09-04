@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <div>
-      <label class="block font-semibold mb-1">Move</label>
+      <span class="block font-semibold mb-1">Move</span>
       <div class="ml-2">
         <label for="numMonths" class="flex items-center">
           <input
@@ -41,7 +41,11 @@
       <label for="position" class="inline-flex items-center font-semibold"
         >Position:
         <div class="flex-grow relative">
-          <BaseSelect v-model="position" :options="positionOptions" />
+          <BaseSelect
+            id="position"
+            v-model="position"
+            :options="positionOptions"
+          />
         </div>
       </label>
       <label
@@ -49,7 +53,11 @@
         class="inline-flex items-center font-semibold mb-1 ml-0 sm:ml-4"
         >Transition:
         <div class="flex-grow relative">
-          <BaseSelect v-model="transition" :options="transitionOptions" />
+          <BaseSelect
+            id="transition"
+            v-model="transition"
+            :options="transitionOptions"
+          />
         </div>
         <span
           class="inline-block w-4 h-4 bg-green-400 rounded-full ml-4"
