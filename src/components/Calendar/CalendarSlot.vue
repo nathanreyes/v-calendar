@@ -15,6 +15,7 @@ import { useSlot } from '../../use/slots';
 export type CalendarSlotName =
   | 'day-content'
   | 'day-popover'
+  | 'dp-footer'
   | 'footer'
   | 'header-title-wrapper'
   | 'header-title'

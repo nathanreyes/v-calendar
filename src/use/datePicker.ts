@@ -138,7 +138,7 @@ export function createDatePicker(
   props: DatePickerProps,
   { emit, slots }: SetupContext<string[]>,
 ) {
-  provideSlots(slots);
+  provideSlots(slots, { footer: 'dp-footer' });
 
   const baseCtx = createBase(props);
   const { locale, masks, disabledAttribute } = baseCtx;
