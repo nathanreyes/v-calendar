@@ -1,7 +1,7 @@
 import { version } from '../../package.json';
-import { defineConfig } from 'vitepress';
 import { fileURLToPath, URL } from 'node:url';
 import path from 'path';
+import { defineConfig } from 'vitepress';
 
 function nav() {
   return [
@@ -12,7 +12,7 @@ function nav() {
           text: 'Changelog',
           link: 'https://github.com/nathanreyes/v-calendar/blob/v3/CHANGELOG.md',
         },
-        { text: '2.0', link: 'https://v2.vcalendar.io' },
+        { text: '2.0', link: 'https://v2--vcalendar.netlify.app/' },
       ],
     },
   ];
