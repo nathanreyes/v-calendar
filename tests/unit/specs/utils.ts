@@ -1,7 +1,11 @@
 import DatePicker from '@/components/DatePicker/DatePicker.vue';
+import { CalendarContext } from '@/use/calendar';
 import { DatePickerContext } from '@/use/datePicker';
 import { VueWrapper, mount } from '@vue/test-utils';
 import { ComponentPublicInstance, UnwrapNestedRefs, h } from 'vue';
+
+export type CalendarComponent = UnwrapNestedRefs<CalendarContext> &
+  ComponentPublicInstance;
 
 export type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
   ComponentPublicInstance;

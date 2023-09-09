@@ -1,5 +1,6 @@
 import TimePicker from '@/components/TimePicker/TimePicker.vue';
 import { describe, expect, it } from 'vitest';
+import { testMoveMethods, testNavigationProps } from './navigation';
 import {
   getDayContentClass,
   mountDp,
@@ -10,6 +11,8 @@ import {
 
 describe('DatePicker', () => {
   describe(':props', async () => {
+    testNavigationProps((props: any) => mountDp(props));
+
     it(':value - does not emit update:modelValue on initial load', () => {
       const dp = mountDp({ modelValue: new Date() });
       expect(dp.emitted('update:modelValue')).toBeUndefined();
@@ -291,6 +294,10 @@ describe('DatePicker', () => {
         end: new Date(2004, 9, 1),
       });
     });
+  });
+
+  describe(':methods', () => {
+    testMoveMethods((props: any) => mountDp(props));
   });
 
   // it(':model-config.fillDate - fills missing date parts for date input', async () => {
