@@ -162,8 +162,6 @@ export function createCalendar(
   let transitionPromise: any = null;
   let removeHandlers: any = null;
 
-  // #region Computed
-
   provideSlots(slots);
 
   const {
@@ -172,9 +170,13 @@ export function createCalendar(
     displayMode,
     locale,
     masks,
+    minDate,
+    maxDate,
     disabledAttribute,
     disabledDates,
   } = useOrCreateBase(props);
+
+  // #region Computed
 
   const count = computed(() => props.rows * props.columns);
 
@@ -186,12 +188,12 @@ export function createCalendar(
 
   const minPage = computed(
     () =>
-      props.minPage || (props.minDate ? getDateAddress(props.minDate) : null),
+      props.minPage || (minDate.value ? getDateAddress(minDate.value) : null),
   );
 
   const maxPage = computed(
     () =>
-      props.maxPage || (props.maxDate ? getDateAddress(props.maxDate) : null),
+      props.maxPage || (maxDate.value ? getDateAddress(maxDate.value) : null),
   );
 
   const navVisibility = computed(() => props.navVisibility);
@@ -634,12 +636,14 @@ export function createCalendar(
   // #region Lifecycle methods
 
   // Created
+
   refreshPages({
     page: props.initialPage,
     position: props.initialPagePosition,
   });
 
   // Mounted
+
   onMounted(() => {
     if (!props.disablePageSwipe && containerRef.value) {
       // Add swipe handler to move to next and previous pages

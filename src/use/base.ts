@@ -66,19 +66,22 @@ export function createBase(props: BaseProps) {
 
   const masks = computed(() => locale.value.masks);
 
+  const minDate = computed(() => props.minDate);
+  const maxDate = computed(() => props.maxDate);
+
   const disabledDates = computed(() => {
     const dates: any[] = props.disabledDates ?? [];
     // Add disabled range for min date
-    if (props.minDate != null) {
+    if (minDate.value != null) {
       dates.push({
         start: null,
-        end: addDays(locale.value.toDate(props.minDate), -1),
+        end: addDays(locale.value.toDate(minDate.value), -1),
       });
     }
     // Add disabled range for max date
-    if (props.maxDate != null) {
+    if (maxDate.value != null) {
       dates.push({
-        start: addDays(locale.value.toDate(props.maxDate), 1),
+        start: addDays(locale.value.toDate(maxDate.value), 1),
         end: null,
       });
     }
@@ -106,6 +109,8 @@ export function createBase(props: BaseProps) {
     theme,
     locale,
     masks,
+    minDate,
+    maxDate,
     disabledDates,
     disabledAttribute,
   };
