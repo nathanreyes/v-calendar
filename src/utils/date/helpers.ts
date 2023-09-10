@@ -44,7 +44,7 @@ export type DayInMonth =
   | 16
   | 17
   | 18
-  | 18
+  | 19
   | 20
   | 21
   | 22
@@ -75,7 +75,7 @@ export type DayInMonth =
   | -16
   | -17
   | -18
-  | -18
+  | -19
   | -20
   | -21
   | -22
