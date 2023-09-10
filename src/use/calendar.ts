@@ -1,18 +1,17 @@
 import {
-  type PropType,
   type ExtractPropTypes,
+  type PropType,
   type SetupContext,
   computed,
-  ref,
-  provide,
+  inject,
   onMounted,
   onUnmounted,
+  provide,
+  ref,
   watch,
-  inject,
   watchEffect,
 } from 'vue';
-import { propsDef as basePropsDef, useOrCreateBase } from './base';
-import { type AttributeConfig, Attribute } from '../utils/attribute';
+import { Attribute, type AttributeConfig } from '../utils/attribute';
 import {
   type DateSource,
   addDays,
@@ -23,11 +22,11 @@ import { type DateRangeCell, DateRangeContext } from '../utils/date/range';
 import { getDefault } from '../utils/defaults';
 import {
   type CustomElement,
-  isBoolean,
+  arrayHasItems,
   has,
   head,
+  isBoolean,
   last,
-  arrayHasItems,
 } from '../utils/helpers';
 import {
   type CalendarDay,
@@ -35,18 +34,19 @@ import {
   type Page,
   type PageAddress,
   type TitlePosition,
-  pageRangeToArray,
-  pageIsValid,
-  pageIsEqualToPage,
-  pageIsBeforePage,
-  pageIsAfterPage,
-  pageIsBetweenPages,
-  getPageAddressForDate,
   addPages as _addPages,
+  getPageAddressForDate,
+  pageIsAfterPage,
+  pageIsBeforePage,
+  pageIsBetweenPages,
+  pageIsEqualToPage,
+  pageIsValid,
+  pageRangeToArray,
 } from '../utils/page';
 import { type PopoverVisibility, hidePopover } from '../utils/popovers';
 import { addHorizontalSwipeHandler } from '../utils/touch';
-import { skipWatcher, handleWatcher } from '../utils/watchers';
+import { handleWatcher, skipWatcher } from '../utils/watchers';
+import { propsDef as basePropsDef, useOrCreateBase } from './base';
 import { provideSlots } from './slots';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
@@ -260,7 +260,7 @@ export function createCalendar(
     _pages.value.reduce((result: CalendarDay[], page: Page) => {
       result.push(...page.viewDays);
       return result;
-    }, <CalendarDay[]>[]),
+    }, [] as CalendarDay[]),
   );
 
   const attributes = computed(() => {
