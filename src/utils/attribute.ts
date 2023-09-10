@@ -44,6 +44,8 @@ export interface AttributeConfig {
   pinPage: boolean;
 }
 
+let attrKey = 0;
+
 export class Attribute {
   key: string | number = '';
   hashcode = '';
@@ -67,6 +69,7 @@ export class Attribute {
       { hashcode: '', order: 0, pinPage: false },
       config,
     );
+    this.key ||= ++attrKey;
     this.locale = locale;
     // Normalize attribute
     theme.normalizeGlyphs(this);
