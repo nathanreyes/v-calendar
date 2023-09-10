@@ -34,7 +34,7 @@
 import { useDatePicker } from '../../use/datePicker';
 import Calendar from '../Calendar/Calendar.vue';
 import CalendarSlot from '../Calendar/CalendarSlot.vue';
-import TimePicker from '../TimePicker/TimePicker.vue';
+import TimePicker from './TimePicker.vue';
 
 const {
   attributes,

@@ -1,4 +1,4 @@
-import TimePicker from '@/components/TimePicker/TimePicker.vue';
+import TimePicker from '@/components/DatePicker/TimePicker.vue';
 import { describe, expect, it } from 'vitest';
 import { testNavigationMethods, testNavigationProps } from './navigation';
 import { testCalendarSlots, testDatePickerSlots } from './slots';
