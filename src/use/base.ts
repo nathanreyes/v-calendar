@@ -70,7 +70,7 @@ export function createBase(props: BaseProps) {
   const maxDate = computed(() => props.maxDate);
 
   const disabledDates = computed(() => {
-    const dates: any[] = [...props.disabledDates] ?? [];
+    const dates: any[] = props.disabledDates ? [...props.disabledDates] : [];
     // Add disabled range for min date
     if (minDate.value != null) {
       dates.push({
