@@ -1,20 +1,16 @@
-import { Calendar, DatePicker } from '@/components';
-import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import type { CalendarDay, Page } from '@/utils/page';
+import { expect, it } from 'vitest';
 import { h } from 'vue';
-import { getDayContentClass } from './utils';
+import { type ComponentMount, getDayContentClass } from './utils';
 
-describe.each([
-  { component: Calendar, name: 'Calendar' },
-  { component: DatePicker, name: 'DatePicker' },
-])('$name :slots', ({ component, name }: { component: any; name: string }) => {
+export function testCalendarSlots(mountFn: ComponentMount) {
   it(':renders the day-content slot', () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       props: {
         initialPage: { month: 1, year: 2000 },
       },
       slots: {
-        'day-content': ({ day }) =>
+        'day-content': ({ day }: { day: CalendarDay }) =>
           h('div', { class: `custom-day-${day.day}` }, day.day),
       },
     });
@@ -23,7 +19,7 @@ describe.each([
 
   it(':renders the day-popover slot', async () => {
     const popoverDate = new Date(2000, 0, 15);
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       props: {
         initialPage: { month: 1, year: 2000 },
         attributes: [{ dates: [popoverDate], popover: true }],
@@ -41,7 +37,7 @@ describe.each([
   });
 
   it(':renders the footer slot', () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       slots: {
         footer: () => h('span', { class: 'custom-footer' }, 'Test footer'),
       },
@@ -50,7 +46,7 @@ describe.each([
   });
 
   it(':renders the header-title-wrapper slot', () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       props: {
         initialPage: { month: 1, year: 2000 },
       },
@@ -66,12 +62,12 @@ describe.each([
   });
 
   it(':renders the header-title slot', () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       props: {
         initialPage: { month: 1, year: 2000 },
       },
       slots: {
-        'header-title': ({ title }) =>
+        'header-title': ({ title }: { title: string }) =>
           h('span', { class: `custom-header-title` }, title),
       },
     });
@@ -83,7 +79,7 @@ describe.each([
   });
 
   it(':renders the header-prev-button slot', () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       slots: {
         'header-prev-button': () =>
           h('span', { class: `custom-header-prev-button` }, 'P'),
@@ -95,7 +91,7 @@ describe.each([
   });
 
   it(':renders the header-next-button slot', () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       slots: {
         'header-next-button': () =>
           h('span', { class: `custom-header-next-button` }, 'N'),
@@ -107,7 +103,7 @@ describe.each([
   });
 
   it(':renders the nav-prev-button slot', async () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       slots: {
         'nav-prev-button': () =>
           h('span', { class: `custom-nav-prev-button` }, 'P'),
@@ -121,7 +117,7 @@ describe.each([
   });
 
   it(':renders the nav-next-button slot', async () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       slots: {
         'nav-next-button': () =>
           h('span', { class: `custom-nav-next-button` }, 'P'),
@@ -135,23 +131,24 @@ describe.each([
   });
 
   it(':renders the page slot', () => {
-    const wrapper = mount(component, {
+    const wrapper = mountFn({
       slots: {
-        page: ({ page }) => h('div', { class: 'custom-page' }, page.id),
+        page: ({ page }: { page: Page }) =>
+          h('div', { class: 'custom-page' }, page.id),
       },
     });
     expect(wrapper.find('.custom-page').exists()).toBe(true);
   });
+}
 
-  if (name === 'DatePicker') {
-    it(':renders the time-header slot', () => {
-      const wrapper = mount(component, {
-        props: { mode: 'dateTime' },
-        slots: {
-          ['time-header']: () => h('div', { class: 'custom-time-header' }),
-        },
-      });
-      expect(wrapper.find('.custom-time-header').exists()).toBe(true);
+export function testDatePickerSlots(mountFn: ComponentMount) {
+  it(':renders the time-header slot', () => {
+    const wrapper = mountFn({
+      props: { mode: 'dateTime' },
+      slots: {
+        ['time-header']: () => h('div', { class: 'custom-time-header' }),
+      },
     });
-  }
-});
+    expect(wrapper.find('.custom-time-header').exists()).toBe(true);
+  });
+}

@@ -2,11 +2,7 @@ import { pad } from '@/utils/helpers';
 import { VueWrapper } from '@vue/test-utils';
 import { expect, it } from 'vitest';
 import disabledTests from '../util/disabledTests';
-import { CalendarComponent, DatePickerComponent } from './utils';
-
-export type ComponentMount = (
-  props?: any,
-) => VueWrapper<CalendarComponent | DatePickerComponent>;
+import type { ComponentMount } from './utils';
 
 const expectDisabledArrows = (arrows: string[], wrapper: VueWrapper) => {
   ['prev', 'next'].forEach(dir => {
@@ -70,7 +66,9 @@ const expectDisabledNavYears = (years: number[], wrapper: VueWrapper) => {
 export function testNavigationProps(mountFn: ComponentMount) {
   it(':initial-page renders at given page', async () => {
     const wrapper = mountFn({
-      initialPage: { month: 1, year: 2000 },
+      props: {
+        initialPage: { month: 1, year: 2000 },
+      },
     });
     expect(wrapper.find('.vc-day.id-2000-01-01').exists()).toBe(true);
   });
@@ -78,7 +76,7 @@ export function testNavigationProps(mountFn: ComponentMount) {
   for (let test of disabledTests) {
     it(test.it, async () => {
       // Set props
-      const wrapper = mountFn(test.props);
+      const wrapper = mountFn({ props: test.props });
       // Test disabled arrows
       if (test.disabledArrows) {
         expectDisabledArrows(test.disabledArrows, wrapper);
@@ -124,7 +122,7 @@ export function testNavigationProps(mountFn: ComponentMount) {
   }
 }
 
-export function testMoveMethods(mountFn: ComponentMount) {
+export function testNavigationMethods(mountFn: ComponentMount) {
   it(':move should move to a date', async () => {
     const wrapper = mountFn();
     const vm = wrapper.vm;

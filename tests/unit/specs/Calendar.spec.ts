@@ -1,15 +1,19 @@
 import Calendar from '@/components/Calendar/Calendar.vue';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
-import { testNavigationProps } from './navigation';
-import { testMoveMethods } from './navigation';
+import { describe } from 'vitest';
+import { testNavigationMethods, testNavigationProps } from './navigation';
+import { testCalendarSlots } from './slots';
 
 describe('Calendar', () => {
   describe(':props', () => {
-    testNavigationProps(props => mount(Calendar, { props }));
+    testNavigationProps(ctx => mount(Calendar, ctx));
   });
 
   describe(':methods', () => {
-    testMoveMethods(props => mount(Calendar, { props }));
+    testNavigationMethods(ctx => mount(Calendar, ctx));
+  });
+
+  describe(':slots', () => {
+    testCalendarSlots(ctx => mount(Calendar, ctx));
   });
 });
