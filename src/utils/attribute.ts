@@ -29,7 +29,7 @@ export type EventConfig = Partial<{
   label: string;
 }>;
 
-export interface AttributeConfig {
+export type AttributeConfig = Partial<{
   key: string | number;
   hashcode: string;
   content: ContentConfig;
@@ -42,7 +42,7 @@ export interface AttributeConfig {
   customData: any;
   order: number;
   pinPage: boolean;
-}
+}>;
 
 let attrKey = 0;
 
