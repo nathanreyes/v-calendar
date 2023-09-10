@@ -59,11 +59,14 @@ title: 'API'
 | Name | Props |
 | --- | --- |
 | **header-title** | title: string |
+| **header-title-wrapper** | |
 | **header-prev-button** | move: () => Promise\<boolean\>, disabled: boolean |
 | **header-next-button** | move: () => Promise\<boolean\>, disabled: boolean |
 | **nav-prev-button** | move: () => Promise\<boolean\>, disabled: boolean |
 | **nav-next-button** | move: () => Promise\<boolean\>, disabled: boolean |
 | **day-content** | day: [CalendarDay](#calendarday), attributes: Attribute[], locale: Locale |
+| **day-popover** | day: [CalendarDay](#calendarday), dayTitle: string, attributes: Attribute[] |
+| **footer** | |
 
 ## Methods
 
