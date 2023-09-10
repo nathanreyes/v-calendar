@@ -508,7 +508,7 @@ const todos = ref([
   {
     description: 'Take Noah to basketball practice.',
     isComplete: false,
-    dates: { weekdays: 6 }, // Every Friday
+    dates: { repeat: { weekdays: 5 } }, // Every Friday
     color: 'red',
   },
 ]);
@@ -519,7 +519,7 @@ const attributes = computed(() => [
     dates: todo.dates,
     dot: {
       color: todo.color,
-      class: todo.isComplete ? 'opacity-75' : '',
+      ...(todo.isComplete && { class: 'opacity-75' }),
     },
     popover: {
       label: todo.description,
