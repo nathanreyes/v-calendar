@@ -439,7 +439,12 @@ export default {
       {
         description: 'Take Noah to basketball practice.',
         isComplete: false,
-        dates: { weekdays: 6 }, // Every Friday
+        dates: {
+          repeat: {
+            from: null,
+            weekdays: 6 // Every Friday
+          }
+        },
         color: 'red',
       },
     ];
