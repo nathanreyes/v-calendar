@@ -1,28 +1,22 @@
-import { ComponentPublicInstance } from 'vue';
-
-// Type utils
+import _has from 'lodash/has';
+import _isDate from 'lodash/isDate';
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
+import _some from 'lodash/some';
+import type { ComponentPublicInstance } from 'vue';
 
 export { isFunction, isString };
 export { default as isBoolean } from 'lodash/isBoolean';
 export { default as isNumber } from 'lodash/isNumber';
 export { default as isUndefined } from 'lodash/isUndefined';
-import _isDate from 'lodash/isDate';
-
-// Object utils
 export { default as get } from 'lodash/get';
 export { default as set } from 'lodash/set';
 export { default as mapValues } from 'lodash/mapValues';
 export { default as defaults } from 'lodash/defaults';
 export { default as defaultsDeep } from 'lodash/defaultsDeep';
-import _has from 'lodash/has';
-
-// Collection utils
 export { default as map } from 'lodash/map';
 export { default as head } from 'lodash/head';
 export { default as last } from 'lodash/last';
-import _some from 'lodash/some';
 
 // Type checkers
 export const getType = (value: any) =>
@@ -49,25 +43,6 @@ export const pad = (val: string | number, len: number, char = '0') => {
   return val;
 };
 
-export const evalFn = (fn: Function, args: any) =>
-  isFunction(fn) ? fn(args) : fn;
-
-export const mergeEvents = (...args: Array<any>) => {
-  const result: any = {};
-  args.forEach(e =>
-    Object.entries(e).forEach(([key, value]) => {
-      if (!result[key]) {
-        result[key] = value;
-      } else if (isArray(result[key])) {
-        result[key].push(value);
-      } else {
-        result[key] = [result[key], value];
-      }
-    }),
-  );
-  return result;
-};
-
 export const roundTenth = (n: number) => {
   return Math.round(n * 100) / 100;
 };
@@ -78,7 +53,7 @@ export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
 
 export const resolveEl = (target: unknown): Node | null => {
-  if (target == null) return target ?? null;
+  if (target == null) return null;
   if (document && isString(target)) return document.querySelector(target);
   return (target as ComponentPublicInstance).$el ?? target;
 };
@@ -135,7 +110,7 @@ export const omit = <T extends object, K extends [...(keyof T)[]]>(
   ...keys: K
 ) => {
   const ret = {} as {
-    [K in keyof typeof obj]: typeof obj[K];
+    [K in keyof typeof obj]: (typeof obj)[K];
   };
   let key: keyof typeof obj;
   for (key in obj) {
@@ -178,13 +153,6 @@ export function clamp(num: number, min: number, max: number) {
 }
 
 /* eslint-disable no-bitwise */
-
-export const createGuid = () => {
-  function S4() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  }
-  return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
-};
 
 export function hash(str: string): number {
   let hashcode = 0;

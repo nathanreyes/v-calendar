@@ -1,25 +1,28 @@
-import { UnwrapNestedRefs, ComponentPublicInstance, h } from 'vue';
-import { mount, VueWrapper } from '@vue/test-utils';
-import { DatePickerContext } from '@/use/datePicker';
 import DatePicker from '@/components/DatePicker/DatePicker.vue';
+import { CalendarContext } from '@/use/calendar';
+import { DatePickerContext } from '@/use/datePicker';
+import { VueWrapper, mount } from '@vue/test-utils';
+import { ComponentPublicInstance, UnwrapNestedRefs, h } from 'vue';
+
+export type CalendarComponent = UnwrapNestedRefs<CalendarContext> &
+  ComponentPublicInstance;
 
 export type DatePickerComponent = UnwrapNestedRefs<DatePickerContext> &
   ComponentPublicInstance;
 
-export async function mountDp(props: any, slots?: any) {
-  const dpWrapper = mount<DatePickerComponent>(
-    // @ts-ignore
-    DatePicker,
-    { props, slots },
-  );
-  return dpWrapper;
+export type PluginComponent = CalendarComponent | DatePickerComponent;
+
+export type ComponentMount = (props?: any) => VueWrapper<PluginComponent>;
+
+export function mountDp(ctx: any) {
+  return mount(DatePicker, ctx) as unknown as VueWrapper<DatePickerComponent>;
 }
 
-export function getDayClass(vm: DatePickerComponent, date: Date) {
+export function getDayClass(vm: PluginComponent, date: Date) {
   return `.id-${vm.locale.getDayId(date)}`;
 }
 
-export function getDayContentClass(vm: DatePickerComponent, date: Date) {
+export function getDayContentClass(vm: PluginComponent, date: Date) {
   return `${getDayClass(vm, date)} .vc-day-content`;
 }
 
@@ -32,12 +35,10 @@ export function renderFnEvents(evts: Record<string, Function>) {
   return result;
 }
 
-export function mountWithInputs(props: any) {
-  return mountDp(
-    {
-      ...props,
-    },
-    {
+export function mountWithInputs(ctx: any) {
+  return mountDp({
+    ...ctx,
+    slots: {
       default: function (sProps: any) {
         return h('input', {
           props: {
@@ -47,18 +48,18 @@ export function mountWithInputs(props: any) {
         });
       },
     },
-  );
+  });
 }
 
-export function mountWithRangeInputs(props: any) {
-  return mountDp(
-    {
-      ...props,
+export function mountWithRangeInputs(ctx: any) {
+  return mountDp({
+    props: {
+      ...ctx.props,
       modelModifiers: {
         range: true,
       },
     },
-    {
+    slots: {
       default: function (sProps: any) {
         return h('div', [
           h('input', {
@@ -76,7 +77,7 @@ export function mountWithRangeInputs(props: any) {
         ]);
       },
     },
-  );
+  });
 }
 
 export async function updateInputs(

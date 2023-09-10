@@ -1,22 +1,21 @@
 import type { Placement } from '@popperjs/core';
-import { type DateRangeSource, DateRange } from './date/range';
-import { arrayHasItems, createGuid } from './helpers';
 import { addDays } from './date/helpers';
+import { DateRange, type DateRangeSource } from './date/range';
+import {
+  Bar,
+  BarConfig,
+  Content,
+  ContentConfig,
+  Dot,
+  DotConfig,
+  Highlight,
+  HighlightConfig,
+  Profile,
+} from './glyph';
+import { arrayHasItems } from './helpers';
+import Locale from './locale';
 import type { PopoverVisibility } from './popovers';
 import { Theme } from './theme';
-import Locale from './locale';
-
-import {
-  ContentConfig,
-  HighlightConfig,
-  DotConfig,
-  BarConfig,
-  Profile,
-  Content,
-  Highlight,
-  Dot,
-  Bar,
-} from './glyph';
 
 export type PopoverConfig = Partial<{
   label: string;
@@ -45,6 +44,8 @@ export interface AttributeConfig {
   pinPage: boolean;
 }
 
+let attrKey = 0;
+
 export class Attribute {
   key: string | number = '';
   hashcode = '';
@@ -68,7 +69,7 @@ export class Attribute {
       { hashcode: '', order: 0, pinPage: false },
       config,
     );
-    if (!this.key) this.key = createGuid();
+    this.key ||= ++attrKey;
     this.locale = locale;
     // Normalize attribute
     theme.normalizeGlyphs(this);

@@ -1,19 +1,19 @@
 import {
-  DateSource,
-  DayParts,
-  DateParts,
-  MonthParts,
-  daysInWeek,
-  weeksInMonth,
+  type DateParts,
+  type DateSource,
+  type DayParts,
+  type MonthParts,
   addDays,
   addMonths,
+  daysInWeek,
   getDayIndex,
+  weeksInMonth,
 } from './date/helpers';
-import Locale from './locale';
 import { pad, pick } from './helpers';
+import Locale from './locale';
 
 export interface CalendarDay extends DayParts {
-  id: string;
+  id: PropertyKey;
   position: number;
   label: string;
   ariaLabel: string;
@@ -380,6 +380,10 @@ function getWeekdays(week: CalendarWeek, locale: Locale): CalendarWeekday[] {
     label: locale.formatDate(day.date, locale.masks.weekdays),
     weekday: day.weekday,
   }));
+}
+
+export function getPageId(month: number, year: number) {
+  return `${year}.${pad(month, 2)}`;
 }
 
 export function getPageAddressForDate(

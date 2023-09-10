@@ -235,9 +235,8 @@
   --vc-time-select-group-icon-color: var(--vc-accent-500);
   /* Base select */
   --vc-select-color: var(--vc-gray-900);
-  --vc-select-bg: var(--vg-gray-50);
-  --vc-select-hover-bg: var(--vc-gray-100);
-  --vc-select-border: var(--vc-gray-300);
+  --vc-select-bg: var(--vc-gray-100);
+  --vc-select-hover-bg: var(--vc-gray-200);
   /* Calendar day */
   --vc-day-content-hover-bg: var(--vc-hover-bg);
   --vc-day-content-disabled-color: var(--vc-gray-400);
@@ -303,7 +302,6 @@
   --vc-select-color: var(--vc-gray-200);
   --vc-select-bg: var(--vc-gray-700);
   --vc-select-hover-bg: var(--vc-gray-600);
-  --vc-select-border: var(--vc-gray-500);
   /* Calendar day */
   --vc-day-content-hover-bg: var(--vc-hover-bg);
   --vc-day-content-disabled-color: var(--vc-gray-600);

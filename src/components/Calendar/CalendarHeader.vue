@@ -16,16 +16,15 @@
         <BaseIcon name="ChevronLeft" size="24" />
       </CalendarSlot>
     </button>
-    <button
-      v-if="show.title"
-      type="button"
-      class="vc-title"
-      v-popover="navPopoverOptions"
-    >
-      <CalendarSlot name="header-title" :title="page.title">
-        <span>{{ page.title }}</span>
+    <div v-if="show.title" class="vc-title-wrapper">
+      <CalendarSlot name="header-title-wrapper">
+        <button type="button" class="vc-title" v-popover="navPopoverOptions">
+          <CalendarSlot name="header-title" :title="page.title">
+            <span>{{ page.title }}</span>
+          </CalendarSlot>
+        </button>
       </CalendarSlot>
-    </button>
+    </div>
     <button
       v-if="show.next"
       type="button"
@@ -42,22 +41,22 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, computed } from 'vue';
-import BaseIcon from '../BaseIcon/BaseIcon.vue';
-import CalendarSlot from '../CalendarSlot/CalendarSlot.vue';
+import { computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
-import { popoverDirective as vPopover } from '../../utils/popovers';
 import { Page } from '../../utils/page';
+import { popoverDirective as vPopover } from '../../utils/popovers';
+import BaseIcon from '../BaseIcon/BaseIcon.vue';
+import CalendarSlot from './CalendarSlot.vue';
 
-const props = defineProps({
-  page: { type: Object as PropType<Page>, required: true },
-  layout: String,
-  isLg: Boolean,
-  isXl: Boolean,
-  is2xl: Boolean,
-  hideTitle: Boolean,
-  hideArrows: Boolean,
-});
+const props = defineProps<{
+  page: Page;
+  layout?: string;
+  isLg?: boolean;
+  isXl?: boolean;
+  is2xl?: boolean;
+  hideTitle?: boolean;
+  hideArrows?: boolean;
+}>();
 
 const {
   navPopoverId,
@@ -146,12 +145,24 @@ const gridStyle = computed(() => {
     font-size: var(--vc-text-2xl);
   }
 
+  .vc-title-wrapper {
+    grid-row: 1;
+    grid-column: title;
+  }
+  .vc-prev {
+    grid-row: 1;
+    grid-column: prev;
+  }
+  .vc-next {
+    grid-row: 1;
+    grid-column: next;
+  }
+
   .vc-title,
   .vc-prev,
   .vc-next {
     display: flex;
     align-items: center;
-    grid-row: 1;
     border: 0;
     border-radius: var(--vc-rounded);
     pointer-events: auto;
@@ -160,7 +171,6 @@ const gridStyle = computed(() => {
   }
 
   .vc-title {
-    grid-column: title;
     color: var(--vc-header-title-color);
     font-weight: var(--vc-font-semibold);
     white-space: nowrap;
@@ -188,13 +198,6 @@ const gridStyle = computed(() => {
       opacity: 0.25;
       pointer-events: none;
     }
-  }
-
-  .vc-prev {
-    grid-column: prev;
-  }
-  .vc-next {
-    grid-column: next;
   }
 }
 </style>

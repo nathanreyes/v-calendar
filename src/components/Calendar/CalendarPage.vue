@@ -52,26 +52,19 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
-import CalendarDay from '../CalendarDay/CalendarDay.vue';
-import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
-import { useCalendar } from '../../use/calendar';
-import type { Page } from '../../utils/page';
-
 export default {
-  name: 'CalendarPane',
   inheritAttrs: false,
-  components: { CalendarHeader, CalendarDay },
-  props: {
-    page: { type: Object as PropType<Page>, required: true },
-  },
-  setup() {
-    const { onWeeknumberClick } = useCalendar();
-    return {
-      onWeeknumberClick,
-    };
-  },
 };
+</script>
+
+<script setup lang="ts">
+import CalendarDay from './CalendarDay.vue';
+import CalendarHeader from './CalendarHeader.vue';
+import { useCalendar } from '../../use/calendar';
+import { usePage } from '../../use/page';
+
+const { page } = usePage();
+const { onWeeknumberClick } = useCalendar();
 </script>
 
 <style lang="css">

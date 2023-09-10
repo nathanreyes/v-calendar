@@ -1,24 +1,24 @@
 import {
   type ExtractPropTypes,
   type PropType,
-  ref,
   computed,
-  provide,
   inject,
-  watch,
   nextTick,
+  provide,
+  ref,
+  watch,
 } from 'vue';
-import { propsDef as basePropsDef, emitsDef, createCalendar } from './calendar';
-import type { CalendarDay } from '../utils/page';
-import { createGuid, on } from '../utils/helpers';
+import CalendarCellPopover from '../components/CalendarGrid/CalendarCellPopover.vue';
 import {
-  type EventConfig,
   type Event,
+  type EventConfig,
   createEvent as _createEvent,
 } from '../utils/calendar/event';
-import CalendarCellPopover from '../components/CalendarGrid/CalendarCellPopover.vue';
-import { roundDate, MS_PER_HOUR } from '../utils/date/helpers';
+import { MS_PER_HOUR, roundDate } from '../utils/date/helpers';
 import { DateRange, DateRangeContext } from '../utils/date/range';
+import { on } from '../utils/helpers';
+import type { CalendarDay } from '../utils/page';
+import { propsDef as basePropsDef, createCalendar, emitsDef } from './calendar';
 
 type GridState =
   | 'NORMAL'
@@ -225,7 +225,7 @@ export const emits = [
 
 const SNAP_MINUTES = 15;
 const PIXELS_PER_HOUR = 50;
-const contextKey = '__vc_grid_context__';
+const contextKey = Symbol('__vc_grid_context__');
 
 export const propsDef = {
   ...basePropsDef,
@@ -249,7 +249,7 @@ export function createCalendarGrid(
   const cellPopoverRef = ref<typeof CalendarCellPopover>();
   const dailyGridRef = ref<IBoundingRect | null>(null);
   const weeklyGridRef = ref<IBoundingRect | null>(null);
-  let activeGridRef = ref<IBoundingRect | null>(null);
+  const activeGridRef = ref<IBoundingRect | null>(null);
   Messages._emit = emit;
 
   const { view, isDaily, isMonthly, pages, locale, move, onDayFocusin } =
@@ -369,7 +369,7 @@ export function createCalendarGrid(
   function createNewEvent(date: Date, isWeekly: boolean) {
     const event = _createEvent(
       {
-        key: createGuid(),
+        key: Symbol(),
         start: date,
         end: date,
         allDay: isWeekly,
@@ -394,7 +394,7 @@ export function createCalendarGrid(
     return props.events.reduce((map, config) => {
       map[config.key] = map[config.key] || createEventFromExisting(config);
       return map;
-    }, {} as Record<any, Event>);
+    }, {} as Record<keyof any, Event>);
   }
 
   function getMsFromPosition(position: number) {
@@ -813,10 +813,10 @@ export function createCalendarGrid(
   }
 
   const setActiveGrid = (event: MouseEvent | TouchEvent) => {
-    activeGridRef =
+    activeGridRef.value =
       [dailyGridRef, weeklyGridRef].find(
         ref => ref.value && ref.value.contains(event.currentTarget as Node),
-      ) || ref(null);
+      )?.value ?? null;
   };
 
   const handleEvent = (

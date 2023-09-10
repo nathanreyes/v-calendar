@@ -1,13 +1,12 @@
 import { computed } from 'vue';
-import { arrayHasItems } from '../utils/helpers';
+import { useDatePicker } from '../use/datePicker';
 import {
-  SimpleDateParts,
-  DateParts,
+  type DateParts,
+  type SimpleDateParts,
   getDatePartsOptions,
   isDateParts,
 } from '../utils/date/helpers';
-import { useBase } from '../use/base';
-import { useDatePicker } from '../use/datePicker';
+import { arrayHasItems } from '../utils/helpers';
 
 const _amOptions = [
   { value: 0, label: '12' },

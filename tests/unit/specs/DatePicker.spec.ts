@@ -1,24 +1,28 @@
+import TimePicker from '@/components/DatePicker/TimePicker.vue';
 import { describe, expect, it } from 'vitest';
-import TimePicker from '@/components/TimePicker/TimePicker.vue';
+import { testNavigationMethods, testNavigationProps } from './navigation';
+import { testCalendarSlots, testDatePickerSlots } from './slots';
 import {
+  getDayContentClass,
   mountDp,
   mountWithInputs,
   mountWithRangeInputs,
-  getDayContentClass,
   updateInputs,
 } from './utils';
 
 describe('DatePicker', () => {
   describe(':props', async () => {
-    it(':value - does not emit update:modelValue on initial load', async () => {
-      const dp = await mountDp({ modelValue: new Date() });
+    testNavigationProps((ctx: any) => mountDp(ctx));
+
+    it(':value - does not emit update:modelValue on initial load', () => {
+      const dp = mountDp({ props: { modelValue: new Date() } });
       expect(dp.emitted('update:modelValue')).toBeUndefined();
     });
 
     it(':value - emits update:modelValue on day click', async () => {
       const date = new Date(2023, 0, 15);
       const initialPage = { year: 2023, month: 1 };
-      const dp = await mountDp({ modelValue: null, initialPage });
+      const dp = mountDp({ props: { modelValue: null, initialPage } });
       const day = dp.get(getDayContentClass(dp.vm, date));
       await day.trigger('click');
       expect(dp.emitted('update:modelValue')).toHaveLength(1);
@@ -27,10 +31,12 @@ describe('DatePicker', () => {
     it(':model-modifiers - emits correct updated value with number model modifier', async () => {
       const initialDate = new Date(2000, 0, 15);
       const clickDate = new Date(2000, 0, 20);
-      const dp = await mountDp({
-        modelValue: initialDate.getTime(),
-        modelModifiers: {
-          number: true,
+      const dp = mountDp({
+        props: {
+          modelValue: initialDate.getTime(),
+          modelModifiers: {
+            number: true,
+          },
         },
       });
       const day = dp.get(getDayContentClass(dp.vm, clickDate));
@@ -43,10 +49,12 @@ describe('DatePicker', () => {
     it(':model-modifiers - emits correct updated ISO value with string model modifier', async () => {
       const initialDate = new Date(2000, 0, 15);
       const clickDate = new Date(2000, 0, 20);
-      const dp = await mountDp({
-        modelValue: initialDate.toISOString(),
-        modelModifiers: {
-          string: true,
+      const dp = mountDp({
+        props: {
+          modelValue: initialDate.toISOString(),
+          modelModifiers: {
+            string: true,
+          },
         },
       });
       const day = dp.get(getDayContentClass(dp.vm, clickDate));
@@ -60,15 +68,17 @@ describe('DatePicker', () => {
       const initialPage = { year: 2000, month: 1 };
       const clickDate = new Date(2000, 0, 20);
       const mask = 'YYYY-MM-DD';
-      const dp = await mountDp({
-        modelValue: null,
-        modelModifiers: {
-          string: true,
+      const dp = mountDp({
+        props: {
+          modelValue: null,
+          modelModifiers: {
+            string: true,
+          },
+          masks: {
+            modelValue: mask,
+          },
+          initialPage,
         },
-        masks: {
-          modelValue: mask,
-        },
-        initialPage,
       });
       const day = dp.get(getDayContentClass(dp.vm, clickDate));
       await day.trigger('click');
@@ -77,7 +87,7 @@ describe('DatePicker', () => {
 
     it(':is-required - clears value if set to false and new value equal to previous value', async () => {
       const date = new Date(2023, 0, 15);
-      const dp = await mountDp({ modelValue: date });
+      const dp = mountDp({ props: { modelValue: date } });
       const day = dp.get(getDayContentClass(dp.vm, date));
       await day.trigger('click');
       expect(dp.emitted('update:modelValue')).toHaveLength(1);
@@ -86,27 +96,29 @@ describe('DatePicker', () => {
 
     it(':is-required - keeps value if set to true and new value equal to previous value', async () => {
       const date = new Date(2023, 0, 15);
-      const dp = await mountDp({ modelValue: date, isRequired: true });
+      const dp = mountDp({ props: { modelValue: date, isRequired: true } });
       const day = dp.get(getDayContentClass(dp.vm, date));
       await day.trigger('click');
       expect(dp.emitted('update:modelValue')).toBeUndefined();
     });
 
     it(':disabled-dates - prevents selection of single dates', async () => {
-      const dp = await mountDp({
-        modelValue: new Date(2023, 0, 1),
-        disabledDates: [{ repeat: { weekdays: [4, 5] } }],
+      const dp = mountDp({
+        props: {
+          modelValue: new Date(2023, 0, 1),
+          disabledDates: [{ repeat: { weekdays: [4, 5] } }],
+        },
       });
       const day = dp.get(getDayContentClass(dp.vm, new Date(2023, 0, 11)));
       await day.trigger('click');
       expect(dp.emitted('update:modelValue')).toBeUndefined();
     });
 
-    it(':rules - emits update:modelValue on initial load if rule modifies value', async () => {
+    it(':rules - emits update:modelValue on initial load if rule modifies value', () => {
       const date = new Date(2023, 0, 15, 0, 0, 0, 0);
       const rulesDate = new Date(2023, 0, 15, 12, 0, 0, 0);
       const rules = { hours: 12 };
-      const dp = await mountDp({ modelValue: date, rules });
+      const dp = mountDp({ props: { modelValue: date, rules } });
       expect(dp.emitted('update:modelValue')).toHaveLength(1);
       expect(dp.emitted('update:modelValue')![0][0]).toEqual(rulesDate);
     });
@@ -115,10 +127,12 @@ describe('DatePicker', () => {
       const initialPage = { year: 2000, month: 1 };
       const clickDate = new Date(2000, 0, 20);
       const rulesDate = new Date(2000, 0, 20, 9, 0, 0, 0);
-      const dp = await mountDp({
-        modelValue: null,
-        rules: { hours: 9 },
-        initialPage,
+      const dp = mountDp({
+        props: {
+          modelValue: null,
+          rules: { hours: 9 },
+          initialPage,
+        },
       });
       const day = dp.get(getDayContentClass(dp.vm, clickDate));
       await day.trigger('click');
@@ -153,7 +167,6 @@ describe('DatePicker', () => {
       const hours = [0, 2, 4, 6, 8, 10, 12, 14, 16];
       expectHours({ rules }, hours);
     });
-
     it(':rules - limits time components to hours in work week function', () => {
       const modelValue = new Date(2023, 0, 26);
       const rules = {
@@ -165,12 +178,14 @@ describe('DatePicker', () => {
       expectHours({ modelValue, rules }, hours);
     });
 
-    async function expectHours(props: any, hours: number[]) {
-      const dp = await mountDp({
-        modelValue: new Date(),
-        mode: 'dateTime',
-        is24hr: true,
-        ...props,
+    function expectHours(props: any, hours: number[]) {
+      const dp = mountDp({
+        props: {
+          modelValue: new Date(),
+          mode: 'dateTime',
+          is24hr: true,
+          ...props,
+        },
       });
       const tp = dp.getComponent(TimePicker);
       const { hourOptions } = tp.vm;
@@ -185,9 +200,11 @@ describe('DatePicker', () => {
     }
 
     it(':min-date - prevents date before minimum date', async () => {
-      const dp = await mountDp({
-        modelValue: new Date(2000, 0, 15),
-        minDate: new Date(2000, 0, 5),
+      const dp = mountDp({
+        props: {
+          modelValue: new Date(2000, 0, 15),
+          minDate: new Date(2000, 0, 5),
+        },
       });
       // Day before min date is disabled
       expect(dp.find('.id-2000-01-04 .vc-disabled').exists()).toEqual(true);
@@ -198,9 +215,11 @@ describe('DatePicker', () => {
     });
 
     it(':min-date - allows date on minimum date', async () => {
-      const dp = await mountDp({
-        modelValue: new Date(2000, 0, 15),
-        minDate: new Date(2000, 0, 5),
+      const dp = mountDp({
+        props: {
+          modelValue: new Date(2000, 0, 15),
+          minDate: new Date(2000, 0, 5),
+        },
       });
       // Day of min date is not disabled
       expect(dp.find('.id-2000-01-05 .vc-disabled').exists()).toEqual(false);
@@ -211,9 +230,11 @@ describe('DatePicker', () => {
     });
 
     it(':max-date - prevents date after maximum date', async () => {
-      const dp = await mountDp({
-        modelValue: new Date(2000, 0, 15),
-        maxDate: new Date(2000, 0, 25),
+      const dp = mountDp({
+        props: {
+          modelValue: new Date(2000, 0, 15),
+          maxDate: new Date(2000, 0, 25),
+        },
       });
       // Day after max date is disabled
       expect(dp.find('.id-2000-01-26 .vc-disabled').exists()).toEqual(true);
@@ -224,9 +245,11 @@ describe('DatePicker', () => {
     });
 
     it(':max-date - allows date on maximum date', async () => {
-      const dp = await mountDp({
-        modelValue: new Date(2000, 0, 15),
-        maxDate: new Date(2000, 0, 25),
+      const dp = mountDp({
+        props: {
+          modelValue: new Date(2000, 0, 15),
+          maxDate: new Date(2000, 0, 25),
+        },
       });
       // Day of max date is not disabled
       expect(dp.find('.id-2000-01-25 .vc-disabled').exists()).toEqual(false);
@@ -239,8 +262,10 @@ describe('DatePicker', () => {
 
   describe(':withInputs', async () => {
     it(':sets value when input text is set in YYYY-MM-DD format', async () => {
-      const dp = await mountWithInputs({
-        modelValue: null,
+      const dp = mountWithInputs({
+        props: {
+          modelValue: null,
+        },
       });
       expect(await updateInputs(dp, '2023-01-01')).toEqual(
         new Date(2023, 0, 1),
@@ -248,10 +273,12 @@ describe('DatePicker', () => {
     });
 
     it(':sets values when input text is set in custom format', async () => {
-      const dp = await mountWithInputs({
-        modelValue: null,
-        masks: {
-          input: 'MM/DD/YYYY',
+      const dp = mountWithInputs({
+        props: {
+          modelValue: null,
+          masks: {
+            input: 'MM/DD/YYYY',
+          },
         },
       });
       expect(await updateInputs(dp, '1/21/1983')).toEqual(
@@ -260,8 +287,10 @@ describe('DatePicker', () => {
     });
 
     it(':resets value to null when input is cleared', async () => {
-      const dp = await mountWithInputs({
-        modelValue: new Date(),
+      const dp = mountWithInputs({
+        props: {
+          modelValue: new Date(),
+        },
       });
       expect(await updateInputs(dp, '')).toEqual(null);
     });
@@ -269,8 +298,10 @@ describe('DatePicker', () => {
 
   describe(':withRangeInputs', async () => {
     it(':sets range value when input text is set in YYYY-MM-DD format', async () => {
-      const dp = await mountWithRangeInputs({
-        modelValue: null,
+      const dp = mountWithRangeInputs({
+        props: {
+          modelValue: null,
+        },
       });
       expect(await updateInputs(dp, '2023-01-01', '2023-01-05')).toEqual({
         start: new Date(2023, 0, 1),
@@ -281,10 +312,12 @@ describe('DatePicker', () => {
 
   describe(':withRangeInputs', async () => {
     it(':sets range value when input text is set in custom format', async () => {
-      const dp = await mountWithRangeInputs({
-        modelValue: null,
-        masks: {
-          input: 'MM/DD/YYYY',
+      const dp = mountWithRangeInputs({
+        props: {
+          modelValue: null,
+          masks: {
+            input: 'MM/DD/YYYY',
+          },
         },
       });
       expect(await updateInputs(dp, '1/21/1983', '10/1/2004')).toEqual({
@@ -292,6 +325,15 @@ describe('DatePicker', () => {
         end: new Date(2004, 9, 1),
       });
     });
+  });
+
+  describe(':methods', () => {
+    testNavigationMethods(ctx => mountDp(ctx));
+  });
+
+  describe(':slots', () => {
+    testCalendarSlots(ctx => mountDp(ctx));
+    testDatePickerSlots(ctx => mountDp(ctx));
   });
 
   // it(':model-config.fillDate - fills missing date parts for date input', async () => {

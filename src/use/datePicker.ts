@@ -11,8 +11,8 @@ import {
   inject,
   provide,
 } from 'vue';
-import Calendar from '../components/Calendar.vue';
-import Popover from '../components/Popover.vue';
+import Calendar from '../components/Calendar/Calendar.vue';
+import Popover from '../components/Popover/Popover.vue';
 import { getDefault } from '../utils/defaults';
 import type { AttributeConfig } from '../utils/attribute';
 import {
@@ -27,7 +27,6 @@ import {
   isArray,
   isDate,
   defaultsDeep,
-  createGuid,
 } from '../utils/helpers';
 import type {
   DatePatch,
@@ -44,6 +43,7 @@ import {
 } from '../utils/popovers';
 import { propsDef as basePropsDef, createBase } from './base';
 import type { MoveTarget, MoveOptions } from './calendar';
+import { provideSlots } from './slots';
 
 export type DateType = 'date' | 'string' | 'number';
 
@@ -53,7 +53,7 @@ export interface DateConfig {
   mask?: string;
 }
 
-const contextKey = '__vc_date_picker_context__';
+const contextKey = Symbol('__vc_date_picker_context__');
 
 export type DateModes = 'date' | 'datetime' | 'time';
 
@@ -136,14 +136,15 @@ export const emits = [
 
 export function createDatePicker(
   props: DatePickerProps,
-  ctx: SetupContext<string[]>,
+  { emit, slots }: SetupContext<string[]>,
 ) {
+  provideSlots(slots, { footer: 'dp-footer' });
+
   const baseCtx = createBase(props);
   const { locale, masks, disabledAttribute } = baseCtx;
-  const { emit } = ctx;
 
   const showCalendar = ref(false);
-  const datePickerPopoverId = ref(createGuid());
+  const datePickerPopoverId = ref(Symbol());
   const dateValue = ref<null | Date | SimpleDateRange>(null);
   const dragValue = ref<null | SimpleDateRange>(null);
   const inputValues = ref<string[]>(['', '']);

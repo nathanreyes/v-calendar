@@ -1,8 +1,8 @@
 import type { App } from 'vue';
 import * as components from './components/index';
+import './styles/index.css';
 import { setVueInstance } from './utils/config/index';
 import { type Defaults, setupDefaults } from './utils/defaults';
-import './styles/index.css';
 
 const install = (app: App, defaults: Defaults = {}) => {
   setVueInstance(app);
@@ -10,7 +10,7 @@ const install = (app: App, defaults: Defaults = {}) => {
   const prefix = app.config.globalProperties.$VCalendar.componentPrefix;
   for (const componentKey in components) {
     const component = (components as any)[componentKey];
-    app.component(`${prefix}${component.name}`, component);
+    app.component(`${prefix}${componentKey}`, component);
   }
 };
 

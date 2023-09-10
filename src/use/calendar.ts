@@ -1,18 +1,17 @@
 import {
-  type PropType,
   type ExtractPropTypes,
+  type PropType,
+  type SetupContext,
   computed,
-  ref,
-  provide,
+  inject,
   onMounted,
   onUnmounted,
+  provide,
+  ref,
   watch,
-  inject,
   watchEffect,
 } from 'vue';
-import { propsDef as basePropsDef, useOrCreateBase } from './base';
-import Popover from '../Popover/Popover.vue';
-import { type AttributeConfig, Attribute } from '../utils/attribute';
+import { Attribute, type AttributeConfig } from '../utils/attribute';
 import {
   type DateSource,
   addDays,
@@ -23,12 +22,11 @@ import { type DateRangeCell, DateRangeContext } from '../utils/date/range';
 import { getDefault } from '../utils/defaults';
 import {
   type CustomElement,
-  createGuid,
-  isBoolean,
+  arrayHasItems,
   has,
   head,
+  isBoolean,
   last,
-  arrayHasItems,
 } from '../utils/helpers';
 import {
   type CalendarDay,
@@ -36,18 +34,20 @@ import {
   type Page,
   type PageAddress,
   type TitlePosition,
-  pageRangeToArray,
-  pageIsValid,
-  pageIsEqualToPage,
-  pageIsBeforePage,
-  pageIsAfterPage,
-  pageIsBetweenPages,
-  getPageAddressForDate,
   addPages as _addPages,
+  getPageAddressForDate,
+  pageIsAfterPage,
+  pageIsBeforePage,
+  pageIsBetweenPages,
+  pageIsEqualToPage,
+  pageIsValid,
+  pageRangeToArray,
 } from '../utils/page';
-import type { PopoverVisibility } from '../utils/popovers';
+import { type PopoverVisibility, hidePopover } from '../utils/popovers';
 import { addHorizontalSwipeHandler } from '../utils/touch';
-import { skipWatcher, handleWatcher } from '../utils/watchers';
+import { handleWatcher, skipWatcher } from '../utils/watchers';
+import { propsDef as basePropsDef, useOrCreateBase } from './base';
+import { provideSlots } from './slots';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -138,26 +138,31 @@ export const emitsDef = [
   'update:pages',
 ];
 
-const contextKey = '__vc_calendar_context__';
+const contextKey = Symbol('__vc_calendar_context__');
 
-export function createCalendar(props: CalendarProps, { emit, slots }: any) {
-  // Reactive refs
+export function createCalendar(
+  props: CalendarProps,
+  { slots, emit }: Pick<SetupContext, 'slots' | 'emit'>,
+) {
+  // #region Refs
+
   const containerRef = ref<IContainer | null>(null);
-  const navPopoverRef = ref<typeof Popover | null>(null);
   const focusedDay = ref<CalendarDay | null>(null);
   const focusableDay = ref(new Date().getDate());
   const inTransition = ref(false);
-  const navPopoverId = ref(createGuid());
-  const dayPopoverId = ref(createGuid());
+  const navPopoverId = ref(Symbol());
+  const dayPopoverId = ref(Symbol());
   const _view = ref(props.view);
   const _pages = ref<Page[]>([]);
   const transitionName = ref('');
+
+  // #endregion
 
   // Non-reactive util vars
   let transitionPromise: any = null;
   let removeHandlers: any = null;
 
-  // #region Computed
+  provideSlots(slots);
 
   const {
     theme,
@@ -165,9 +170,13 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     displayMode,
     locale,
     masks,
+    minDate,
+    maxDate,
     disabledAttribute,
     disabledDates,
   } = useOrCreateBase(props);
+
+  // #region Computed
 
   const count = computed(() => props.rows * props.columns);
 
@@ -179,12 +188,12 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const minPage = computed(
     () =>
-      props.minPage || (props.minDate ? getDateAddress(props.minDate) : null),
+      props.minPage || (minDate.value ? getDateAddress(minDate.value) : null),
   );
 
   const maxPage = computed(
     () =>
-      props.maxPage || (props.maxDate ? getDateAddress(props.maxDate) : null),
+      props.maxPage || (maxDate.value ? getDateAddress(maxDate.value) : null),
   );
 
   const navVisibility = computed(() => props.navVisibility);
@@ -251,7 +260,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     _pages.value.reduce((result: CalendarDay[], page: Page) => {
       result.push(...page.viewDays);
       return result;
-    }, <CalendarDay[]>[]),
+    }, [] as CalendarDay[]),
   );
 
   const attributes = computed(() => {
@@ -455,7 +464,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
       _view.value,
       locale.value,
     ).map(p => pageIsBetweenPages(p, minPage.value, maxPage.value));
-    return pagesInRange.every(val => val);
+    return pagesInRange.some(val => val);
   };
 
   const canMoveBy = (pages: number, opts: Partial<MoveOptions> = {}) => {
@@ -472,9 +481,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
     // Move to new `fromPage` if it's different from the current one
     if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, firstPage.value)) {
       // Hide nav popover for good measure
-      if (navPopoverRef.value) {
-        navPopoverRef.value.hide({ hideDelay: 0 });
-      }
+      hidePopover({ id: navPopoverId.value, hideDelay: 0 });
       // Quietly change view if needed
       if (opts.view) {
         skipWatcher('view', 10);
@@ -629,12 +636,14 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
   // #region Lifecycle methods
 
   // Created
+
   refreshPages({
     page: props.initialPage,
     position: props.initialPagePosition,
   });
 
   // Mounted
+
   onMounted(() => {
     if (!props.disablePageSwipe && containerRef.value) {
       // Add swipe handler to move to next and previous pages
@@ -711,9 +720,7 @@ export function createCalendar(props: CalendarProps, { emit, slots }: any) {
 
   const context = {
     emit,
-    slots,
     containerRef,
-    navPopoverRef,
     focusedDay,
     inTransition,
     navPopoverId,

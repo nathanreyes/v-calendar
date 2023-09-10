@@ -15,12 +15,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, computed, toRefs } from 'vue';
-import Popover from '../Popover/Popover.vue';
-import CalendarEventEdit from '../CalendarEventEdit/CalendarEventEdit.vue';
+import { computed, defineComponent, reactive, ref, toRefs } from 'vue';
 import { useCalendar } from '../../use/calendar';
-import { Event } from '../../utils/calendar/event';
-import { PopoverOptions, showPopover, hidePopover } from '../../utils/popovers';
+import type { Event } from '../../utils/calendar/event';
+import {
+  type PopoverOptions,
+  hidePopover,
+  showPopover,
+} from '../../utils/popovers';
+import Popover from '../Popover/Popover.vue';
+import CalendarEventEdit from './CalendarEventEdit.vue';
 
 interface State {
   event: Event | null;

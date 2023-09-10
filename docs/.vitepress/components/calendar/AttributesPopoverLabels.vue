@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   visibility: { type: String, default: 'hover' },
@@ -33,7 +33,7 @@ const attributes = computed(() => [
     dates: todo.dates,
     dot: {
       color: todo.color,
-      class: todo.isComplete ? 'opacity-75' : '',
+      ...(todo.isComplete && { class: 'opacity-75' }),
     },
     popover: {
       label: todo.description,

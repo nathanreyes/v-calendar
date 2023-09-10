@@ -34,40 +34,48 @@
             gridTemplateColumns: `repeat(${columns}, 1fr)`,
           }"
         >
-          <!--Calendar Panes-->
-          <CalendarPane v-for="page in pages" :key="page.id" :page="page" />
+          <!--Calendar pages-->
+          <CalendarPageProvider
+            v-for="page in pages"
+            :key="page.id"
+            :page="page"
+          >
+            <CalendarSlot name="page" :page="page">
+              <CalendarPage />
+            </CalendarSlot>
+          </CalendarPageProvider>
         </div>
       </Transition>
-      <slot name="footer" />
+      <CalendarSlot name="footer" />
     </div>
   </div>
   <!--Day popover-->
-  <CalendarDayPopover
-    ><template #default="props"
-      ><slot name="day-popover" v-bind="props" /></template
-  ></CalendarDayPopover>
+  <CalendarDayPopover />
   <!--Nav popover-->
   <CalendarNavPopover />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CalendarHeader from '../CalendarHeader/CalendarHeader.vue';
-import CalendarPane from '../CalendarPane/CalendarPane.vue';
-import CalendarNavPopover from '../CalendarNavPopover/CalendarNavPopover.vue';
-import CalendarDayPopover from '../CalendarDayPopover/CalendarDayPopover.vue';
-import { emitsDef, propsDef, createCalendar } from '../../use/calendar';
+import { createCalendar, emitsDef, propsDef } from '../../use/calendar';
+import CalendarDayPopover from './CalendarDayPopover.vue';
+import CalendarHeader from './CalendarHeader.vue';
+import CalendarNavPopover from './CalendarNavPopover.vue';
+import CalendarPage from './CalendarPage.vue';
+import CalendarPageProvider from './CalendarPageProvider.vue';
+import CalendarSlot from './CalendarSlot.vue';
 
 export default defineComponent({
-  name: 'Calendar',
   components: {
     CalendarHeader,
-    CalendarPane,
+    CalendarPage,
     CalendarNavPopover,
     CalendarDayPopover,
+    CalendarPageProvider,
+    CalendarSlot,
   },
-  emits: emitsDef,
   props: propsDef,
+  emit: emitsDef,
   setup(props, { emit, slots }) {
     return createCalendar(props, { emit, slots });
   },

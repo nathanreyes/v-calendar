@@ -45,36 +45,35 @@
 
 <script lang="ts">
 import {
-  ref,
-  toRefs,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-  onUnmounted,
-  defineComponent,
-  nextTick,
-} from 'vue';
-import {
-  State as PopperState,
-  Instance,
-  OptionsGeneric,
-  PositioningStrategy,
+  type Instance,
+  type OptionsGeneric,
+  type State as PopperState,
+  type PositioningStrategy,
   createPopper,
 } from '@popperjs/core';
-import { on, off, elementContains, resolveEl, omit } from '../../utils/helpers';
 import {
+  computed,
+  defineComponent,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from 'vue';
+import { elementContains, off, omit, on, resolveEl } from '../../utils/helpers';
+import type {
+  PopoverEvent,
   PopoverOptions,
   PopoverState,
-  PopoverEvent,
 } from '../../utils/popovers';
 
 export default defineComponent({
-  name: 'Popover',
   inheritAttrs: false,
   emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
   props: {
-    id: { type: String, required: true },
+    id: { type: [Number, String, Symbol], required: true },
     showDelay: { type: Number, default: 0 },
     hideDelay: { type: Number, default: 110 },
     boundarySelector: { type: String },
@@ -216,7 +215,6 @@ export default defineComponent({
       setTimer(opts.showDelay ?? props.showDelay, () => {
         if (state.isVisible) {
           state.force = false;
-          emit('after-show');
         }
         updateState({
           ...opts,
@@ -246,12 +244,6 @@ export default defineComponent({
       } else {
         show(opts);
       }
-    }
-
-    function update(opts: Partial<PopoverOptions> = {}) {
-      if (!isCurrentTarget(opts.target)) return;
-      updateState(opts);
-      setupPopper();
     }
 
     function onDocumentClick(e: CustomEvent) {
@@ -309,20 +301,20 @@ export default defineComponent({
       off(document, 'toggle-popover', onDocumentTogglePopover);
     }
 
-    function beforeEnter(el: HTMLElement) {
+    function beforeEnter(el: Element) {
       emit('before-show', el);
     }
 
-    function afterEnter(el: HTMLElement) {
+    function afterEnter(el: Element) {
       state.force = false;
       emit('after-show', el);
     }
 
-    function beforeLeave(el: HTMLElement) {
+    function beforeLeave(el: Element) {
       emit('before-hide', el);
     }
 
-    function afterLeave(el: HTMLElement) {
+    function afterLeave(el: Element) {
       state.force = false;
       destroyPopper();
       emit('after-hide', el);

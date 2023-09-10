@@ -1,6 +1,8 @@
 {
   "arrowParens": "avoid",
   "endOfLine": "auto",
+  "importOrder": ["^components/(.*)$", "^[./]"],
+  "importOrderSortSpecifiers": true,
   "printWidth": 80,
   "semi": true,
   "singleQuote": true,
