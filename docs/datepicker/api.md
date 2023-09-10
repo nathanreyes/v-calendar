@@ -30,7 +30,7 @@ title: 'API'
 
 <BaseAlert title="Event Support">
 
-`VDatePicker` accepts all the same events as [Calendar](/calendar/api#events).
+`VDatePicker` emits all the same events as [Calendar](/calendar/api#events).
 </BaseAlert>
 
 | Event | Parameter Type |
@@ -41,6 +41,18 @@ title: 'API'
 | **popover-did-show** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
 | **popover-will-hide** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
 | **popover-did-hide** | [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) |
+
+## Slots
+
+<BaseAlert title="Event Support">
+
+`VDatePicker` supports all the same slots as [Calendar](/calendar/api#slots).
+</BaseAlert>
+
+| Name | Props |
+| --- | --- |
+| **_default_** | DatePickerContext |
+| **time-header** | |
 
 ## Types
 
