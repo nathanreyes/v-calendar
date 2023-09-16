@@ -44,7 +44,7 @@ export default {
 import { computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 
-interface BaseOption {
+export interface BaseOption {
   value: any;
   label: string;
   disabled?: boolean;

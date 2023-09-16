@@ -104,7 +104,7 @@
                     tabindex="1"
                     role="button"
                     class="vc-grid-header-day-number vc-focusable"
-                    :class="`id-${day.id}`"
+                    :class="`id-${String(day.id)}`"
                     @click="onDayNumberClick(day)"
                     @keydown="onDayKeydown(day, $event)"
                     @keydown.space.enter="onDayNumberClick(day)"
