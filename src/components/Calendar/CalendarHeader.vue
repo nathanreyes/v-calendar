@@ -61,28 +61,19 @@ const props = defineProps<{
 const {
   navPopoverId,
   navVisibility,
+  navPopoverPlacement,
   canMovePrev,
   movePrev,
   canMoveNext,
   moveNext,
 } = useCalendar();
 
-const navPlacement = computed(() => {
-  switch (props.page.titlePosition) {
-    case 'left':
-      return 'bottom-start';
-    case 'right':
-      return 'bottom-end';
-    default:
-      return 'bottom';
-  }
-});
 const navPopoverOptions = computed(() => {
   const { page } = props;
   return {
     id: navPopoverId.value,
     visibility: navVisibility.value,
-    placement: navPlacement.value,
+    placement: navPopoverPlacement.value,
     modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom'] } }],
     data: { page },
     isInteractive: true,

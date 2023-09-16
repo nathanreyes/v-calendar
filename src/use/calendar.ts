@@ -108,6 +108,9 @@ export const propsDef = {
     type: String as PropType<PopoverVisibility>,
     default: () => getDefault('navVisibility') as PopoverVisibility,
   },
+  navPopoverPlacement: {
+    type: String,
+  },
   showWeeknumbers: [Boolean, String],
   showIsoWeeknumbers: [Boolean, String],
   expanded: Boolean,
@@ -197,6 +200,17 @@ export function createCalendar(
   );
 
   const navVisibility = computed(() => props.navVisibility);
+  const navPopoverPlacement = computed(() => {
+    if (props.navPopoverPlacement) return props.navPopoverPlacement;
+    switch (props.titlePosition) {
+      case 'left':
+        return 'bottom-start';
+      case 'right':
+        return 'bottom-end';
+      default:
+        return 'bottom';
+    }
+  });
 
   const showWeeknumbers = computed(() => !!props.showWeeknumbers);
 
@@ -751,6 +765,7 @@ export function createCalendar(
     isWeekly,
     isDaily,
     navVisibility,
+    navPopoverPlacement,
     showWeeknumbers,
     showIsoWeeknumbers,
     getDateAddress,
