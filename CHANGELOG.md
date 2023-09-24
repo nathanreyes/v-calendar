@@ -66,3 +66,30 @@
 ## Improvements
 
 * Improve header elements/styling
+
+## 3.1.0
+
+### Project
+
+* Add prettier plugin to sort imports
+* Clean up unused helper methods, refactor out createGuid
+* Use symbols in lieu of GUIDs
+* Fixes type declaration
+* Bump `.nvm` version to 18.14.2
+
+### Calendar
+
+* Group calendar components in Calendar directory
+* Group calendar grid components in CalendarGrid directory
+* CalendarPane => CalendarPage
+* Adds `header-title-wrapper` slot
+* Fixes `disabledDates` prop usage
+
+### DatePicker
+
+* Refactors from render function to templates to play nice with vue-test-utils
+* Refactors mounting method in tests
+* Fixes bug not passing minDate and maxDate to Calendar
+* Fixes `footer` slot for `dateTime` mode
+* Adds slot tests
+* Removes `await` for datepicker mount in tests
