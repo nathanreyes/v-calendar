@@ -93,3 +93,10 @@
 * Fixes `footer` slot for `dateTime` mode
 * Adds slot tests
 * Removes `await` for datepicker mount in tests
+
+## 3.1.1
+
+### DatePicker
+
+* Add tests for time picker
+* Add class for time select components
