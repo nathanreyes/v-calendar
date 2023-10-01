@@ -285,7 +285,7 @@ const date = ref(new Date());
 const rules = ref({
   hours: (hour, { weekday }) => {
     // 8AM - 12PM on the weekends
-    if ([1, 7].includes(weekday)) return hour >= 8 && hour <= 12;
+    if ([1, 7].includes(weekday)) return hour >= 8 && hour < 12;
     // Any hour otherwise
     return true;
   },
