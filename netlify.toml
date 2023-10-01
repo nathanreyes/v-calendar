@@ -11,4 +11,4 @@
   # a base has not been set.
   publish = "docs/.vitepress/dist"
   
-  environment = { NODE_VERSION = "16.19.0" }
+  environment = { NODE_VERSION = "18.14.2" }
