@@ -232,7 +232,7 @@ describe('DatePicker', () => {
       const modelValue = new Date(2023, 0, 26);
       const rules = {
         hours: (hour: number, { weekday }: { weekday: number }) => {
-          return ![1, 7].includes(weekday) && hour >= 8 && hour <= 12;
+          return ![1, 7].includes(weekday) && hour >= 8 && hour < 12;
         },
       };
       const hours = [8, 9, 10, 11, 12];
