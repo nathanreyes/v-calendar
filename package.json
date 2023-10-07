@@ -82,7 +82,7 @@
     "postcss-nested": "^4.2.1",
     "postcss-simple-vars": "5.0.2",
     "postcss-url": "^8.0.0",
-    "prettier": "^2.5.1",
+    "prettier": "^3.0.3",
     "regenerator-runtime": "^0.13.9",
     "resize-observer-polyfill": "^1.5.1",
     "rollup-plugin-visualizer": "^5.5.4",
