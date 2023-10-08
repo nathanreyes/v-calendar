@@ -246,7 +246,9 @@ export class BaseRenderer<T extends Partial<Glyph>>
   ) {
     const { key } = data;
     const item = data[this.type as keyof Attribute];
-    if (!key || !item) return;
+    if (!key || !item) {
+      return;
+    }
     const collection = glyphs[this.collectionType];
     const { base, start, end } = item;
     if (onStart) {
