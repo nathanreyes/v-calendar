@@ -186,7 +186,7 @@ export default class Locale {
     return isNaN(dte.getTime()) ? null : dte;
   }
 
-  fromDate(date: Date, { type, mask }: Partial<DateOptions> = {}) {
+  fromDate(date: Date | null, { type, mask }: Partial<DateOptions> = {}) {
     switch (type) {
       case 'number':
         return date ? date.getTime() : NaN;
