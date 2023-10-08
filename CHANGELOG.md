@@ -96,6 +96,10 @@
 
 ## 3.1.1
 
+## Calendar
+
+* Fixes bug when auto-assigning attribute keys
+
 ### DatePicker
 
 * Add tests for time picker
