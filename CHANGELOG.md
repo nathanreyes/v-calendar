@@ -104,3 +104,4 @@
 
 * Add tests for time picker
 * Add class for time select components
+* Fix bug where value not cleared when toggling `range` mode
