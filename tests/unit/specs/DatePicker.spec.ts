@@ -235,7 +235,7 @@ describe('DatePicker', () => {
           return ![1, 7].includes(weekday) && hour >= 8 && hour < 12;
         },
       };
-      const hours = [8, 9, 10, 11, 12];
+      const hours = [8, 9, 10, 11];
       expectHours({ modelValue, rules }, hours);
     });
 
