@@ -2,7 +2,9 @@
   <VCalendar :attributes="attributes" />
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+
 const date = new Date();
 const thisMonth = date.getMonth();
 const thisMonthYear = date.getFullYear();
@@ -12,18 +14,19 @@ nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
 const nextMonth = nextMonthDate.getMonth();
 const nextMonthYear = nextMonthDate.getFullYear();
 
-const meetings = [
+const meetings = ref([
   {
     description: 'Bi-weekly staff meeting.',
-    dates: {
-      start: new Date(thisMonthYear, thisMonth, 6),
-      repeat: {
-        every: [2, 'weeks'],
-        weekdays: 1,
+    dates: [
+      {
+        start: new Date(2023, thisMonth, 6),
+        repeat: {
+          every: [2, 'weeks'],
+          weekdays: 1,
+        },
       },
-    },
+    ],
     color: 'blue',
-    order: 10,
   },
   {
     description: 'Meeting to discuss the new project.',
@@ -41,9 +44,9 @@ const meetings = [
     },
     color: 'green',
   },
-];
+]);
 
-const todos = [
+const todos = ref([
   {
     description: 'Take Noah to basketball practice.',
     isComplete: false,
@@ -60,49 +63,32 @@ const todos = [
     ],
     color: 'purple',
   },
-];
+]);
 
-export default {
-  data() {
-    return {
-      incId: todos.length,
-      meetings,
-      todos,
-    };
-  },
-  computed: {
-    attributes() {
-      return [
-        {
-          content: {
-            class: 'italic',
-          },
-          dates: new Date(),
-          order: 100,
-        },
-        ...this.meetings.map(({ description, dates, color, order }) => ({
-          dates,
-          highlight: color,
-          popover: {
-            label: description,
-          },
-          order: order || 0,
-        })),
-        ...this.todos.map(
-          ({ description, dates, color, order, isComplete }) => ({
-            dates: dates,
-            dot: {
-              color: color,
-              class: isComplete ? 'opacity-25' : '',
-            },
-            popover: {
-              label: description,
-            },
-            order: order || 0,
-          }),
-        ),
-      ];
+const attributes = computed(() => [
+  {
+    content: {
+      class: 'italic',
     },
+    dates: new Date(),
+    order: 100,
   },
-};
+  ...meetings.value.map(({ description, dates, color }) => ({
+    dates,
+    highlight: color,
+    popover: {
+      label: description,
+    },
+  })),
+  ...todos.value.map(({ description, dates, color, isComplete }) => ({
+    dates,
+    dot: {
+      color: color,
+      class: isComplete ? 'opacity-25' : '',
+    },
+    popover: {
+      label: description,
+    },
+  })),
+]);
 </script>
