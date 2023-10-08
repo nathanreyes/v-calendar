@@ -228,6 +228,7 @@ describe('DatePicker', () => {
       const hours = [0, 2, 4, 6, 8, 10, 12, 14, 16];
       expectHours({ rules }, hours);
     });
+
     it(':rules - limits time components to hours in work week function', () => {
       const modelValue = new Date(2023, 0, 26);
       const rules = {
