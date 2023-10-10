@@ -1,9 +1,9 @@
-import path from 'path';
-import { lstatSync, readdirSync } from 'fs';
 import vue from '@vitejs/plugin-vue';
-import { type InlineConfig } from 'vite';
-import { visualizer } from 'rollup-plugin-visualizer';
+import { lstatSync, readdirSync } from 'fs';
+import path from 'path';
 import type { RollupOptions } from 'rollup';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { type InlineConfig } from 'vite';
 
 export type BuildFormat = 'es' | 'mjs' | 'cjs' | 'iife';
 

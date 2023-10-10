@@ -20,15 +20,13 @@ After initial mount, if the user selects new dates in the calendar, only the yea
 
 ```vue
 <template>
-  <DateModePicker v-model="mode" />
-  <VDatePicker v-model="date" :mode="mode" />
+  <VDatePicker v-model="date" />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
 const date = ref(new Date());
-const mode = ref('date');
 </script>
 ```
 
@@ -36,7 +34,7 @@ const mode = ref('date');
 
 Let's start with a simple example to show how rules work. We can zero-out time components by setting a `rules` prop object with hard-coded values for the time component keys.
 
-Note how the `Value` displayed below shows the zero-ed out time components. A date was passed in (`new Date()`) and the `VDatePicker` applied the rules on mount and re-emitted the new date value.
+Note how the **Value** displayed below shows the zero-ed out time components. A date was passed in (`new Date()`) and `VDatePicker` applied the rules on mount and re-emitted the new date value.
 
 <Example centered>
   <DateRulesIntroDate />
@@ -51,7 +49,6 @@ Note how the `Value` displayed below shows the zero-ed out time components. A da
 import { ref } from 'vue';
 
 const date = ref(new Date());
-// Remember, rules are applied in the browser's local timezone!
 const rules = ref({
   hours: 0,
   minutes: 0,
@@ -69,11 +66,11 @@ Rules are applied to date values on initial mount **and** future updates.
 
 <BaseAlert title="Do timezones affect how rules are applied?">
 
-Rules are applied respective of the browser's current timezone, unless the `timezone` prop is explicitly provided.
+Rules are applied using the calendar's configured timezone (defaults to browser's timezone), unless the `timezone` prop is explicitly provided.
 </BaseAlert>
 
 <BaseAlert title="Do rules affect the time picker?">
-Rules do limit what time component selections are available in the time picker.
+Rules limit what time component selections are available in the time picker.
 </BaseAlert>
 
 ## Date Range Selection
@@ -166,6 +163,27 @@ const rules = ref({
 A rule with an array of numbers will limit selection to values in the list.
 
 <Example centered>
+  <DateRulesArray is24hr />
+</Example>
+
+```vue
+<template>
+  <VDatePicker v-model="date" mode="dateTime" :rules="rules" is24hr />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const date = ref(new Date());
+const rules = ref({
+  hours: [7, 15, 18, 22],
+});
+</script>
+```
+
+For this example, we are limiting hours and using `is24hr` to enable 24-hour mode. We could similarly use non-24hr mode (am/pm) using the same rules and they would be enforced similarly. In short, you don't need to worry about special handling for non-24hr mode.
+
+<Example centered>
   <DateRulesArray />
 </Example>
 
@@ -179,7 +197,7 @@ import { ref } from 'vue';
 
 const date = ref(new Date());
 const rules = ref({
-  hours: [12, 15, 18, 22],
+  hours: [7, 15, 18, 22],
 });
 </script>
 ```
@@ -267,7 +285,7 @@ const date = ref(new Date());
 const rules = ref({
   hours: (hour, { weekday }) => {
     // 8AM - 12PM on the weekends
-    if ([1, 7].includes(weekday)) return hour >= 8 && hour <= 12;
+    if ([1, 7].includes(weekday)) return hour >= 8 && hour < 12;
     // Any hour otherwise
     return true;
   },

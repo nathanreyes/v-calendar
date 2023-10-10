@@ -35,6 +35,12 @@
 </template>
 
 <script lang="ts">
+interface BaseOption {
+  value: any;
+  label: string;
+  disabled?: boolean;
+}
+
 export default {
   inheritAttrs: false,
 };
@@ -43,12 +49,6 @@ export default {
 <script setup lang="ts">
 import { computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
-
-export interface BaseOption {
-  value: any;
-  label: string;
-  disabled?: boolean;
-}
 
 const props = defineProps<{
   options: BaseOption[];

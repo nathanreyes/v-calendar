@@ -12,7 +12,10 @@
       </div>
       <!--Date Range Display (ISO)-->
       <template v-else>
-        <BaseField v-if="value == null" label="Date Value"> null </BaseField>
+        <BaseField v-if="!value" label="Date Value">
+          {{ value }}
+          <span>({{ dateType(value) }})</span></BaseField
+        >
         <template v-else>
           <div
             class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0"
@@ -58,7 +61,7 @@ export default {
       return attrs.modelModifiers.range === true;
     });
     function dateType(val) {
-      if (val == null) return '';
+      if (val == null) return 'null';
       if (val.toISOString) return 'date';
       return typeof val;
     }

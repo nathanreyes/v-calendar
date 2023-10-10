@@ -281,14 +281,11 @@ export function createCalendar(
     const result: Attribute[] = [];
     (props.attributes || []).forEach((attr, i) => {
       if (!attr || !attr.dates) return;
-      const key = has(attr, 'key') ? attr.key : i;
-      const order = attr.order || 0;
       result.push(
         new Attribute(
           {
             ...attr,
-            key,
-            order,
+            order: attr.order || 0,
           },
           theme.value,
           locale.value,

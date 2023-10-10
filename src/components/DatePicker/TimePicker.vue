@@ -21,12 +21,18 @@
     </CalendarSlot>
     <div class="vc-time-select-group">
       <BaseIcon name="Clock" size="17" />
-      <BaseSelect v-model.number="hours" :options="hourOptions" align-right />
+      <BaseSelect
+        v-model.number="hours"
+        :options="hourOptions"
+        class="vc-time-select-hours"
+        align-right
+      />
       <template v-if="timeAccuracy > 1">
         <span class="vc-time-colon">:</span>
         <BaseSelect
           v-model.number="minutes"
           :options="options.minutes"
+          class="vc-time-select-minutes"
           :align-left="timeAccuracy === 2"
         />
       </template>
@@ -35,6 +41,7 @@
         <BaseSelect
           v-model.number="seconds"
           :options="options.seconds"
+          class="vc-time-select-seconds"
           :align-left="timeAccuracy === 3"
         />
       </template>
@@ -43,6 +50,7 @@
         <BaseSelect
           v-model.number="milliseconds"
           :options="options.milliseconds"
+          class="vc-time-select-milliseconds"
           align-left
         />
       </template>

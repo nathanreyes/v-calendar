@@ -2,6 +2,7 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue';
 import { CalendarContext } from '@/use/calendar';
 import { DatePickerContext } from '@/use/datePicker';
 import { VueWrapper, mount } from '@vue/test-utils';
+import { expect } from 'vitest';
 import { ComponentPublicInstance, UnwrapNestedRefs, h } from 'vue';
 
 export type CalendarComponent = UnwrapNestedRefs<CalendarContext> &
@@ -24,6 +25,19 @@ export function getDayClass(vm: PluginComponent, date: Date) {
 
 export function getDayContentClass(vm: PluginComponent, date: Date) {
   return `${getDayClass(vm, date)} .vc-day-content`;
+}
+
+export function expectValueEmitted(
+  dp: VueWrapper<DatePickerComponent>,
+  value: any,
+) {
+  expect(dp.emitted('update:modelValue')).toHaveLength(1);
+  expect(dp.emitted('update:modelValue')![0][0]).toEqual(value);
+  dp.emitted('update:modelValue')!.pop();
+}
+
+export function expectNoValueEmitted(dp: VueWrapper<DatePickerComponent>) {
+  expect(dp.emitted('update:modelValue')).toBeUndefined();
 }
 
 export function renderFnEvents(evts: Record<string, Function>) {

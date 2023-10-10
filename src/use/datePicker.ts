@@ -15,23 +15,14 @@ import Calendar from '../components/Calendar/Calendar.vue';
 import Popover from '../components/Popover/Popover.vue';
 import { getDefault } from '../utils/defaults';
 import type { AttributeConfig } from '../utils/attribute';
-import {
-  type CalendarDay,
-  getPageAddressForDate,
-  pageIsBetweenPages,
-} from '../utils/page';
-import {
-  isNumber,
-  isString,
-  isObject,
-  isArray,
-  isDate,
-  defaultsDeep,
-} from '../utils/helpers';
+import { type CalendarDay, getPageAddressForDate } from '../utils/page';
+import { isObject, isArray, isDate, defaultsDeep } from '../utils/helpers';
 import type {
   DatePatch,
   DateParts,
   DatePartsRules,
+  DateSource,
+  SimpleDateParts,
 } from '../utils/date/helpers';
 import type { SimpleDateRange } from '../utils/date/range';
 import {
@@ -77,12 +68,13 @@ export interface ModelModifiers {
   range?: boolean;
 }
 
-export type DatePickerDate = number | string | Date | null;
+export type DatePickerDate = DateSource | Partial<SimpleDateParts> | null;
 export type DatePickerRangeArray = [DatePickerDate, DatePickerDate];
-export type DatePickerRangeObject = Partial<{
-  start: DatePickerDate;
-  end: DatePickerDate;
-}>;
+export type DatePickerRangeObject = {
+  start: Exclude<DatePickerDate, null>;
+  end: Exclude<DatePickerDate, null>;
+};
+export type DatePickerModel = DatePickerDate | DatePickerRangeObject;
 
 export type DatePickerContext = ReturnType<typeof createDatePicker>;
 
@@ -92,9 +84,7 @@ export const propsDef = {
   ...basePropsDef,
   mode: { type: String, default: 'date' },
   modelValue: {
-    type: [Number, String, Date, Object] as PropType<
-      number | string | Date | DatePickerRangeObject | null
-    >,
+    type: [Number, String, Date, Object] as PropType<DatePickerModel>,
   },
   modelModifiers: {
     type: Object as PropType<ModelModifiers>,
@@ -360,58 +350,54 @@ export function createDatePicker(
         ({
           ...c,
           rules: rules.value[i],
-        } as DateConfig),
+        }) as DateConfig,
     );
   }
 
-  function hasDateValue(value: unknown) {
-    if (isNumber(value)) return !isNaN(value);
-    if (isDate(value)) return !isNaN(value.getTime());
-    if (isString(value)) return value !== '';
-    return value != null;
+  function hasDateValue(
+    value: DatePickerDate,
+  ): value is Exclude<DatePickerDate, null> {
+    return value != null && locale.value.toDateOrNull(value) != null;
   }
 
-  function hasValue(value: any) {
-    if (isRange.value) {
-      return (
-        isObject(value) && hasDateValue(value.start) && hasDateValue(value.end)
-      );
-    }
-    return hasDateValue(value);
+  function hasRangeValue(value: unknown): value is DatePickerRangeObject {
+    if (!isObject(value) || hasDateValue(value)) return false;
+    if (!('start' in value) || !('end' in value)) return false;
+    return hasDateValue(value.start ?? null) && hasDateValue(value.end ?? null);
   }
 
-  function datesAreEqual(a: any, b: any): boolean {
+  function hasValue(
+    value: DatePickerModel,
+  ): value is Exclude<DatePickerDate, null> | DatePickerRangeObject {
+    return hasRangeValue(value) || hasDateValue(value);
+  }
+
+  function valuesAreEqual(
+    a: null | Date | SimpleDateRange,
+    b: null | Date | SimpleDateRange,
+  ): boolean {
+    if (a == null && b == null) return true;
+    if (a == null || b == null) return false;
     const aIsDate = isDate(a);
     const bIsDate = isDate(b);
-    if (!aIsDate && !bIsDate) return true;
-    if (aIsDate !== bIsDate) return false;
-    return a.getTime() === b.getTime();
+    if (aIsDate && bIsDate) return a.getTime() === b.getTime();
+    if (aIsDate || bIsDate) return false;
+    return valuesAreEqual(a.start, b.start) && valuesAreEqual(a.end, b.end);
   }
 
-  function valuesAreEqual(a: any, b: any) {
-    if (isRange.value) {
-      const aHasValue = hasValue(a);
-      const bHasValue = hasValue(b);
-      if (!aHasValue && !bHasValue) return true;
-      if (aHasValue !== bHasValue) return false;
-      return datesAreEqual(a.start, b.start) && datesAreEqual(a.end, b.end);
-    }
-    return datesAreEqual(a, b);
-  }
-
-  function valueIsDisabled(value: any) {
+  function valueIsDisabled(value: Date | SimpleDateRange | null) {
     if (!hasValue(value) || !disabledAttribute.value) return false;
     return disabledAttribute.value.intersectsRange(locale.value.range(value));
   }
 
   function normalizeValue(
-    value: any,
+    value: DatePickerModel,
     config: DateConfig[],
     patch: DatePatch,
     targetPriority?: ValueTarget,
   ): Date | SimpleDateRange | null {
     if (!hasValue(value)) return null;
-    if (isRange.value) {
+    if (hasRangeValue(value)) {
       const start = locale.value.toDate(value.start, {
         ...config[0],
         fillDate: valueStart.value ?? undefined,
@@ -431,13 +417,18 @@ export function createDatePicker(
     });
   }
 
-  function denormalizeValue(value: any, config: DateConfig[]) {
-    if (isRange.value) {
-      if (!hasValue(value)) return null;
+  function denormalizeValue(
+    value: null | Date | SimpleDateRange,
+    config: DateConfig[],
+  ) {
+    if (hasRangeValue(value)) {
       return {
         start: locale.value.fromDate(value.start, config[0]),
         end: locale.value.fromDate(value.end, config[1]),
       };
+    }
+    if (isRange.value) {
+      return null;
     }
     return locale.value.fromDate(value, config[0]);
   }
@@ -542,7 +533,7 @@ export function createDatePicker(
         mask: inputMask.value,
       });
       const value = denormalizeValue(
-        dragValue.value || dateValue.value,
+        dragValue.value ?? dateValue.value,
         config,
       );
       if (isRange.value) {
@@ -724,7 +715,7 @@ export function createDatePicker(
     });
   }
 
-  function sortRange(range: any, priority?: ValueTarget) {
+  function sortRange(range: SimpleDateRange, priority?: ValueTarget) {
     const { start, end } = range;
     if (start > end) {
       switch (priority) {
@@ -737,18 +728,6 @@ export function createDatePicker(
       }
     }
     return { start, end };
-  }
-
-  function getPageForValue(isStart: boolean) {
-    if (hasValue(dateValue.value)) {
-      const date = isRange.value
-        ? isStart
-          ? valueStart.value
-          : valueEnd.value
-        : dateValue.value;
-      return getPageAddressForDate(date as Date, 'monthly', locale.value);
-    }
-    return null;
   }
 
   async function move(target: MoveTarget, opts: Partial<MoveOptions> = {}) {
@@ -765,16 +744,17 @@ export function createDatePicker(
     target: ValueTarget,
     opts: Partial<MoveOptions> = {},
   ) {
-    if (calendarRef.value == null) return false;
-    const { firstPage, lastPage, move } = calendarRef.value;
+    const dValue = dateValue.value;
+    if (calendarRef.value == null || !hasValue(dValue)) return false;
     const start = target !== 'end';
-    const page = getPageForValue(start);
     const position = start ? 1 : -1;
-    if (!page || pageIsBetweenPages(page, firstPage, lastPage)) return false;
-    return move(page, {
-      position,
-      ...opts,
-    });
+    const date = hasRangeValue(dValue)
+      ? start
+        ? dValue.start
+        : dValue.end
+      : dValue;
+    const page = getPageAddressForDate(date, 'monthly', locale.value);
+    return calendarRef.value.move(page, { position, ...opts });
   }
 
   // #endregion Methods
@@ -792,10 +772,19 @@ export function createDatePicker(
     },
     { immediate: true },
   );
+
+  watch(
+    () => isRange.value,
+    () => {
+      forceUpdateValue(null, { formatInput: true });
+    },
+  );
+
   watch(
     () => inputMask.value,
     () => formatInput(),
   );
+
   watch(
     () => props.modelValue,
     val => {
@@ -806,6 +795,7 @@ export function createDatePicker(
       });
     },
   );
+
   watch(
     () => rules.value,
     () => {
@@ -817,6 +807,7 @@ export function createDatePicker(
       }
     },
   );
+
   watch(
     () => props.timezone,
     () => {
@@ -830,7 +821,11 @@ export function createDatePicker(
 
   // Set initial date value (no validation applied)
   const config = normalizeConfig(modelConfig.value);
-  dateValue.value = normalizeValue(props.modelValue, config, 'dateTime');
+  dateValue.value = normalizeValue(
+    props.modelValue ?? null,
+    config,
+    'dateTime',
+  );
 
   onMounted(() => {
     forceUpdateValue(props.modelValue, {
