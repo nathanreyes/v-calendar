@@ -270,6 +270,19 @@ The `.sync` modifier does not work with this prop, unlike `to-page`.
 
 **Params:** [`page`](./page-object.md)
 
+### `weekdayclick`
+
+**Description:** Forwarded from the `click` event for the weekday content element.
+
+**Params:**: Days info object.
+```js
+{
+  weekday: Number, // Weekday clicked
+  days: [Day], // List of day objects for the weekday clicked
+  event: MouseEvent, // Native event emitted
+}
+```
+
 ### `weeknumberclick`
 
 **Description:** Forwarded from the `click` event for the weeknumber content element.

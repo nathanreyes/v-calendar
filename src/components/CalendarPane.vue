@@ -37,6 +37,17 @@ export default {
         {
           key: i + 1,
           class: 'vc-weekday',
+          on: {
+            click: event => {
+              this.$emit('weekdayclick', {
+                i,
+                days: this.page.days.filter(
+                  d => d.weekdayPosition === i + 1,
+                ),
+                event,
+              });
+            },
+          },
         },
         [wl],
       ),
