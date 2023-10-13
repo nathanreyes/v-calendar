@@ -39,7 +39,6 @@
     "@vue/cli-service": "~4.5.4",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/test-utils": "^1.1.2",
-    "@vuepress/plugin-google-analytics": "^1.2.0",
     "babel-core": "^7.0.0-0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^22.0.4",
