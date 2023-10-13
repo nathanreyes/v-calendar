@@ -16,13 +16,21 @@ import Popover from '../components/Popover/Popover.vue';
 import { getDefault } from '../utils/defaults';
 import type { AttributeConfig } from '../utils/attribute';
 import { type CalendarDay, getPageAddressForDate } from '../utils/page';
-import { isObject, isArray, isDate, defaultsDeep } from '../utils/helpers';
-import type {
-  DatePatch,
-  DateParts,
-  DatePartsRules,
-  DateSource,
-  SimpleDateParts,
+import {
+  defaultsDeep,
+  isArray,
+  isDate,
+  isNumber,
+  isObject,
+  isString,
+} from '../utils/helpers';
+import {
+  type DatePatch,
+  type DateParts,
+  type DatePartsRules,
+  type DateSource,
+  type SimpleDateParts,
+  isDateParts,
 } from '../utils/date/helpers';
 import type { SimpleDateRange } from '../utils/date/range';
 import {
@@ -357,13 +365,21 @@ export function createDatePicker(
   function hasDateValue(
     value: DatePickerDate,
   ): value is Exclude<DatePickerDate, null> {
-    return value != null && locale.value.toDateOrNull(value) != null;
+    if (value == null) return false;
+    if (isNumber(value)) return !isNaN(value);
+    if (isDate(value)) return !isNaN(value.getTime());
+    if (isString(value)) return value !== '';
+    return isDateParts(value);
   }
 
   function hasRangeValue(value: unknown): value is DatePickerRangeObject {
-    if (!isObject(value) || hasDateValue(value)) return false;
-    if (!('start' in value) || !('end' in value)) return false;
-    return hasDateValue(value.start ?? null) && hasDateValue(value.end ?? null);
+    return (
+      isObject(value) &&
+      'start' in value &&
+      'end' in value &&
+      hasDateValue(value.start ?? null) &&
+      hasDateValue(value.end ?? null)
+    );
   }
 
   function hasValue(
