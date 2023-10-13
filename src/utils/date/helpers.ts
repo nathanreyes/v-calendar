@@ -8,7 +8,7 @@ import {
   isFunction,
   isObject,
 } from '../helpers';
-import toFnsDate from 'date-fns-tz/toDate';
+import { toDate } from 'date-fns-tz';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
 import getISOWeek from 'date-fns/getISOWeek';
@@ -603,7 +603,7 @@ export function getDateFromParts(
       hrs,
       2,
     )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-    return toFnsDate(dateString, { timeZone: timezone });
+    return toDate(dateString, { timeZone: timezone });
   }
   return new Date(year, month - 1, day, hrs, min, sec, ms);
 }
@@ -628,7 +628,7 @@ export function getTimezoneOffset(
       hrs,
       2,
     )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-    date = toFnsDate(dateString, { timeZone: timezone });
+    date = toDate(dateString, { timeZone: timezone });
   } else {
     date = new Date(y, m - 1, d, hrs, min, sec, ms);
   }

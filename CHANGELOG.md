@@ -105,3 +105,9 @@
 * Add tests for time picker
 * Add class for time select components
 * Fix bug where value not cleared when toggling `range` mode
+
+## 3.1.2
+
+## Improvements
+
+* Updates `date-fns-tz` to 2.0
