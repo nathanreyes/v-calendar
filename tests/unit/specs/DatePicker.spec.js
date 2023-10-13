@@ -65,6 +65,7 @@ describe('DatePicker', () => {
       // Click day of min date
       await dp.find('.id-2000-01-05 .vc-day-content').trigger('click');
       // Highlight should appear
+      await dp.vm.$nextTick();
       expect(dp.find('.id-2000-01-05 .vc-highlight').exists()).toBe(true);
     });
 
@@ -96,6 +97,7 @@ describe('DatePicker', () => {
       expect(dp.find('.id-2000-01-25 .is-disabled').exists()).toBe(false);
       // Click day of max date
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      await dp.vm.$nextTick();
       // Highlight should appear
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
     });
@@ -109,8 +111,10 @@ describe('DatePicker', () => {
       });
       await dp.vm.$nextTick();
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      await dp.vm.$nextTick();
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      await dp.vm.$nextTick();
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
     });
 
@@ -123,8 +127,10 @@ describe('DatePicker', () => {
       });
       await dp.vm.$nextTick();
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      await dp.vm.$nextTick();
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(true);
       await dp.find('.id-2000-01-25 .vc-day-content').trigger('click');
+      await dp.vm.$nextTick();
       expect(dp.find('.id-2000-01-25 .vc-highlight').exists()).toBe(false);
     });
 
