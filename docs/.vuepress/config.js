@@ -5,10 +5,7 @@ const tailwindcss = require('tailwindcss');
 module.exports = {
   title: 'V-Calendar',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
-  plugins: [
-    // Google analytics
-    ['@vuepress/google-analytics', { ga: 'UA-113780759-1' }],
-  ],
+  plugins: [],
   head: [['link', { rel: 'icon', href: 'favicon.png' }]],
   themeConfig: {
     nav: [
