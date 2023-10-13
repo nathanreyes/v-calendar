@@ -635,18 +635,18 @@ export default {
       if (!this.hasValue(value)) return null;
       if (this.isRange) {
         const result = {};
-        const start = value.start > value.end ? value.end : value.start;
-        result.start = this.normalizeDate(start, {
+        const normalizedStart = this.normalizeDate(value.start, {
           ...config[0],
           fillDate: (this.value_ && this.value_.start) || config[0].fillDate,
           patch,
         });
-        const end = value.start > value.end ? value.start : value.end;
-        result.end = this.normalizeDate(end, {
+        const normalizedEnd = this.normalizeDate(value.end, {
           ...config[1],
           fillDate: (this.value_ && this.value_.end) || config[1].fillDate,
           patch,
         });
+        result.start = normalizedStart.getTime() > normalizedEnd.getTime() ? normalizedEnd : normalizedStart;
+        result.end = normalizedStart.getTime() > normalizedEnd.getTime() ? normalizedStart : normalizedEnd;
         return this.sortRange(result, rangePriority);
       }
       return this.normalizeDate(value, {
