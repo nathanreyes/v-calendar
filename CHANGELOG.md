@@ -108,6 +108,10 @@
 
 ## 3.1.2
 
+## Bug Fixes
+
+* Fixes date normalization when using different locales
+
 ## Improvements
 
 * Updates `date-fns-tz` to 2.0
