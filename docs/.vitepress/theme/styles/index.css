@@ -41,10 +41,18 @@
   --vp-c-brand-dark: theme(colors.accent.700);
   --vp-c-brand-darker: theme(colors.accent.900);
 
-  --vp-code-font-size: theme(fontSize.base)
+  --vp-code-font-size: theme(fontSize.sm);
+
   --vp-code-tab-bg: theme(colors.gray.900);
-  --vp-code-tab-divider: theme(colors.gray.700);
+  --vp-code-lang-color: theme(colors.gray.400);
   --vp-code-block-bg: theme(colors.gray.900);
+
+  --vp-code-tab-divider: theme(colors.gray.700);
+  --vp-code-tab-text-color: theme(colors.gray.400);
+  --vp-code-tab-hover-text-color: theme(colors.gray.100);
+  --vp-code-tab-active-text-color: theme(colors.gray.200);
+  --vp-code-tab-active-bar-color: theme(colors.accent.300);
+
   --vp-c-switch-bg: theme(colors.gray.300);
   --vp-c-switch-border: theme(colors.gray.400);
   --vp-c-switch-grabber-bg: theme(colors.white);
@@ -93,9 +101,16 @@
   --vp-c-brand-dark: theme(colors.accent.700);
   --vp-c-brand-darker: theme(colors.accent.900);
 
+  --vp-code-lang-color: theme(colors.gray.400);
+  --vp-code-block-bg: theme(colors.gray.900);
+
   --vp-code-tab-bg: theme(colors.gray.900);
   --vp-code-tab-divider: theme(colors.gray.700);
-  --vp-code-block-bg: theme(colors.gray.900);
+  --vp-code-tab-text-color: theme(colors.gray.400);
+  --vp-code-tab-hover-text-color: theme(colors.gray.100);
+  --vp-code-tab-active-text-color: theme(colors.gray.200);
+  --vp-code-tab-active-bar-color: theme(colors.accent.300);
+
   --vp-c-switch-bg: theme(colors.black);
   --vp-c-switch-border: theme(colors.gray.600);
   --vp-c-switch-grabber-bg: theme(colors.gray.500);
