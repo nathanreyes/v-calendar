@@ -651,7 +651,7 @@ export function createDatePicker(
     const opts: Partial<UpdateOptions> = {
       patch: 'date',
       formatInput: true,
-      hidePopover: true,
+      hidePopover: !isDateTimeMode.value,
     };
     if (isRange.value) {
       const dragging = !isDragging.value;
