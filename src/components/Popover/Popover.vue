@@ -382,11 +382,6 @@ export default defineComponent({
 
 <style lang="css">
 .vc-popover-content-wrapper {
-  --popover-horizontal-content-offset: 8px;
-  --popover-vertical-content-offset: 10px;
-  --popover-caret-horizontal-offset: 18px;
-  --popover-caret-vertical-offset: 8px;
-
   position: absolute;
   width: max-content;
   top: 0;
@@ -412,16 +407,16 @@ export default defineComponent({
   z-index: 10;
   box-shadow: var(--vc-shadow-lg);
   &.direction-bottom {
-    margin-top: var(--popover-vertical-content-offset);
+    margin-top: var(--vc-popover-content-offset-vertical);
   }
   &.direction-top {
-    margin-bottom: var(--popover-vertical-content-offset);
+    margin-bottom: var(--vc-popover-content-offset-vertical);
   }
   &.direction-left {
-    margin-right: var(--popover-horizontal-content-offset);
+    margin-right: var(--vc-popover-content-offset-horizontal);
   }
   &.direction-right {
-    margin-left: var(--popover-horizontal-content-offset);
+    margin-left: var(--vc-popover-content-offset-horizontal);
   }
 }
 
@@ -484,22 +479,22 @@ export default defineComponent({
     }
   }
   &.align-left {
-    left: var(--popover-caret-horizontal-offset);
+    left: var(--vc-popover-caret-offset-horizontal);
   }
   &.align-center {
     left: 50%;
   }
   &.align-right {
-    right: var(--popover-caret-horizontal-offset);
+    right: var(--vc-popover-caret-offset-horizontal);
   }
   &.align-top {
-    top: var(--popover-caret-vertical-offset);
+    top: var(--vc-popover-caret-offset-vertical);
   }
   &.align-middle {
     top: 50%;
   }
   &.align-bottom {
-    bottom: var(--popover-caret-vertical-offset);
+    bottom: var(--vc-popover-caret-offset-vertical);
   }
 }
 </style>

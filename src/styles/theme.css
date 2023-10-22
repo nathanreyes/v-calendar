@@ -223,6 +223,11 @@
   --vc-popover-content-color: var(--vc-gray-900);
   --vc-popover-content-bg: var(--vc-gray-50);
   --vc-popover-content-border: var(--vc-gray-300);
+
+  --vc-popover-content-offset-horizontal: 8px;
+  --vc-popover-content-offset-vertical: 10px;
+  --vc-popover-caret-offset-horizontal: 18px;
+  --vc-popover-caret-offset-vertical: 8px;
   /* Time picker */
   --vc-time-picker-border: var(--vc-gray-300);
   --vc-time-weekday-color: var(--vc-gray-700);
