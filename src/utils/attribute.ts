@@ -1,4 +1,3 @@
-import type { Placement } from '@popperjs/core';
 import { addDays } from './date/helpers';
 import { DateRange, type DateRangeSource } from './date/range';
 import {
@@ -14,13 +13,13 @@ import {
 } from './glyph';
 import { arrayHasItems } from './helpers';
 import Locale from './locale';
-import type { PopoverVisibility } from './popovers';
+import type { PopoverVisibility, PopoverPlacement } from './popovers';
 import { Theme } from './theme';
 
 export type PopoverConfig = Partial<{
   label: string;
   visibility: PopoverVisibility;
-  placement: Placement;
+  placement: PopoverPlacement;
   hideIndicator: boolean;
   isInteractive: boolean;
 }>;

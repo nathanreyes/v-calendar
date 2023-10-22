@@ -1,8 +1,10 @@
-import type { Placement } from '@popperjs/core';
-import type { ComponentPublicInstance, Directive, DirectiveBinding } from 'vue';
-import { elementContains, on, resolveEl } from './helpers';
+import type { Directive, DirectiveBinding } from 'vue';
+import { type ElementTarget, elementContains, on, resolveEl } from './helpers';
+import type { Placement, FlipOptions } from '@floating-ui/dom';
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
+export type PopoverPlacement = Placement;
+export type PopoverFlipOptions = FlipOptions;
 
 export interface PopoverOptions {
   id: PropertyKey;
@@ -10,29 +12,13 @@ export interface PopoverOptions {
   isInteractive: boolean;
   autoHide: boolean;
   force: boolean;
-  target: unknown;
-  placement: Placement;
-  modifiers: any;
+  target: ElementTarget;
+  placement: PopoverPlacement;
+  positionFixed: boolean;
+  flip: boolean | FlipOptions;
   data: any;
   showDelay: number;
   hideDelay: number;
-}
-
-export interface PopoverState {
-  isVisible: boolean;
-  target: unknown;
-  data: any;
-  transition: string;
-  placement: Placement;
-  direction: string;
-  positionFixed: false;
-  modifiers: any[];
-  isInteractive: boolean;
-  visibility: PopoverVisibility;
-  isHovered: boolean;
-  isFocused: boolean;
-  autoHide: boolean;
-  force: boolean;
 }
 
 export interface PopoverEvent {
@@ -98,6 +84,7 @@ export function getPopoverEventHandlers(
       e.stopPropagation();
     }
   };
+
   const mouseMoveHandler = (e: MouseEvent) => {
     if (!hovered) {
       hovered = true;
@@ -109,6 +96,7 @@ export function getPopoverEventHandlers(
       }
     }
   };
+
   const mouseLeaveHandler = () => {
     if (hovered) {
       hovered = false;
@@ -117,6 +105,7 @@ export function getPopoverEventHandlers(
       }
     }
   };
+
   const focusInHandler = (e: FocusEvent) => {
     if (!focused) {
       focused = true;
@@ -128,6 +117,7 @@ export function getPopoverEventHandlers(
       }
     }
   };
+
   const focusOutHandler = (e: FocusEvent) => {
     if (
       focused &&
@@ -163,7 +153,7 @@ export function getPopoverEventHandlers(
   return handlers;
 }
 
-const removeHandlers = (target: Element | ComponentPublicInstance | string) => {
+const removeHandlers = (target: ElementTarget) => {
   const el = resolveEl(target);
   if (el == null) return;
   const handlers = (el as any).popoverHandlers;
@@ -172,10 +162,7 @@ const removeHandlers = (target: Element | ComponentPublicInstance | string) => {
   delete (el as any).popoverHandlers;
 };
 
-const addHandlers = (
-  target: Element | ComponentPublicInstance | string,
-  opts: Partial<PopoverOptions>,
-) => {
+const addHandlers = (target: ElementTarget, opts: Partial<PopoverOptions>) => {
   const el = resolveEl(target);
   if (el == null) return;
   const remove: Function[] = [];
@@ -187,7 +174,7 @@ const addHandlers = (
 };
 
 export const popoverDirective: Directive = {
-  mounted(el: any, binding: DirectiveBinding<PopoverOptions>) {
+  mounted(el: HTMLElement, binding: DirectiveBinding<PopoverOptions>) {
     const { value } = binding;
     if (!value) return;
     addHandlers(el, value);
@@ -206,7 +193,7 @@ export const popoverDirective: Directive = {
       }
     }
   },
-  unmounted(el: Element) {
+  unmounted(el: HTMLElement) {
     removeHandlers(el);
   },
 };

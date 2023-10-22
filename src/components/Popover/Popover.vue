@@ -1,73 +1,97 @@
 <template>
-  <div
-    class="vc-popover-content-wrapper"
-    :class="{ 'is-interactive': isInteractive }"
-    ref="popoverRef"
-    @click="onClick"
-    @mouseover="onMouseOver"
-    @mouseleave="onMouseLeave"
-    @focusin="onFocusIn"
-    @focusout="onFocusOut"
-  >
-    <Transition
-      :name="`vc-${transition}`"
-      appear
-      @before-enter="beforeEnter"
-      @after-enter="afterEnter"
-      @before-leave="beforeLeave"
-      @after-leave="afterLeave"
+  <Teleport :to="teleport" :disabled="!teleport">
+    <div
+      class="vc-popover-content-wrapper"
+      :class="{ 'is-interactive': isInteractive }"
+      :style="popoverStyle"
+      ref="popoverRef"
+      @click="onClick"
+      @mouseover="onMouseOver"
+      @mouseleave="onMouseLeave"
+      @focusin="onFocusIn"
+      @focusout="onFocusOut"
     >
-      <div
-        v-if="isVisible"
-        tabindex="-1"
-        :class="`vc-popover-content direction-${direction}`"
-        v-bind="$attrs"
+      <Transition
+        :name="`vc-${transition}`"
+        appear
+        @before-enter="beforeEnter"
+        @after-enter="afterEnter"
+        @before-leave="beforeLeave"
+        @after-leave="afterLeave"
       >
-        <slot
-          :direction="direction"
-          :alignment="alignment"
-          :data="data"
-          :hide="hide"
+        <div
+          v-if="isVisible"
+          tabindex="-1"
+          :class="`vc-popover-content direction-${direction}`"
+          v-bind="$attrs"
         >
-          {{ data }}
-        </slot>
-        <span
-          :class="[
-            'vc-popover-caret',
-            `direction-${direction}`,
-            `align-${alignment}`,
-          ]"
-        />
-      </div>
-    </Transition>
-  </div>
+          <slot
+            :direction="direction"
+            :alignment="alignment"
+            :data="data"
+            :hide="hide"
+          >
+            {{ data }}
+          </slot>
+          <span
+            :class="[
+              'vc-popover-caret',
+              `direction-${direction}`,
+              `align-${alignment}`,
+            ]"
+          />
+        </div>
+      </Transition>
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts">
-import {
-  type Instance,
-  type OptionsGeneric,
-  type State as PopperState,
-  type PositioningStrategy,
-  createPopper,
-} from '@popperjs/core';
+import { flip, autoUpdate, computePosition } from '@floating-ui/dom';
+
 import {
   computed,
   defineComponent,
-  nextTick,
   onMounted,
   onUnmounted,
   reactive,
   ref,
   toRefs,
-  watch,
+  watchEffect,
 } from 'vue';
-import { elementContains, off, omit, on, resolveEl } from '../../utils/helpers';
+import {
+  type ElementTarget,
+  elementContains,
+  off,
+  omit,
+  on,
+  resolveEl,
+  isBoolean,
+} from '../../utils/helpers';
 import type {
   PopoverEvent,
+  PopoverPlacement,
   PopoverOptions,
-  PopoverState,
 } from '../../utils/popovers';
+
+interface PopoverState
+  extends Pick<
+    PopoverOptions,
+    | 'placement'
+    | 'flip'
+    | 'positionFixed'
+    | 'isInteractive'
+    | 'visibility'
+    | 'autoHide'
+  > {
+  isVisible: boolean;
+  target: ElementTarget;
+  data: any;
+  transition: string;
+  isHovered: boolean;
+  isFocused: boolean;
+  force: boolean;
+}
 
 export default defineComponent({
   inheritAttrs: false,
@@ -76,23 +100,20 @@ export default defineComponent({
     id: { type: [Number, String, Symbol], required: true },
     showDelay: { type: Number, default: 0 },
     hideDelay: { type: Number, default: 110 },
-    boundarySelector: { type: String },
+    teleport: { type: [String, Object], default: 'body' },
   },
   setup(props, { emit }) {
     let timeout: number | undefined = undefined;
-    const popoverRef = ref<HTMLElement>();
-    let resizeObserver: ResizeObserver | null = null;
-    let popper: Instance | null = null;
+    const popoverRef = ref<HTMLElement | undefined>();
 
-    const state: PopoverState = reactive({
+    const state = reactive<PopoverState>({
       isVisible: false,
       target: null,
       data: null,
       transition: 'slide-fade',
       placement: 'bottom',
-      direction: '',
       positionFixed: false,
-      modifiers: [],
+      flip: true,
       isInteractive: true,
       visibility: 'click',
       isHovered: false,
@@ -101,59 +122,28 @@ export default defineComponent({
       force: false,
     });
 
-    function updateDirection(placement?: string) {
-      if (placement) state.direction = placement.split('-')[0];
-    }
+    const popoverStyle = ref({});
+    const actualPlacement = ref<PopoverPlacement | null>(null);
 
-    function onPopperUpdate({ placement, options }: Partial<PopperState>) {
-      updateDirection(placement || options?.placement);
-    }
+    const middleware = computed(() => {
+      if (state.flip) {
+        return [flip(isBoolean(state.flip) ? undefined : state.flip)];
+      }
+      return [];
+    });
 
-    const popperOptions = computed<Partial<OptionsGeneric<any>>>(() => {
-      return {
-        placement: state.placement,
-        strategy: (state.positionFixed
-          ? 'fixed'
-          : 'absolute') as PositioningStrategy,
-        boundary: '',
-        modifiers: [
-          {
-            name: 'onUpdate',
-            enabled: true,
-            phase: 'afterWrite',
-            fn: onPopperUpdate,
-          },
-          ...(state.modifiers || []),
-        ],
-        onFirstUpdate: onPopperUpdate,
-      };
-      // if (props.boundarySelector) {
-      //   const boundary = document.querySelector(props.boundarySelector);
-      //   modifiers.push({
-      //     name: 'boundary',
-      //     enabled: true,
-      //     phase: 'main',
-      //     requiresIfExists: ['offset'],
-      //     fn({ state }) {
-      //       console.log(
-      //         detectOverflow(state, {
-      //           boundary,
-      //           altBoundary: true,
-      //         }),
-      //       );
-      //     },
-      //   });
-      // }
+    const direction = computed(() => {
+      const placement = actualPlacement.value ?? state.placement ?? '';
+      return placement.split('-')[0];
     });
 
     const alignment = computed(() => {
       const isLeftRight =
-        state.direction === 'left' || state.direction === 'right';
+        direction.value === 'left' || direction.value === 'right';
       let alignment = '';
-      if (state.placement) {
-        const parts = state.placement.split('-');
-        if (parts.length > 1) alignment = parts[1];
-      }
+      const placement = actualPlacement.value ?? state.placement ?? '';
+      const parts = placement.split('-');
+      if (parts.length > 1) alignment = parts[1];
       if (['start', 'top', 'left'].includes(alignment)) {
         return isLeftRight ? 'top' : 'left';
       }
@@ -162,32 +152,6 @@ export default defineComponent({
       }
       return isLeftRight ? 'middle' : 'center';
     });
-
-    function destroyPopper() {
-      if (popper) {
-        popper.destroy();
-        popper = null;
-      }
-    }
-
-    function setupPopper() {
-      nextTick(() => {
-        const el = resolveEl(state.target);
-        if (!el || !popoverRef.value) return;
-        if (popper && popper.state.elements.reference !== el) {
-          destroyPopper();
-        }
-        if (!popper) {
-          popper = createPopper(
-            el as Element,
-            popoverRef.value,
-            popperOptions.value,
-          );
-        } else {
-          popper.update();
-        }
-      });
-    }
 
     function updateState(newState: Partial<PopoverState>) {
       Object.assign(state, omit(newState, 'force'));
@@ -202,10 +166,11 @@ export default defineComponent({
       }
     }
 
-    function isCurrentTarget(target: unknown) {
-      if (!target || !popper) return false;
-      const el = resolveEl(target);
-      return el === popper.state.elements.reference;
+    function isCurrentTarget(target: ElementTarget) {
+      if (!target || !state.target) return false;
+      const targetEl = resolveEl(target);
+      const currentEl = resolveEl(state.target);
+      return targetEl === currentEl;
     }
 
     async function show(opts: Partial<PopoverOptions> = {}) {
@@ -220,17 +185,13 @@ export default defineComponent({
           ...opts,
           isVisible: true,
         });
-        setupPopper();
       });
     }
 
     function hide(opts: Partial<PopoverOptions> = {}) {
-      if (!popper) return;
       if (opts.target && !isCurrentTarget(opts.target)) return;
-
       if (state.force) return;
       if (opts.force) state.force = true;
-
       setTimer(opts.hideDelay ?? props.hideDelay, () => {
         if (!state.isVisible) state.force = false;
         state.isVisible = false;
@@ -247,16 +208,14 @@ export default defineComponent({
     }
 
     function onDocumentClick(e: CustomEvent) {
-      if (!popper) return;
-      const popperRef = popper.state.elements.reference;
-      if (!popoverRef.value || !popperRef) {
-        return;
-      }
       // Don't hide if target element is contained within popover ref or content
+      if (!popoverRef.value) return;
+      const anchor = resolveEl(state.target);
+      if (anchor == null) return;
       const target = e.target as Node;
       if (
         elementContains(popoverRef.value, target) ||
-        elementContains(popperRef as Node, target)
+        elementContains(anchor, target)
       ) {
         return;
       }
@@ -316,7 +275,6 @@ export default defineComponent({
 
     function afterLeave(el: Element) {
       state.force = false;
-      destroyPopper();
       emit('after-hide', el);
     }
 
@@ -336,12 +294,11 @@ export default defineComponent({
 
     function onMouseLeave() {
       state.isHovered = false;
-      if (!popper) return;
-      const popperRef = popper.state.elements.reference;
+      const el = resolveEl(state.target);
       if (
         state.autoHide &&
         !state.isFocused &&
-        (!popperRef || popperRef !== document.activeElement) &&
+        (!el || el !== document.activeElement) &&
         ['hover', 'hover-focus'].includes(state.visibility)
       ) {
         hide();
@@ -369,27 +326,27 @@ export default defineComponent({
       }
     }
 
-    function cleanupRO() {
-      if (resizeObserver != null) {
-        resizeObserver.disconnect();
-        resizeObserver = null;
+    let cleanup: null | (() => void) = null;
+    watchEffect(() => {
+      const el = resolveEl(state.target);
+      if (!el || !popoverRef.value) return;
+      if (cleanup != null) {
+        cleanup();
       }
-    }
-
-    watch(
-      () => popoverRef.value,
-      val => {
-        cleanupRO();
-        if (!val) return;
-        resizeObserver = new ResizeObserver(() => {
-          if (popper) popper.update();
+      cleanup = autoUpdate(el, popoverRef.value, () => {
+        if (el == null || popoverRef.value == null) return;
+        computePosition(el, popoverRef.value, {
+          placement: state.placement,
+          strategy: state.positionFixed ? 'fixed' : 'absolute',
+          middleware: [...middleware.value],
+        }).then(({ x, y, placement }) => {
+          actualPlacement.value = placement;
+          popoverStyle.value = {
+            left: `${x}px`,
+            top: `${y}px`,
+          };
         });
-        resizeObserver.observe(val);
-      },
-    );
-
-    watch(() => state.placement, updateDirection, {
-      immediate: true,
+      });
     });
 
     onMounted(() => {
@@ -397,17 +354,18 @@ export default defineComponent({
     });
 
     onUnmounted(() => {
-      destroyPopper();
-      cleanupRO();
       removeEvents();
     });
 
     return {
       ...toRefs(state),
+      actualPlacement,
       popoverRef,
+      popoverStyle,
+      direction,
       alignment,
+      middleware,
       hide,
-      setupPopper,
       beforeEnter,
       afterEnter,
       beforeLeave,
@@ -430,6 +388,9 @@ export default defineComponent({
   --popover-caret-vertical-offset: 8px;
 
   position: absolute;
+  width: max-content;
+  top: 0;
+  left: 0;
   display: block;
   outline: none;
   z-index: 10;

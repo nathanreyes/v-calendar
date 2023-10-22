@@ -49,6 +49,7 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,vue}\""
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.5.3",
     "@types/lodash": "^4.14.165",
     "@types/resize-observer-browser": "^0.1.7",
     "date-fns": "^2.16.1",
@@ -57,11 +58,9 @@
     "vue-screen-utils": "^1.0.0-beta.13"
   },
   "peerDependencies": {
-    "@popperjs/core": "^2.0.0",
     "vue": "^3.2.0"
   },
   "devDependencies": {
-    "@popperjs/core": "^2.11.6",
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",

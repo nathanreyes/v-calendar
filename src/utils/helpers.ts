@@ -3,7 +3,7 @@ import _isDate from 'lodash/isDate';
 import isFunction from 'lodash/isFunction';
 import isString from 'lodash/isString';
 import _some from 'lodash/some';
-import type { ComponentPublicInstance } from 'vue';
+import type { ComponentPublicInstance, Ref } from 'vue';
 
 export { isFunction, isString };
 export { default as isBoolean } from 'lodash/isBoolean';
@@ -17,6 +17,13 @@ export { default as defaultsDeep } from 'lodash/defaultsDeep';
 export { default as map } from 'lodash/map';
 export { default as head } from 'lodash/head';
 export { default as last } from 'lodash/last';
+
+export type ElementTarget =
+  | string
+  | HTMLElement
+  | ComponentPublicInstance
+  | null
+  | Ref<string | HTMLElement | ComponentPublicInstance | null>;
 
 // Type checkers
 export const getType = (value: any) =>
@@ -52,7 +59,7 @@ export const isArray = (val: any): val is any[] => Array.isArray(val);
 export const arrayHasItems = (array: any): boolean =>
   isArray(array) && array.length > 0;
 
-export const resolveEl = (target: unknown): Node | null => {
+export const resolveEl = (target: ElementTarget): HTMLElement | null => {
   if (target == null) return null;
   if (document && isString(target)) return document.querySelector(target);
   return (target as ComponentPublicInstance).$el ?? target;

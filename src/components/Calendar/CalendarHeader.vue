@@ -44,7 +44,11 @@
 import { computed } from 'vue';
 import { useCalendar } from '../../use/calendar';
 import { Page } from '../../utils/page';
-import { popoverDirective as vPopover } from '../../utils/popovers';
+import {
+  type PopoverPlacement,
+  type PopoverOptions,
+  popoverDirective as vPopover,
+} from '../../utils/popovers';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
 import CalendarSlot from './CalendarSlot.vue';
 
@@ -67,7 +71,7 @@ const {
   moveNext,
 } = useCalendar();
 
-const navPlacement = computed(() => {
+const navPlacement = computed<PopoverPlacement>(() => {
   switch (props.page.titlePosition) {
     case 'left':
       return 'bottom-start';
@@ -77,17 +81,19 @@ const navPlacement = computed(() => {
       return 'bottom';
   }
 });
-const navPopoverOptions = computed(() => {
+
+const navPopoverOptions = computed<Partial<PopoverOptions>>(() => {
   const { page } = props;
   return {
     id: navPopoverId.value,
     visibility: navVisibility.value,
     placement: navPlacement.value,
-    modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom'] } }],
+    flip: false,
     data: { page },
     isInteractive: true,
   };
 });
+
 const titleLeft = computed(() => props.page.titlePosition.includes('left'));
 const titleRight = computed(() => props.page.titlePosition.includes('right'));
 const layout_ = computed(() => {
