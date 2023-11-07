@@ -635,13 +635,13 @@ export default {
       if (!this.hasValue(value)) return null;
       if (this.isRange) {
         const result = {};
-        const start = value.start > value.end ? value.end : value.start;
+        const start = new Date(value.start).getTime() > new Date(value.end).getTime() ? value.end : value.start;
         result.start = this.normalizeDate(start, {
           ...config[0],
           fillDate: (this.value_ && this.value_.start) || config[0].fillDate,
           patch,
         });
-        const end = value.start > value.end ? value.start : value.end;
+        const end = new Date(value.start).getTime() > new Date(value.end).getTime() ? value.start : value.end;
         result.end = this.normalizeDate(end, {
           ...config[1],
           fillDate: (this.value_ && this.value_.end) || config[1].fillDate,
