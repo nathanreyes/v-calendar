@@ -414,12 +414,12 @@ export function createDatePicker(
   ): Date | SimpleDateRange | null {
     if (!hasValue(value)) return null;
     if (hasRangeValue(value)) {
-      const start = locale.value.toDate(value.start, {
+      const start = locale.value.toDateOrNull(value.start, {
         ...config[0],
         fillDate: valueStart.value ?? undefined,
         patch,
       });
-      const end = locale.value.toDate(value.end, {
+      const end = locale.value.toDateOrNull(value.end, {
         ...config[1],
         fillDate: valueEnd.value ?? undefined,
         patch,
