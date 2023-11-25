@@ -65,6 +65,7 @@ export default {
   props: {
     id: { type: String, required: true },
     contentClass: String,
+    positionFixed: { type: Boolean, default: false},
   },
   data() {
     return {
@@ -73,7 +74,6 @@ export default {
       data: null,
       transition: 'slide-fade',
       placement: 'bottom',
-      positionFixed: false,
       modifiers: [],
       isInteractive: false,
       isHovered: false,

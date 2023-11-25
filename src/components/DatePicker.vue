@@ -131,6 +131,7 @@ export default {
             props: {
               id: this.datePickerPopoverId,
               placement: 'bottom-start',
+              positionFixed: this.popover.positionFixed,
               contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
             },
             on: {
