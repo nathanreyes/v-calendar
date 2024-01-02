@@ -59,33 +59,38 @@ export default {
     }
 
     // Weeknumber cell
-    const getWeeknumberCell = weeknumber =>
-      h(
+    const getWeeknumberCell = weeknumber => {
+      const handleClick = event => {
+        this.$emit('weeknumberclick', {
+          weeknumber,
+          days: this.page.days.filter(
+            d => d[this.weeknumberKey] === weeknumber,
+          ),
+          event,
+        });
+      };
+      return h(
         'div',
         {
           class: ['vc-weeknumber'],
         },
-        [
+        this.safeScopedSlot('weeknumber-content', {
+          weeknumber,
+          click: handleClick,
+        }) || [
           h(
             'span',
             {
               class: ['vc-weeknumber-content', `is-${this.showWeeknumbers_}`],
               on: {
-                click: event => {
-                  this.$emit('weeknumberclick', {
-                    weeknumber,
-                    days: this.page.days.filter(
-                      d => d[this.weeknumberKey] === weeknumber,
-                    ),
-                    event,
-                  });
-                },
+                click: handleClick,
               },
             },
             [weeknumber],
           ),
         ],
       );
+    };
 
     // Day cells
     const dayCells = [];
@@ -187,13 +192,8 @@ export default {
       }
     },
     navPopoverEvents() {
-      const {
-        sharedState,
-        navVisibility_,
-        navPlacement,
-        page,
-        position,
-      } = this;
+      const { sharedState, navVisibility_, navPlacement, page, position } =
+        this;
       return getPopoverTriggerEvents({
         id: sharedState.navPopoverId,
         visibility: navVisibility_,
