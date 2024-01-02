@@ -2,7 +2,7 @@
 import { childMixin, safeScopedSlotMixin } from '../utils/mixins';
 import { arrayHasItems, mergeEvents } from '../utils/helpers';
 import { getPopoverTriggerEvents, updatePopover } from '../utils/popovers';
-import { last, get, defaults } from '../utils/_';
+import { last, get, map, defaults } from '../utils/_';
 
 export default {
   name: 'CalendarDay',
@@ -175,7 +175,7 @@ export default {
       return [
         'vc-day-content vc-focusable',
         { 'is-disabled': this.isDisabled },
-        get(last(this.content), 'class') || '',
+        ...map(this.content, 'class'),
       ];
     },
     dayContentStyle() {
