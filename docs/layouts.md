@@ -49,6 +49,16 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 <v-calendar trim-weeks>
 ```
 
+## Weekly View
+
+Set the `view` prop to display the calendar in 'weekly' view.
+
+<guide-layouts-weekly-view />
+
+```html
+<v-calendar view="weekly" />
+```
+
 ## Week Numbers :tada:
 
 Show week numbers in the calendar using the `show-weeknumbers` prop.
