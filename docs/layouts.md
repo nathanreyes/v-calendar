@@ -46,7 +46,17 @@ However, these empty weeks can be 'trimmed' by setting the `trim-weeks` prop.
 <guide-layouts-trim-weeks />
 
 ```html
-<v-calendar trim-weeks />
+<v-calendar trim-weeks>
+```
+
+## Weekly View
+
+Set the `view` prop to display the calendar in 'weekly' view.
+
+<guide-layouts-weekly-view />
+
+```html
+<v-calendar view="weekly" />
 ```
 
 ## Week Numbers :tada:
@@ -68,7 +78,7 @@ Alternatively, you can display the week numbers outside the calendar or on the r
 <guide-layouts-weeknumbers option="left-outside" />
 
 ```html
-<v-calendar show-weeknumbers="left-outside" />
+<v-calendar show-weeknumbers="left-outside">
 ```
 
 #### Right
@@ -76,7 +86,7 @@ Alternatively, you can display the week numbers outside the calendar or on the r
 <guide-layouts-weeknumbers option="right" />
 
 ```html
-<v-calendar show-weeknumbers="right" />
+<v-calendar show-weeknumbers="right">
 ```
 
 #### Right Outside
@@ -84,7 +94,7 @@ Alternatively, you can display the week numbers outside the calendar or on the r
 <guide-layouts-weeknumbers option="right-outside" />
 
 ```html
-<v-calendar show-weeknumbers="right-outside" />
+<v-calendar show-weeknumbers="right-outside">
 ```
 
 ### ISO Week Numbers
