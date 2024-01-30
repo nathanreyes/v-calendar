@@ -142,7 +142,7 @@ interface NumberRuleConfig {
   interval?: number;
 }
 
-type DatePartsRuleFunction = (part: number, parts: TimeParts) => boolean;
+type DatePartsRuleFunction = (part: number, parts: DateParts) => boolean;
 
 type DatePartsRule =
   | number
