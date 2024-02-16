@@ -1,5 +1,5 @@
 import { Attribute } from './attribute';
-import { DateRangeCell } from '@/utils/date/range';
+import { DateRangeCell } from '../utils/date/range';
 import {
   GlyphRenderer,
   Glyph,
