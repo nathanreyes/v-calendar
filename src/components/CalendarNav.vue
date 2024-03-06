@@ -272,6 +272,7 @@ export default {
 .vc-nav-header {
   display: flex;
   justify-content: space-between;
+  direction: ltr;
 }
 
 .vc-nav-arrow {

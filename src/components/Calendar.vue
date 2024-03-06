@@ -885,6 +885,7 @@ export default {
   justify-content: space-between;
   padding: 8px 10px;
   pointer-events: none;
+  direction: ltr;
   &.title-left {
     justify-content: flex-end;
   }
