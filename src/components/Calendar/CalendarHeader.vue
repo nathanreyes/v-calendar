@@ -10,7 +10,6 @@
       class="vc-arrow vc-prev vc-focus"
       :disabled="!canMovePrev"
       @click="movePrev"
-      @keydown.space.enter="movePrev"
     >
       <CalendarSlot name="header-prev-button" :disabled="!canMovePrev">
         <BaseIcon name="ChevronLeft" size="24" />
@@ -31,7 +30,6 @@
       class="vc-arrow vc-next vc-focus"
       :disabled="!canMoveNext"
       @click="moveNext"
-      @keydown.space.enter="moveNext"
     >
       <CalendarSlot name="header-next-button" :disabled="!canMoveNext">
         <BaseIcon name="ChevronRight" size="24" />
