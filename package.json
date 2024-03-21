@@ -19,6 +19,7 @@
     "test": "vue-cli-service test:unit --watch"
   },
   "main": "lib/v-calendar.umd.min.js",
+  "style": "dist/style.css",
   "files": [
     "src",
     "lib"
