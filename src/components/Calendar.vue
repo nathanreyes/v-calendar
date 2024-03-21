@@ -90,6 +90,7 @@ export default {
           ],
           attrs: {
             role: 'button',
+            'aria-label': `${isPrev ? 'previous' : 'next'} month`
           },
           on: {
             click,
