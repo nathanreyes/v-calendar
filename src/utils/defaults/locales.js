@@ -3,6 +3,7 @@ import { toPairs } from '../_';
 const locales = {
   // Arabic
   ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
+  'ar-SA': { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
   // Bulgarian
   bg: { dow: 2, L: 'D.MM.YYYY' },
   // Catalan

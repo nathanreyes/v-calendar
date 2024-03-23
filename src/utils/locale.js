@@ -112,17 +112,34 @@ const formatFlags = {
   MM(d) {
     return pad(d.month);
   },
-  MMM(d, l) {
-    return l.monthNamesShort[d.month - 1];
+  MMM(d) {
+    const monthFormatter = new Intl.DateTimeFormat(d.locale, {
+      month: 'short',
+    });
+    return monthFormatter.format(d.date);
   },
-  MMMM(d, l) {
-    return l.monthNames[d.month - 1];
+  MMMM(d) {
+    console.log(d);
+    const monthFormatter = new Intl.DateTimeFormat(d.locale, {
+      month: 'long',
+    });
+    return monthFormatter.format(d.date);
   },
   YY(d) {
-    return String(d.year).substr(2);
+    // return String(d.year).substr(2);
+    const yearFormatter = new Intl.DateTimeFormat(d.locale, {
+      year: 'numeric',
+      numberingSystem: 'latn'
+    });
+    return String(yearFormatter.format(d.date)).substring(2);
   },
   YYYY(d) {
-    return pad(d.year, 4);
+    // return pad(d.year, 4);
+    const yearFormatter = new Intl.DateTimeFormat(d.locale, {
+      year: 'numeric',
+      numberingSystem: 'latn'
+    });
+    return pad(yearFormatter.format(d.date), 4);
   },
   h(d) {
     return d.hours % 12 || 12;
@@ -349,6 +366,7 @@ export default class Locale {
     const timezone = /Z$/.test(mask) ? 'utc' : this.timezone;
     const dateParts = this.getDateParts(date, timezone);
     // Apply formatting rules
+    dateParts.locale = this.id;
     mask = mask.replace(token, $0 =>
       $0 in formatFlags
         ? formatFlags[$0](dateParts, this)
