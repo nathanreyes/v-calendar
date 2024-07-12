@@ -75,7 +75,7 @@ export default defineComponent({
     CalendarSlot,
   },
   props: propsDef,
-  emit: emitsDef,
+  emits: emitsDef,
   setup(props, { emit, slots }) {
     return createCalendar(props, { emit, slots });
   },
