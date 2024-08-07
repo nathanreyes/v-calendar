@@ -7,7 +7,11 @@
       v-for="position in positions"
       :key="position"
       :position="position"
-    />
+    >
+      <template #select="{ onChange, value, options, alignRight, alignLeft }">
+        <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+      </template>
+    </TimePicker>
   </div>
   <Calendar
     v-else
@@ -23,7 +27,11 @@
           v-for="position in positions"
           :key="position"
           :position="position"
-        />
+        >
+          <template #select="{ onChange, value, options, alignRight, alignLeft }">
+            <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+          </template>
+        </TimePicker>
       </template>
       <CalendarSlot name="dp-footer" />
     </template>

@@ -26,7 +26,11 @@
         :options="hourOptions"
         class="vc-time-select-hours"
         align-right
-      />
+      >
+        <template #select="{ onChange, value, options, alignRight, alignLeft }">
+          <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+        </template>
+      </BaseSelect>
       <template v-if="timeAccuracy > 1">
         <span class="vc-time-colon">:</span>
         <BaseSelect
@@ -34,7 +38,11 @@
           :options="options.minutes"
           class="vc-time-select-minutes"
           :align-left="timeAccuracy === 2"
-        />
+        >
+          <template #select="{ onChange, value, options, alignRight, alignLeft }">
+            <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+          </template>
+        </BaseSelect>
       </template>
       <template v-if="timeAccuracy > 2">
         <span class="vc-time-colon">:</span>
@@ -43,7 +51,11 @@
           :options="options.seconds"
           class="vc-time-select-seconds"
           :align-left="timeAccuracy === 3"
-        />
+        >
+          <template #select="{ onChange, value, options, alignRight, alignLeft }">
+            <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+          </template>
+        </BaseSelect>
       </template>
       <template v-if="timeAccuracy > 3">
         <span class="vc-time-decimal">.</span>
@@ -52,9 +64,17 @@
           :options="options.milliseconds"
           class="vc-time-select-milliseconds"
           align-left
-        />
+        >
+          <template #select="{ onChange, value, options, alignRight, alignLeft }">
+            <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+          </template>
+        </BaseSelect>
       </template>
-      <BaseSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions" />
+      <BaseSelect v-if="!is24hr" v-model="isAM" :options="isAMOptions">
+        <template #select="{ onChange, value, options, alignRight, alignLeft }">
+          <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+        </template>
+      </BaseSelect>
     </div>
   </div>
 </template>

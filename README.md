@@ -140,3 +140,34 @@ yarn lint
 # Types, ES, ESM, CommonJS, IIFE
 yarn test
 ```
+
+## Use Select Slot
+
+```vue
+<script>
+import ASelect from 'ant-design-vue/es/select';
+import AOption from 'ant-design-vue/es/select/option';
+</script>
+
+<template>
+  <VCalendarDatePicker v-if="date && (typeof date === 'object')" v-model.range="date" :columns="2" v-bind="{ ...attrs, ...$attrs }" :attributes="attributes" mode="dateTime" is24hr>
+        <template #select="{ onChange, value, options }">
+          <a-select
+            :default-value="value"
+            size="mini"
+            :style="{ width: '68px' }"
+            @change="(val) => onChange(val)"
+          >
+            <a-option
+              v-for="option in options"
+              :key="option.value"
+              :value="option.value"
+              :disabled="option.disabled"
+            >
+              {{ option.label }}
+            </a-option>
+          </a-select>
+        </template>
+  </VCalendarDatePicker>
+</template>
+```
