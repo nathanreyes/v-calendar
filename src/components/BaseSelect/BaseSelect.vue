@@ -6,27 +6,29 @@
       'vc-has-icon': showIcon,
     }"
   >
-    <select
-      v-bind="$attrs"
-      :value="modelValue"
-      class="vc-focus"
-      :class="{
-        'vc-align-right': alignRight,
-        'vc-align-left': alignLeft,
-      }"
-      @change="
-        $emit('update:modelValue', ($event.target as HTMLSelectElement).value)
-      "
-    >
-      <option
-        v-for="option in options"
-        :key="option.value"
-        :value="option.value"
-        :disabled="option.disabled"
+    <slot name="select" :onChange="handleChange" :value="modelValue" :options="options" :alignRight="alignRight" :alignLeft="alignLeft">
+        <select
+        v-bind="$attrs"
+        :value="modelValue"
+        class="vc-focus"
+        :class="{
+          'vc-align-right': alignRight,
+          'vc-align-left': alignLeft,
+        }"
+        @change="
+          $emit('update:modelValue', ($event.target as HTMLSelectElement).value)
+        "
       >
-        {{ option.label }}
-      </option>
-    </select>
+        <option
+          v-for="option in options"
+          :key="option.value"
+          :value="option.value"
+          :disabled="option.disabled"
+        >
+          {{ option.label }}
+        </option>
+      </select>
+    </slot>
     <BaseIcon v-if="showIcon" name="ChevronDown" size="18" />
     <div v-if="fitContent" class="vc-base-sizer" aria-hidden="true">
       {{ selectedLabel }}
@@ -35,12 +37,6 @@
 </template>
 
 <script lang="ts">
-interface BaseOption {
-  value: any;
-  label: string;
-  disabled?: boolean;
-}
-
 export default {
   inheritAttrs: false,
 };
@@ -49,6 +45,8 @@ export default {
 <script setup lang="ts">
 import { computed } from 'vue';
 import BaseIcon from '../BaseIcon/BaseIcon.vue';
+import type { BaseOption } from './types'
+
 
 const props = defineProps<{
   options: BaseOption[];
@@ -58,12 +56,16 @@ const props = defineProps<{
   showIcon?: boolean;
   fitContent?: boolean;
 }>();
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 
 const selectedLabel = computed(() => {
   const option = props.options.find(opt => opt.value === props.modelValue);
   return option?.label;
 });
+
+function handleChange(val: any): void {
+  emit('update:modelValue', val);
+}
 </script>
 
 <style lang="css">
@@ -134,3 +136,4 @@ const selectedLabel = computed(() => {
   }
 }
 </style>
+./types

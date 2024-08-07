@@ -3,7 +3,11 @@
     <slot v-bind="slotCtx" />
     <DatePickerPopover v-bind="$attrs" />
   </template>
-  <DatePickerBase v-else v-bind="$attrs" />
+  <DatePickerBase v-else v-bind="$attrs">
+    <template #select="{ onChange, value, options, alignRight, alignLeft }">
+      <slot name="select" :onChange="onChange" :value="value" :options="options" :alignRight="alignRight" :alignLeft="alignLeft" />
+    </template>
+  </DatePickerBase>
 </template>
 
 <script lang="ts">
