@@ -78,7 +78,7 @@ app.use(SetupCalendar, {})
 <!-- Component.vue template -->
 <template>
   <Calendar />
-  <DatePicker v-model="date">
+  <DatePicker v-model="date" />
 </template>
 ```
 
