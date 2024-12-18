@@ -89,6 +89,7 @@ export default {
             { 'is-disabled': isDisabled },
           ],
           attrs: {
+            'aria-label': `${isPrev ? 'Previous' : 'Next'}`,
             role: 'button',
           },
           on: {

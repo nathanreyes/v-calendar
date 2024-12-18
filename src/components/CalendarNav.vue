@@ -7,6 +7,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-left"
+        aria-label="Previous"
         :class="{ 'is-disabled': !prevItemsEnabled }"
         :tabindex="prevItemsEnabled ? 0 : undefined"
         @click="movePrev"
@@ -31,6 +32,7 @@
       <span
         role="button"
         class="vc-nav-arrow is-right"
+        aria-label="Next"
         :class="{ 'is-disabled': !nextItemsEnabled }"
         :tabindex="nextItemsEnabled ? 0 : undefined"
         @click="moveNext"
