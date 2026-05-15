@@ -6,13 +6,6 @@
     An elegant calendar and datepicker plugin for Vuejs.
 </p>
 
-<p align="center">
-    <a href="https://www.npmjs.com/package/v-calendar"><img src="https://img.shields.io/npm/dt/v-calendar.svg" alt="Total Downloads"></a>
-    <a href="https://github.com/nathanreyes/v-calendar/releases"><img src="https://img.shields.io/npm/v/v-calendar.svg" alt="Latest Release"></a>
-    <a href="https://github.com/nathanreyes/v-calendar/releases"><img src="https://img.shields.io/npm/v/v-calendar/next.svg" alt="Next Release"></a>
-    <a href="https://github.com/nathanreyes/v-calendar/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/v-calendar.svg" alt="License"></a>
-</p>
-
 ------
 
 ```bash
@@ -21,7 +14,7 @@ npm i --save v-calendar
 
 ## Documentation
 
-For full documentation, visit [vcalendar.io](https://vcalendar.io/).
+This is a fork of nathanreyes's v-calender - [vcalendar.io](https://vcalendar.io/).
 
 ### Attributes
 
